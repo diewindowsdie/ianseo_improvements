@@ -1,0 +1,15 @@
+<?php
+$lang['DayOfWeekLong_0']='อาทิตย์';
+$lang['DayOfWeekLong_1']='จันทร์';
+$lang['DayOfWeekLong_2']='อังคาร';
+$lang['DayOfWeekLong_3']='พุธ';
+$lang['DayOfWeekLong_4']='พฤหัสบดี';
+$lang['DayOfWeekLong_5']='ศุกร์';
+$lang['DayOfWeekLong_6']='เสาร์';
+$lang['DayOfWeek_1']='จ.';
+$lang['DayOfWeek_2']='อ.';
+$lang['DayOfWeek_3']='พ.';
+$lang['DayOfWeek_4']='พฤ.';
+$lang['DayOfWeek_5']='ศ.';
+$lang['DayOfWeek_6']='ส.';
+?>
