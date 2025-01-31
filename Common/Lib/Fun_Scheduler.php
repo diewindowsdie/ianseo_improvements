@@ -1417,11 +1417,11 @@ Class Scheduler {
 	function getSchedulePDF(&$pdf='') {
 		if(empty($pdf)) {
 			require_once('Common/pdf/OrisPDF.inc.php');
-			$pdf= new OrisPDF('C08', 'Schedule');
-			$pdf->EvPhase='Schedule';
+			$pdf= new OrisPDF('C08', get_text('Schedule', 'Tournament'));
+			$pdf->EvPhase=get_text('IntSCHED', 'ODF');
 			$pdf->startPageGroup();
 		} else {
-			$pdf->EvPhase='Schedule';
+			$pdf->EvPhase=get_text('IntSCHED', 'ODF');
 		}
 
 		if($this->SchedVersion) {

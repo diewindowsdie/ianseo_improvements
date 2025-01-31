@@ -128,9 +128,10 @@
 		 *  prima passata per costruire la struttura del vettore.
 		 *  Tiro fuori le qualifiche, le posizioni finali e le eliminatorie (se ci sono)
 		 */
-			$q="SELECT EnId,EnCode, EnSex, EnNameOrder, upper(EnIocCode) EnIocCode, EnName AS Name, EnFirstName AS FirstName, upper(EnFirstName) AS FirstNameUpper, CoId, CoCode, CoName, if(CoNameComplete>'', CoNameComplete, CoName) as CoNameComplete,
+			$q="SELECT EnId,EnCode, EnSex, EnNameOrder, upper(EnIocCode) EnIocCode, EnName AS Name, EnFirstName AS FirstName, upper(EnFirstName) AS FirstNameUpper, co.CoId, co.CoCode, co.CoName, if(co.CoNameComplete>'', co.CoNameComplete, co.CoName) as CoNameComplete,
+                    if(co2.CoNameComplete > '', co2.CoNameComplete, co2.CoName) as Co2NameComplete,
 					EvCode,EvEventName,EvProgr,EvElimType, ifnull(EdExtra, EnCode) as LocalBib, EnDob, coalesce(StopPhase, 0) as StopPhase,
-					EvFinalPrintHead as PrintHeader, CoMaCode, CoCaCode,
+					EvFinalPrintHead as PrintHeader, co.CoMaCode, co.CoCaCode,
 					EvFinalFirstPhase,	EvNumQualified, EvFirstQualified, EvElim1, 	EvElim2,EvMatchMode, EvMedals, EvCodeParent, 
 					IndRank as QualRank, ".($StraightRank ? "IndRankFinal" : "IF(EvShootOff+EvE1ShootOff+EvE2ShootOff=0, IndRank, IndRankFinal)")." as FinalRank, QuScore AS QualScore, 
 					e1.ElRank AS E1Rank,e1.ElScore AS E1Score,
@@ -144,14 +145,15 @@
 				FROM Tournament
 				INNER JOIN Events ON EvTeamEvent=0 AND EvTournament=ToId
 				INNER JOIN Entries ON ToId=EnTournament
-				left JOIN Countries ON CoId=
+				left JOIN Countries co ON co.CoId=
 				    case EvTeamCreationMode 
 				        when 0 then EnCountry
 				        when 1 then EnCountry2
 				        when 2 then EnCountry3
 				        else EnCountry
                     end
-                    AND EnTournament=CoTournament AND EnTournament={$this->tournament}
+                    AND EnTournament=co.CoTournament AND EnTournament={$this->tournament}
+                left JOIN Countries co2 ON co2.CoId=EnCountry2 AND EnTournament=co2.CoTournament AND EnTournament={$this->tournament}
 				INNER JOIN Qualifications ON EnId=QuId
 				INNER JOIN Individuals ON EvCode=IndEvent AND EnTournament=IndTournament AND EnId=IndId
 				INNER JOIN IrmTypes i1 ON i1.IrmId=IndIrmTypeFinal
@@ -320,6 +322,7 @@
 						'memberAssoc' => $myRow->CoMaCode,
 						'countryIocCode' => $myRow->EnIocCode,
 						'countryName' => $myRow->CoName,
+                        'countryName2' => $myRow->Co2NameComplete,
 						'countryNameLong' => $myRow->CoNameComplete,
 						'qualScore'=>$myRow->HideDetails ? '' : $myRow->QualScore,
 						'qualTie'=>$myRow->QuTieBreak,

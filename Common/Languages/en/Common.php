@@ -556,6 +556,7 @@ $lang['TargetFinalInd']='Individual finals target assignment';
 $lang['TargetFinalTeam']='Team finals target assignment';
 $lang['TargetMoved']='Target Assignment moved successfully';
 $lang['TargetType']='Target Type';
+$lang['TargetWithoutN']='T';
 $lang['TB']='S.O.';
 $lang['Team']='Team';
 $lang['TeamComponents']='Components';
@@ -616,4 +617,5 @@ $lang['WA_Pool4']='World Archery 4 Pools';
 $lang['WG_Pool2']='World Games 2 Pools';
 $lang['Winner']='Winner';
 $lang['Yes']='Yes';
+$lang['Normative']='Normative';
 ?>

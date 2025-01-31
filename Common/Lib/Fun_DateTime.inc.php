@@ -241,13 +241,13 @@
 		$DateTo=mktime(0,0,0,$m,$d,$y);
 
 		if($DateFrom == $DateTo)			//Inizio e Fine Coincidono
-			$TmpData=date('j M Y',$DateFrom);
+			$TmpData=date('d.m.Y',$DateFrom);
 		else if(date('m',$DateFrom)==date('m',$DateTo))
-			$TmpData=date('j',$DateFrom) . '-' . date('j',$DateTo) . date(' M Y',$DateFrom);
+			$TmpData=date('d',$DateFrom) . '-' . date('d',$DateTo) . date('.m.Y',$DateFrom);
 		else if(date('Y',$DateFrom)==date('Y',$DateTo))
-			$TmpData=date('j M',$DateFrom) . ' - ' . date('j M',$DateTo) . date(' Y',$DateFrom);
+			$TmpData=date('d.m',$DateFrom) . ' - ' . date('d.m',$DateTo) . date(' Y',$DateFrom);
 		else
-			$TmpData=date('j M Y',$DateFrom) . ' - ' . date('j M Y',$DateTo);
+			$TmpData=date('d.m.Y',$DateFrom) . ' - ' . date('d.m.Y',$DateTo);
 
 		return $TmpData;
 	}

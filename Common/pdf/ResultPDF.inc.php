@@ -255,8 +255,6 @@ class ResultPDF extends IanseoPdf {
 	{
 	//Legenda per la Partecipazione a Gare
 		$this->SetXY(10,$this->GetY()+5);
-		if(!$this->SamePage(15))
-			$this->AddPage();
 	   	$this->SetFont($this->FontStd,'B',$this->FontSizeLines);
 		$this->Cell(190, 5, $this->Partecipation, 1, 1, 'C', 1);
 		$this->Cell(22, 10,  '', 1, 0, 'C', 0);
@@ -331,6 +329,7 @@ class ResultPDF extends IanseoPdf {
 			// prints the header
 			$head=true;
 			$this->SetFont($this->FontStd,'',1);
+			//space between target bales
 			$this->Cell(190, 0.5,  '', 0, 1, 'C', 0);
 			$this->SetFont($this->FontStd,'B',$this->FontSizeLines);
 	//		if(!$this->samepage(4*(count($Components['players'])+1))) $this->addpage();
@@ -354,16 +353,14 @@ class ResultPDF extends IanseoPdf {
 					$this->Cell(4, $this->RealCellHeight,  $row[0], 1, 0, 'R', 0);
 				}
 				$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-				$this->Cell(10, $this->RealCellHeight,  $row[1]??'', 1, 0, 'R', 0);
-				$this->Cell(44, $this->RealCellHeight,  $row[2]??'', 1, 0, 'L', 0);
-				$this->Cell( 8, $this->RealCellHeight,  $row[3]??'', 'LTB', 0, 'C', 0);
-				$this->Cell(48, $this->RealCellHeight,  $row[4]??'' . ($row[11]==null ? "" : " (" . $row[11] . " " . $row[12]. ")") . ($row[14]==null ? "" : " (" . $row[14]." ". $row[15].")"), 'RTB', 0, 'L', 0);
+				$this->Cell(34, $this->RealCellHeight,  $row[1]??'', 1, 0, 'L', 0);
+				$this->Cell(70, $this->RealCellHeight,  $row[3]??'' . ($row[10]==null ? "" : " (" . $row[10] . " " . $row[11]. ")") . ($row[13]==null ? "" : " (" . $row[13]." ". $row[14].")"), 'RTB', 0, 'L', 0);
 				if(!$this->HideCols && !$TargetFace) {
-					$this->Cell(12, $this->RealCellHeight,  $row[5], 1, 0, 'C', 0);
-					$this->Cell( 9, $this->RealCellHeight,  $row[6], 1, 0, 'C', 0);
+					$this->Cell(12, $this->RealCellHeight,  $row[4], 1, 0, 'C', 0);
+					$this->Cell( 9, $this->RealCellHeight,  $row[5], 1, 0, 'C', 0);
 				}
-				$this->Cell(12 + ($this->HideCols==true ? ($TargetFace ? 12 : 23) : 0), $this->RealCellHeight, $row[7], 1, 0, 'C', 0);
-				$this->Cell(12 + ($this->HideCols==true ? ($TargetFace ? 12 : 22) : 0), $this->RealCellHeight,  $row[8], 1, 0, 'C', 0);
+				$this->Cell(18 + ($this->HideCols==true ? ($TargetFace ? 12 : 23) : 0), $this->RealCellHeight, $row[6], 1, 0, 'C', 0);
+				$this->Cell(12 + ($this->HideCols==true ? ($TargetFace ? 12 : 22) : 0), $this->RealCellHeight,  $row[7], 1, 0, 'C', 0);
 
 				if ($TargetFace) {
 					$this->SetFont($this->FontStd,'B',$this->FontSizeHead);
@@ -375,10 +372,10 @@ class ResultPDF extends IanseoPdf {
 		//Disegna i Pallini per la partecipazione
 				if(!$this->HideCols)
 				{
-					$this->DrawParticipantDetails($row[9][0], $row[9][1], $row[9][2], $row[9][3], $row[9][4]);
+					$this->DrawParticipantDetails($row[8][0], $row[8][1], $row[8][2], $row[8][3], $row[8][4]);
 					$this->SetDefaultColor();
 					$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-					$this->Cell(10, $this->RealCellHeight,  $row[10] , 1, 0, 'C', 0);
+					$this->Cell(10, $this->RealCellHeight,  $row[9] , 1, 0, 'C', 0);
 				}
 				$this->Cell(1, $this->RealCellHeight,  '' , 0, 1, 'C', 0);
 				$head=false;
@@ -391,20 +388,15 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(8, 4 * ($double ? 2 : 1),  $item['rank'], $border.'LR', 0, 'R', 0);
 		//Atleta
 		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-		$this->Cell(7, 4 * ($double ? 2 : 1),  ($item['session'] . "- " . $item['target']), $border. 'L', 0, 'R', 0);
-		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-		$this->Cell(38+ $addSize, 4 * ($double ? 2 : 1),  $item['athlete'], $border. 'R', 0, 'L', 0);
+		$this->Cell(20+ $addSize, 4 * ($double ? 2 : 1),  $item['athlete'], $border. 'R', 0, 'L', 0);
 		//Classe
 		if($this->PrintAgeClass) {
-			$this->SetFont($this->FontStd,'',$this->FontSizeHeadSmall);
-			$this->Cell(5, 4 * ($double ? 2 : 1), ($item['class']), $border.'L', 0, 'C', 0);
-			$this->SetFont($this->FontStd,'',5);
-			$this->Cell(5, 4 * ($double ? 2 : 1), ($item['class']!=$item['ageclass'] ?  ' ' . ( $item['ageclass']) : ''), $border.'R', 0, 'C', 0);
 		}
+		$this->Cell(12, 4 * ($double ? 2 : 1), ($item['birthdate']), $border.'L', 0, 'C', 0);
+		$this->Cell(10, 4 * ($double ? 2 : 1), ($item['subclassName']), $border.'L', 0, 'C', 0);
 		//Nazione
 		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-		$this->Cell(8, 4 * ($double ? 2 : 1),  $item['countryCode'], $border.'L', 0, 'L', 0);
-		$this->Cell(43 + $addSize, 4 * ($double ? 2 : 1),  $item['countryName'], $border.'R', 0, 'L', 0);
+		$this->Cell(54 + $addSize, 4 * ($double ? 2 : 1),  $item['countryName'] . ($item['countryName2'] != '' ? ', ' : '') . $item['countryName2'], $border.'L', 0, 'L', 0);
 		$this->SetFont($this->FontFix,'',$this->FontSizeHead);
 		if(!$double) {
 			for($i=1; $i<=$distances;$i++) {
@@ -509,7 +501,7 @@ class ResultPDF extends IanseoPdf {
 				$this->SetFont($this->FontFix,'',$this->FontSizeLines);
 				$this->Cell(20, 4 * ($double ? 2 : 1),  $item['tieWeightDecoded'], $border.'LR', 1, 'L', 0);
 			} else {
-				$this->Cell(0, 4 * ($double ? 2 : 1),  '', $border.'LR', 1);
+				$this->Cell(10, 4 * ($double ? 2 : 1),  '', $border.'LR', 0);
 			}
 		} else {
 		//Definizione dello spareggio/Sorteggio
@@ -537,8 +529,10 @@ class ResultPDF extends IanseoPdf {
 					$tmpNote .= ' ' . $item['record'];
 				}
 			}
-			$this->Cell(0, 4 * ($double ? 2 : 1),  $tmpNote, $border.$LrBorder, 1, $align, 0);
+			$this->Cell(10, 4 * ($double ? 2 : 1),  $tmpNote, $border.$LrBorder, 0, $align, 0);
 		}
+		$this->SetFont($this->FontFix,'B',7);
+		$this->Cell(0, 4 * ($double ? 2 : 1),  $item['normative'], $border.$LrBorder, 1, 'C', 0);
 	}
 
 	function writeGroupHeaderPrnIndividualAbs($section, $distSize, $addSize, $running, $distances, $double, $follows=false)
@@ -578,12 +572,11 @@ class ResultPDF extends IanseoPdf {
 	   	$this->SetFont($this->FontStd,'B',$this->FontSizeHead);
 		$this->Cell(8, 4 * ($double ? 2 : 1),  $section['fields']['rank'], 1, 0, 'C', 1);
 
-		$this->Cell(45 + $addSize, 4 * ($double ? 2 : 1),  $section['fields']['athlete'], 1, 0, 'L', 1);
-		if($this->PrintAgeClass) {
-			$this->Cell(10, 4 * ($double ? 2 : 1),  $section['fields']['class'], 1, 0, 'C', 1);
-		}
+		$this->Cell(20 + $addSize, 4 * ($double ? 2 : 1),  $section['fields']['athlete'], 1, 0, 'L', 1);
+		$this->Cell(12, 4 * ($double ? 2 : 1),  $section['fields']['birthdate'], 1, 0, 'C', 1);
+		$this->Cell(10, 4 * ($double ? 2 : 1),  $section['fields']['subclass'], 1, 0, 'C', 1);
 
-		$this->Cell(51 + $addSize, 4 * ($double ? 2 : 1),  $section['fields']['countryName'], 1, 0, 'L', 1);
+		$this->Cell(54 + $addSize, 4 * ($double ? 2 : 1),  $section['fields']['countryName'], 1, 0, 'L', 1);
 		if(!$double)
 		{
 			for($i=1; $i<=$distances;$i++)
@@ -610,10 +603,11 @@ class ResultPDF extends IanseoPdf {
 		if($running) {
 			$this->Cell(8, 4 * ($double ? 2 : 1),  $section['fields']['hits'], 1, 0, 'C', 1);
 			$this->Cell(12, 4 * ($double ? 2 : 1),  $section['fields']['score'], 1, 0, 'C', 1);
-			$this->Cell(0, 4 * ($double ? 2 : 1),  '', 1, 1, 'C', 1);
+			$this->Cell(0, 4 * ($double ? 2 : 1),  '', 1, 0, 'C', 1);
 		} else {
-			$this->Cell(0, 4 * ($double ? 2 : 1),  '', 1, 1, 'C', 1);
+			$this->Cell(10, 4 * ($double ? 2 : 1),  '', 1, 0, 'C', 1);
 		}
+		$this->Cell(0, 4 * ($double ? 2 : 1), $section['fields']['normative'], 1, 1, 'C', 1);
 		$this->SetFont($this->FontStd,'',1);
 		$this->Cell(0, 0.5,  '', 1, 1, 'C', 0);
 	}

@@ -1,6 +1,9 @@
 <?php
 	require_once('Common/Lib/ArrTargets.inc.php');
 	require_once('Common/Rank/Obj_Rank_Abs.php');
+
+require_once('Common/Normative/NormativeCalculator.php');
+
 /**
  * Obj_Rank_Abs
  * Implementa l'algoritmo di default per il calcolo della rank di qualificazione assoluta individuale
@@ -235,7 +238,7 @@
 					EnId, EnCode, ifnull(EdExtra, EnCode) as LocalId, if(EnDob=0, '', EnDob) as BirthDate, EnOdfShortname, EnSex, EnNameOrder, upper(EnIocCode) EnIocCode, EnName AS Name, EnFirstName AS FirstName, upper(EnFirstName) AS FirstNameUpper, QuSession as Session, SesName,
 					SUBSTRING(QuTargetNo,2) AS TargetNo, FlContAssoc,
 					EvProgr, ToNumEnds,ToNumDist,ToMaxDistScore, FdiDetails,
-					CoId, CoCode, CoName, CoMaCode, CoCaCode, EnClass, EnDivision,EnAgeClass,  EnSubClass,  ScDescription,
+					co.CoId, co.CoCode, co.CoName, co.CoMaCode, co.CoCaCode, co2.CoName as CoName2, EnClass, EnDivision,EnAgeClass,  EnSubClass,  ScDescription,
 					IFNULL(Td1,'.1.') as Td1, IFNULL(Td2,'.2.') as Td2, IFNULL(Td3,'.3.') as Td3, IFNULL(Td4,'.4.') as Td4, IFNULL(Td5,'.5.') as Td5, IFNULL(Td6,'.6.') as Td6, IFNULL(Td7,'.7.') as Td7, IFNULL(Td8,'.8.') as Td8,
 					QuD1Score, IndD1Rank, QuD2Score, IndD2Rank, QuD3Score, IndD3Rank, QuD4Score, IndD4Rank,
 					QuD5Score, IndD5Rank, QuD6Score, IndD6Rank, QuD7Score, IndD7Rank, QuD8Score, IndD8Rank,
@@ -249,7 +252,7 @@
 					coalesce(RrLevGroups*RrLevGroupArchers, IF(EvElim1=0 && EvElim2=0, EvNumQualified ,IF(EvElim1=0,EvElim2,EvElim1))) as QualifiedNo, EvFirstQualified, EvQualPrintHead as PrintHeader,
 					{$MyRank} AS `Rank`, " . (!empty($comparedTo) ? 'IFNULL(IopRank,0)' : '0') . " as OldRank, Qu{$dd}Score AS Score, Qu{$dd}Gold AS Gold,Qu{$dd}Xnine AS XNine, Qu{$dd}Hits AS Hits, 
 					IndIrmType, IrmType, IrmShowRank, IrmHideDetails, ";
-			$q.="IndRecordBitmap as RecBitLevel, EvIsPara, CoMaCode, CoCaCode, "; // records management
+			$q.="IndRecordBitmap as RecBitLevel, EvIsPara, co.CoMaCode, co.CoCaCode, "; // records management
 
 			if(!empty($this->opts['runningDist']) && $this->opts['runningDist']>0) {
 				$q1='';
@@ -279,14 +282,15 @@
 				INNER JOIN Entries ON ToId=EnTournament
 				INNER JOIN Individuals ON IndTournament=ToId AND IndId=EnId
 				INNER JOIN Events ON EvCode=IndEvent AND EvTeamEvent=0 AND EvTournament=ToId
-				left JOIN Countries ON CoId=
+				left JOIN Countries co ON co.CoId=
 				    case EvTeamCreationMode 
 				        when 0 then EnCountry
 				        when 1 then EnCountry2
 				        when 2 then EnCountry3
 				        else EnCountry
                     end
-                    AND EnTournament=CoTournament AND EnTournament={$this->tournament}
+                    AND EnTournament=co.CoTournament AND EnTournament={$this->tournament}
+				INNER JOIN Countries co2 ON EnCountry2=co2.CoId AND EnTournament=co2.CoTournament AND EnTournament={$this->tournament}
 				INNER JOIN Qualifications ON EnId=QuId
 				INNER JOIN IrmTypes ON IrmId=IndIrmType
 				inner join (
@@ -315,7 +319,7 @@
 			if(!empty($comparedTo)) {
 				$q .= "LEFT JOIN IndOldPositions ON IopId=EnId AND IopEvent=EvCode AND IopTournament=EnTournament AND IopHits=" . ($comparedTo>0 ? $comparedTo :  "(SELECT MAX(IopHits) FROM IndOldPositions WHERE IopId=EnId AND IopEvent=EvCode AND IopTournament=EnTournament AND IopHits!=QuHits) ") . " ";
 			}
-			$q .= "LEFT JOIN Flags ON FlIocCode='FITA' and FlCode=CoCode and FlTournament=ToId
+			$q .= "LEFT JOIN Flags ON FlIocCode='FITA' and FlCode=co.CoCode and FlTournament=ToId
 
 					/* Contatori per CT (gialli)*/
 					LEFT JOIN (
@@ -418,6 +422,7 @@
 							'session' => get_text('Session'),
 							'target' => get_text('Target'),
 							'athlete' => get_text('Athlete'),
+                            'birthdate' => get_text('ArcherDoB', 'Service'),
 							'familyname' => get_text('FamilyName', 'Tournament'),
 							'givenname' => get_text('Name', 'Tournament'),
 							'gender' => get_text('Sex', 'Tournament'),
@@ -435,8 +440,9 @@
 							'completeScore' => get_text('TotalShort','Tournament'),
 							'gold' => $myRow->GoldLabel,
 							'xnine' => $myRow->XNineLabel,
-							'hits' => get_text('Arrows','Tournament')
-						);
+							'hits' => get_text('Arrows','Tournament'),
+                            'normative' => get_text('Normative'),
+                        );
 
 						if ($this->opts['dist']==0 && empty($this->opts['runningDist'])) {
 							$fields=$fields+array(
@@ -450,7 +456,9 @@
 
 						$fields=$fields+$distFields;
 
-						$section=array(
+                        $distances = $distFields;
+
+                        $section=array(
 							'meta' => array(
 								'event' => $curEvent,
                                 'odfUnitcode' => $myRow->OdfUnitCode ? $myRow->EvOdfCode.$myRow->OdfUnitCode : '',
@@ -519,7 +527,7 @@
 						'bib' => $myRow->EnCode,
 						'localbib' => $myRow->LocalId,
 						'tvname' => $myRow->EnOdfShortname,
-						'birthdate' => $myRow->BirthDate,
+						'birthdate' => DateTime::createFromFormat('Y-m-d', $myRow->BirthDate)->format('d.m.Y'),
 						'session' => $myRow->Session,
 						'sessionName' => $myRow->SesName,
 						'target' => $myRow->TargetNo,
@@ -533,12 +541,14 @@
 						'class' => $myRow->EnClass,
 						'ageclass' => $myRow->EnAgeClass,
 						'subclass' => $myRow->EnSubClass,
-						'countryId' => $myRow->CoId,
+                        'subclassName' => $myRow->ScDescription,
+                        'countryId' => $myRow->CoId,
 						'countryCode' => $myRow->CoCode,
 						'contAssoc' => $myRow->CoCaCode,
 						'memberAssoc' => $myRow->CoMaCode,
 						'countryIocCode' => $myRow->EnIocCode,
 						'countryName' => $myRow->CoName,
+                        'countryName2' => $myRow->CoName2,
 						'rank' => $myRow->IrmShowRank ? $tmpRank : '',
 						'oldRank' => $myRow->OldRank,
 						'finalRank' => $myRow->IndRankFinal,
@@ -555,7 +565,8 @@
 						'irm' => $myRow->IndIrmType,
 						'irmText' => $myRow->IrmType,
 						'recordGap' => ($myRow->Arrows_Shot*10)-$myRow->Score,
-					);
+                        'normative' => calcNormative($distances, $myRow->EnClass, $myRow->EnDivision, $myRow->Score)
+                    );
 
 					if ($this->opts['dist']==0 AND empty($this->opts['runningDist'])) {
 						$item=$item+array(

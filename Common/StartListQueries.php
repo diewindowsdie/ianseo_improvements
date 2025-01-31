@@ -343,7 +343,7 @@ function getStartListQuery($ORIS=false, $Event='', $Elim=false, $Filled=false, $
 		$MyQuery = "SELECT distinct SesName, 
 				EvCode, EvOdfCode, DivDescription, ClDescription, 
 				Bib, Athlete, SUBSTRING(AtTargetNo,1,1) AS Session, SUBSTRING(AtTargetNo,2) AS TargetNo, NationCode, Nation, RealEventCode, RealEventName,
-				EventCode, EventName, DOB, SesAth4Target, ClassCode, DivCode, AgeClass, SubClass, Status, 
+				EventCode, EventName, DOB, SesAth4Target, ClassCode, DivCode, AgeClass, SubClass, SubClassDescription, Status, 
 				`IC`, `TC`, `IF`, `TF`, `TM`, NationCode2, Nation2, NationCode3, Nation3, EnSubTeam, TfName, Wheelchair,
 				concat(DvMajVersion, '.', DvMinVersion) as DocVersion, date_format(DvPrintDateTime, '%e %b %Y %H:%i UTC') as DocVersionDate,
 				DvNotes as DocNotes,
@@ -360,24 +360,25 @@ function getStartListQuery($ORIS=false, $Event='', $Elim=false, $Filled=false, $
 					EnCode as Bib,
 					QuTargetNo,
 					upper(c.CoCode) AS NationCode,
-					upper(c.CoName) AS Nation,
+					c.CoName AS Nation,
 					upper(c2.CoCode) NationCode2,
-					upper(c2.CoName) Nation2,
-					upper(c3.CoCode) NationCode3,
-					upper(c3.CoName) Nation3,
+					c2.CoName Nation2,
+					c3.CoCode NationCode3,
+					c3.CoName Nation3,
 					" . ($ORIS ? " IFNULL(EvEventName,CONCAT('|',DivDescription, '| |', ClDescription)) as EventName," : " '' as EventName,") . " 
 					EnSubTeam,
 					EnClass AS ClassCode,
 					EnDivision AS DivCode,
 					EnAgeClass as AgeClass,
 					EnSubClass as SubClass,
+					ScDescription as SubClassDescription,
 					EnStatus as Status,
 					EnIndClEvent AS `IC`,
 					EnTeamClEvent AS `TC`,
 					EnIndFEvent AS `IF`,
 					EnTeamFEvent as `TF`,
 					EnTeamMixEvent as `TM`,
-					DATE_FORMAT(EnDob,'%d %b %Y') as DOB, 
+					DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DOB, 
 					TfName, 
 					EnWChair as Wheelchair,
 					" . ($ORIS ? " RankRanking " : "'' ") ." as RankRanking,
@@ -386,6 +387,7 @@ function getStartListQuery($ORIS=false, $Event='', $Elim=false, $Filled=false, $
 					EnTimestamp
 				FROM Qualifications AS q 
 				INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 
+				LEFT JOIN SubClass sc on sc.ScId = e.EnSubClass
 				INNER JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament
 				INNER JOIN Tournament on ToId=EnTournament 
 				LEFT JOIN Countries AS c2 ON e.EnCountry2=c2.CoId AND e.EnTournament=c2.CoTournament 
@@ -1110,9 +1112,9 @@ function getStartListAlphaQuery($ORIS=false, $Athlete=false) {
 			QuSession AS Session, 
 			SUBSTRING(QuTargetNo,2) AS TargetNo, 
 			QuTarget AS TargetButt, 
-			upper(c.CoCode) AS NationCode, upper(c.CoName) AS Nation, 
-			upper(c2.CoCode) AS NationCode2, upper(c2.CoName) AS Nation2, 
-			upper(c3.CoCode) AS NationCode3, upper(c3.CoName) AS Nation3, 
+			upper(c.CoCode) AS NationCode, c.CoName AS Nation, 
+			upper(c2.CoCode) AS NationCode2, c2.CoName AS Nation2, 
+			upper(c3.CoCode) AS NationCode3, c3.CoName AS Nation3, 
 			DivDescription, ClDescription, 
 			EnSubTeam, EnClass AS ClassCode, EnDivision AS DivCode, 
 			DivAthlete and ClAthlete as IsAthlete, 
@@ -1212,15 +1214,15 @@ function getStartListCategoryQuery($ORIS=false, $orderByTeam=0, $Events=array())
 				else upper(c.CoCode) 
 			end as NationCode,
 			case EvTeamCreationMode
-				when 0 then upper(c.CoName) 
-				when 1 then upper(c2.CoName) 
-				when 2 then upper(c3.CoName) 
-				else upper(c.CoName) 
+				when 0 then c.CoName 
+				when 1 then c2.CoName 
+				when 2 then c3.CoName 
+				else c.CoName 
 			end as Nation,
 			upper(c2.CoCode) AS NationCode2, 
-			upper(c2.CoName) AS Nation2, 
+			c2.CoName AS Nation2, 
 			upper(c3.CoCode) AS NationCode3, 
-			upper(c3.CoName) AS Nation3, 
+			c3.CoName AS Nation3, 
 			DivDescription, 
 			ClDescription, 
 			EnSubTeam, 

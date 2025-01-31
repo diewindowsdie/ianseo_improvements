@@ -9,6 +9,10 @@ $OldTarget='';
 $Components=array('ok'=>false,'players'=>array(),'header'=>array());
 $TargetFace=(isset($_REQUEST['tf']) && $_REQUEST['tf']==1);
 $key='';
+
+$pdf->SetFont($pdf->FontStd,'B',12);
+$pdf->Cell(190, 10, get_text('DrawProtocol', 'Service'), 0, 1, 'C', 0);
+
 foreach($PdfData->Data['Items'] as $MyRows) {
 	foreach($MyRows as $MyRow) {
 		if($key==$MyRow->TargetNo.$MyRow->Bib.$MyRow->DivCode.$MyRow->ClassCode) {
@@ -33,6 +37,7 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 				if(!$pdf->SamePage(12+4*$MyRow->SesAth4Target))
 					$pdf->AddPage();
 				elseif($CurSession != -1)
+                    //wider space between sessions
 					$pdf->SetY($pdf->GetY()+2);
 			}
 
@@ -46,6 +51,7 @@ foreach($PdfData->Data['Items'] as $MyRows) {
                 $txt = $PdfData->Data['Fields']['Session'] . ' ' . $CurSession;
             }
 
+            //session header
 			$pdf->Cell(190, 6,  $txt, 1, 1, 'C', 1);
 			if($TmpSegue) {
 				$pdf->SetXY(170,$pdf->GetY()-6);
@@ -53,15 +59,15 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 				$pdf->Cell(30, 6,  $PdfData->Continue, 0, 1, 'R', 0);
 			}
 		    $pdf->SetFont($pdf->FontStd,'B',7);
+            //headers under the session name
 			$pdf->Cell(11, 4, $PdfData->Data['Fields']['TargetNo'], 1, 0, 'C', 1);
-			$pdf->Cell(10, 4, $PdfData->Data['Fields']['Bib'], 1, 0, 'C', 1);
-			$pdf->Cell(44, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
-			$pdf->Cell(56, 4, $PdfData->Data['Fields']['NationCode'], 1, 0, 'L', 1);
+			$pdf->Cell(34, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
+			$pdf->Cell(70, 4, $PdfData->Data['Fields']['NationCode'], 1, 0, 'L', 1);
 			if(!$pdf->HideCols && !$TargetFace) {
-				$pdf->Cell(12, 4, $PdfData->Data['Fields']['AgeClass'], 1, 0, 'C', 1);
+				$pdf->Cell(12, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'C', 1);
 				$pdf->Cell(9, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
 			}
-			$pdf->Cell(12 + ($pdf->HideCols ? ($TargetFace ? 12 : 23) : 0), 4, $PdfData->Data['Fields']['DivCode'], 1, 0, 'C', 1);
+			$pdf->Cell(18 + ($pdf->HideCols ? ($TargetFace ? 12 : 23) : 0), 4, $PdfData->Data['Fields']['DivCode'], 1, 0, 'C', 1);
 			$pdf->Cell(12 + ($pdf->HideCols ? ($TargetFace ? 12 : 22) : 0), 4, $PdfData->Data['Fields']['ClassCode'], 1, 0, 'C', 1);
 
 			if ($TargetFace) {
@@ -81,9 +87,10 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 			$FirstTime=false;
 		}
 		//$pdf->SetFont($pdf->FontStd,'B',8);
-		$temprow=array();
 		if($OldTarget != substr($MyRow->TargetNo,0,-1)) {
+            //outputs rows with targets and people each time target changes
 			if($Components['players']) $pdf->PrintComponents($OldTarget, $Components, empty($_REQUEST['Filled']),$TargetFace); // new function
+            //resets targets and people array, target
 			$Components=array('ok'=>false,'players'=>array(),'header'=>array());
 			$OldTarget = substr($MyRow->TargetNo,0,-1);
 			$Targetno = intval($OldTarget);
@@ -103,15 +110,16 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 			$Components['header'][]=$Targetno;
 		}
 		$Components['ok']=($Components['ok'] or $MyRow->Athlete);
+        //build data for one target and athlete and add it to $Components['players'] array
+        $temprow=array();
 		$temprow[]=substr($MyRow->TargetNo,-1,1);
-		$temprow[]= ($MyRow->Bib ?? '');
 		$temprow[]= ($MyRow->Athlete ?? '');
 		$temprow[]= ($MyRow->NationCode ?? '');
-		$temprow[]= $MyRow->Nation . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")");
-		$temprow[]= ($MyRow->AgeClass ?? '');
-		$temprow[]= ($MyRow->SubClass ?? '');
-		$temprow[]= ($pdf->HideCols ? $MyRow->DivDescription : $MyRow->DivCode) ?? '';
-		$temprow[]= ($pdf->HideCols ? $MyRow->ClDescription : $MyRow->ClassCode) ?? '';
+		$temprow[]= $MyRow->Nation . ($MyRow->Nation2 != '' ? ', ' : '') . $MyRow->Nation2;
+		$temprow[]= ($MyRow->DOB ?? '');
+		$temprow[]= ($MyRow->SubClassDescription ?? '');
+		$temprow[]= $MyRow->DivDescription;
+		$temprow[]= $MyRow->ClDescription;
 		$temprow[]= array($MyRow->IC, $MyRow->IF, $MyRow->TC, $MyRow->TF, $MyRow->TM);
 		$temprow[]= $MyRow->Status==0 ? '' : ($MyRow->Status ?? '');
 		$temprow[]= ($MyRow->NationCode2 ?? '');
@@ -138,7 +146,9 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 	}
 }
 
-if($Components['players']) $pdf->PrintComponents($OldTarget, $Components, empty($_REQUEST['Filled']),$TargetFace); // check for the last entry
+if($Components['players']) {
+    $pdf->PrintComponents($OldTarget, $Components, empty($_REQUEST['Filled']), $TargetFace); // check for the last entry
+}
 
 if(!$pdf->HideCols)
 {

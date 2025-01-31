@@ -1968,7 +1968,7 @@ function getMedalList($ORIS=false, $TourId=0, $Event='', $Team='') {
 	$Data=new StdClass();
 
 	$Data->Code='C93';
-	$Data->Description='Medallists by Event';
+	$Data->Description=get_text('MedallistsByEvent', 'Tournament');
 	$Data->Phase="Medallists by Event";
 	$Data->Order="0";
 	$Data->LastUpdate='';

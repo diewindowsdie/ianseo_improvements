@@ -203,20 +203,20 @@ foreach($rankData['sections'] as $Event => $section) {
 					$pdf->SetXY($LineXstart-7, $OrgY);
 					$pdf->SetFont($pdf->FontStd,'I',6);
 					if($Match['target']==$Match['oppTarget']) {
-						$pdf->Cell(7, $Cella*2, "T# " . ltrim($Match['target'],'0'), 0, 0, 'R', 0);
+						$pdf->Cell(7, $Cella*2, get_text('TargetWithoutN') . ' ' . ltrim($Match['target'],'0'), 0, 0, 'R', 0);
 					} else {
-						$pdf->Cell(7, $Cella, "T# " . ltrim($Match['target'],'0'), 0, 0, 'R', 0);
+						$pdf->Cell(7, $Cella, get_text('TargetWithoutN') . ' ' . ltrim($Match['target'],'0'), 0, 0, 'R', 0);
 						$pdf->SetXY($LineXstart-7, $OrgY+$Cella);
-						$pdf->Cell(7, $Cella, "T# " . ltrim($Match['oppTarget'],'0'), 0, 0, 'R', 0);
+						$pdf->Cell(7, $Cella, get_text('TargetWithoutN') . ' ' . ltrim($Match['oppTarget'],'0'), 0, 0, 'R', 0);
 					}
 				} else {
 					// up and down
 					$pdf->SetXY($LineXstart, $OrgY-$Cella);
 					$pdf->SetFont($pdf->FontStd,'I',6);
-					$pdf->Cell($MisName + $AddSize + $MisScore + 2*$AddSize + ($PrintCountry ? $MisCountry : 0), 2.5, "T# " . ltrim($Match['target'],'0') . (($ShowSchedule and $Match['scheduledTime']!='00:00' and $Match['scheduledDate']!='00-00-0000') ?  ($DateShown ? '' : ' ' . $Match['scheduledDate']) . " @ "  . $Match['scheduledTime'] : '') , 0, 0, 'L', 0);
+					$pdf->Cell($MisName + $AddSize + $MisScore + 2*$AddSize + ($PrintCountry ? $MisCountry : 0), 2.5, get_text('TargetWithoutN') . ' ' . ltrim($Match['target'],'0') . (($ShowSchedule and $Match['scheduledTime']!='00:00' and $Match['scheduledDate']!='00-00-0000') ?  ($DateShown ? '' : ' ' . $Match['scheduledDate']) . " @ "  . $Match['scheduledTime'] : '') , 0, 0, 'L', 0);
 					if($Match['target']!=$Match['oppTarget']) {
 						$pdf->SetXY($LineXstart,$OrgY+ 2*$Cella);
-						$pdf->Cell($MisName + $AddSize + $MisScore + 2*$AddSize + ($PrintCountry ? $MisCountry : 0), 2.5, "T# " . ltrim($Match['oppTarget'],'0') , 0, 0, 'L', 0);
+						$pdf->Cell($MisName + $AddSize + $MisScore + 2*$AddSize + ($PrintCountry ? $MisCountry : 0), 2.5, get_text('TargetWithoutN') . ' ' . ltrim($Match['oppTarget'],'0') , 0, 0, 'L', 0);
 					}
 					$DateFlag=($DateFlag or ($Match['scheduledTime']!='00:00' && $Match['scheduledDate']!='00-00-0000'));
 				}
