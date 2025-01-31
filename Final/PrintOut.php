@@ -147,6 +147,8 @@
 		safe_free_result($Rs);
 	}
 	echo '</td><td class="w-50">';
+	echo '<div><input name="IncMedals" id="IncMedals" type="checkbox" value="1" checked>&nbsp;' . get_text('MedalList') . '</div>';
+	echo '<div><input name="IncQual" id="IncQual" type="checkbox" value="1" checked>&nbsp;' . get_text('QualRound') . '</div>';
 	echo '<div><input name="IncRankings" id="IncRankings" type="checkbox" value="1" checked>&nbsp;' . get_text('Rankings') . '</div>';
 	echo '<div><input name="IncBrackets" id="IncBrackets" type="checkbox" value="1" checked onclick="CheckIfOrisBrackets(true);">&nbsp;' . get_text('Brackets') . '</div>';
 	echo '<div><input name="ShowTargetNo" id="ShowTargetNo" type="checkbox" value="1" checked>&nbsp;' . get_text('Target') . '</div>';
