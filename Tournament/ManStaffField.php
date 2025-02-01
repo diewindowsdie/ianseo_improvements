@@ -27,6 +27,15 @@ $Genders ='<option value="">---</option>';
 $Genders.='<option value="0">'.get_text('GenderShort0').'</option>';
 $Genders.='<option value="1">'.get_text('GenderShort1').'</option>';
 
+$JudgeAccreditations = '<option value="">---</option>';
+$JudgeAccreditations .= '<option value="ССВК">ССВК</option>';
+$JudgeAccreditations .= '<option value="СС1К">СС1К</option>';
+$JudgeAccreditations .= '<option value="СС2К">СС2К</option>';
+$JudgeAccreditations .= '<option value="СС3К">СС3К</option>';
+$JudgeAccreditations .= '<option value="ЮСС">ЮСС</option>';
+$JudgeAccreditations .= '<option value="Б/К">Б/К</option>';
+
+
 $JS_SCRIPT = array(
     phpVars2js(array(
         'NoEmptyField' => get_text('AllFieldsMandatory','Errors'),
@@ -36,10 +45,13 @@ $JS_SCRIPT = array(
         'TitCode' => get_text('Code', 'Tournament'),
         'TitFName' => get_text('FamilyName', 'Tournament'),
         'TitGName' => get_text('GivenName', 'Tournament'),
+        'TitLName' => get_text('LastName', 'Tournament'),
+        'TitAccred' => get_text('JudgeAccreditation', 'Tournament'),
         'TitGender' => get_text('Sex', 'Tournament'),
         'TitDob' => get_text('DOB','Tournament'),
         'TitCoCode' => get_text('CountryCode'),
         'TitCountry' => get_text('Country'),
+        'TitIsSigningProtocols' => get_text('IsSigningProtocols', 'Tournament'),
     )),
     '<script type="text/javascript" src="'.$CFG->ROOT_DIR.'Tournament/Fun_JS.js"></script>',
     '<script type="text/javascript" src="'.$CFG->ROOT_DIR.'Tournament/Fun_AJAX_ManStaffField.js"></script>',
@@ -51,17 +63,20 @@ $PAGE_TITLE=get_text('StaffOnField','Tournament');
 include('Common/Templates/head.php');
 if($CanEdit) {
 	echo '<table class="Tabella">
-		<tr><th class="Title" colspan="9">' . get_text('StaffOnField', 'Tournament') . '</th></tr>
-		<tr class="Divider"><td colspan="9"></td></tr>
+		<tr><th class="Title" colspan="12">' . get_text('StaffOnField', 'Tournament') . '</th></tr>
+		<tr class="Divider"><td colspan="12"></td></tr>
 		<tr>
             <th class="w-5">' . get_text('Code', 'Tournament') . '</th>
             <th class="w-5">' . get_text('LocalCode', 'Tournament') . '</th>
-            <th class="w-25">' . get_text('FamilyName', 'Tournament') . '</th>
-            <th class="w-25">' . get_text('GivenName', 'Tournament') . '</th>
-            <th class="w-5"">' . get_text('Sex', 'Tournament') . '</th>
+            <th class="w-15">' . get_text('FamilyName', 'Tournament') . '</th>
+            <th class="w-15">' . get_text('GivenName', 'Tournament') . '</th>           
+            <th class="w-15">' . get_text('LastName', 'Tournament') . '</th>
+            <th class="w-5">' . get_text('JudgeAccreditation', 'Tournament') . '</th>
+            <th class="w-5">' . get_text('Sex', 'Tournament') . '</th>
             <th class="w-5">' . get_text('CountryCode') . '</th>
             <th class="w-10">' . get_text('Country') . '</th>
-            <th class="w-10">' . get_text('Type', 'Tournament') . '</th>
+            <th class="w-10">' . get_text('JudgeFunction', 'Tournament') . '</th>
+            <th class="w-5">' . get_text('IsSigningProtocols', 'Tournament') . '</th>
             <th class="w-10"></th>
 		</tr>
 		<tr ref="new">
@@ -69,10 +84,13 @@ if($CanEdit) {
             <td class="Center"><input type="text" style="width: 95%" id="new_LocalCode" maxlength="32"></td>
             <td class="Center"><input type="text" style="width: 97%" id="new_FamilyName" maxlength="64"></td>
             <td class="Center"><input type="text" style="width: 97%" id="new_GivenName" maxlength="64"></td>
+            <td class="Center"><input type="text" style="width: 97%" id="new_LastName" maxlength="64"></td>
+            <td class="Center"><select style="width: 97%" id="new_Accreditation">' . $JudgeAccreditations . '</select></td>
             <td class="Center"><select style="width: 95%" id="new_Gender">' . $Genders . '</select></td>
-            <td class="Center"><input type="text" style="width: 95%" id="new_CountryCode" maxlength="10"></td>
+            <td class="Center"><input type="text" style="width: 95%" id="new_CountryCode" maxlength="10" onchange="findCountry(this)"></td>
             <td class="Center"><input type="text" style="width: 95%" id="new_CountryName" maxlength="30"></td>
             <td class="Center"><select style="width: 95%" id="new_Type">' . $TypeOptions . '</select></td>
+            <td class="Center"><input type="checkbox" style="width: 95%" id="new_IsSigningProtocols" maxlength="30" /></td>
             <td class="Center NoWrap">
                 <div class="Button" onclick="searchFieldStaff()"><i class="fa fa-search"></i></div>
                 <div class="Button" onclick="addFieldStaff()">' . get_text('CmdAdd', 'Tournament') . '</div>
@@ -84,17 +102,20 @@ if($CanEdit) {
 }
 
 echo '<table class="Tabella">
-	<tr><th class="Title" colspan="9">'.get_text('PersonList','Tournament').'</th></tr>
-	<tr class="Divider"><td colspan="9"></td></tr>
+	<tr><th class="Title" colspan="12">'.get_text('PersonList','Tournament').'</th></tr>
+	<tr class="Divider"><td colspan="12"></td></tr>
 	<tr>
         <th class="w-5">' . get_text('Code', 'Tournament') . '</th>
         <th class="w-5">' . get_text('LocalCode', 'Tournament') . '</th>
-        <th class="w-25">' . get_text('FamilyName', 'Tournament') . '</th>
-        <th class="w-25">' . get_text('GivenName', 'Tournament') . '</th>
-        <th class="w-5"">' . get_text('Sex', 'Tournament') . '</th>
+        <th class="w-15">' . get_text('FamilyName', 'Tournament') . '</th>
+        <th class="w-15">' . get_text('GivenName', 'Tournament') . '</th>
+        <th class="w-15">' . get_text('LastName', 'Tournament') . '</th>
+        <th class="w-5">' . get_text('JudgeAccreditation', 'Tournament') . '</th>
+        <th class="w-5">' . get_text('Sex', 'Tournament') . '</th>
         <th class="w-5">' . get_text('CountryCode') . '</th>
         <th class="w-10">' . get_text('Country') . '</th>
-        <th class="w-10">' . get_text('Type', 'Tournament') . '</th>
+        <th class="w-10">' . get_text('JudgeFunction', 'Tournament') . '</th>
+        <th class="w-5">' . get_text('IsSigningProtocols', 'Tournament') . '</th>
         <th class="w-10"></th>
 	</tr>
 	<tbody id="FieldStaff"></tbody>

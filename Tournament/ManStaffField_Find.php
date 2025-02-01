@@ -8,14 +8,22 @@ if(!CheckTourSession() or !hasACL(AclCompetition, AclReadWrite) or empty($_REQUE
 }
 
 switch($_REQUEST['act']) {
+    case 'searchCountry':
+        if(empty($_REQUEST['CountryCode'])) {
+            JsonOut($JSON);
+        }
+        $query = "select CoNameComplete from Countries where CoCode = " . StrSafe_DB($_REQUEST['CountryCode']) . " and CoTournament = " . $_SESSION['TourId'] . ";";
+        $result = safe_r_SQL($query);
+        $JSON['rows'][] = safe_fetch($result)->CoNameComplete;
+        break;
 	case 'find':
 		if(empty($_REQUEST['Code'])) {
 			JsonOut($JSON);
 		}
 		$q=safe_r_sql("("
-			."select '1' as LUE, LueFamilyName as FamName, LueName as GivName, LueSex as Gender, LueCountry as CoCode, LueCoShort as CoName from LookUpEntries inner join Tournament on ToId={$_SESSION['TourId']} and ToIocCode=LueIocCode where LueCode=".StrSafe_DB($_REQUEST['Code'])
+			."select '1' as LUE, LueFamilyName as FamName, LueName as GivName, '' as LastName, '' as Accred, LueSex as Gender, LueCountry as CoCode, LueCoShort as CoName from LookUpEntries inner join Tournament on ToId={$_SESSION['TourId']} and ToIocCode=LueIocCode where LueCode=".StrSafe_DB($_REQUEST['Code'])
 			.") union ("
-			."select '0' as LUE, EnFirstName as FamName, EnName as GivName, EnSex as Gender, CoCode, CoName from Entries inner join Countries on CoId=EnCountry and CoTournament=EnTournament where EnTournament={$_SESSION['TourId']} and EnCode=".StrSafe_DB($_REQUEST['Code'])."
+			."select '0' as LUE, EnFirstName as FamName, EnName as GivName, '' as LastName, '' as Accred, EnSex as Gender, CoCode, CoName from Entries inner join Countries on CoId=EnCountry and CoTournament=EnTournament where EnTournament={$_SESSION['TourId']} and EnCode=".StrSafe_DB($_REQUEST['Code'])."
 			)");
 
 		while($r=safe_fetch($q)) {
@@ -27,6 +35,8 @@ switch($_REQUEST['act']) {
 				'LUE'=>'1',
 				'FamName'=>'',
 				'GivName' =>'',
+                'LastName' =>'',
+                'Accred' =>'',
 				'Gender'=>'',
 				'CoCode'=>'',
 				'CoName'=>''
@@ -47,6 +57,7 @@ switch($_REQUEST['act']) {
 			$Where[1][]="LueName like '%".StrSafe_DB($_REQUEST['GivenName'], true)."%'";
 			$Where[0][]="EnName like '%".StrSafe_DB($_REQUEST['GivenName'], true)."%'";
 		}
+        //tournament entries has no patronymic/last name and no accreditation info, so we cannot search by it and no need to add conditions like above
 		if(isset($_REQUEST['Gender']) and preg_match("/^[01]$/",$_REQUEST['Gender'])) {
 			$Where[1][]="LueSex = ".intval($_REQUEST['Gender']);
 			$Where[0][]="EnSex = ".intval($_REQUEST['Gender']);
@@ -63,17 +74,17 @@ switch($_REQUEST['act']) {
 			JsonOut($JSON);
 		}
 		$q=safe_r_sql("("
-			."SELECT '1' as LUE, LueCode as Code, LueFamilyName as FamName, LueName as GivName, LueSex as Gender, LueCountry as CoCode, LueCoShort as CoName, if(LueCtrlCode=0,'',LueCtrlCode) as DOB 
+			."SELECT '1' as LUE, LueCode as Code, LueFamilyName as FamName, LueName as GivName, '' as LastName, '' as Accred, LueSex as Gender, LueCountry as CoCode, LueCoShort as CoName, if(LueCtrlCode=0,'',LueCtrlCode) as DOB 
 				from LookUpEntries 
 			    inner join Tournament on ToId={$_SESSION['TourId']} and ToIocCode=LueIocCode 
 				where ".implode(' and ', $Where[1])
 			.") union ("
-			."SELECT '0' as LUE, EnCode as Code, EnFirstName as FamName, EnName as GivName, EnSex as Gender, CoCode, CoName, if(EnDob=0,'',EnDob) as DOB 
+			."SELECT '0' as LUE, EnCode as Code, EnFirstName as FamName, EnName as GivName, '' as LastName, '' as Accred, EnSex as Gender, CoCode, CoName, if(EnDob=0,'',EnDob) as DOB 
 				from Entries 
 			    inner join Countries on CoId=EnCountry and CoTournament=EnTournament 
 				where EnTournament={$_SESSION['TourId']} and ".implode(' and ', $Where[0])."
 			)
-			order by FamName, GivName, LUE");
+			order by FamName, GivName, LastName, LUE");
 
 		while($r=safe_fetch($q)) {
 			$JSON['rows'][$r->Code]=$r;

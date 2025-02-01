@@ -13,6 +13,8 @@ if(!empty($_REQUEST['act'])) {
 				empty($_REQUEST['Code']) or
 				empty($_REQUEST['FamilyName']) or
 				empty($_REQUEST['GivenName']) or
+                empty($_REQUEST['LastName']) or
+                empty($_REQUEST['Accreditation']) or
 				!isset($_REQUEST['Gender']) or
 				$_REQUEST['Gender']==='' or
 				empty($_REQUEST['CountryCode']) or
@@ -56,6 +58,9 @@ if($CanEdit) {
                 "TiCodeLocal=".StrSafe_DB($_REQUEST['CodeLocal']),
 				"TiName=".StrSafe_DB($_REQUEST['FamilyName']),
 				"TiGivenName=".StrSafe_DB($_REQUEST['GivenName']),
+                "TiLastName=".StrSafe_DB($_REQUEST['LastName']),
+                "TiAccreditation=".StrSafe_DB($_REQUEST['Accreditation']),
+                "TiIsSigningProtocols=".StrSafe_DB($_REQUEST['IsSigningProtocols']),
 				"TiCountry=$CoId",
 				"TiGender=".intval($_REQUEST['Gender'])
 			);
@@ -96,13 +101,21 @@ $Genders ='<option value="">---</option>';
 $Genders.='<option value="0">'.get_text('GenderShort0').'</option>';
 $Genders.='<option value="1">'.get_text('GenderShort1').'</option>';
 
+$JudgeAccreditations = '<option value="">---</option>';
+$JudgeAccreditations .= '<option value="ССВК">ССВК</option>';
+$JudgeAccreditations .= '<option value="СС1К">СС1К</option>';
+$JudgeAccreditations .= '<option value="СС2К">СС2К</option>';
+$JudgeAccreditations .= '<option value="СС3К">СС3К</option>';
+$JudgeAccreditations .= '<option value="ЮСС">ЮСС</option>';
+$JudgeAccreditations .= '<option value="Б/К">Б/К</option>';
+
 $JSON['table']='';
 $q=safe_r_sql("SELECT *
     FROM TournamentInvolved  
     LEFT JOIN InvolvedType ON TiType=ItId
     left join Countries on CoId=TiCountry and CoTournament=TiTournament
     WHERE TiTournament={$_SESSION['TourId']}
-    ORDER BY ItId IS NOT NULL, ItJudge=0, ItJudge, ItDoS=0, ItDoS, ItJury=0, ItJury, ItOc, TiName, TiGivenName");
+    ORDER BY TiIsSigningProtocols desc, ItId IS NOT NULL, ItJudge=0, ItJudge, ItDoS=0, ItDoS, ItJury=0, ItJury, ItOc, TiName, TiGivenName");
 
 if($CanEdit) {
 	while($r=safe_fetch($q)) {
@@ -110,11 +123,14 @@ if($CanEdit) {
 				'<td class="Center"><input type="text" style="width: 95%" maxlength="9" name="Code" value="' . $r->TiCode . '" onchange="editFieldStaff(this)"></td>'.
                 '<td class="Center"><input type="text" style="width: 95%" maxlength="9" name="CodeLocal" value="' . $r->TiCodeLocal . '" onchange="editFieldStaff(this)"></td>'.
                 '<td class="Center"><input type="text" style="width: 97%" maxlength="64" name="FamilyName" value="' . $r->TiName . '" onchange="editFieldStaff(this)"></td>'.
-				'<td class="Center"><input type="text" style="width: 97%" maxlength="64"name="GivenName" value="' . $r->TiGivenName . '" onchange="editFieldStaff(this)"></td>'.
-				'<td class="Center"><select name="Gender" style="width: 95%" onchange="editFieldStaff(this)">'.str_replace('value="'.$r->TiGender.'"','value="'.$r->TiGender.'" selected="selected"', $Genders).'</select></td>'.
+				'<td class="Center"><input type="text" style="width: 97%" maxlength="64" name="GivenName" value="' . $r->TiGivenName . '" onchange="editFieldStaff(this)"></td>'.
+                '<td class="Center"><input type="text" style="width: 97%" maxlength="64" name="LastName" value="' . $r->TiLastName . '" onchange="editFieldStaff(this)"></td>'.
+                '<td class="Center"><select  style="width: 97%" name="Accreditation" onchange="editFieldStaff(this)">' . str_replace('value="'.$r->TiAccreditation.'"', 'value="'.$r->TiAccreditation.'" selected="selected"', $JudgeAccreditations) . '</select></td>'.
+                '<td class="Center"><select name="Gender" style="width: 95%" onchange="editFieldStaff(this)">'.str_replace('value="'.$r->TiGender.'"','value="'.$r->TiGender.'" selected="selected"', $Genders).'</select></td>'.
 				'<td class="Center"><input type="text" style="width: 95%" maxlength="10" name="CountryCode" value="' . $r->CoCode . '" ' . (empty($r->CoName) ? '' : 'onchange="editFieldStaff(this)"') . '></td>'.
 				'<td class="Center"><input type="text" style="width: 95%" maxlength="20" name="CountryName" value="' . $r->CoName . '" ' . (empty($r->CoName) ? 'onchange="editFieldStaff(this)"' : 'readonly="readonly"') . '></td>'.
 				'<td class="Center"><select name="Type" style="width: 95%" onchange="editFieldStaff(this)">'.str_replace('value="'.$r->TiType.'"','value="'.$r->TiType.'" selected="selected"', $TypeOptions).'</select></td>'.
+                '<td class="Center"><input type="checkbox" style="width: 97%" name="IsSigningProtocols" ' . ($r->TiIsSigningProtocols == '1' ? 'checked' : '') . ' onclick="editFieldStaff(this)" /></td>'.
 				'<td class="Center"><input type="button" value="' . get_text('CmdDelete','Tournament') . '" onClick="deleteFieldStaff(this)"></td>'.
 			'</tr>';
 	}
@@ -125,10 +141,13 @@ if($CanEdit) {
                 '<td class="Center">' . $r->TiCodeLocal . '</td>'.
 				'<td class="Center">' . $r->TiName . '</td>'.
 				'<td class="Center">' . $r->TiGivenName . '</td>'.
+                '<td class="Center">' . $r->TiLastName . '</td>'.
+                '<td class="Center">' . $r->TiAccreditation . '</td>'.
 				'<td class="Center">'.($r->TiGender ? get_text('ShortFemale', 'Tournament') : get_text('ShortMale', 'Tournament')).'</td>'.
 				'<td class="Center">' . $r->CoCode . '</td>'.
 				'<td class="Center">' . $r->CoName . '</td>'.
 				'<td class="Center">'.(isset($Types[$r->TiType]) ? $Types[$r->TiType] : '').'</td>'.
+                '<td class="Center">' . $r->IsSigningProtocols ? get_text('Yes') : get_text('No') . '</td>'.
 				'<td class="Center"></td>'.
 			'</tr>';
 	}

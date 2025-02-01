@@ -13,6 +13,8 @@ function addFieldStaff() {
 	if($('#new_Matr').val()==''
 			|| $('#new_FamilyName').val()==''
 			|| $('#new_GivenName').val()==''
+			|| $('#new_LastName').val()==''
+			|| $('#new_Accreditation').val()==''
 			|| $('#new_Gender').val()==''
 			|| $('#new_CountryCode').val()==''
 			|| $('#new_CountryName').val()==''
@@ -26,10 +28,13 @@ function addFieldStaff() {
 		CodeLocal:$('#new_LocalCode').val(),
 		FamilyName:$('#new_FamilyName').val(),
 		GivenName:$('#new_GivenName').val(),
+		LastName:$('#new_LastName').val(),
+		Accreditation:$('#new_Accreditation').val(),
 		Gender:$('#new_Gender').val(),
 		CountryCode:$('#new_CountryCode').val(),
 		CountryName:$('#new_CountryName').val(),
 		Type:$('#new_Type').val(),
+		IsSigningProtocols:($('#new_IsSigningProtocols').is(":checked") ? 1 : 0),
 		ID:'new',
 		act:'new',
 	};
@@ -48,6 +53,8 @@ function editFieldStaff(obj) {
 	if(row.find('[name="Code"]').val()==''
 			|| row.find('[name="FamilyName"]').val()==''
 			|| row.find('[name="GivenName"]').val()==''
+			|| row.find('[name="LastName"]').val()==''
+			|| row.find('[name="Accreditation"]').val()==''
 			|| row.find('[name="Gender"]').val()==''
 			|| row.find('[name="CountryCode"]').val()==''
 			|| row.find('[name="Type"]').val()==''
@@ -60,10 +67,13 @@ function editFieldStaff(obj) {
 		CodeLocal:row.find('[name="CodeLocal"]').val(),
 		FamilyName:row.find('[name="FamilyName"]').val(),
 		GivenName:row.find('[name="GivenName"]').val(),
+		LastName:row.find('[name="LastName"]').val(),
+		Accreditation:row.find('[name="Accreditation"]').val(),
 		Gender:row.find('[name="Gender"]').val(),
 		CountryCode:row.find('[name="CountryCode"]').val(),
 		CountryName:row.find('[name="CountryName"]').val(),
 		Type:row.find('[name="Type"]').val(),
+		IsSigningProtocols:(row.find('[name="IsSigningProtocols"]').is(":checked") ? 1 : 0),
 		ID:row.attr('ref'),
 		act:'edit',
 	};
@@ -72,6 +82,24 @@ function editFieldStaff(obj) {
 		if(data.error==0) {
 			resetFieldStaff();
 			$('#FieldStaff').html(data.table);
+		} else {
+			alert(data.msg);
+		}
+	});
+}
+
+function findCountry(obj) {
+	if(obj.value === '') {
+		return;
+	}
+	let form={
+		CountryCode:obj.value,
+		act:'searchCountry',
+	};
+
+	$.getJSON('./ManStaffField_Find.php', form, function(data) {
+		if(data.error==0) {
+			$('#new_CountryName').val( data.rows[0])
 		} else {
 			alert(data.msg);
 		}
@@ -100,10 +128,13 @@ function resetFieldStaff() {
 	$('#new_Matr').val('');
 	$('#new_FamilyName').val('');
 	$('#new_GivenName').val('');
+	$('#new_LastName').val('');
+	$('#new_Accreditation').val('');
 	$('#new_Gender').val('');
 	$('#new_CountryCode').val('');
 	$('#new_CountryName').val('');
 	$('#new_Type').val('');
+	$('#new_IsSigningProtocols').prop('checked', false);
 }
 
 function FindFieldStaff(obj) {
@@ -113,6 +144,8 @@ function FindFieldStaff(obj) {
 			let fields=data.rows[0];
 			$('#new_FamilyName').val(fields.FamName);
 			$('#new_GivenName').val(fields.GivName);
+			$('#new_LastName').val(fields.LastName);
+			$('#new_Accreditation').val(fields.Accred);
 			$('#new_Gender').val(fields.Gender);
 			$('#new_CountryCode').val(fields.CoCode);
 			$('#new_CountryName').val(fields.CoName);
@@ -130,8 +163,10 @@ function searchFieldStaff(code) {
 		content:'<table class="Tabella">' +
 			'<tr>' +
 			'<th colspan="2" style="width: 10%">'+TitCode+'</th>' +
-			'<th style="width: 25%">'+TitFName+'</th>' +
-			'<th style="width: 25%">'+TitGName+'</th>' +
+			'<th style="width: 15%">'+TitFName+'</th>' +
+			'<th style="width: 15%">'+TitGName+'</th>' +
+			'<th style="width: 15%">'+TitLName+'</th>' +
+			'<th style="width: 15%">'+TitAccred+'</th>' +
 			'<th style="width: 5%">'+TitGender+'</th>' +
 			'<th style="width: 5%">'+TitCoCode+'</th>' +
 			'<th style="width: 20%">'+TitCountry+'</th>' +
@@ -141,6 +176,8 @@ function searchFieldStaff(code) {
 			'<td colspan="2" class="Center"><input type="text" style="width: 95%" id="searchCode"'+(code ? ' value="'+code+'"' : '')+'></td>' +
 			'<td class="Center"><input type="text" style="width: 97%" id="searchFName"></td>' +
 			'<td class="Center"><input type="text" style="width: 97%" id="searchGName"></td>' +
+			'<td class="Center"><input type="text" style="width: 97%" id="searchLName"></td>' +
+			'<td class="Center"><input type="text" style="width: 97%" id="searchAccred"></td>' +
 			'<td class="Center"><select type="text" style="width: 95%" id="searchGender">' +
 			'<option value="">--</option>' +
 			'<option value="0">M</option>' +
@@ -151,7 +188,7 @@ function searchFieldStaff(code) {
 			'<td></td>' +
 			'</tr>' +
 			'<tbody id="SearchTable"></tbody>' +
-			'<tr><th colspan="8">' +
+			'<tr><th colspan="10">' +
 			'<div class="Button" onclick="doSearch()">Search</div>' +
 			'<div class="Button" onclick="doClose(this)">Close</div>' +
 			'</th></tr>' +
@@ -184,6 +221,8 @@ function doSearch() {
 		Code:$('#searchCode').val(),
 		FamilyName:$('#searchFName').val(),
 		GivenName:$('#searchGName').val(),
+		LastName:$('#searchLName').val(),
+		Accreditation:$('#searchAccred').val(),
 		Gender:$('#searchGender').val(),
 		CountryCode:$('#searchCoCode').val(),
 		CountryName:$('#searchCoName').val(),
@@ -198,6 +237,8 @@ function doSearch() {
 					'<td ref="Code" val="'+this.Code+'">'+this.Code+'</td>' +
 					'<td ref="FamName" val="'+this.FamName+'">'+this.FamName+'</td>' +
 					'<td ref="GivName" val="'+this.GivName+'">'+this.GivName+'</td>' +
+					'<td ref="LastName" val="'+this.LastName+'">'+this.LastName+'</td>' +
+					'<td ref="Accred" val="'+this.Accred+'">'+this.Accred+'</td>' +
 					'<td ref="Gender" val="'+this.Gender+'">'+window['Gender'+this.Gender]+'</td>' +
 					'<td ref="CoCode" val="'+this.CoCode+'">'+this.CoCode+'</td>' +
 					'<td ref="CoName" val="'+this.CoName+'">'+this.CoName+'</td>' +
@@ -219,6 +260,8 @@ function doInsert(obj) {
 	$('#new_Matr').val($(obj).find('[ref="Code"]').attr('val'));
 	$('#new_FamilyName').val($(obj).find('[ref="FamName"]').attr('val'));
 	$('#new_GivenName').val($(obj).find('[ref="GivName"]').attr('val'));
+	$('#new_LastName').val($(obj).find('[ref="LastName"]').attr('val'));
+	$('#new_Accred').val($(obj).find('[ref="Accred"]').attr('val'));
 	$('#new_Gender').val($(obj).find('[ref="Gender"]').attr('val'));
 	$('#new_CountryCode').val($(obj).find('[ref="CoCode"]').attr('val'));
 	$('#new_CountryName').val($(obj).find('[ref="CoName"]').attr('val'));
