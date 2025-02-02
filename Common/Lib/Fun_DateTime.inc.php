@@ -245,7 +245,7 @@
 		else if(date('m',$DateFrom)==date('m',$DateTo))
 			$TmpData=date('d',$DateFrom) . '-' . date('d',$DateTo) . date('.m.Y',$DateFrom);
 		else if(date('Y',$DateFrom)==date('Y',$DateTo))
-			$TmpData=date('d.m',$DateFrom) . ' - ' . date('d.m',$DateTo) . date(' Y',$DateFrom);
+			$TmpData=date('d.m',$DateFrom) . ' - ' . date('d.m',$DateTo) . date('.Y',$DateFrom);
 		else
 			$TmpData=date('d.m.Y',$DateFrom) . ' - ' . date('d.m.Y',$DateTo);
 

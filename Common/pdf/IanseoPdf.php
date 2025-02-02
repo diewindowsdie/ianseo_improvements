@@ -11,7 +11,7 @@ define('EURO', chr(128));
 class IanseoPdf extends TCPDF {
 
 	const sideMargin=10;
-	const topMargin=22;
+	const topMargin=15;
 	const bottomMargin=10;
 	const footerImageH=10;
 

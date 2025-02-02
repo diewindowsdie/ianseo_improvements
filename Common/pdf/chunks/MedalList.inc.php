@@ -41,16 +41,15 @@ foreach($PdfData->rankData['events'] as $Event => $section) {
 		$pdf->Cell(190, 6, $PdfData->Description, 1, 1, 'C', 1);
 		$pdf->SetFont($pdf->FontStd,'B',7);
 		$pdf->Cell(40, 6, $PdfData->EvName, 1, 0, 'L', 1);
-		$pdf->Cell(20, 6, $PdfData->TourWhen, 1, 0, 'C', 1);
-		$pdf->Cell(20, 6, $PdfData->Medal, 1, 0, 'C', 1);
-		$pdf->Cell(50, 6, $PdfData->Athlete, 1, 0, 'L', 1);
-		$pdf->Cell(60, 6, $PdfData->Country, 1, 1, 'L', 1);
+		$pdf->Cell(15, 6, $PdfData->TourWhen, 1, 0, 'C', 1);
+		$pdf->Cell(15, 6, $PdfData->Medal, 1, 0, 'C', 1);
+		$pdf->Cell(40, 6, $PdfData->Athlete, 1, 0, 'L', 1);
+		$pdf->Cell(80, 6, $PdfData->Country, 1, 1, 'L', 1);
 		$pdf->SetFont($pdf->FontStd,'',8);
 	}
 	$pdf->sety($pdf->gety()+1);
 	$pdf->Cell(40, $blockHeight, $section['evName'], '1', 0, 'L', 0);
-	$unixtime=strtotime($section['date']);
-	$pdf->Cell(15, $blockHeight, $PdfData->{'DayOfWeek_'.date('w', $unixtime)} . " " . date('j', $unixtime). " " . $PdfData->{'Month_'.(date('n', $unixtime)-1)}, '1', 0, 'R', 0);
+	$pdf->Cell(15, $blockHeight, date('d.m.Y', strtotime($section['date'])), '1', 0, 'R', 0);
 
 
 	//Ciclo per ogni singola medaglia
