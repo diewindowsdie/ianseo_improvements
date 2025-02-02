@@ -163,7 +163,7 @@ class IanseoPdf extends TCPDF {
 		global $CFG;
 		$this->SetDefaultColor();
 		$LeftStart = IanseoPdf::sideMargin;
-		$RightStart = IanseoPdf::sideMargin;
+		$RightStart = IanseoPdf::sideMargin+1;
 		$ImgSizeReq=15;
 		if (count($this->StaffCategories)>0) $ImgSizeReq+=5;
 		if($this->ToPaths['ToLeft']) {
