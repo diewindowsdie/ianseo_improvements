@@ -74,17 +74,17 @@ switch($_REQUEST['act']) {
 			JsonOut($JSON);
 		}
 		$q=safe_r_sql("("
-			."SELECT '1' as LUE, LueCode as Code, LueFamilyName as FamName, LueName as GivName, '' as LastName, '' as Accred, LueSex as Gender, LueCountry as CoCode, LueCoShort as CoName, if(LueCtrlCode=0,'',LueCtrlCode) as DOB 
+			."SELECT '1' as LUE, LueCode as Code, LueFamilyName as FamName, LueName as GivName, LueSex as Gender, LueCountry as CoCode, LueCoShort as CoName, if(LueCtrlCode=0,'',DATE_FORMAT(LueCtrlCode,'" . get_text('DateFmtDB') . "')) as DOB 
 				from LookUpEntries 
 			    inner join Tournament on ToId={$_SESSION['TourId']} and ToIocCode=LueIocCode 
 				where ".implode(' and ', $Where[1])
 			.") union ("
-			."SELECT '0' as LUE, EnCode as Code, EnFirstName as FamName, EnName as GivName, '' as LastName, '' as Accred, EnSex as Gender, CoCode, CoName, if(EnDob=0,'',EnDob) as DOB 
+			."SELECT '0' as LUE, EnCode as Code, EnFirstName as FamName, EnName as GivName, EnSex as Gender, CoCode, CoName, if(EnDob=0,'',DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "')) as DOB 
 				from Entries 
 			    inner join Countries on CoId=EnCountry and CoTournament=EnTournament 
 				where EnTournament={$_SESSION['TourId']} and ".implode(' and ', $Where[0])."
 			)
-			order by FamName, GivName, LastName, LUE");
+			order by FamName, GivName, LUE");
 
 		while($r=safe_fetch($q)) {
 			$JSON['rows'][$r->Code]=$r;

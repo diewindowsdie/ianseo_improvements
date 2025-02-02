@@ -163,10 +163,8 @@ function searchFieldStaff(code) {
 		content:'<table class="Tabella">' +
 			'<tr>' +
 			'<th colspan="2" style="width: 10%">'+TitCode+'</th>' +
-			'<th style="width: 15%">'+TitFName+'</th>' +
-			'<th style="width: 15%">'+TitGName+'</th>' +
-			'<th style="width: 15%">'+TitLName+'</th>' +
-			'<th style="width: 15%">'+TitAccred+'</th>' +
+			'<th style="width: 20%">'+TitFName+'</th>' +
+			'<th style="width: 20%">'+TitGName+'</th>' +
 			'<th style="width: 5%">'+TitGender+'</th>' +
 			'<th style="width: 5%">'+TitCoCode+'</th>' +
 			'<th style="width: 20%">'+TitCountry+'</th>' +
@@ -176,8 +174,6 @@ function searchFieldStaff(code) {
 			'<td colspan="2" class="Center"><input type="text" style="width: 95%" id="searchCode"'+(code ? ' value="'+code+'"' : '')+'></td>' +
 			'<td class="Center"><input type="text" style="width: 97%" id="searchFName"></td>' +
 			'<td class="Center"><input type="text" style="width: 97%" id="searchGName"></td>' +
-			'<td class="Center"><input type="text" style="width: 97%" id="searchLName"></td>' +
-			'<td class="Center"><input type="text" style="width: 97%" id="searchAccred"></td>' +
 			'<td class="Center"><select type="text" style="width: 95%" id="searchGender">' +
 			'<option value="">--</option>' +
 			'<option value="0">M</option>' +
@@ -188,7 +184,7 @@ function searchFieldStaff(code) {
 			'<td></td>' +
 			'</tr>' +
 			'<tbody id="SearchTable"></tbody>' +
-			'<tr><th colspan="10">' +
+			'<tr><th colspan="8">' +
 			'<div class="Button" onclick="doSearch()">Search</div>' +
 			'<div class="Button" onclick="doClose(this)">Close</div>' +
 			'</th></tr>' +
@@ -221,8 +217,6 @@ function doSearch() {
 		Code:$('#searchCode').val(),
 		FamilyName:$('#searchFName').val(),
 		GivenName:$('#searchGName').val(),
-		LastName:$('#searchLName').val(),
-		Accreditation:$('#searchAccred').val(),
 		Gender:$('#searchGender').val(),
 		CountryCode:$('#searchCoCode').val(),
 		CountryName:$('#searchCoName').val(),
@@ -237,8 +231,6 @@ function doSearch() {
 					'<td ref="Code" val="'+this.Code+'">'+this.Code+'</td>' +
 					'<td ref="FamName" val="'+this.FamName+'">'+this.FamName+'</td>' +
 					'<td ref="GivName" val="'+this.GivName+'">'+this.GivName+'</td>' +
-					'<td ref="LastName" val="'+this.LastName+'">'+this.LastName+'</td>' +
-					'<td ref="Accred" val="'+this.Accred+'">'+this.Accred+'</td>' +
 					'<td ref="Gender" val="'+this.Gender+'">'+window['Gender'+this.Gender]+'</td>' +
 					'<td ref="CoCode" val="'+this.CoCode+'">'+this.CoCode+'</td>' +
 					'<td ref="CoName" val="'+this.CoName+'">'+this.CoName+'</td>' +
