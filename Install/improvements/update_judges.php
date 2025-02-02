@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(dirname(__FILE__)) . '/config.php');
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 echo "Executing <i>update_judges.php</i> update script...<br/><br/>";
 
 //сначала, проверим что в таблице TournamentInvolved еще нет столбцов с отчеством и аккредитацией судьи

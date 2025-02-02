@@ -346,7 +346,7 @@ if (!isset($_REQUEST['New'])) {
 <tr>
 <th class="TitleLeft w-15"><?php print get_text('TourCode','Tournament');?></th>
 <td>
-<input <?php print ($Arr_Values2Check_Index['d_ToCode']['Error'] ? ' class="error"' : '');?> type="text" name="d_ToCode" class="TextInput" maxlength="8" value="<?php print ($Arr_Values2Check_Index['d_ToCode']['Error'] ? (isset($ToCode) ? $ToCode : '') : ($MyRow!=NULL ? $MyRow->ToCode : (isset($ToCode) ? $ToCode : '')));?>">
+<input <?php print ($Arr_Values2Check_Index['d_ToCode']['Error'] ? ' class="error"' : '');?> type="text" name="d_ToCode" class="TextInput" maxlength="15" value="<?php print ($Arr_Values2Check_Index['d_ToCode']['Error'] ? (isset($ToCode) ? $ToCode : '') : ($MyRow!=NULL ? $MyRow->ToCode : (isset($ToCode) ? $ToCode : '')));?>">
 </td>
 </tr>
 
