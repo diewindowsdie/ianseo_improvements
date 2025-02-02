@@ -131,9 +131,6 @@ class IanseoPdf extends TCPDF {
 	public function setDocUpdate($newDate)
 	{
 		$this->docUpdate=$newDate;
-		$this->docUpdate=str_replace("-","",$this->docUpdate);
-		$this->docUpdate=str_replace(":","",$this->docUpdate);
-		$this->docUpdate=str_replace(" ",".",$this->docUpdate);
 	}
 
 	public function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=0, $link='', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M') {
