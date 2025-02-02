@@ -68,7 +68,7 @@ if ($numberOfJudges + 1 > getNumberOfRowsStillFittingPage($pdf, $rowHeight, $add
 
 //заголовок и первая строка
 $pdf->SetFont($pdf->FontStd,'B',$fontSize + 3);
-$pdf->Cell(190, $titleRowHeight, 'Список судей', 0, 1, 'C');
+$pdf->Cell(190, $titleRowHeight, get_text('StaffOnField','Tournament'), 0, 1, 'C');
 
 $pdf->SetFont($pdf->FontStd,'B', $fontSize);
 $pdf->Cell(8, $rowHeight, '№', 1, 0, 'L', 1);

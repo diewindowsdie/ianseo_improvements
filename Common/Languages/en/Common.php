@@ -378,6 +378,7 @@ $lang['MenuLM_PrintAwardsPositions']='Print Awards Positions';
 $lang['MenuLM_PrintBadges']='Print Accreditation Badges';
 $lang['MenuLM_PrintFinalReport']='Print Final Report';
 $lang['MenuLM_Printout']='Printout';
+$lang['MenuLM_PrintProtocol']='Print protocol';
 $lang['MenuLM_PrintScheduling']='Print Competition Schedule';
 $lang['MenuLM_PrintSchedulingByDay']='Print Schedule By Day';
 $lang['MenuLM_PrnShootOff']='Shoot Off/Coin Toss Status Printout';

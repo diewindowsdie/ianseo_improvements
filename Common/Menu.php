@@ -106,6 +106,7 @@ function get_which_menu($on=false) {
         if ($acl[AclCompetition] == AclReadWrite) {
             $ret['COMP']['REPT'][] = get_text('MenuLM_Final report');
             $ret['COMP']['REPT'][] = get_text('MenuLM_EditFinalReport') . '|' . $CFG->ROOT_DIR . 'Tournament/FinalReport/index.php';
+            $ret['COMP']['REPT'][] = get_text('MenuLM_PrintProtocol') . '|' . $CFG->ROOT_DIR . 'Tournament/FinalReport/Protocol.php|||PrintOut';
             $ret['COMP']['REPT'][] = get_text('MenuLM_PrintFinalReport') . '|' . $CFG->ROOT_DIR . 'Tournament/FinalReport/PDFReport.php|||PrintOut';
             $ret['COMP']['REPT'][] = get_text('MenuLM_CheckList') . '|' . $CFG->ROOT_DIR . 'Tournament/FinalReport/PDFCheckList.php|||PrintOut';
             $ret['COMP'][] = MENU_DIVIDER;

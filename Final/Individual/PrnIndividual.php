@@ -8,18 +8,6 @@ $isCompleteResultBook = true;
 
 $pdf = new ResultPDF(get_text('BrakRank'));
 
-if(isset($_REQUEST["IncMedals"]) && $_REQUEST["IncMedals"]==1)
-    include '../../Final/PDFMedalList.php';
-
-if(isset($_REQUEST["IncMedals"]) && $_REQUEST["IncMedals"]==1 && isset($_REQUEST["IncQual"]) && $_REQUEST["IncQual"]==1)
-    $pdf->AddPage();
-
-if(isset($_REQUEST["IncQual"]) && $_REQUEST["IncQual"]==1)
-    include '../../Qualification/PrnIndividualAbs.php';
-
-if(isset($_REQUEST["IncQual"]) && $_REQUEST["IncQual"]==1 && isset($_REQUEST["IncBrackets"]) && $_REQUEST["IncBrackets"]==1)
-    $pdf->AddPage();
-
 if(isset($_REQUEST["IncBrackets"]) && $_REQUEST["IncBrackets"]==1)
 	include 'PrnBracket.php';
 
