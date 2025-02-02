@@ -583,6 +583,7 @@ $lang['IsSpecificConfig']='Competition specific items';
 $lang['Judge']='Judge';
 $lang['JudgeAccreditation']='Accreditation';
 $lang['JudgeFunction']='Function';
+$lang['JudgeRegion']='Country/Region';
 $lang['JudgesSelectionForm']='Judge Selection Form';
 $lang['JudgesSelectionMatches']='Judges - Matches Assignment';
 $lang['Jury']='Member of Jury of Appeal';

@@ -2,6 +2,8 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
+
+require_once('Common/TournamentOfficials.php');
 checkACL(AclCompetition, AclReadOnly);
 define("HideCols", GetParameter("IntEvent"));
 
@@ -16,49 +18,90 @@ if(!isset($isCompleteResultBook))
 
 $Ses=StrSafe_DB($_SESSION['TourId']);
 
-// $Filter=array();
-//
-// if ($CatJudge)
-// 	$Filter[]=" ItJudge<>0 ";
-//
-// if ($CatDos)
-// 	$Filter[]=" ItDoS<>0 ";
-//
-// if ($CatJury)
-// 	$Filter[]=" ItJury<>0 ";
-//
-// if ($CatOC)
-// 	$Filter[]=" ItOC<>0 ";
-//
-// if (count($Filter)>0)
-// 	$Filter="AND (" . implode(" OR ",$Filter) . ") ";
-// else
 	$Filter="";
 
+    $pdf->SetY($pdf->GetY() - 8);
+
+//высота одной строки
+$rowHeight = 6;
+//размер шрифта по умолчанию
+$fontSize = 9;
+//минимальное количество строк на следующей странице, если отчет не помещается на текущее количество страниц
+$numberOfJudgesOnNextPage = 3;
+//отступ перед блоком с подписями судей
+$marginBeforeSignatures = 10;
+//высота ячейки под текстовый заголовок
+$titleRowHeight = 15;
+
+function getNumberOfRowsStillFittingPage($pdf, $rowHeight, $additionalSpaceUsed = 0) {
+    $startNumber = 34; //получено эмпирически
+    while ($pdf->SamePage($startNumber * $rowHeight + $additionalSpaceUsed)) {
+        $startNumber++;
+    }
+    while(!$pdf->SamePage($startNumber * $rowHeight + $additionalSpaceUsed)) {
+        $startNumber--;
+    }
+
+    return $startNumber;
+}
 $Select="
-	SELECT ti.*, it.*, CoCode, ucase(TiName) as TiUpperName
+	SELECT ti.*, it.*, CoNameComplete, ucase(TiName) as TiUpperName
 	FROM TournamentInvolved AS ti 
     LEFT JOIN Countries on TiCountry=CoId and TiTournament=CoTournament
     LEFT JOIN InvolvedType AS it ON ti.TiType=it.ItId
 	WHERE ti.TiTournament={$Ses} AND it.ItId IS NOT NULL {$Filter}
-	ORDER BY ItJudge=0, ItJudge, ItDoS=0, ItDos, ItJury=0, ItJury, ItOC=0, ItOC, ti.TiName ASC
-";
-//print $Select;Exit;
-$Rs=safe_r_sql($Select);
+	ORDER BY TiIsSigningProtocols desc, ItId IS NOT NULL, ItJudge=0, ItJudge, ItDoS=0, ItDoS, ItJury=0, ItJury, ItOc, TiName, TiGivenName ASC";
 
-$OldCategory='';
-while ($MyRow=safe_fetch($Rs)) {
-	if ($OldCategory!=$MyRow->ItDescription) {
-		$pdf->Ln(10);
-		$Function=get_text($MyRow->ItDescription,'Tournament').':';
-	}
-	$pdf->SetFont($pdf->FontStd,'B',10);
-	$pdf->Cell(45, 6, $Function);
-	$pdf->SetFont($pdf->FontStd,'',10);
-	$pdf->Cell(0, 6,  $MyRow->TiUpperName . ' ' . $MyRow->TiGivenName . ' (' .  $MyRow->CoCode . ')', 0, 1);
-	$OldCategory=$MyRow->ItDescription;
-	$Function='';
+$resultSet=safe_r_sql($Select);
+$numberOfJudges = mysqli_num_rows($resultSet);
+$additionalSpaceUsed = 1 + $marginBeforeSignatures + TournamentOfficials::getOfficialsBlockHeight() + $titleRowHeight;
+
+//проверим, помещается ли все на одну страницу
+//+1 к количеству судей из-за заголовка таблицы
+if ($numberOfJudges + 1 > getNumberOfRowsStillFittingPage($pdf, $rowHeight, $additionalSpaceUsed)) {
+    //не помещается, подгоняем высоту так, чтобы было не меньше $numberOfJudgesOnNextPage на следующей, и увеличиваем шрифт
+    while ($numberOfJudges + 1 - getNumberOfRowsStillFittingPage($pdf, $rowHeight, $titleRowHeight) < $numberOfJudgesOnNextPage) {
+        $rowHeight += 0.1;
+        $fontSize += 0.1;
+    }
 }
+
+//заголовок и первая строка
+$pdf->SetFont($pdf->FontStd,'B',$fontSize + 3);
+$pdf->Cell(190, $titleRowHeight, 'Список судей', 0, 1, 'C');
+
+$pdf->SetFont($pdf->FontStd,'B', $fontSize);
+$pdf->Cell(8, $rowHeight, '№', 1, 0, 'L', 1);
+$nameHeader = 'Judge name';
+if (SelectLanguage() == 'ru') {
+    $nameHeader = get_text('FamilyName', 'Tournament') . ', ' .
+        mb_strtolower(get_text('Name', 'Tournament')) . ', ' .
+        mb_strtolower(get_text('LastName', 'Tournament'));
+}
+$pdf->Cell(62, $rowHeight, $nameHeader, 1, 0, 'L', 1);
+$pdf->Cell(55, $rowHeight, get_text('JudgeFunction', 'Tournament'), 1, 0, 'L', 1);
+$pdf->Cell(25, $rowHeight, get_text('JudgeAccreditation', 'Tournament'), 1, 0, 'L', 1);
+$pdf->Cell(40, $rowHeight, get_text('JudgeRegion', 'Tournament'), 1, 1, 'L', 1);
+
+
+
+$pdf->SetFont($pdf->FontStd,'',$fontSize);
+$index = 1;
+while ($judge=safe_fetch($resultSet)) {
+    if (!$pdf->SamePage($rowHeight + 1)) {
+        $pdf -> AddPage();
+    }
+
+    $pdf->Cell(8, $rowHeight, $index, 1, 0, 'L');
+    $pdf->Cell(62, $rowHeight, $judge->TiName . ' ' . $judge->TiGivenName . ' ' . $judge -> TiLastName, 1, 0, 'L');
+    $pdf->Cell(55, $rowHeight, get_text($judge->ItDescription, 'Tournament'), 1, 0, 'L');
+    $pdf->Cell(25, $rowHeight, $judge->TiAccreditation, 1, 0, 'C');
+    $pdf->Cell(40, $rowHeight, $judge->CoNameComplete, 1, 1, 'L');
+    $index++;
+}
+
+$pdf->SetY($pdf->GetY() + $marginBeforeSignatures);
+TournamentOfficials::printOfficials($pdf);
 
 if(!isset($isCompleteResultBook))
 {

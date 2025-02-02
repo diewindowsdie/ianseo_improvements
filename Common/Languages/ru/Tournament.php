@@ -358,6 +358,7 @@ $lang['IsSigningProtocols']="Подписывает протоколы?";
 $lang['Judge']='Судья';
 $lang['JudgeAccreditation']='Судейская категория';
 $lang['JudgeFunction']='Должность';
+$lang['JudgeRegion']='Субъект РФ';
 $lang['Jury']='Апелляционное жюри';
 $lang['KeyPress']='Применить Keypad';
 $lang['LastName']='Отчество';

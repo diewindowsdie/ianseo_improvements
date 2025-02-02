@@ -50,7 +50,7 @@ $JS_SCRIPT = array(
         'TitGender' => get_text('Sex', 'Tournament'),
         'TitDob' => get_text('DOB','Tournament'),
         'TitCoCode' => get_text('CountryCode'),
-        'TitCountry' => get_text('Country'),
+        'TitCountry' => get_text('JudgeRegion', 'Tournament'),
         'TitIsSigningProtocols' => get_text('IsSigningProtocols', 'Tournament'),
     )),
     '<script type="text/javascript" src="'.$CFG->ROOT_DIR.'Tournament/Fun_JS.js"></script>',
@@ -74,7 +74,7 @@ if($CanEdit) {
             <th class="w-5">' . get_text('JudgeAccreditation', 'Tournament') . '</th>
             <th class="w-5">' . get_text('Sex', 'Tournament') . '</th>
             <th class="w-5">' . get_text('CountryCode') . '</th>
-            <th class="w-10">' . get_text('Country') . '</th>
+            <th class="w-10">' . get_text('JudgeRegion', 'Tournament') . '</th>
             <th class="w-10">' . get_text('JudgeFunction', 'Tournament') . '</th>
             <th class="w-5">' . get_text('IsSigningProtocols', 'Tournament') . '</th>
             <th class="w-10"></th>
@@ -113,7 +113,7 @@ echo '<table class="Tabella">
         <th class="w-5">' . get_text('JudgeAccreditation', 'Tournament') . '</th>
         <th class="w-5">' . get_text('Sex', 'Tournament') . '</th>
         <th class="w-5">' . get_text('CountryCode') . '</th>
-        <th class="w-10">' . get_text('Country') . '</th>
+        <th class="w-10">' . get_text('JudgeRegion', 'Tournament') . '</th>
         <th class="w-10">' . get_text('JudgeFunction', 'Tournament') . '</th>
         <th class="w-5">' . get_text('IsSigningProtocols', 'Tournament') . '</th>
         <th class="w-10"></th>
