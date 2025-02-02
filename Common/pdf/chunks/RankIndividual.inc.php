@@ -55,8 +55,8 @@ foreach($PdfData->rankData['sections'] as $section) {
 				// Header vero e proprio
 			   	$pdf->SetFont($pdf->FontStd,'B',7);
 				$pdf->Cell(8, 5, $section['meta']['fields']['rank'], 1, 0, 'C', 1);
-				$pdf->Cell(94 - 15 * ($NumPhases+$ElimCols), 5, $section['meta']['fields']['athlete'], 1, 0, 'C', 1);
-				$pdf->Cell(76, 5, $section['meta']['fields']['countryName'], 1, 0, 'C', 1);
+				$pdf->Cell(75 - 7 * ($NumPhases+$ElimCols), 5, $section['meta']['fields']['athlete'], 1, 0, 'C', 1);
+				$pdf->Cell(95 - 8 * ($NumPhases+$ElimCols), 5, $section['meta']['fields']['countryName'], 1, 0, 'C', 1);
 				$pdf->Cell(12, 5, $section['meta']['fields']['qualRank'], 1, 0, 'C', 1);
 				for($i=1; $i<=$ElimCols; $i++)
 					$pdf->Cell(12, 5, $section['meta']['fields']['elims']['e' . $i], 1, 0, 'C', 1);
@@ -69,43 +69,64 @@ foreach($PdfData->rankData['sections'] as $section) {
 				$NeedTitle=false;
 			}
 
-
+            $isIRMStatus = !is_numeric($item['rank']);
 		   	$pdf->SetFont($pdf->FontStd,'B',8);
 			$pdf->Cell(8, 4, ($item['rank'] ? $item['rank'] : ''), 1, 0, 'C', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',8);
-			$pdf->Cell(94 - 15 * ($NumPhases+$ElimCols), 4, $item['athlete'], 'RBT', 0, 'L', 0);
-			$pdf->Cell(76, 4, $item['countryName'] . ($item['countryName2'] != '' ? ', ' : '') . $item['countryName2'], 'RTB', 0, 'L', 0);
+			$pdf->Cell(75 - 7 * ($NumPhases+$ElimCols), 4, $item['athlete'], 'RBT', 0, 'L', 0);
+			$pdf->Cell(95 - 8 * ($NumPhases+$ElimCols), 4, $item['countryName'] . ($item['countryName2'] != '' ? ', ' : '') . $item['countryName2'], 'RTB', 0, 'L', 0);
+            $spaceUsed = 8 + 75 - 7 * ($NumPhases+$ElimCols) + 95 - 8 * ($NumPhases+$ElimCols);
 			$pdf->SetFont($pdf->FontFix,'',7);
-			$pdf->Cell(12, 4,  number_format($item['qualScore'],0,$PdfData->NumberDecimalSeparator,$PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['qualRank'],-2,2), 1, 0, 'C', 0);
+			$pdf->Cell(12, 4,  is_numeric($item['qualScore']) ? (number_format($item['qualScore'],0,$PdfData->NumberDecimalSeparator,$PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['qualRank'],-2,2)) : '', 1, 0, 'C', 0);
+            $spaceUsed += 12;
+            if ($isIRMStatus && $item['qualNotes'] != '') {
+                $pdf->Cell(190 - $spaceUsed, 4, $item['qualNotes'], 1, 1, 'L', 0);
+                continue;
+            }
 			if($section['meta']['elimType']!=5) {
 				//Risultati delle eliminatorie
-				if(array_key_exists('e1',$item['elims']))
-					$pdf->Cell(12, 4,  number_format($item['elims']['e1']['score'],0,$PdfData->NumberDecimalSeparator,$PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['elims']['e1']['rank'],-2,2), 1, 0, 'R', 0);
-				if(array_key_exists('e2',$item['elims']))
-					$pdf->Cell(12, 4,  number_format($item['elims']['e2']['score'],0,$PdfData->NumberDecimalSeparator,$PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['elims']['e2']['rank'],-2,2), 1, 0, 'R', 0);
+				if(array_key_exists('e1',$item['elims'])) {
+                    $pdf->Cell(12, 4, number_format($item['elims']['e1']['score'], 0, $PdfData->NumberDecimalSeparator, $PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['elims']['e1']['rank'], -2, 2), 1, 0, 'R', 0);
+                    $spaceUsed += 12;
+                }
+				if(array_key_exists('e2',$item['elims'])) {
+                    $pdf->Cell(12, 4, number_format($item['elims']['e2']['score'], 0, $PdfData->NumberDecimalSeparator, $PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['elims']['e2']['rank'], -2, 2), 1, 0, 'R', 0);
+                    $spaceUsed += 12;
+                }
 			}
 //Risultati  delle varie fasi
 			foreach($item['finals'] as $k=>$v)
 			{
-				if($v['tie']==2)
-					$pdf->Cell(15, 4,  $PdfData->Bye, 1, 0, 'L', 0);
+				if($v['tie']==2) {
+                    $pdf->Cell(15, 4, $PdfData->Bye, 1, 0, 'L', 0);
+                    $spaceUsed += 15;
+                }
 				else
 				{
 					if($k==4 && $section['meta']['matchMode']!=0 && $item['rank']>=5)
 					{
                         $pdf->Cell(strlen($v['tiebreak'])>0 ? 8 : 15, 4, $v['setScore'] . '(' . $v['score'] . ')', (strlen($v['tiebreak'])>0 ? 'TB' : 'RTB'), 0, 'L', 0);
-                        if(strlen($v['tiebreak'])>0)
-                            $pdf->Cell(7, 4,  "T.".str_replace('|',',',$v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RTB', 0, 'L', 0);
+                        $spaceUsed += strlen($v['tiebreak'])>0 ? 8 : 15;
+                        if(strlen($v['tiebreak'])>0) {
+                            $pdf->Cell(7, 4, "T." . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RTB', 0, 'L', 0);
+                            $spaceUsed += 7;
+                        }
 					}
 					else
 					{
 						$pdf->Cell(15 - (strlen($v['tiebreak'])>0 ? 7 : 0), 4, ($section['meta']['matchMode']==0 ? $v['score'] : $v['setScore']) . ($v['tie']==1 && strlen($v['tiebreak'])==0 ? '*' : ''), (strlen($v['tiebreak'])>0 ? 'LTB' : 1), 0, 'L', 0);
-						if(strlen($v['tiebreak'])>0)
-                        $pdf->Cell(7, 4,  "T.".str_replace('|',',',$v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RTB', 0, 'L', 0);
+                        $spaceUsed += 15 - (strlen($v['tiebreak'])>0 ? 7 : 0);
+						if(strlen($v['tiebreak'])>0) {
+                            $pdf->Cell(7, 4, "T." . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RTB', 0, 'L', 0);
+                            $spaceUsed += 7;
+                        }
 					}
 				}
 			}
-			$pdf->Cell(0.1, 4,'',0,1,'C',0);
+            if ($isIRMStatus) {
+                $pdf->Cell(190 - $spaceUsed, 4, array_values($item['finals'])[count($item['finals']) - 1]['notes'], 1, 0, 'L', 0);
+            }
+			$pdf->Cell(0, 4,'',0,1,'C',0);
 		}
         $pdf->SetY($pdf->GetY() + $spaceBetweenSections);
 	}

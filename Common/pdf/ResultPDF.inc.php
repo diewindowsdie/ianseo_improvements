@@ -384,155 +384,157 @@ class ResultPDF extends IanseoPdf {
 	}
 
 	function writeDataRowPrnIndividualAbs($item, $distSize, $addSize, $running, $distances, $double, $snapDistance, $border='TB') {
+		$hasIRMStatus = !is_numeric($item['score']);
 		$this->SetFont($this->FontStd,'B',$this->FontSizeLines);
-		$this->Cell(8, 4 * ($double ? 2 : 1),  $item['rank'], $border.'LR', 0, 'R', 0);
+		$this->Cell(8, 4 * ($double ? 2 : 1),  ($hasIRMStatus ? $item['score'] : $item['rank']), $border.'LR', 0, 'R', 0);
 		//Atleta
 		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
 		$this->Cell(20+ $addSize, 4 * ($double ? 2 : 1),  $item['athlete'], $border. 'R', 0, 'L', 0);
-		//Classe
-		if($this->PrintAgeClass) {
-		}
 		$this->Cell(12, 4 * ($double ? 2 : 1), ($item['birthdate']), $border.'L', 0, 'C', 0);
 		$this->Cell(10, 4 * ($double ? 2 : 1), ($item['subclassName']), $border.'L', 0, 'C', 0);
 		//Nazione
 		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
 		$this->Cell(54 + $addSize, 4 * ($double ? 2 : 1),  $item['countryName'] . ($item['countryName2'] != '' ? ', ' : '') . $item['countryName2'], $border.'L', 0, 'L', 0);
 		$this->SetFont($this->FontFix,'',$this->FontSizeHead);
-		if(!$double) {
-			for($i=1; $i<=$distances;$i++) {
-				list($rank,$score)=explode('|',$item['dist_' . $i]);
-				if($snapDistance==0) {
-					$cellContent=str_pad($score,3," ",STR_PAD_LEFT);
-					if($rank) $cellContent.="/" . str_pad($rank,2," ",STR_PAD_LEFT);
-					$this->Cell($distSize, 4,  $cellContent, $border.'LR', 0, 'R', 0);
-				} else if($i<$snapDistance) {
-					$this->Cell($distSize/2, 4, str_pad($score,3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
-					$this->Cell($distSize/2, 4, "", $border.'R', 0, 'R', 0);
-				} else if($i==$snapDistance) {
-					list($rankS,$scoreS)=explode('|',$item['dist_Snap']);
-					$this->Cell($distSize/2, 4, str_pad($scoreS,3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
-					$this->Cell($distSize/2, 4, ($scoreS != $score ? "(" . str_pad($score,3," ",STR_PAD_LEFT) . ")" : "     "), $border.'R', 0, 'R', 0);
-				} else {
-					$this->Cell($distSize/2, 4, str_pad("0",3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
-					$this->Cell($distSize/2, 4, ($score!=0 ? "(" . str_pad($score,3," ",STR_PAD_LEFT) . ")" : "     "), $border.'R', 0, 'R', 0);
+		if (!$hasIRMStatus) {
+			if(!$double) {
+				for($i=1; $i<=$distances;$i++) {
+					list($rank,$score)=explode('|',$item['dist_' . $i]);
+					if($snapDistance==0) {
+						$cellContent=str_pad($score,3," ",STR_PAD_LEFT);
+						if($rank) $cellContent.="/" . str_pad($rank,2," ",STR_PAD_LEFT);
+						$this->Cell($distSize, 4,  $cellContent, $border.'LR', 0, 'R', 0);
+					} else if($i<$snapDistance) {
+						$this->Cell($distSize/2, 4, str_pad($score,3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
+						$this->Cell($distSize/2, 4, "", $border.'R', 0, 'R', 0);
+					} else if($i==$snapDistance) {
+						list($rankS,$scoreS)=explode('|',$item['dist_Snap']);
+						$this->Cell($distSize/2, 4, str_pad($scoreS,3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
+						$this->Cell($distSize/2, 4, ($scoreS != $score ? "(" . str_pad($score,3," ",STR_PAD_LEFT) . ")" : "     "), $border.'R', 0, 'R', 0);
+					} else {
+						$this->Cell($distSize/2, 4, str_pad("0",3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
+						$this->Cell($distSize/2, 4, ($score!=0 ? "(" . str_pad($score,3," ",STR_PAD_LEFT) . ")" : "     "), $border.'R', 0, 'R', 0);
+					}
 				}
-			}
-		} else {
-			$TmpX=$this->GetX();
-			$TmpY=$this->GetY();
-			$RunningTotal=0;
-			for($i=1; $i<=$distances/2;$i++) {
-				list($rank,$score)=explode('|',$item['dist_' . $i]);
-				if($snapDistance==0) {
-					$cellContent=str_pad($score,3," ",STR_PAD_LEFT);
-					if($rank) $cellContent.="/" . str_pad($rank,2," ",STR_PAD_LEFT);
-					$this->Cell($distSize, 4,  $cellContent, $border.'LR', 0, 'R', 0);
-				} else if($i<$snapDistance) {
-					$this->Cell($distSize/2, 4, str_pad($score,3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
-					$this->Cell($distSize/2, 4, "", $border.'R', 0, 'R', 0);
-				} else if($i==$snapDistance) {
-					list($rankS,$scoreS)=explode('|',$item['dist_Snap']);
-					$this->Cell($distSize/2, 4, str_pad($scoreS,3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
-					$this->Cell($distSize/2, 4, ($scoreS != $score ? "(" . str_pad($score,3," ",STR_PAD_LEFT) . ")" : "     "), $border.'R', 0, 'R', 0);
-				} else {
-					$this->Cell($distSize/2, 4, str_pad("0",3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
-					$this->Cell($distSize/2, 4, ($score!=0 ? "(" . str_pad($score,3," ",STR_PAD_LEFT) . ")" : "     "), $border.'R', 0, 'R', 0);
-				}
-				$RunningTotal += $score;
-			}
-			$this->Cell($distSize, 4, number_format($RunningTotal,0,'',$this->NumberThousandsSeparator), 1, 0, 'R', 0);
-			$this->setXY($TmpX,$TmpY+4);
-			$RunningTotal=0;
-			for($i; $i<=$distances;$i++) {
-				list($rank,$score)=explode('|',$item['dist_' . $i]);
-				if($snapDistance==0) {
-					$cellContent=str_pad($score,3," ",STR_PAD_LEFT);
-					if($rank) $cellContent.="/" . str_pad($rank,2," ",STR_PAD_LEFT);
-					$this->Cell($distSize, 4,  $cellContent, $border.'LR', 0, 'R', 0);
-				} else if($i<$snapDistance) {
-					$this->Cell($distSize/2, 4, str_pad($score,3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
-					$this->Cell($distSize/2, 4, "", $border.'R', 0, 'R', 0);
-				} else if($i==$snapDistance) {
-					list($rankS,$scoreS)=explode('|',$item['dist_Snap']);
-					$this->Cell($distSize/2, 4, str_pad($scoreS,3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
-					$this->Cell($distSize/2, 4, ($scoreS != $score ? "(" . str_pad($score,3," ",STR_PAD_LEFT) . ")" : "     "), $border.'R', 0, 'R', 0);
-				} else {
-					$this->Cell($distSize/2, 4, str_pad("0",3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
-					$this->Cell($distSize/2, 4, ($score!=0 ? "(" . str_pad($score,3," ",STR_PAD_LEFT) . ")" : "     "), $border.'R', 0, 'R', 0);
-				}
-				$RunningTotal += $score;
-			}
-			$this->Cell($distSize, 4, number_format($RunningTotal,0,'',$this->NumberThousandsSeparator), $border.'LR', 0, 'R', 0);
-			$this->setXY($this->GetX(),$TmpY);
-		}
-	  	$this->SetFont($this->FontFix,'B',$this->FontSizeLines);
-	  	if(!$running) {
-	  	  	if($snapDistance==0) {
-                $this->Cell(12, 4 * ($double ? 2 : 1), (is_numeric($item['score']) ? number_format(floatval($item['score']), 0, '', $this->NumberThousandsSeparator) : $item['score']), $border . 'LR', 0, 'R', 0);
-            } else {
-				$this->Cell(6, 4 * ($double ? 2 : 1), number_format($item['scoreSnap'],0,'',$this->NumberThousandsSeparator), $border.'L', 0, 'R', 0);
-				$this->SetFont($this->FontFix,'',$this->FontSizeHead);
-				$this->Cell(6, 4 * ($double ? 2 : 1), ($item['score']==$item['scoreSnap'] ? '' : '(' . number_format($item['score'],0,'',$this->NumberThousandsSeparator) . ')'), $border.'R', 0, 'R', 0);
-			}
-	  	}
-		$this->SetFont($this->FontFix,'',$this->FontSizeLines);
-		if($this->ShowTens) {
-		  	if($snapDistance==0) {
-		  		$this->SetFont($this->FontFix,'',$this->FontSizeLines);
-				$this->Cell(6, 4 * ($double ? 2 : 1), $item['gold'], $border.'LR', 0, 'R', 0);
-		  	} else {
-				$this->SetFont($this->FontFix,'',$this->FontSizeHeadSmall);
-				$this->Cell(6, 4 * ($double ? 2 : 1), str_pad($item['goldSnap'],2," ", STR_PAD_LEFT) . ($item['gold']==$item['goldSnap'] ? "": "(". str_pad($item['gold'],2," ", STR_PAD_LEFT). ")"), $border.'LR', 0, 'R', 0);
-			}
-		}
-		$this->SetFont($this->FontFix,'',$this->FontSizeLines);
-	  	if($snapDistance==0) {
-	  		$this->SetFont($this->FontFix,'',$this->FontSizeLines);
-	  		$this->Cell(6 * ($this->ShowTens ? 1:2), 4 * ($double ? 2 : 1), $item['xnine'],$border.'LR', 0, 'R', 0);
-	  	} else {
-			$this->SetFont($this->FontFix,'',$this->FontSizeHeadSmall);
-			$this->Cell(6 * ($this->ShowTens ? 1:2), 4 * ($double ? 2 : 1), str_pad($item['xnineSnap'],2," ", STR_PAD_LEFT) . ($item['xnine']==$item['xnineSnap'] ? "": "(". str_pad($item['xnine'],2," ", STR_PAD_LEFT). ")"), $border.'LR', 0, 'R', 0);
-		}
-		if($running) {
-			$this->Cell(8, 4 * ($double ? 2 : 1),  $item['hits'], $border.'LR', 0, 'R', 0);
-			$this->SetFont($this->FontFix,'B',$this->FontSizeLines);
-			$this->Cell(12, 4 * ($double ? 2 : 1),  is_numeric($item['score'])?number_format($item['score'],3,$this->NumberDecimalSeparator,$this->NumberThousandsSeparator):$item['score'], $border.'LR', 0, 'R', 0);
-			if($this->PrintWeight and !empty($item['tieWeightDecoded'])) {
-				$this->SetFont($this->FontFix,'',$this->FontSizeLines);
-				$this->Cell(20, 4 * ($double ? 2 : 1),  $item['tieWeightDecoded'], $border.'LR', 1, 'L', 0);
 			} else {
-				$this->Cell(10, 4 * ($double ? 2 : 1),  '', $border.'LR', 0);
+				$TmpX=$this->GetX();
+				$TmpY=$this->GetY();
+				$RunningTotal=0;
+				for($i=1; $i<=$distances/2;$i++) {
+					list($rank,$score)=explode('|',$item['dist_' . $i]);
+					if($snapDistance==0) {
+						$cellContent=str_pad($score,3," ",STR_PAD_LEFT);
+						if($rank) $cellContent.="/" . str_pad($rank,2," ",STR_PAD_LEFT);
+						$this->Cell($distSize, 4,  $cellContent, $border.'LR', 0, 'R', 0);
+					} else if($i<$snapDistance) {
+						$this->Cell($distSize/2, 4, str_pad($score,3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
+						$this->Cell($distSize/2, 4, "", $border.'R', 0, 'R', 0);
+					} else if($i==$snapDistance) {
+						list($rankS,$scoreS)=explode('|',$item['dist_Snap']);
+						$this->Cell($distSize/2, 4, str_pad($scoreS,3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
+						$this->Cell($distSize/2, 4, ($scoreS != $score ? "(" . str_pad($score,3," ",STR_PAD_LEFT) . ")" : "     "), $border.'R', 0, 'R', 0);
+					} else {
+						$this->Cell($distSize/2, 4, str_pad("0",3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
+						$this->Cell($distSize/2, 4, ($score!=0 ? "(" . str_pad($score,3," ",STR_PAD_LEFT) . ")" : "     "), $border.'R', 0, 'R', 0);
+					}
+					$RunningTotal += is_numeric($score) ?? $score;
+				}
+				$this->Cell($distSize, 4, number_format($RunningTotal,0,'',$this->NumberThousandsSeparator), 1, 0, 'R', 0);
+				$this->setXY($TmpX,$TmpY+4);
+				$RunningTotal=0;
+				for($i; $i<=$distances;$i++) {
+					list($rank,$score)=explode('|',$item['dist_' . $i]);
+					if($snapDistance==0) {
+						$cellContent=str_pad($score,3," ",STR_PAD_LEFT);
+						if($rank) $cellContent.="/" . str_pad($rank,2," ",STR_PAD_LEFT);
+						$this->Cell($distSize, 4,  $cellContent, $border.'LR', 0, 'R', 0);
+					} else if($i<$snapDistance) {
+						$this->Cell($distSize/2, 4, str_pad($score,3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
+						$this->Cell($distSize/2, 4, "", $border.'R', 0, 'R', 0);
+					} else if($i==$snapDistance) {
+						list($rankS,$scoreS)=explode('|',$item['dist_Snap']);
+						$this->Cell($distSize/2, 4, str_pad($scoreS,3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
+						$this->Cell($distSize/2, 4, ($scoreS != $score ? "(" . str_pad($score,3," ",STR_PAD_LEFT) . ")" : "     "), $border.'R', 0, 'R', 0);
+					} else {
+						$this->Cell($distSize/2, 4, str_pad("0",3," ",STR_PAD_LEFT), $border.'L', 0, 'R', 0);
+						$this->Cell($distSize/2, 4, ($score!=0 ? "(" . str_pad($score,3," ",STR_PAD_LEFT) . ")" : "     "), $border.'R', 0, 'R', 0);
+					}
+					$RunningTotal += is_numeric($score) ?? $score;
+				}
+				$this->Cell($distSize, 4, number_format($RunningTotal,0,'',$this->NumberThousandsSeparator), $border.'LR', 0, 'R', 0);
+				$this->setXY($this->GetX(),$TmpY);
 			}
-		} else {
-		//Definizione dello spareggio/Sorteggio
-			$this->SetFont($this->FontStd,'I',5);
-			$tmpNote = '';
-			$align='R';
-			$LrBorder='LR';
-			if($this->ShowCTSO) {
+			$this->SetFont($this->FontFix,'B',$this->FontSizeLines);
+			if(!$running) {
+				if($snapDistance==0) {
+					$this->Cell(12, 4 * ($double ? 2 : 1), (is_numeric($item['score']) ? number_format(floatval($item['score']), 0, '', $this->NumberThousandsSeparator) : $item['score']), $border . 'LR', 0, 'R', 0);
+				} else {
+					$this->Cell(6, 4 * ($double ? 2 : 1), number_format($item['scoreSnap'],0,'',$this->NumberThousandsSeparator), $border.'L', 0, 'R', 0);
+					$this->SetFont($this->FontFix,'',$this->FontSizeHead);
+					$this->Cell(6, 4 * ($double ? 2 : 1), ($item['score']==$item['scoreSnap'] ? '' : '(' . number_format($item['score'],0,'',$this->NumberThousandsSeparator) . ')'), $border.'R', 0, 'R', 0);
+				}
+			}
+			$this->SetFont($this->FontFix,'',$this->FontSizeLines);
+			if($this->ShowTens) {
+				if($snapDistance==0) {
+					$this->SetFont($this->FontFix,'',$this->FontSizeLines);
+					$this->Cell(6, 4 * ($double ? 2 : 1), $item['gold'], $border.'LR', 0, 'R', 0);
+				} else {
+					$this->SetFont($this->FontFix,'',$this->FontSizeHeadSmall);
+					$this->Cell(6, 4 * ($double ? 2 : 1), str_pad($item['goldSnap'],2," ", STR_PAD_LEFT) . ($item['gold']==$item['goldSnap'] ? "": "(". str_pad($item['gold'],2," ", STR_PAD_LEFT). ")"), $border.'LR', 0, 'R', 0);
+				}
+			}
+			$this->SetFont($this->FontFix,'',$this->FontSizeLines);
+			if($snapDistance==0) {
+				$this->SetFont($this->FontFix,'',$this->FontSizeLines);
+				$this->Cell(6 * ($this->ShowTens ? 1:2), 4 * ($double ? 2 : 1), $item['xnine'],$border.'LR', 0, 'R', 0);
+			} else {
+				$this->SetFont($this->FontFix,'',$this->FontSizeHeadSmall);
+				$this->Cell(6 * ($this->ShowTens ? 1:2), 4 * ($double ? 2 : 1), str_pad($item['xnineSnap'],2," ", STR_PAD_LEFT) . ($item['xnine']==$item['xnineSnap'] ? "": "(". str_pad($item['xnine'],2," ", STR_PAD_LEFT). ")"), $border.'LR', 0, 'R', 0);
+			}
+			if($running) {
+				$this->Cell(8, 4 * ($double ? 2 : 1),  $item['hits'], $border.'LR', 0, 'R', 0);
+				$this->SetFont($this->FontFix,'B',$this->FontSizeLines);
+				$this->Cell(12, 4 * ($double ? 2 : 1),  is_numeric($item['score'])?number_format($item['score'],3,$this->NumberDecimalSeparator,$this->NumberThousandsSeparator):$item['score'], $border.'LR', 0, 'R', 0);
 				if($this->PrintWeight and !empty($item['tieWeightDecoded'])) {
-					$this->Cell(20, 4 * ($double ? 2 : 1),  $item['tieWeightDecoded'], $border.'L', 0, 'L', 0);
-					$LrBorder='R';
+					$this->SetFont($this->FontFix,'',$this->FontSizeLines);
+					$this->Cell(20, 4 * ($double ? 2 : 1),  $item['tieWeightDecoded'], $border.'LR', 1, 'L', 0);
+				} else {
+					$this->Cell(10, 4 * ($double ? 2 : 1),  '', $border.'LR', 0);
 				}
-				if(!empty($item['so']) &&  $item['so']>0) {
-					$tmpNote=$this->ShotOffShort .' ';
-                    if(strlen(trim($item['tiebreak']))) {
-						$tmpNote .= 'T.'.$item['tiebreakDecoded'];
-                    }
-				} elseif(!empty($item['ct']) &&  $item['ct']>1) {
-					$tmpNote = $this->CoinTossShort;
+			} else {
+			//Definizione dello spareggio/Sorteggio
+				$this->SetFont($this->FontStd,'I',5);
+				$tmpNote = '';
+				$align='R';
+				$LrBorder='LR';
+				if($this->ShowCTSO) {
+					if($this->PrintWeight and !empty($item['tieWeightDecoded'])) {
+						$this->Cell(20, 4 * ($double ? 2 : 1),  $item['tieWeightDecoded'], $border.'L', 0, 'L', 0);
+						$LrBorder='R';
+					}
+					if(!empty($item['so']) &&  $item['so']>0) {
+						$tmpNote=$this->ShotOffShort .' ';
+						if(strlen(trim($item['tiebreak']))) {
+							$tmpNote .= 'T.'.$item['tiebreakDecoded'];
+						}
+					} elseif(!empty($item['ct']) &&  $item['ct']>1) {
+						$tmpNote = $this->CoinTossShort;
+					}
+					if($item['notes']) {
+						$tmpNote .= ' ' . $item['notes'];
+					}
+					if(!empty($item['record'])) {
+						$tmpNote .= ' ' . $item['record'];
+					}
 				}
-				if($item['notes']) {
-					$tmpNote .= ' ' . $item['notes'];
-				}
-				if(!empty($item['record'])) {
-					$tmpNote .= ' ' . $item['record'];
-				}
+				$this->Cell(10, 4 * ($double ? 2 : 1),  $tmpNote, $border.$LrBorder, 0, $align, 0);
 			}
-			$this->Cell(10, 4 * ($double ? 2 : 1),  $tmpNote, $border.$LrBorder, 0, $align, 0);
+			$this->SetFont($this->FontFix,'B',7);
+			$this->Cell(0, 4 * ($double ? 2 : 1),  $item['normative'], $border.$LrBorder, 1, 'C', 0);
+		} else {
+			$this->Cell(0, 4 * ($double ? 2 : 1),  $item['notes'], 1, 1, 'L', 0);
 		}
-		$this->SetFont($this->FontFix,'B',7);
-		$this->Cell(0, 4 * ($double ? 2 : 1),  $item['normative'], $border.$LrBorder, 1, 'C', 0);
 	}
 
 	function writeGroupHeaderPrnIndividualAbs($section, $distSize, $addSize, $running, $distances, $double, $follows=false)
