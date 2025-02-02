@@ -51,7 +51,7 @@ if (count($PdfData->rankData['sections'])) {
 }
 
 //командные сетки
-$PdfData = $PdfData = getBracketsTeams('', false, 0, 0, 1);
+$PdfData = getBracketsTeams('', false, 0, 0, 1);
 if (count($PdfData->rankData['sections'])) {
     $pdf->Titolo = get_text('VersionBracketsTeam', 'Tournament');
     include '../../Final/Team/PrnBracket.php';
