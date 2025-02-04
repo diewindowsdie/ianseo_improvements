@@ -6,69 +6,205 @@ require_once('Common/OrisFunctions.php');
 
 checkACL(array(AclIndividuals, AclTeams, AclCompetition), AclReadOnly);
 
-//в этом отчете печатаем все
-$isCompleteResultBook = true;
+if ($_REQUEST["doPrint"]) {
+    //в этом отчете печатаем все
+    $isCompleteResultBook = true;
 
-$pdf = new ResultPDF('');
+    $pdf = new ResultPDF('');
 
-$_REQUEST["ShowSetArrows"] = 1;
+    $_REQUEST["ShowSetArrows"] = 1;
 
-//медалисты в личке и командах
-$pdf->Titolo = get_text('MedallistsByEvent', 'Tournament');
-include '../../Final/PDFMedalList.php';
-$pdf->AddPage();
+    $pageOrientation = 'P';
 
-//личная квалификация
-$PdfData = getQualificationIndividual();
-if (count($PdfData->rankData['sections'])) {
-    $pdf->Titolo = get_text('ResultIndAbs', 'Tournament');
-    include '../../Qualification/PrnIndividualAbs.php';
-    $pdf->AddPage();
+    $pagesPresent = [
+        "Medalists" => true,
+        "IndividualQualification" => count(getQualificationIndividual()->rankData['sections']),
+        "TeamQualification" => count(getQualificationTeam()->rankData['sections']),
+        "IndividualBrackets" => count(getBracketsIndividual('', false, 0, 0, 1)->rankData['sections']),
+        "IndividualRankings" => count(getRankingIndividual()->rankData['sections']),
+        "TeamBrackets" => count(getBracketsTeams('', false, 0, 0, 1)->rankData['sections']),
+        "TeamRankings" => count(getRankingTeams()->rankData['sections'])
+    ];
+
+    //медалисты в личке и командах
+    $pdf->Titolo = get_text('MedallistsByEvent', 'Tournament');
+    include '../../Final/PDFMedalList.php';
+    //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
+    if (!in_array(true, array(
+            $pagesPresent["IndividualQualification"],
+            $pagesPresent["TeamQualification"],
+            $pagesPresent["IndividualBrackets"],
+            $pagesPresent["IndividualRankings"],
+            $pagesPresent["TeamBrackets"],
+            $pagesPresent["TeamRankings"]
+        )) && ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"])) {
+        $pageOrientation = 'L';
+    }
+    $pdf->AddPage($pageOrientation);
+
+    //личная квалификация
+    if ($pagesPresent["IndividualQualification"]) {
+        $pdf->Titolo = get_text('ResultIndAbs', 'Tournament');
+        include '../../Qualification/PrnIndividualAbs.php';
+        //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
+        if (!in_array(true, array(
+                $pagesPresent["TeamQualification"],
+                $pagesPresent["IndividualBrackets"],
+                $pagesPresent["IndividualRankings"],
+                $pagesPresent["TeamBrackets"],
+                $pagesPresent["TeamRankings"]
+            )) && ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"])) {
+            $pageOrientation = 'L';
+        }
+        $pdf->AddPage($pageOrientation);
+    }
+
+    //командная квалификация
+    if ($pagesPresent["TeamQualification"]) {
+        $pdf->Titolo = get_text('ResultSqAbs', 'Tournament');
+        include '../../Qualification/PrnTeamAbs.php';
+        //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
+        if (!in_array(true, array(
+                $pagesPresent["IndividualBrackets"],
+                $pagesPresent["IndividualRankings"],
+                $pagesPresent["TeamBrackets"],
+                $pagesPresent["TeamRankings"]
+            )) && ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"])) {
+            $pageOrientation = 'L';
+        }
+        $pdf->AddPage($pageOrientation);
+    }
+
+    //личные сетки
+    if ($pagesPresent["IndividualBrackets"]) {
+        $pdf->Titolo = get_text('VersionBracketsInd', 'Tournament');
+        include '../../Final/Individual/PrnBracket.php';
+        //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
+        if (!in_array(true, array(
+                $pagesPresent["IndividualRankings"],
+                $pagesPresent["TeamBrackets"],
+                $pagesPresent["TeamRankings"]
+            )) && ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"])) {
+            $pageOrientation = 'L';
+        }
+        $pdf->AddPage($pageOrientation);
+    }
+
+    //личные лесенки
+    if ($pagesPresent["IndividualRankings"]) {
+        $pdf->Titolo = get_text('RankingInd');
+        include '../../Final/Individual/PrnRanking.php';
+        //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
+        if (!in_array(true, array(
+                $pagesPresent["TeamBrackets"],
+                $pagesPresent["TeamRankings"]
+            )) && ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"])) {
+            $pageOrientation = 'L';
+        }
+        $pdf->AddPage($pageOrientation);
+    }
+
+    //командные сетки
+    if ($pagesPresent["TeamBrackets"]) {
+        $pdf->Titolo = get_text('VersionBracketsTeam', 'Tournament');
+        include '../../Final/Team/PrnBracket.php';
+        //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
+        if (!in_array(true, array(
+                $pagesPresent["TeamRankings"]
+            )) && ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"])) {
+            $pageOrientation = 'L';
+        }
+        $pdf->AddPage($pageOrientation);
+    }
+
+    //командные лесенки
+    if ($pagesPresent["TeamRankings"]) {
+        $pdf->Titolo = get_text('RankingSq');
+        include '../../Final/Team/PrnRanking.php';
+        //если есть хотя бы один отчет со статистикой по "регионам" - ставим альбомную ориентацию
+        if ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"]) {
+            $pageOrientation = 'L';
+        }
+        $pdf->AddPage($pageOrientation);
+    }
+
+    //статистика по "регионам" по полю 1
+    if ($_REQUEST["country1"]) {
+        $_REQUEST["countryIndex"] = 1;
+        $pdf->Titolo = get_text('NumberOfEntriesByCountry', 'Tournament');
+        include '../../Partecipants/PrnStatCountry.php';
+        //если больше нет отчетов со статистикой по "регионам" - возвращаем портретную ориентацию
+        if (!$_REQUEST["country2"] && !$_REQUEST["country3"]) {
+            $pageOrientation = 'P';
+        }
+        $pdf->AddPage($pageOrientation);
+    }
+
+    //статистика по "регионам" по полю 2
+    if ($_REQUEST["country2"]) {
+        $_REQUEST["countryIndex"] = 2;
+        $pdf->Titolo = get_text('NumberOfEntriesByCountry', 'Tournament');
+        include '../../Partecipants/PrnStatCountry.php';
+        //если больше нет отчетов со статистикой по "регионам" - возвращаем портретную ориентацию
+        if (!$_REQUEST["country3"]) {
+            $pageOrientation = 'P';
+        }
+        $pdf->AddPage($pageOrientation);
+    }
+
+    //статистика по "регионам" по полю 3
+    if ($_REQUEST["country3"]) {
+        $_REQUEST["countryIndex"] = 3;
+        $pdf->Titolo = get_text('NumberOfEntriesByCountry', 'Tournament');
+        include '../../Partecipants/PrnStatCountry.php';
+        //других отчетов со статистикой уже точно больше не будет
+        $pageOrientation = 'P';
+        $pdf->AddPage($pageOrientation);
+    }
+
+    //судьи
+    $pdf->Titolo = get_text('StaffOnField', 'Tournament');
+    include '../../Tournament/PrnStaffField.php';
+
+    $pdf->Output();
+} else {
+    $IncludeFA = true;
+    $IncludeJquery = true;
+    include('Common/Templates/head.php');
+
+    ?>
+    <form id="printProtocol" method="POST" action="Protocol.php?doPrint=1">
+        <table class="Tabella">
+            <tr>
+                <th style="width: 10%; text-align: left; padding-left: 20px">Включить в протокол соревнований информацию
+                    о странах/регионах участников?
+                </th>
+            </tr>
+            <tr>
+                <td class="Left" style="padding-left: 20px"><input type="checkbox" name="country1" id="country1"
+                                                                   checked><label style="padding-left: 5px"
+                                                                                  for="country1">Включить отчет о
+                        странах/регионах первого уровня</label></td>
+            </tr>
+            <tr>
+                <td class="Left" style="padding-left: 20px"><input type="checkbox" name="country2" id="country2"
+                                                                   checked><label style="padding-left: 5px"
+                                                                                  for="country2">Включить отчет о
+                        странах/регионах второго уровня</label></td>
+            <tr>
+                <td class="Left" style="padding-left: 20px"><input type="checkbox" name="country3" id="country3"><label
+                            style="padding-left: 5px" for="country3">Включить отчет о странах/регионах третьего
+                        уровня</label></td>
+            </tr>
+            <tr>
+                <th class="Left" style="padding-left: 50px">
+                    <div class="Button" onclick="$('#printProtocol').submit()">Распечатать</div>
+                </th>
+            </tr>
+        </table>
+    </form>
+
+    <?php
+    include('Common/Templates/tail.php');
 }
-
-//командная квалификация
-$PdfData = getQualificationTeam();
-if (count($PdfData->rankData['sections'])) {
-    $pdf->Titolo = get_text('ResultSqAbs', 'Tournament');
-    include '../../Qualification/PrnTeamAbs.php';
-    $pdf->AddPage();
-}
-
-//сетки
-$PdfData = getBracketsIndividual('', false, 0, 0, 1);
-if (count($PdfData->rankData['sections'])) {
-    $pdf->Titolo = get_text('VersionBracketsInd', 'Tournament');
-    include '../../Final/Individual/PrnBracket.php';
-    $pdf->AddPage();
-}
-
-//лесенки
-$PdfData = getRankingIndividual();
-if (count($PdfData->rankData['sections'])) {
-    $pdf->Titolo = get_text('RankingInd');
-    include '../../Final/Individual/PrnRanking.php';
-    $pdf->AddPage();
-}
-
-//командные сетки
-$PdfData = getBracketsTeams('', false, 0, 0, 1);
-if (count($PdfData->rankData['sections'])) {
-    $pdf->Titolo = get_text('VersionBracketsTeam', 'Tournament');
-    include '../../Final/Team/PrnBracket.php';
-    $pdf->AddPage();
-}
-
-//командные лесенки
-$PdfData = getRankingTeams();
-if (count($PdfData->rankData['sections'])) {
-    $pdf->Titolo = get_text('RankingSq');
-    include '../../Final/Team/PrnRanking.php';
-    $pdf->AddPage();
-}
-
-//судьи
-$pdf->Titolo = get_text('StaffOnField', 'Tournament');
-include '../../Tournament/PrnStaffField.php';
-
-$pdf->Output();
 ?>
