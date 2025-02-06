@@ -148,7 +148,7 @@
                     . " FinEvent Event,"
 					. " GrPhase,"
 					. " EvProgr,"
-					. " EvEventName AS EventDescr,"
+					. " concat(divs.DivDescription, ' ', cl.ClDescription) AS EventDescr,"
 					. " EvMatchMode,"
 					. " EvWinnerFinalRank, "
 					. " EvFinalFirstPhase=EvNumQualified as NoRealPhase,"
@@ -237,6 +237,8 @@
 					. "left JOIN IrmTypes i2 ON i2.IrmId=IndIrmType "
 					. "left JOIN IrmTypes i3 ON i3.IrmId=IndIrmTypeFinal "
 					. "LEFT JOIN Entries a ON FinAthlete=a.EnId AND FinTournament=a.EnTournament "
+                    . "left JOIN Classes cl ON cl.ClTournament=FinTournament and EnClass=cl.ClId "
+                    . "left JOIN Divisions divs ON divs.DivTournament=FinTournament AND EnDivision=divs.DivId "
 					. "LEFT JOIN ExtraData ON EdId=a.EnId AND EdType='Z' "
 					. "LEFT JOIN Qualifications ON QuId=a.EnId "
 					. "LEFT JOIN Countries ON CoId=
@@ -381,7 +383,9 @@
 			$PoolMatchesPhases=getPoolMatchesPhases();
 			$PoolMatchesPhasesWA=getPoolMatchesPhasesWA();
 
-			$r=safe_r_sql($this->getQuery());
+            $query = $this->getQuery();
+//            print_r($query);
+            $r=safe_r_sql($query);
 
 			$this->data['meta']['title']=get_text('BracketsInd');
 			$this->data['meta']['saved']=get_text('Seeded16th');

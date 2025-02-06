@@ -8,7 +8,7 @@ $pdf->setDocUpdate($PdfData->LastUpdate);
 
 $FirstPage=true;
 $pdf->SetFont($pdf->FontStd,'B',12);
-$pdf->Cell(190, 10, get_text('FinalStanding', 'Tournament'), 0, 1, 'C', 0);
+$pdf->Cell(190, 10, get_text('FinalStanding', 'Tournament'), 0, 1, 'C', 0, '', 1, false, 'T', 'T');
 
 $currentSectionIndex = 0;
 $spaceBetweenSections = 5;

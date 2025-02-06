@@ -259,6 +259,10 @@ class Obj_Rank_MedalList extends Obj_Rank
 
 					$evCode=$row->EvCode;
 					$evName=$row->EvName;
+                    if ($row->indEvent == 1) {
+                        $evName = $row->DivDescription . ' ' . $row->ClDescription;
+                    }
+
 				// queste 4 solo per le divcl
 					$divCode='';
 					$divName='';

@@ -131,7 +131,7 @@
 			$q="SELECT EnId,EnCode, EnSex, EnNameOrder, upper(EnIocCode) EnIocCode, EnName AS Name, EnFirstName AS FirstName, upper(EnFirstName) AS FirstNameUpper, co.CoId, co.CoCode, co.CoName, if(co.CoNameComplete>'', co.CoNameComplete, co.CoName) as CoNameComplete,
                     if(co2.CoNameComplete > '', co2.CoNameComplete, co2.CoName) as Co2NameComplete,
                     if(co3.CoNameComplete > '', co3.CoNameComplete, co3.CoName) as Co3NameComplete,
-					EvCode,EvEventName,EvProgr,EvElimType, ifnull(EdExtra, EnCode) as LocalBib, EnDob, coalesce(StopPhase, 0) as StopPhase,
+					EvCode,concat(divs.DivDescription, ' ', cl.ClDescription) as EvEventName,EvProgr,EvElimType, ifnull(EdExtra, EnCode) as LocalBib, EnDob, coalesce(StopPhase, 0) as StopPhase,
 					EvFinalPrintHead as PrintHeader, co.CoMaCode, co.CoCaCode,
 					EvFinalFirstPhase,	EvNumQualified, EvFirstQualified, EvElim1, 	EvElim2,EvMatchMode, EvMedals, EvCodeParent, 
 					IndRank as QualRank, ".($StraightRank ? "IndRankFinal" : "IF(EvShootOff+EvE1ShootOff+EvE2ShootOff=0, IndRank, IndRankFinal)")." as FinalRank, QuScore AS QualScore, IndNotes as QualificationNotes, 
@@ -146,6 +146,8 @@
 				FROM Tournament
 				INNER JOIN Events ON EvTeamEvent=0 AND EvTournament=ToId
 				INNER JOIN Entries ON ToId=EnTournament
+				inner join Classes cl on cl.ClId=EnClass and cl.ClTournament=ToId
+				inner join Divisions divs on divs.DivId=EnDivision and divs.DivTournament=ToId
 				left JOIN Countries co ON co.CoId=
 				    case EvTeamCreationMode 
 				        when 0 then EnCountry
