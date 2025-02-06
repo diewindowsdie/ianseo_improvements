@@ -13,6 +13,40 @@ $pdf->Cell(190, 10, get_text('FinalStanding', 'Tournament'), 0, 1, 'C', 0);
 $currentSectionIndex = 0;
 $spaceBetweenSections = 5;
 
+$maxNumPhases = 0;
+$maxElimRounds = 0;
+$maxAthleteNameLength = 0;
+$maxRegionNameLength = 0;
+
+$athleteNameColumnLength = 0;
+
+function getRegionTitle($item) {
+    return $item['countryName'] .
+        ($item['countryName2'] != '' ? ', ' : '') . $item['countryName2'] .
+        ($item['countryName3'] != '' ? ', ' : '') . $item['countryName3'];
+}
+
+foreach ($PdfData->rankData['sections'] as $section) {
+    //сначала, найдем самые "большие" финалы и на их основе посчитаем, сколько у нас есть место под имя спортсмена плюс информацию о регионе
+    $ElimCols=0;
+    if($section['meta']['elimType']!=5) {
+        if($section['meta']['elim1']) $ElimCols++;
+        if($section['meta']['elim2']) $ElimCols++;
+    }
+
+    $NumPhases=$section['meta']['firstPhase'] ? ceil(log($section['meta']['firstPhase'], 2))+1 : 1;
+    $maxNumPhases = max($maxNumPhases, $NumPhases);
+    $maxElimRounds = max($maxElimRounds, $ElimCols);
+    //пробежимся по всем спортсменам и регионам и найдем самые длинные строки
+    foreach($section['items'] as $item) {
+        $maxAthleteNameLength = max($maxAthleteNameLength, strlen($item['athlete']));
+        $maxRegionNameLength = max($maxRegionNameLength, strlen(getRegionTitle($item)));
+    }
+}
+
+$spaceAvailable = 190 - 8 - 12 - 12 * $maxElimRounds - 15 * $maxNumPhases;
+$athleteNameLength = floor($spaceAvailable * $maxAthleteNameLength / ($maxAthleteNameLength + $maxRegionNameLength));
+
 foreach($PdfData->rankData['sections'] as $section) {
     $currentSectionIndex++;
     if ($currentSectionIndex == count($PdfData->rankData['sections'])) {
@@ -55,8 +89,8 @@ foreach($PdfData->rankData['sections'] as $section) {
 				// Header vero e proprio
 			   	$pdf->SetFont($pdf->FontStd,'B',7);
 				$pdf->Cell(8, 5, $section['meta']['fields']['rank'], 1, 0, 'C', 1);
-				$pdf->Cell(75 - 7 * ($NumPhases+$ElimCols), 5, $section['meta']['fields']['athlete'], 1, 0, 'C', 1);
-				$pdf->Cell(95 - 8 * ($NumPhases+$ElimCols), 5, $section['meta']['fields']['countryName'], 1, 0, 'C', 1);
+				$pdf->Cell($athleteNameLength, 5, $section['meta']['fields']['athlete'], 1, 0, 'C', 1);
+				$pdf->Cell(190-8-12-$athleteNameLength-12*$ElimCols-15*$NumPhases, 5, $section['meta']['fields']['countryName'], 1, 0, 'C', 1);
 				$pdf->Cell(12, 5, $section['meta']['fields']['qualRank'], 1, 0, 'C', 1);
 				for($i=1; $i<=$ElimCols; $i++)
 					$pdf->Cell(12, 5, $section['meta']['fields']['elims']['e' . $i], 1, 0, 'C', 1);
@@ -73,15 +107,11 @@ foreach($PdfData->rankData['sections'] as $section) {
 		   	$pdf->SetFont($pdf->FontStd,'B',8);
 			$pdf->Cell(8, 4, ($item['rank'] ? $item['rank'] : ''), 1, 0, 'C', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',8);
-			$pdf->Cell(75 - 7 * ($NumPhases+$ElimCols), 4, $item['athlete'], 'RBT', 0, 'L', 0);
-			$pdf->Cell(95 - 8 * ($NumPhases+$ElimCols), 4,
-                $item['countryName'] .
-                ($item['countryName2'] != '' ? ', ' : '') . $item['countryName2'] .
-                ($item['countryName3'] != '' ? ', ' : '') . $item['countryName3'], 'RTB', 0, 'L', 0);
-            $spaceUsed = 8 + 75 - 7 * ($NumPhases+$ElimCols) + 95 - 8 * ($NumPhases+$ElimCols);
+			$pdf->Cell($athleteNameLength, 4, $item['athlete'], 'RBT', 0, 'L', 0);
+			$pdf->Cell(190-8-12-$athleteNameLength-12*$ElimCols-15*$NumPhases, 4, getRegionTitle($item), 'RTB', 0, 'L', 0);
+            $spaceUsed = 190-12*$ElimCols-15*$NumPhases;
 			$pdf->SetFont($pdf->FontFix,'',7);
 			$pdf->Cell(12, 4,  is_numeric($item['qualScore']) ? (number_format($item['qualScore'],0,$PdfData->NumberDecimalSeparator,$PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['qualRank'],-2,2)) : '', 1, 0, 'C', 0);
-            $spaceUsed += 12;
             if ($isIRMStatus && $item['qualNotes'] != '') {
                 $pdf->Cell(190 - $spaceUsed, 4, $item['qualNotes'], 1, 1, 'L', 0);
                 continue;
