@@ -108,7 +108,6 @@
 					= "UPDATE " . $Arr_Tabelle[$Tabella][0]  . " SET "
 					. $Campo . "=" . StrSafe_DB(stripslashes($Value)) . " "
 					. "WHERE " . $Arr_Tabelle[$Tabella][1] . "=" . StrSafe_DB($Chiave). " ";
-				error_log($Update);
 				$RsUp=safe_w_sql($Update);
 				//этот запрос не выполнится успешно никогда, потому что в таблице нет таких полей
 //				if(safe_w_affected_rows()) {

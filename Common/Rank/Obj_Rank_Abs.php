@@ -528,7 +528,7 @@ require_once('Common/Normative/NormativeCalculator.php');
 						'bib' => $myRow->EnCode,
 						'localbib' => $myRow->LocalId,
 						'tvname' => $myRow->EnOdfShortname,
-						'birthdate' => DateTime::createFromFormat('Y-m-d', $myRow->BirthDate)->format('d.m.Y'),
+						'birthdate' => $myRow->BirthDate ? DateTime::createFromFormat('Y-m-d', $myRow->BirthDate)->format('d.m.Y') : '',
 						'session' => $myRow->Session,
 						'sessionName' => $myRow->SesName,
 						'target' => $myRow->TargetNo,
