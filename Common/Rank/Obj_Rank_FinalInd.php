@@ -130,6 +130,7 @@
 		 */
 			$q="SELECT EnId,EnCode, EnSex, EnNameOrder, upper(EnIocCode) EnIocCode, EnName AS Name, EnFirstName AS FirstName, upper(EnFirstName) AS FirstNameUpper, co.CoId, co.CoCode, co.CoName, if(co.CoNameComplete>'', co.CoNameComplete, co.CoName) as CoNameComplete,
                     if(co2.CoNameComplete > '', co2.CoNameComplete, co2.CoName) as Co2NameComplete,
+                    if(co3.CoNameComplete > '', co3.CoNameComplete, co3.CoName) as Co3NameComplete,
 					EvCode,EvEventName,EvProgr,EvElimType, ifnull(EdExtra, EnCode) as LocalBib, EnDob, coalesce(StopPhase, 0) as StopPhase,
 					EvFinalPrintHead as PrintHeader, co.CoMaCode, co.CoCaCode,
 					EvFinalFirstPhase,	EvNumQualified, EvFirstQualified, EvElim1, 	EvElim2,EvMatchMode, EvMedals, EvCodeParent, 
@@ -154,6 +155,7 @@
                     end
                     AND EnTournament=co.CoTournament AND EnTournament={$this->tournament}
                 left JOIN Countries co2 ON co2.CoId=EnCountry2 AND EnTournament=co2.CoTournament AND EnTournament={$this->tournament}
+                left JOIN Countries co3 ON co3.CoId=EnCountry3 AND EnTournament=co3.CoTournament AND EnTournament={$this->tournament}
 				INNER JOIN Qualifications ON EnId=QuId
 				INNER JOIN Individuals ON EvCode=IndEvent AND EnTournament=IndTournament AND EnId=IndId
 				INNER JOIN IrmTypes i1 ON i1.IrmId=IndIrmTypeFinal
@@ -321,8 +323,9 @@
 						'contAssoc' => $myRow->CoCaCode,
 						'memberAssoc' => $myRow->CoMaCode,
 						'countryIocCode' => $myRow->EnIocCode,
-						'countryName' => $myRow->CoName,
+						'countryName' => $myRow->CoNameComplete,
                         'countryName2' => $myRow->Co2NameComplete,
+                        'countryName3' => $myRow->Co3NameComplete,
 						'countryNameLong' => $myRow->CoNameComplete,
 						'qualScore'=>$myRow->HideDetails ? '' : $myRow->QualScore,
                         'qualNotes'=>$myRow->HideDetails ? '' : $myRow->QualificationNotes,

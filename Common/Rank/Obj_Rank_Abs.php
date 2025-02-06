@@ -238,7 +238,7 @@ require_once('Common/Normative/NormativeCalculator.php');
 					EnId, EnCode, ifnull(EdExtra, EnCode) as LocalId, if(EnDob=0, '', EnDob) as BirthDate, EnOdfShortname, EnSex, EnNameOrder, upper(EnIocCode) EnIocCode, EnName AS Name, EnFirstName AS FirstName, upper(EnFirstName) AS FirstNameUpper, QuSession as Session, SesName,
 					SUBSTRING(QuTargetNo,2) AS TargetNo, FlContAssoc,
 					EvProgr, ToNumEnds,ToNumDist,ToMaxDistScore, FdiDetails,
-					co.CoId, co.CoCode, co.CoName, co.CoMaCode, co.CoCaCode, co2.CoName as CoName2, EnClass, EnDivision,EnAgeClass,  EnSubClass,  ScDescription,
+					co.CoId, co.CoCode, co.CoNameComplete, co.CoMaCode, co.CoCaCode, co2.CoNameComplete as CoNameComplete2, co3.CoNameComplete as CoNameComplete3, EnClass, EnDivision,EnAgeClass,  EnSubClass,  ScDescription,
 					IFNULL(Td1,'.1.') as Td1, IFNULL(Td2,'.2.') as Td2, IFNULL(Td3,'.3.') as Td3, IFNULL(Td4,'.4.') as Td4, IFNULL(Td5,'.5.') as Td5, IFNULL(Td6,'.6.') as Td6, IFNULL(Td7,'.7.') as Td7, IFNULL(Td8,'.8.') as Td8,
 					QuD1Score, IndD1Rank, QuD2Score, IndD2Rank, QuD3Score, IndD3Rank, QuD4Score, IndD4Rank,
 					QuD5Score, IndD5Rank, QuD6Score, IndD6Rank, QuD7Score, IndD7Rank, QuD8Score, IndD8Rank,
@@ -271,7 +271,7 @@ require_once('Common/Normative/NormativeCalculator.php');
 				$q .= "0 AS OrderScore, 0 AS OrderGold, 0 AS OrderXnine, ";
 			}
 
-			$q .= "IndTimestamp, IndRankFinal, 
+			$q .= "IndTimestamp, IndRankFinal,
 					IF(EvGolds!='',EvGolds,ToGolds) AS GoldLabel, IF(EvXNine!='',EvXNine,ToXNine) AS XNineLabel,
 					ToDouble, DiEnds, DiArrows, ToGoldsChars as QualGoldChars, ToXNineChars as QualXNineChars,
 					ifnull(concat(DV2.DvMajVersion, '.', DV2.DvMinVersion) ,concat(DV1.DvMajVersion, '.', DV1.DvMinVersion)) as DocVersion,
@@ -290,7 +290,8 @@ require_once('Common/Normative/NormativeCalculator.php');
 				        else EnCountry
                     end
                     AND EnTournament=co.CoTournament AND EnTournament={$this->tournament}
-				INNER JOIN Countries co2 ON EnCountry2=co2.CoId AND EnTournament=co2.CoTournament AND EnTournament={$this->tournament}
+				left JOIN Countries co2 ON EnCountry2=co2.CoId AND EnTournament=co2.CoTournament AND EnTournament={$this->tournament}
+				left JOIN Countries co3 ON EnCountry3=co3.CoId AND EnTournament=co3.CoTournament AND EnTournament={$this->tournament}
 				INNER JOIN Qualifications ON EnId=QuId
 				INNER JOIN IrmTypes ON IrmId=IndIrmType
 				inner join (
@@ -547,8 +548,9 @@ require_once('Common/Normative/NormativeCalculator.php');
 						'contAssoc' => $myRow->CoCaCode,
 						'memberAssoc' => $myRow->CoMaCode,
 						'countryIocCode' => $myRow->EnIocCode,
-						'countryName' => $myRow->CoName,
-                        'countryName2' => $myRow->CoName2,
+						'countryName' => $myRow->CoNameComplete,
+                        'countryName2' => $myRow->CoNameComplete2,
+                        'countryName3' => $myRow->CoNameComplete3,
 						'rank' => $myRow->IrmShowRank ? $tmpRank : '',
 						'oldRank' => $myRow->OldRank,
 						'finalRank' => $myRow->IndRankFinal,

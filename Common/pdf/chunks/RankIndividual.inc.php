@@ -74,7 +74,10 @@ foreach($PdfData->rankData['sections'] as $section) {
 			$pdf->Cell(8, 4, ($item['rank'] ? $item['rank'] : ''), 1, 0, 'C', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',8);
 			$pdf->Cell(75 - 7 * ($NumPhases+$ElimCols), 4, $item['athlete'], 'RBT', 0, 'L', 0);
-			$pdf->Cell(95 - 8 * ($NumPhases+$ElimCols), 4, $item['countryName'] . ($item['countryName2'] != '' ? ', ' : '') . $item['countryName2'], 'RTB', 0, 'L', 0);
+			$pdf->Cell(95 - 8 * ($NumPhases+$ElimCols), 4,
+                $item['countryName'] .
+                ($item['countryName2'] != '' ? ', ' : '') . $item['countryName2'] .
+                ($item['countryName3'] != '' ? ', ' : '') . $item['countryName3'], 'RTB', 0, 'L', 0);
             $spaceUsed = 8 + 75 - 7 * ($NumPhases+$ElimCols) + 95 - 8 * ($NumPhases+$ElimCols);
 			$pdf->SetFont($pdf->FontFix,'',7);
 			$pdf->Cell(12, 4,  is_numeric($item['qualScore']) ? (number_format($item['qualScore'],0,$PdfData->NumberDecimalSeparator,$PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['qualRank'],-2,2)) : '', 1, 0, 'C', 0);

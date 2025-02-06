@@ -394,7 +394,10 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(10, 4 * ($double ? 2 : 1), ($item['subclassName']), $border.'L', 0, 'C', 0);
 		//Nazione
 		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-		$this->Cell(54 + $addSize, 4 * ($double ? 2 : 1),  $item['countryName'] . ($item['countryName2'] != '' ? ', ' : '') . $item['countryName2'], $border.'L', 0, 'L', 0);
+		$this->Cell(54 + $addSize, 4 * ($double ? 2 : 1),
+			$item['countryName'] .
+			($item['countryName2'] != '' ? ', ' : '') . $item['countryName2'] .
+			($item['countryName3'] != '' ? ', ' : '') . $item['countryName3'], $border.'L', 0, 'L', 0);
 		$this->SetFont($this->FontFix,'',$this->FontSizeHead);
 		if (!$hasIRMStatus) {
 			if(!$double) {
