@@ -8,12 +8,16 @@ require_once('Common/pdf/PdfChunkLoader.php');
 
 // ATTENTION!
 // MUST BE called $PdfData
-$PdfData=getStatEntriesByCountries();
+
+$PdfData=($_REQUEST["countryIndex"]
+    ? getStatEntriesByCountries(false, false, $_REQUEST["countryIndex"])
+    : getStatEntriesByCountries()
+);
 
 if(!isset($isCompleteResultBook))
 	$pdf = new ResultPDF($PdfData->Description,false);
 
-require_once(PdfChunkLoader('StatByCountry.inc.php'));
+require(PdfChunkLoader('StatByCountry.inc.php'));
 
 if(!isset($isCompleteResultBook))
 {

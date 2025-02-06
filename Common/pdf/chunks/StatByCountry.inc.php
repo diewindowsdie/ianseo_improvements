@@ -85,7 +85,7 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0) {
             }
 
             $pdf->SetFont($pdf->FontStd, '', 7);
-            $pdf->Cell(45, 5, $Rows->NationCode . " - " . $Rows->NationName, 1, 0, 'L', 1);
+            $pdf->Cell(45, 5, $Rows->NationName, 1, 0, 'L', 1);
             foreach ($HeaderList as $Key => $Value) {
                 $DivTotal = 0;
                 foreach ($Value as $Cl => $Total) {

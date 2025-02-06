@@ -181,23 +181,44 @@ if ($_REQUEST["doPrint"]) {
                 </th>
             </tr>
             <tr>
-                <td class="Left" style="padding-left: 20px"><input type="checkbox" name="country1" id="country1"
+                <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country1" id="country1"
                                                                    checked><label style="padding-left: 5px"
                                                                                   for="country1">Включить отчет о
                         странах/регионах первого уровня</label></td>
             </tr>
             <tr>
-                <td class="Left" style="padding-left: 20px"><input type="checkbox" name="country2" id="country2"
+                <td class="Left" style="padding-left: 20px">
+                    Заголовок отчета о странах/регионах первого уровня. Например, "Субъекты РФ":<br/>
+                    <input style="width: 500px; height: 25px" type="text" name="StatHeader1" id="StatHeader1"
+                           value="<?php echo get_text('StatCountries', 'Tournament'); ?>"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country2" id="country2"
                                                                    checked><label style="padding-left: 5px"
                                                                                   for="country2">Включить отчет о
                         странах/регионах второго уровня</label></td>
+            </tr>
             <tr>
-                <td class="Left" style="padding-left: 20px"><input type="checkbox" name="country3" id="country3"><label
+                <td class="Left" style="padding-left: 20px">
+                    Заголовок отчета о странах/регионах второго уровня. Например, "Спортивные школы":<br/>
+                    <input style="width: 500px; height: 25px" type="text" name="StatHeader2" id="StatHeader2"
+                           value="<?php echo get_text('StatCountries', 'Tournament'); ?>"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country3" id="country3"><label
                             style="padding-left: 5px" for="country3">Включить отчет о странах/регионах третьего
                         уровня</label></td>
             </tr>
             <tr>
-                <th class="Left" style="padding-left: 50px">
+                <td class="Left" style="padding-left: 20px">
+                    Заголовок отчета о странах/регионах третьего уровня. Например, "Спортивные клубы" или "Команды":<br/>
+                    <input style="width: 500px; height: 25px" type="text" name="StatHeader3" id="StatHeader3"
+                           value="<?php echo get_text('StatCountries', 'Tournament'); ?>"/></td>
+            </tr>
+            <tr>
+                <th class="Left" style="padding-left: 50px; padding-top: 10px; padding-bottom: 10px">
                     <div class="Button" onclick="$('#printProtocol').submit()">Распечатать</div>
                 </th>
             </tr>

@@ -830,7 +830,7 @@ function getStatEntriesByEvent($ORIS='') {
 	return $Data;
 }
 
-function getStatEntriesByCountries($ORIS='', $Athletes=false) {
+function getStatEntriesByCountries($ORIS='', $Athletes=false, $countryIndex=1) {
 	$Data=new StdClass();
 	$Data->Code='C30A';
 	$Data->Order='2';
@@ -840,7 +840,7 @@ function getStatEntriesByCountries($ORIS='', $Athletes=false) {
 	$Data->HeaderWidth=array(array(10,40),15,15,25,10,15,15,5);
 	$Data->Phase='';
 	$Data->LastUpdate='';
-	$Data->StatCountries=get_text('StatCountries','Tournament');
+	$Data->StatCountries=$_REQUEST['StatHeader' . $countryIndex] ? get_text('MenuLM_Statistics') . ' (' . $_REQUEST['StatHeader' . $countryIndex] . ')' : get_text('StatCountries','Tournament');
 	$Data->Continue=get_text('Continue');
 	$Data->TotalShort=get_text('TotalShort','Tournament');
 	$Data->Total=get_text('Total');
@@ -852,7 +852,7 @@ function getStatEntriesByCountries($ORIS='', $Athletes=false) {
 		$Data->Header=array(get_text('CountryCode'), get_text('M')."#", get_text('F')."#",get_text('TotalCompetitors', 'Tournament')."#", "", get_text("Officials", 'Tournament')."#", get_text("Total")."#");
 	}
 
-	$MyQuery = getStatEntriesByCountriesQuery($ORIS, $Athletes);
+	$MyQuery = getStatEntriesByCountriesQuery($ORIS, $Athletes, $countryIndex);
 	$Rs=safe_r_sql($MyQuery);
 
 	while ($info = safe_fetch_field($Rs)) {
@@ -869,7 +869,24 @@ function getStatEntriesByCountries($ORIS='', $Athletes=false) {
 		$Data->Data['Items'][$MyRow->NationCode]=$MyRow;
 	}
 
-	return $Data;
+    error_reporting(E_ALL);
+    //заберем из базы названия дивизионов и классов
+    $query = "select concat(trim(DivId), '|', trim(ClId)) as Code, 
+        concat(trim(DivDescription), '|', trim(ClDescription)) as Description
+        from Divisions cross join classes 
+        where DivTournament = " . StrSafe_DB($_SESSION['TourId']) . " and ClTournament = " . StrSafe_DB($_SESSION['TourId']);
+    $resultSet = safe_r_sql($query);
+    while ($row = safe_fetch($resultSet)) {
+        //подменим заголовки с кодов пар "дивизион-класс" на их названия
+        $Data->Data['Fields'][$row->Code] = $row->Description;
+        //в объектах с данными по каждому региону добавим новое поле с именем, представляющим собой пару "описание дивизиона|описание класса"
+        //и значением, взятым из поля с именем "код дивизиона|код класса"
+        foreach($Data->Data['Items'] as $regionCode => $regionData) {
+            $Data->Data['Items'][$regionCode]->{$row->Description} = $regionData->{$row->Code};
+        }
+    }
+
+    return $Data;
 }
 
 function getCompetitionOfficials($ORIS=false) {
