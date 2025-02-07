@@ -89,7 +89,7 @@ echo '<tr class="Spacer"><td colspan="2"></td></tr>';
 echo '<tr><th class="SubTitle">'.get_text('SelFile2Imp','HTT').'</th>';
 echo '<td>';
 if(ProgramRelease=='HEAD') echo '<input type="checkbox" name="Accreditation">'.get_text('AccreditationBooth', 'Tournament').'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-echo '<input type="file" name="Gara">';
+echo '<input type="file" name="Gara" accept=".ianseo">';
 echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="submit" value="'.get_text('CmdImport','HTT').'"'.$onclick.'></td></tr>';
 echo '</table>';
 echo '</form>';
