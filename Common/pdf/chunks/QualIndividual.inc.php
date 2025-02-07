@@ -1,7 +1,7 @@
 <?php
 
-require_once('Common/TournamentOfficials.php');
-require_once('Common/IRMStatusesLegendProvider.php');
+require_once('Common/Lib/TournamentOfficials.php');
+require_once('Common/Lib/IRMStatusesLegendProvider.php');
 //error_reporting(E_ALL);
 
 //$pdf->HideCols=$PdfData->HideCols;
@@ -84,8 +84,6 @@ if(count($rankData['sections'])) {
 
     TournamentOfficials::printOfficials($pdf);
 
-    if(!isset($isCompleteResultBook)) {
-        $pdf->DrawShootOffLegend();
-        IRMStatusLegendProvider::printLegend($pdf);
-    }
+    $pdf->DrawShootOffLegend();
+    IRMStatusLegendProvider::printLegend($pdf);
 }

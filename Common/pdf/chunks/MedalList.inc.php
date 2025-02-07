@@ -1,6 +1,6 @@
 <?php
 
-require_once('Common/TournamentOfficials.php');
+require_once('Common/Lib/TournamentOfficials.php');
 
 $pdf->setDocUpdate($PdfData->LastUpdate);
 

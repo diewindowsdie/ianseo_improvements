@@ -29,4 +29,5 @@ function calcNormative($distances, $class, $division, $score)
     $provider = new $className();
     return $provider->calculateNormativeInternal($class, $division, $score);
 }
+
 ?>

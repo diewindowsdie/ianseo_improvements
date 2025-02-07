@@ -44,4 +44,5 @@ class Provider12m_1_12m_2 implements NormativeProvider
         return '';
     }
 }
+
 ?>

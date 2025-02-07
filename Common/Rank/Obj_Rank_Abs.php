@@ -2,7 +2,9 @@
 	require_once('Common/Lib/ArrTargets.inc.php');
 	require_once('Common/Rank/Obj_Rank_Abs.php');
 
-require_once('Common/Normative/NormativeCalculator.php');
+require_once('Common/Lib/Normative/NormativeCalculator.php');
+
+error_reporting(E_ALL);
 
 /**
  * Obj_Rank_Abs
