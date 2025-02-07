@@ -6,11 +6,17 @@ class TournamentOfficials
     private static $judgeSignatureCellHeight = 12;
     private static $judgeNameCellHeight = 5;
 
-    private static $judgeCellWidth = 60;
-    private static $spacerCellWidth = 5;
+    private static $spacerCellWidthPortrait = 5;
+    private static $spacerCellWidthLandscape = 15;
+    private static $horizontalMargin = 10;
 
     static function printOfficials($pdf)
     {
+        $spacerCellWidth = self::$spacerCellWidthPortrait;
+        if ($pdf->getPageWidth() > $pdf->getPageHeight()) {
+            $spacerCellWidth = self::$spacerCellWidthLandscape;
+        }
+        $cellWidth = ($pdf->getPageWidth() - 2 * $spacerCellWidth - 2 * self::$horizontalMargin) / 3;
         $tournament = $_SESSION['TourId'];
 
         $sql = 'select TiName as Surname, TiGivenName as FirstName, TiLastName as Patronymic, TiAccreditation as Credential, CoNameComplete as Region, ItDescription as JudgeRoleCode from TournamentInvolved
@@ -31,27 +37,27 @@ class TournamentOfficials
             return;
         }
 
-        $pdf->SetXY(10,$pdf->GetY());
+        $pdf->SetXY(self::$horizontalMargin,$pdf->GetY());
         if(!$pdf->SamePage(self::$judgeRoleCellHeight + self::$judgeSignatureCellHeight + self::$judgeNameCellHeight)) {
             $pdf->AddPage();
         }
 
         //если судей с галочкой "подписывает протокол" хватает, выводим поля для подписей первых трех
         $pdf->SetFont($pdf->FontStd,'B',$pdf->FontSizeLines);
-        $pdf->Cell(self::$judgeCellWidth, self::$judgeRoleCellHeight, get_text($judges[0]->JudgeRoleCode, 'Tournament'), 1, 0, 'C', 1);
-        $pdf->Cell(self::$spacerCellWidth, self::$judgeRoleCellHeight, '', 0, 0, 'R', 0);
-        $pdf->Cell(self::$judgeCellWidth, self::$judgeRoleCellHeight, get_text($judges[1]->JudgeRoleCode, 'Tournament'), 1, 0, 'C', 1);
-        $pdf->Cell(self::$spacerCellWidth, self::$judgeRoleCellHeight, '', 0, 0, 'R', 0);
-        $pdf->Cell(self::$judgeCellWidth, self::$judgeRoleCellHeight, get_text($judges[2]->JudgeRoleCode, 'Tournament'), 1, 1, 'C', 1);
+        $pdf->Cell($cellWidth, self::$judgeRoleCellHeight, get_text($judges[0]->JudgeRoleCode, 'Tournament'), 1, 0, 'C', 1);
+        $pdf->Cell($spacerCellWidth, self::$judgeRoleCellHeight, '', 0, 0, 'R', 0);
+        $pdf->Cell($cellWidth, self::$judgeRoleCellHeight, get_text($judges[1]->JudgeRoleCode, 'Tournament'), 1, 0, 'C', 1);
+        $pdf->Cell($spacerCellWidth, self::$judgeRoleCellHeight, '', 0, 0, 'R', 0);
+        $pdf->Cell($cellWidth, self::$judgeRoleCellHeight, get_text($judges[2]->JudgeRoleCode, 'Tournament'), 1, 1, 'C', 1);
 
-        $pdf->Cell(self::$judgeCellWidth, self::$judgeSignatureCellHeight, '', 'LR', 0, 'C', 0);
-        $pdf->Cell(self::$spacerCellWidth, self::$judgeSignatureCellHeight, '', 0, 0, 'R', 0);
-        $pdf->Cell(self::$judgeCellWidth, self::$judgeSignatureCellHeight, '', 'LR', 0, 'C', 0);
-        $pdf->Cell(self::$spacerCellWidth, self::$judgeSignatureCellHeight, '', 0, 0, 'R', 0);
-        $pdf->Cell(self::$judgeCellWidth, self::$judgeSignatureCellHeight, '', 'LR', 1, 'C', 0);
+        $pdf->Cell($cellWidth, self::$judgeSignatureCellHeight, '', 'LR', 0, 'C', 0);
+        $pdf->Cell($spacerCellWidth, self::$judgeSignatureCellHeight, '', 0, 0, 'R', 0);
+        $pdf->Cell($cellWidth, self::$judgeSignatureCellHeight, '', 'LR', 0, 'C', 0);
+        $pdf->Cell($spacerCellWidth, self::$judgeSignatureCellHeight, '', 0, 0, 'R', 0);
+        $pdf->Cell($cellWidth, self::$judgeSignatureCellHeight, '', 'LR', 1, 'C', 0);
 
         $pdf->SetFont($pdf->FontStd,'',$pdf->FontSizeLines);
-        $pdf->Cell(self::$judgeCellWidth, self::$judgeNameCellHeight,
+        $pdf->Cell($cellWidth, self::$judgeNameCellHeight,
             $judges[0]->Surname .
             ' ' .
             mb_substr($judges[0]->FirstName, 0, 1) .
@@ -62,8 +68,8 @@ class TournamentOfficials
             . '), '
             . $judges[0]->Credential,
             1, 0, 'C', 1);
-        $pdf->Cell(self::$spacerCellWidth, self::$judgeNameCellHeight, '', 0, 0, 'R', 0);
-        $pdf->Cell(self::$judgeCellWidth, self::$judgeNameCellHeight,
+        $pdf->Cell($spacerCellWidth, self::$judgeNameCellHeight, '', 0, 0, 'R', 0);
+        $pdf->Cell($cellWidth, self::$judgeNameCellHeight,
             $judges[1]->Surname .
             ' ' .
             mb_substr($judges[1]->FirstName, 0, 1) .
@@ -74,8 +80,8 @@ class TournamentOfficials
             . '), '
             . $judges[1]->Credential,
             1, 0, 'C', 1);
-        $pdf->Cell(self::$spacerCellWidth, self::$judgeNameCellHeight, '', 0, 0, 'R', 0);
-        $pdf->Cell(self::$judgeCellWidth, self::$judgeNameCellHeight,
+        $pdf->Cell($spacerCellWidth, self::$judgeNameCellHeight, '', 0, 0, 'R', 0);
+        $pdf->Cell($cellWidth, self::$judgeNameCellHeight,
             $judges[2]->Surname .
             ' ' .
             mb_substr($judges[2]->FirstName, 0, 1) .

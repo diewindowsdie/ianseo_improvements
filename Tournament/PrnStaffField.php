@@ -3,7 +3,9 @@ require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
 
-require_once('Common/TournamentOfficials.php');
+require_once('Common/Lib/TournamentOfficials.php');
+require_once('Common/Lib/RowSpaceCalculator.php');
+
 checkACL(AclCompetition, AclReadOnly);
 define("HideCols", GetParameter("IntEvent"));
 
@@ -31,19 +33,6 @@ $numberOfJudgesOnNextPage = 3;
 $marginBeforeSignatures = 10;
 //высота ячейки под текстовый заголовок
 $titleRowHeight = 10;
-
-function getNumberOfRowsStillFittingPage($pdf, $rowHeight, $additionalSpaceUsed = 0)
-{
-    $startNumber = 34; //получено эмпирически
-    while ($pdf->SamePage($startNumber * $rowHeight + $additionalSpaceUsed)) {
-        $startNumber++;
-    }
-    while (!$pdf->SamePage($startNumber * $rowHeight + $additionalSpaceUsed)) {
-        $startNumber--;
-    }
-
-    return $startNumber;
-}
 
 $Select = "
 	SELECT ti.*, it.*, CoNameComplete, ucase(TiName) as TiUpperName
