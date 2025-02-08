@@ -21,7 +21,11 @@ if(count($rankData['sections'])) {
 	$AddSize=0;
 	$pdf->setDocUpdate($rankData['meta']['lastUpdate']);
     $currentSectionIndex = 0;
-	foreach($rankData['sections'] as $section) {
+
+    $pdf->SetFont($pdf->FontStd,'B',$pdf->FontSizeTitle + 2);
+    $pdf->Cell(190, 10, get_text("Q-Session", "Tournament"), 0, 1, 'C', 0, '', 1, false, 'T', 'T');
+
+    foreach($rankData['sections'] as $section) {
         $currentSectionIndex++;
 		//Calcolo Le Misure per i Campi
 		if($section['meta']['numDist']>=4 && !$rankData['meta']['double'])
