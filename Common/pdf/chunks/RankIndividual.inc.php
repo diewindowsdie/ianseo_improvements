@@ -1,11 +1,12 @@
 <?php
 
 require_once('Common/Lib/TournamentOfficials.php');
-require_once('Common/Lib/IRMStatusesLegendProvider.php');
+require_once('Common/Lib/StatusesLegendProvider.php');
 
 $PdfData->LastUpdate=$PdfData->rankData['meta']['lastUpdate'];
 
 $pdf->setDocUpdate($PdfData->LastUpdate);
+$legendStatusProvider = new StatusLegendProvider($pdf);
 
 $FirstPage=true;
 $pdf->SetFont($pdf->FontStd,'B',12);
@@ -57,7 +58,7 @@ foreach($PdfData->rankData['sections'] as $section) {
             5; //table header
         $dataSize = 4 * count($section['items']) + $spaceBetweenSections;
         $officialsSize = TournamentOfficials::getOfficialsBlockHeight();
-        $IRMLegendSize = IRMStatusLegendProvider::getLegendBlockHeight();
+        $IRMLegendSize = $legendStatusProvider->getLegendBlockHeight();
 
         if (!$pdf->SamePage($headerSize + $dataSize + $officialsSize + $IRMLegendSize)) {
             $pdf->AddPage();
@@ -169,5 +170,4 @@ foreach($PdfData->rankData['sections'] as $section) {
 
 TournamentOfficials::printOfficials($pdf);
 
-$pdf->DrawShootOffLegend();
-IRMStatusLegendProvider::printLegend($pdf);
+$legendStatusProvider->printLegend();
