@@ -40,7 +40,7 @@ $Select = "
     LEFT JOIN Countries on TiCountry=CoId and TiTournament=CoTournament
     LEFT JOIN InvolvedType AS it ON ti.TiType=it.ItId
 	WHERE ti.TiTournament={$Ses} AND it.ItId IS NOT NULL {$Filter}
-	ORDER BY TiIsSigningProtocols desc, ItId IS NOT NULL, ItJudge=0, ItJudge, ItDoS=0, ItDoS, ItJury=0, ItJury, ItOc, TiName, TiGivenName ASC";
+	ORDER BY TiIsSigningProtocols desc, ItId IS NOT NULL, ItJudge=0, ItJudge, ItDoS=0, ItDoS, ItJury=0, ItJury, ItOc, TiAccreditation asc, TiName, TiGivenName ASC";
 
 $resultSet = safe_r_sql($Select);
 $numberOfJudges = mysqli_num_rows($resultSet);
@@ -84,7 +84,7 @@ while ($judge = safe_fetch($resultSet)) {
     $pdf->Cell(8, $rowHeight, $index, 1, 0, 'L');
     $pdf->Cell(62, $rowHeight, $judge->TiName . ' ' . $judge->TiGivenName . ' ' . $judge->TiLastName, 1, 0, 'L');
     $pdf->Cell(55, $rowHeight, get_text($judge->ItDescription, 'Tournament'), 1, 0, 'L');
-    $pdf->Cell(25, $rowHeight, $judge->TiAccreditation, 1, 0, 'C');
+    $pdf->Cell(25, $rowHeight, get_text("JudgeAccreditation_" . $judge->TiAccreditation, "Tournament"), 1, 0, 'C');
     $pdf->Cell(40, $rowHeight, $judge->CoNameComplete, 1, 1, 'L');
     $index++;
 }

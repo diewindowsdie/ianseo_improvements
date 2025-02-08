@@ -102,12 +102,12 @@ $Genders.='<option value="0">'.get_text('GenderShort0').'</option>';
 $Genders.='<option value="1">'.get_text('GenderShort1').'</option>';
 
 $JudgeAccreditations = '<option value="">---</option>';
-$JudgeAccreditations .= '<option value="ССВК">ССВК</option>';
-$JudgeAccreditations .= '<option value="СС1К">СС1К</option>';
-$JudgeAccreditations .= '<option value="СС2К">СС2К</option>';
-$JudgeAccreditations .= '<option value="СС3К">СС3К</option>';
-$JudgeAccreditations .= '<option value="ЮСС">ЮСС</option>';
-$JudgeAccreditations .= '<option value="Б/К">Б/К</option>';
+$JudgeAccreditations .= '<option value="10">' . get_text("JudgeAccreditation_10", "Tournament") . '</option>';
+$JudgeAccreditations .= '<option value="20">' . get_text("JudgeAccreditation_20", "Tournament") . '</option>';
+$JudgeAccreditations .= '<option value="30">' . get_text("JudgeAccreditation_30", "Tournament") . '</option>';
+$JudgeAccreditations .= '<option value="40">' . get_text("JudgeAccreditation_40", "Tournament") . '</option>';
+$JudgeAccreditations .= '<option value="50">' . get_text("JudgeAccreditation_50", "Tournament") . '</option>';
+$JudgeAccreditations .= '<option value="60">' . get_text("JudgeAccreditation_60", "Tournament") . '</option>';
 
 $JSON['table']='';
 $q=safe_r_sql("SELECT *
@@ -115,7 +115,7 @@ $q=safe_r_sql("SELECT *
     LEFT JOIN InvolvedType ON TiType=ItId
     left join Countries on CoId=TiCountry and CoTournament=TiTournament
     WHERE TiTournament={$_SESSION['TourId']}
-    ORDER BY TiIsSigningProtocols desc, ItId IS NOT NULL, ItJudge=0, ItJudge, ItDoS=0, ItDoS, ItJury=0, ItJury, ItOc, TiName, TiGivenName");
+    ORDER BY TiIsSigningProtocols desc, ItId IS NOT NULL, ItJudge=0, ItJudge, ItDoS=0, ItDoS, ItJury=0, ItJury, ItOc, TiAccreditation asc, TiName, TiGivenName");
 
 if($CanEdit) {
 	while($r=safe_fetch($q)) {
