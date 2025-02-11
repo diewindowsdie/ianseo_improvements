@@ -1,7 +1,7 @@
 <?php
 
-require_once('Common/TournamentOfficials.php');
-require_once('Common/IRMStatusesLegendProvider.php');
+require_once('Common/Lib/TournamentOfficials.php');
+require_once('Common/Lib/StatusesLegendProvider.php');
 //error_reporting(E_ALL);
 
 //$pdf->HideCols=$PdfData->HideCols;
@@ -14,12 +14,18 @@ $pdf->CoinTossShort=$PdfData->CoinTossShort;
 
 $spaceBetweenSections = 5;
 
+$legendStatusProvider = new StatusLegendProvider($pdf, true);
+
 if(count($rankData['sections'])) {
 	$DistSize = 11;
 	$AddSize=0;
 	$pdf->setDocUpdate($rankData['meta']['lastUpdate']);
     $currentSectionIndex = 0;
-	foreach($rankData['sections'] as $section) {
+
+    $pdf->SetFont($pdf->FontStd,'B',$pdf->FontSizeTitle + 2);
+    $pdf->Cell(190, 10, get_text("Q-Session", "Tournament"), 0, 1, 'C', 0, '', 1, false, 'T', 'T');
+
+    foreach($rankData['sections'] as $section) {
         $currentSectionIndex++;
 		//Calcolo Le Misure per i Campi
 		if($section['meta']['numDist']>=4 && !$rankData['meta']['double'])
@@ -40,7 +46,7 @@ if(count($rankData['sections'])) {
                 $dataSize += 1;
             }
             $officialsSize = TournamentOfficials::getOfficialsBlockHeight();
-            $legendSize = IRMStatusLegendProvider::getLegendBlockHeight();
+            $legendSize = $legendStatusProvider->getLegendBlockHeight();
 
             if (!$pdf->SamePage($headerSize + $dataSize + $officialsSize + $legendSize))
                 $pdf->AddPage();
@@ -84,8 +90,5 @@ if(count($rankData['sections'])) {
 
     TournamentOfficials::printOfficials($pdf);
 
-    if(!isset($isCompleteResultBook)) {
-        $pdf->DrawShootOffLegend();
-        IRMStatusLegendProvider::printLegend($pdf);
-    }
+    $legendStatusProvider->printLegend();
 }

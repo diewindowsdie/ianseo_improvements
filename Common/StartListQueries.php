@@ -79,7 +79,15 @@ function getStatEntriesByEventIndQuery() {
 	return $Sql;
 }
 
-function getStatEntriesByCountriesQuery($ORIS=false, $Athletes=false) {
+function getStatEntriesByCountriesQuery($ORIS=false, $Athletes=false, $countryIndex) {
+	$field = "EnCountry";
+	if ($countryIndex == 2) {
+		$field = "EnCountry2";
+	} else if ($countryIndex == 3) {
+		$field = "EnCountry3";
+	}
+
+	//print_r($countryIndex . ' ' . $field);
 	$Sql="";
 	if($ORIS) {
 		$Sql = "SELECT SUM(IF((DivAthlete AND ClAthlete AND EnSex=0), 1,0)) as `M`, SUM(IF((DivAthlete AND ClAthlete AND EnSex=1), 1,0)) as `W`, SUM(IF((DivAthlete AND ClAthlete), 0,1)) as `Of`,
@@ -88,7 +96,7 @@ function getStatEntriesByCountriesQuery($ORIS=false, $Athletes=false) {
 				date_format(DvPrintDateTime, '%e %b %Y %H:%i UTC') as DocVersionDate,
 				DvNotes as DocNotes, max(EnTimestamp) as EnTimestamp
 			FROM Entries
-			INNER JOIN Countries ON EnCountry = CoId
+			INNER JOIN Countries ON " . $field . " = CoId
 			LEFT JOIN DocumentVersions on EnTournament=DvTournament AND DvFile = 'EN'
 			LEFT JOIN Divisions ON EnDivision=DivId AND DivTournament=" . StrSafe_DB($_SESSION['TourId']) . "
 			LEFT JOIN Classes ON EnClass=ClId AND ClTournament=" . StrSafe_DB($_SESSION['TourId']) . "
@@ -111,12 +119,12 @@ function getStatEntriesByCountriesQuery($ORIS=false, $Athletes=false) {
 				$Sql .= "SUM(IF(CONCAT(TRIM(EnDivision),'|',TRIM(EnClass))='" . $MyRow->Id . "',1,0)) as `" . $MyRow->Id . "`, ";
 			safe_free_result($Rs);
 		}
-		$Sql .= "CoCode as NationCode, CoName as NationName,
+		$Sql .= "CoCode as NationCode, CoNameComplete as NationName,
 				concat(DvMajVersion, '.', DvMinVersion) as DocVersion,
 				date_format(DvPrintDateTime, '%e %b %Y %H:%i UTC') as DocVersionDate,
 				DvNotes as DocNotes, max(EnTimestamp) as EnTimestamp
 			FROM Entries
-			INNER JOIN Countries ON EnCountry = CoId
+			INNER JOIN Countries ON " . $field . " = CoId
 			LEFT JOIN DocumentVersions on EnTournament=DvTournament AND DvFile = 'EN'
 			WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . "
 			GROUP BY CoCode

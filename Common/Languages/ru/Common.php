@@ -293,6 +293,7 @@ $lang['MenuLM_PrintAwardsPositions']='Печать список медалист
 $lang['MenuLM_PrintBadges']='Печать бейджей';
 $lang['MenuLM_PrintFinalReport']='Распечатать Финальный Отчёт';
 $lang['MenuLM_Printout']='Распечатки';
+$lang['MenuLM_PrintProtocol']='Распечатать протокол соревнований';
 $lang['MenuLM_PrintScheduling']='Печать расписания соревнований';
 $lang['MenuLM_PrintSchedulingByDay']='Печать расписания (по дням)';
 $lang['MenuLM_PrnShootOff']='Печать перестрелок/жеребьёвки';

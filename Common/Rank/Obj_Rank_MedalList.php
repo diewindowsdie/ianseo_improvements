@@ -124,7 +124,7 @@ class Obj_Rank_MedalList extends Obj_Rank
 			$queries[]="
 				(
 					SELECT EvCode, EvOdfGender, EvEventName as EvName, 1 as indEvent, 1 as finEvent, (EvFinalFirstPhase!=0) AS hasFinals,
-					IF(EvFinalFirstPhase!=0, IndRankFinal, IndRank) as `Rank`, QuScore, co.CoCode, co.CoName, co2.CoName as CoName2, '' as TeSubTeam, CONCAT_WS(',',EnCode,EnFirstName,EnName, EnNameOrder,ifnull(EdExtra,EnCode),ifnull(EfCoCode,co.CoCode), concat(QuTarget,QuLetter), EnSex, EnDob) as Athlete,
+					IF(EvFinalFirstPhase!=0, IndRankFinal, IndRank) as `Rank`, QuScore, co.CoCode, co.CoNameComplete, co2.CoNameComplete as CoNameComplete2, co3.CoNameComplete as CoNameComplete3, '' as TeSubTeam, CONCAT_WS(',',EnCode,EnFirstName,EnName, EnNameOrder,ifnull(EdExtra,EnCode),ifnull(EfCoCode,co.CoCode), concat(QuTarget,QuLetter), EnSex, EnDob) as Athlete,
 					IFNULL(FSScheduledDate,ToWhenTo) as Date, IF(EvFinalFirstPhase!=0, IndTimestampFinal, IndTimestamp) as lastUpdate, 1 AS myOrder,EvProgr AS Progr,
 					DivId, DivDescription, ClId, ClDescription,
 					ifnull(DV2.DvMajVersion ,DV1.DvMajVersion) as DocMajVersion,
@@ -154,7 +154,8 @@ class Obj_Rank_MedalList extends Obj_Rank
                             else EnCountry
                         end
                         AND EnTournament=co.CoTournament
-                    left join Countries co2 on co2.CoId=EnCountry2 AND EnTournament=co2.CoTournament 
+                    left join Countries co2 on co2.CoId=EnCountry2 AND EnTournament=co2.CoTournament
+                    left join Countries co3 on co3.CoId=EnCountry3 AND EnTournament=co3.CoTournament
 					LEFT JOIN FinSchedule ON EvCode=FSEvent AND EvTeamEvent=FSTeamEvent AND EvTournament=FSTournament AND FSMatchNo=0
 					left join OdfTranslations nm on nm.OdfTrTournament=ToId and nm.OdfTrInternal='TRANSLATE' and nm.OdfTrLanguage='ENG' and nm.OdfTrType='EVENT' and nm.OdfTrIanseo=concat(EvTeamEvent,EvCode)
 					left join OdfTranslations br on br.OdfTrTournament=ToId and br.OdfTrInternal='MATCH' and br.OdfTrLanguage='ENG' and br.OdfTrType='CODE' and br.OdfTrIanseo=if(IndRankFinal=3,'0_2','0_0')
@@ -170,7 +171,7 @@ class Obj_Rank_MedalList extends Obj_Rank
 			$queries[]="
 				(
 					SELECT EvCode, EvOdfGender, EvEventName as EvName, 0 as indEvent, 1 as finEvent, (EvFinalFirstPhase!=0) AS hasFinals,
-					IF(EvFinalFirstPhase!=0, TeRankFinal, TeRank) as `Rank`, 0 QuScore, CoCode, CoName, '' as CoName2, TeSubTeam,
+					IF(EvFinalFirstPhase!=0, TeRankFinal, TeRank) as `Rank`, 0 QuScore, CoCode, CoName, '' as CoName2, '' as CoName3, TeSubTeam,
 					GROUP_CONCAT(IF(EvFinalFirstPhase!=0, CONCAT_WS(',',ef.EnCode,ef.EnFirstName,ef.EnName, ef.EnNameOrder,ifnull(EdExtra,ef.EnCode),ifnull(EfCoCode,CoCode), TargetNo, ef.EnSex, ef.EnDob),CONCAT_WS(',',eq.EnCode,eq.EnFirstName,eq.EnName, eq.EnNameOrder, eq.EnCode, CoCode, '', eq.EnSex, eq.EnDob)) ORDER BY ef.EnSex desc,ef.EnFirstName,eq.EnSex desc,eq.EnFirstName SEPARATOR '|') as Athlete,
 					IFNULL(FSScheduledDate,ToWhenTo) as Date, IF(EvFinalFirstPhase!=0, TeTimeStampFinal, TeTimeStamp) as lastUpdate, 2 AS myOrder,EvProgr AS Progr,
 					DivId, DivDescription, ClId, ClDescription,
@@ -258,6 +259,10 @@ class Obj_Rank_MedalList extends Obj_Rank
 
 					$evCode=$row->EvCode;
 					$evName=$row->EvName;
+                    if ($row->indEvent == 1) {
+                        $evName = $row->DivDescription . ' ' . $row->ClDescription;
+                    }
+
 				// queste 4 solo per le divcl
 					$divCode='';
 					$divName='';
@@ -343,8 +348,9 @@ class Obj_Rank_MedalList extends Obj_Rank
 				// aggiungo la nazione e le persone
 					$this->data['events'][$evKey][$medal][]=array(
 						'countryCode'=>$row->CoCode,
-						'countryName'=>$row->CoName,
-                        'countryName2'=>$row->CoName2,
+						'countryName'=>$row->CoNameComplete,
+                        'countryName2'=>$row->CoNameComplete2,
+                        'countryName3'=>$row->CoNameComplete3,
                         'subTeam'=> $row->TeSubTeam,
 						'qualScore'=>$row->QuScore,
 						'athletes'=>$athletes
