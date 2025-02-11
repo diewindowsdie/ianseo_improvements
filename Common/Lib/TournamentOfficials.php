@@ -66,7 +66,7 @@ class TournamentOfficials
             '. ('
             . $judges[0]->Region
             . '), '
-            . $judges[0]->Credential,
+            . get_text("JudgeAccreditation_" . $judges[0]->Credential, "Tournament"),
             1, 0, 'C', 1);
         $pdf->Cell($spacerCellWidth, self::$judgeNameCellHeight, '', 0, 0, 'R', 0);
         $pdf->Cell($cellWidth, self::$judgeNameCellHeight,
@@ -78,7 +78,7 @@ class TournamentOfficials
             '. ('
             . $judges[1]->Region
             . '), '
-            . $judges[1]->Credential,
+            . get_text("JudgeAccreditation_" . $judges[1]->Credential, "Tournament"),
             1, 0, 'C', 1);
         $pdf->Cell($spacerCellWidth, self::$judgeNameCellHeight, '', 0, 0, 'R', 0);
         $pdf->Cell($cellWidth, self::$judgeNameCellHeight,
@@ -90,7 +90,7 @@ class TournamentOfficials
             '. ('
             . $judges[2]->Region
             . '), '
-            . $judges[2]->Credential,
+            . get_text("JudgeAccreditation_" . $judges[2]->Credential, "Tournament"),
             1, 1, 'C', 1);
     }
 
