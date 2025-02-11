@@ -869,7 +869,6 @@ function getStatEntriesByCountries($ORIS='', $Athletes=false, $countryIndex=1) {
 		$Data->Data['Items'][$MyRow->NationCode]=$MyRow;
 	}
 
-    error_reporting(E_ALL);
     //заберем из базы названия дивизионов и классов
     $query = "select concat(trim(DivId), '|', trim(ClId)) as Code, 
         concat(trim(DivDescription), '|', trim(ClDescription)) as Description

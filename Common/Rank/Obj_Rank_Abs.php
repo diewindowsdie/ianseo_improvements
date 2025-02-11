@@ -4,8 +4,6 @@
 
 require_once('Common/Lib/Normative/NormativeCalculator.php');
 
-error_reporting(E_ALL);
-
 /**
  * Obj_Rank_Abs
  * Implementa l'algoritmo di default per il calcolo della rank di qualificazione assoluta individuale
