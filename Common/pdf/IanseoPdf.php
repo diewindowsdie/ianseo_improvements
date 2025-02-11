@@ -182,7 +182,7 @@ class IanseoPdf extends TCPDF {
 		$this->SetXY($LeftStart,$this->GetY()+1);
     	$this->SetFont($this->FontStd,'',10);
 		$this->SetX($LeftStart);
-		$this->Cell($this->w-$LeftStart-$RightStart, 4, (preg_replace("/[\r\n]+/sim", ' ', $this->Oc) . (strlen($this->Code) > 0 ? ' (' . $this->Code . ')' : '')) , 0, 1, 'L', 0);
+		$this->Cell($this->w-$LeftStart-$RightStart, 4, (preg_replace("/[\r\n]+/sim", ' ', $this->Oc)) , 0, 1, 'L', 0);
     	$this->SetFont($this->FontStd,'',10);
 		$this->SetX($LeftStart);
 		$this->Cell($this->w-$LeftStart-$RightStart, 4,  ($this->Where . ", " . $this->TournamentDate2String ), 0, 1, 'L', 0);
@@ -217,8 +217,11 @@ class IanseoPdf extends TCPDF {
 			$this->SetFont($this->FontStd,'',8);
 	    	$this->SetXY(IanseoPdf::sideMargin,$this->h - $this->savedBottomMargin);
 		    $this->MultiCell(($this->w-20), 5, $this->getGroupPageNo() . "/" . $this->getPageGroupAlias() ,0, "C", 0);    //Page number
-		    $this->SetXY(($this->w-105),$this->h - $this->savedBottomMargin + 1);    //Position at 1.5 cm from bottom
+		    $this->SetXY(($this->w-105),$this->h - $this->savedBottomMargin + 0.5);    //Position at 1.5 cm from bottom
 			$this->MultiCell(95, 5, $this->Titolo . " - " . $this->docUpdate .$this->TzOffset. ($this->Version ? " (v. $this->Version)" : ''),0, "R", 0);    //Page number
+            //код соревнования
+            $this->SetXY(IanseoPdf::sideMargin,$this->h - $this->savedBottomMargin + 0.5);
+            $this->MultiCell(95, 5, (strlen($this->Code) > 0 ? $this->Code : ''),0, "L", 0);
 		}
 	}
 
