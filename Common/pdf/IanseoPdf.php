@@ -10,8 +10,10 @@ define('EURO', chr(128));
 
 class IanseoPdf extends TCPDF {
 
+    const imageTopOffset=5;
+    const imageSize=16;
 	const sideMargin=10;
-	const topMargin=17;
+	const topMargin=self::imageTopOffset + self::imageSize + 2;
 	const bottomMargin=10;
 	const footerImageH=10;
 
@@ -112,7 +114,7 @@ class IanseoPdf extends TCPDF {
 		$this->Title=$DocTitolo;
 		$this->Titolo=$DocTitolo;
 		$this->SetDefaultColor();
-		$this->SetMargins(IanseoPdf::sideMargin,IanseoPdf::topMargin + 3.0*count($this->StaffCategories) ,IanseoPdf::sideMargin);
+		$this->SetMargins(IanseoPdf::sideMargin,IanseoPdf::topMargin ,IanseoPdf::sideMargin);
 		$this->SetAutoPageBreak(true, ($this->ToPaths['ToBottom'] ? IanseoPdf::footerImageH:0) + IanseoPdf::bottomMargin);
 		$this->SetAuthor('https://www.ianseo.net');
 		$this->SetCreator('Software Design by Ianseo');
@@ -164,16 +166,14 @@ class IanseoPdf extends TCPDF {
 		$this->SetDefaultColor();
 		$LeftStart = IanseoPdf::sideMargin;
 		$RightStart = IanseoPdf::sideMargin+1;
-		$ImgSizeReq=15;
-		if (count($this->StaffCategories)>0) $ImgSizeReq+=5;
 		if($this->ToPaths['ToLeft']) {
-			$this->Image($this->ToPaths['ToLeft'], IanseoPdf::sideMargin, 5, 0, $ImgSizeReq);
+			$this->Image($this->ToPaths['ToLeft'], IanseoPdf::sideMargin, self::imageTopOffset, 0, self::imageSize);
 			$LeftStart = $this->getImageRBX()+2;
 		}
 		if($this->ToPaths['ToRight']) {
 			$im=getimagesize($this->ToPaths['ToRight']);
-			$this->Image($this->ToPaths['ToRight'], (($this->w-IanseoPdf::sideMargin) - ($im[0] * $ImgSizeReq / $im[1])), 5, 0, $ImgSizeReq);
-			$RightStart += ($im[0] * $ImgSizeReq / $im[1]);
+			$this->Image($this->ToPaths['ToRight'], (($this->w-IanseoPdf::sideMargin) - ($im[0] * self::imageSize / $im[1])), self::imageTopOffset, 0, self::imageSize);
+			$RightStart += ($im[0] * self::imageSize / $im[1]);
 		}
 
     	$this->SetFont($this->FontStd,'B',13);
