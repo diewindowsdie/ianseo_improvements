@@ -10,45 +10,30 @@ if(isset($JSON)) {
 		JsonOut($JSON);
 	}
 
-	$lvl=0;
-	if($CardType=='A') {
-		$lvl = checkACL(AclAccreditation, AclReadOnly);
-	} else if($CardType=='Q') {
-		$lvl = checkACL(AclQualification, AclReadOnly);
-	} else if($CardType=='E') {
-		$lvl = checkACL(AclEliminations, AclReadOnly);
-	} else if($CardType=='I') {
-		$lvl = checkACL(AclIndividuals, AclReadOnly);
-	} else if($CardType=='T') {
-		$lvl = checkACL(AclTeams, AclReadOnly);
-	} else if($CardType=='Y') {
-		$lvl = checkACL(AclCompetition, AclReadOnly);
-	} else if($CardType=='Z') {
-		$lvl = checkACL(AclCompetition, AclReadOnly);
-	}
-
-	if($lvl!=AclReadWrite) {
+	if(($CardType=='A' and !$lvl = hasFullACL(AclAccreditation, 'acSetup', AclReadWrite)) OR
+        ($CardType=='Q' and !$lvl = hasFullACL(AclQualification, '', AclReadWrite)) OR
+        ($CardType=='E' and !$lvl = hasFullACL(AclEliminations, '', AclReadWrite)) OR
+        ($CardType=='I' and !$lvl = hasFullACL(AclIndividuals, '', AclReadWrite)) OR
+        ($CardType=='T' and !$lvl = hasFullACL(AclTeams, '', AclReadWrite)) OR
+        (($CardType=='Y' or $CardType=='Z') and !$lvl = hasFullACL(AclCompetition, 'cPrintouts', AclReadWrite))) {
 		JsonOut($JSON);
 	}
 } else {
 	CheckTourSession(true);
 	if($CardType=='A') {
-		checkACL(AclAccreditation, AclReadWrite);
+		checkFullACL(AclAccreditation, 'acSetup',AclReadWrite);
 	} else if($CardType=='Q') {
-		checkACL(AclQualification, AclReadWrite);
+		checkFullACL(AclQualification, '', AclReadWrite);
 	} else if($CardType=='E') {
-		checkACL(AclEliminations, AclReadWrite);
+		checkFullACL(AclEliminations, '', AclReadWrite);
 	} else if($CardType=='I') {
-		checkACL(AclIndividuals, AclReadWrite);
+		checkFullACL(AclIndividuals, '', AclReadWrite);
 	} else if($CardType=='T') {
-		checkACL(AclTeams, AclReadWrite);
-	} else if($CardType=='Y') {
-		checkACL(AclCompetition, AclReadWrite);
-	} else if($CardType=='Z') {
-		checkACL(AclCompetition, AclReadWrite);
+        checkFullACL(AclTeams, '', AclReadWrite);
+	} else if($CardType=='Y' OR $CardType=='Z') {
+        checkFullACL(AclCompetition, 'cPrintouts', AclReadWrite);
 	}
 }
-
 
 
 function switchOrder($Old, $New, $CardType, $CardNumber) {

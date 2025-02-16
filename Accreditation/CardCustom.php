@@ -10,6 +10,7 @@ if(isset($_REQUEST['ToCode'])) {
 if(!empty($_REQUEST['ToId'])) {
 	CreateTourSession(intval($_REQUEST['ToId']));
 }
+checkFullACL(AclAccreditation, 'acStandard', AclReadOnly);
 
 if($Mem=getSystemMemInfo() and !empty($Mem['MemFree'])) {
 	$Free=ceil(intval($Mem['MemFree'])/1500000);

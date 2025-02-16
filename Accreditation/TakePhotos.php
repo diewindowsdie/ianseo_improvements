@@ -2,7 +2,7 @@
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 
 	CheckTourSession(true);
-    checkACL(AclAccreditation, AclReadWrite);
+    checkFullACL(AclAccreditation, 'acAdvanced',AclReadWrite);
 
 	$dir=$CFG->DOCUMENT_PATH . 'Accreditation/IdCard/Photo/';
 

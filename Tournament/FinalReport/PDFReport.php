@@ -4,11 +4,11 @@ require_once('Common/pdf/Report.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Fun_Various.inc.php');
 require_once 'Tournament/Fun_Tournament.local.inc.php';
-checkACL(AclCompetition, AclReadOnly);
 
 if (!isset($_SESSION['TourId']) && isset($_REQUEST['TourId'])) {
 	CreateTourSession($_REQUEST['TourId']);
 }
+checkFullACL(AclCompetition, 'cFinalReport', AclReadOnly);
 
 $RowTournament = NULL;
 $TournamentOptions = array();
@@ -73,8 +73,7 @@ $pdf -> setValidationCode(number_format(sprintf("%u",crc32($StrData)),0,'',get_t
 
 
 
-for($i=0;$i<count($copy2);++$i)
-{
+for($i=0;$i<count($copy2);++$i) {
 	$pdf->setCopy2($copy2[$i]);
 
 	//Intestazione
@@ -188,20 +187,16 @@ for($i=0;$i<count($copy2);++$i)
 		. "WHERE TiTournament=" . StrSafe_DB($_SESSION['TourId']) . " "
 		. "ORDER BY ItOc, ItJury, ItDoS, ItJudge, TiName ";
 	$Rs=safe_r_sql($MySql);
-	if (safe_num_rows($Rs)>0)
-	{
-		while ($MyRow=safe_fetch($Rs))
-		{
+	if (safe_num_rows($Rs)>0) {
+		while ($MyRow=safe_fetch($Rs)) {
 			if(!array_key_exists(get_text($MyRow->ItDescription,'Tournament'), $Involved))
 				$Involved[get_text($MyRow->ItDescription,'Tournament')] = '';
 			$Involved[get_text($MyRow->ItDescription,'Tournament')] .= (trim($MyRow->TiName) . (strlen($MyRow->TiCode)>0 ? '(' . $MyRow->TiCode . ')' : '') . ', ');
 		}
 		safe_free_result($Rs);
 	}
-	if(count($Involved)>0)
-	{
-		foreach($Involved as $InvType => $InvName)
-		{
+	if(count($Involved)>0) {
+		foreach($Involved as $InvType => $InvName) {
 			$mcStartY = $pdf->GetY();
 			$pdf->SetX($pdf->GetX()+40);
 			$pdf->SetFont($pdf->FontStd,'B',10);
@@ -213,9 +208,7 @@ for($i=0;$i<count($copy2);++$i)
 			$pdf->Cell(40, $mcEndY-$mcStartY,  $InvType . ": ", 'L', 1, 'L', 0);
 
 		}
-	}
-	else
-	{
+	} else {
 		$pdf->SetFont($pdf->FontStd,'B',10);
 		$pdf->Cell(175, 7,  get_text('NoStaffOnField','Tournament'), 'LR', 1, 'L', 0);
 	}
@@ -239,19 +232,13 @@ for($i=0;$i<count($copy2);++$i)
 
 	$Rs=safe_r_sql($MySql);
 
-	if(safe_num_rows($Rs)>0)
-	{
-		while($MyRow = safe_fetch($Rs))
-		{
-			if($MyRow->FrqType==-1)
-			{
+	if(safe_num_rows($Rs)>0) {
+		while($MyRow = safe_fetch($Rs)) {
+			if($MyRow->FrqType==-1) {
 				$pdf->SetFont($pdf->FontStd,'B',10);
 				$pdf->Cell(175, 7,  $MyRow->FrqId . ' - ' . $MyRow->FrqQuestion, 1, 1, 'L', 1);
-			}
-			else
-			{
-				switch($MyRow->FrqType)
-				{
+			} else {
+				switch($MyRow->FrqType) {
 					case 0:
 						$pdf->SetFont($pdf->FontStd,'',8);
 						$pdf->Cell(10, 6,  $MyRow->FrqId . ".", 'LTB', 0, 'L', 0);
@@ -265,8 +252,7 @@ for($i=0;$i<count($copy2);++$i)
 						$pdf->SetFont($pdf->FontStd,'B',8);
 						$pdf->MultiCell(115, 7,  $MyRow->FraAnswer??'' , 'RTB', 'L', 0, 1);
 						$mcEndY = $pdf->GetY();
-						if($mcStartY>$mcEndY)
-						{
+						if($mcStartY>$mcEndY) {
 							$tmpMargin = $pdf->getMargins();
 							$mcStartY = $tmpMargin['top'];
 						}
@@ -302,38 +288,29 @@ for($i=0;$i<count($copy2);++$i)
 		safe_free_result($Rs);
 	}
 
-	if ($i!=count($copy2)-1)
-	{
+	if ($i!=count($copy2)-1) {
 		$pdf->startPageGroup();
 		$pdf->AddPage();
 	}
 
 }
 
-if (isset($_REQUEST['TourId']))
-{
+if (isset($_REQUEST['TourId'])) {
 	EraseTourSession();
 }
 
-if(isset($__ExportPDF))
-{
+if(isset($__ExportPDF)) {
 	$__ExportPDF = $pdf->Output('','S');
-}
-elseif(isset($_REQUEST['ToFitarco']))
-{
+} else if(isset($_REQUEST['ToFitarco'])) {
 	$Dest='D';
-	if (isset($_REQUEST['Dest']))
-		$Dest=$_REQUEST['Dest'];
-
-	if ($Dest=='S')
-		print $pdf->Output($_REQUEST['ToFitarco'],$Dest);
-	else
-		$pdf->Output($_REQUEST['ToFitarco'],$Dest);
+	if (isset($_REQUEST['Dest'])) {
+        $Dest = $_REQUEST['Dest'];
+    }
+	if ($Dest=='S') {
+        print $pdf->Output($_REQUEST['ToFitarco'], $Dest);
+    } else {
+        $pdf->Output($_REQUEST['ToFitarco'], $Dest);
+    }
+} else {
+    $pdf->Output();
 }
-else
-	$pdf->Output();
-
-
-//$pdf->Output();
-
-?>

@@ -2,8 +2,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 include('Common/Fun_Export.php');
 ini_set('max_execution_time','240');
-checkACL(AclCompetition, AclReadOnly);
-
+checkFullACL(AclCompetition, 'cExport', AclReadOnly);
 EraseTourSession();
 
 $Sql = "SELECT ToId, ToCode from Tournament";

@@ -5,7 +5,7 @@ require_once('Common/Lib/CommonLib.php');
 
 $JSON=['error'=>1, 'msg'=>get_text('ErrGenericError', 'Errors')];
 
-if(!CheckTourSession() or !hasACL(AclISKServer, AclReadWrite)) {
+if(!CheckTourSession() or !hasFullACL(AclISKServer, 'iskManagement', AclReadWrite)) {
 	JsonOut($JSON);
 }
 

@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-checkACL(AclParticipants, AclReadOnly);
+checkFullACL(AclParticipants, 'pEntries', AclReadOnly);
 require_once('Common/pdf/ResultPDF.inc.php');
 
 if(!isset($isCompleteResultBook)) {

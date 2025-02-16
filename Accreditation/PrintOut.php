@@ -1,7 +1,7 @@
 <?php
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 	CheckTourSession(true);
-    checkACL(AclParticipants, AclReadOnly);
+    checkFullACL(AclAccreditation, 'acStandard', AclReadOnly);
 	require_once('Common/Fun_FormatText.inc.php');
 	require_once('Common/Fun_Sessions.inc.php');
 
@@ -33,13 +33,13 @@
 
 	$SesNo=count($sessions);
 
-	$ComboSessions= '<select name="Session">' . "\n";
-		$ComboSessions.='<option value="All">' . get_text('AllSessions','Tournament') . '</option>' . "\n";
+	$ComboSessions= '<select name="Session">';
+		$ComboSessions.='<option value="All">' . get_text('AllSessions','Tournament') . '</option>';
 		foreach ($sessions AS $s)
 		{
-			$ComboSessions.='<option value="' . $s->SesOrder. '">' . $s->Descr . '</option>' . "\n";
+			$ComboSessions.='<option value="' . $s->SesOrder. '">' . $s->Descr . '</option>';
 		}
-	$ComboSessions.='</select>' . "\n";
+	$ComboSessions.='</select>';
 
 
 	switch ($NumOp)
@@ -64,10 +64,10 @@
 	}
 	//$SmallCellW = ceil(100/$NumOp);
 
-	print '<table class="Tabella">'  . "\n";
-	print '<tr><th class="Title" colspan="' . $NumOp . '">' . get_text('PrintList','Tournament')  . '</th></tr>' . "\n";
+	print '<table class="Tabella">' ;
+	print '<tr><th class="Title" colspan="' . $NumOp . '">' . get_text('PrintList','Tournament')  . '</th></tr>';
 // Lista Piazzole
-	print '<tr><th class="SubTitle" colspan="' . ($NumOp) . '">' . get_text('StartlistSession','Tournament')  . '</th></tr>' . "\n";
+	print '<tr><th class="SubTitle" colspan="' . ($NumOp) . '">' . get_text('StartlistSession','Tournament')  . '</th></tr>';
 	print '<tr>';
 	foreach($Arr_Operations as $Key=>$Value)
 	{
@@ -75,10 +75,10 @@
 		print '<a href="PrnSession.php?OperationType=' . $Key . '" class="Link" target="PrintOut"><img src="../Common/Images/pdf.gif" alt="' . get_text('StartlistSession','Tournament') . '" border="0"><br>' . $Value . '</a>';
 		print '</td>';
 	}
-	print '</tr>' . "\n";
+	print '</tr>';
 	echo '<tr class="Divider"><td  colspan="' . ($NumOp) . '">&nbsp;</td></tr>';
 // Lista per società
-	print '<tr><th class="SubTitle" colspan="' . ($NumOp) . '">' . get_text('StartlistCountry','Tournament')  . '</th></tr>' . "\n";
+	print '<tr><th class="SubTitle" colspan="' . ($NumOp) . '">' . get_text('StartlistCountry','Tournament')  . '</th></tr>';
 	print '<tr>';
 	foreach($Arr_Operations as $Key=>$Value)
 	{
@@ -86,10 +86,10 @@
 		print '<a href="PrnCountry.php?OperationType=' . $Key . '" class="Link" target="PrintOut"><img src="../Common/Images/pdf.gif" alt="' . get_text('StartlistCountry','Tournament') . '" border="0"><br>' . $Value . '</a>';
 		print '</td>';
 	}
-	print '</tr>' . "\n";
+	print '</tr>';
 	echo '<tr class="Divider"><td  colspan="' . ($NumOp) . '">&nbsp;</td></tr>';
 // Ordine alfabetico
-	print '<tr><th class="SubTitle" colspan="' . ($NumOp) . '">' . get_text('StartlistAlpha','Tournament')  . '</th></tr>' . "\n";
+	print '<tr><th class="SubTitle" colspan="' . ($NumOp) . '">' . get_text('StartlistAlpha','Tournament')  . '</th></tr>';
 	print '<tr>';
 	foreach($Arr_Operations as $Key=>$Value)
 	{
@@ -97,10 +97,10 @@
 		print '<a href="PrnAlphabetical.php?OperationType=' . $Key . '" class="Link" target="PrintOut"><img src="../Common/Images/pdf.gif" alt="' . get_text('StartlistAlpha','Tournament') . '" border="0"><br>' . $Value . '</a>';
 		print '</td>';
 	}
-	print '</tr>' . "\n";
+	print '</tr>';
 	echo '<tr class="Divider"><td  colspan="' . ($NumOp) . '">&nbsp;</td></tr>';
 // IdCard & Label
-	print '<tr><th class="SubTitle" colspan="' . ($NumOp) . '">' . get_text('Partecipants') . '</th></tr>' . "\n";
+	print '<tr><th class="SubTitle" colspan="' . ($NumOp) . '">' . get_text('Partecipants') . '</th></tr>';
 	print '<tr>';
 	print '<td class="Center">';
 	print '<a href="IdCards.php" class="Link"><img src="../Common/Images/pdf.gif" alt="' . get_text('IdCard','Tournament') . '" border="0"><br>' . get_text('IdCard','Tournament') . '</a>';
@@ -111,7 +111,7 @@
 	print '</tr>';
 	echo '<tr class="Divider"><td  colspan="' . ($NumOp) . '">&nbsp;</td></tr>';
 // Bill e Cash
-	print '<tr><th class="SubTitle" colspan="2">' . get_text('BillAndCash','Tournament') . '</th></tr>' . "\n";
+	print '<tr><th class="SubTitle" colspan="2">' . get_text('BillAndCash','Tournament') . '</th></tr>';
 	print '<tr>';
 	print '<td class="Center" width="25%">';
 	print '<a href="PrnBill.php" class="Link" target="PrintOut"><img src="../Common/Images/pdf.gif" alt="' . get_text('Bill','Tournament') . '" border="0"><br>' . get_text('Bill','Tournament') . '</a>';
@@ -120,8 +120,8 @@
 	print '<td class="Center" width="25%">';
 	print '<a href="PrnCash.php" class="Link" target="PrintOut"><img src="../Common/Images/pdf.gif" alt="' . get_text('Cash','Tournament') . '" border="0"><br>' . get_text('Cash','Tournament') . '</a>';
 	print '</td>';
-	print '</tr>' . "\n";
-	print '</table>' . "\n";
+	print '</tr>';
+	print '</table>';
 
 	echo '<br />';
 	echo '<table class="Tabella">';

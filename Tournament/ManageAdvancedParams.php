@@ -2,11 +2,10 @@
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 	require_once('Common/Lib/ArrTargets.inc.php');
 	require_once('Common/Fun_Various.inc.php');
-    checkACL(AclCompetition, AclReadWrite);
+    checkFullACL(AclCompetition, 'cData', AclReadWrite);
+    CheckTourSession(true);
 
-	CheckTourSession(true);
-
-	if (isset($_REQUEST['command'])) {
+    if (isset($_REQUEST['command'])) {
 		if ($_REQUEST['command']=='SAVE') {
             $_REQUEST['d_ToGoldsChars']=getLettersFromPrintList($_REQUEST['d_ToGoldsChars']);
             $_REQUEST['d_ToXNineChars']=getLettersFromPrintList($_REQUEST['d_ToXNineChars']);

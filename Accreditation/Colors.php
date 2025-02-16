@@ -2,7 +2,7 @@
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 
 	CheckTourSession(true);
-    checkACL(AclCompetition, AclReadWrite);
+    checkFullACL(AclCompetition, 'acSetup', AclReadWrite);
 
 	$rs=null;
 

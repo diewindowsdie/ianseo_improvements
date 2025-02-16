@@ -4,7 +4,7 @@ require_once(dirname(dirname(__FILE__)).'/config.php');
 require_once('Common/pdf/ResultPDF.inc.php');
 
 CheckTourSession(true);
-checkACL(AclISKServer, AclReadWrite);
+checkFullACL(AclISKServer, 'iskUser', AclReadWrite);
 
 $Results=array();
 

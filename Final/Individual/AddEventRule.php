@@ -3,8 +3,7 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 $JSON=array('error' => 1, 'msg' => 'Error', 'rules' => array());
 
-if(checkACL(AclCompetition, AclNoAccess) != AclReadWrite
-	or !CheckTourSession()
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite)
 	or empty($_REQUEST['New_EcDivision'])
 	or empty($_REQUEST['New_EcClass'])
 	or !isset($_REQUEST['New_EcSubClass'])

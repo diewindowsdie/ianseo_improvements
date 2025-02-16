@@ -87,6 +87,7 @@ $lang['CompleteResultBook']='Libro completo dei Risultati';
 $lang['CompleteResultBookChoose']='Libro Completo dei Risultati (con scelta stampe)';
 $lang['Continue']='Continua';
 $lang['Country']='Società';
+$lang['Country2']='Società 2';
 $lang['CountryCode']='Codice Soc.';
 $lang['CountryNameParent1']='Primo Liv. Sup.';
 $lang['CountryNameParent2']='Secondo Liv. Sup.';

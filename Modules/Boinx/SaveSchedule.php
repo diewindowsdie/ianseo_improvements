@@ -5,7 +5,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclOutput,AclReadWrite, false);
+    checkFullACL(AclOutput,'outCaspar', AclReadWrite, false);
 	$Errore=0;
 
 	$ret='';

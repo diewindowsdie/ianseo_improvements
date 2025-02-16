@@ -15,7 +15,7 @@
 		exit;
 	}
 
-    checkACL(($_REQUEST['Team'] ? AclTeams : AclIndividuals), AclReadOnly);
+    checkFullACL(($_REQUEST['Team'] ? AclTeams : AclIndividuals), '', AclReadOnly);
 
 	$JS_SCRIPT=array(
 		'<script type="text/javascript" src="'.$CFG->ROOT_DIR.'Final/Individual/Fun_JS.js"></script>',

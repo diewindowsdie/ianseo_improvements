@@ -4,7 +4,7 @@ require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 CheckTourSession(true);
 
 // check competition level
-$aclLevel = checkACL(AclCompetition,AclReadOnly);
+checkFullACL(AclCompetition, 'cExport', AclReadOnly);
 
 if(!empty($_REQUEST['forceLUE'])) {
 	safe_w_sql("update Entries inner join Tournament on ToId=EnTournament set EnIocCode=ToIocCode where EnId=".intval($_REQUEST['forceLUE']));

@@ -1,5 +1,5 @@
 <?php
-checkACL(array(AclIndividuals, AclTeams), AclReadOnly);
+checkFullACL(array(AclIndividuals, AclTeams), '', AclReadOnly);
 
 $pdf = new IanseoPdf('',false);
 $pdf->setPrintHeader(false);

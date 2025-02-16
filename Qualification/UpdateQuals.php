@@ -19,7 +19,7 @@ require_once('Common/Fun_Sessions.inc.php');
 require_once('Common/Lib/ArrTargets.inc.php');
 require_once('Common/Lib/Obj_RankFactory.php');	// nuovo by simo
 
-if (!CheckTourSession() or !hasACL(AclQualification, AclReadWrite) or IsBlocked(BIT_BLOCK_QUAL)) {
+if (!CheckTourSession() or !hasFullACL(AclQualification, '', AclReadWrite) or IsBlocked(BIT_BLOCK_QUAL)) {
     JsonOut($JSON);
 }
 

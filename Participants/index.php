@@ -101,7 +101,7 @@ include('Common/Templates/head.php');
 
 <?php
 $acl = actualACL();
-if($acl[AclParticipants] == AclReadWrite) {
+if(subFeatureAcl($acl,AclParticipants,'pEntries') == AclReadWrite) {
 ?>
 <div id="PhotoFrame">
     <div id="PhotoFrameTitle" align="center">Foto<img src="<?php echo $CFG->ROOT_DIR.'Common/Images/status-noshoot.gif'; ?>" align="right" onclick="closePhoto()"></div>

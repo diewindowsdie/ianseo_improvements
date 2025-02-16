@@ -2,7 +2,7 @@
 require_once(dirname(dirname(__DIR__)) . '/config.php');
 CheckTourSession(true);
 // require_once('Common/Fun_FormatText.inc.php');
-checkACL(array(AclRobin), AclReadOnly);
+checkFullACL(AclRobin, '', AclReadOnly);
 
 require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/pdf/PdfChunkLoader.php');

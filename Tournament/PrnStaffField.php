@@ -2,7 +2,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
-checkACL(AclCompetition, AclReadOnly);
+checkFullACL(AclCompetition, 'cData', AclReadOnly);
 define("HideCols", GetParameter("IntEvent"));
 
 $CatJudge=isset($_REQUEST['judge']);

@@ -7,7 +7,7 @@ if(!CheckTourSession()) {
 	JsonOut($JSON);
 }
 
-checkACL(array(AclIndividuals, AclTeams), AclReadWrite);
+checkFullACL(array(AclIndividuals, AclTeams), '', AclReadWrite);
 
 $SQL="(" . "SELECT 0 as RoundRobin, EvCode, EvEventName, EvTeamEvent, EvProgr, EvFinalFirstPhase 
         FROM Events 

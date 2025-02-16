@@ -10,7 +10,7 @@ require_once('Common/pdf/PdfChunkLoader.php');
 
 
 if(empty($_SESSION['TourId']) && !empty($_REQUEST['TourId'])) CreateTourSession($_REQUEST['TourId']);
-checkACL(AclCompetition, AclReadOnly);
+checkFullACL(AclTeams, '', AclReadOnly);
 
 $Events='';
 if(isset($_REQUEST["Event"]) && $_REQUEST["Event"][0]!=".") {

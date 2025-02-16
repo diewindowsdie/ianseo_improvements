@@ -4,18 +4,14 @@ define('debug',false);	// settare a true per l'output di debug
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Tournament/Fun_Tournament.local.inc.php');
-checkACL(AclCompetition, AclReadWrite, false);
 
 $JSON=array('error' => 1, 'errormsg'=>get_text('MissingData','Errors'));
 
-if (!CheckTourSession() ||
-		empty($_REQUEST['New_ScId']) ||
-		empty($_REQUEST['New_ScDescription']) ||
-		!isset($_REQUEST['New_ScViewOrder'])
-		or IsBlocked(BIT_BLOCK_TOURDATA)
-		) {
+if (!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite) or IsBlocked(BIT_BLOCK_TOURDATA)
+    or empty($_REQUEST['New_ScId']) or empty($_REQUEST['New_ScDescription'])or !isset($_REQUEST['New_ScViewOrder'])) {
 	JsonOut($JSON);
 }
+
 
 if (preg_match('/[^a-z0-9]/i', $_REQUEST['New_ScId'])) {
     $JSON['errormsg']=get_text('InvalidCharacters','Errors', '<span class="text-danger">a-z A-Z 0-9</span>');

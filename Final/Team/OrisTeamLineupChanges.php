@@ -3,7 +3,7 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Common/pdf/OrisPDF.inc.php');
 require_once('Common/OrisFunctions.php');
 require_once('Common/pdf/PdfChunkLoader.php');
-checkACL(AclCompetition, AclReadOnly);
+checkFullACL(AclTeams, '', AclReadOnly);
 
 $Ev = (!empty($_REQUEST["EvCode"]) ? $_REQUEST["EvCode"] : '');
 $Team = (!empty($_REQUEST["CoId"]) ? $_REQUEST["CoId"] : '');

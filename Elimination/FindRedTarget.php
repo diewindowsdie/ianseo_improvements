@@ -10,7 +10,7 @@ require_once('Common/Fun_Sessions.inc.php');
 
 $JSON=array('error'=>1,'rows'=>array());
 
-if(checkACL(AclEliminations, AclReadWrite, false)!=AclReadWrite or !CheckTourSession()) {
+if(!CheckTourSession() or !hasFullACL(AclEliminations, '', AclReadWrite, false)) {
 	JsonOut($JSON);
 }
 

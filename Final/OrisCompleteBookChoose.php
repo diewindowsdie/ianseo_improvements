@@ -23,7 +23,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Qualification/Fun_Qualification.local.inc.php');
 CheckTourSession(true);
-checkACL(array(AclIndividuals, AclTeams),AclReadOnly);
+checkFullACL(array(AclIndividuals, AclTeams), '', AclReadOnly);
 
 $MSG='';
 $ORIS=$_SESSION['ISORIS'];

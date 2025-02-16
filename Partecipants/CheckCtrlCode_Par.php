@@ -15,7 +15,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-	checkACL(AclParticipants, AclReadOnly, false);
+	checkFullACL(AclParticipants, 'pEntries', AclReadOnly, false);
 
 	$Errore=0;
 	$AgeClass = '';

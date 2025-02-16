@@ -8,7 +8,7 @@ require_once('Common/Lib/CommonLib.php');
 global $CFG;
 $JSON=['error'=>1, 'msg'=>get_text('ErrGenericError', 'Errors'), 'rows'=>[]];
 
-if (!CheckTourSession() or !hasACL(AclCompetition,AclReadWrite)) {
+if (!CheckTourSession() or !hasFullACL(AclCompetition,'cAward', AclReadWrite)) {
 	JsonOut($JSON);
 }
 

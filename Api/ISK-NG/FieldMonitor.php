@@ -12,7 +12,7 @@ if(empty($_SESSION["TourId"])) {
 if(!($_SESSION["UseApi"] == ISK_NG_PRO_CODE or ($_SESSION["UseApi"] == ISK_NG_LIVE_CODE AND module_exists('ISK-NG_Live')))) {
     CD_redirect($CFG->ROOT_DIR);
 }
-checkACL(AclISKServer, AclReadOnly);
+checkFullACL(AclISKServer, 'iskUser', AclReadOnly);
 $PAGE_TITLE=get_text('FieldMonitor', 'Api');
 $IncludeJquery = true;
 $IncludeFA = true;

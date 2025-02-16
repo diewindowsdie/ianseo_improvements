@@ -8,7 +8,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclQualification, AclReadOnly);
+    checkFullACL(AclQualification, '', AclReadOnly);
 
 	$ToCode = '';
 

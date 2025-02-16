@@ -23,7 +23,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-	checkACL(AclCompetition, AclReadWrite, false);
+	checkFullACL(AclCompetition, 'acSetup', AclReadWrite, false);
 
 	$Errore=0;
 

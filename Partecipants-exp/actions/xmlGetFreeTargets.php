@@ -23,7 +23,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclParticipants, AclReadOnly, false);
+    checkFullACL(AclParticipants, 'pTarget', AclReadOnly, false);
 
 	$query
 		= "SELECT "

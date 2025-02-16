@@ -1,5 +1,6 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
+checkFullACL(AclQualification, '', AclReadOnly);
 require_once('Common/pdf/BackNoPDF.php');
 require_once('Common/Fun_FormatText.inc.php');
 

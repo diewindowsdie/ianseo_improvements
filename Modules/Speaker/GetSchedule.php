@@ -8,7 +8,7 @@ $JSON=array('error' => 1, 'rows' => array(), 'running'=>'', 'onlytoday'=>'1');
 if (empty($_SESSION['TourId'])) {
 	JsonOut($JSON);
 }
-checkACL(array(AclSpeaker, AclQualification, AclEliminations, AclIndividuals, AclTeams), AclReadOnly);
+checkFullACL(array(AclSpeaker, AclQualification, AclEliminations, AclIndividuals, AclTeams), '', AclReadOnly);
 
 $Today=getToday();
 $UseHHT='';

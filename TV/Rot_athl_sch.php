@@ -27,8 +27,6 @@ if(isset($TVsettings->TVPEventInd) && !empty($TVsettings->TVPEventInd))
     $options['events'] = explode('|',$TVsettings->TVPEventInd);
 if(isset($TVsettings->TVPNumRows) && $TVsettings->TVPNumRows>0)
     $options['cutRank'] = $TVsettings->TVPNumRows;
-//if(isset($TVsettings->TVPSession) && $TVsettings->TVPSession>0)
-//    $options['session'] = $TVsettings->TVPSession;
 
 $rank=Obj_RankFactory::create('DivClass',$options);
 $rank->read();

@@ -339,8 +339,6 @@ if($NumSession>1) {
 	echo '<td colspan="2">';
 	echo '<select name="d_TVSession" id="d_TVSession">';
 	echo '<option value="0">' . get_text('AllSessions','Tournament') . '</option>';
-	//for ($i=1;$i<=$NumSession;++$i)
-		//print '<option value="' . $i. '"' . ($MyRow->TVPSession==$i ? ' selected' : '') . '>' . $i . '</option>' . "\n";
 	foreach ($sessions as $s)
 	{
 		print '<option value="' . $s->SesOrder. '"' . (isset($MyRow->TVPSession) && $MyRow->TVPSession==$s->SesOrder ? ' selected' : '') . '>' . $s->Descr . '</option>' . "\n";

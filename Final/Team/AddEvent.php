@@ -11,7 +11,7 @@
     require_once('Common/Lib/Fun_Phases.inc.php');
 
 
-	if (!CheckTourSession() ||
+	if (!CheckTourSession() || !hasFullACL(AclCompetition, 'cData', AclReadWrite) ||
 		!isset($_REQUEST['New_EvCode']) ||
 		!isset($_REQUEST['New_EvEventName']) ||
 		!isset($_REQUEST['New_EvProgr']) ||
@@ -24,7 +24,6 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclCompetition, AclReadWrite, false);
 
     $JSON=array('error' => 1);
 

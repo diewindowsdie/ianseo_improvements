@@ -5,7 +5,7 @@ $JSON=[
     'msg'=>get_text('GenericError', 'Errors'),
 ];
 
-if(!CheckTourSession() or !hasACL(AclAccreditation, AclReadWrite)) {
+if(!CheckTourSession() or !hasFullACL(AclAccreditation, 'acSetup', AclReadWrite)) {
     JsonOut($JSON);
 }
 

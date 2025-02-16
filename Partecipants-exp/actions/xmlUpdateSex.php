@@ -13,7 +13,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclParticipants, AclReadWrite, false);
+    checkFullACL(AclParticipants, 'pEntries', AclReadWrite, false);
 
 	if (is_null($id) || is_null($sex) || is_null($row) || is_null($col))
 	{

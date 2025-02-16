@@ -10,7 +10,7 @@ require_once('Fun_Final.local.inc.php');
 
 $JSON=array('error'=>1);
 
-if(!isset($_REQUEST['Ev']) or !isset($_REQUEST['Ph']) or !CheckTourSession() or checkACL(array(AclIndividuals,AclTeams, AclOutput), AclReadOnly, false) < AclReadOnly) {
+if(!isset($_REQUEST['Ev']) or !isset($_REQUEST['Ph']) or !CheckTourSession() or !hasFullACL(array(AclIndividuals, AclTeams), '', AclReadOnly) or !hasFullACL(AclOutput, 'outTv', AclReadOnly)) {
 	JsonOut($JSON);
 }
 

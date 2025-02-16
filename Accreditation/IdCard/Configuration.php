@@ -1,7 +1,7 @@
 <?php
 
-require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-checkACL(AclAccreditation, AclReadWrite);
+require_once(dirname(__FILE__, 3) . '/config.php');
+checkFullACL(AclAccreditation, 'acSetup', AclReadWrite, false);
 
 if(!empty($_REQUEST['SetCamUrl'])) {
 	setcookie("CamUrl", $_REQUEST['SetCamUrl'], strtotime("+1 year"));  /* expire in 1 year */

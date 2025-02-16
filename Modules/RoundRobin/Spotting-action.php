@@ -5,7 +5,7 @@ require_once(dirname(dirname(__FILE__)) . '/config.php');
 $JSON=array('error'=>1, 'msg'=>get_text('ErrGenericError', 'Errors'));
 $Team=intval($_REQUEST['team'] ?? -1);
 
-if($Team==-1 or !CheckTourSession() or !hasACL(AclRobin, AclReadWrite) or empty($_REQUEST['act'])) {
+if($Team==-1 or !CheckTourSession() or !hasFullACL(AclRobin, '', AclReadWrite) or empty($_REQUEST['act'])) {
 	JsonOut($JSON);
 }
 
@@ -79,70 +79,11 @@ switch($_REQUEST['act']) {
             $m1=floor(intval($_REQUEST['match']))*2;
 
             $Rs=setLiveSession($Team, $Event, $Level*1000000 + $Group*10000 + $Round*100 + $m1, $_SESSION['TourId']);
-
-//            $m2=$m1+1;
-//            safe_w_sql("update RoundRobinMatches set RrMatchLive=1-RrMatchLive
-//                where RrMatchTeam=$Team
-//                    and RrMatchEvent=".StrSafe_DB($Event)."
-//                    and RrMatchTournament={$_SESSION['TourId']}
-//                    and RrMatchLevel=$Level
-//                    and RrMatchGroup=$Group
-//                    and RrMatchRound=$Round
-//                    and RrMatchMatchno in ($m1, $m2)
-//                order by RrMatchRound");
-//
-//            $q=safe_r_sql("select RrMatchLive,
-//				RrMatchScheduledDate Day,
-//				concat_ws('|', RrLevName, RrMatchLevel, RrGrName, RrMatchGroup, RrMatchRound) Session,
-//				RrMatchRound Distance,
-//				if(RrMatchScheduledTime=0, '', date_format(RrMatchScheduledTime, '%H:%i')) Start,
-//				(RrMatchLevel*1000000)+(RrMatchGroup*10000)+(RrMatchRound*100) as OrderPhase
-//                from RoundRobinMatches
-//			    inner join RoundRobinGroup on RrGrTournament=RrMatchTournament and RrGrTeam=RrMatchTeam and RrGrEvent=RrMatchEvent and RrGrLevel=RrMatchLevel and RrGrGroup=RrMatchGroup
-//			    inner join RoundRobinLevel on RrLevTournament=RrMatchTournament and RrLevTeam=RrMatchTeam and RrLevEvent=RrMatchEvent and RrLevLevel=RrMatchLevel
-//                where RrMatchTeam=$Team
-//                    and RrMatchEvent=".StrSafe_DB($Event)."
-//                    and RrMatchTournament={$_SESSION['TourId']}
-//                    and RrMatchLevel=$Level
-//                    and RrMatchGroup=$Group
-//                    and RrMatchRound=$Round
-//                    and RrMatchMatchno=$m1");
-//
-//            $JSON['isLive']=0;
-//            if($r=safe_fetch($q)) {
-//                if($r->RrMatchLive) {
-//                    // removes live from regular matches
-//                    safe_w_sql("update Finals set FinLive=0 where FinTournament={$_SESSION['TourId']}");
-//                    safe_w_sql("update TeamFinals set TfLive=0 where TfTournament={$_SESSION['TourId']}");
-//                    safe_w_sql("update RoundRobinMatches set RrMatchLive=0 where RrMatchTournament={$_SESSION['TourId']} and !(RrMatchTeam=$Team
-//                        and RrMatchEvent=".StrSafe_DB($Event)."
-//                        and RrMatchLevel=$Level
-//                        and RrMatchGroup=$Group
-//                        and RrMatchRound=$Round
-//                        and RrMatchMatchno in ($m1, $m2))");
-//                }
-//                // Set/unset active session in scheduler
-//                if($r->Day) {
-//                    $ActiveSessions=array();
-//                    if($r->RrMatchLive) {
-//                        // works reverse as it is the previous state!
-//                        // 2024-01-29|09:00|8 vs 7|1|Group 1|1|1|1|1010100
-//                        $key=$r->Day
-//                            .'|'.$r->Start
-//                            .'|'.$r->Session
-//                            .'|'.$r->Distance
-//                            .'|'.$r->OrderPhase;
-//                        $ActiveSessions=array($key);
-//                    }
-//                    Set_Tournament_Option('ActiveSession', $ActiveSessions, false, $_SESSION['TourId']);
-//
-//                }
             $JSON['isLive']=0;
             if(safe_num_rows($Rs) and $r=safe_fetch($Rs)) {
                 $JSON['isLive']=($r->Live>0);
                 runJack("FinLiveUpdate", $_SESSION['TourId'], array("Event"=>$Event, "Team"=>$Team, "MatchNo"=>$m1+100*$Round+10000*$Group+1000000*$Level, "IsLive"=>$JSON['isLive'], "TourId"=>$_SESSION['TourId']));
             }
-//            }
             $JSON['error']=0;
         }
         break;

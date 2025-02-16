@@ -16,7 +16,16 @@ function rotAlfa($TVsettings, $RULE) {
 	$Session='';
 	if(!empty($_REQUEST['Session'])) $Session=" and Left(EnFirstName, 1)='{$_REQUEST['Session']}'";
 
-	$Select = "SELECT LEFT(UPPER(EnFirstName), 1) as Initial, EnCode as Bib, EnName AS Name,
+    $HallField="''";
+    if(in_array('HALL',$TVsettings->Columns) and $FopLocations=Get_Tournament_Option('FopLocations', [], $TourId)) {
+        $HallField='case';
+        foreach($FopLocations as $FopLocation) {
+            $HallField.=" when QuTarget between {$FopLocation->Tg1} and {$FopLocation->Tg2} then ".StrSafe_DB($FopLocation->Loc);
+        }
+        $HallField.=" end";
+    }
+
+	$Select = "SELECT LEFT(UPPER(EnFirstName), 1) as Initial, EnCode as Bib, EnName AS Name, $HallField as Hall,
 			SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo,
 			CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status "
 		. "FROM Entries  "
@@ -37,13 +46,13 @@ function rotAlfa($TVsettings, $RULE) {
 	$Class='';
 	$OldInitial='';
 
-	$Columns=(isset($TVsettings->TVPColumns) && !empty($TVsettings->TVPColumns) ? explode('|',$TVsettings->TVPColumns) : array());
-	$ViewTeams=(in_array('TEAM', $Columns) or in_array('ALL', $Columns));
-	$ViewFlag=(in_array('FLAG', $Columns) or in_array('ALL', $Columns));
-	$ViewCode=(in_array('CODE', $Columns) or in_array('ALL', $Columns));
-	$ViewCat=(in_array('DIVCLAS', $Columns) or in_array('ALL', $Columns));
-	$ViewCatCode=(in_array('CATCODE', $Columns) or in_array('ALL', $Columns));
-	$Title2Rows=(in_array('TIT2ROWS', $Columns) ? '<br/>' : ': ');
+    $ViewTeams=(in_array('TEAM', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+    $ViewFlag=(in_array('FLAG', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+    $ViewCode=(in_array('CODE', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+    $ViewCat=(in_array('DIVCLAS', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+    $ViewCatCode=(in_array('CATCODE', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+    $ViewHalls=(in_array('HALL', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+    $Title2Rows=(in_array('TIT2ROWS', $TVsettings->Columns) ? '<br/>' : ': ');
 
 
 	$ret[]='<div class="Title">
@@ -52,6 +61,7 @@ function rotAlfa($TVsettings, $RULE) {
 		'.get_text('StartlistAlfabetical','Tournament').'</div>';
 	$ret[]='<div class="StartList Headers">'
 		. '<div class="Target Headers">' . get_text('Target') . '</div>'
+		. ($ViewHalls ? '<div class="Hall Headers"></div>' : '')
 		. ($ViewCode ? '<div class="CountryCode Headers"></div>' : '')
 		. ($ViewFlag ? '<div class="FlagDiv Headers"></div>' : '')
 		. '<div class="Athlete Headers">' . get_text('Athlete') . '</div>'
@@ -73,6 +83,9 @@ function rotAlfa($TVsettings, $RULE) {
 		$Class=($RowCounter++%2 ? 'e' : 'o');
 		$tmp= '<div class="StartList Font1'.$Class.' Back1'.$Class.'">';
 		$tmp.='<div class="Target">' . ltrim($MyRow->TargetNo, '0') . '</div>';
+		if($ViewHalls) {
+			$tmp.='<div class="Hall">'.$MyRow->Hall.'</div>';
+		}
 		if($ViewCode) {
 			$tmp.='<div class="CountryCode Rotate Rev1'.$Class.'">'.$MyRow->NationCode.'</div>';
 		}
@@ -148,6 +161,7 @@ function getPageDefaults(&$RMain) {
 		'Session' => 'flex: 1 1 5vw; text-align:left;white-space:nowrap;overflow:hidden;',
 		'Category' => 'flex: 1 1 10vw;white-space:nowrap;overflow:hidden;',
 		'CategoryCode' => 'flex: 0 0 4vw; text-align:center;',
+		'Hall' => 'flex: 1 1 10vw; font-size:0.7em; text-align:left;white-space:nowrap;overflow:hidden;',
 		);
 	foreach($ret as $k=>$v) {
 		if(!isset($RMain[$k])) $RMain[$k]=$v;

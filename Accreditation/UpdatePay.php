@@ -9,11 +9,10 @@
 
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 
-	if (!CheckTourSession()) {
+	if (!CheckTourSession() or !hasFullACL(AclCompetition, 'acSetup', AclReadWrite)) {
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclCompetition, AclReadWrite, false);
 
 	$Arr_Tabelle = array
 	(

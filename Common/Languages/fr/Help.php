@@ -2,6 +2,7 @@
 $lang['AutoCheckinAlreadyDone']='Vous êtes déjà enregistré pour la compétition! Si vous devez modifier des informations, retournez au greffe.';
 $lang['AutoCheckinSearch']='Scannez le QR Code que vous avez reçu ou saisissez votre nom!';
 $lang['AutoCHK-Print']='Impressions automatique';
+$lang['AutoImportSettings']='<b>Uniquement pour les utilisateurs experts</b><br>La modification du comportement par défaut peut <b>entrainer des résultats inexacts.</b> <br> Il est important de recalculer tous les rangs qui ont été configurés comme "manuellement" AVANT d’envoyer à ianseo.net ou d’imprimer des résultats et en général avant toute distribution de quelque nature que ce soit.';
 $lang['CombiCompList']='Liste des codes de compétitions! Séparateur","';
 $lang['GetBarcodeSeparator']='Aprèsl\'mpression du tableau de référence des codes barres, lire le "SÉPARATEUR" du code barre pour activer la lecture correcte des élément.';
 $lang['HomePage']='Voici la page où vous pouvez sélectionner ou créer un tournoi.';

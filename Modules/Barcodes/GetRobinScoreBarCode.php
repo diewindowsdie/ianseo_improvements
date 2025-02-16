@@ -9,7 +9,7 @@ require_once('Final/Fun_Final.local.inc.php');
 require_once('Common/Lib/ArrTargets.inc.php');
 
 CheckTourSession(true);
-checkACL(array(AclIndividuals,AclTeams),AclReadWrite);
+checkFullACL(AclRobin, '', AclReadWrite);
 $Match='';
 
 // Check the correct separator (as barcode reader may interpret «-» as a «'» !)
@@ -304,6 +304,9 @@ include('Common/Templates/tail.php');
 
 function getScore($barcode, $strict=false) {
 	@list($matchno, $round, $group, $level, $team, $event) = @explode($_SESSION['BarCodeSeparator'], $barcode, 6);
+    if(!is_numeric($matchno)) {
+        $matchno = -1;
+    }
 	$event=str_replace($_SESSION['BarCodeSeparator'], "-", $event);
 
 	$options=[
@@ -319,7 +322,7 @@ function getScore($barcode, $strict=false) {
 	$MyQuery = $rank->getQuery();
 
 	$q=safe_r_sql($MyQuery);
-	$r= safe_fetch($q);
+	$r=safe_fetch($q);
 	return $r;
 }
 

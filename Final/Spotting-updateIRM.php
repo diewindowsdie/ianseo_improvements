@@ -19,7 +19,7 @@ $team=intval($_REQUEST['team']);
 $match=intval($_REQUEST['matchno']);
 $irm=intval($_REQUEST['value']);
 
-if(($team==0 ? IsBlocked(BIT_BLOCK_IND) : IsBlocked(BIT_BLOCK_TEAM)) or checkACL(($team ? AclTeams : AclIndividuals), AclReadWrite, false)!=AclReadWrite) {
+if(($team==0 ? IsBlocked(BIT_BLOCK_IND) : IsBlocked(BIT_BLOCK_TEAM)) or !hasFullACL(($team ? AclTeams : AclIndividuals), '', AclReadWrite)) {
 	JsonOut($JSON);
 }
 

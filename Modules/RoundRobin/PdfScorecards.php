@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 CheckTourSession(true);
-checkACL(AclRobin, AclReadOnly);
+checkFullACL(AclRobin, '', AclReadOnly);
 require_once('Common/pdf/ResultPDF.inc.php');
 // require_once('Common/Lib/CommonLib.php');
 // require_once('Common/Globals.inc.php');

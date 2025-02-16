@@ -3,7 +3,7 @@ require_once(dirname(__FILE__) . '/config.php');
 require_once('Common/Lib/CommonLib.php');
 
 CheckTourSession(true);
-checkACL(AclISKServer, AclReadWrite);
+checkFullACL(AclISKServer, 'iskManagement', AclReadWrite);
 
 // get targets from qualification and matches
 // Field and 3D CAN NOT SCORE TOGETHER!!!

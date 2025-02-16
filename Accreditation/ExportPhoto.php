@@ -1,7 +1,7 @@
 <?php
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 	CheckTourSession(true);
-    checkACL(AclAccreditation, AclReadWrite);
+    checkFullACL(AclCompetition, 'cExport', AclReadWrite);
 	$dir=$CFG->DOCUMENT_PATH . 'Accreditation/IdCard/Photo/';
 
 	$query = "SELECT EnCode, EnDivision, EnClass, EnFirstName, EnName, PhPhoto

@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 CheckTourSession(true);
-checkACL(AclAccreditation, AclReadOnly);
+checkFullACL(AclAccreditation, 'acSetup',  AclReadOnly);
 
 $TourId=$_SESSION['TourId'];
 if($_SESSION['AccreditationTourIds']) $TourId=$_SESSION['AccreditationTourIds'];

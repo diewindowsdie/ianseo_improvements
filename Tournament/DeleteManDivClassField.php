@@ -1,13 +1,5 @@
 <?php
-/*
-													- UpdateFieldEventList.php -
-	Aggiorna il campo di Events passato in querystring.
-*/
-
-define('debug',false);
-
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-
 $JSON=array('error'=>1,'which'=>'#','tab'=>'');
 
 /*
@@ -21,9 +13,8 @@ $Arr_Tables = array(
 	'C' => array('Classes','ClId','ClTournament', 'Cl_'),
 	'SC'=> array('SubClass','ScId','ScTournament', 'SubClass_')
 	);
-
-if(checkACL(AclCompetition, AclReadWrite, false)!=AclReadWrite
-		or !CheckTourSession()
+checkFullACL(AclCompetition, 'cData', AclReadWrite, false);
+if(!CheckTourSession()
 		or empty($_REQUEST['Tab'])
 		or empty($_REQUEST['Id'])
 		or empty($Arr_Tables[$_REQUEST['Tab']])
@@ -32,6 +23,7 @@ if(checkACL(AclCompetition, AclReadWrite, false)!=AclReadWrite
 		) {
 	JsonOut($JSON);
 }
+
 
 $tt=$Arr_Tables[$_REQUEST['Tab']][0];	// tabella su cui fare l'update
 $kk=$Arr_Tables[$_REQUEST['Tab']][1];	// campo 1 da usare come chiave per l'update

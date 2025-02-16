@@ -7,7 +7,7 @@ if(!CheckTourSession()) {
 	JsonOut($JSON);
 }
 
-checkACL(array(AclIndividuals, AclTeams), AclReadWrite);
+checkFullACL(array(AclIndividuals, AclTeams), '', AclReadWrite);
 
 if(empty($_REQUEST['ev']) or !isset($_REQUEST['ph'])) {
 	$JSON['msg']=get_text('BadParams', 'Tournament');

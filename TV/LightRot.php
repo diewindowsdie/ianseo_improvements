@@ -43,12 +43,13 @@
 	if (empty($_REQUEST['Rule'])) printCrackError();
 	require_once('Common/Fun_FormatText.inc.php');
 	require_once('TV/Fun_HTML.local.inc.php');
+    require_once('Common/Lib/CommonLib.php');
 
 	$RuleId=intval($_REQUEST['Rule']);
 	$TourCode=stripslashes($_REQUEST['Tour']);
 	$TourId=getIdFromCode($TourCode);
 	$RuleOrder=(empty($_REQUEST['Order']) ? 0 : intval($_REQUEST['Order']));
-    checkACL(AclOutput,AclReadOnly,true,$TourId);
+    checkFullACL(AclOutput,'outTv', AclReadOnly,true,$TourId);
 
 	$pagine=array();
 
@@ -72,7 +73,9 @@
 		switch($r->TVSTable) {
 			case 'DB':
 				$t=safe_r_sql("select * from TVParams where TVPId=$r->TVSContent AND TVPTournament=$r->TVSTournament");
-				$tmp=genera_html_rot(safe_fetch($t), $RULE);
+                $u=safe_fetch($t);
+                $u->Columns=($u->TVPColumns?explode('|', $u->TVPColumns):[]);
+				$tmp=genera_html_rot($u, $RULE);
 				break;
 			case 'MM':
 				$t=safe_r_sql("select * from TVContents where TVCId=$r->TVSContent AND TVCTournament=" . ($r->TVSCntSameTour==1 ? $r->TVSTournament : "-1"));

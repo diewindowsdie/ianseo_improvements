@@ -8,7 +8,7 @@ if (!CheckTourSession()) {
 	print get_text('CrackError');
 	exit;
 }
-checkACL(AclAccreditation, AclReadWrite);
+checkFullACL(AclAccreditation, 'acStandard',AclReadOnly);
 
 $TmpWhere="";
 if(isset($_REQUEST["ArcherName"]) && strlen($_REQUEST["ArcherName"])>0 && preg_match("/^[-,0-9A-Z]*$/i",str_replace(" ","",$_REQUEST["ArcherName"])))
@@ -76,7 +76,7 @@ $Rs=safe_r_sql($MyQuery);
 if (safe_num_rows($Rs)>0)
 {
 	$pdf=new LabelPDF(); // 'P','mm','A4');
-	$pdf->AliasNbPages();
+	//$pdf->AliasNbPages();
 	$pdf->setPrintHeader(false);
 	$pdf->setPrintFooter(false);
 	$pdf->SetMargins(6,6,6);

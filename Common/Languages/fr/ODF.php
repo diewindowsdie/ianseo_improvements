@@ -16,7 +16,7 @@ $lang['IntQUAL']='Classement du tournoi';
 $lang['IntRES']='Résultats';
 $lang['IntSCHED']='Programme';
 $lang['IntTRANSLATE']='Traduction';
-$lang['IrmHelp']='Gestion des abandons / Disqualifications: Pour générer les classements (DNF, DNS, DSQ, DQB). Par défaut la place affectée sera vraiment haut. DNF: Abandon=>29.999; DNS: N\'a pas pris part au départ=>30.000; DSQ: Disqualifié=>31.000; DQB: Disqualification pour cause majeur =>32.000. <br> Pour rétablir le classement initial, il faut vérifier manuellement <b>l\'ensemble du classement<b>!<br>';
+$lang['IrmHelp']='Gestion des abandons / Disqualifications : Pour générer les classements (DNF, DNS, DSQ, DQB). Par défaut la place affectée sera vraiment haute. DNF: Abandon=>29.999; DNS: N\'a pas pris part au départ=>30.000; DSQ: Disqualifié=>31.000; DQB: Disqualification pour cause majeur =>32.000. <br> Pour rétablir le classement initial, il faut vérifier manuellement <b>l\'ensemble du classement<b>!<br></b></b>';
 $lang['KAOffset']='Retard pris';
 $lang['LangNotSupported']='Cette langue $a n\'est pas supporté';
 $lang['Languages']='ODF Langues officiels';

@@ -7,7 +7,7 @@ require_once('Common/UpdateDb-check.php');
 
 require_once('Common/Fun_FormatText.inc.php');
 panicACL();
-checkGPL();
+checkIanseoLicense();
 
 //$PAGE_TITLE=get_text('TitleTourMenu', 'Tournament');
 
@@ -52,14 +52,14 @@ if(empty($_SESSION['TourCode']) and ProgramRelease!='HEAD') {
 }
 
 
-?>
-<tr class="Divider"><td colspan="6"></td></tr>
-<tr><td colspan="6"><a class="Link" href="<?php echo $CFG->ROOT_DIR ?>Tournament/index.php?New="><?php print get_text('NewTour', 'Tournament');?></a></td></tr>
-<tr class="Divider"><td colspan="6"></td></tr>
-<?php
+echo '<tr class="Divider"><td colspan="6"></td></tr>';
+if((($_SERVER["REMOTE_ADDR"] == '127.0.0.1' OR $_SERVER["REMOTE_ADDR"] == '::1') AND ($_SERVER["SERVER_ADDR"] == '127.0.0.1' OR $_SERVER["SERVER_ADDR"] == '::1')) or empty(isAuthEnabled()[0])) {
+    echo '<tr><td colspan="6"><a class="Link" href="'.$CFG->ROOT_DIR .'Tournament/index.php?New=">' . get_text('NewTour', 'Tournament') . '</a></td></tr>';
+    echo '<tr class="Divider"><td colspan="6"></td></tr>';
+}
 $AuthFiler = array();
-if($CFG->USERAUTH){
-    if(empty($_SESSION['AUTH_User'])) {
+if(AuthModule){
+    if(empty($_SESSION['AUTH_User']) and !(($_SERVER["REMOTE_ADDR"] == '127.0.0.1' OR $_SERVER["REMOTE_ADDR"] == '::1') AND ($_SERVER["SERVER_ADDR"] == '127.0.0.1' OR $_SERVER["SERVER_ADDR"] == '::1'))) {
         echo '<tr><th colspan="6"><a class="Link" href="'.$CFG->ROOT_DIR .'Modules/Authentication/LogIn.php">'.get_text('Login', 'Tournament').'</a></th></tr>';
         echo '<tr class="Divider"><td colspan="6"></td></tr>';
     }
@@ -104,7 +104,7 @@ if (safe_num_rows($Rs)>0) {
         print '<td>' . $MyRow->ToCommitee . ' - ' . ManageHTML($MyRow->ToComDescr) . '</td>';
         print '<td>' . ManageHTML($MyRow->ToWhere) . '</td>';
         print '<td>' . get_text('From','Tournament') . ' ' . $MyRow->DtFrom . ' ' . get_text('To','Tournament') . ' ' . $MyRow->DtTo . '</td>';
-        print '</tr>' . "\n";
+        print '</tr>';
     }
 }
 

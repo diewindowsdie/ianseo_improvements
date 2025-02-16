@@ -11,7 +11,7 @@ if(!GetParameter('UUID2')) {
 }
 
 CheckTourSession(true);
-$aclLevel = checkACL(AclCompetition,AclNoAccess);
+$aclLevel = checkFullACL(AclCompetition,'', AclNoAccess);
 
 if(!empty($_REQUEST['redraw'])) {
     include_once('Common/CheckPictures.php');

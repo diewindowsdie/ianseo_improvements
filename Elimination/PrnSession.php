@@ -4,7 +4,7 @@ require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/OrisFunctions.php');
 require_once('Common/pdf/PdfChunkLoader.php');
-checkACL(AclEliminations, AclReadOnly);
+checkFullACL(AclEliminations, '',  AclReadOnly);
 
 if(!empty($_REQUEST['isORIS'])) {
     CD_redirect('OrisStartList.php'.go_get());

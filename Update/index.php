@@ -1,8 +1,8 @@
 <?php
 
 require_once(dirname(__FILE__, 2) . '/config.php');
-checkACL(AclRoot, AclReadWrite);
-checkGPL(true);
+checkFullACL(AclRoot, '', AclReadWrite);
+checkIanseoLicense(true);
 
 if(!empty($_SESSION['AUTH_ENABLE']) AND empty($_SESSION['AUTH_ROOT'])) {
     CD_redirect($CFG->ROOT_DIR.'noAccess.php');
@@ -58,8 +58,8 @@ if($f) {
 
     if(!in_array(ProgramRelease, array('STABLE','FITARCO')) or isset($_GET['testing'])) {
         echo '<div class="alert alert-info mt-2">
-            <div>'.get_text('SpecialUpdate', 'Install').'</div>
-            <div style="display:flex" class="mt-2"><div class="w-30 text-right">' . get_text('Email','Install') . ':</div><div class="w-70"><input type="text" name="Email" id="Email"  class="w-100"></div></div>
+            <div><b>'.get_text('SpecialUpdate', 'Install').'<b></b></div>
+            <div style="display:flex" class="mt-2"><div class="text-right mx-2">' . get_text('Email','Install') . ':</div><div class="w-100"><input type="text" name="Email" id="Email"  class="w-100"></div></div>
             </div>';
     }
 

@@ -5,7 +5,7 @@
 	CheckTourSession(true);
 	require_once('Common/Fun_FormatText.inc.php');
 	require_once('Common/Fun_Various.inc.php');
-    checkACL(AclParticipants, AclReadWrite);
+    checkFullACL(AclParticipants, 'pAdvancedTarget', AclReadWrite);
 
 	if(!empty($_REQUEST['delete']) and $CoId=intval($_REQUEST['delete'])) {
 		$q=safe_r_sql("select EnId from Entries where EnTournament={$_SESSION['TourId']} and (EnCountry=$CoId or EnCountry2=$CoId or EnCountry3=$CoId) limit 1");

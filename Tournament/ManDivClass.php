@@ -5,10 +5,8 @@ require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/Lib/CommonLib.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Tournament/Fun_Tournament.local.inc.php');
-checkACL(AclCompetition, AclReadWrite);
-
-if (!CheckTourSession())
-{
+checkFullACL(AclCompetition, 'cData', AclReadWrite);
+if (!CheckTourSession()) {
     print get_text('CrackError');
     exit;
 }
@@ -109,8 +107,8 @@ echo '</table>
     <th class="wmin-5ch">'.get_text('Para', 'Records').'</th>
     <th class="wmin-5ch">'.get_text('Athlete').'</th>
     <th class="wmin-5ch">'.get_text('Progr').'</th>
-    <th class="wmin-5ch">'.get_text('YearStart','Tournament').'</th>
-    <th class="wmin-5ch">'.get_text('YearEnd','Tournament').'</th>
+    <th class="wmin-7ch">'.get_text('YearStart','Tournament').'</th>
+    <th class="wmin-7ch">'.get_text('YearEnd','Tournament').'</th>
     <th class="w-15">'.get_text('ValidClass','Tournament').'</th>
     <th class="w-15">'.get_text('ValidDivisions','Tournament').'</th>
     <th>&nbsp;</th>

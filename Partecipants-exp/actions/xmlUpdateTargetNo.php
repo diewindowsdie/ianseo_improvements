@@ -6,7 +6,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclParticipants, AclReadWrite, false);
+    checkFullACL(AclParticipants, 'pTarget', AclReadWrite, false);
 
 	$error = 1;
 

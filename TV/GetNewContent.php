@@ -14,7 +14,7 @@
 	$SegmentId=intval($_GET['Segment']);
 	$RuleId=intval($_GET['Rule']);
 	$TourId=intval($_GET['Tour']);
-    checkACL(AclOutput,AclReadOnly, false, $TourId);
+    checkFullACL(AclOutput,'outTv', AclReadOnly, false, $TourId);
 	$Event='';
 	if(!empty($_GET['Event']))
 		$Event=preg_replace('/[^a-zA-Z0-9_-]*/','',$_GET['Event']);
@@ -41,8 +41,10 @@
 	$u->TVPEventTeam = $Event;
 	$u->TVPPhasesTeam = $Phase;
 	$u->TVPPhasesInd = $Phase;
-	if(!empty($_GET['Session']))
-		$u->TVPSession=intval($_GET['Session']);
+    $u->Columns=($u->TVPColumns?explode('|', $u->TVPColumns):[]);
+	if(!empty($_GET['Session'])) {
+        $u->TVPSession=intval($_GET['Session']);
+    }
 
 	$RotMatches=false;
 	$tmp=genera_html_rot($u, $RULE);

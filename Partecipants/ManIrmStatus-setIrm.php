@@ -3,7 +3,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 $JSON=array('error' => 1, 'msg' => '');
 
-if(!CheckTourSession() or !hasACL(AclParticipants, AclReadWrite) or empty($_REQUEST['item']) or (!isset($_REQUEST['bye']) and !isset($_REQUEST['note']) and (!isset($_REQUEST['irm']) or !isset($_REQUEST['qual']) or !isset($_REQUEST['fin'])))) {
+if(!CheckTourSession() or !hasFullACL(AclParticipants, 'pAdvancedEntries', AclReadWrite) or empty($_REQUEST['item']) or (!isset($_REQUEST['bye']) and !isset($_REQUEST['note']) and (!isset($_REQUEST['irm']) or !isset($_REQUEST['qual']) or !isset($_REQUEST['fin'])))) {
 	JsonOut($JSON);
 }
 global $CFG;

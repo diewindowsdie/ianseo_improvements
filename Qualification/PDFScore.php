@@ -4,7 +4,7 @@ require_once('Common/pdf/ScorePDF.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Fun_Sessions.inc.php');
 require_once('Common/Lib/ScorecardsLib.php');
-checkACL(AclQualification, AclReadOnly);
+checkFullACL(AclQualification, '', AclReadOnly);
 
 // switch to decide which scorecard type to print $_REQUEST['TourField3D']=$_SESSION['TourField3D'];
 

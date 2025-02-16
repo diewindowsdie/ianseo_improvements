@@ -3,8 +3,7 @@
 $JSON=array('error'=>1, 'msg'=>'Wrong Data');
 
 require_once(dirname(dirname(__DIR__)) . '/config.php');
-
-if(!CheckTourSession() or !hasACL(AclCompetition, AclReadWrite) or empty($_REQUEST['act'])) {
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite) or empty($_REQUEST['act'])) {
 	JsonOut($JSON);
 }
 

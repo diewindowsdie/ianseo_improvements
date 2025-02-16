@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 CheckTourSession(true);
-checkACL(AclCompetition, AclReadWrite);
+checkFullACL(AclCompetition, 'cSchedule', AclReadWrite);
 
 if(!empty($_REQUEST['Delete'])) {
 	safe_w_sql("delete from FinWarmup where

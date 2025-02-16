@@ -5,7 +5,7 @@ require_once('Common/Lib/Fun_Modules.php');
 require_once('Common/Lib/CommonLib.php');
 
 CheckTourSession(true);
-checkACL(AclISKServer, AclReadWrite);
+checkFullACL(AclISKServer, 'iskManagement', AclReadWrite);
 
 
 $CanPrint=false;

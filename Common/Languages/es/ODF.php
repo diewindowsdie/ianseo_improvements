@@ -1,6 +1,8 @@
 <?php
 $lang['AssignAndSend']='Asignar y enviar';
+$lang['AssignAndSendSchedule']='Actualizar la Unidad, enviar el Programa';
 $lang['BrokenRecords']='Récords batidos';
+$lang['ByesAll']='Todas las Unidades';
 $lang['CompetitionCodeNotThere']='El código $a de la Competición no está en el sistema';
 $lang['CompleteOdfCode']='Código ODF Completo';
 $lang['CompUndefined']='Código ODF de la Competición sin definir';

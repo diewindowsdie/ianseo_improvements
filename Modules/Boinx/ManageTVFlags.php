@@ -2,7 +2,7 @@
 require_once('../../config.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Lib/CommonLib.php');
-checkACL(AclOutput,AclReadWrite);
+checkFullACL(AclOutput,'outCaspar', AclReadWrite);
 
 // reset all "flag raising"
 safe_w_sql("update BoinxSchedule set BsExtra='1' where BsTournament='{$_SESSION['TourId']}' and BsType like 'Awa\_%'");

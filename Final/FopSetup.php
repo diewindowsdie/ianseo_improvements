@@ -5,7 +5,7 @@ require_once('Common/Fun_Phases.inc.php');
 require_once('Common/Lib/CommonLib.php');
 require_once('Common/Lib/Fun_Scheduler.php');
 
-checkACL(AclCompetition, AclReadOnly);
+checkFullACL(AclCompetition, 'cSchedule', AclReadOnly);
 
 if(!$FopLocations=Get_Tournament_Option('FopLocations')) {
 	$FopLocations=array();

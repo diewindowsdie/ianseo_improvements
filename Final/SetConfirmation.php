@@ -19,7 +19,7 @@ $MatchMode=intval($_REQUEST['mode']);
 $Starter='';
 $Winner=0;
 
-checkACL(($Team ? AclTeams : AclIndividuals), AclReadWrite, false);
+checkFullACL(($Team ? AclTeams : AclIndividuals), '', AclReadWrite, false);
 
 foreach($_REQUEST['confirm'] as $Matchno => $Start) {
 	$rows=4;

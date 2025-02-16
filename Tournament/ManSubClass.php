@@ -5,8 +5,7 @@ require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Tournament/Fun_Tournament.local.inc.php');
 require_once('Common/Lib/CommonLib.php');
-checkACL(AclCompetition, AclReadWrite);
-
+checkFullACL(AclCompetition, 'cData', AclReadWrite);
 if (!CheckTourSession()) {
     print get_text('CrackError');
     exit;

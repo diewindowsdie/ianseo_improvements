@@ -14,7 +14,7 @@ $Group=intval($_REQUEST['group'] ?? -1);
 $Round=intval($_REQUEST['round'] ?? -1);
 $Schedule=($_REQUEST['sched'] ?? '');
 
-if(!CheckTourSession() or !hasACL(AclRobin, AclReadWrite) or empty($_REQUEST['act']) or ($Team==-1 and !$Schedule)) {
+if(!CheckTourSession() or !hasFullACL(AclRobin, '',AclReadWrite) or empty($_REQUEST['act']) or ($Team==-1 and !$Schedule)) {
 	JsonOut($JSON);
 }
 

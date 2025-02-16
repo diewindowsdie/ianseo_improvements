@@ -4,7 +4,7 @@ $JSON=[
 ];
 require_once(dirname(__FILE__, 5) . '/config.php');
 
-if(!CheckTourSession() or !hasACL(AclIndividuals, AclReadWrite)) {
+if(!CheckTourSession() or !hasFullACL(AclIndividuals, '', AclReadWrite)) {
     JsonOut($JSON);
 }
 

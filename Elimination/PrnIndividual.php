@@ -7,7 +7,7 @@ require_once('Common/OrisFunctions.php');
 require_once('Common/pdf/PdfChunkLoader.php');
 
 if (!isset($_SESSION['TourId']) && isset($_REQUEST['TourId'])) CreateTourSession($_REQUEST['TourId']);
-checkACL(AclEliminations, AclReadOnly);
+checkFullACL(AclEliminations, '',  AclReadOnly);
 
 if(!empty($_REQUEST['doStartlist'])) {
     CD_redirect('PrnSession.php'.go_get());

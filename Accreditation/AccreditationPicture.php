@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(__FILE__) . '/config.php');
-checkACL(AclAccreditation, AclReadWrite);
+checkFullACL(AclAccreditation, 'acStandard', AclReadWrite);
 require_once('Common/Lib/CommonLib.php');
 require_once('Common/Fun_Modules.php');
 require_once('Common/Fun_Sessions.inc.php');

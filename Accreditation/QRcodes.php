@@ -19,7 +19,7 @@ require_once('Common/Lib/CommonLib.php');
 require_once('Common/Lib/Fun_Modules.php');
 
 CheckTourSession(true);
-checkACL(AclRoot, AclReadWrite);
+checkFullACL(AclAccreditation, 'acAdvanced', AclReadWrite);
 
 
 if(!empty($_REQUEST['items'])) {

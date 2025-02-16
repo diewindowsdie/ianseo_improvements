@@ -23,7 +23,7 @@ $JSON=array(
 	// require_once('Common/Fun_Various.inc.php');
 	// require_once('Common/Fun_Sessions.inc.php');
 
-if(!CheckTourSession() or !hasACL(AclQualification, AclReadWrite) or empty($_REQUEST['act'])) {
+if(!CheckTourSession() or !hasFullACL(AclQualification, '', AclReadWrite) or empty($_REQUEST['act'])) {
     JsonOut($JSON);
 }
 

@@ -10,7 +10,7 @@ $act=($_REQUEST['act']??'');
 $viewInd = intval($_REQUEST['viewInd']??null);
 $viewTeam = intval($_REQUEST['viewTeam']??null);
 
-if(!CheckTourSession() or !hasACL(AclSpeaker, AclReadOnly) or !$act or is_null($viewInd) or is_null($viewTeam)) {
+if(!CheckTourSession() or !hasfullACL(AclSpeaker, '', AclReadOnly) or !$act or is_null($viewInd) or is_null($viewTeam)) {
 	JsonOut($JSON);
 }
 

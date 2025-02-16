@@ -4,11 +4,9 @@ define('debug',false);	// settare a true per l'output di debug
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Tournament/Fun_Tournament.local.inc.php');
 
-checkACL(AclCompetition, AclReadWrite, false);
-
 $JSON=array('error'=>1, 'msg' => '');
 
-if (!CheckTourSession()
+if (!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite)
 		or !isset($_REQUEST['ClId'])
 		or !isset($_REQUEST['Age'])
 		or !isset($_REQUEST['Field'])

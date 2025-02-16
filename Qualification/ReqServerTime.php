@@ -7,7 +7,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclQualification, AclReadOnly,false);
+    checkFullACL(AclQualification, '', AclReadOnly,false);
 
 	if (!is_numeric($_REQUEST['When']) || $_REQUEST['When']<0)
 	{

@@ -26,8 +26,7 @@
 	$Match2=-1;
 	$IsFinished=0;
 
-    checkACL(($TeamEvent ? AclTeams : AclIndividuals), AclReadWrite, false);
-
+    checkFullACL(($TeamEvent ? AclTeams : AclIndividuals),'',  AclReadWrite, false);
 
 	$OrgMatch=$match;
 

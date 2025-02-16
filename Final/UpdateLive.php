@@ -11,7 +11,7 @@
 	$JSON=array('error'=>1, 'isLive' => 0, 'msg'=>'');
 	$isJSON=isset($_REQUEST['JSON']);
 
-    checkACL(($TeamEvent ? AclTeams : AclIndividuals), AclReadWrite, false);
+    checkFullACL(($TeamEvent ? AclTeams : AclIndividuals),'',  AclReadWrite, false);
 
 	if($match%2!=0)
 		$match--;

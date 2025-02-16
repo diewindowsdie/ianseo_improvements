@@ -3,7 +3,7 @@
 	
 	require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 	if (!CheckTourSession() || is_null($id)) PrintCheckError();
-    checkACL(AclParticipants, AclReadWrite, false);
+    checkFullACL(AclParticipants, 'pEntries', AclReadWrite, false);
 	
 	require_once('Common/Fun_Various.inc.php');
 	

@@ -8,7 +8,7 @@
 	$Rev1 = isset($_REQUEST['Review1']) ? $_REQUEST['Review1'] : null;
 	$Rev2 = isset($_REQUEST['Review2']) ? $_REQUEST['Review2'] : null;
 
-    checkACL(($TeamEvent ? AclTeams : AclIndividuals), AclReadWrite, false);
+    checkFullACL(($TeamEvent ? AclTeams : AclIndividuals),'',  AclReadWrite, false);
 	
 	if($match%2!=0)
 		$match--;

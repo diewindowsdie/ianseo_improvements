@@ -8,7 +8,7 @@ require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Fun_Sessions.inc.php');
 
 CheckTourSession(true);
-checkACL(AclQualification,AclReadWrite);
+checkFullACL(AclQualification, '', AclReadWrite);
 $EnBib='-';
 $archers=array();
 
@@ -68,9 +68,11 @@ if($_GET) {
 		// _GET['target']
 		$archers=getScore($D, $_GET['B'], false, $T);
 		if(!is_array($archers)) {
-            $ERROR=get_text('BarCodeSettings', 'Errors');
+            $ERROR=get_text('BarCodeNotFound', 'Errors', $_GET['B']). '<br>';
             if(!$T) {
-                $ERROR=get_text('BarCodeSession', 'Errors');
+                $ERROR.=get_text('BarCodeSession', 'Errors');
+            } else {
+                $ERROR.=get_text('BarCodeSettings', 'Errors');
             }
         }
         if($EnBib=='-') {
@@ -492,9 +494,9 @@ function getScore($dist, $barcode, $strict=false, $Session=0) {
 			$cls=$tmp[3];
 		} else {
 			//$bib=ltrim($tmp[0], '0'); // why??? Breaks all the regular bibs that start with 0!
-			$bib=$tmp[0];
-			$div=$tmp[1];
-			$cls=$tmp[2];
+			$bib=$tmp[0]??'';
+			$div=$tmp[1]??'';
+			$cls=$tmp[2]??'';
 		}
 		if(substr($bib, 0, 2)=='UU') $bib='_'.substr($bib, 2);
 		$filter="EnCode='$bib' and EnDivision='$div' and EnClass='$cls'";

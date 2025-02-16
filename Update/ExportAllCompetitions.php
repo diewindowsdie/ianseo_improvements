@@ -1,7 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__, 2) . '/config.php');
-checkACL(AclRoot, AclReadWrite);
+checkFullACL(AclRoot, 'cExport', AclReadWrite);
 
 if(!empty($_SESSION['AUTH_ENABLE']) AND empty($_SESSION['AUTH_ROOT'])) {
     CD_redirect($CFG->ROOT_DIR.'noAccess.php');

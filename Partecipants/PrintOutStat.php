@@ -1,7 +1,7 @@
 <?php
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 	CheckTourSession(true);
-    checkACL(AclParticipants, AclReadOnly);
+    checkFullACL(AclParticipants, 'pEntries', AclReadOnly);
 	require_once('Common/Fun_FormatText.inc.php');
 
 

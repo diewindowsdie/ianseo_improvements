@@ -3,9 +3,10 @@
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Common/Fun_Phases.inc.php');
 
-checkACL(array(AclIndividuals,AclTeams, AclOutput), AclReadOnly, false);
-
 $JSON=array('error' => 1, 'data'=>array());
+if(!CheckTourSession() or !hasFullACL(AclOutput, 'outTv', AclReadOnly)) {
+    JsonOut($JSON);
+}
 
 $Sql = "SELECT distinct SesType, SesOrder, SesName, date_format(SesDtStart, '%d %M %H:%i') as SesDate
   FROM Session

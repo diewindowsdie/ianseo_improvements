@@ -36,18 +36,18 @@
 
 
 	define('debug',false);	// settare a true per l'output di debug
-
 	define('IN_PHP', true);
 
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 	if (empty($_REQUEST['Rule'])) printCrackError();
 	require_once('Common/Fun_FormatText.inc.php');
 	require_once('TV/Fun_HTML.local.inc.php');
+    require_once('Common/Lib/CommonLib.php');
 
 	$RuleId=intval($_REQUEST['Rule']);
 	$TourCode=stripslashes($_REQUEST['Tour']);
 	$TourId=getIdFromCode($TourCode);
-    checkACL(AclOutput,AclReadOnly,true, $TourId);
+    checkFullACL(AclOutput,'outTv', AclReadOnly,true, $TourId);
 
 //	if(empty($_SESSION['TourId'])) {
 //		include_once('Common/UpdatePreOpen.inc.php');
@@ -82,7 +82,9 @@
 		switch($r->TVSTable) {
 			case 'DB':
 				$t=safe_r_sql("select * from TVParams where TVPId=$r->TVSContent AND TVPTournament=$r->TVSTournament");
-				$tmp=genera_html_rot(safe_fetch($t), $RULE);
+                $u=safe_fetch($t);
+                $u->Columns=($u->TVPColumns?explode('|', $u->TVPColumns):[]);
+				$tmp=genera_html_rot($u, $RULE);
 				break;
 			case 'MM':
 				$t=safe_r_sql("select * from TVContents where TVCId=$r->TVSContent AND TVCTournament=" . ($r->TVSCntSameTour==1 ? $r->TVSTournament : "-1"));

@@ -3,7 +3,7 @@
 require_once(dirname(__DIR__) . '/config.php');
 require_once('Common/Lib/CommonLib.php');
 CheckTourSession(true);
-checkACL(AclAccreditation, AclReadWrite);
+checkFullACL(AclAccreditation, 'acSetup', AclReadWrite);
 
 $CompCodes=getModuleParameter('AccSync', 'CompCodes', array());
 $NumRows=0;

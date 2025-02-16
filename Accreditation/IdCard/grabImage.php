@@ -1,6 +1,6 @@
 <?php
-	require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-    checkACL(AclAccreditation, AclReadWrite, false);
+	require_once(dirname(__FILE__, 3) . '/config.php');
+    checkFullACL(AclAccreditation, 'acStandard', AclReadWrite, false);
 /*
 
 :sout=#transcode{vcodec=mjpg,fps=5,width=800,height=600}:standard{access=http,mux=mpjpeg,dst=0.0.0.0:8050/stream.mjpg}

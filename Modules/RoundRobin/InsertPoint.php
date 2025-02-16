@@ -3,7 +3,7 @@ require_once(dirname(dirname(__DIR__)) . '/config.php');
 require_once('Common/Lib/CommonLib.php');
 
 CheckTourSession(true);
-checkACL(AclRobin, AclReadWrite);
+checkFullACL(AclRobin, '', AclReadWrite);
 
 $Team=($_REQUEST['team'] ?? '');
 $Event=($_REQUEST['event'] ?? '');

@@ -2,7 +2,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 CheckTourSession(true);
 require_once('Common/Fun_FormatText.inc.php');
-checkACL(array(AclIndividuals, AclTeams), AclReadOnly);
+checkFullACL(array(AclIndividuals, AclTeams), '', AclReadOnly);
 
 $IncludeJquery = true;
 $JS_SCRIPT=array(

@@ -6,7 +6,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 
 $JSON=array('error'=>1, 'warning'=>'', 'msg'=>'');
 
-if(!hasACL(AclCompetition, AclReadWrite) or !CheckTourSession() or empty($_REQUEST['act'])) {
+if(!hasFullACL(AclCompetition, 'cData', AclReadWrite) or !CheckTourSession() or empty($_REQUEST['act'])) {
 	JsonOut($JSON);
 }
 

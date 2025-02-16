@@ -10,10 +10,9 @@ $MatchId = isset($_REQUEST['MatchId']) ? $_REQUEST['MatchId'] : null;
 $Arrows = isset($_REQUEST['ArrowPosition']);
 
 $JSON=array(
-	//'debug'=>array(),
 	'error'=>1, 'isLive' => 0, 'isAlternate' => 0, 'winner'=>'', 'msg'=>'', 'config'=>array(), 'nameL' => '', 'nameR'=>'', 'scoreL'=>'', 'scoreR' => '', 'target' => '', 'targetSize' => 0);
 
-checkACL(($TeamEvent ? AclTeams : AclIndividuals), AclReadWrite, false);
+checkFullACL(($TeamEvent ? AclTeams : AclIndividuals), '', AclReadWrite, false);
 
 $options=array();
 $options['tournament']=$_SESSION['TourId'];

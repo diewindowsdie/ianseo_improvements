@@ -11,7 +11,7 @@ if (!CheckTourSession()) {
 	$JSON['msg']= get_text('CrackError');
 	JsonOut($JSON);
 }
-checkACL(AclEliminations, AclReadWrite, false);
+checkFullACL(AclEliminations, '',  AclReadWrite, false);
 
 $JSON=array('error' => 1, 'msg'=>'');
 

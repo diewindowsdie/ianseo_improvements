@@ -6,7 +6,7 @@
     require_once('Common/Lib/Fun_Phases.inc.php');
 
 	CheckTourSession(true);
-    checkACL(AclIndividuals, AclReadWrite);
+    checkFullACL(AclIndividuals, '', AclReadWrite);
 
 	$PAGE_TITLE=get_text('MenuLM_Data insert (Table view)');
 

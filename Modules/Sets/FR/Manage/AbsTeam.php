@@ -9,7 +9,7 @@ require_once('Common/Fun_Sessions.inc.php');
 require_once('Final/Fun_ChangePhase.inc.php');
 
 CheckTourSession(true);
-checkACL(AclTeams, AclReadWrite);
+checkFullACL(AclTeams, '', AclReadWrite);
 
 $AllInOne=getModuleParameter('FFTA', 'D1AllInOne', 0);
 

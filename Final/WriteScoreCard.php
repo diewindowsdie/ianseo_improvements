@@ -13,7 +13,7 @@
 	$TeamEvent=isset($_REQUEST['Team']) ? $_REQUEST['Team'] : 0;
 	$ElimPool=isset($_REQUEST['ElimPool']) ? $_REQUEST['ElimPool'] : 0;
 
-    checkACL(($TeamEvent ? AclTeams : AclIndividuals), AclReadWrite);
+    checkFullACL(($TeamEvent ? AclTeams : AclIndividuals), '', AclReadWrite);
 
 	if(!is_null($d_Match) and !is_null($d_Event)) $ONLOAD=' onload="makeScore('.$TeamEvent.')"';
 

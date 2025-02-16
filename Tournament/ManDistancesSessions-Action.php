@@ -6,7 +6,7 @@ require_once('Scheduler/LibScheduler.php');
 
 $JSON=array('error'=>1, 'msg'=>get_text('NoPrivilege', 'Errors'));
 
-if(!CheckTourSession() or !hasACL(AclCompetition, AclReadWrite) or empty($_REQUEST['act'])) {
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cSchedule', AclReadWrite) or empty($_REQUEST['act'])) {
 	JsonOut($JSON);
 }
 

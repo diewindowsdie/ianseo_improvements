@@ -3,7 +3,7 @@
 
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 	if (!CheckTourSession() or !isset($_REQUEST['Id'])) printCrackerror('popup');
-    checkACL(AclParticipants, AclReadOnly);
+    checkFullACL(AclParticipants, 'pEntries', AclReadOnly);
 
 	require_once('Common/Fun_FormatText.inc.php');
 	require_once('Partecipants/Fun_Partecipants.local.inc.php');

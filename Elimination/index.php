@@ -3,7 +3,7 @@ if(!defined('debug')) define('debug',false);	// settare a true per l'output di d
 
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 CheckTourSession(true);
-checkACL(AclEliminations, AclReadWrite);
+checkFullACL(AclEliminations, '',  AclReadWrite);
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Fun_Sessions.inc.php');
 require_once('Common/Lib/CommonLib.php');

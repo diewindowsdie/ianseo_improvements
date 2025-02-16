@@ -5,7 +5,7 @@ require_once('Common/Fun_Sessions.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Fun_Modules.php');
 CheckTourSession(true);
-checkACL(AclQualification, AclReadOnly);
+checkFullACL(AclQualification, '', AclReadOnly);
 
 $RowTour=NULL;
 
@@ -89,9 +89,13 @@ echo '<input name="ScoreDraw" type="radio" value="CompleteTotals" onClick="manag
 echo '<input name="ScoreDraw" type="radio" value="Data" onClick="manageDistances(true);">&nbsp;' . get_text('ScoreData','Tournament') . '<br>';
 echo '<input name="ScoreDraw" type="radio" value="TargetNo" onClick="manageDistances(true);">&nbsp;' . get_text('ScoreTargetNo','Tournament') . '<br>';
 echo '<input name="ScoreDraw" type="radio" value="Draw" onClick="manageDistances(true);">&nbsp;' . get_text('ScoreDrawing') . '<br>';
-echo '<input name="ScoreDraw" type="radio" value="FourScoresNFAA" onClick="manageDistances(true);">&nbsp;' . get_text('FourScoresNFAA','Tournament') . '<br>';
+if($_SESSION['TourLocRule']=='NFAA') {
+    echo '<input name="ScoreDraw" type="radio" value="FourScoresNFAA" onClick="manageDistances(true);">&nbsp;' . get_text('FourScoresNFAA', 'Tournament') . '<br>';
+}
 echo '<input name="ScoreDraw" type="radio" value="HorScore" onClick="manageDistances(true);">&nbsp;' . get_text('HorScore','Tournament') . '<br>';
-echo '<input name="ScoreDraw" type="radio" value="HorScoreAllDist" onClick="manageDistances(true);">&nbsp;' . get_text('HorScoreAllDist','Tournament') . '<br>';
+if($_SESSION['TourLocRule']=='LANC') {
+    echo '<input name="ScoreDraw" type="radio" value="HorScoreAllDist" onClick="manageDistances(true);">&nbsp;' . get_text('HorScoreAllDist', 'Tournament') . '<br>';
+}
 //echo '<input name="ScoreDraw" type="radio" value="VertScoreAllDist" onClick="manageDistances(true);">&nbsp;' . get_text('VertScoreAllDist','Tournament') . '<br>';
 echo '<input name="TourField3D" type="checkbox" value="'.($RowTour->IsTeam3D==0 ? '': ($RowTour->IsTeam3D==4 ? 'FIELD'  : '3D')).'" onclick="$(\'#ScoreCollectorDiv\').toggleClass(\'d-none\', this.checked)" '.($RowTour->IsTeam3D==0?'':' checked="checked"').'>&nbsp;'.get_text('FieldScorecard', 'Tournament').'<br/>';
 echo '<div id="ScoreCollectorDiv" class="'.($RowTour->IsTeam3D==0 ? '' : 'd-none').'">';

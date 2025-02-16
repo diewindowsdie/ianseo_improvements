@@ -299,7 +299,6 @@ $lang['Delayed']='Posposat (-1 per restablir)';
 $lang['DeleteAclRule']='Suprimeix regla ACL';
 $lang['DeleteAclUser']='Suprimeix usuari ACL';
 $lang['DeleteAwarded']='Suprimeix Premiat';
-$lang['DeleteChannel']='Elimina el canal. Això eliminarà totes les particions del canal i del canal mateix.';
 $lang['DeletePreviousArchers']='Elimineu inscripcions que no apareixen a la llista';
 $lang['DeletePreviousTeams']='Esborra Equips Anteriors';
 $lang['DeleteSplit']='Elimina partició. Això eliminarà la partició.';

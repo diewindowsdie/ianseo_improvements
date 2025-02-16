@@ -4,7 +4,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/ScoreEditor/Score.class.php');
 CheckTourSession(true);
-checkACL(AclEliminations, AclReadWrite);
+checkFullACL(AclEliminations, '',  AclReadWrite);
 if (BlockExperimental) printcrackerror(false,'Blocked');
 
 require_once('Common/Lib/CommonLib.php');

@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+checkFullACL(AclCompetition,  'cData', AclReadWrite);
 CheckTourSession(true);
-checkACL(AclCompetition, AclReadWrite);
 
 $JSON=array(
     'error'=>1,

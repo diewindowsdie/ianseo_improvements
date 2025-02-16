@@ -2,7 +2,7 @@
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Common/pdf/OrisPDF.inc.php');
 
-checkACL(AclTeams, AclReadOnly);
+checkFullACL(AclTeams, '', AclReadOnly);
 
 class TMDeclarationPDF extends OrisPDF {
     function Footer() {

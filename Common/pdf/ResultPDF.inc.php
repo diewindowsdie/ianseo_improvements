@@ -19,6 +19,7 @@ class ResultPDF extends IanseoPdf {
 	var $ScoreCellHeight=4, $PrintFlags = false, $FillWithArrows = false;
 	var $PrintWeight=false;
 	var $PrintAgeClass=true;
+	var $PrintLogo=true, $PrintJudgeNotes=true;
 
 	//Constructor
 	function __construct($DocTitolo, $Portrait=true, $Headers='', $StaffVisibility=true, $Options=[]) {

@@ -8,7 +8,7 @@ require_once(dirname(dirname(__FILE__)) . '/config.php');
 //require_once('Common/Fun_Various.inc.php');
 //require_once('Common/Fun_Sessions.inc.php');
 
-if(!CheckTourSession() or checkACL(AclQualification, AclReadWrite, false)!=AclReadWrite or empty($_REQUEST['act']) or empty($_REQUEST['id'])) {
+if(!CheckTourSession() or !hasFullAcl(AclQualification, '', AclReadWrite) or empty($_REQUEST['act']) or empty($_REQUEST['id'])) {
     JsonOut($JSON);
 }
 

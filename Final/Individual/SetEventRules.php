@@ -7,7 +7,7 @@ require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Lib/ArrTargets.inc.php');
 
 if (!CheckTourSession() || !isset($_REQUEST['EvCode'])) printCrackError();
-checkACL(AclCompetition, AclReadWrite);
+checkFullACL(AclCompetition, 'cData', AclReadWrite);
 
 $AddOnsEnabled = 0;
 $listAddOns=array();

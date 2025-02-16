@@ -1,11 +1,9 @@
 <?php
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 	require_once('Common/Fun_FormatText.inc.php');
-    checkACL(AclCompetition, AclReadOnly);
 
 	$CFG->TRACE_QUERRIES=false;
-
-	if(!empty($_SESSION['TourId'])) $TourId=$_SESSION['TourId'];
+	if(isset($_SESSION['TourId']) AND $_SESSION['TourId']>0) $TourId=$_SESSION['TourId'];
 
 	if (isset($_REQUEST['TourCode']))
 		$TourId=getIdFromCode($_REQUEST['TourCode']);
@@ -14,6 +12,7 @@
 		print get_text('CrackError');
 		exit;
 	}
+    checkFullACL(AclCompetition, 'cExport', AclReadOnly, false, $TourId);
 
     if($CFG->USERAUTH AND !empty($_SESSION['AUTH_ENABLE']) AND empty($_SESSION['AUTH_ROOT'])) {
         $AuthFiler = array();

@@ -6,7 +6,7 @@ require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Lib/ArrTargets.inc.php');
 
 CheckTourSession(true);
-checkACL(AclQualification, AclReadOnly);
+checkFullACL(AclQualification, '', AclReadOnly);
 
 $Sql = "SELECT ToCode, ToNumDist, ToGolds, ToXNine FROM Tournament WHERE ToId=" . StrSafe_DB($_SESSION['TourId']);
 $q = safe_r_sql($Sql);

@@ -255,7 +255,6 @@ $lang['DefaultHM']='HM padrão';
 $lang['DefaultLocRule']='FITA';
 $lang['DefaultVI']='VI padrão';
 $lang['DeleteAwarded']='Apagar entregues';
-$lang['DeleteChannel']='Remover canal. Isto irá remover todas divisões do canal e o próprio canal.';
 $lang['DeletePreviousArchers']='Apagar entradas que não estejam na lista';
 $lang['DeletePreviousTeams']='Apagar Equipes Anteriores';
 $lang['DeleteSplit']='Remover divisão. Isto irá remover somente a divisão.';

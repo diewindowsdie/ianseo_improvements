@@ -7,12 +7,10 @@ require_once('Common/Lib/Obj_RankFactory.php');
 require_once('Common/OrisFunctions.php');
 require_once('Common/pdf/PdfChunkLoader.php');
 
-if (!isset($_SESSION['TourId']) && isset($_REQUEST['TourId']))
-{
+if (!isset($_SESSION['TourId']) && isset($_REQUEST['TourId'])) {
 	CreateTourSession($_REQUEST['TourId']);
 }
-
-checkACL(AclCompetition, AclReadOnly);
+checkFullACL(AclTeams, '', AclReadOnly);
 
 $PdfData=getRankingTeams();
 

@@ -8,7 +8,7 @@ require_once(dirname(__DIR__) . '/config.php');
 
 $JSON=array('error' => 1, 'msg' => 'Error');
 
-if(!CheckTourSession() or !hasACL(AclCompetition, AclNoAccess) or empty($_REQUEST['act'])) {
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclNoAccess) or empty($_REQUEST['act'])) {
 	JsonOut($JSON);
 }
 

@@ -2,14 +2,10 @@
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Qualification/Fun_Qualification.local.inc.php');
 $JSON=array('error' => 1);
-if (!CheckTourSession()) {
+if (!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite) or IsBlocked(BIT_BLOCK_TOURDATA)) {
     JsonOut($JSON);
 }
-checkACL(AclCompetition, AclReadWrite, false);
 
-if (IsBlocked(BIT_BLOCK_TOURDATA)) {
-    JsonOut($JSON);
-}
 if (isset($_REQUEST['EvCode']) and isset($_REQUEST['EvTeamCreationMode'])) {
     $Update = "UPDATE Events SET EvTeamCreationMode=" . StrSafe_DB($_REQUEST['EvTeamCreationMode']) .
         " WHERE EvCode=" . StrSafe_DB($_REQUEST['EvCode']) . " AND EvTeamEvent='1' AND EvTournament=" . StrSafe_DB($_SESSION['TourId']);

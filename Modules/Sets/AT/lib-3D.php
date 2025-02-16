@@ -11,16 +11,16 @@ function CreateStandard3DEvents($TourId, $SubRule) {
 		case '1':
 		case '2':
 			$SettingsInd=array(
-		                'EvFinalFirstPhase' => 8,
-		                'EvFinalTargetType' => TGT_3D,
-		                'EvElimEnds' => 6,
-		                'EvElimArrows' => 2,
-		                'EvElimSO' => 1,
-		                'EvFinEnds' => 4,
-		                'EvFinArrows' => 2,
-		                'EvFinSO' => 1,
-		                'EvFinalAthTarget' => MATCH_NO_SEP,
-		                'EvMatchArrowsNo' => FINAL_FROM_2
+                'EvFinalFirstPhase' => 8,
+                'EvFinalTargetType' => TGT_3D,
+                'EvElimEnds' => 6,
+                'EvElimArrows' => 2,
+                'EvElimSO' => 1,
+                'EvFinEnds' => 4,
+                'EvFinArrows' => 2,
+                'EvFinSO' => 1,
+                'EvFinalAthTarget' => MATCH_NO_SEP,
+                'EvMatchArrowsNo' => FINAL_FROM_2
 			);
 			$SettingsTeam=array(
 				'EvTeamEvent' => '1',

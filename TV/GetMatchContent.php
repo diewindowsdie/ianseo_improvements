@@ -10,7 +10,7 @@ require_once('TV/Fun_HTML.local.inc.php');
 
 $RuleId=intval($_REQUEST['RuleId']);
 $TourId=intval($_REQUEST['TourId']);
-checkACL(AclOutput,AclReadOnly, false, $TourId);
+checkFullACL(AclOutput,'outTv', AclReadOnly, false, $TourId);
 
 
 // get the defaults of the rule

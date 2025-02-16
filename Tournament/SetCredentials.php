@@ -1,9 +1,6 @@
 <?php
-define('debug',false);	// settare a true per l'output di debug
-
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-checkACL(AclInternetPublish, AclReadWrite);
-
+checkFullACL(AclInternetPublish, 'ipCredentials', AclReadWrite);
 CheckTourSession(true);
 
 if(!empty($_REQUEST['ForgetPwd'])) {

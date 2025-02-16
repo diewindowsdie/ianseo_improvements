@@ -6,7 +6,7 @@ require_once('./Fun_MatchTotal.inc.php');
 
 $JSON=array('error'=>1);
 
-if(!CheckTourSession() or !isset($_REQUEST['closest']) or !isset($_REQUEST['team']) or !isset($_REQUEST['event']) or !isset($_REQUEST['match']) or checkACL(($_REQUEST['team'] ? AclTeams : AclIndividuals), AclReadWrite, false)!=AclReadWrite) {
+if(!CheckTourSession() or !isset($_REQUEST['closest']) or !isset($_REQUEST['team']) or !isset($_REQUEST['event']) or !isset($_REQUEST['match']) or !hasFullACL(($_REQUEST['team'] ? AclTeams : AclIndividuals), '', AclReadWrite)) {
 	JsonOut($JSON);
 }
 

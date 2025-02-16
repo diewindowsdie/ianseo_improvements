@@ -6,7 +6,7 @@
 	//require_once('HHT/Fun_HHT.local.inc.php');
 
 	CheckTourSession(true);
-    checkACL(AclTeams, AclReadOnly);
+    checkFullACL(AclTeams, '', AclReadWrite);
 
 	$IncludeJquery = true;
 	$JS_SCRIPT=array(

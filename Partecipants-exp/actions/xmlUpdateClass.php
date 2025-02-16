@@ -9,7 +9,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclParticipants, AclReadWrite, false);
+    checkFullACL(AclParticipants, 'pEntries', AclReadWrite, false);
 
 	$error=0;
 	$EnAthlete=1;

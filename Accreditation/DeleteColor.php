@@ -1,11 +1,11 @@
 <?php
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 	
-	if (!CheckTourSession() || !isset($_REQUEST['row']) || !isset($_REQUEST['cl']))	{
+	if (!CheckTourSession() || !isset($_REQUEST['row']) || !isset($_REQUEST['cl']) OR !hasFullACL(AclCompetition, 'acSetup', AclReadWrite))	{
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclCompetition, AclReadWrite, false);
+
 	
 	$Errore=0;
 	
@@ -25,8 +25,7 @@
 	
 	header('Content-Type: text/xml');
 		
-	print '<response>' . "\n";
-	print '<error>' . $Errore . '</error>' . "\n";
-	print '<row>' . $_REQUEST['row'] . '</row>' . "\n";		
-	print '</response>' . "\n";
- ?>
+	print '<response>';
+	print '<error>' . $Errore . '</error>';
+	print '<row>' . $_REQUEST['row'] . '</row>';		
+	print '</response>';

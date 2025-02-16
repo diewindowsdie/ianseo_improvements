@@ -6,11 +6,7 @@ require_once('Common/Lib/CommonLib.php');
 $JSON=array('error' => 1);
 
 
-if(!CheckTourSession() OR GetTournamentIocCode()!='FITA') {
-    JsonOut($JSON);
-}
-
-if (checkACL(array(AclTeams, AclIndividuals, AclOutput),AclNoAccess, false, $_SESSION['TourId'])==AclNoAccess) {
+if(!CheckTourSession() OR GetTournamentIocCode()!='FITA' or !hasFullACL(AclOutput, 'outTv', AclReadOnly)) {
     JsonOut($JSON);
 }
 

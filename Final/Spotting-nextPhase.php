@@ -23,7 +23,7 @@ if($team==0 ? IsBlocked(BIT_BLOCK_IND) : IsBlocked(BIT_BLOCK_TEAM)) {
 	JsonOut($JSON);
 }
 
-checkACL(($team ? AclTeams : AclIndividuals), AclReadWrite);
+checkFullACL(($team ? AclTeams : AclIndividuals), '', AclReadWrite);
 
 // normalize the matchno to get the lower 1
 if($match%2) {

@@ -1,23 +1,15 @@
 <?php
-	define('debug',false);	// settare a true per l'output di debug
-
 	require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-    checkACL(AclCompetition, AclReadWrite);
+    checkFullACL(AclCompetition, 'cFinalReport', AclReadWrite);
 
-	if (!IsBlocked(BIT_BLOCK_REPORT))
-	{
-		foreach($_REQUEST AS $Key => $Value)
-		{
-			if(preg_match("/^[Rep_]/",$Key))
-			{
+	if (!IsBlocked(BIT_BLOCK_REPORT)) {
+		foreach($_REQUEST AS $Key => $Value) {
+			if(preg_match("/^[Rep_]/",$Key)) {
 				$Tmp = "";
-				if(is_array($Value))
-				{
+				if(is_array($Value)) {
 					foreach($Value as $subValue)
 						$Tmp .= (strlen($Tmp)>0 ? "|" : "") . stripslashes($subValue);
-				}
-				else
-				{
+				} else {
 					$Tmp = stripslashes($Value);
 				}
 
@@ -38,16 +30,6 @@
 <tr><th class="Title" colspan="3"><?php print get_text('FinalReportTitle','Tournament'); ?></th></tr>
 
 <?php
-/*
- * Type: 0->Text Box, 1->Text Area, 2->Yes/No, 3->List, 4->Check Box
- */
-	/*$MySql = "SELECT FrqId, FrqStatus, FrqQuestion, FrqTip, FrqType, FrqOptions, FraAnswer "
-		. "FROM FinalReportQ "
-		. "INNER JOIN Tournament ON ToId=" . StrSafe_DB($_SESSION['TourId']) . " "
-		. "INNER JOIN Tournament*Type ON TtId=ToType "
-		. "LEFT JOIN FinalReportA ON FrqId=FraQuestion AND FraTournament=ToId "
-		. "WHERE (FrqStatus & TtCategory) > 0 "
-		. "ORDER BY FrqId";*/
 	$MySql = "SELECT FrqId, FrqStatus, FrqQuestion, FrqTip, FrqType, FrqOptions, FraAnswer "
 		. "FROM FinalReportQ "
 		. "INNER JOIN Tournament ON ToId=" . StrSafe_DB($_SESSION['TourId']) . " "
@@ -56,25 +38,20 @@
 		. "ORDER BY FrqId";
 	$Rs=safe_r_sql($MySql);
 
-	if(safe_num_rows($Rs)>0)
-	{
-		while($MyRow = safe_fetch($Rs))
-		{
-			echo '<tr>'. "\n\t";
+	if(safe_num_rows($Rs)>0){
+		while($MyRow = safe_fetch($Rs)){
+			echo '<tr>';
 			if($MyRow->FrqType==-1)
 			{
-				echo '<tr class="Divider"><td colspan="3"></td></tr>' . "\n";
+				echo '<tr class="Divider"><td colspan="3"></td></tr>';
 				echo '<tr>';
 				echo '<th class="Title" colspan="3">' . $MyRow->FrqId . ' - ' . $MyRow->FrqQuestion . '</th>';
 				echo '</tr>';
-			}
-			else
-			{
+			} else {
 				echo '<td width="5%" class="Caption">' . $MyRow->FrqId . "</td>\n\t";
-				echo '<td width="35%" class="Medium Bold"><span title="' . $MyRow->FrqTip . '">' . $MyRow->FrqQuestion . "</span></td>\n\t";
+				echo '<td width="35%" class="Medium Bold"><span title="' . $MyRow->FrqTip . '">' . $MyRow->FrqQuestion . "</span></td>";
 				echo '<td width="60%">';
-				switch($MyRow->FrqType)
-				{
+				switch($MyRow->FrqType) {
 					case 0:
 						$Tmp = ' maxlen="200" size="70" ';
 						if(preg_match("/^[0-9]+$/i",$MyRow->FrqOptions))
@@ -97,8 +74,7 @@
 						break;
 					case 3:
 						$Tmp = explode("|",$MyRow->FrqOptions);
-						if(count($Tmp)>0)
-						{
+						if(count($Tmp)>0) {
 							echo '<select name="Rep_'. $MyRow->FrqId .'" id="' . $MyRow->FrqId . '"' . ' title="' . $MyRow->FrqQuestion . (!empty($MyRow->FrqTip) ? ": " . $MyRow->FrqTip : "") . '">';
 							echo '<option value="-">---</option>';
 							foreach($Tmp as $Value)
@@ -108,8 +84,7 @@
 						break;
 					case 4:
 						$Tmp = explode("|",$MyRow->FrqOptions);
-						if(count($Tmp)>0)
-						{
+						if(count($Tmp)>0) {
 							echo '<select name="Rep_'. $MyRow->FrqId .'[]" id="' . $MyRow->FrqId . '" multiple="multiple" title="' . $MyRow->FrqQuestion . (!empty($MyRow->FrqTip) ? ": " . $MyRow->FrqTip : "") . '">';
 							foreach($Tmp as $Value)
 								echo '<option value="' . $Value . '"' . (strpos($MyRow->FraAnswer,$Value)!==false ? ' selected' : '') . '>' . $Value . '</option>';
@@ -117,9 +92,9 @@
 						}
 						break;
 				}
-				echo "</td>\n\t";
+				echo "</td>";
 			}
-			echo '</tr>'. "\n";
+			echo '</tr>';
 
 		}
 
@@ -128,7 +103,7 @@
 				echo '<input type="submit" value="' . get_text('CmdSave') . '" />&nbsp;&nbsp;';
 				echo '<input type="button" value="' . get_text('Print', 'Tournament') . '" onclick="window.open(\'PDFReport.php\',\'PrintOut\');">';
 			echo '</td>';
-		echo '</tr>' . "\n";
+		echo '</tr>';
 		//echo '<tr><td colspan="3" class="Center"><a href="PDFReport.php" target="_blank">' . get_text('Print', 'Tournament') . '</a></td></tr>';
 		safe_free_result($Rs);
 	}

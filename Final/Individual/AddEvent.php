@@ -10,11 +10,9 @@ require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Fun_Sessions.inc.php');
 require_once('Common/Fun_Phases.inc.php');
 
-checkACL(AclCompetition, AclReadWrite, false);
-
 $JSON=array('error' => 1);
 
-if (!CheckTourSession() ||
+if (!CheckTourSession() || !hasFullACL(AclCompetition, 'cData', AclReadWrite) ||
 	!isset($_REQUEST['New_EvCode']) ||
 	!isset($_REQUEST['New_EvEventName']) ||
 	!isset($_REQUEST['New_EvProgr']) ||

@@ -22,7 +22,7 @@ require_once('Common/Lib/CommonLib.php');
 // require_once('Common/Fun_Sessions.inc.php');
 
 CheckTourSession(true);
-checkACL(AclQualification, AclReadWrite);
+checkFullACL(AclQualification, '', AclReadWrite);
 
 // prepare the selectors...
 $Event=$_REQUEST['event']??'';

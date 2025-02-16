@@ -7,7 +7,7 @@ if (defined('hideSpeaker')) {
 	header('location: /index.php');
 	exit;
 }
-checkACL(AclSpeaker, AclReadOnly);
+checkFullACL(AclSpeaker, '', AclReadOnly);
 
 $PAGE_TITLE=get_text('MenuLM_Speaker');
 $JS_SCRIPT=array(

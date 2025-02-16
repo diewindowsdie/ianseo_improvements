@@ -9,7 +9,7 @@ require_once('Common/Lib/Obj_RankFactory.php');
 require_once('Common/Lib/CommonLib.php');
 
 CheckTourSession(true);
-checkACL(AclEliminations, AclReadWrite);
+checkFullACL(AclEliminations, '',  AclReadWrite);
 
 $advMode = (!empty($_REQUEST["Advanced"]));
 

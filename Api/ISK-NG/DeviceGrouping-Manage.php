@@ -2,7 +2,7 @@
 require_once(dirname(__FILE__) . '/config.php');
 
 CheckTourSession(false);
-checkACL(AclISKServer, AclReadWrite, false);
+checkFullACL(AclISKServer, 'iskManagement', AclReadWrite, false);
 
 $JSON=array('error' => true);
 $IskGroup=getModuleParameter('ISK-NG', 'Sequence', null, $_SESSION['TourId']);

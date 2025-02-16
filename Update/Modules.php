@@ -1,7 +1,7 @@
 <?php
 
 require_once(dirname(__FILE__, 2) . '/config.php');
-checkACL(AclRoot, AclReadWrite);
+checkFullACL(AclRoot, '', AclReadWrite);
 
 $JSON=array('error'=>1);
 

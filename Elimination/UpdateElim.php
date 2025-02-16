@@ -23,7 +23,7 @@ if (!CheckTourSession()) {
 	$JSON['msg']= get_text('CrackError');
 	JsonOut($JSON);
 }
-checkACL(AclEliminations, AclReadWrite, false);
+checkFullACL(AclEliminations, '',  AclReadWrite, false);
 
 foreach ($_REQUEST as $Key => $Value) {
 	if (substr($Key,0,2)=='d_') {

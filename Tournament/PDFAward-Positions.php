@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/pdf/OrisPDF.inc.php');
-checkACl(AclCompetition,AclReadOnly);
+checkFullACl(AclCompetition,'cAward', AclReadOnly);
 
 $arrPosition=array('','1st','2nd','3rd','4th','5th');
 

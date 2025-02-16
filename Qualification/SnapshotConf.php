@@ -2,7 +2,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 
 CheckTourSession(true);
-checkACL(AclQualification, AclReadWrite);
+checkFullACL(AclQualification, '', AclReadWrite);
 
 require_once('Common/Fun_Sessions.inc.php');
 $IncludeJquery = true;

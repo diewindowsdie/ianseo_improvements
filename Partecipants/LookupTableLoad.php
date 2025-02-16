@@ -4,7 +4,7 @@ require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Fun_Various.inc.php');
 
 CheckTourSession(true);
-checkACL(AclParticipants, AclReadWrite);
+checkFullACL(AclParticipants, 'pAdvancedTarget', AclReadWrite);
 $ML=ini_get('memory_limit');
 switch(substr($ML,-1)) {
     case 'G':

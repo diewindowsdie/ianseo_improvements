@@ -1,6 +1,6 @@
 <?php
 
-if(!empty($on) AND $_SESSION["TourLocRule"]=='FR' AND $acl[AclCompetition] >= AclReadOnly) {
+if(!empty($on) AND $_SESSION["TourLocRule"]=='FR' AND subFeatureAcl($acl,AclCompetition,'cData') >= AclReadOnly) {
     $ret['COMP']['EXPT'][] = MENU_DIVIDER;
     $ret['COMP']['EXPT'][] = get_text('MenuLM_Export-FR-Results') . '|' . $CFG->ROOT_DIR . 'Modules/Sets/FR/exports/';
 
@@ -52,7 +52,7 @@ if(!empty($on) AND $_SESSION["TourLocRule"]=='FR' AND $acl[AclCompetition] >= Ac
 	        $tmp[]=get_text('Setup', 'ISK'). '|' . $CFG->ROOT_DIR . 'Modules/Sets/FR/Manage/configure.php';
 	        $tmp[]=get_text('MenuLM_Target Assignment') . '|' . $CFG->ROOT_DIR . 'Modules/Sets/FR/Manage/';
 			if($_SESSION['TourLocSubRule']=='SetFRD12023') {
-				if ($acl[AclRobin] >= AclReadOnly) {
+				if (subFeatureAcl($acl,AclRobin,'') >= AclReadOnly) {
 					$tmp[]=get_text('ScorecardsTeams', 'Tournament') . '|' . $CFG->ROOT_DIR . 'Modules/RoundRobin/PrintScore.php?team=1';
 				}
 			} else {
@@ -75,7 +75,7 @@ if(!empty($on) AND $_SESSION["TourLocRule"]=='FR' AND $acl[AclCompetition] >= Ac
 
 			if($_SESSION['TourLocSubRule']=='SetFRD12023') {
 				$ret['SetFRChampsD1DNAP'][] = MENU_DIVIDER;
-				if ($acl[AclRobin] == AclReadWrite) {
+				if (subFeatureAcl($acl,AclRobin,'') == AclReadWrite) {
 					$tmp = get_text('DifferentEventSoManagementButton', 'RoundRobin') . '';
 					if ($_SESSION['MenuRobin']) {
 						$tmp .= ' <b class="ShootOffMenu">(';
@@ -88,7 +88,7 @@ if(!empty($on) AND $_SESSION["TourLocRule"]=='FR' AND $acl[AclCompetition] >= Ac
 					$ret['SetFRChampsD1DNAP'][] = $tmp;
 				}
 				if($_SESSION['MenuRobinOn']) {
-					if ($acl[AclRobin] == AclReadWrite) {
+					if (subFeatureAcl($acl,AclRobin,'') == AclReadWrite) {
 						$ret['SetFRChampsD1DNAP'][] = MENU_DIVIDER;
 						// $ret['SetFRChampsD1DNAP'][] = get_text('MenuLM_Change Components') . '|' . $CFG->ROOT_DIR . 'Final/Team/ChangeComponents.php';
 						// $ret['SetFRChampsD1DNAP'][] = MENU_DIVIDER;
@@ -102,7 +102,7 @@ if(!empty($on) AND $_SESSION["TourLocRule"]=='FR' AND $acl[AclCompetition] >= Ac
 						$ret['SetFRChampsD1DNAP'][] = get_text('MenuLM_Speaker') . '|' . $CFG->ROOT_DIR.'Modules/Speaker/robin.php';
 
 					}
-					if ($acl[AclRobin] >= AclReadOnly) {
+					if (subFeatureAcl($acl,AclRobin,'') >= AclReadOnly) {
 						$ret['SetFRChampsD1DNAP'][] = MENU_DIVIDER;
 						$ret['SetFRChampsD1DNAP'][] = get_text('MenuLM_RobinPrintout') . '|' . $CFG->ROOT_DIR . 'Modules/RoundRobin/PrintOut.php';
 					}

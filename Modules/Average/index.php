@@ -5,7 +5,7 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 if(!is_writable(dirname(__FILE__))) {
 	die(get_text('DirectoryNotWriteable', 'Errors', dirname(__FILE__)));
 }
-checkACL(AclModules, AclReadOnly);
+checkFullACL(AclModules, 'modGeneric', AclReadOnly);
 
 $Archers=array();
 $Bonus=array();

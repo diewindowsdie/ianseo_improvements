@@ -15,7 +15,7 @@ $Error=1;
 $Out='';
 
 foreach($_REQUEST['first'] as $Team => $Events) {
-    checkACL(($Team ? AclTeams : AclIndividuals), AclReadWrite, false);
+    checkFullACL(($Team ? AclTeams : AclIndividuals), '', AclReadWrite, false);
 	foreach($Events as $Event => $Matches) {
 		foreach($Matches as $Matchno => $Ends) {
 			foreach($Ends as $End => $Start) {

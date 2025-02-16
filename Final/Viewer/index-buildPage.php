@@ -6,14 +6,10 @@ require_once('Common/Lib/Fun_DateTime.inc.php');
 
 $JSON=array('error' => 1, 'time' => '', 'force' => false);
 
-if(!CheckTourSession()) {
+if (!isset($_REQUEST['time']) or !CheckTourSession() or !hasFullACL(AclOutput, 'outTv', AclReadOnly)) {
 	JsonOut($JSON);
 }
-
 $TourId=$_SESSION['TourId'];
-if (!isset($_REQUEST['time']) or checkACL(array((empty($_REQUEST['Team']) ? AclIndividuals:AclTeams), AclOutput),AclNoAccess, false, $TourId)==AclNoAccess) {
-	JsonOut($JSON);
-}
 
 $JSON['error']=0;
 if(empty($_REQUEST['time']) or !empty($_REQUEST['SelectedEnd'])) {

@@ -1,7 +1,7 @@
 <?php
-	require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+	require_once(dirname(__FILE__, 3) . '/config.php');
 	CheckTourSession(true);
-    checkACL(AclAccreditation, AclReadWrite);
+    checkFullACL(AclAccreditation, 'acStandard', AclReadWrite, false);
 
 	print_r($_COOKIE);
 

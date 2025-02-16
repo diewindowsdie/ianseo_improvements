@@ -14,7 +14,7 @@
 	$match=isset($_REQUEST['match']) ? $_REQUEST['match'] : null;
 	$pool=empty($_REQUEST['pool']) ? '' : $_REQUEST['pool'];
 
-    checkACL(($team ? AclTeams : AclIndividuals), AclReadWrite);
+    checkFullACL(($team ? AclTeams : AclIndividuals), '', AclReadWrite);
 
 	$Errore=0;
 

@@ -9,7 +9,7 @@
     require_once('Common/Fun_Phases.inc.php');
 	require_once('Common/Lib/Obj_RankFactory.php');
     require_once('Common/Lib/ScorecardsLib.php');
-	checkACL(AclIndividuals, AclReadOnly);
+	checkFullACL(AclIndividuals, '', AclReadOnly);
 
     $Options=[];
     if(!empty($_REQUEST['Margins'])) {
@@ -17,6 +17,7 @@
             'PrintLogo'=>false,
             'print_header'=>false,
             'print_footer'=>false,
+            'PrintJudgeNotes'=>false,
         ];
     }
 	$pdf = new ResultPDF((get_text('IndFinal')),false, '', true, $Options);
@@ -189,14 +190,15 @@
 			DrawScore($pdf, $MyRow, 'R');
 
 			//Judge Signatures, Timestamp & Annotations
-			$pdf->SetLeftMargin($WhereStartX[0]);
-			$pdf->Ln(5);
+			if($pdf->PrintJudgeNotes) {
+                $pdf->SetLeftMargin($WhereStartX[0]);
+                $pdf->Ln(5);
 
-			$pdf->Cell($pdf->GetPageWidth()-(2*$pdf->getSideMargin())-90,8,(get_text('TargetJudgeSignature','Tournament')),'B',0,'L',0);
-			$pdf->Cell(90,8,(get_text('TimeStampSignature','Tournament')),1,1,'L',0);
-			$pdf->Ln(6);
-			$pdf->Cell(0,4,(get_text('JudgeNotes')),'B',1,'L',0);
-
+                $pdf->Cell($pdf->GetPageWidth() - (2 * $pdf->getSideMargin()) - 90, 8, (get_text('TargetJudgeSignature', 'Tournament')), 'B', 0, 'L', 0);
+                $pdf->Cell(90, 8, (get_text('TimeStampSignature', 'Tournament')), 1, 1, 'L', 0);
+                $pdf->Ln(6);
+                $pdf->Cell(0, 4, (get_text('JudgeNotes')), 'B', 1, 'L', 0);
+            }
 			// print barcode if any
 			if(!empty($_REQUEST['Barcode'])) {
 				$pdf->setxy($BarCodeX, $BarCodeY);

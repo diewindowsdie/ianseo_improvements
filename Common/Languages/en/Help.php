@@ -20,6 +20,7 @@ $lang['ChangeComponents']='<p>To proceed with a change first remove the athletes
 &#9654&nbsp;Score included in the total of team qualification round<br>
 &#9655&nbsp;Score not included in the total of team qualification round';
 $lang['CombiCompList']='List of Competitions Codes, comma separated';
+$lang['DeleteChannel']='Remove Channel. This will remove all splits from the channel and the channel itself.';
 $lang['ExportAdvanced']='Also exports Entry and Country data to create if missing at the endpoint';
 $lang['ExportCategories']='Choose which categories/events to export (no selection means all)';
 $lang['ExportDistances']='Select which distance(s) to export (no selection means all distances)';

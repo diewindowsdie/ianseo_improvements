@@ -2,7 +2,7 @@
 $JSON=['error'=>1, 'msg'=>''];
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
-if(!CheckTourSession() or !hasACL(AclRobin, AclReadOnly)) {
+if(!CheckTourSession() or !hasFullACL(AclRobin, '', AclReadOnly)) {
 	JsonOut($JSON);
 }
 

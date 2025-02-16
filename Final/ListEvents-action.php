@@ -3,7 +3,7 @@ global $CFG;
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 
 $JSON=array('error'=>1, 'msg'=>get_text('ErrGenericError','Errors'));
-if(!CheckTourSession() or !hasACL(AclCompetition, AclReadWrite) or empty($_REQUEST['act']) or !isset($_REQUEST['team'])) {
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite) or empty($_REQUEST['act']) or !isset($_REQUEST['team'])) {
 	JsonOut($JSON);
 }
 

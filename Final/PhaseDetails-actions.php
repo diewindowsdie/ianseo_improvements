@@ -3,13 +3,12 @@
 
 require_once(dirname(__DIR__) . '/config.php');
 CheckTourSession(true);
-checkACL(AclCompetition, AclReadWrite, false);
 //require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Fun_Phases.inc.php');
 
 $JSON=array('error'=>1);
 
-if(checkACL(AclCompetition, AclReadWrite, '')!=AclReadWrite or !isset($_REQUEST['team']) or !isset($_REQUEST['option']) or !isset($_REQUEST['act'])) {
+if(!hasFullACL(AclCompetition, 'cData',AclReadWrite) or !isset($_REQUEST['team']) or !isset($_REQUEST['option']) or !isset($_REQUEST['act'])) {
 	JsonOut($JSON);
 }
 

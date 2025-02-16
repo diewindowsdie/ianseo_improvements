@@ -2,8 +2,8 @@
 define('debug',false);	// settare a true per l'output di debug
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+checkFullACL(AclCompetition,  'cData', AclReadWrite);
 CheckTourSession(true);
-checkACL(AclCompetition, AclReadWrite);
 
 require_once('Common/Lib/CommonLib.php');
 //require_once('Common/Lib/ArrTargets.inc.php');

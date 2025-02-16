@@ -2,7 +2,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/Lib/CommonLib.php');
 CheckTourSession(true);
-checkACL(AclCompetition, AclReadWrite, false);
+checkFullACL(AclCompetition, 'cSchedule', AclReadWrite, false);
 
 $Value=array('error' => 1);
 if($FopLocations=Get_Tournament_Option('FopLocations')) {

@@ -20,8 +20,7 @@ $Arr_Tables = array(
 	'SC'=> array('SubClass','ScId','ScTournament','','')
 	);
 
-if(checkACL(AclCompetition, AclReadWrite, false)!=AclReadWrite
-		or !CheckTourSession()
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite)
 		or IsBlocked(BIT_BLOCK_TOURDATA)
 		or defined('dontEditClassDiv')
 		or empty($_REQUEST['Tab'])

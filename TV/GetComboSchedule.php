@@ -3,7 +3,7 @@
 
 	if (!CheckTourSession())
 		exit;
-    checkACL(AclOutput,AclReadOnly);
+    checkfullACL(AclOutput, 'outTv', AclReadOnly);
 
 	$teamEvent = (!empty($_REQUEST["teamEvent"]) && $_REQUEST["teamEvent"]==1 ? 1 : 0);
 

@@ -9,7 +9,7 @@ $CurValue = isset($_REQUEST['CurValue']) ? $_REQUEST['CurValue'] : null;
 
 $JSON=array('error'=>1, 'nextValue'=>'');
 
-checkACL(($TeamEvent ? AclTeams : AclIndividuals), AclReadWrite, false);
+checkFullACL(($TeamEvent ? AclTeams : AclIndividuals), '', AclReadWrite, false);
 $isBlocked=($TeamEvent==0 ? IsBlocked(BIT_BLOCK_IND) : IsBlocked(BIT_BLOCK_TEAM));
 
 if(is_null($Event) or is_null($TeamEvent) or is_null($CurValue) or $isBlocked) {

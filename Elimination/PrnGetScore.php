@@ -5,7 +5,7 @@ require_once('Common/Fun_Sessions.inc.php');
 require_once('Common/Lib/CommonLib.php');
 
 if(CheckTourSession()) {
-    checkACL(AclEliminations, AclReadOnly);
+	checkFullACL(AclEliminations, '',  AclReadOnly);
 	$pdf = new LabelPDF();
 
 	$ath4target=0;

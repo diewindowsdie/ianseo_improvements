@@ -11,7 +11,7 @@ require_once('Final/Fun_ChangePhase.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Lib/ArrTargets.inc.php');
 
-if (!CheckTourSession() or checkACL(AclIndividuals, AclReadWrite, false)!=AclReadWrite or IsBlocked(BIT_BLOCK_IND)) {
+if (!CheckTourSession() or !hasFull(AclIndividuals, '', AclReadWrite) or IsBlocked(BIT_BLOCK_IND)) {
 	JsonOut($JSON);
 }
 

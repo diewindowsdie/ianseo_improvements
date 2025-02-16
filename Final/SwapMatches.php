@@ -2,8 +2,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 
 CheckTourSession(true);
-
-checkACL(array(AclIndividuals, AclTeams), AclReadWrite);
+checkFullACL(array(AclIndividuals, AclTeams), '', AclReadWrite);
 
 $PRINT_MENU=true;
 $IncludeJquery = true;

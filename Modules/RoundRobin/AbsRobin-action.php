@@ -9,7 +9,7 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 $JSON=array('error'=>1, 'msg'=>get_text('ErrGenericError', 'Errors'));
 
-if(!CheckTourSession(true) or !hasACL(AclRobin, AclReadWrite) or empty($_REQUEST['act'])) {
+if(!CheckTourSession() or !hasFullACL(AclRobin, '', AclReadWrite) or empty($_REQUEST['act'])) {
 	JsonOut($JSON);
 }
 

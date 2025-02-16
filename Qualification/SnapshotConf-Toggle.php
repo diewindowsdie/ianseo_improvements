@@ -8,7 +8,7 @@ if(!CheckTourSession()) {
 	JsonOut($JSON);
 	die();
 }
-checkACL(AclQualification, AclReadWrite, false);
+checkFullACL(AclQualification, '', AclReadWrite, false);
 
 // toggle the snapshot feature
 require_once('Common/Lib/Fun_Modules.php');

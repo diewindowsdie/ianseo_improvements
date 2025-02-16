@@ -5,10 +5,9 @@ require_once('Qualification/Fun_Qualification.local.inc.php');
 require_once('Common/Fun_Various.inc.php');
 
 $JSON=array('error' => 1);
-if (!CheckTourSession()) {
+if (!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite)) {
     JsonOut($JSON);
 }
-checkACL(AclCompetition, AclReadWrite, false);
 
 if (IsBlocked(BIT_BLOCK_TOURDATA)) {
     JsonOut($JSON);

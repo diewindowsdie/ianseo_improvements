@@ -9,7 +9,7 @@ require_once('Final/Fun_Final.local.inc.php');
 require_once('Common/Lib/ArrTargets.inc.php');
 
 CheckTourSession(true);
-checkACL(array(AclIndividuals,AclTeams),AclReadWrite);
+checkFullACL(array(AclIndividuals,AclTeams),'', AclReadWrite);
 $Match='';
 
 // Check the correct separator (as barcode reader may interpret «-» as a «'» !)
@@ -229,31 +229,6 @@ if($Match) {
 	}
     echo '</td>';
 	echo '</tr>';
-
-	//echo '<tr>';
-	//echo '<th class="'.$Win1.'">'.get_text('Score', 'Tournament').'</th>';
-	//echo '<td class="LetteraGrande'.$Win1.'" align="right">'.$Score1.'</td>';
-	//echo '<td>&nbsp;</td>';
-	//echo '<th class="'.$Win2.'">'.get_text('Score', 'Tournament').'</th>';
-	//echo '<td class="LetteraGrande'.$Win2.'" align="right">'.$Score2.'</td>';
-	//echo '</tr>';
-	//
-	//if($Match->matchMode) {
-	//	echo '<tr>';
-	//	echo '<td colspan="2" class="LetteraGrande'.$Win1.'" align="right">'.str_replace("|",",&nbsp;",$Match->setPoints1).'</td>';
-	//	echo '<td>&nbsp;</td>';
-	//	echo '<td colspan="2" class="LetteraGrande'.$Win2.'" align="right">'.str_replace("|",",&nbsp;",$Match->setPoints2).'</td>';
-	//	echo '</tr>';
-	//}
-	//
-	//echo '<tr>';
-	//echo '<th>'.get_text('ShotOffShort', 'Tournament').'</th>';
-	//echo '<td class="LetteraGrande" align="right">'.(!empty($Match->tiebreak1) ? (strlen($Match->tiebreak1)>1 ? implode(DecodeFromString($Match->tiebreak1, false),',') : DecodeFromString($Match->tiebreak1, false)):'&nbsp;').'</td>';
-	//echo '<td>&nbsp;</td>';
-	//echo '<th>'.get_text('ShotOffShort', 'Tournament').'</th>';
-	//echo '<td class="LetteraGrande" align="right">'.(!empty($Match->tiebreak2) ? (strlen($Match->tiebreak2)>1 ? implode(DecodeFromString($Match->tiebreak2, false),',') : DecodeFromString($Match->tiebreak2, false)):'&nbsp;').'</td>';
-	//echo '</tr>';
-
 	echo '<tr>';
 		echo '<td colspan="2" align="center" style="font-size:80%"><b><a href="'.go_get(array('C'=>$_REQUEST['B'])).'">CONFIRM</a></b></td>';
 		echo '<td>&nbsp;</td>';
@@ -305,15 +280,17 @@ include('Common/Templates/tail.php');
 
 function getScore($barcode, $strict=false) {
 	@list($matchno, $team, $event) = @explode($_SESSION['BarCodeSeparator'], $barcode, 3);
+    if(!is_numeric($matchno)) {
+        $matchno = -1;
+    }
     $matchno = ($matchno % 2 ? $matchno-1 : $matchno);
 	$event=str_replace($_SESSION['BarCodeSeparator'], "-", $event);
 	$rs=GetFinMatches($event, null, $matchno, $team, false);
 
-	$r= safe_fetch($rs);
-	$obj=getEventArrowsParams($event, $r->phase, $team);
-
-	$r->winAt=$obj->winAt;
-
+	if($r= safe_fetch($rs)) {
+        $obj = getEventArrowsParams($event, $r->phase ?? 0, $team);
+        $r->winAt = $obj->winAt;
+    }
 	return $r;
 }
 

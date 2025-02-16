@@ -12,32 +12,44 @@ function rotList($TVsettings, $RULE) {
 		'SubBlocks' => 1);
 	$ret=array();
 
-	$Select = "SELECT EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, SUBSTRING(AtTargetNo,1,1) AS Session, SUBSTRING(AtTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status "
-		. "FROM AvailableTarget at "
-		. "LEFT JOIN "
-		. "(SELECT SesName, QuTargetNo, DivDescription, ClDescription, EnCode, EnName, EnFirstName, CoCode, CoName, EnClass, EnDivision, EnAgeClass, EnSubClass, EnStatus, EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent "
-		. "FROM Qualifications AS q  "
-		. "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($TourId)  . " AND EnAthlete=1 "
-		. "INNER JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament "
-		. "LEFT JOIN Classes ON EnClass=ClId AND EnTournament=ClTournament "
-		. "LEFT JOIN Session ON QuSession=SesOrder AND SesType='Q' AND EnTournament=SesTournament "
-		. "LEFT JOIN Divisions ON EnDivision=DivId AND EnTournament=DivTournament) as Sq ON at.AtTargetNo=Sq.QuTargetNo "
-		. "WHERE AtTournament = " . StrSafe_DB($TourId) . " AND EnCode IS NOT NULL "
-		. ($TVsettings->TVPSession ? " AND AtTargetNo LIKE " . StrSafe_DB($TVsettings->TVPSession . "%") : "") . " "
-		. "ORDER BY AtTargetNo, CoCode, Name, CoName, FirstName ";
+    $Filter=[
+        "AtTournament = " . $TourId,
+    ];
+    if(!empty($TVsettings->TVPSession)) {
+        $Filter[]="AtSession = " . $TVsettings->TVPSession;
+    }
+    $HallField="''";
+    if(in_array('HALL',$TVsettings->Columns) and $FopLocations=Get_Tournament_Option('FopLocations', [], $TourId)) {
+        $HallField='case';
+        foreach($FopLocations as $FopLocation) {
+            $HallField.=" when AtTarget between {$FopLocation->Tg1} and {$FopLocation->Tg2} then ".StrSafe_DB($FopLocation->Loc);
+        }
+        $HallField.=" end";
+    }
+
+	$Select = "SELECT EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, AtSession AS Session, concat(AtTarget, AtLetter) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, $HallField as Hall
+	    FROM AvailableTarget at
+        inner join Qualifications on QuTargetNo=AtTargetNo
+        INNER JOIN Entries ON EnId=QuId AND EnTournament=AtTournament
+        INNER JOIN Countries ON CoId=EnCountry AND CoTournament=AtTournament
+        LEFT JOIN Classes ON EnClass=ClId AND AtTournament=ClTournament
+        LEFT JOIN Session ON QuSession=SesOrder AND SesType='Q' AND AtTournament=SesTournament
+        LEFT JOIN Divisions ON EnDivision=DivId AND AtTournament=DivTournament
+        WHERE " . implode(' and ',$Filter) . "
+        ORDER BY AtTargetNo, CoCode, Name, CoName, FirstName ";
 	$Rs=safe_r_sql($Select);
 
 	$RowCounter = 0;
 	$oldTarget='';
 	$Class='';
 	$OldSession='';
-	$Columns=(isset($TVsettings->TVPColumns) && !empty($TVsettings->TVPColumns) ? explode('|',$TVsettings->TVPColumns) : array());
-	$ViewTeams=(in_array('TEAM', $Columns) or in_array('ALL', $Columns));
-	$ViewFlag=(in_array('FLAG', $Columns) or in_array('ALL', $Columns));
-	$ViewCode=(in_array('CODE', $Columns) or in_array('ALL', $Columns));
-	$ViewCat=(in_array('DIVCLAS', $Columns) or in_array('ALL', $Columns));
-	$ViewCatCode=(in_array('CATCODE', $Columns) or in_array('ALL', $Columns));
-	$Title2Rows=(in_array('TIT2ROWS', $Columns) ? '<br/>' : ': ');
+	$ViewTeams=(in_array('TEAM', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+	$ViewFlag=(in_array('FLAG', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+	$ViewCode=(in_array('CODE', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+	$ViewCat=(in_array('DIVCLAS', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+	$ViewCatCode=(in_array('CATCODE', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+	$ViewHalls=(in_array('HALL', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+	$Title2Rows=(in_array('TIT2ROWS', $TVsettings->Columns) ? '<br/>' : ': ');
 
 
 	$ret[]='<div class="Title">
@@ -46,6 +58,7 @@ function rotList($TVsettings, $RULE) {
 			'.get_text('StartlistSession','Tournament').'</div>';
 	$ret[]='<div class="StartList Headers">'
 		. '<div class="Target Headers">' . get_text('Target') . '</div>'
+		. ($ViewHalls ? '<div class="Hall Headers">&nbsp;</div>' : '')
 		. ($ViewCode ? '<div class="CountryCode Rotate Headers">&nbsp;</div>' : '')
 		. ($ViewFlag ? '<div class="FlagDiv Headers">&nbsp;&nbsp;&nbsp;</div>' : '')
 		. '<div class="Athlete Headers">' . get_text('Athlete') . '</div>'
@@ -68,6 +81,9 @@ function rotList($TVsettings, $RULE) {
 		$Class=($RowCounter%2 ? 'e' : 'o');
 		$tmp= '<div class="StartList Font1'.$Class.' Back1'.$Class.'">';
 		$tmp.='<div class="Target">' . ltrim($MyRow->TargetNo, '0') . '</div>';
+		if($ViewHalls) {
+			$tmp.='<div class="Hall">'.$MyRow->Hall.'</div>';
+		}
 		if($ViewCode) {
 			$tmp.='<div class="CountryCode Rotate Rev1'.$Class.'">'.$MyRow->NationCode.'</div>';
 		}
@@ -141,6 +157,7 @@ function getPageDefaults(&$RMain) {
 		'CountryDescr' => 'flex: 0 1 20vw;white-space:nowrap;overflow:hidden;',
 		'Category' => 'flex: 1 1 10vw;white-space:nowrap;overflow:hidden;',
 		'CategoryCode' => 'flex: 0 0 4vw; text-align:center;',
+        'Hall' => 'flex: 1 1 10vw; font-size:0.7em; text-align:left;white-space:nowrap;overflow:hidden;',
 		);
 	foreach($ret as $k=>$v) {
 		if(!isset($RMain[$k])) $RMain[$k]=$v;

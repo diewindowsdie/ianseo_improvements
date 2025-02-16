@@ -1,9 +1,8 @@
 <?php
 
-require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
+require_once(dirname(__FILE__, 4) . '/config.php');
 
 CheckTourSession(true);
-
-checkACL(AclCompetition, AclReadWrite);
+checkFullACL(AclCompetition, 'cData', AclReadWrite);
 
 define('Series', 5);

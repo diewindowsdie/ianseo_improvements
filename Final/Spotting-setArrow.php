@@ -14,7 +14,7 @@ $Arrow = isset($_REQUEST['Arrow']) ? $_REQUEST['Arrow'] : null;
 
 $JSON=array('error'=>1, 'changed' => 0, 'confirm' => '', 'winner' => 0, 'newSOPossible'=>false);
 
-checkACL(($TeamEvent ? AclTeams : AclIndividuals), AclReadWrite, false);
+checkFullACL(($TeamEvent ? AclTeams : AclIndividuals), '', AclReadWrite, false);
 $isBlocked=($TeamEvent==0 ? IsBlocked(BIT_BLOCK_IND) : IsBlocked(BIT_BLOCK_TEAM));
 
 if(is_null($Event) or is_null($TeamEvent) or is_null($Arrow) or $isBlocked) {

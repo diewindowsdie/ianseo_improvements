@@ -6,12 +6,12 @@ require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Fun_Modules.php');
 require_once('Common/Lib/CommonLib.php');
-
+checkFullACl(AclCompetition,'cAward', AclReadWrite);
 if (!CheckTourSession()) {
 	print get_text('CrackError');
 	exit;
 }
-checkACl(AclCompetition,AclReadWrite);
+
 
 if(!empty($_REQUEST['delAwarder'])) {
 	delModuleParameter('Awards','Aw-Awarder-1-'. intval($_REQUEST['delAwarder']));
