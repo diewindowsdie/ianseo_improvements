@@ -16,4 +16,7 @@ if(in_array($CFG->DOCUMENT_PATH . 'Common'.DIRECTORY_SEPARATOR.'config.inc.php',
 	if($version < $newversion) {
 		require_once('Common/UpdateDb.inc.php');
 	}
+
+    //дополнительные обновления БД
+    require_once('Update/improvements_update.php');
 }
