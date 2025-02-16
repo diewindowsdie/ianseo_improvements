@@ -1,9 +1,5 @@
 <?php
-
-interface NormativeProvider
-{
-    public function calculateNormativeInternal($class, $division, $score);
-}
+require_once "NormativeProvider.php";
 
 function calculateClassName($distances)
 {
@@ -19,15 +15,15 @@ function calculateClassName($distances)
     return 'Provider' . $className;
 }
 
-function calcNormative($distances, $class, $division, $score)
+function calcNormative($distances, $class, $division, $scoreByDistances)
 {
     $className = calculateClassName($distances);
     $fileName = $className . '.inc.php';
 
-    require_once('conf/' . $fileName);
+    require_once('providers/' . $fileName);
 
     $provider = new $className();
-    return $provider->calculateNormativeInternal($class, $division, $score);
+    return $provider->calculateNormativeInternal($class, $division, $scoreByDistances)["name"];
 }
 
 ?>
