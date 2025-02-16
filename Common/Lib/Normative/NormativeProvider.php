@@ -37,7 +37,10 @@ abstract class NormativeProvider
 
     abstract public function calcByTotalScore($class, $division, $score): array;
 
-    abstract public function calcByOneDistance($class, $division, $score): array;
+    public function calcByOneDistance($class, $division, $score): array
+    {
+        return Normative::None;
+    }
 }
 
 ?>

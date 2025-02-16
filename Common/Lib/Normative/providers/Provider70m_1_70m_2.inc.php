@@ -63,11 +63,6 @@ class Provider70m_1_70m_2 extends NormativeProvider
 
         return Normative::None;
     }
-
-    public function calcByOneDistance($class, $division, $score): array
-    {
-        return Normative::None;
-    }
 }
 
 ?>

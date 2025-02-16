@@ -1,5 +1,7 @@
 <?php
-class Provider90m_70m_50m_30m extends NormativeProvider {
+
+class Provider90m_70m_50m_30m extends NormativeProvider
+{
     public function calcByTotalScore($class, $division, $score): array
     {
         if (str_ends_with('M', $class)) {
@@ -34,10 +36,6 @@ class Provider90m_70m_50m_30m extends NormativeProvider {
 
         return Normative::None;
     }
-
-    public function calcByOneDistance($class, $division, $score): array
-    {
-        return Normative::None;
-    }
 }
+
 ?>
