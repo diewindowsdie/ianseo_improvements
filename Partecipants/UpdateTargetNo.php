@@ -12,7 +12,7 @@ define('debug',false);
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclParticipants, AclReadWrite, false);
+    checkFullACL(AclParticipants, 'pTarget', AclReadWrite, false);
 
 	$Errore=0;
 	$Id='#';

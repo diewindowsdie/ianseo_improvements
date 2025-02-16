@@ -244,7 +244,6 @@ $lang['DefaultHM']='Default HM';
 $lang['DefaultLocRule']='FITA';
 $lang['DefaultVI']='Default VI';
 $lang['Delayed']='Försening (min)';
-$lang['DeleteChannel']='Radera kanal. Detta raderar kanalen och de uppdelningar som gjorts i den.';
 $lang['DeletePreviousArchers']='Radera inlagda som inte finns med i denna import.';
 $lang['DeleteSplit']='Radera uppdelning. Klicka här för att ta bort den här delen.';
 $lang['DeleteTourConfirm']='Fyll i följande kod och klicka på "Radera tävling" för att radera tävlingen:';

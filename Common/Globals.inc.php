@@ -12,10 +12,10 @@
 */
 
 // $newversion moved to file ROOT/config.php
-
+global $CFG;
 
 define ("ProgramName","Ianseo");	// Nome del programma
-define ("ProgramVersion","2024-12-08"); // "Experience is the teacher of all things (Gaius Iulius Caesar)"
+define ("ProgramVersion","2025-02-10"); // "The greatest enemy of knowledge is not ignorance, it is the illusion of knowledge. (Stephen Hawking)"
 
 define ("TargetNoPadding",3);		// Padding del targetno
 
@@ -42,6 +42,13 @@ define("verbose",false);			// Serve per visualizzare o meno gli errori nella lig
 									// settare a false per avere come fallback l'inglese
 
 define("PageEncode", "UTF-8");		// spostato qui invece che come stringa "linguistica"
+
+define("IanseoLicenseCode", "FSL-1.1-ALv2");		// License code
+define("IanseoLicenseFullName", "Functional Source License, Version 1.1, ALv2 Future License");		// License full name
+define("IanseoLicense", $CFG->ROOT_DIR."LICENSE.html");		// License local
+define("IanseoLicenseExt", $CFG->IanseoServer."IanseoLicense-".IanseoLicenseCode.".html");		// Ianseo License on ianseo.net
+define("IanseoLicensePicture", "fsl.jpg");		// License picture
+define("IanseoLicenseExternalSite", "https://fsl.software/");		// License original website
 
 require_once('Common/BlockDefines.php');
 
@@ -425,23 +432,27 @@ function InfoTournament()
 		print '</td>';
 	}
 	if(!empty($INFO->ACLReqfeatures)) {
-        print '<td width="10%" id="securityBox" class="NoWrap">';
+        print '<td id="securityBox" class="NoWrap w-10">';
         print get_text('MenuLM_Lock manage').": <b>".($INFO->ACLEnabled ? get_text('CmdOn') : get_text('CmdOff')).'</b><br>';
         if($INFO->ACLReqlevel!=0) {
             foreach ($INFO->ACLReqfeatures as $feature) {
                 print get_text($listACL[$feature], 'Tournament');
             }
+            print '&nbsp;(' . $INFO->ACLReqsubFeatures .')';
             print '&nbsp;<b>' . ($INFO->ACLReqlevel == 1 ? 'r/o' : 'R/W'). '</b>';
+            if($INFO->ACLAuthEnabled) {
+
+            }
         }
         print '</td>';
     }
-	print '<td width="5%" class="Center">';
+	print '<td class="Center w-5">';
 	print '<a href="'.$CFG->ROOT_DIR.'credits.php">';
 	print '<img onMouseOver="resizeImg(this, 150, \''.$CFG->ROOT_DIR.'Common/Images/ianseo_dot-30.png\')" onMouseOut="resizeImg(this)" border="0" src="'.$CFG->ROOT_DIR.'Common/Images/ianseo_dot.png" alt="Credits" title="Credits">';
 	print '</a>';
 	print '</td>';
-	print '</tr>' . "\n";
-	print '</table>' . "\n";
+	print '</tr>';
+	print '</table>';
 }
 
 /**

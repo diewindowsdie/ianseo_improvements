@@ -3,32 +3,44 @@ require_once('Common/Fun_FormatText.inc.php');
 
 define("HideCols", GetParameter("IntEvent"));
 
-$Select
-	= "SELECT EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, SUBSTRING(AtTargetNo,1,1) AS Session, SUBSTRING(AtTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status "
-	. "FROM AvailableTarget at "
-	. "LEFT JOIN "
-	. "(SELECT SesName, QuTargetNo, DivDescription, ClDescription, EnCode, EnName, EnFirstName, CoCode, CoName, EnClass, EnDivision, EnAgeClass, EnSubClass, EnStatus, EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent "
-	. "FROM Qualifications AS q  "
-	. "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($TourId)  . " AND EnAthlete=1 "
-	. "INNER JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament "
-	. "LEFT JOIN Classes ON EnClass=ClId AND EnTournament=ClTournament "
-	. "LEFT JOIN Session ON QuSession=SesOrder AND SesType='Q' AND EnTournament=SesTournament "
-	. "LEFT JOIN Divisions ON EnDivision=DivId AND EnTournament=DivTournament) as Sq ON at.AtTargetNo=Sq.QuTargetNo "
-	. "WHERE AtTournament = " . StrSafe_DB($TourId) . " AND EnCode IS NOT NULL "
-	. ($TVsettings->TVPSession ? " AND AtTargetNo LIKE " . StrSafe_DB($TVsettings->TVPSession . "%") : "") . " "
-	. "ORDER BY AtTargetNo, CoCode, Name, CoName, FirstName ";
+$Filter=[
+    "AtTournament = " . $TourId,
+];
+if(!empty($TVsettings->TVPSession)) {
+    $Filter[]="AtSession = " . $TVsettings->TVPSession;
+}
+$HallField="''";
+if(in_array('HALL',$TVsettings->Columns) and $FopLocations=Get_Tournament_Option('FopLocations', [], $TourId)) {
+    $HallField='case';
+    foreach($FopLocations as $FopLocation) {
+        $HallField.=" when AtTarget between {$FopLocation->Tg1} and {$FopLocation->Tg2} then ".StrSafe_DB($FopLocation->Loc);
+    }
+    $HallField.=" end";
+}
+
+$Select = "SELECT EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, AtSession AS Session, concat(AtTarget, AtLetter) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, $HallField as Hall
+    FROM AvailableTarget at
+    inner join Qualifications on QuTargetNo=AtTargetNo
+    INNER JOIN Entries ON EnId=QuId AND EnTournament=AtTournament
+    INNER JOIN Countries ON CoId=EnCountry AND CoTournament=AtTournament
+    LEFT JOIN Classes ON EnClass=ClId AND AtTournament=ClTournament
+    LEFT JOIN Session ON QuSession=SesOrder AND SesType='Q' AND AtTournament=SesTournament
+    LEFT JOIN Divisions ON EnDivision=DivId AND AtTournament=DivTournament
+    WHERE " . implode(' and ',$Filter) . "
+    ORDER BY AtTargetNo, CoCode, Name, CoName, FirstName ";
 $Rs=safe_r_sql($Select);
 
 $RowCounter = 0;
 $oldTarget='x';
 $Class='';
+$ViewHalls=(in_array('HALL', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
 while($MyRow=safe_fetch($Rs)) {
 	if(!isset($ret[$MyRow->Session])) {
 
 		// crea l'header della gara
 		$tmp = '';
 
-		$NumCol = 5;
+		$NumCol = 5+$ViewHalls;
 
 		$tmp.= '<tr><th class="Title" colspan="' . ($NumCol) . '">';
 		$tmp.= $Arr_Pages[$TVsettings->TVPPage];
@@ -45,6 +57,10 @@ while($MyRow=safe_fetch($Rs)) {
 		$tmp.= '<tr>';
 		$tmp.= '<th>' . get_text('Target') . '</th>';
 		$col[]=9;
+        if($ViewHalls) {
+            $tmp.= '<th>' . get_text('ShootingHall', 'Tournament') . '</th>';
+            $col[]=10;
+        }
 		$tmp.= '<th>' . get_text('Athlete') . '</th>';
 		$col[]=33;
 		$tmp.= '<th>' . get_text('Country') . '</th>';
@@ -79,6 +95,7 @@ while($MyRow=safe_fetch($Rs)) {
 
 	$tmp.= '<tr' . $Class . '>'
 		. '<td class="NumberAlign">' . ltrim($MyRow->TargetNo,'0') . '&nbsp;</td>'
+        . ($ViewHalls ? '<td>'.$MyRow->Hall.'</td>' : '')
 		. '<td>' . $MyRow->FirstName . ' ' . ($TVsettings->TVPNameComplete==0 ? FirstLetters($MyRow->Name) : $MyRow->Name) . '</td>'
 		. '<td>' . $MyRow->NationCode . ' ' . ($TVsettings->TVPViewNationName==1 ? $MyRow->Nation : '') . '</td>'
 		. '<td class="Center">' . (HideCols && $MyRow->DivDescription ? $MyRow->DivDescription : $MyRow->DivCode) . '</td>'

@@ -16,7 +16,7 @@ if(!CheckTourSession()) {
 	print get_text('CrackError');
 	exit;
 }
-checkACL(AclModules, AclReadOnly);
+checkFullACL(AclModules, 'modGeneric', AclReadOnly);
 
 // Get Archers and Bonusses
 list($Archers, $Bonus, $Coeffs)=json_decode(file_get_contents('./conf.php'), true);

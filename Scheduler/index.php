@@ -29,7 +29,8 @@ Each schedule line can be of type:
 
 */
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-$aclLevel = checkACL(AclCompetition, AclReadOnly);
+$aclLevel = checkFullACL(AclCompetition, 'cSchedule', AclReadOnly);
+
 
 CheckTourSession(true);
 

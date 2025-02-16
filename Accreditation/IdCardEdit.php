@@ -48,7 +48,7 @@ if(!empty($_REQUEST['DeleteBgImage'])) {
 if(!empty($_FILES["Content"])) {
 	// ATTENTION!!!!
 	foreach ($_FILES["Content"]['size'] as $IdOrder => $Options) {
-		$q=safe_r_sql("select * from IdCardElements where IceCardType='$CardType' and IceCardNumber=$CardNumber and IceOrder=$IdOrder and IceTournament={$_SESSION['TourId']}");
+		$q=safe_r_sql("select distinct * from IdCardElements where IceCardType='$CardType' and IceCardNumber=$CardNumber and IceOrder=$IdOrder and IceTournament={$_SESSION['TourId']}");
 		if(!($r=safe_fetch($q))) {
 			continue;
 		}
@@ -313,7 +313,7 @@ echo '<tr><th>&nbsp;</th><th>' . get_text('Progr')  . '</th>
 
 // All the already inserted elements
 $NewOrder=0;
-$SQL="select * from IdCardElements where IceTournament={$_SESSION['TourId']} and IceCardType='$CardType' and IceCardNumber=$CardNumber order by IceOrder";
+$SQL="select distinct * from IdCardElements where IceTournament={$_SESSION['TourId']} and IceCardType='$CardType' and IceCardNumber=$CardNumber order by IceOrder";
 $q=safe_r_sql($SQL);
 while($r=safe_fetch($q)) {
 	echo getFieldPos($r);

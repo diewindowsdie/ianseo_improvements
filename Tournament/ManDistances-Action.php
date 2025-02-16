@@ -7,7 +7,7 @@ $Type=intval($_REQUEST['type'] ?? 0);
 $NumDist=intval($_REQUEST['numDist'] ?? 0);
 $Classes=($_REQUEST['cl']??'');
 
-if(!CheckTourSession() or !hasACL(AclCompetition, AclReadWrite) or empty($_REQUEST['act']) or !$Type or !$NumDist or IsBlocked(BIT_BLOCK_TOURDATA)) {
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite) or empty($_REQUEST['act']) or !$Type or !$NumDist or IsBlocked(BIT_BLOCK_TOURDATA)) {
 	JsonOut($JSON);
 }
 

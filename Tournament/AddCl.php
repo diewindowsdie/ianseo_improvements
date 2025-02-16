@@ -4,20 +4,18 @@ define('debug', false);
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Tournament/Fun_Tournament.local.inc.php');
-checkACL(AclCompetition, AclReadWrite, false);
 
 $JSON=array('error'=>1, 'errormsg'=>get_text('MissingData','Errors'));
-if (!CheckTourSession() ||
-        checkACL(AclCompetition, AclReadWrite, false)!=AclReadWrite ||
-		empty($_REQUEST['New_ClId']) ||
-		!isset($_REQUEST['New_ClSex']) ||
-		empty($_REQUEST['New_ClDescription']) ||
-		!isset($_REQUEST['New_ClAthlete']) ||
-		!isset($_REQUEST['New_ClViewOrder']) ||
-		!isset($_REQUEST['New_ClAgeFrom']) ||
-		!isset($_REQUEST['New_ClAgeTo']) ||
-		!isset($_REQUEST['New_ClValidClass']) ||
-		!isset($_REQUEST['New_ClValidDivision'])
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite)
+		or empty($_REQUEST['New_ClId'])
+		or !isset($_REQUEST['New_ClSex'])
+		or empty($_REQUEST['New_ClDescription'])
+		or !isset($_REQUEST['New_ClAthlete'])
+		or !isset($_REQUEST['New_ClViewOrder'])
+		or !isset($_REQUEST['New_ClAgeFrom'])
+		or !isset($_REQUEST['New_ClAgeTo'])
+		or !isset($_REQUEST['New_ClValidClass'])
+		or !isset($_REQUEST['New_ClValidDivision'])
 		or IsBlocked(BIT_BLOCK_TOURDATA)
 		or defined('dontEditClassDiv')) {
 	JsonOut($JSON);

@@ -12,7 +12,7 @@ require_once('Common/Fun_Phases.inc.php');
 require_once('Common/OrisFunctions.php');
 require_once('../LibFinals.php');
 
-if (!CheckTourSession() or !hasACL(AclCompetition, AclReadWrite) or IsBlocked(BIT_BLOCK_TOURDATA) or empty($_REQUEST['act'])) {
+if (!CheckTourSession() or !hasFullACL(AclCompetition, 'cSchedule', AclReadWrite) or IsBlocked(BIT_BLOCK_TOURDATA) or empty($_REQUEST['act'])) {
 	JsonOut($JSON);
 }
 

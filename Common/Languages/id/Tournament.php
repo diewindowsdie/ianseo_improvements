@@ -299,7 +299,6 @@ $lang['Delayed']='Tertunda (-1 untuk mengatur ulang)';
 $lang['DeleteAclRule']='Hapus peraturan ACL';
 $lang['DeleteAclUser']='Hapus pengguna ACL';
 $lang['DeleteAwarded']='Hapus Juara';
-$lang['DeleteChannel']='Hapus Saluran. Ini akan menghapus semua pemisahan dari saluran dan saluran itu sendiri.';
 $lang['DeletePreviousArchers']='Hapus entri sekarang yang tidak ada di daftar';
 $lang['DeletePreviousTeams']='Hapus Regu Sebelumnya';
 $lang['DeleteSplit']='Hilangkan Pemisah. Ini akan menghapus pemisah';

@@ -6,7 +6,7 @@ require_once('Common/Lib/Obj_RankFactory.php');
 
 
 CheckTourSession(true);
-checkACL(array(AclIndividuals, AclTeams), AclReadOnly);
+checkFullACL(array(AclIndividuals, AclTeams), '', AclReadOnly);
 
 $rank=null;
 $options['tournament'] = $_SESSION['TourId'];

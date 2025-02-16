@@ -4,7 +4,7 @@
 	require_once('Common/pdf/ResultPDF.inc.php');
 	require_once('Common/Fun_FormatText.inc.php');
 	require_once('Common/Fun_Phases.inc.php');
-    checkACL(AclIndividuals, AclReadOnly);
+    checkFullACL(AclIndividuals, '', AclReadOnly);
 
     if(!empty($_REQUEST['QRCode'])) {
         foreach ($_REQUEST['QRCode'] as $k => $Api) {

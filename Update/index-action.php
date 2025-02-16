@@ -3,7 +3,7 @@
 $JSON=array('error'=>1, 'msg'=> 'error');
 define('DIRNAME', dirname($_SERVER['SCRIPT_FILENAME']));
 require_once(dirname(DIRNAME) . '/config.php');
-checkACL(AclRoot, AclReadWrite);
+checkFullACL(AclRoot, '', AclReadWrite);
 
 if(!empty($_SESSION['AUTH_ENABLE']) AND empty($_SESSION['AUTH_ROOT'])) {
     JsonOut($JSON);

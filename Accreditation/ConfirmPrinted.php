@@ -1,7 +1,7 @@
 <?php
 
-require_once(dirname(dirname(__FILE__)) . '/config.php');
-checkACL(AclParticipants, AclReadOnly, false);
+require_once(dirname(__FILE__, 2) . '/config.php');
+checkFullACL(AclAccreditation, 'acStandard', AclReadOnly);
 
 $CardType=(empty($_REQUEST['CardType']) ? 'A' : $_REQUEST['CardType']);
 $CardNumber=(empty($_REQUEST['CardNumber']) ? 0 : intval($_REQUEST['CardNumber']));
@@ -11,6 +11,15 @@ $Operation=($CardType=='A' ? 1 : (ord($CardType)*100)+$CardNumber);
 
 $Now=date('Y-m-d H:i:s');
 $TourId=$_SESSION['TourId'];
+
+if(($CardType=='A' and !$lvl = hasFullACL(AclAccreditation, 'acSetup', AclReadWrite)) OR
+    ($CardType=='Q' and !$lvl = hasFullACL(AclQualification, '', AclReadWrite)) OR
+    ($CardType=='E' and !$lvl = hasFullACL(AclEliminations, '', AclReadWrite)) OR
+    ($CardType=='I' and !$lvl = hasFullACL(AclIndividuals, '', AclReadWrite)) OR
+    ($CardType=='T' and !$lvl = hasFullACL(AclTeams, '', AclReadWrite)) OR
+    (($CardType=='Y' or $CardType=='Z') and !$lvl = hasFullACL(AclCompetition, 'cPrintouts', AclReadWrite))) {
+    exit();
+}
 
 $ACT=($_REQUEST['act']??'');
 $ENIDS=[];

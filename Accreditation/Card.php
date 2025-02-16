@@ -1,7 +1,7 @@
 <?php
 
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-checkACL(AclParticipants, AclReadOnly);
+checkFullACL(AclAccreditation, 'acStandard', AclReadOnly);
 require_once('Common/pdf/LabelPDF.inc.php');
 
 $SORT='Printed, NationCode, FirstName, Name';

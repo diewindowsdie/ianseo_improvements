@@ -235,7 +235,7 @@ class Obj_Rank_Robin extends Obj_Rank{
 				inner join Events on EvTournament=RrPartTournament and EvCode=RrPartEvent and EvTeamEvent=RrPartTeam and EvElimType=5
 			    inner join RoundRobinLevel on RrLevTournament=RrPartTournament and RrLevTeam=RrPartTeam and RrLevEvent=RrPartEvent and RrLevLevel=RrPartLevel
 				left join (
-				    select EnId, IndEvent, trim(concat_ws(' ', upper(EnFirstName), EnName)) as Entry, if(CoCode=CoName, CoCode, concat_ws('-', CoCode, CoName)) as EnCountry, EnTvFamilyName, EnTvInitials 
+				    select EnId, IndEvent, trim(concat_ws(' ', upper(EnFirstName), EnName)) as Entry, if(CoCode=CoName, CoCode, concat_ws('-', CoCode, CoName)) as EnCountry, EnTvFamilyName, EnTvGivenName, EnTvInitials 
 					from Entries
 					inner join Individuals on IndTournament=EnTournament and IndId=EnId
 					inner join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0 
@@ -483,7 +483,8 @@ class Obj_Rank_Robin extends Obj_Rank{
 					'itemSubTeam' => $myRow->M1SubTeam,
 					'target' => ltrim($myRow->M1Target, '0'),
 					'athlete' => $myRow->Athlete1,
-                    'tvFamilyName' => $myRow->TvName1,
+                    'tvFamilyName' => $myRow->TvFamilyName1,
+                    'tvGivenName' => $myRow->TvGivenName1,
                     'tvInitials' => $myRow->TvInitials1,
                     'fullName' => ($myRow->En1NameOrder ? "{$myRow->En1FamilyUpper} {$myRow->En1GivenName}" : "{$myRow->En1GivenName} {$myRow->En1FamilyUpper}"),
                     'familyName' => $myRow->En1FamilyName,
@@ -538,7 +539,8 @@ class Obj_Rank_Robin extends Obj_Rank{
 					'oppItemId' => $myRow->M2Athlete,
 					'oppTarget' => ltrim($myRow->M2Target,'0'),
 					'oppAthlete' => $myRow->Athlete2,
-                    'oppTvFamilyName' => $myRow->TvName2,
+                    'oppTvFamilyName' => $myRow->TvFamilyName2,
+                    'oppTvGivenName' => $myRow->TvGivenName2,
                     'oppTvInitials' => $myRow->TvInitials2,
                     'oppFullName' => ($myRow->En2NameOrder ? "{$myRow->En2FamilyUpper} {$myRow->En2GivenName}" : "{$myRow->En2GivenName} {$myRow->En2FamilyUpper}"),
                     'oppFamilyName' => $myRow->En2FamilyName,
@@ -641,8 +643,8 @@ class Obj_Rank_Robin extends Obj_Rank{
         $SQL="select m1.*, m2.*,
        		EvCode, EvEventName, EvTeamEvent, EvProgr, EvShootOff, EvCodeParent, RrLevMatchMode, RrLevBestRankMode,
        		RrLevCheckGolds as EvCheckGolds, RrLevCheckXNines as EvCheckXNines, EvGoldsChars, EvXNineChars,
-            coalesce(En1Entry, Te1Country) as Athlete1, coalesce(En1Country, Te1Code) as Country1, coalesce(En1CoShort, Te1Code) as CoShort1, coalesce(En1CoName, Te1Country) as CoName1, coalesce(En1TvFamilyName, Te1Country) as TvName1, coalesce(En1TvInitials, '') as TvInitials1,
-            coalesce(En2Entry, Te2Country) as Athlete2, coalesce(En2Country, Te2Code) as Country2, coalesce(En2CoShort, Te2Code) as CoShort2, coalesce(En2CoName, Te2Country) as CoName2, coalesce(En2TvFamilyName, Te2Country) as TvName2, coalesce(En2TvInitials, '') as TvInitials2,
+            coalesce(En1Entry, Te1Country) as Athlete1, coalesce(En1Country, Te1Code) as Country1, coalesce(En1CoShort, Te1Code) as CoShort1, coalesce(En1CoName, Te1Country) as CoName1, coalesce(En1TvFamilyName, '') as TvFamilyName1, coalesce(En1TvInitials, '') as TvInitials1, coalesce(En1TvGivenName, '') as TvGivenName1,
+            coalesce(En2Entry, Te2Country) as Athlete2, coalesce(En2Country, Te2Code) as Country2, coalesce(En2CoShort, Te2Code) as CoShort2, coalesce(En2CoName, Te2Country) as CoName2, coalesce(En2TvFamilyName, '') as TvFamilyName2, coalesce(En2TvInitials, '') as TvInitials2, coalesce(En2TvGivenName, '') as TvGivenName2,
 			coalesce(En1Rank, Te1Rank) as Rank1, coalesce(En2Rank, Te2Rank) as Rank2,
 			coalesce(En1EntryShort, Te1Short) as AthleteShort1, coalesce(En2EntryShort, Te2Short) as AthleteShort2,
        		ifnull(concat(DV2.DvMajVersion, '.', DV2.DvMinVersion) ,concat(DV1.DvMajVersion, '.', DV1.DvMinVersion)) as DocVersion,
@@ -760,7 +762,7 @@ class Obj_Rank_Robin extends Obj_Rank{
 		left join (
 		    select EnId as En1Id, IndEvent as En1Event, IndRank as En1Rank, EnCode as En1Bib, coalesce(EdExtra, EnCode) as En1LocalBib,
 		           EnFirstName as En1FamilyName, EnName as En1GivenName, EnNameOrder as En1NameOrder, upper(EnFirstName) as En1FamilyUpper, EnSex En1Gender, CoId En1CoId,
-		           trim(concat_ws(' ', upper(EnFirstName), EnName)) as En1Entry, trim(concat(upper(EnFirstName), ' ', left(EnName,1))) as En1EntryShort, CoName as En1Country, CoCode as En1CoShort, CoName as En1CoName, if(EnTvFamilyName='', ucase(EnFirstName),EnTvFamilyName) as En1TvFamilyName, EnTvInitials as En1TvInitials,
+		           trim(concat_ws(' ', upper(EnFirstName), EnName)) as En1Entry, trim(concat(upper(EnFirstName), ' ', left(EnName,1))) as En1EntryShort, CoName as En1Country, CoCode as En1CoShort, CoName as En1CoName, EnTvFamilyName as En1TvFamilyName, EnTvGivenName as En1TvGivenName, EnTvInitials as En1TvInitials,
 		           QuScore as Qu1Score, RrPartSourceRank as En1SourceRank
 			from Entries
 			inner join Individuals on IndId=EnId and IndTournament=EnTournament
@@ -781,7 +783,7 @@ class Obj_Rank_Robin extends Obj_Rank{
 		left join (
 		    select EnId as En2Id, IndEvent as En2Event, IndRank as En2Rank, EnCode as En2Bib, coalesce(EdExtra, EnCode) as En2LocalBib,
 		           EnFirstName as En2FamilyName, EnName as En2GivenName, EnNameOrder as En2NameOrder, upper(EnFirstName) as En2FamilyUpper, EnSex En2Gender, CoId En2CoId,
-		           trim(concat_ws(' ', upper(EnFirstName), EnName)) as En2Entry, trim(concat(upper(EnFirstName), ' ', left(EnName,1))) as En2EntryShort, CoName as En2Country, CoCode as En2CoShort, CoName as En2CoName, if(EnTvFamilyName='', ucase(EnFirstName),EnTvFamilyName) as En2TvFamilyName, EnTvInitials as En2TvInitials,
+		           trim(concat_ws(' ', upper(EnFirstName), EnName)) as En2Entry, trim(concat(upper(EnFirstName), ' ', left(EnName,1))) as En2EntryShort, CoName as En2Country, CoCode as En2CoShort, CoName as En2CoName, EnTvFamilyName as En2TvFamilyName,EnTvGivenName as En2TvGivenName, EnTvInitials as En2TvInitials,
 		           QuScore as Qu2Score, RrPartSourceRank as En2SourceRank
 			from Entries
 			inner join Individuals on IndId=EnId and IndTournament=EnTournament

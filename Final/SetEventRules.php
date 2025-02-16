@@ -12,7 +12,7 @@ if (!CheckTourSession()) {
 	printCrackError();
 }
 
-checkACL(AclCompetition, AclReadWrite);
+checkFullACL(AclCompetition, 'cData', AclReadWrite);
 require_once('Common/Lib/CommonLib.php');
 require_once('Common/Fun_Various.inc.php');
 

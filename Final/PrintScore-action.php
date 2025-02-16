@@ -3,7 +3,7 @@ require_once(dirname(__FILE__, 2) . '/config.php');
 require_once('Common/Lib/CommonLib.php');
 
 $Json=array('error'=>true, 'schedule'=>array());
-if(!(CheckTourSession() AND checkACL((empty($_REQUEST["indTeam"]) ? AclIndividuals : AclTeams), AclReadOnly, false))) {
+if(!CheckTourSession() OR !hasFullACL((empty($_REQUEST["indTeam"]) ? AclIndividuals : AclTeams), '', AclReadOnly)) {
     JsonOut($Json);
     die();
 }

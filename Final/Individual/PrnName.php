@@ -3,7 +3,7 @@ require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once('Common/Fun_Phases.inc.php');
 require_once('Common/Lib/Fun_PrintOuts.php');
 
-checkACL(AclIndividuals, AclReadOnly);
+checkFullACL(AclIndividuals, '', AclReadOnly);
 
 $Events=array();
 if(empty($_REQUEST['Event'])) {

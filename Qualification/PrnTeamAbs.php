@@ -10,7 +10,7 @@ require_once('Common/pdf/PdfChunkLoader.php');
 if (!isset($_SESSION['TourId']) && isset($_REQUEST['TourId'])) {
 	CreateTourSession($_REQUEST['TourId']);
 }
-checkACL(AclQualification, AclReadOnly);
+checkFullACL(AclQualification, '', AclReadOnly);
 
 $PdfData=getQualificationTeam();
 $rankData=$PdfData->rankData;

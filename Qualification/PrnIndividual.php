@@ -13,7 +13,7 @@ $PdfData=getDivClasIndividual();
 if (!isset($_SESSION['TourId']) && isset($_REQUEST['TourId'])) {
 	CreateTourSession($_REQUEST['TourId']);
 }
-checkACL(AclQualification, AclReadOnly);
+checkFullACL(AclQualification, '', AclReadOnly);
 
 if(!isset($isCompleteResultBook)) {
 	$pdf = new ResultPDF($PdfData->Description);

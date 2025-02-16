@@ -3,7 +3,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/Lib/CommonLib.php');
 CheckTourSession(true);
-checkACL(AclCompetition, AclReadOnly);
+checkFullACL(AclCompetition, 'cSchedule', AclReadOnly);
 
 $PAGE_TITLE=get_text('FopSetup');
 $JS_SCRIPT=array(

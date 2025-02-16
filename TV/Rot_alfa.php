@@ -6,8 +6,17 @@ define("HideCols", GetParameter("IntEvent"));
 $Session='';
 if(!empty($_REQUEST['Session'])) $Session=" and Left(EnFirstName, 1)='{$_REQUEST['Session']}'";
 
+$HallField="''";
+if(in_array('HALL',$TVsettings->Columns) and $FopLocations=Get_Tournament_Option('FopLocations', [], $TourId)) {
+    $HallField='case';
+    foreach($FopLocations as $FopLocation) {
+        $HallField.=" when QuTarget between {$FopLocation->Tg1} and {$FopLocation->Tg2} then ".StrSafe_DB($FopLocation->Loc);
+    }
+    $HallField.=" end";
+}
+
 $Select
-	= "SELECT LEFT(UPPER(EnFirstName), 1) as Initial, EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status "
+	= "SELECT LEFT(UPPER(EnFirstName), 1) as Initial, EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, $HallField as Hall "
 	. "FROM Entries  "
 	. "INNER JOIN Countries ON EnCountry=CoId AND EnTournament=CoTournament "
 	. "INNER JOIN Divisions ON EnDivision=DivId AND EnTournament=DivTournament and DivAthlete=1 "
@@ -23,6 +32,7 @@ $Rs=safe_r_sql($Select);
 $RowCounter = 0;
 $oldTarget='x';
 $Class='';
+$ViewHalls=(in_array('HALL', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
 while($MyRow=safe_fetch($Rs))
 {
 	if(!isset($ret[$MyRow->Initial])) {
@@ -30,7 +40,7 @@ while($MyRow=safe_fetch($Rs))
 		// crea l'header della gara
 		$tmp = '';
 
-		$NumCol = 6;
+		$NumCol = 6+$ViewHalls;
 
 		$tmp.= '<tr><th class="Title" colspan="' . ($NumCol) . '">';
 		$tmp.= $Arr_Pages[$TVsettings->TVPPage];
@@ -48,6 +58,10 @@ while($MyRow=safe_fetch($Rs))
 		$tmp.= '<tr>';
 		$tmp.= '<th>' . get_text('Target') . '</th>';
 		$col[]=9;
+        if($ViewHalls) {
+            $tmp.= '<th>' . get_text('ShootingHall', 'Tournament') . '</th>';
+            $col[]=10;
+        }
 		$tmp.= '<th>' . get_text('Athlete') . '</th>';
 		$col[]=25;
 		$tmp.= '<th>' . get_text('Country') . '</th>';
@@ -84,6 +98,7 @@ while($MyRow=safe_fetch($Rs))
 
 	$tmp.= '<tr' . $Class . '>'
 		. '<td class="NumberAlign">' . ltrim($MyRow->TargetNo, '0') . '&nbsp;</td>'
+        . ($ViewHalls ? '<td>'.$MyRow->Hall.'</td>' : '')
 		. '<td>' . $MyRow->FirstName . ' ' . ($TVsettings->TVPNameComplete==0 ? FirstLetters($MyRow->Name) : $MyRow->Name) . '</td>'
 		. '<td>' . $MyRow->NationCode . ' ' . ($TVsettings->TVPViewNationName==1 ? $MyRow->Nation : '') . '</td>'
 // 		. '<td class="Center">' . (HideCols && $MyRow->DivDescription ? $MyRow->DivDescription : $MyRow->DivCode) . '</td>'

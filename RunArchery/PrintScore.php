@@ -10,7 +10,7 @@ require_once('Common/Fun_Sessions.inc.php');
 // require_once('Common/Fun_FormatText.inc.php');
 // require_once('Common/Fun_Modules.php');
 CheckTourSession(true);
-checkACL(AclQualification, AclReadOnly);
+checkFullACL(AclQualification, '', AclReadOnly);
 
 // $Select = "SELECT ToCategory, ToId,ToNumDist AS TtNumDist,ToElabTeam AS TtElabTeam FROM Tournament WHERE ToId={$_SESSION['TourId']}";
 // $RsTour=safe_r_sql($Select);

@@ -1,12 +1,28 @@
 <?php
 $lang['AutoCheckinAlreadyDone']='Usted ya ha sido verificado en <br>Si necesita modificar cualquier información dirijase al mostrador de acreditación';
+$lang['AutoCheckinConfirm']='Si todos los detalles son correctos pulse CONFIRMAR REGISTRO<br>Si no, pulse CANCELAR y acuda al mostrador de acreditación';
 $lang['AutoCheckinSearch']='Escanee el Código QR que ha recibido o teclee su nombre';
+$lang['AutoCHK-CanEdit']='Permitir a los encargados de las inscripciones editar Nombres, E-Mails, País/Club, etc.';
+$lang['AutoCHK-IP']='Listado de IP para el registro automático de dispositivos. Una dirección IP por linea.';
+$lang['AutoCHK-Print']='Muestra automáticamente imprimir dialogo.';
 $lang['CombiCompList']='Listado de Códigos de Competiciones, separados por una coma';
+$lang['ExportCategories']='Seleccione que categorías/eventos quiere exportar (no selección quiere decir todos)';
+$lang['ExportDistances']='Selecciones que distancia(s) quiere exportar (no selección quiere decir todas las distancias)';
+$lang['ExportSchedule']='Selecciones del programa el turno a exportar';
+$lang['ExportScheduleToday']='Muestra solo los turnos programados para hoy';
+$lang['FontFamily']='Nombre de la fuente a utilizar en el CSS';
+$lang['FontFile']='Localización del archivo en el disco';
+$lang['FontName']='Nombre actual de la fuente';
+$lang['FontStyle']='Estilo de la fuente en CSS';
+$lang['FontWeight']='Peso de la fuente en CSS';
 $lang['GetBarcodeSeparator']='Despues de imprimir la hoja de referencia de los códigos de barras leer el código de barras "SEPARATOR" en orden a activar los elementos correctos de lectura.';
 $lang['HomePage']='Esta es la página en la que puedes seleccionar o crear una competición.';
 $lang['ISK-LockedSessionHelp']='Los iconos {$a} muestran si la App puede tantear o no en este turno';
 $lang['ScoreBarCodeShortcuts']='Leer el código de barras impreso en la hoja de puntuaciones.<br/> Insertando manualmente un # seguido por el nombre del atleta buscará a dicho atleta en la base de datos<br/> Insertando @ seguido de un número de diana buscará dicha diana. DEBERA establecerse la distancia. Se deberá especificar el turno (primer dígito) y la diana tendrá de 0 a 3 dígitos.';
+$lang['TargetRequests-Printout']='Imprime los Códigos Qr de las dianas requeridas para permitir que los dispositivos personales sean rápidamente reasignados a las dianas correctas.<br> Seleccione el(los) grupo(s) de dispositivos que quiere imprimir y el rango de las dianas:<br> 1-10 imprime el CódigoQr de las dianas 1 a 10<br> 1,7,,12-15 imprime el CódigoQr de las dianas 1,7, y de la 12 a la 15';
 $lang['TV-ChannelSetup']='=Configuración de Canales= Después de configurar sus canales, conecte el navegador del dispositivo que quiera conectar a un canal a <code>http://IP.OF.IANSEO/tv.php?id=CHANNEL</code> donde \'\'\'IP.OF.IANSEO\'\'\' es la IP en la que ianseo se está ejecutando (incluyendo el directorio, de haberlo) y \'\'\'CHANNEL\'\'\' es la ID del canal.';
 $lang['TV-RotEdit']='<div>Una página de presentación está compuesta por al menos una página de contenidos.</div> <div>Las páginas de contenidos se mostrarán entonces una a una sin fin.</div><div><b>NOTA:</b>En versiones regulares y ligeras, el primer contenido se mostrará otra vez como el último por lo que será sensato  insertar una imagen como primer contenido (por ejemplo: logotipo de la competición).</div> <div>Estos contenidos pueden ser de la misma competición (sorteo de dianas, calificación, encuentros ...) o bien "multimedia" (imágenes, mensajes HTML, ...).</div>';
 $lang['TV-RotList']='<div>Esta es una lista de páginas de presentación disponibles para enviar a la pantalla, monitores o transmisión por TV.</div> <div>Se muestran 3 posibles motores y habrá que clicar en el  link correspondiente para activarlos:</div> <ul> <li>un motor regular compatible con la mayoría de los navegadores</li> <li>una versión ligera compatible con la mayoría de navegadores pero que utiliza menos recursos</li> <li>una versión avanzada que usa navegadores modernos con capacidad HTML5</li> </ul> <div>Para crear un nuevo contenido introducir un nombre y presionar el botón.</div>';
+$lang['UserName']='Debe ser único en el sistema. Longitud mínima: 6 caracteres';
+$lang['UserPassword']='Dejar en blanco para mantener la contraseña actual';
 ?>

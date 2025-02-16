@@ -3,9 +3,11 @@
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Common/Fun_Phases.inc.php');
 
-checkACL(array(AclTeams,AclIndividuals, AclOutput), AclReadOnly, false);
-
 $JSON=array('error' => 1, 'data'=>array());
+if(!CheckTourSession() or !hasFullACL(AclOutput, 'outTv', AclReadOnly)) {
+    JsonOut($JSON);
+}
+
 
 $Sql = "SELECT EvCode, EvEventName as EvName, EvTeamEvent as isTeam, EvFinalFirstPhase AS StartPhase, EvElimType 
   FROM Events 

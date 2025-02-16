@@ -13,7 +13,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclParticipants, AclReadWrite, false);
+    checkFullACL(AclParticipants, 'pEntries', AclReadWrite, false);
 
 	$Errore = 0;
 	$CoName='';

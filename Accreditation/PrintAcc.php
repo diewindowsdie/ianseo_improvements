@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-checkACL(AclAccreditation, AclReadWrite);
+checkFullACL(AclAccreditation,  'acStandard', AclReadWrite);
 $badge2Print = urldecode($_REQUEST["toPrint"] ?? '');
 $specificAutomator='';
 $customPrinter = $_REQUEST["printer"] ?? '';;

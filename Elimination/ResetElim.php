@@ -8,7 +8,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclEliminations, AclReadWrite, false);
+    checkFullACL(AclEliminations, '',  AclReadWrite, false);
 
 	$error=0;
 	$xml='';

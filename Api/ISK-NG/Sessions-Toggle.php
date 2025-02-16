@@ -3,7 +3,7 @@ require_once(__DIR__.'/config.php');
 
 $JSON=array('error'=>1, 'msg'=>get_text('Error'), 'status'=>array());
 
-if(!CheckTourSession() or checkACL(AclISKServer, AclReadWrite, false)!=AclReadWrite or empty($_REQUEST['key'])) {
+if(!CheckTourSession() or !hasFullACL(AclISKServer, 'iskManagement', AclReadWrite) or empty($_REQUEST['key'])) {
 	JsonOut($JSON);
 }
 

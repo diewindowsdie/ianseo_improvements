@@ -14,7 +14,7 @@
 	require_once('Common/Fun_Sessions.inc.php');
 
 	CheckTourSession(true);
-    checkACL(AclQualification, AclReadWrite);
+    checkFullACL(AclQualification, '', AclReadWrite);
 
 	$IncludeJquery = true;
 	$JS_SCRIPT=array(

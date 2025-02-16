@@ -24,7 +24,7 @@ if($_FILES and !empty($_FILES['Gara']['tmp_name'])){
 
 	$TourId = getIdFromCode(($importedToCode = tour_getCode($_FILES['Gara']['tmp_name'])));
 	if($TourId ) {
-        checkACL(AclRoot, AclReadWrite, true, $TourId);
+        checkFullACL(AclRoot, '', AclReadWrite, true, $TourId);
     }
 
     if($CFG->USERAUTH AND !empty($_SESSION['AUTH_ENABLE']) AND empty($_SESSION['AUTH_ROOT'])) {

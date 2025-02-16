@@ -20,7 +20,7 @@ $Event=$_REQUEST['event'];
 //$Starter='';
 //$Winner=0;
 
-checkACL(($Team ? AclTeams : AclIndividuals), AclReadWrite, false);
+checkFullACL(($Team ? AclTeams : AclIndividuals), '', AclReadWrite, false);
 
 $TabIndexOffset=100;
 

@@ -5,11 +5,10 @@
 */
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-if (!CheckTourSession()) {
+if (!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite)) {
 	print get_text('CrackError');
 	exit;
 }
-checkACL(AclCompetition, AclReadWrite, false);
 
 $JSON=array('error' => 1, 'which' => '#');
 

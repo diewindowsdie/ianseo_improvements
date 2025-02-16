@@ -1,7 +1,7 @@
 <?php
 
 require_once(dirname(dirname(__FILE__)).'/config.php');
-checkACL(AclRoot, AclReadWrite);
+checkFullACL(AclAccreditation, 'acAdvanced', AclReadWrite);
 
 require_once('Common/Lib/Fun_Modules.php');
 require_once('Common/Lib/CommonLib.php');

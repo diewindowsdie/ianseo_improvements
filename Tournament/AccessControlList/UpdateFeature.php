@@ -1,8 +1,9 @@
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-checkACL(AclRoot, AclReadWrite);
-if (!CheckTourSession())
+checkFullACL(AclRoot, '', AclReadWrite);
+if (!CheckTourSession()) {
     exit;
+}
 
 $Json = array();
 if(!empty($_REQUEST["IP"]) AND $_REQUEST["IP"]!='127.0.0.1') {

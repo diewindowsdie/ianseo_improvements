@@ -19,7 +19,7 @@ Horizontal Spacing 	Report – Column Spacing 	0.15625
  */
 
 if(CheckTourSession()) {
-    checkACL(AclQualification, AclReadOnly);
+    checkFullACL(AclQualification, '', AclReadOnly);
 
 	if($_SESSION['ToPaper']) {
 		$pdf = new LabelPDF(216, 280);

@@ -104,8 +104,8 @@ if(file_exists($CFG->LANGUAGE_PATH.'/en/translators.json')) {
 }
 
 echo '<tr class="Divider"><td colspan="3"></td></tr>'
-	. '<tr><th class="SubTitle" colspan="3">' . get_text('Credits-License', 'Install') . '</th></tr>'
-	. '<tr><td class="Center" colspan="3"><a href="http://www.gnu.org" target="_blank"><img src="Common/Images/gplv3.png" alt="GPLv3" border="0"></a></td></tr>'
+	. '<tr><th class="SubTitle" colspan="3">' . get_text('AcceptLicense-Credits', 'Install', '<a href="'.$CFG->ROOT_DIR.'LICENSE.html" target="License">'.IanseoLicenseFullName.'</a> ('.IanseoLicenseCode.')') . '</th></tr>'
+	. '<tr><td class="Center" colspan="3"><a href="'.IanseoLicenseExternalSite.'" target="_blank"><img src="'.$CFG->ROOT_DIR.'Common/Images/'.IanseoLicensePicture.'" alt="'.IanseoLicenseCode.'" border="0" style="height:4em"></a></td></tr>'
 	. '</table>';
 
 include('Common/Templates/tail.php');

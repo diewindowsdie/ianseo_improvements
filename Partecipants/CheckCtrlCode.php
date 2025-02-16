@@ -11,7 +11,7 @@ require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/Lib/Fun_DateTime.inc.php');
 require_once('Fun_Partecipants.local.inc.php');
 
-if (!CheckTourSession() or checkACL(AclParticipants, AclReadOnly, false)<AclReadOnly or !isset($_REQUEST['d_e_EnCtrlCode']) or !isset($_REQUEST['d_e_EnSex'])) {
+if (!CheckTourSession() or !hasFullACL(AclParticipants, 'pEntries',  AclReadOnly) or !isset($_REQUEST['d_e_EnCtrlCode']) or !isset($_REQUEST['d_e_EnSex'])) {
 	JsonOut($JSON);
 }
 

@@ -8,7 +8,7 @@ if(!empty($_REQUEST['export'])) {
 	$ToId=getIdFromCode($_REQUEST['Tour']);
 	$RuleId=intval($_REQUEST['export']);
 	$q=safe_r_sql("select * from TVRules where TVRTournament={$ToId} and TVRId=$RuleId");
-	if($r=safe_fetch($q)) {
+	if(hasFullACL(AclOutput,'outTv', AclReadOnly) and $r=safe_fetch($q)) {
 		$JSON['rule']=$r;
 		$RuleName=$r->TVRName;
 		$q=safe_r_sql("select * from TVSequence where TVSTournament={$ToId} and TVSRule=$RuleId order by TVSId");
@@ -40,7 +40,7 @@ if(!empty($_SESSION['TourId'])) $TourId=$_SESSION['TourId'];
 if(!empty($_REQUEST['TourId'])) $TourId=$_REQUEST['TourId'];
 $lvl = 0;
 if($TourId) {
-    $lvl = checkACL(AclOutput, AclReadOnly, true, $TourId);
+    $lvl = checkFullACL(AclOutput,'outTv', AclReadOnly, true, $TourId);
 }
 
 if(!IsBlocked(BIT_BLOCK_MEDIA)) {

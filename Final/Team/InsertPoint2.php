@@ -7,7 +7,7 @@ require_once('Common/Lib/Fun_Phases.inc.php');
 require_once('Common/Lib/ArrTargets.inc.php');
 
 if (!CheckTourSession() || !isset($_REQUEST['d_Phase'])) PrintCrackError();
-checkACL(AclTeams, AclReadOnly);
+checkFullACL(AclTeams, '',AclReadWrite);
 
 $Cols2Remove = (isset($_REQUEST['d_Tie']) && $_REQUEST['d_Tie']==1 ? 0 : 3);
 $QrCodeScorecards = '';

@@ -8,8 +8,7 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 $JSON=array('error' => 1, 'msg' => 'Error');
 
-if(checkACL(AclCompetition, AclNoAccess) != AclReadWrite
-		or !CheckTourSession()
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite)
 		or empty($_REQUEST['EvCode'])
 		or empty($_REQUEST['DelDiv'])
 		or empty($_REQUEST['DelCl'])

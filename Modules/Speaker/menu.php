@@ -2,7 +2,7 @@
 $version='2022-11-01 16:13:00';
 
 
-if ($on and !defined('hideSpeaker') AND $acl[AclSpeaker] >= AclReadOnly) {
+if ($on and !defined('hideSpeaker') AND subFeatureAcl($acl,AclSpeaker,'') >= AclReadOnly) {
 	$ret['PART'][] = MENU_DIVIDER;
 	$ret['PART'][] = get_text('MenuLM_Speaker') . '|' . $CFG->ROOT_DIR.'Modules/Speaker/participants.php';
 

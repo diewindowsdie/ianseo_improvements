@@ -1,8 +1,8 @@
 <?php
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 	CheckTourSession(true);
-    checkACL(AclEliminations, AclReadOnly);
-	require_once('Common/Fun_FormatText.inc.php');
+    checkFullACL(AclEliminations, '',  AclReadOnly);
+    require_once('Common/Fun_FormatText.inc.php');
 
 	if(!empty($_FILES) and !empty($_FILES['ImportBackNumbers']['tmp_name']) ) {
 		$Bns=unserialize(gzuncompress(implode('',file($_FILES['ImportBackNumbers']['tmp_name']))));

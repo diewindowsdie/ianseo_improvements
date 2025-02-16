@@ -11,7 +11,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 
 $JSON=array('error'=>1, 'which'=>'', 'field_error'=>0, 'ath'=>array());
 
-if (!CheckTourSession() or checkACL(AclTeams, AclReadWrite,false)!=AclReadWrite or IsBlocked(BIT_BLOCK_TEAM)) {
+if (!CheckTourSession() or !hasFullACL(AclTeams, '', AclReadWrite) or IsBlocked(BIT_BLOCK_TEAM)) {
 	JsonOut($JSON);
 }
 

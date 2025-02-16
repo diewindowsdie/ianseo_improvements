@@ -3,7 +3,7 @@ require_once(dirname(dirname(__DIR__)) . '/config.php');
 require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/pdf/PdfChunkLoader.php');
 
-checkACL(array(AclQualification,AclRobin), AclReadOnly);
+checkFullACL(array(AclQualification, AclRobin), '', AclReadOnly);
 
 $Event=($_REQUEST['Events']??'');
 $Team=($_REQUEST['Team']??0);

@@ -9,7 +9,7 @@ $JSON=array('error' => 1, 'rows' => array(), 'newdata' => '');
 if (empty($_SESSION['TourId']) or !$schedule ) {
 	JsonOut($JSON);
 }
-checkACL(AclSpeaker, AclReadOnly, false);
+checkFullACL(AclSpeaker, '', AclReadOnly, false);
 
 $team=substr($schedule,0,1);
 

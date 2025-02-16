@@ -5,7 +5,7 @@ require_once('Common/Lib/CommonLib.php');
 require_once(__DIR__ . '/Lib.php');
 
 $Json=array('error'=>true);
-if(!(CheckTourSession() AND checkACL(AclISKServer, AclReadWrite, false))) {
+if(!(CheckTourSession() AND hasFullACL(AclISKServer, 'iskUser', AclReadWrite))) {
     JsonOut($Json);
     die();
 }

@@ -4,7 +4,7 @@ require_once('Common/pdf/LabelPDF.inc.php');
 require_once('Common/Fun_Sessions.inc.php');
 
 if(CheckTourSession()) {
-    checkACL(AclQualification, AclReadOnly);
+    checkFullACL(AclQualification, '', AclReadOnly);
 
 	$pdf = new LabelPDF();
 

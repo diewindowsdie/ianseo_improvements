@@ -12,7 +12,7 @@ $JSON=[
     'msg'=>get_text('Error','Errors'),
 ];
 
-if(!hasACL(AclQualification, AclReadWrite) or IsBlocked(BIT_BLOCK_QUAL)) {
+if(!hasFullACL(AclQualification, '', AclReadWrite) or IsBlocked(BIT_BLOCK_QUAL)) {
     JsonOut($JSON);
 }
 

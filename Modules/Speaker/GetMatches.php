@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(dirname(__FILE__)) . '/config.php');
+require_once(dirname(__FILE__, 2) . '/config.php');
 require_once('Common/Lib/Fun_Final.local.inc.php');
 require_once('Common/Lib/Fun_Phases.inc.php');
 require_once('Common/Lib/ArrTargets.inc.php');
@@ -32,7 +32,7 @@ if($IskSequence=getModuleParameter('ISK-NG', 'Sequence')) {
 if (empty($_SESSION['TourId']) && (is_null($schedule) || is_null($team))) {
 	JsonOut($JSON);
 }
-checkACL(AclSpeaker, AclReadOnly, false);
+checkFullACL(AclSpeaker, '', AclReadOnly, false);
 
 $otherWhere= "
 	AND fs1.FSTeamEvent=" . StrSafe_DB($team) . "
@@ -170,9 +170,9 @@ if (safe_num_rows($rs)>0) {
 				$finished=isFinished($myRow,$points4win[$myRow->event],$max);
 			} elseif($myRow->tie1==2 || $myRow->tie2==2) {
 				$finished = 1;
-            } elseif(strlen(trim($myRow->arrowString1))==$arrow4Match[$myRow->event] AND strlen(trim($myRow->arrowString2))==$arrow4Match[$myRow->event]) {
-                if($myRow->score1 != $myRow->score2 OR ($myRow->tie1==1 OR $myRow->tie2==1) OR ($myRow->win1==1 OR $myRow->win2==1)) {
-                    if(strlen(trim($myRow->arrowString1))==$stdArrowShot AND strlen(trim($myRow->arrowString2))==$stdArrowShot AND strlen(trim($myRow->tiebreak1))==$tieArrowShot AND strlen(trim($myRow->tiebreak2))==$tieArrowShot) {
+			} elseif(strlen(trim($myRow->arrowString1))==$arrow4Match[$myRow->event] AND strlen(trim($myRow->arrowString2))==$arrow4Match[$myRow->event]) {
+				if($myRow->score1 != $myRow->score2 OR ($myRow->tie1==1 OR $myRow->tie2==1) OR ($myRow->win1==1 OR $myRow->win2==1)) {
+					if(strlen(trim($myRow->arrowString1))==$stdArrowShot AND strlen(trim($myRow->arrowString2))==$stdArrowShot AND strlen(trim($myRow->tiebreak1))==$tieArrowShot AND strlen(trim($myRow->tiebreak2))==$tieArrowShot) {
 						$finished = 2;
 					} else {
 						$finished = 1;

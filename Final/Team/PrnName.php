@@ -2,7 +2,7 @@
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Common/Fun_Phases.inc.php');
 require_once('Common/Lib/Fun_PrintOuts.php');
-checkACL(AclTeams, AclReadOnly);
+checkFullACL(AclTeams, '', AclReadOnly);
 
 $TeamLeaf=false;
 

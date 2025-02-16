@@ -2,7 +2,7 @@
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 CheckTourSession(true);
 
-checkACL(AclTeams, AclReadWrite, false);
+checkFullACL(AclTeams, '', AclReadWrite, false);
 
 $IsRunArchery=($_SESSION['TourType']==48);
 

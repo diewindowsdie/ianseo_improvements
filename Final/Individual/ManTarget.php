@@ -2,7 +2,7 @@
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 CheckTourSession(true);
-checkACL(AclCompetition, AclReadWrite);
+checkFullACL(AclCompetition, 'cSchedule', AclReadWrite);
 require_once('Common/Lib/CommonLib.php');
 require_once('Common/Fun_Phases.inc.php');
 

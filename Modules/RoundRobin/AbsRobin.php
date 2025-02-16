@@ -10,7 +10,7 @@ require_once('Common/Lib/CommonLib.php');
 // require_once('Common/Fun_Sessions.inc.php');
 
 CheckTourSession(true);
-checkACL(AclRobin, AclReadWrite);
+checkFullACL(AclRobin, '', AclReadWrite);
 
 $Team=($_REQUEST['team']??-1);
 

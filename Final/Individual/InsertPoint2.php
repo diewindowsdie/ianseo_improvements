@@ -8,7 +8,7 @@
 	//require_once('HHT/Fun_HHT.local.inc.php');
 
 	if (!CheckTourSession() || !isset($_REQUEST['d_Phase'])) PrintCrackError();
-    checkACL(AclIndividuals, AclReadWrite);
+    checkFullACL(AclIndividuals, '', AclReadWrite);
 
 	$Cols2Remove = (isset($_REQUEST['d_Tie']) && $_REQUEST['d_Tie']==1 ? 0 : 2);
     $QrCodeScorecards = '';

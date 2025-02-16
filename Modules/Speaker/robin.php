@@ -14,7 +14,7 @@ if(!CheckTourSession()) {
 		CreateTourSession($TourId);
 	}
 }
-checkACL(AclSpeaker, AclReadOnly);
+checkFullACL(AclSpeaker, '', AclReadOnly, false);
 
 $IncludeJquery=true;
 $IncludeFA=true;

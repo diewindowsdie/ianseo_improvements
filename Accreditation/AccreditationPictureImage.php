@@ -1,16 +1,15 @@
 <?php
-require_once(dirname(dirname(__FILE__)) . '/config.php');
+require_once(dirname(__FILE__, 2) . '/config.php');
 require_once('Common/Fun_Modules.php');
 
 if(file_exists($paramFile=dirname(dirname(__FILE__))."/Modules/Accreditation/includeAccreditationPicture.php")) {
 	require_once($paramFile);
 }
 
-if (!CheckTourSession()) {
+if (!CheckTourSession() or !hasFullACL(AclAccreditation, 'acStandard', AclReadWrite)) {
 	print get_text('CrackError');
 	exit;
 }
-checkACL(AclAccreditation, AclReadWrite,false);
 
 $Errore = 1;
 $Answer='';

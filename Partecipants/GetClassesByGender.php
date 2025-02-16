@@ -9,7 +9,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclParticipants, AclReadOnly, false);
+    checkFullACL(AclParticipants, 'pEntries', AclReadOnly, false);
 
 	if(!empty($age)) {
 		preg_match('/(?P<age>[0-9]{4})/',$age,$tmp);

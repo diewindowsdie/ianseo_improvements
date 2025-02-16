@@ -6,7 +6,7 @@ require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Lib/TournamentOfficials.php');
 require_once('Common/Lib/RowSpaceCalculator.php');
 
-checkACL(AclCompetition, AclReadOnly);
+checkFullACL(AclCompetition, 'cData', AclReadOnly);
 define("HideCols", GetParameter("IntEvent"));
 
 $CatJudge = isset($_REQUEST['judge']);

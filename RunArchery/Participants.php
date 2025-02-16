@@ -5,7 +5,7 @@ require_once('Common/Fun_Sessions.inc.php');
 $IncludeJquery=true;
 
 CheckTourSession(true);
-checkACL(AclParticipants, AclReadOnly);
+checkFullACL(AclParticipants, 'pEntries', AclReadOnly);
 
 $SesNo=0;
 $SmallCellW=0;

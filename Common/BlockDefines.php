@@ -34,6 +34,7 @@ define ('BIT_BLOCK_ALL', 0xFFFF);
 define ("AclNoAccess",0);
 define ("AclReadOnly",1);
 define ("AclReadWrite",2);
+define ("AclCustom",3);
 
 define ('AclRoot', 0);
 define ('AclCompetition', 1);
@@ -92,6 +93,14 @@ if($CFG->USERAUTH) {
     function isAuthEnabled() {return array(0,1);}
     function authActualACL($authEnabled, &$acl) {}
     function authHasACL($authEnabled, $feature, $level, $toCode) {return null;}
+    function authCheckACL($authEnabled, $checkCompAcl, $feature, $subFeature, $level, $toCode) {return null;}
+    function subFeatureAcl($acl, $feature, $subfeature='') {
+        if(array_key_exists($feature, $acl)) {
+            return $acl[$feature];
+        } else {
+            return AclNoAccess;
+        }
+    }
 }
 /*
  * La chiave rappresenta il bit di cui si è chiesto l'unset
@@ -144,10 +153,26 @@ function actualACL() {
         $acl = array_fill(0, count($listACL), AclNoAccess);
         authActualACL($authEnabled, $acl);
         if($lockEnabled and $checkCompAcl) {
-            $Sql = "SELECT AclDtFeature, AclDtLevel FROM AclDetails WHERE AclDtTournament=" . intval($_SESSION['TourId']) . " AND AclDtIP='{$ip}'";
+            $Sql = "SELECT AclDtFeature, AclDtLevel FROM AclDetails WHERE AclDtTournament=" . intval($_SESSION['TourId']??0) . " AND AclDtIP='{$ip}'";
+            if((!isset($_SESSION['TourId']) or ($_SESSION['TourId']??0)<0) and !empty($_SESSION['AUTH_COMP'])) {
+                $AuthFilter = array();
+                $compList = array();
+                foreach (($_SESSION["AUTH_COMP"] ?? array()) as $comp) {
+                    if (str_contains($comp, '%')) {
+                        $AuthFilter[] = 'ToCode LIKE ' . StrSafe_DB($comp);
+                    } else {
+                        $compList[] = $comp;
+                    }
+                }
+                if (count($compList)) {
+                    $AuthFilter[] = 'FIND_IN_SET(ToCode, \'' . implode(',', $compList) . '\') != 0 ';
+                }
+
+                $Sql = "SELECT AclDtFeature, AclDtLevel FROM AclDetails inner join Tournament on AclDtTournament=ToId WHERE (" . implode(' OR ', $AuthFilter) . ") AND AclDtIP='{$ip}'";
+            }
             $q = safe_r_SQL($Sql);
             while ($r = safe_fetch($q)) {
-                $acl[$r->AclDtFeature] = $r->AclDtLevel;
+                $acl[$r->AclDtFeature] = max( $acl[$r->AclDtFeature], $r->AclDtLevel);
             }
         }
     }
@@ -168,14 +193,27 @@ function panicACL() {
 }
 
 function hasACL($feature, $level, $TourId=0) {
+    return hasFullACL($feature, '', $level, $TourId);
+}
+
+function checkACL($feature, $level, $redirect=true, $TourId=0) {
+    return checkFullACL($feature, '', $level, $redirect, $TourId);
+}
+
+function hasFullACL($feature, $subFeature, $level, $TourId=0) {
+    return (checkFullACL($feature, $subFeature, $level, null, $TourId) >= $level);
+}
+
+function checkFullACL($feature, $subFeature, $level, $redirect=true, $TourId=0) {
     global $INFO, $CFG;
     if(!is_array($feature)) {
         $feature = array($feature);
     }
     $INFO->ACLReqfeatures = $feature;
+    $INFO->ACLReqsubFeatures = $subFeature;
     $INFO->ACLReqlevel = $level;
     $INFO->ACLEnabled = false;
-
+    $INFO->ACLAuthEnabled = false;
     if ($TourId == 0 AND !empty($_SESSION['TourId'])) {
         $TourId = intval($_SESSION['TourId']);
     }
@@ -187,51 +225,7 @@ function hasACL($feature, $level, $TourId=0) {
     list($authEnabled, $checkCompAcl) = isAuthEnabled();
     if($authEnabled == 1) {
         $INFO->ACLEnabled = true;
-    }
-    $ip = $_SERVER["REMOTE_ADDR"];
-    if($ip == '127.0.0.1' OR $ip == '::1' OR in_array($ip,$CFG->ACLExcluded)) {
-        return true;
-    } else {
-        if($INFO->ACLEnabled) {
-            if(!is_null($tmpReturn = authHasACL($authEnabled, $feature, $level, $TourCode))) {
-                return $tmpReturn;
-            }
-            if ($lockEnabled[0] == "1" and $checkCompAcl) {
-                $Sql = "SELECT AclDtLevel FROM AclDetails WHERE AclDtTournament={$TourId} AND AclDtIP='{$ip}' && AclDtFeature IN (" . implode(',', $feature) . ") ORDER BY AclDtLevel ASC";
-                $q = safe_r_SQL($Sql);
-                if ($r = safe_fetch($q) and $level <= $r->AclDtLevel) {
-                    return true;
-                } else if ($level == AclNoAccess) {
-                    return false;
-                }
-            }
-        } else {
-            return true;
-        }
-    }
-    // as a security measure always return false if it arrives here!
-    return false;
-}
-
-function checkACL($feature, $level, $redirect=true, $TourId=0) {
-    global $INFO, $CFG, $listACL;
-    if(!is_array($feature)) {
-        $feature = array($feature);
-    }
-    $INFO->ACLReqfeatures = $feature;
-    $INFO->ACLReqlevel = $level;
-    $INFO->ACLEnabled = false;
-    if ($TourId == 0 AND !empty($_SESSION['TourId'])) {
-        $TourId = intval($_SESSION['TourId']);
-    }
-    $TourCode = getCodeFromId($TourId);
-    $lockEnabled = getModuleParameter("ACL", "AclEnable", "00", $TourId, true);
-    if($lockEnabled[0] == "1") {
-        $INFO->ACLEnabled = true;
-    }
-    list($authEnabled, $checkCompAcl) = isAuthEnabled();
-    if($authEnabled == 1) {
-        $INFO->ACLEnabled = true;
+        $INFO->ACLAuthEnabled = true;
     }
     $ip = $_SERVER["REMOTE_ADDR"];
     if($ip == '127.0.0.1' OR $ip == '::1' OR in_array($ip,$CFG->ACLExcluded)) {
@@ -259,12 +253,29 @@ function checkACL($feature, $level, $redirect=true, $TourId=0) {
         }
         //Check Valid
         if($INFO->ACLEnabled) {
-            if ($lockEnabled[0] == "1" and $checkCompAcl) {
+            if(!is_null($tmpReturn = authCheckACL($authEnabled, $checkCompAcl, $feature, $subFeature, $level, $TourCode)) and $tmpReturn !== false) {
+                return $tmpReturn;
+            } else if ($lockEnabled[0] == "1" and $checkCompAcl) {
                 $Sql = "SELECT `AclDtLevel` FROM `AclDetails` WHERE AclDtTournament={$TourId} AND AclDtIP='{$ip}' && AclDtFeature IN (" . implode(',', $feature) . ") ORDER BY AclDtLevel ASC";
                 $q = safe_r_SQL($Sql);
                 if ($r = safe_fetch($q) and $level <= $r->AclDtLevel) {
                     return intval($r->AclDtLevel);
                 } else if ($level == AclNoAccess) {
+                    return AclNoAccess;
+                } else {
+                    if(is_null($redirect)) {
+                        return AclNoAccess;
+                    } else {
+                        if ($redirect) {
+                            CD_redirect($CFG->ROOT_DIR . 'noAccess.php');
+                        } else {
+                            http_response_code(404);
+                        }
+                        die();
+                    }
+                }
+            } else if($tmpReturn === false) {
+                if(is_null($redirect)) {
                     return AclNoAccess;
                 } else {
                     if ($redirect) {
@@ -275,19 +286,8 @@ function checkACL($feature, $level, $redirect=true, $TourId=0) {
                     die();
                 }
             }
-            if(!is_null($tmpReturn = authCheckACL($authEnabled, $checkCompAcl, $feature, $level, $TourCode)) and $tmpReturn !== false) {
-                return $tmpReturn;
-            } else if($tmpReturn === false) {
-                if ($redirect) {
-                    CD_redirect($CFG->ROOT_DIR . 'noAccess.php');
-                } else {
-                    http_response_code(404);
-                }
-                die();
-            }
         } else {
             return AclReadWrite;
         }
     }
 }
-

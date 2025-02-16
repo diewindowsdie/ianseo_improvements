@@ -6,7 +6,7 @@ define('debug',false);	// settare a true per l'output di debug
 
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 CheckTourSession(true);
-checkACL(AclParticipants, AclReadWrite);
+checkFullACL(AclParticipants, 'pAdvancedEntries', AclReadWrite);
 
 $JSON=array('error' => 0, 'elements' => array(), 'ScTitle' => get_text('SubClassRank', 'Tournament'));
 

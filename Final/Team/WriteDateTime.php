@@ -9,9 +9,8 @@
 	require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 	require_once('Common/Fun_FormatText.inc.php');
 	require_once('Common/Lib/Fun_DateTime.inc.php');
-    checkACL(AclCompetition, AclReadWrite, false);
 
-	if (!CheckTourSession()) {
+	if (!CheckTourSession() or !hasFullACL(AclCompetition, 'cSchedule', AclReadWrite)) {
 		print get_text('CrackError');
 		exit;
 	}

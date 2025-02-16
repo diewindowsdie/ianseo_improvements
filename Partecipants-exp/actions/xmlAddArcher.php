@@ -3,7 +3,7 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 /****** Controller ******/
 CheckTourSession(true);
-checkACL(AclParticipants, AclReadWrite, false);
+checkFullACL(AclParticipants,  'pEntries', AclReadWrite, false);
 
 $error = 1;
 

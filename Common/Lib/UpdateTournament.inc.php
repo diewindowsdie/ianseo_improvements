@@ -1371,7 +1371,9 @@ function GetNewUuidOnce() {
 		'version' => ProgramVersion,
 		'release' => ProgramRelease,
 		'build' => ProgramBuild,
-		'gpl' => GetParameter('AcceptGPL'),
+		'gpl' => GetParameter('Accept-'.IanseoLicenseCode),
+		'license' => IanseoLicenseCode,
+		'referer' => $_SERVER['HTTP_HOST'],
 	);
 	$ch = curl_init();
 	curl_setopt($ch,CURLOPT_URL, $CFG->IanseoServer.'Ianseo/uuidInit.php?'.http_build_query($post));

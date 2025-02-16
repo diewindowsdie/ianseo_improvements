@@ -10,7 +10,7 @@ define('debug',false);
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 
 CheckTourSession(true);
-checkACL(AclParticipants, AclReadWrite, false);
+checkFullACL(AclParticipants, 'pEntries', AclReadWrite, false);
 
 $Errore = 1;
 

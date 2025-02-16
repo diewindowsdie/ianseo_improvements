@@ -1,9 +1,7 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-
-checkACL(AclCompetition, AclReadWrite);
+checkFullACL(AclCompetition, 'cData', AclReadWrite);
 CheckTourSession(true); // will print the crack error string if not inside a tournament!
-
 require_once('Common/Lib/CommonLib.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Partecipants/Fun_Targets.php');

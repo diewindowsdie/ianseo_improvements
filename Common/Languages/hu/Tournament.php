@@ -249,7 +249,6 @@ $lang['DefaultCO']='Alapértelmezett CO';
 $lang['DefaultHM']='Alapértelmezett HM';
 $lang['DefaultLocRule']='FITA';
 $lang['DefaultVI']='Alapértelmezett VI';
-$lang['DeleteChannel']='Csatorna törlése. Ezzel minden felosztás és a csatorna maga is törlődik.';
 $lang['DeletePreviousArchers']='Listában nem szereplő versenyzők törlése';
 $lang['DeletePreviousTeams']='Korábbi csapatok törlése';
 $lang['DeleteSplit']='Felosztás törlése.';

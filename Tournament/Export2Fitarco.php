@@ -1,12 +1,10 @@
 <?php
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 	require_once('Common/Fun_FormatText.inc.php');
-    checkACL(AclCompetition, AclReadOnly);
 
 	define('hide_ExportAndSend',true);	// true per nascondere il botton ExportAndSend
-
-	if (!CheckTourSession())
-	{
+    checkFullACL(AclCompetition, 'cExport', AclReadOnly);
+	if (!CheckTourSession()) {
 		print get_text('CrackError');
 		exit;
 	}

@@ -6,7 +6,7 @@ require_once('Common/pdf/ScorePDF.inc.php');
 require_once('Common/Lib/ScorecardsLib.php');
 
 CheckTourSession(true);
-checkACL(AclQualification, AclReadOnly);
+checkFullACL(AclQualification, '', AclReadOnly);
 
 $PdfType=$_REQUEST['act']??'';
 

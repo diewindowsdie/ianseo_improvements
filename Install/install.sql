@@ -1836,7 +1836,6 @@ INSERT INTO `Parameters` (`ParId`, `ParValue`) VALUES
                                                    ('AccActive', ''),
                                                    ('AccCompetitions', ''),
                                                    ('AccIPs', ''),
-                                                   ('AcceptGPL', '2024-05-29 09:11:00'),
                                                    ('UUID2', 'Ianseo-61c872d8755908.80054882');
 
 DROP TABLE IF EXISTS `Phases`;

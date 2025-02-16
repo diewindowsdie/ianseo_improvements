@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-checkACL(AclParticipants, AclReadOnly);
+checkFullACL(AclParticipants, 'pEntries', AclReadOnly);
 include_once('Common/pdf/OrisPDF.inc.php');
 include_once('Common/Fun_FormatText.inc.php');
 require_once('Common/OrisFunctions.php');

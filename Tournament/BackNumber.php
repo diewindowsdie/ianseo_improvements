@@ -5,24 +5,23 @@
 	//print_r($_REQUEST);exit;
 
 	CheckTourSession(true);
-    checkACL(AclQualification, AclReadWrite);
 
 	$BackNoFinal=0;
 	if(!empty($_REQUEST["BackNo"])) $BackNoFinal = max(0, intval($_REQUEST['BackNo']));
 	if($BackNoFinal>4) $BackNoFinal=0;
     switch($BackNoFinal) {
         case 0:
-            checkACL(AclQualification, AclReadOnly);
+            checkFullACL(AclQualification, '', AclReadOnly);
             break;
         case 1:
-            checkACL(AclIndividuals, AclReadOnly);
+            checkFullACL(AclIndividuals, '', AclReadOnly);
             break;
         case 2:
-            checkACL(AclTeams, AclReadOnly);
+            checkFullACL(AclTeams, '', AclReadOnly);
             break;
         case 3:
         case 4:
-        checkACL(AclEliminations, AclReadOnly);
+            checkFullACL(AclEliminations, '', AclReadOnly);
             break;
     }
 

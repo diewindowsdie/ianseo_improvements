@@ -3,8 +3,7 @@ global $CFG;
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/Lib/Fun_FormatText.inc.php');
 require_once('Common/Lib/CommonLib.php');
-
-checkACL(AclCompetition, AclReadWrite);
+checkFullACL(AclCompetition, 'cData', AclReadWrite);
 CheckTourSession(true); // will print the crack error string if not inside a tournament!
 
 $rs=safe_r_sql("SELECT ToType,ToNumDist AS TtNumDist

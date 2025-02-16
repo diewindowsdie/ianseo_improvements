@@ -14,7 +14,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclParticipants, AclReadWrite);
+    checkFullACL(AclParticipants, 'pEntries', AclReadWrite);
 
 	if (!IsBlocked(BIT_BLOCK_PARTICIPANT))
 	{

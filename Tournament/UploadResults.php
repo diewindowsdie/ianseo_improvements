@@ -25,11 +25,10 @@ require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Qualification/Fun_Qualification.local.inc.php');
 require_once('Common/Lib/Fun_Phases.inc.php');
 
+checkFullACL(AclInternetPublish, 'ipSend', AclReadWrite);
 if(!CheckTourSession() or IsBlocked(BIT_BLOCK_PUBBLICATION)) {
 	PrintCrackError(false,'LockedProcedure', 'Errors');
 }
-
-checkACL(AclInternetPublish, AclReadWrite);
 $URL=$CFG->IanseoServer.'Upload-Competition.php';
 
 if(empty($_SESSION['OnlineId']) or empty($_SESSION['OnlineAuth']) or empty($_SESSION['OnlineServices']) or !($_SESSION['OnlineServices']&1) or empty($_SESSION['OnlineEventCode'])) {

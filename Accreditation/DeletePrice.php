@@ -8,12 +8,10 @@
 
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 
-	if (!CheckTourSession() || !isset($_REQUEST['DelDivCl']))
-	{
+	if (!CheckTourSession() or !isset($_REQUEST['DelDivCl']) or !hasFullACL(AclCompetition, 'acSetup', AclReadWrite)) {
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclCompetition, AclReadWrite,false);
 
 	$Errore=0;
 
@@ -34,8 +32,7 @@
 	if (!debug)
 		header('Content-Type: text/xml');
 
-	print '<response>' . "\n";
-	print '<error>' . $Errore . '</error>' . "\n";
-	print '<divcl>' . $_REQUEST['DelDivCl'] . '</divcl>' . "\n";
-	print '</response>' . "\n";
-?>
+	print '<response>';
+	print '<error>' . $Errore . '</error>';
+	print '<divcl>' . $_REQUEST['DelDivCl'] . '</divcl>';
+	print '</response>';

@@ -5,7 +5,7 @@ require_once('Common/Lib/CommonLib.php');
 require_once(__DIR__.'/Lib.php');
 
 CheckTourSession(true);
-checkACL(AclISKServer, AclReadWrite);
+checkFullACL(AclISKServer, 'iskUser', AclReadWrite);
 
 if(!($QrCode=getSetupGlobalQrCode($_SESSION['TourId']))) {
 	// no QR Code go and set things!

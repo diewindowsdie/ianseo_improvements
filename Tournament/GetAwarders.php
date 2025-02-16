@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-checkACl(AclCompetition,AclReadWrite, false);
+checkFullACl(AclCompetition,'cAward', AclReadWrite, false);
 
 $xmlDoc=new DOMDocument('1.0','UTF-8');
 $xmlRoot=$xmlDoc->createElement('response');

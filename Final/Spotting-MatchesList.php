@@ -12,7 +12,7 @@ $TeamEvent = 0;
 if(isset($_REQUEST['Type']) && preg_match("/^[01]$/", $_REQUEST['Type'])) {
 	$TeamEvent = intval($_REQUEST['Type']);
 }
-checkACL(($TeamEvent ? AclTeams : AclIndividuals), AclReadWrite, false);
+checkFullACL(($TeamEvent ? AclTeams : AclIndividuals), '', AclReadWrite, false);
 require_once('Common/Lib/CommonLib.php');
 require_once('Common/Lib/Obj_RankFactory.php');
 

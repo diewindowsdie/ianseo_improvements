@@ -10,14 +10,13 @@ require_once(__DIR__.'/Lib.php');
     'd'[] => data in DB are present, (0 no, 1 yes)
     't'[] => data in Temporary Table are present, (0 no, 1 yes)
  */
-$isRW = hasACL(AclISKServer, AclReadWrite, false);
 
 $Json=array('error'=>true);
-if(!(CheckTourSession() AND checkACL(AclISKServer, AclReadOnly, false))) {
+if(!(CheckTourSession() AND hasFullACL(AclISKServer, 'iskUser', AclReadOnly))) {
     JsonOut($Json);
     die();
 }
-
+$isRW = hasFullACL(AclISKServer, 'iskUser', AclReadWrite);
 $tmpDevices = array();
 
 $Json['error'] = false;

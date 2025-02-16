@@ -299,7 +299,6 @@ $lang['Delayed']='Forsinket';
 $lang['DeleteAclRule']='Slet ACL regel';
 $lang['DeleteAclUser']='Slet ACL bruger';
 $lang['DeleteAwarded']='Slet tildelt';
-$lang['DeleteChannel']='Fjerne Kanal. Dette vil fjerne alle split for kanalen og kanelen selv';
 $lang['DeletePreviousArchers']='Slet information som ikke er sendt';
 $lang['DeletePreviousTeams']='Slet forrige hold';
 $lang['DeleteSplit']='Fjern split. Dette vil fjerne split.';

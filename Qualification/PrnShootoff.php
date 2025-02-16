@@ -6,7 +6,7 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 require_once('Common/Lib/ArrTargets.inc.php');
 require_once('Common/OrisFunctions.php');
 require_once('Common/pdf/PdfChunkLoader.php');
-checkACL(array(AclQualification,AclEliminations,AclIndividuals,AclTeams), AclReadOnly);
+checkFullACL(array(AclQualification, AclEliminations, AclRobin, AclIndividuals, AclTeams), '', AclReadOnly);
 
 if (!isset($_SESSION['TourId']) AND isset($_REQUEST['TourId'])) {
 	CreateTourSession($_REQUEST['TourId']);

@@ -3,7 +3,7 @@ define('debug',false);	// settare a true per l'output di debug
 
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 CheckTourSession(true);
-checkACL(AclEliminations, AclReadWrite);
+checkFullACL(AclEliminations, '',  AclReadWrite);
 if (BlockExperimental) printcrackerror(false,'Blocked');
 
 require_once('Common/Lib/CommonLib.php');

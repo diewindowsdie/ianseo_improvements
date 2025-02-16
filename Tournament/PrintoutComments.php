@@ -7,7 +7,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-	checkACL(array(AclQualification,AclEliminations,AclIndividuals,AclTeams),AclReadWrite);
+	checkFullACL(array(AclQualification, AclEliminations, AclRobin, AclIndividuals, AclTeams), '',AclReadWrite);
 
 //Data handler
 if(!empty($_REQUEST['action']) and preg_match("/^(list|set|bulk|session)$/i",$_REQUEST['action'])) {

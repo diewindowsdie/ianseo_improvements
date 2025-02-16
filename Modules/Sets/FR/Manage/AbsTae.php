@@ -9,7 +9,7 @@ require_once('Common/Fun_Sessions.inc.php');
 require_once('Final/Fun_ChangePhase.inc.php');
 
 CheckTourSession(true);
-checkACL(AclIndividuals, AclReadWrite);
+checkFullACL(AclIndividuals, '', AclReadWrite);
 
 $Error=false;
 

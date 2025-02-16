@@ -7,8 +7,7 @@ require_once('Tournament/Fun_Tournament.local.inc.php');
 
 $JSON=array('error' => 1, 'errormsg'=>get_text('MissingData','Errors'));
 
-if(checkACL(AclCompetition, AclReadWrite, false)!=AclReadWrite
-		or !CheckTourSession()
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite)
 		or empty($_REQUEST['New_DivId'])
 		or empty($_REQUEST['New_DivDescription'])
 		or empty($_REQUEST['New_DivViewOrder'])

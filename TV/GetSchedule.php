@@ -5,7 +5,7 @@
 
 	if (!CheckTourSession() || is_null($schedule))
 		exit;
-    checkACL(AclOutput,AclReadWrite,false);
+    checkFullACL(AclOutput,'outTv', AclReadWrite, false);
 
 	$xml='';
 	$error=0;

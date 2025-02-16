@@ -14,7 +14,7 @@ $d_Match=isset($_REQUEST['d_Match']) ? $_REQUEST['d_Match'] : null;
 $team=isset($_REQUEST['d_Team']) ? $_REQUEST['d_Team'] : 0;
 $chunkMode=isset($_REQUEST['d_Mode']) ? $_REQUEST['d_Mode'] : 0;
 
-checkACL(($team ? AclTeams : AclIndividuals), AclReadWrite);
+checkFullACL(($team ? AclTeams : AclIndividuals), '', AclReadWrite);
 
 if (is_null($d_Event) || is_null($d_Match) || !CheckTourSession())
 	exit;

@@ -7,12 +7,12 @@ require_once(dirname(dirname(__FILE__)) . '/config.php');
 // quindi ricostruisco il $CFG
 $CFG->ROOT_DIR = substr($_SERVER['SCRIPT_NAME'], 0, strlen(dirname(dirname(__FILE__))) + strlen($_SERVER['SCRIPT_NAME']) - strlen(realpath($_SERVER['SCRIPT_FILENAME']))) . '/';
 
-if(isset($_REQUEST['acceptGPL'])) {
-	$_SESSION['AcceptGPL']=true;
+if(isset($_REQUEST['accept-'.IanseoLicenseCode])) {
+	$_SESSION['Accept-'.IanseoLicenseCode]=true;
 }
 
-if(empty($_SESSION['AcceptGPL'])) {
-	AcceptGPL();
+if(empty($_SESSION['Accept-'.IanseoLicenseCode])) {
+	AcceptIanseoLicense();
 }
 
 /**
@@ -120,7 +120,7 @@ function install_blank_db() {
 	}
 	if($query AND substr($query, -1)==';') safe_w_sql($query);
 
-	// inserisce l'accettazione della licenza GPL
-	SetParameter('AcceptGPL', date('Y-m-d H:i:s'));
+	// inserisce l'accettazione della licenza FSL
+	SetParameter('Accept-'.IanseoLicenseCode, date('Y-m-d H:i:s'));
 }
 

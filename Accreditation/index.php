@@ -1,10 +1,8 @@
 <?php
-define('debug',false);	// settare a true per l'output di debug
-
 require_once(dirname(__FILE__) . '/config.php');
 
 CheckTourSession(true);
-checkACL(AclAccreditation, AclReadWrite);
+checkFullACL(AclAccreditation, 'acStandard', AclReadWrite);
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Fun_Sessions.inc.php');
 

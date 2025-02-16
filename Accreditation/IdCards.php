@@ -10,23 +10,23 @@ $CardType=(empty($_REQUEST['CardType']) ? 'A' : $_REQUEST['CardType']);
 $lvl=0;
 switch($CardType) {
 	case 'A':
-	    $lvl = checkACL(AclAccreditation, AclReadOnly);
+	    $lvl = checkFullACL(AclAccreditation, 'acStandard', AclReadOnly);
 		break;
 	case 'Q':
-	    $lvl = checkACL(AclQualification, AclReadOnly);
+	    $lvl = checkFullACL(AclQualification, '', AclReadOnly);
 		break;
 	case 'E':
-	    $lvl = checkACL(AclEliminations, AclReadOnly);
+	    $lvl = checkFullACL(AclEliminations, '', AclReadOnly);
 		break;
 	case 'I':
-	    $lvl = checkACL(AclIndividuals, AclReadOnly);
+	    $lvl = checkFullACL(AclIndividuals, '', AclReadOnly);
 		break;
 	case 'T':
-	    $lvl = checkACL(AclTeams, AclReadOnly);
+	    $lvl = checkFullACL(AclTeams, '', AclReadOnly);
 		break;
 	case 'Y':
 	case 'Z':
-	    $lvl = checkACL(AclCompetition, AclReadOnly);
+	    $lvl = checkFullACL(AclCompetition, 'cPrintouts', AclReadOnly);
 		break;
 }
 
@@ -108,7 +108,7 @@ if(!empty($_REQUEST['ExportLayout'])) {
 	if($r=safe_fetch_assoc($q)) {
 		$Layout['IdCards']=$r;
 
-		$q=safe_r_SQL("select * from IdCardElements where IceTournament=$TourId and IceCardType='$CardType' and IceCardNumber=$CardNumber");
+		$q=safe_r_SQL("select distinct * from IdCardElements where IceTournament=$TourId and IceCardType='$CardType' and IceCardNumber=$CardNumber");
 		while($r=safe_fetch_assoc($q)) {
 			$Layout['IdCardElements'][]=$r;
 		}
@@ -193,19 +193,19 @@ echo '<div class="CustomBadges">';
 		<td><select id="BadgeType" name="CardType" onchange="location.href=\'?CardType=\'+this.value">';
 
 	$TypeArray=array();
-	if(hasACL(AclAccreditation, AclReadOnly)) {
+	if(hasFullACL(AclAccreditation, 'acStandard', AclReadOnly)) {
 		$TypeArray[]='A';
 	}
-	if(hasACL(AclQualification, AclReadOnly)) {
+	if(hasFullACL(AclQualification, '', AclReadOnly)) {
 		$TypeArray[]='Q';
 	}
 	$q=safe_r_sql("Select distinct EvElim2, EvTeamEvent from Events where EvTournament={$_SESSION['TourId']} and EvFinalFirstPhase>0 order by EvElim2=0");
 	while($r=safe_fetch($q)) {
-		if($r->EvElim2>0 and !in_array('E', $TypeArray) and hasACL(AclEliminations, AclReadOnly)) $TypeArray[]='E';
-		if(!$r->EvTeamEvent and !in_array('I', $TypeArray) and hasACL(AclIndividuals, AclReadOnly)) $TypeArray[]='I';
-		if($r->EvTeamEvent and !in_array('T', $TypeArray) and hasACL(AclTeams, AclReadOnly)) $TypeArray[]='T';
+		if($r->EvElim2>0 and !in_array('E', $TypeArray) and hasFullACL(AclEliminations, '',AclReadOnly)) $TypeArray[]='E';
+		if(!$r->EvTeamEvent and !in_array('I', $TypeArray) and hasFullACL(AclIndividuals, '', AclReadOnly)) $TypeArray[]='I';
+		if($r->EvTeamEvent and !in_array('T', $TypeArray) and hasFullACL(AclTeams, '', AclReadOnly)) $TypeArray[]='T';
 	}
-	if(hasACL(AclCompetition, AclReadOnly)) {
+	if(hasFullACL(AclCompetition, 'cPrintouts', AclReadOnly)) {
 		$TypeArray[]='Y';
 		$TypeArray[]='Z';
 	}

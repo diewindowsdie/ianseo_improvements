@@ -23,7 +23,7 @@ if(isset($_REQUEST["OperationType"]))
 	$OpDetails = $_REQUEST["OperationType"];
 
 if(CheckTourSession()) {
-    checkACL(AclTeams, AclReadOnly);
+	checkFullACL(AclTeams, '', AclReadOnly);
 	$pdf = new LabelPDF();
 	//Predefinita per etichette A4
 	$lblW= $pdf->GetPageWidth()/3;

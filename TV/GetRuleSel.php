@@ -2,7 +2,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 
 CheckTourSession(true);
-checkACL(AclOutput,AclReadWrite,false);
+checkFullACL(AclOutput,'outTv', AclReadWrite, false);
 
 $result='';
 $Settings='';
@@ -79,6 +79,9 @@ if(!empty($_REQUEST['Id']) and isset($_REQUEST['RuleId'])) {
 		case 'LSPH':
 			$Cols[] = 'DIVCLAS';
 			$Cols[] = 'CATCODE';
+            if(count($_SESSION['FopLocations'])>1) {
+                $Cols[] = 'HALL';
+            }
 			break;
 		case 'QUAL': // Divs and Clas of the Competition (individual)
 		case 'QUALC': // ==> SubClasses

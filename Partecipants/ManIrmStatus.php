@@ -6,7 +6,7 @@ define('debug',false);	// settare a true per l'output di debug
 
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 CheckTourSession(true);
-checkACL(AclParticipants, AclReadWrite);
+checkFullACL(AclParticipants, 'pAdvancedEntries', AclReadWrite);
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Lib/CommonLib.php');
 

@@ -10,7 +10,7 @@ if (!CheckTourSession() || !isset($_REQUEST['Id']) || !is_numeric($_REQUEST['Id'
     print get_text('CrackError');
     exit;
 }
-checkACL(AclQualification, AclReadWrite, false);
+checkFullACL(AclQualification, '', AclReadWrite, false);
 
 $QuId=intval($_REQUEST['Id']);
 $Dist=intval($_REQUEST['Dist']);

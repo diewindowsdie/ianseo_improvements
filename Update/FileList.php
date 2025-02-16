@@ -118,7 +118,9 @@ class FileList
 		$ret->ProgBuild = ProgramBuild;
 		$ret->UUID = GetParameter('UUID2');
 		$ret->DbVersion = GetParameter('DBUpdate');
-		$ret->AcceptGPL = GetParameter('AcceptGPL');
+		$ret->AcceptGPL = GetParameter('Accept-'.IanseoLicenseCode);
+		$ret->License = IanseoLicenseCode;
+        $ret->Referer = $_SERVER['HTTP_HOST'];
 		$ret->Files = $this->Files;
 		return serialize($ret);
 	}

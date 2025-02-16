@@ -14,7 +14,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-	checkACL(AclParticipants, AclReadWrite, false);
+	checkFullACL(AclParticipants, 'pEntries', AclReadWrite, false);
 
 	$nocCode='';
 	if(isset($_REQUEST['Noc']))

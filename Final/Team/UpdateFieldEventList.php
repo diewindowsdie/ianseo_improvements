@@ -8,8 +8,7 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 $JSON=array('error' => 1, 'which' => '#');
 
-if(!CheckTourSession()
-		or checkACL(AclCompetition, AclReadWrite, false)!=AclReadWrite
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cData',  AclReadWrite)
 		or IsBlocked(BIT_BLOCK_TOURDATA)
 		or empty($_REQUEST['field'])
 		or !isset($_REQUEST['value'])) {

@@ -7,7 +7,7 @@ $IncludeFA=true;
 require_once(dirname(__DIR__) . '/config.php');
 
 CheckTourSession(true);
-checkACL(AclQualification, AclReadWrite);
+checkFullACL(AclQualification, '', AclReadWrite);
 
 require_once('Common/ods/ods.php');
 require_once('Common/Lib/Obj_RankFactory.php');

@@ -1,7 +1,5 @@
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-CheckTourSession(true);
-
 $JSON=array('error'=>1, 'data'=>array());
 
 if(empty($_REQUEST['Event']) or !preg_match("/^[a-z0-9_-|]+$/i", $_REQUEST['Event']) or !isset($_REQUEST['Phase'])) {
@@ -15,7 +13,11 @@ if($TeamEvent) {
 } else {
     $TeamEvent=0;
 }
-checkACL(array(($TeamEvent ? AclTeams:AclIndividuals), AclOutput), AclReadOnly, false);
+if (!CheckTourSession() or !hasFullACL(AclOutput, 'outTv', AclReadOnly)) {
+    JsonOut($JSON);
+}
+
+
 require_once('Common/Lib/CommonLib.php');
 require_once('Common/Lib/Obj_RankFactory.php');
 

@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-checkACL(AclCompetition, AclReadWrite,false);
+checkFullACL(AclCompetition, 'cSchedule', AclReadWrite,false);
 CheckTourSession(true);
 
 require_once('./LibScheduler.php');

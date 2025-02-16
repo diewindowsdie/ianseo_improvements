@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(__FILE__).'/config.php');
-checkACL(AclOutput,AclReadOnly,false, $TourId);
+checkFullACL(AclOutput, 'outTv', AclReadOnly,false, $TourId);
 
 require_once('Common/Lib/Fun_FormatText.inc.php');
 
@@ -46,7 +46,9 @@ $tmp='';
 switch($r->TVSTable) {
 	case 'DB':
 		$t=safe_r_sql("select * from TVParams where TVPId=$r->TVSContent AND TVPTournament=$r->TVSTournament");
-		$tmp=create_Comp_rot($Page=safe_fetch($t), $RULE);
+        $u=safe_fetch($t);
+        $u->Columns=($u->TVPColumns?explode('|', $u->TVPColumns):[]);
+		$tmp=create_Comp_rot($Page=$u, $RULE);
 		break;
 	case 'MM':
 		// default id fadin/fadeout!

@@ -11,7 +11,7 @@ if(file_exists($CFG->DOCUMENT_PATH.'Api/ISK-NG/config_defines.php')) {
     include_once($CFG->DOCUMENT_PATH.'Api/ISK-NG/config_defines.php');
 }
 
-checkACL(AclCompetition, AclReadWrite);
+checkFullACL(AclCompetition, 'cData', AclReadWrite);
 
 if (!isset($_REQUEST['New']) && !CheckTourSession(true)) {
     print get_text('CrackError');
@@ -819,6 +819,12 @@ function GetExistingTournamentTypes() {
 	    if($b['ord']=='WA') return 1;
 	    if($a['ord']=='PAR') return -1;
 	    if($b['ord']=='PAR') return 1;
+	    if($a['ord']=='WAN') return -1;
+	    if($b['ord']=='WAN') return 1;
+	    if($a['ord']=='NFAA') return -1;
+	    if($b['ord']=='NFAA') return 1;
+	    if($a['ord']=='IFAA') return -1;
+	    if($b['ord']=='IFAA') return 1;
 	    if($a['ord']==$UsedLang) return -1;
 	    if($b['ord']==$UsedLang) return 1;
 

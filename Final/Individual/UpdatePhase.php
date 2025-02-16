@@ -2,17 +2,9 @@
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Common/Fun_Sessions.inc.php');
-if (!CheckTourSession() || !isset($_REQUEST['EvCode']) || !isset($_REQUEST['NewPhase'])) {
-	print get_text('CrackError');
-	exit;
-}
-checkACL(AclCompetition, AclReadWrite, false);
-
 $JSON=array('error' => 1, 'events' => array());
-
-
-if (IsBlocked(BIT_BLOCK_TOURDATA)) {
-	JsonOut($JSON);
+if (!CheckTourSession()  or !hasFullACL(AclCompetition, 'cData', AclReadWrite) or !isset($_REQUEST['EvCode']) or !isset($_REQUEST['NewPhase']) or IsBlocked(BIT_BLOCK_TOURDATA)) {
+    JsonOut($JSON);
 }
 
 $NewPhase=intval($_REQUEST['NewPhase']);

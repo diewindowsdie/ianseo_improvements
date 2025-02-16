@@ -1,11 +1,10 @@
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Qualification/Fun_Qualification.local.inc.php');
-checkACL(AclCompetition, AclReadWrite, false);
 
 $JSON=array('error' => 1, 'events' => array());
 
-if (!CheckTourSession() || !isset($_REQUEST['EvCode'])) {
+if (!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadWrite) or !isset($_REQUEST['EvCode'])) {
 	JsonOut($JSON);
 }
 

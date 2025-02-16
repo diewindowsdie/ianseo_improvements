@@ -3,13 +3,9 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Fun_Various.inc.php');
-checkACL(AclCompetition, AclReadOnly);
+checkFullACL(AclCompetition, 'cFinalReport', AclReadOnly);
 
 $RowTournament = NULL;
-/*$MySql = "SELECT ToCode, ToName, ToCommitee, ToComDescr, ToWhere, UNIX_TIMESTAMP(ToWhenFrom) AS DtFrom, UNIX_TIMESTAMP(ToWhenTo) AS DtTo, TtName "
-	. "FROM Tournament "
-	. "INNER JOIN Tournament*Type ON ToType=TtId "
-	. "WHERE ToId=" . StrSafe_DB($_SESSION['TourId']);*/
 $MySql = "SELECT"
 	. " ToCode,"
 	. " ToName,"
@@ -22,8 +18,7 @@ $MySql = "SELECT"
 	. "FROM Tournament "
 	. "WHERE ToId=" . StrSafe_DB($_SESSION['TourId']);
 $Rs=safe_r_sql($MySql);
-if(safe_num_rows($Rs)==1)
-{
+if(safe_num_rows($Rs)==1) {
 	$RowTournament = safe_fetch($Rs);
 	safe_free_result($Rs);
 }
@@ -69,17 +64,6 @@ $pdf->Cell(190, 0.5,  '', 1, 1, 'L', 1);
 
 $pdf->SetXY($pdf->GetX(),$pdf->GetY()+5);
 
-//Parte di Report vera e propria
-/*$MySql = "SELECT FrqId, FrqStatus, FrqQuestion, FrqTip, FrqType, FrqOptions, TtCategory "
-	. "FROM FinalReportQ "
-	. "INNER JOIN Tournament ON ToId=" . StrSafe_DB($_SESSION['TourId']) . " "
-	. "INNER JOIN Tournament*Type ON TtId=ToType ";
-if($AllQuestions)
-	$MySql .= "WHERE FrqStatus > 0 ";
-else
-	$MySql .= "WHERE (FrqStatus & TtCategory) > 0 ";
-$MySql .= "ORDER BY FrqId";*/
-
 $MySql = "SELECT FrqId, FrqStatus, FrqQuestion, FrqTip, FrqType, FrqOptions, ToCategory AS TtCategory "
 	. "FROM FinalReportQ "
 	. "INNER JOIN Tournament ON ToId=" . StrSafe_DB($_SESSION['TourId']) . " ";
@@ -91,23 +75,17 @@ $MySql .= "ORDER BY FrqId";
 
 $Rs=safe_r_sql($MySql);
 
-if(safe_num_rows($Rs)>0)
-{
-	while($MyRow = safe_fetch($Rs))
-	{
-		if($MyRow->FrqType==-1)
-		{
+if(safe_num_rows($Rs)>0) {
+	while($MyRow = safe_fetch($Rs)) {
+		if($MyRow->FrqType==-1) {
 			$pdf->SetFont($pdf->FontStd,'B',10);
 			$pdf->Cell(190, 7,  $MyRow->FrqId . ' - ' . $MyRow->FrqQuestion, 1, 1, 'L', 1);
-		}
-		else
-		{
+		} else {
 			$hLine = ($pdf->GetNumChars(str_replace("|"," / ",$MyRow->FrqOptions))>85 ? 2:1);
 			$pdf->SetFont($pdf->FontStd,'',8);
 			$pdf->Cell(10, 5*$hLine + ($MyRow->FrqTip || $AllQuestions ? 4 : 0),  $MyRow->FrqId . ".", 'LTB', 0, 'L', 0);
 			$pdf->Cell(60, 5*$hLine,  $MyRow->FrqQuestion, 'T'. ($MyRow->FrqTip || $AllQuestions ? '' : 'B'), 0, 'L', 0);
-			switch($MyRow->FrqType)
-			{
+			switch($MyRow->FrqType) {
 				case 0:
 					$pdf->Cell(120, 5*$hLine,  get_text('jrTextBox', 'Common', ($MyRow->FrqOptions>0 ? $MyRow->FrqOptions : 255)) , 'RT' . ($MyRow->FrqTip || $AllQuestions ? '' : 'B'), 1, 'L', 0);
 					break;
@@ -118,37 +96,32 @@ if(safe_num_rows($Rs)>0)
 					$pdf->Cell(120, 5*$hLine,  get_text('jrYesNo', 'Common') , 'RT' . ($MyRow->FrqTip || $AllQuestions ? '' : 'B'), 1, 'L', 0);
 					break;
 				case 3:
-					if($hLine!=1)
-					{
+					if($hLine!=1) {
 						$pdf->MultiCell(120, 5,  get_text('jrSingleChoice', 'Common', str_replace("|"," / ",$MyRow->FrqOptions)) , 0, 'L', 0, 0, '', '', true, 1, false, true, 5*$hLine);
 						$pdf->SetX($pdf->GetX()-120);
 						$pdf->Cell(120, 5*$hLine, '', 'RT' . ($MyRow->FrqTip || $AllQuestions ? '' : 'B'), 1, 'L', 0);
-					}
-					else
-						$pdf->Cell(120, 5*$hLine,  get_text('jrSingleChoice', 'Common', str_replace("|"," / ",$MyRow->FrqOptions)) , 'RT' . ($MyRow->FrqTip || $AllQuestions ? '' : 'B'), 1, 'L', 0);
+					} else {
+                        $pdf->Cell(120, 5 * $hLine, get_text('jrSingleChoice', 'Common', str_replace("|", " / ", $MyRow->FrqOptions)), 'RT' . ($MyRow->FrqTip || $AllQuestions ? '' : 'B'), 1, 'L', 0);
+                    }
 					break;
 				case 4:
-					if($hLine!=1)
-					{
+					if($hLine!=1) {
 						$pdf->MultiCell(120, 5,  get_text('jrMultiChoice', 'Common', str_replace("|"," / ",$MyRow->FrqOptions)) , 0, 'L', 0, 0, '', '', true, 1, false, true, 5*$hLine);
 						$pdf->SetX($pdf->GetX()-120);
 						$pdf->Cell(120, 5*$hLine, '', 'RT' . ($MyRow->FrqTip || $AllQuestions ? '' : 'B'), 1, 'L', 0);
-					}
-					else
-						$pdf->Cell(120, 5*$hLine,  get_text('jrMultiChoice', 'Common', str_replace("|"," / ",$MyRow->FrqOptions)) , 'RT' . ($MyRow->FrqTip || $AllQuestions ? '' : 'B'), 1, 'L', 0);
+					} else {
+                        $pdf->Cell(120, 5 * $hLine, get_text('jrMultiChoice', 'Common', str_replace("|", " / ", $MyRow->FrqOptions)), 'RT' . ($MyRow->FrqTip || $AllQuestions ? '' : 'B'), 1, 'L', 0);
+                    }
 					break;
 			}
 
-			if($MyRow->FrqTip || $AllQuestions)
-			{
+			if($MyRow->FrqTip || $AllQuestions) {
 				$pdf->SetFont($pdf->FontStd,'',6);
 				$pdf->SetX($pdf->GetX()+10);
 				$pdf->Cell(($AllQuestions ? 150 : 180), 4,  $MyRow->FrqTip . ".", 'RB', ($AllQuestions ? 0 : 1), 'L', 0);
-				if($AllQuestions)
-				{
+				if($AllQuestions) {
 					$tmpText = '';
-					for ($i=1; $i<=8; $i*=2)
-					{
+					for ($i=1; $i<=8; $i*=2) {
 						if($MyRow->FrqStatus & $i)
 							$tmpText .=  get_text('TourType_' . $i,'Tournament') . '-' ;
 					}
@@ -161,4 +134,3 @@ if(safe_num_rows($Rs)>0)
 }
 
 $pdf->Output();
-?>

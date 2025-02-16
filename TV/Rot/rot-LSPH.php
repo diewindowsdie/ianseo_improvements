@@ -15,14 +15,23 @@ function rotLsph($TVsettings, $RULE) {
 		'SubBlocks' => 1);
 	$ret=array();
 
-	$Select = "SELECT EnCode as Bib, EnName AS Name, SesName, "
-		. " PhPhoto, EnId, "
-		. " upper(EnFirstName) AS FirstName, SUBSTRING(AtTargetNo,1,1) AS Session,"
-		. " SUBSTRING(AtTargetNo,2) AS TargetNo,"
-		. " CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode,"
-		. " EnDivision AS DivCode, EnAgeClass as AgeClass, DivDescription, ClDescription, "
-		. " EnSubClass as SubClass, EnStatus as Status "
-		. "FROM AvailableTarget at "
+    $HallField="''";
+    if(in_array('HALL',$TVsettings->Columns) and $FopLocations=Get_Tournament_Option('FopLocations', [], $TourId)) {
+        $HallField='case';
+        foreach($FopLocations as $FopLocation) {
+            $HallField.=" when AtTarget between {$FopLocation->Tg1} and {$FopLocation->Tg2} then ".StrSafe_DB($FopLocation->Loc);
+        }
+        $HallField.=" end";
+    }
+
+	$Select = "SELECT EnCode as Bib, EnName AS Name, SesName, $HallField as Hall,
+            PhPhoto, EnId,
+            upper(EnFirstName) AS FirstName, AtSession AS Session,
+            concat(AtTarget, AtLetter) AS TargetNo,
+            CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode,
+            EnDivision AS DivCode, EnAgeClass as AgeClass, DivDescription, ClDescription,
+            EnSubClass as SubClass, EnStatus as Status
+		FROM AvailableTarget at "
 		. "LEFT JOIN (SELECT EnTournament, QuTargetNo, EnId, EnCode, EnName, EnFirstName, CoCode, CoName, "
 			. "EnClass, EnDivision, EnAgeClass, EnSubClass, EnStatus, EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent "
 			. "FROM Qualifications AS q  "
@@ -40,13 +49,13 @@ function rotLsph($TVsettings, $RULE) {
 		. "ORDER BY AtTargetNo, CoCode, Name, CoName, FirstName ";
 
 	$Rs=safe_r_sql($Select);
-	$Columns=(isset($TVsettings->TVPColumns) && !empty($TVsettings->TVPColumns) ? explode('|',$TVsettings->TVPColumns) : array());
-	$ViewTeams=(in_array('TEAM', $Columns) or in_array('ALL', $Columns));
-	$ViewFlag=(in_array('FLAG', $Columns) or in_array('ALL', $Columns));
-	$ViewCode=(in_array('CODE', $Columns) or in_array('ALL', $Columns));
-	$ViewCat=(in_array('DIVCLAS', $Columns) or in_array('ALL', $Columns));
-	$ViewCatCode=(in_array('CATCODE', $Columns) or in_array('ALL', $Columns));
-	$Title2Rows=(in_array('TIT2ROWS', $Columns) ? '<br/>' : ': ');
+    $ViewTeams=(in_array('TEAM', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+    $ViewFlag=(in_array('FLAG', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+    $ViewCode=(in_array('CODE', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+    $ViewCat=(in_array('DIVCLAS', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+    $ViewCatCode=(in_array('CATCODE', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+    $ViewHalls=(in_array('HALL', $TVsettings->Columns) or in_array('ALL', $TVsettings->Columns));
+    $Title2Rows=(in_array('TIT2ROWS', $TVsettings->Columns) ? '<br/>' : ': ');
 
 // 	include_once('Common/CheckPictures.php');
 // 	CheckPictures($IsCode);

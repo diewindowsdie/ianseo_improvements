@@ -81,7 +81,9 @@
 		switch($r->TVSTable) {
 			case 'DB':
 				$t=safe_r_sql("select * from TVParams where TVPId=$r->TVSContent AND TVPTournament=$r->TVSTournament");
-				$tmp=genera_html_rot(safe_fetch($t), $RULE);
+                $u=safe_fetch($t);
+                $u->Columns=($u->TVPColumns?explode('|', $u->TVPColumns):[]);
+				$tmp=genera_html_rot($u, $RULE);
 				break;
 			case 'MM':
 				$t=safe_r_sql("select * from TVContents where TVCId=$r->TVSContent AND TVCTournament=" . ($r->TVSCntSameTour==1 ? $r->TVSTournament : "-1"));

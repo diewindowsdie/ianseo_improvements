@@ -9,11 +9,10 @@
 	require_once('Common/Fun_Sessions.inc.php');
 	require_once('Common/Fun_DB.inc.php');
 
-	if (!CheckTourSession()) {
+    if (!CheckTourSession() or !hasFullACL(AclCompetition, 'cSchedule', AclReadWrite)) {
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclCompetition, AclReadWrite, false);
 
 	$Errore=0;
 	$Which = '';

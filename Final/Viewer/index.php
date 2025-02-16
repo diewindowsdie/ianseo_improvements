@@ -8,7 +8,7 @@ if(!empty($_SESSION['TourId']) AND $_SESSION['TourId']!=-1) {
 	$TourId=getIdFromCode(GetIsParameter('IsCode'));
     CreateTourSession($TourId);
 }
-checkACL(AclOutput,AclReadOnly, true, $TourId);
+checkFullACL(AclOutput,'outTv', AclReadOnly, true, $TourId);
 
 $MatchNo=(!isset($_REQUEST['d_Match']) ? -1 : intval($_REQUEST['d_Match']));
 $Event=(empty($_REQUEST['d_Event']) ? '' : preg_replace('/[^a-z0-9_-]/sim','', $_REQUEST['d_Event'] ));

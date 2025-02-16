@@ -4,7 +4,7 @@ require_once(dirname(dirname(__FILE__)) . '/config.php');
 CheckTourSession(true);
 
 $TeamEvent=isset($_REQUEST['Team']) ? $_REQUEST['Team'] : 0;
-checkACL(($TeamEvent ? AclTeams : AclIndividuals), AclReadWrite);
+checkFullACL(($TeamEvent ? AclTeams : AclIndividuals), '', AclReadWrite);
 
 require_once('Common/Lib/CommonLib.php');
 

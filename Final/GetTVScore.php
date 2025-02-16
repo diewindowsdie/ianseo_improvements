@@ -14,7 +14,7 @@
 	} else {
 		$TourId=(empty($_REQUEST['TourCode']) ? $_SESSION['TourId'] : getIdFromCode($_REQUEST['TourCode']));
 	}
-    checkACL(AclOutput,AclReadOnly, false, $TourId);
+	checkFullACL(AclOutput,'outTv', AclReadOnly, true, $TourId);
 
 	$LastUpdated=(empty($_REQUEST['Time']) ? 0 : $_REQUEST['Time']);
 	$WinWidth=(empty($_REQUEST['Width']) ? 800 : $_REQUEST['Width']);

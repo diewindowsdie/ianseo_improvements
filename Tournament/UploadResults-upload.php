@@ -40,7 +40,7 @@ if(isset($_REQUEST["ToCode"]) AND $ToId=getIdFromCode($_REQUEST["ToCode"])) {
     $_REQUEST['showRecords'] = (safe_num_rows($q) > 0);
 }
 
-if(!CheckTourSession() or checkACL(AclInternetPublish, AclReadWrite, false)!=AclReadWrite or IsBlocked(BIT_BLOCK_PUBBLICATION)) {
+if(!CheckTourSession() or !hasFullACL(AclInternetPublish, 'ipSend', AclReadWrite) or IsBlocked(BIT_BLOCK_PUBBLICATION)) {
     JsonOut($JSON);
 }
 

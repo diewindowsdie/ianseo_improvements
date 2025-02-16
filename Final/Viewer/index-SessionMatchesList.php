@@ -1,17 +1,14 @@
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-CheckTourSession(true);
 
 $JSON=array('error'=>1, 'data'=>array());
-
-if(empty($_REQUEST['Session']) or !preg_match("/^[EF][0-9]+$/i", $_REQUEST['Session'])) {
-	JsonOut($JSON);
+if (empty($_REQUEST['Session']) or !preg_match("/^[EF][0-9]+$/i", $_REQUEST['Session']) or !CheckTourSession() or !hasFullACL(AclOutput, 'outTv', AclReadOnly)) {
+    JsonOut($JSON);
 }
 
 $SesType=$_REQUEST['Session'][0];
 $SesOrder=intval(substr($_REQUEST['Session'], 1));
 
-checkACL(array(AclIndividuals,AclTeams, AclOutput), AclReadOnly, false);
 require_once('Common/Lib/CommonLib.php');
 require_once('Common/Lib/Obj_RankFactory.php');
 

@@ -25,11 +25,9 @@ require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Qualification/Fun_Qualification.local.inc.php');
 require_once('Common/Lib/Fun_Phases.inc.php');
 
-$JSON=array();
-
 CheckTourSession(true);
-checkACL(AclInternetPublish, AclReadWrite);
-
+checkFullACL(AclInternetPublish, 'ipSend', AclReadWrite);
+$JSON=array();
 
 $MSG='';
 $ORIS=$_SESSION['ISORIS'];

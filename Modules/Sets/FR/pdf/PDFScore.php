@@ -5,7 +5,7 @@ require_once('Common/pdf/ScorePDF.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Fun_Sessions.inc.php');
 require_once('Common/Lib/ScorecardsLib.php');
-checkACL(AclQualification, AclReadOnly);
+checkFullACL(AclQualification, '', AclReadOnly);
 
 if($_REQUEST['Marmot']??'') {
     require_once(__DIR__.'/Marmot.php');

@@ -171,20 +171,13 @@ $lang['SetFrSelectifPara']='Selectif + Para';
 $lang['SetFRTAE']='Championnat de France Elite';
 $lang['SetFRTAE-Para']='Selectif TAE + Para';
 $lang['SetFRTAE-Valides']='Selectif TAE';
-$lang['SetIfaa2xFlint']='Double flint competition';
-$lang['SetIfaa2xIndoor']='Double indoor competition';
-$lang['SetIfaaFlint']='Single flint competition';
-$lang['SetIfaaIndoor']='4 => \'SetIfaa2xFlint\',
-    5 => \'SetIfaaWorldStandard\',
-    6 => \'SetIfaaIndoorFlint
-
-
-
-Single indoor competition (2 rounds, 6 ends of 5 arrows per round 20yards distance, 10 yards for cubs)
-//- Double flint competition ( Double Single flint competition )
-//- IFAA World Indoor Championships Standard and flint ( Single indoor competition + Single flint competition + Single indoor competition)
-//- Single indoor and single flint Competition';
-$lang['SetIfaaWorldIndoor']='IFAA World Indoor Championships 20 yards only';
+$lang['SetIfaa2xFlint']='Double Flint';
+$lang['SetIfaa2xIndoor']='Double Indoor';
+$lang['SetIfaaFlint']='Single Flint';
+$lang['SetIfaaIndoor']='Single Indoor';
+$lang['SetIfaaIndoorFlint']='Single Indoor + Single Flint';
+$lang['SetIfaaWorldIndoor']='World Indoor Championships (20 yards only)';
+$lang['SetIfaaWorldStandard']='World Indoor Championships (Standard and Flint)';
 $lang['SetIndoor']='Indoor';
 $lang['SetIPCandWA']='IPC and WA categories';
 $lang['SetJ-CClass']='U21 and U18';
@@ -262,6 +255,10 @@ $lang['SetWAPools-JS']='Junior and Senior (WA 4 Pools)';
 $lang['SetWAPools-One']='One Class (WA 4 Pools)';
 $lang['SetYouthClass']='Youth Categories';
 $lang['SpecialUpdate']='You have a "testing" Installation.<br/>Only selected users may have this feature: please provide the email you are registered with.<br/>A notification will be sent both to you and Ianseo Staff.';
+$lang['SpecialUpdatePassword']='You have an "advanced" Installation.<br/>
+Only selected users may have this feature: please provide the email and password you are registered with.<br/>
+A notification will be sent both to you and Ianseo Staff.<br/>
+If you don\'t remember your password you can reset it from $a';
 $lang['Start Ianseo']='Go to IANSEO!';
 $lang['Status']='Status';
 $lang['stdValue']='Value';

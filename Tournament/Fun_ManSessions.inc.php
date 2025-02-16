@@ -12,95 +12,92 @@
  * @param int $SesFollow: 0 no, 1 sì
  * @return mixed: true se ok; messaggio di errore altrimenti
  */
-	function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTar4Session,$SesAth4Target,$SesFirstTarget,$SesFollow,$SesDtStart=0,$SesDtEnd=0,$SesOdfCode='',$SesOdfPeriod='',$SesOdfVenue='',$SesOdfLocation='') {
-		$ret=true;
+function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTar4Session,$SesAth4Target,$SesFirstTarget,$SesFollow,$SesDtStart=0,$SesDtEnd=0,$SesOdfCode='',$SesOdfPeriod='',$SesOdfVenue='',$SesOdfLocation='') {
+    $ret=true;
+    $SQL=[
+        "SesTournament=". StrSafe_DB($SesTournament),
+        "SesOrder=". StrSafe_DB($SesOrder),
+        "SesType=". StrSafe_DB($SesType),
+        "SesName=". StrSafe_DB($SesName),
+        "SesLocation=". (is_null($SesLoc) ? 'SesLocation' : StrSafe_DB($SesLoc)),
+        "SesTar4Session=". StrSafe_DB(($SesType=='Q' || $SesType=='E' ? $SesTar4Session : 0)),
+        "SesAth4Target=". StrSafe_DB(($SesType=='Q' || $SesType=='E' ? $SesAth4Target : 0)),
+        "SesFirstTarget=". StrSafe_DB(($SesType=='Q' || $SesType=='E' ? $SesFirstTarget : 0)),
+        "SesFollow=". StrSafe_DB(($SesType=='F' ? $SesFollow : 0)),
+    ];
+    if($SesDtStart) {
+        $SQL[]="SesDtStart=". StrSafe_DB($SesDtStart);
+    }
+    if($SesDtEnd=0) {
+        $SQL[]="SesDtEnd=". StrSafe_DB($SesDtEnd);
+    }
+    if($SesOdfCode) {
+        $SQL[]="SesOdfCode=". StrSafe_DB($SesOdfCode);
+    }
+    if($SesOdfPeriod) {
+        $SQL[]="SesOdfPeriod=". StrSafe_DB($SesOdfPeriod);
+    }
+    if($SesOdfVenue) {
+        $SQL[]="SesOdfVenue=". StrSafe_DB($SesOdfVenue);
+    }
+    if($SesOdfLocation) {
+        $SQL[]="SesOdfLocation=". StrSafe_DB($SesOdfLocation);
+    }
 
-		$q
-			= "INSERT ignore INTO Session (SesTournament,SesOrder,SesType,SesName,SesLocation,SesTar4Session,SesAth4Target,SesFirstTarget,SesFollow,SesDtStart,SesDtEnd,SesOdfCode,SesOdfPeriod,SesOdfVenue,SesOdfLocation) "
-			. "VALUES( "
-				. StrSafe_DB($SesTournament) . ", "
-				. StrSafe_DB($SesOrder) . ", "
-				. StrSafe_DB($SesType) . ", "
-				. StrSafe_DB($SesName) . ", "
-				. (is_null($SesLoc) ? 'SesLocation' : StrSafe_DB($SesLoc)) . ", "
-				. StrSafe_DB(($SesType=='Q' || $SesType=='E' ? $SesTar4Session : 0)) . ", "
-				. StrSafe_DB(($SesType=='Q' || $SesType=='E' ? $SesAth4Target : 0)) . ", "
-				. StrSafe_DB(($SesType=='Q' || $SesType=='E' ? $SesFirstTarget : 0)) . ", "
-				. StrSafe_DB(($SesType=='F' ? $SesFollow : 0)) . ", "
-				//. StrSafe_DB(($SesType=='F' ? $SesDtStart : 0)) . ", "
-				//. StrSafe_DB(($SesType=='F' ? $SesDtEnd : 0))
-				. StrSafe_DB($SesDtStart) . ", "
-				. StrSafe_DB($SesDtEnd) . ", "
-				. StrSafe_DB($SesOdfCode) . ", "
-				. StrSafe_DB($SesOdfPeriod) . ", "
-				. StrSafe_DB($SesOdfVenue) . ", "
-				. StrSafe_DB($SesOdfLocation)
-			. ") ";
-			//	print $q;exit;
-		$rs=safe_w_sql($q);
+    $q=implode(', ', $SQL);
+    safe_w_sql("insert into Session set $q on duplicate key update $q");
 
-		if (!$rs)
-		{
-			$ret='_error_';
-		}
-		else
-		{
-		// IMPLICAZIONI
-			switch($SesType)
-			{
-				case 'Q':
-					// aggiorno il numero di sessioni di qualifica (Tournament.ToNumSession)
-					$x=updateQualNumSession($SesTournament);
+    // IMPLICAZIONI
+    switch($SesType) {
+        case 'Q':
+            // aggiorno il numero di sessioni di qualifica (Tournament.ToNumSession)
+            $x=updateQualNumSession($SesTournament);
 
-					if (!$x)
-					{
-						$ret='_error_';
-					}
-					else
-					{
-						// genero i paglioni per la sessione
-						$x=regenerateQualTargetsForSession($SesTournament,$SesOrder);
-						if (!$x)
-						{
-							$ret='_error_';
-						}
-					}
+            if (!$x) {
+                $ret='_error_';
+            } else {
+                // genero i paglioni per la sessione
+                $x=regenerateQualTargetsForSession($SesTournament,$SesOrder);
+                if (!$x)
+                {
+                    $ret='_error_';
+                }
+            }
 
-					// inserts a new DistanceInformation records set
-					$SQL="select * from DistanceInformation where DiTournament=$SesTournament and DiType='Q' and DiSession=".($SesOrder-1);
-					$q=safe_r_sql($SQL);
-					if(safe_num_rows($q)) {
-						while($r=safe_fetch($q)) {
-							safe_w_sql("insert ignore into DistanceInformation set
-								DiTournament=$r->DiTournament,
-								DiSession=$SesOrder,
-								DiDistance=$r->DiDistance,
-								DiEnds=$r->DiEnds,
-								DiArrows=$r->DiArrows,
-								DiType='Q'");
-						}
-					} else {
-						// inserts a standard guess based on the type
-						$q=safe_r_sql("select ToType from Tournament where ToId=$SesTournament");
-						$r=safe_fetch($q);
-						foreach(getDistanceArrays($r->ToType) as $Dist=>$Info) {
-							safe_w_sql("insert ignore into DistanceInformation set DiTournament=$SesTournament, DiSession=$SesOrder, DiDistance=$Dist+1, DiEnds={$Info[0]}, DiArrows={$Info[1]}, DiType='Q'");
-						}
-					}
+            // inserts a new DistanceInformation records set
+            $SQL="select * from DistanceInformation where DiTournament=$SesTournament and DiType='Q' and DiSession=".($SesOrder-1);
+            $q=safe_r_sql($SQL);
+            if(safe_num_rows($q)) {
+                while($r=safe_fetch($q)) {
+                    safe_w_sql("insert ignore into DistanceInformation set
+                        DiTournament=$r->DiTournament,
+                        DiSession=$SesOrder,
+                        DiDistance=$r->DiDistance,
+                        DiEnds=$r->DiEnds,
+                        DiArrows=$r->DiArrows,
+                        DiType='Q'");
+                }
+            } else {
+                // inserts a standard guess based on the type
+                $q=safe_r_sql("select ToType from Tournament where ToId=$SesTournament");
+                $r=safe_fetch($q);
+                foreach(getDistanceArrays($r->ToType) as $Dist=>$Info) {
+                    safe_w_sql("insert ignore into DistanceInformation set DiTournament=$SesTournament, DiSession=$SesOrder, DiDistance=$Dist+1, DiEnds={$Info[0]}, DiArrows={$Info[1]}, DiType='Q'");
+                }
+            }
 
-					break;
-				case 'E':
-					break;
-				case 'F':
-					break;
-				case 'T':
-					break;
-			}
-		}
+            break;
+        case 'E':
+            break;
+        case 'F':
+            break;
+        case 'T':
+            break;
+    }
 
-		return $ret;
+    return $ret;
 
-	}
+}
 
 /**
  * updateSession().

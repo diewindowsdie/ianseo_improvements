@@ -16,7 +16,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclParticipants, AclReadWrite, false);
+    checkFullACL(AclParticipants, 'pAdvancedEntries', AclReadWrite, false);
 
 	$Errore = 0;
 

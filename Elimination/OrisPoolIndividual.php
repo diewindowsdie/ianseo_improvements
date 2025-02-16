@@ -6,7 +6,7 @@ include_once('Common/Lib/ArrTargets.inc.php');
 require_once('Common/Lib/Obj_RankFactory.php');
 require_once('Common/OrisFunctions.php');
 require_once('Common/pdf/PdfChunkLoader.php');
-checkACL(AclEliminations, AclReadOnly);
+checkFullACL(AclEliminations, '',  AclReadOnly);
 
 $events = array();
 if(isset($_REQUEST["EventCode"])) {

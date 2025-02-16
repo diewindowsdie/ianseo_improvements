@@ -55,15 +55,15 @@ function DrawQRCode_ISK_NG(TCPDF &$pdf, $X, $Y, $Session=0, $Distance=0, $Target
 	$Oldx=$pdf->getX();
 	$Oldy=$pdf->getY();
 
-	require_once('Common/tcpdf/tcpdf_barcodes_2d.php');
-	// create new barcode object
-	$barcodeobj = new TCPDF2DBarcode($text, 'QRCODE,L');
-	$img=$barcodeobj->getBarcodePngData();
+//	require_once('Common/tcpdf/tcpdf_barcodes_2d.php');
+//	// create new barcode object
+//	$barcodeobj = new TCPDF2DBarcode($text, 'QRCODE,L');
+//	$img=$barcodeobj->getBarcodePngData();
 
 	if($Individual and $Stage=='Q' and $Distance) {
 		// draws a white background square
 		$pdf->Rect($X, $Y, $Width, $Height, 'FD', array('all'=>array('color'=>100)), array(255));
-		$pdf->Image('@'.$img, $X+($small? 1 : 2.5), $Y+($small? 1 : 2.5), $Width-($small? 2 : 5), $Height-($small? 2 : 5), 'PNG');
+		$pdf->write2DBarcode(json_encode($Opts), 'QRCODE,L', $X+($small? 1 : 2.5), $Y+($small? 1 : 2.5), $Width-($small? 2 : 5), $Height-($small? 2 : 5));
 
 		$pdf->SetFont($pdf->FontStd,'',8);
 		$pdf->StartTransform();
@@ -78,7 +78,7 @@ function DrawQRCode_ISK_NG(TCPDF &$pdf, $X, $Y, $Session=0, $Distance=0, $Target
 	} else {
 		// draws a white background square
 		$pdf->Rect($X, $Y, $Width, $Height, 'FD', array('all'=>array('color'=>100)), array(255));
-		$pdf->Image('@'.$img, $X+($small? 1 : 2.5), $Y+($small? 1 : 2.5), $Width-($small? 2 : 5), $Height-($small? 2 : 5), 'PNG');
+		$pdf->write2DBarcode(json_encode($Opts), 'QRCODE,L', $X+($small? 1 : 2.5), $Y+($small? 1 : 2.5), $Width-($small? 2 : 5), $Height-($small? 2 : 5));
 	}
 
 	$pdf->setXY($Oldx, $Oldy);

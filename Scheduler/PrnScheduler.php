@@ -6,7 +6,7 @@ require_once('Common/pdf/IanseoPdf.php');
 if (defined('hideSchedulerAndAdvancedSession')) {
 	exit;
 }
-checkACL(AclCompetition, AclReadOnly);
+checkFullACL(AclCompetition, 'cSchedule', AclReadOnly);
 CheckTourSession(true);
 
 if(!empty($_REQUEST["FinalSchedule"]) OR !empty($_REQUEST["DailySchedule"])) {

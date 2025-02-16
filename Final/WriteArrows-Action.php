@@ -42,12 +42,12 @@ switch($_REQUEST['act']) {
 				$options['events']=$Events;
 			}
 			if($Team=$Schedule[0]) {
-				if(!hasACL(AclTeams, AclReadWrite)) {
+				if(!hasFullACL(AclTeams, '', AclReadWrite)) {
 					JsonOut($JSON);
 				}
 				$rank[$Team]=Obj_RankFactory::create('GridTeam',$options);
 			} else {
-				if(!hasACL(AclIndividuals, AclReadWrite)) {
+				if(!hasFullACL(AclIndividuals, '',  AclReadWrite)) {
 					JsonOut($JSON);
 				}
 				$rank[$Team]=Obj_RankFactory::create('GridInd',$options);
@@ -64,12 +64,12 @@ switch($_REQUEST['act']) {
 					}
 				}
 				if($Team) {
-					if(!hasACL(AclTeams, AclReadWrite)) {
+					if(!hasFullACL(AclTeams, '', AclReadWrite)) {
 						JsonOut($JSON);
 					}
 					$rank[$Team]=Obj_RankFactory::create('GridTeam',$options);
 				} else {
-					if(!hasACL(AclIndividuals, AclReadWrite)) {
+					if(!hasFullACL(AclIndividuals, '', AclReadWrite)) {
 						JsonOut($JSON);
 					}
 					$rank[$Team]=Obj_RankFactory::create('GridInd',$options);
@@ -268,7 +268,7 @@ switch($_REQUEST['act']) {
 			}
 		}
 		$TeamEvent = intval($_REQUEST['team']);
-		if(!hasACL(($TeamEvent ? AclTeams : AclIndividuals), AclReadWrite) or ($TeamEvent==0 ? IsBlocked(BIT_BLOCK_IND) : IsBlocked(BIT_BLOCK_TEAM))) {
+		if(!hasFullACL(($TeamEvent ? AclTeams : AclIndividuals), '', AclReadWrite) or ($TeamEvent==0 ? IsBlocked(BIT_BLOCK_IND) : IsBlocked(BIT_BLOCK_TEAM))) {
 			JsonOut($JSON);
 		}
 		$event = $_REQUEST['event'];

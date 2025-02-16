@@ -15,6 +15,7 @@ $lang['CssBoxLeft']='Box - Sinistra';
 $lang['CssBoxRight']='Box - Destra';
 $lang['CssCountry']='Blocco Nome e Bandiera - Codice Nazione';
 $lang['CssCountryCommon']='Nazione';
+$lang['CssCountryName']='Blocco Nome e Bandiera - Nome Società/Nazione';
 $lang['CssFlag']='Blocco Nome e Bandiera - Bandiera';
 $lang['CssFlexArrows']='Blocco Dettagli Frecce - Common';
 $lang['CssFlexArrowsDiv']='Dividere Singola Freccia';

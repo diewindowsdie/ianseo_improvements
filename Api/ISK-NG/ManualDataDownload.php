@@ -7,7 +7,7 @@ CheckTourSession(true);
 if(!($_SESSION["UseApi"] == ISK_NG_LIVE_CODE AND module_exists('ISK-NG_Live'))) {
     CD_redirect($CFG->ROOT_DIR);
 }
-checkACL(AclISKServer, AclReadWrite);
+checkFullACL(AclISKServer, 'iskUser', AclReadWrite);
 
 $PAGE_TITLE=get_text('ISK-GetQRData');
 $IncludeJquery = true;

@@ -2,7 +2,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Tournament/Fun_Tournament.local.inc.php');
-checkACL(AclCompetition, AclReadWrite, false);
+checkFullACL(AclCompetition, 'cData', AclReadWrite, false);
 
 $JSON=array('error'=>1, 'clid' => '', 'valid' => '');
 if (!CheckTourSession()

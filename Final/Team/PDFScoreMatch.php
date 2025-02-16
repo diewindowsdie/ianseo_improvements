@@ -10,7 +10,7 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 require_once('Common/Fun_Phases.inc.php');
 require_once('Common/Lib/Obj_RankFactory.php');
 require_once('Common/Lib/ScorecardsLib.php');
-checkACL(AclTeams, AclReadOnly);
+checkFullACL(AclTeams, '', AclReadOnly);
 
 $pdf = new ResultPDF((get_text('TeamFinal')),false);
 $pdf->setBarcodeHeader(70);

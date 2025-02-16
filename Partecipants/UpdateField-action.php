@@ -2,7 +2,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Qualification/Fun_Qualification.local.inc.php');
 CheckTourSession(false);
-checkACL(AclParticipants, AclReadWrite, false);
+checkFullACL(AclParticipants, 'pEntries', AclReadWrite, false);
 
 $JSON=array('error' => 1, 'keys'=>array(), 'value'=>0);
 

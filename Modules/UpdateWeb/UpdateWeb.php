@@ -2,7 +2,7 @@
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Common/Fun_Phases.inc.php');
-checkACL(AclInternetPublish, AclReadWrite);
+checkFullACL(AclInternetPublish,  'ipLiveUpdate', AclReadWrite);
 CheckTourSession(true);
 
 if(empty($_SESSION['OnlineAuth']) or empty($_SESSION['OnlineServices']) or !($_SESSION['OnlineServices']&2)) {

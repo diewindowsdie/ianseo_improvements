@@ -2,7 +2,7 @@
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 CheckTourSession(true);
-checkACL(AclIndividuals, AclReadOnly);
+checkFullACL(AclIndividuals, '', AclReadOnly);
 require_once('Common/Globals.inc.php');
 require_once('Common/Fun_DB.inc.php');
 require_once('Common/Lib/CommonLib.php');

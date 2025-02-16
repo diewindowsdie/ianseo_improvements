@@ -3,7 +3,7 @@
 
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 	CheckTourSession(true);
-    checkACL(AclParticipants, AclReadWrite);
+    checkFullACL(AclParticipants, 'pEntries', AclReadWrite);
 	require_once('Common/Fun_FormatText.inc.php');
 	require_once('Partecipants/Fun_Partecipants.local.inc.php');
 	require_once('Common/Fun_Sessions.inc.php');

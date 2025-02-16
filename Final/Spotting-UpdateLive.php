@@ -10,7 +10,7 @@ $match = isset($_REQUEST['d_Match']) ? $_REQUEST['d_Match'] : null;
 
 $JSON=array('error'=>1, 'isLive' => 0, 'msg'=>'');
 
-checkACL(($TeamEvent ? AclTeams : AclIndividuals), AclReadWrite, false);
+checkFullACL(($TeamEvent ? AclTeams : AclIndividuals), '', AclReadWrite, false);
 
 if($match%2!=0)
 	$match--;

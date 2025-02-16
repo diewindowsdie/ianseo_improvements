@@ -11,7 +11,7 @@
 	require_once('Common/Fun_FormatText.inc.php');
 
 	if (!CheckTourSession()) printCrackerror('popup');
-    checkACL(AclParticipants, AclReadWrite);
+    checkFullACL(AclParticipants, 'pEntries', AclReadWrite);
 
 	$id=isset($_REQUEST['id']) ? $_REQUEST['id'] : null;
 

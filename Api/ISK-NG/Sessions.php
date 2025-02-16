@@ -2,7 +2,7 @@
 require_once(__DIR__.'/config.php');
 
 CheckTourSession(true);
-checkACL(AclISKServer, AclReadWrite);
+checkFullACL(AclISKServer, 'iskManagement', AclReadWrite);
 
 require_once(__DIR__.'/Lib.php');
 require_once('Common/Lib/Fun_Phases.inc.php');

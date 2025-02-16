@@ -11,7 +11,7 @@ require_once('Common/Fun_Sessions.inc.php');
 
 $JSON=array('error'=>1,'val'=>'');
 
-if (!CheckTourSession() or checkACL(AclEliminations, AclReadWrite, false)!=AclReadWrite or IsBlocked(BIT_BLOCK_ELIM)) {
+if (!CheckTourSession() or !hasFullACL(AclEliminations, '', AclReadWrite) or IsBlocked(BIT_BLOCK_ELIM)) {
 	JsonOut($JSON);
 }
 

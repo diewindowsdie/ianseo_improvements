@@ -6,11 +6,9 @@ require_once('Common/Lib/Fun_DateTime.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Tournament/Fun_Tournament.local.inc.php');
 require_once('Common/Lib/CommonLib.php');
-
-$aclLevel = checkACL(AclCompetition, AclReadOnly);
+$aclLevel = checkFullACL(AclCompetition, 'cData', AclReadOnly);
+$CanEdit=$aclLevel>=AclReadWrite;
 CheckTourSession(true);
-
-$CanEdit=hasACL(AclCompetition, AclReadWrite);
 
 $TypeOptions = '<option value="0">---</option>';
 $RsSel = safe_r_sql("SELECT ItId, ItDescription, if(ItJudge>0,1,0) + if(ItDos>0,2,0) + if(ItJury>0,3,0) + if(ItOc>0,4,0) as TiGroup FROM InvolvedType ORDER BY ItJudge=0, ItJudge, ItDoS=0, ItDoS, ItJury=0, ItJury, ItOc");

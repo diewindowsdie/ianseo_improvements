@@ -416,42 +416,45 @@ function GetAccBoothEnWhere($EnId, $Division=false, $Limit=false) {
 	return '';
 }
 
-function checkGPL($Force=false) {
-	if(isset($_REQUEST['acceptGPL'])) {
-		SetParameter('AcceptGPL', date('Y-m-d H:i:s'));
+function checkIanseoLicense($Force=false) {
+	if(isset($_REQUEST['acceptLicense'])) {
+		SetParameter('Accept-'.IanseoLicenseCode, date('Y-m-d H:i:s'));
         return;
 	}
-	if($Force or GetParameter('AcceptGPL')<date('Y-m-d H:i:s', strtotime('-1 month'))) {
-		AcceptGPL();
+	if($Force or GetParameter('Accept-'.IanseoLicenseCode)<date('Y-m-d H:i:s', strtotime('-1 month'))) {
+        AcceptIanseoLicense();
 	}
 }
 
-function AcceptGPL() {
+function AcceptIanseoLicense() {
 	global $CFG;
+    $IncludeJquery=true;
 	include('Common/Templates/head.php');
 
 	echo '<style>
-			.AgreeGPL {font-size:1.25rem;text-align: center; margin:0 auto; max-width:60rem;} 
-			.AgreeGPL input[type=checkbox] { width:1.5rem;height:1.5rem; } 
-			.AgreeGPL input[type=button] { font-size:2rem; } 
-			.AgreeGPL > div { margin-top:1rem; } 
-			.AgreeGPL > div.checkbox { padding:0.5rem; background-color:#ffaaaa; }
-			#AcceptGPL {margin-top:1rem;}
+			.AgreeLicense {font-size:1.25rem;text-align: center; margin:0 auto; max-width:60rem;} 
+			.AgreeLicense input[type=checkbox] { width:1.5rem;height:1.5rem; } 
+			.AgreeLicense input[type=button] { font-size:2rem; } 
+			.AgreeLicense > div { margin-top:1rem; } 
+			.AgreeLicense > div.checkbox { padding:0.5rem; background-color:#ffaaaa; }
+			.AgreeLicense img {border:0; height:2em; width:auto; }
+			.AgreeLicense iframe {border:0; width:100%; height:40vh;}
+			#AcceptLicense {margin-top:1rem;}
 		</style>
-		<div class="AgreeGPL">
-		<h2>'.get_text('Install-0 Title', 'Install').'</h2>
-		<div>' . get_text('AcceptGPL-Desc0', 'Install') . '</div>
-		<div>' . get_text('AcceptGPL-Desc1', 'Install', '<a href="https://www.gnu.org/licenses/gpl.html" target="License">GNU General Public License</a>') . '</div>
-		<div><a href="'.$CFG->ROOT_DIR.'LICENSE.txt" target="License">' . get_text('AcceptGPL-ReadTXT', 'Install') . '</a></div>
-		<div>' . get_text('AcceptGPL-Desc2', 'Install', '<a href="https://www.gnu.org/licenses/gpl.html" target="License">https://www.gnu.org/licenses/gpl.html</a>') . '</div>
-		<div><a href="https://www.gnu.org/licenses/gpl.html" target="License">' . get_text('Credits-License', 'Install') . '</a></div>
-        <div><a href="https://www.gnu.org/licenses/gpl.html" target="License"><img src="'.$CFG->ROOT_DIR.'Common/Images/gplv3.png" alt="GPLv3" border="0"></a></div>
-        <div>'.get_text('AcceptGPL-Start', 'Install', 'http://www.gnu.org').'</div>
+		<div class="AgreeLicense">
+		<h2>'.get_text('AcceptLicense-Title', 'Install', '«'.IanseoLicenseFullName.' ('.IanseoLicenseCode.')»').'</h2>
+		<div>' . get_text('AcceptLicense-Credits', 'Install', '«'.IanseoLicenseFullName.'» <span class="NoWrap">('.IanseoLicenseCode.')</span>') . '</div>
+		<div>' . get_text('AcceptLicense-Desc0', 'Install', '<a href="'.IanseoLicenseExternalSite.'" target="ExternalLicense">'.IanseoLicenseFullName.'</a>') . '</div>
+		<div>' . get_text('AcceptLicense-Desc1', 'Install') . '</div>
+		<div><a href="'.$CFG->ROOT_DIR.'LICENSE.html" target="License">' . get_text('AcceptLicense-Read', 'Install') . '</a></div>
+		<div>' . get_text('AcceptLicense-Desc2', 'Install', '<a href="'.IanseoLicenseExt.'" target="License">'.IanseoLicenseExt.'</a>') . '</div>
+        <div><a href="'.$CFG->ROOT_DIR.'LICENSE.html" target="License"><img src="'.$CFG->ROOT_DIR.'Common/Images/'.IanseoLicensePicture.'" alt="'.IanseoLicenseCode.'" border="0"></a></div>
+        <div>'.get_text('AcceptLicense-Start', 'Install', IanseoLicenseExternalSite).'</div>
         <div class="checkbox">
-        	<div><input type="checkbox" onclick="document.getElementById(\'AcceptGPL\').style.display=\'block\'">&nbsp;'.get_text('AcceptGPL', 'Install', 'http://www.gnu.org').'</div>
-        	<div id="AcceptGPL" style="display:none"><input type="button" onclick="location.href=\'?acceptGPL\'" value="'.htmlspecialchars(get_text('AcceptGPL-Accept', 'Install')).'"></div>
+        	<div><input type="checkbox" onclick="$(\'#AcceptLicense\').toggleClass(\'d-none\', !this.checked)">&nbsp;'.get_text('AcceptLicense', 'Install', '<a href="'.$CFG->ROOT_DIR.'LICENSE.html" target="License">'.IanseoLicenseFullName.'</a>').'</div>
+        	<div id="AcceptLicense" class="d-none"><input type="button" onclick="location.href=\'?acceptLicense\'" value="'.htmlspecialchars(get_text('AcceptLicense-Accept', 'Install')).'"></div>
         </div>
-        <div><a href="https://www.gnu.org/licenses/gpl.html" target="License">' . get_text('AcceptGPL-Logo', 'Install') . '</a></div>
+        <div>' . get_text('AcceptLicense-More', 'Install', '<a href="'.IanseoLicenseExternalSite.'" target="License">'.IanseoLicenseExternalSite.'</a>') . '</div>
         </div>';
 	include('Common/Templates/tail.php');
 	die();

@@ -2,8 +2,9 @@
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Common/Lib/CommonLib.php');
-checkACL(AclRoot, AclReadWrite);
+checkFullACL(AclRoot, '', AclReadWrite);
 CheckTourSession(true);
+
 global $listACL, $CFG;
 
 if(!empty($_FILES['importACL']) and $_FILES['importACL']['error']==0) {

@@ -16,7 +16,7 @@
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclQualification, AclReadWrite, false);
+    checkFullACL(AclQualification, '', AclReadWrite, false);
 
 	$JSON=array(
 		'error' => 1,

@@ -15,6 +15,7 @@ $lang['CssBoxLeft']='Box - Left';
 $lang['CssBoxRight']='Box - Right';
 $lang['CssCountry']='Name and Flag Block - Country Code';
 $lang['CssCountryCommon']='Country';
+$lang['CssCountryName']='Name and Flag Block - Country Name';
 $lang['CssFlag']='Name and Flag Block - Flag';
 $lang['CssFlexArrows']='Arrows Detail Block - Common';
 $lang['CssFlexArrowsDiv']='Single Arrow Div';

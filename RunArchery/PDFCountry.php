@@ -5,7 +5,7 @@ require_once('Common/OrisFunctions.php');
 require_once('Common/pdf/PdfChunkLoader.php');
 
 CheckTourSession(true);
-checkACL(AclParticipants, AclReadOnly);
+checkFullACL(AclParticipants, 'pEntries', AclReadOnly);
 
 $PdfData=getRunEntries('','','Country');
 

@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-checkACL(AclParticipants, AclReadOnly);
+checkFullACL(AclParticipants, 'pEntries', AclReadOnly);
 require_once('Common/pdf/ResultPDF.inc.php');
 
 define("HideCols", GetParameter("IntEvent"));
@@ -13,8 +13,8 @@ $MyQuery.= "FROM Entries AS e ";
 $MyQuery.= "LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament ";
 $MyQuery.= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
 $MyQuery.= "LEFT JOIN Divisions ON e.EnTournament=DivTournament AND e.EnDivision=DivId ";
-$MyQuery.= "LEFT JOIN Classes as c1 ON e.EnTournament=c1.ClTournament AND e.EnAgeClass=c1.ClId ";
-$MyQuery.= "LEFT JOIN Classes as c2 ON e.EnTournament=c2.ClTournament AND e.EnClass=c2.ClId ";
+$MyQuery.= "LEFT JOIN Classes as c1 ON e.EnTournament=c1.ClTournament AND e.EnAgeClass=c1.ClId and (e.EnSex=c1.ClSex or c1.ClSex=-1) ";
+$MyQuery.= "LEFT JOIN Classes as c2 ON e.EnTournament=c2.ClTournament AND e.EnClass=c2.ClId and (e.EnSex=c2.ClSex or c1.ClSex=-1) ";
 
 
 $MyQuery.= "WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " ";

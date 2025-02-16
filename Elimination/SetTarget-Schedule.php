@@ -7,7 +7,7 @@ if(!CheckTourSession()) {
 	JsonOut($JSON);
 }
 
-checkACL(AclEliminations, AclReadWrite);
+checkFullACL(AclEliminations, '',  AclReadWrite);
 
 // remove old schedule
 safe_w_sql("delete from FinSchedule where FSEvent=".StrSafe_DB($_REQUEST['dest'])." and FSTeamEvent=0 and FSTournament={$_SESSION['TourId']}");

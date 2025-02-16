@@ -7,14 +7,11 @@
 
 	require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
-	if (!CheckTourSession() ||
-		!isset($_REQUEST['d_Event']) ||
-		!isset($_REQUEST['d_Phase']))
-	{
+	if (!CheckTourSession() or !hasFullACL(AclCompetition, 'cSchedule', AclReadWrite) or !isset($_REQUEST['d_Event']) or !isset($_REQUEST['d_Phase'])) {
 		print get_text('CrackError');
 		exit;
 	}
-    checkACL(AclCompetition, AclReadWrite, false);
+
 
 	$xml = '';
 	$Errore=0;

@@ -7,7 +7,7 @@ CheckTourSession(true);
 if(!($_SESSION["UseApi"] == ISK_NG_LITE_CODE)) {
     CD_redirect($CFG->ROOT_DIR);
 }
-checkACL(AclISKServer, AclReadWrite);
+checkFullACL(AclISKServer, 'iskUser', AclReadWrite);
 
 $PAGE_TITLE=get_text('TargetScoring-Printout', 'Api');
 

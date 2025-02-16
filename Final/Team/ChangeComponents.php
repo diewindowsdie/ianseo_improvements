@@ -3,7 +3,7 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Common/Lib/CommonLib.php');
 
 CheckTourSession(true);
-checkACL(AclTeams, AclReadWrite);
+checkFullACL(AclTeams, '',AclReadWrite);
 
 $PAGE_TITLE=get_text('ChangeComponents');
 $IncludeJquery = true;

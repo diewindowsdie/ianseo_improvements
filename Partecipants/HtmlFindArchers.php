@@ -8,7 +8,7 @@
 	require_once('Fun_Partecipants.local.inc.php');
 
 	if (!CheckTourSession()) printCrackerror('popup');
-    checkACL(AclParticipants, AclReadOnly);
+    checkFullACL(AclParticipants, 'pEntries', AclReadOnly);
 
 	$Code	= (!empty($_REQUEST['findCode']) ? $_REQUEST['findCode'] : '');
 	$Ath	= (!empty($_REQUEST['findAth']) && strlen($_REQUEST['findAth'])>1 ? $_REQUEST['findAth'] : '');

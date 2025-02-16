@@ -6,7 +6,7 @@ $JSON=array('error' => 1, 'rows' => array());
 if (empty($_SESSION['TourId'])) {
 	JsonOut($JSON);
 }
-checkACL(AclSpeaker, AclReadOnly, false);
+checkFullACL(AclSpeaker, '', AclReadOnly, false);
 
 $SQL='';
 $Sessions='';
