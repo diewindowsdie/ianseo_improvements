@@ -254,9 +254,9 @@ foreach($rankData['sections'] as $Event => $section) {
 				$StartXpos=$pdf->GetX()-3*max(count($FinSetScore), count($OppSetScore));
 				$pdf->SetXY($StartXpos, $OrgY+ 2*$Cella);
 				$smallCella=$Cella-0.5;
-				foreach($FinSetScore as $score) $pdf->Cell(3, $smallCella, $score?$score:'', 1, 0);
+				foreach($FinSetScore as $score) $pdf->Cell(3, $smallCella, $score != '' ? $score : '', 1, 0);
 				$pdf->SetXY($StartXpos, $OrgY+2*$Cella+$smallCella);
-				foreach($OppSetScore as $score) $pdf->Cell(3, $smallCella, $score?$score:'', 1, 0);
+				foreach($OppSetScore as $score) $pdf->Cell(3, $smallCella, $score != '' ? $score : '', 1, 0);
 				$pdf->SetLineStyle(array('color' => array(0)));
 				$pdf->SetTextColor(0);
 				$pdf->SetXY($LineXstart,$OrgY);
