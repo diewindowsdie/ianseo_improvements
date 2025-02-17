@@ -566,8 +566,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 						'record' => $this->ManageBitRecord($myRow->RecBitLevel, $myRow->CoCaCode, $myRow->CoMaCode, $myRow->EvIsPara),
 						'irm' => $myRow->IndIrmType,
 						'irmText' => $myRow->IrmType,
-						'recordGap' => ($myRow->Arrows_Shot*10)-$myRow->Score,
-                        'normative' => calcNormative($distances, $myRow->EnClass, $myRow->EnDivision, $myRow->Score)
+						'recordGap' => ($myRow->Arrows_Shot*10)-$myRow->Score
                     );
 
 					if ($this->opts['dist']==0 AND empty($this->opts['runningDist'])) {
@@ -596,6 +595,8 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 					}
 
 					$item=$item+$distFields;
+                    error_reporting(E_ALL);
+                    $item['normative'] = calcNormative($distances, $myRow->EnClass, $myRow->EnDivision, $distFields);
 
 					//Gestisco il numero di frecce tirate per sessione
 					if($myRow->IndIrmType==0 AND (empty($section["meta"]["arrowsShot"][$myRow->Session]) OR $section["meta"]["arrowsShot"][$myRow->Session]<=$myRow->Arrows_Shot)) {

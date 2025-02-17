@@ -2,7 +2,7 @@
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 $JSON=array('error' => 1, 'msg' => get_text('AllFieldsMandatory','Errors'));
 
-if(!CheckTourSession() or !hasACL(AclCompetition, AclReadOnly)) {
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cData', AclReadOnly)) {
 	JsonOut($JSON);
 }
 
@@ -27,7 +27,7 @@ if(!empty($_REQUEST['act'])) {
 	$_REQUEST['act']='list';
 }
 
-$CanEdit=hasACL(AclCompetition, AclReadWrite);
+$CanEdit=hasFullACL(AclCompetition, 'cData', AclReadWrite);
 
 $JSON['error']=0;
 

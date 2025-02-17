@@ -10,8 +10,10 @@ define('EURO', chr(128));
 
 class IanseoPdf extends TCPDF {
 
+    const imageTopOffset=5;
+    const imageSize=16;
 	const sideMargin=10;
-	const topMargin=17;
+	const topMargin=self::imageTopOffset + self::imageSize + 2;
 	const bottomMargin=10;
 	const footerImageH=10;
 
@@ -112,7 +114,7 @@ class IanseoPdf extends TCPDF {
 		$this->Title=$DocTitolo;
 		$this->Titolo=$DocTitolo;
 		$this->SetDefaultColor();
-		$this->SetMargins(IanseoPdf::sideMargin,IanseoPdf::topMargin + 3.0*count($this->StaffCategories) ,IanseoPdf::sideMargin);
+		$this->SetMargins(IanseoPdf::sideMargin,IanseoPdf::topMargin ,IanseoPdf::sideMargin);
 		$this->SetAutoPageBreak(true, ($this->ToPaths['ToBottom'] ? IanseoPdf::footerImageH:0) + IanseoPdf::bottomMargin);
 		$this->SetAuthor('https://www.ianseo.net');
 		$this->SetCreator('Software Design by Ianseo');
@@ -164,16 +166,14 @@ class IanseoPdf extends TCPDF {
 		$this->SetDefaultColor();
 		$LeftStart = IanseoPdf::sideMargin;
 		$RightStart = IanseoPdf::sideMargin+1;
-		$ImgSizeReq=15;
-		if (count($this->StaffCategories)>0) $ImgSizeReq+=5;
 		if($this->ToPaths['ToLeft']) {
-			$this->Image($this->ToPaths['ToLeft'], IanseoPdf::sideMargin, 5, 0, $ImgSizeReq);
+			$this->Image($this->ToPaths['ToLeft'], IanseoPdf::sideMargin, self::imageTopOffset, 0, self::imageSize);
 			$LeftStart = $this->getImageRBX()+2;
 		}
 		if($this->ToPaths['ToRight']) {
 			$im=getimagesize($this->ToPaths['ToRight']);
-			$this->Image($this->ToPaths['ToRight'], (($this->w-IanseoPdf::sideMargin) - ($im[0] * $ImgSizeReq / $im[1])), 5, 0, $ImgSizeReq);
-			$RightStart += ($im[0] * $ImgSizeReq / $im[1]);
+			$this->Image($this->ToPaths['ToRight'], (($this->w-IanseoPdf::sideMargin) - ($im[0] * self::imageSize / $im[1])), self::imageTopOffset, 0, self::imageSize);
+			$RightStart += ($im[0] * self::imageSize / $im[1]);
 		}
 
     	$this->SetFont($this->FontStd,'B',13);
@@ -182,7 +182,7 @@ class IanseoPdf extends TCPDF {
 		$this->SetXY($LeftStart,$this->GetY()+1);
     	$this->SetFont($this->FontStd,'',10);
 		$this->SetX($LeftStart);
-		$this->Cell($this->w-$LeftStart-$RightStart, 4, (preg_replace("/[\r\n]+/sim", ' ', $this->Oc) . (strlen($this->Code) > 0 ? ' (' . $this->Code . ')' : '')) , 0, 1, 'L', 0);
+		$this->Cell($this->w-$LeftStart-$RightStart, 4, (preg_replace("/[\r\n]+/sim", ' ', $this->Oc)) , 0, 1, 'L', 0);
     	$this->SetFont($this->FontStd,'',10);
 		$this->SetX($LeftStart);
 		$this->Cell($this->w-$LeftStart-$RightStart, 4,  ($this->Where . ", " . $this->TournamentDate2String ), 0, 1, 'L', 0);
@@ -217,8 +217,11 @@ class IanseoPdf extends TCPDF {
 			$this->SetFont($this->FontStd,'',8);
 	    	$this->SetXY(IanseoPdf::sideMargin,$this->h - $this->savedBottomMargin);
 		    $this->MultiCell(($this->w-20), 5, $this->getGroupPageNo() . "/" . $this->getPageGroupAlias() ,0, "C", 0);    //Page number
-		    $this->SetXY(($this->w-105),$this->h - $this->savedBottomMargin + 1);    //Position at 1.5 cm from bottom
+		    $this->SetXY(($this->w-105),$this->h - $this->savedBottomMargin + 0.5);    //Position at 1.5 cm from bottom
 			$this->MultiCell(95, 5, $this->Titolo . " - " . $this->docUpdate .$this->TzOffset. ($this->Version ? " (v. $this->Version)" : ''),0, "R", 0);    //Page number
+            //код соревнования
+            $this->SetXY(IanseoPdf::sideMargin,$this->h - $this->savedBottomMargin + 0.5);
+            $this->MultiCell(95, 5, (strlen($this->Code) > 0 ? $this->Code : ''),0, "L", 0);
 		}
 	}
 

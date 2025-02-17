@@ -6,5 +6,6 @@
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
-/.idea/
-/*.zip
+.htaccess
+.idea/*
+/TV/Photos/*.jpg
