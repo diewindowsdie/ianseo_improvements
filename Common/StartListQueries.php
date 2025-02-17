@@ -1222,23 +1222,24 @@ function getStartListCategoryQuery($ORIS=false, $orderByTeam=0, $Events=array())
 				else upper(c.CoCode) 
 			end as NationCode,
 			case EvTeamCreationMode
-				when 0 then c.CoName 
-				when 1 then c2.CoName 
-				when 2 then c3.CoName 
-				else c.CoName 
+				when 0 then c.CoNameComplete 
+				when 1 then c2.CoNameComplete 
+				when 2 then c3.CoNameComplete 
+				else c.CoNameComplete 
 			end as Nation,
 			upper(c2.CoCode) AS NationCode2, 
-			c2.CoName AS Nation2, 
+			c2.CoNameComplete AS Nation2, 
 			upper(c3.CoCode) AS NationCode3, 
-			c3.CoName AS Nation3, 
+			c3.CoNameComplete AS Nation3, 
 			DivDescription, 
 			ClDescription, 
 			EnSubTeam, 
 			EnClass AS ClassCode, 
 			EnDivision AS DivCode, 
 			DivAthlete and ClAthlete as IsAthlete, 
-			EnAgeClass as AgeClass, 
-			EnSubClass as SubClass, 
+			EnAgeClass as AgeClass,
+			EnSubClass as SubClass,
+			sc.ScDescription as SubClassDescription, 
 			EnStatus as Status, 
 			EnIndClEvent AS `IC`, 
 			EnTeamClEvent AS `TC`, 
@@ -1246,7 +1247,7 @@ function getStartListCategoryQuery($ORIS=false, $orderByTeam=0, $Events=array())
 			EnTeamFEvent as `TF`, 
 			EnTeamMixEvent as `TM`, 
 			EvCode, 
-			DATE_FORMAT(EnDob,'%d %b %Y') as DOB, 
+			DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DOB, 
 			IFNULL(GROUP_CONCAT(EvEventName order by EvProgr SEPARATOR ', '),CONCAT('|',DivDescription, '| |', ClDescription)) as EventName , 
 			TfName, 
 			cNumber, EnTimestamp,
@@ -1254,7 +1255,8 @@ function getStartListCategoryQuery($ORIS=false, $orderByTeam=0, $Events=array())
 		FROM Entries AS e
 		INNER JOIN Tournament on EnTournament=ToId
 		INNER JOIN Qualifications AS q ON e.EnId=q.QuId 
-		LEFT JOIN Individuals on IndId=EnId AND EnTournament=IndTournament 
+		LEFT JOIN Individuals on IndId=EnId AND EnTournament=IndTournament
+		left join SubClass sc on sc.ScTournament=EnTournament and sc.ScId=EnSubClass 
 		LEFT JOIN Events AS ec ON EvTeamEvent=0 AND EvTournament=EnTournament AND IndEvent=EvCode and EvCodeParent=''
 		LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament 
 		LEFT JOIN Classes ON TRIM(EnClass)=TRIM(ClId) AND EnTournament=ClTournament 

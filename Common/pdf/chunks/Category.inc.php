@@ -5,6 +5,7 @@ $TargetFace=(isset($_REQUEST['tf']) && $_REQUEST['tf']==1);
 $pdf->HideCols = $PdfData->HideCols;
 $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 
+error_reporting(E_ALL);
 $StartLetter = ".";
 $ShowStatusLegend = false;
 $FirstTime=true;
@@ -17,21 +18,16 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 		$FirstTime=false;
 
 	   	$pdf->SetFont($pdf->FontStd,'B',10);
-		$pdf->Cell(190, 6,  $Rows[0]->EventCode." - ".$Rows[0]->EventName, 1, 1, 'C', 1);
+		$pdf->Cell(190, 6,  $Rows[0]->EventName, 1, 1, 'C', 1);
 
 		$pdf->SetFont($pdf->FontStd,'B',7);
-		$pdf->Cell(10, 4, $PdfData->Data['Fields']['Bib'], 1, 0, 'C', 1);
-		$pdf->Cell(41, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
-		$pdf->Cell(54, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
+		$pdf->Cell(10, 4, '№', 1, 0, 'C', 1);
+		$pdf->Cell(40, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
+		$pdf->Cell(75, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
+        $pdf->Cell(15, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'C', 1);
+        $pdf->Cell(8, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
 		$pdf->Cell(7, 4,  $PdfData->Data['Fields']['Session'], 1, 0, 'C', 1);
 		$pdf->Cell(11, 4, $PdfData->Data['Fields']['TargetNo'], 1, 0, 'C', 1);
-		if(!$PdfData->HideCols && !$TargetFace)
-		{
-			$pdf->Cell(11, 4, $PdfData->Data['Fields']['AgeClass'], 1, 0, 'C', 1);
-			$pdf->Cell(8, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
-		}
-		$pdf->Cell(12 + ($PdfData->HideCols==true ? ($TargetFace ? 12 : 22) : 0), 4, $PdfData->Data['Fields']['DivDescription'], 1, 0, 'C', 1);
-		$pdf->Cell(12 + ($PdfData->HideCols==true ? ($TargetFace ? 12 : 21) : 0), 4, $PdfData->Data['Fields']['ClDescription'], 1, 0, 'C', 1);
 
 		if ($TargetFace)
 		{
@@ -49,44 +45,30 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 		$pdf->SetFont($pdf->FontStd,'',1);
 		$pdf->Cell(190, 0.5,  '', 1, 1, 'C', 0);
 
+        $athleteIndex = 0;
 		foreach($Rows as $MyRow) {
-            $ExtraCountries=[];
-            if($MyRow->NationCode2 and $MyRow->NationCode2!=$MyRow->NationCode) {
-                $ExtraCountries[]=[
-                    'CoCode'=>$MyRow->NationCode2,
-                    'CoName'=>$MyRow->Nation2,
-                ];
-            }
-            if($MyRow->NationCode3 and $MyRow->NationCode3!=$MyRow->NationCode2 and $MyRow->NationCode3!=$MyRow->NationCode) {
-                $ExtraCountries[]=[
-                    'CoCode'=>$MyRow->NationCode3,
-                    'CoName'=>$MyRow->Nation3,
-                ];
-            }
-			$secondaryTeam = count($ExtraCountries)+1;
+            $athleteIndex = $MyRow->IsAthlete ? ($athleteIndex + 1) : 0;
+
+            //для минимизации объема изменений тут просто захардкодим 1
+			$secondaryTeam = 1;
 
 			if (!$pdf->SamePage(4*$secondaryTeam)) {
 				$pdf->AddPage();
 
 				$pdf->SetFont($pdf->FontStd,'B',10);
-				$pdf->Cell(0, 6,  $Rows[0]->EventCode." - ".$Rows[0]->EventName, 1, 1, 'C', 1);
+				$pdf->Cell(0, 6,  $Rows[0]->EventName, 1, 1, 'C', 1);
 				$pdf->SetXY(170,$pdf->GetY()-6);
 			   	$pdf->SetFont($pdf->FontStd,'I',6);
 				$pdf->Cell(30, 6, $PdfData->Continue, 0, 1, 'R', 0);
 
 				$pdf->SetFont($pdf->FontStd,'B',7);
-				$pdf->Cell(10, 4, $PdfData->Data['Fields']['Bib'], 1, 0, 'C', 1);
-				$pdf->Cell(41, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
-				$pdf->Cell(54, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
+				$pdf->Cell(10, 4, '№', 1, 0, 'C', 1);
+				$pdf->Cell(40, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
+				$pdf->Cell(75, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
+                $pdf->Cell(15, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'C', 1);
+                $pdf->Cell(8, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
 				$pdf->Cell(7, 4,  $PdfData->Data['Fields']['Session'], 1, 0, 'C', 1);
 				$pdf->Cell(11, 4, $PdfData->Data['Fields']['TargetNo'], 1, 0, 'C', 1);
-				if(!$PdfData->HideCols && !$TargetFace)
-				{
-					$pdf->Cell(11, 4, $PdfData->Data['Fields']['AgeClass'], 1, 0, 'C', 1);
-					$pdf->Cell(8, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
-				}
-				$pdf->Cell(12 + ($PdfData->HideCols==true ? ($TargetFace ? 12 : 22) : 0), 4, $PdfData->Data['Fields']['DivDescription'], 1, 0, 'C', 1);
-				$pdf->Cell(12 + ($PdfData->HideCols==true ? ($TargetFace ? 12 : 21) : 0), 4, $PdfData->Data['Fields']['ClDescription'], 1, 0, 'C', 1);
 
 				if ($TargetFace)
 				{
@@ -106,30 +88,20 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 			}
 
 		   	$pdf->SetFont($pdf->FontStd,'',7);
-			$pdf->Cell(10, 4 * $secondaryTeam,  $MyRow->IsAthlete ? $MyRow->Bib : '', 1, 0, 'R', 0);
+			$pdf->Cell(10, 4 * $secondaryTeam, $athleteIndex, 1, 0, 'R', 0);
 		   	$pdf->SetFont($pdf->FontStd,'B',7);
-			$pdf->Cell(41, 4 * $secondaryTeam,  $MyRow->Athlete, 1, 0, 'L', 0);
+			$pdf->Cell(40, 4 * $secondaryTeam,  $MyRow->Athlete, 1, 0, 'L', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',7);
-		   	$pdf->Cell(8, 4,  $MyRow->NationCode??'', 'LTB', 0, 'C', 0);
-			$pdf->Cell(46, 4,  $MyRow->Nation??'' . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 'RTB', 0, 'L', 0);
-            foreach($ExtraCountries as $k=>$Country) {
-                $secTmpX=$pdf->GetX();
-                $secTmpY=$pdf->GetY();
-                $pdf->SetXY($secTmpX-54,$secTmpY+4+4*$k);
-                $pdf->Cell(8, 4,  $Country['CoCode'], 'LTB', 0, 'C', 0);
-                $pdf->Cell(46, 4,  $Country['CoName'], 'RTB', 0, 'L', 0);
-                $pdf->SetXY($secTmpX,$secTmpY);
-            }
+            $text = $MyRow->Nation .
+                ($MyRow->Nation2 != '' ? ", " . $MyRow->Nation2 : "") .
+                ($MyRow->Nation3 != '' ? ", " . $MyRow->Nation3 : "");
+			$pdf->Cell(75, 4,  $text, 'RTB', 0, 'L', 0);
+            $pdf->SetFont($pdf->FontStd,'',7);
+            $pdf->Cell(15, 4 * $secondaryTeam,  $MyRow->DOB, 1, 0, 'C', 0);
+            $pdf->Cell(8, 4 * $secondaryTeam,  ($MyRow->SubClassDescription), 1, 0, 'C', 0);
 			$pdf->Cell(7, 4 * $secondaryTeam,  $MyRow->IsAthlete ? $MyRow->Session : '', 1, 0, 'R', 0);
 			$TgtNo=ltrim(($PdfData->BisTarget && (intval(substr($MyRow->TargetNo,1)) > $PdfData->NumEnd) ? str_pad((substr($MyRow->TargetNo,0,-1)-$PdfData->NumEnd),3,"0",STR_PAD_LEFT) . substr($MyRow->TargetNo,-1,1) . ' bis'  : $MyRow->TargetNo), 'O');
 			$pdf->Cell(11, 4 * $secondaryTeam,  $MyRow->IsAthlete ? $TgtNo : '', 1, 0, 'R', 0);
-			if(!$PdfData->HideCols && !$TargetFace)
-			{
-				$pdf->Cell(11, 4 * $secondaryTeam,  ($MyRow->AgeClass), 1, 0, 'C', 0);
-				$pdf->Cell(8, 4 * $secondaryTeam,  ($MyRow->SubClass), 1, 0, 'C', 0);
-			}
-			$pdf->Cell(12 + ($PdfData->HideCols==true ? ($TargetFace ? 12 : 22) : 0), 4 * $secondaryTeam, ($PdfData->HideCols==true ? $MyRow->DivDescription : $MyRow->DivCode), 1, 0, 'C', 0);
-			$pdf->Cell(12 + ($PdfData->HideCols==true ? ($TargetFace ? 12 : 21) : 0), 4 * $secondaryTeam, ($PdfData->HideCols==true ? $MyRow->ClDescription : $MyRow->ClassCode), 1, 0, 'C', 0);
 
 			if ($TargetFace)
 			{
@@ -140,18 +112,21 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 			{
 				if(!$MyRow->IsAthlete) {
 					$pdf->DrawParticipantDetails(-1);
-				} elseif($secondaryTeam==1) {
-					$pdf->DrawParticipantDetails($MyRow->IC, $MyRow->IF, $MyRow->TC, $MyRow->TF, $MyRow->TM);
-				} elseif($secondaryTeam>=2) {
-					$pdf->DrawParticipantDetails($MyRow->IC, $MyRow->IF);
-					$secTmpX=$pdf->GetX();
-					$secTmpY=$pdf->GetY();
-					$pdf->SetXY($secTmpX-14,$secTmpY+4);
-					$pdf->DrawParticipantDetails(0, 0, $MyRow->TC, $MyRow->TF, $MyRow->TM);
-					$pdf->SetXY($secTmpX,$secTmpY);
 				} else {
+                    $pdf->DrawParticipantDetails($MyRow->IC, $MyRow->IF, $MyRow->TC, $MyRow->TF, $MyRow->TM);
+                }
 
-				}
+//                elseif($secondaryTeam==1) {
+//				} elseif($secondaryTeam>=2) {
+//					$pdf->DrawParticipantDetails($MyRow->IC, $MyRow->IF);
+//					$secTmpX=$pdf->GetX();
+//					$secTmpY=$pdf->GetY();
+//					$pdf->SetXY($secTmpX-14,$secTmpY+4);
+//					$pdf->DrawParticipantDetails(0, 0, $MyRow->TC, $MyRow->TF, $MyRow->TM);
+//					$pdf->SetXY($secTmpX,$secTmpY);
+//				} else {
+
+//				}
 
 				$pdf->SetDefaultColor();
 				$pdf->SetFont($pdf->FontStd, '', 7);

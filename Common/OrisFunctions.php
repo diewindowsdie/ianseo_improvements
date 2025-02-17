@@ -1363,6 +1363,7 @@ function getStartListCategory($ORIS=false, $orderByTeam=0, $Events=array()) {
 			'TargetNo' => get_text('Target'),
 			'Nation' => get_text('Country'),
 			'NationCode' => get_text('Country'),
+            'DOB' => get_text('DOB', 'Tournament'),
 			'AgeClass' => get_text('AgeCl'),
 			'SubClass' => get_text('SubCl','Tournament'),
 			'DivDescription' => get_text('Division'),
@@ -1418,7 +1419,7 @@ function getStartListCategory($ORIS=false, $orderByTeam=0, $Events=array()) {
 			$OldCategory = $MyRow->EventCode;
 		}
 
-		$MyRow->EventName=get_text($MyRow->EventName,'','',true);
+		$MyRow->EventName=$MyRow->DivDescription . ' ' . $MyRow->ClDescription;
 		$MyRow->TfName=get_text($MyRow->TfName,'Tournament','',true);
 		$Data->Data['Items'][$Group][]=$MyRow;
 
