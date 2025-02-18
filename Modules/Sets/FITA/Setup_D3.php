@@ -31,7 +31,7 @@ switch($TourType) {
 }
 
 // default Events
-CreateStandard3DEvents($TourId, $SubRule);
+CreateStandard3DEvents($TourId, $SubRule, $TourType);
 
 // insert class in events
 InsertStandard3DEvents($TourId, $SubRule);

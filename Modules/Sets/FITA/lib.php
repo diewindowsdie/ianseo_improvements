@@ -38,9 +38,9 @@ function getClassName($class, $is3D=false): string {
  * Локализованное название эвента. В случае если тип эвента поддерживается, состоит из локализованного названия дивизиона, класса и указанного в скобках названия упражнения из ЕВСК по стрельбе из лука.
  * @param string $classWithDivision Код класса с указанием дивизиона
  * @param int $tournamentType Идентификатор типа соревнования. Определяет выбор названий упражнения.
- * @return string Построенное название дивизиона, если имеются данные для указанного типа соревнования, иначе пустая строка.
+ * @return string Построенное название дивизиона, если имеются данные для указанного типа соревнования, иначе null.
  */
-function getEventName($classWithDivision, $tournamentType): string {
+function getEventName($classWithDivision, $tournamentType): mixed {
     $eventDescriptions=array();
     switch ($tournamentType) {
         case 1:
@@ -106,7 +106,7 @@ function getEventName($classWithDivision, $tournamentType): string {
     $eventNameWithoutClassAndDivision = $eventDescriptions[$classWithDivision] ?? $eventDescriptions[$division];
     return isset($eventNameWithoutClassAndDivision)
         ? getDivisionName($division) . ' ' . getClassName(substr($classWithDivision, 1)) . ' (' . $eventNameWithoutClassAndDivision . ')'
-        : '';
+        : null;
 }
 
 function CreateStandardDivisions($TourId, $Type='FITA') {
@@ -180,16 +180,17 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
     $allowBB=(in_array($TourType,array(3,6,7,8,37)));
     $allowU15=(in_array($TourType, [3,37]));
 	$TargetR=($Outdoor?5:2);
-	$TargetC=($Outdoor?9:4);
+	$TargetC=($Outdoor?($TourType==1 ? 5 : 9):4);
     $TargetB=($Outdoor?5:1);
 	$TargetSizeR=($Outdoor ? 122 : 40);
-	$TargetSizeC=($Outdoor ? 80 : 40);
+	$TargetSizeC=($Outdoor ? ($TourType==1 ? 122 : 80) : 40);
     $TargetSizeB=($Outdoor ? 122 : 40);
 	$DistanceR=($Outdoor ? 70 : 18);
 	$DistanceRcm=($Outdoor ? 60 : 18);
 	$DistanceU15=($Outdoor ? 40 : 18);
 	$DistanceU15B=($Outdoor ? 30 : 18);
-	$DistanceC=($Outdoor ? 50 : 18);
+	$DistanceC=($Outdoor ? ($TourType==1 ? 70 : 50) : 18);
+    $DistanceCcm=($Outdoor ? ($TourType==1 ? 60 : 50) : 18);
     $DistanceB=($Outdoor ? 50 : 18);
 	$FirstPhase = ($Outdoor ? 48 : 16);
 	$TeamFirstPhase = ($Outdoor ? 12 : 8);
@@ -250,6 +251,7 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
             }
             CreateEventNew($TourId, 'CU21M', getEventName('CU21M', $TourType) ?? 'Compound Under 21 Men', $i++, $Options);
 			CreateEventNew($TourId, 'CU21W', getEventName('CU21W', $TourType) ?? 'Compound Under 21 Women', $i++, $Options);
+            $Options['EvDistance']=$DistanceCcm;
 			CreateEventNew($TourId, 'CU18M', getEventName('CU18M', $TourType) ?? 'Compound Under 18 Men', $i++, $Options);
 			CreateEventNew($TourId, 'CU18W', getEventName('CU18W', $TourType) ?? 'Compound Under 18 Women', $i++, $Options);
             if($allowU15) {
