@@ -9,25 +9,26 @@ function CreateStandard3DClasses($TourId, $SubRule) {
 	switch($SubRule) {
 		case '1':
 		case '3':
-			CreateClass($TourId, 1, 21, 49, 0, 'M', 'M', get_text('CL-M', 'Tournament'));
-			CreateClass($TourId, 2, 21, 49, 1, 'W', 'W', get_text('CL-W', 'Tournament'));
-			CreateClass($TourId, 3, 18, 20, 0, 'U21M', 'U21M,M', get_text('CL-U21M', 'Tournament'));
-			CreateClass($TourId, 4, 18, 20, 1, 'U21W', 'U21W,W', get_text('CL-U21W', 'Tournament'));
-			CreateClass($TourId, 5, 1, 17, 0, 'U18M', 'U18M,U21M,M', get_text('CL-U18M-3D', 'Tournament'));
-			CreateClass($TourId, 6, 1, 17, 1, 'U18W', 'U18W,U21W,W', get_text('CL-U18W-3D', 'Tournament'));
+			CreateClass($TourId, 1, 21, 49, 0, 'M', 'M', getClassName('M'));
+			CreateClass($TourId, 2, 21, 49, 1, 'W', 'W', getClassName('W'));
+			CreateClass($TourId, 3, 18, 20, 0, 'U21M', 'U21M,M', getClassName('U21M'));
+			CreateClass($TourId, 4, 18, 20, 1, 'U21W', 'U21W,W', getClassName('U21W'));
+			CreateClass($TourId, 5, 1, 17, 0, 'U18M', 'U18M,U21M,M', getClassName('U18M', true));
+			CreateClass($TourId, 6, 1, 17, 1, 'U18W', 'U18W,U21W,W', getClassName('U18W', true));
 			CreateClass($TourId, 7, 50,100, 0, '50M', '50M,M', '50+ Men');
 			CreateClass($TourId, 8, 50,100, 1, '50W', '50W,W', '50+ Women');
 			break;
 		case '2':
 		case '4':
-			CreateClass($TourId, 1, 1,100, 0, 'M', 'M', get_text('CL-M', 'Tournament'));
-			CreateClass($TourId, 2, 1,100, 1, 'W', 'W', get_text('CL-W', 'Tournament'));
+			CreateClass($TourId, 1, 1,100, 0, 'M', 'M', getClassName('M'));
+			CreateClass($TourId, 2, 1,100, 1, 'W', 'W', getClassName('W'));
 			break;
 	}
 }
 
 
 function CreateStandard3DEvents($TourId, $SubRule) {
+
 	switch($SubRule) {
         case '1':
         case '2':
@@ -72,43 +73,43 @@ function CreateStandard3DEvents($TourId, $SubRule) {
             );
 
             $i = 1;
-            CreateEventNew($TourId, 'CM', 'Compound Men', $i++, $SettingsInd);
-            CreateEventNew($TourId, 'CW', 'Compound Women', $i++, $SettingsInd);
+            CreateEventNew($TourId, 'CM', getEventName('CM', 13), $i++, $SettingsInd);
+            CreateEventNew($TourId, 'CW', getEventName('CW', 13), $i++, $SettingsInd);
             if ($SubRule == 1) {
-                CreateEventNew($TourId, 'CU21M', 'Compound Under 21 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'CU21W', 'Compound Under 21 Women', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'CU18M', 'Compound Cadet Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'CU18W', 'Compound Cadet Women', $i++, $SettingsInd);
+                CreateEventNew($TourId, 'CU21M', getEventName('CU21M', 13), $i++, $SettingsInd);
+                CreateEventNew($TourId, 'CU21W', getEventName('CU21W', 13), $i++, $SettingsInd);
+                CreateEventNew($TourId, 'CU18M', getEventName('CU18M', 13), $i++, $SettingsInd);
+                CreateEventNew($TourId, 'CU18W', getEventName('CU18M', 13), $i++, $SettingsInd);
                 CreateEventNew($TourId, 'C50M', 'Compound 50+ Men', $i++, $SettingsInd);
                 CreateEventNew($TourId, 'C50W', 'Compound 50+ Women', $i++, $SettingsInd);
             }
-            CreateEventNew($TourId, 'BM', 'Barebow Men', $i++, $SettingsInd);
-            CreateEventNew($TourId, 'BW', 'Barebow Women', $i++, $SettingsInd);
+            CreateEventNew($TourId, 'BM', getEventName('BM', 13), $i++, $SettingsInd);
+            CreateEventNew($TourId, 'BW', getEventName('BM', 13), $i++, $SettingsInd);
             if ($SubRule == 1) {
-                CreateEventNew($TourId, 'BU21M', 'Barebow Under 21 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'BU21W', 'Barebow Under 21 Women', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'BU18M', 'Barebow Under 18 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'BU18W', 'Barebow Under 18 Women', $i++, $SettingsInd);
+                CreateEventNew($TourId, 'BU21M', getEventName('BU21M', 13), $i++, $SettingsInd);
+                CreateEventNew($TourId, 'BU21W', getEventName('BU21W', 13), $i++, $SettingsInd);
+                CreateEventNew($TourId, 'BU18M', getEventName('BU18M', 13), $i++, $SettingsInd);
+                CreateEventNew($TourId, 'BU18W', getEventName('BU18W', 13), $i++, $SettingsInd);
                 CreateEventNew($TourId, 'B50M', 'Barebow 50+ Men', $i++, $SettingsInd);
                 CreateEventNew($TourId, 'B50W', 'Barebow 50+ Women', $i++, $SettingsInd);
             }
-            CreateEventNew($TourId, 'LM', 'Longbow Men', $i++, $SettingsInd);
-            CreateEventNew($TourId, 'LW', 'Longbow Women', $i++, $SettingsInd);
+            CreateEventNew($TourId, 'LM', getEventName('LM', 13), $i++, $SettingsInd);
+            CreateEventNew($TourId, 'LW', getEventName('LW', 13), $i++, $SettingsInd);
             if ($SubRule == 1) {
-                CreateEventNew($TourId, 'LU21M', 'Longbow Under 21 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'LU21W', 'Longbow Under 21 Women', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'LU18M', 'Longbow Under 18 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'LU18W', 'Longbow Under 18 Women', $i++, $SettingsInd);
+                CreateEventNew($TourId, 'LU21M', getEventName('LU21M', 13), $i++, $SettingsInd);
+                CreateEventNew($TourId, 'LU21W', getEventName('LU21W', 13), $i++, $SettingsInd);
+                CreateEventNew($TourId, 'LU18M', getEventName('LU18M', 13), $i++, $SettingsInd);
+                CreateEventNew($TourId, 'LU18W', getEventName('LU18W', 13), $i++, $SettingsInd);
                 CreateEventNew($TourId, 'L50M', 'Longbow 50+ Men', $i++, $SettingsInd);
                 CreateEventNew($TourId, 'L50W', 'Longbow 50+ Women', $i++, $SettingsInd);
             }
-            CreateEventNew($TourId, 'TM', 'Traditional Men', $i++, $SettingsInd);
-            CreateEventNew($TourId, 'TW', 'Traditional Women', $i++, $SettingsInd);
+            CreateEventNew($TourId, 'TM', getEventName('TM', 13), $i++, $SettingsInd);
+            CreateEventNew($TourId, 'TW', getEventName('TW', 13), $i++, $SettingsInd);
             if ($SubRule == 1) {
-                CreateEventNew($TourId, 'TU21M', 'Traditional Under 21 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'TU21W', 'Traditional Under 21 Women', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'TU18M', 'Traditional Under 18 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'TU18W', 'Traditional Under 18 Women', $i++, $SettingsInd);
+                CreateEventNew($TourId, 'TU21M', getEventName('TU21M', 13), $i++, $SettingsInd);
+                CreateEventNew($TourId, 'TU21W', getEventName('TU21W', 13), $i++, $SettingsInd);
+                CreateEventNew($TourId, 'TU18M', getEventName('TU18M', 13), $i++, $SettingsInd);
+                CreateEventNew($TourId, 'TU18W', getEventName('TU18W', 13), $i++, $SettingsInd);
                 CreateEventNew($TourId, 'T50M', 'Traditional 50+ Men', $i++, $SettingsInd);
                 CreateEventNew($TourId, 'T50W', 'Traditional 50+ Women', $i++, $SettingsInd);
             }

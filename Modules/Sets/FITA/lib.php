@@ -13,18 +13,114 @@ if(empty($SubRule)) {
     $SubRule='1';
 }
 
+/**
+ * Локализованное название дивизиона. Значения берутся из языкового конфига Tournament.
+ * @param string $division Код дивизиона
+ */
+function getDivisionName($division): string {
+    return get_text('Div-' . $division, 'Tournament');
+}
+
+/**
+ * Локализованное название класса. Значения берутся из языкового конфига Tournament. Если указан флаг $is3D - берется значение для соревнований по 3D.
+ * @param string $class Код класса
+ * @param boolean $is3D Признак того, что значение нужно для соревнований по 3D
+ */
+function getClassName($class, $is3D=false): string {
+    if ($is3D) {
+        return get_text('CL-' . $class . '-3D', 'Tournament');
+    }
+
+    return get_text('CL-' . $class, 'Tournament');
+}
+
+/**
+ * Локализованное название эвента. В случае если тип эвента поддерживается, состоит из локализованного названия дивизиона, класса и указанного в скобках названия упражнения из ЕВСК по стрельбе из лука.
+ * @param string $classWithDivision Код класса с указанием дивизиона
+ * @param int $tournamentType Идентификатор типа соревнования. Определяет выбор названий упражнения.
+ * @return string Построенное название дивизиона, если имеются данные для указанного типа соревнования, иначе пустая строка.
+ */
+function getEventName($classWithDivision, $tournamentType): string {
+    $eventDescriptions=array();
+    switch ($tournamentType) {
+        case 1:
+            //M-1
+            $eventDescriptions['RM']='КЛ - 90 м, 70 м, 50 м, 30 м (144 выстрелов) + 70 м финал';
+            $eventDescriptions['CM']='БЛ - 90 м, 70 м, 50 м, 30 м (144 выстрелов) + 70 м финал';
+            $eventDescriptions['RW']='КЛ - 70 м, 60 м, 50 м, 30 м (144 выстрелов) + 70 м финал';
+            $eventDescriptions['CW']='БЛ - 70 м, 60 м, 50 м, 30 м (144 выстрелов) + 70 м финал';
+            $eventDescriptions['RU21M']='КЛ - 90 м, 70 м, 50 м, 30 м (144 выстрелов) + 70 м финал';
+            $eventDescriptions['CU21M']='БЛ - 90 м, 70 м, 50 м, 30 м (144 выстрелов) + 70 м финал';
+            $eventDescriptions['RU21W']='КЛ - 70 м, 60 м, 50 м, 30 м (144 выстрелов) + 70 м финал';
+            $eventDescriptions['CU21W']='БЛ - 70 м, 60 м, 50 м, 30 м (144 выстрелов) + 70 м финал';
+            $eventDescriptions['RU18M']='КЛ - 70 м, 60 м, 50 м, 30 м (144 выстрелов) + 60 м финал';
+            $eventDescriptions['CU18M']='БЛ - 70 м, 60 м, 50 м, 30 м (144 выстрелов) + 60 м финал';
+            $eventDescriptions['RU18W']='КЛ - 60 м, 50 м, 40 м, 30 м (144 выстрелов) + 60 м финал';
+            $eventDescriptions['CU18W']='БЛ - 60 м, 50 м, 40 м, 30 м (144 выстрелов) + 60 м финал';
+            break;
+        case 3:
+            //50/70(60) m
+            $eventDescriptions['RM']='КЛ - 70 м (36+36 выстрелов) + финал';
+            $eventDescriptions['CM']='БЛ - 50 м (36+36 выстрелов) + финал';
+            $eventDescriptions['RW']='КЛ - 70 м (36+36 выстрелов) + финал';
+            $eventDescriptions['CW']='БЛ - 50 м (36+36 выстрелов) + финал';
+            $eventDescriptions['RU21M']='КЛ - 70 м (36+36 выстрелов) + финал';
+            $eventDescriptions['CU21M']='БЛ - 50 м (36+36 выстрелов) + финал';
+            $eventDescriptions['RU21W']='КЛ - 70 м (36+36 выстрелов) + финал';
+            $eventDescriptions['CU21W']='БЛ - 50 м (36+36 выстрелов) + финал';
+            $eventDescriptions['RU18M']='КЛ - 60 м (36+36 выстрелов) + финал';
+            $eventDescriptions['CU18M']='БЛ - 50 м (36+36 выстрелов) + финал';
+            $eventDescriptions['RU18W']='КЛ - 60 м (36+36 выстрелов) + финал';
+            $eventDescriptions['CU18W']='БЛ - 50 м (36+36 выстрелов) + финал';
+            break;
+        case 6:
+            //18м две дистанции по 30 выстрелов
+            $eventDescriptions['RM']='КЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['RW']='КЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['RU21M']='КЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['RU21W']='КЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['RU18M']='КЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['RU18W']='КЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['CM']='БЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['CW']='БЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['CU21M']='БЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['CU21W']='БЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['CU18M']='БЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['CU18W']='БЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['BM']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['BW']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['BU21M']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['BU21W']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['BU18M']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['BU18W']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
+            break;
+        case 13:
+            //3d - два круга
+            $eventDescriptions['C']='3Д - БЛ - 5-45 м (квалификация + финал)';
+            $eventDescriptions['B']='3Д - КЛ - 3-30 м (квалификация + финал)';
+            $eventDescriptions['L']='3Д - длинный лук - 3-30 м (квалификация + финал)';
+            $eventDescriptions['T']='3Д - составной лук - 3-30 м (квалификация + финал)';
+            break;
+    }
+    $division = substr($classWithDivision, 0, 1);
+    $eventNameWithoutClassAndDivision = $eventDescriptions[$classWithDivision] ?? $eventDescriptions[$division];
+    return isset($eventNameWithoutClassAndDivision)
+        ? getDivisionName($division) . ' ' . getClassName(substr($classWithDivision, 1)) . ' (' . $eventNameWithoutClassAndDivision . ')'
+        : '';
+}
+
 function CreateStandardDivisions($TourId, $Type='FITA') {
 	$i=1;
 	if($Type!='3D') {
-	    CreateDivision($TourId, $i++, 'R', get_text('Div-R', 'Tournament'));
+	    CreateDivision($TourId, $i++, 'R', getDivisionName('R'));
     }
-	CreateDivision($TourId, $i++, 'C', get_text('Div-C', 'Tournament'));
+	CreateDivision($TourId, $i++, 'C', getDivisionName('C'));
     if($Type!='FITA') {
-        CreateDivision($TourId, $i++, 'B', get_text('Div-B', 'Tournament'));
+        CreateDivision($TourId, $i++, 'B', getDivisionName('B'));
     }
     if($Type=='3D') {
-		CreateDivision($TourId, $i++, 'L', get_text('Div-L', 'Tournament'));
-		CreateDivision($TourId, $i++, 'T', get_text('Div-T', 'Tournament'));
+		CreateDivision($TourId, $i++, 'L', getDivisionName('L'));
+		CreateDivision($TourId, $i++, 'T', getDivisionName('T'));
 	}
 }
 
@@ -32,48 +128,48 @@ function CreateStandardClasses($TourId, $SubRule, $Type='FITA') {
     $i=1;
 	switch($SubRule) {
 		case '1':
-			CreateClass($TourId, $i++, 21, 49, 0, 'M', 'M', get_text('CL-M', 'Tournament'));
-			CreateClass($TourId, $i++, 21, 49, 1, 'W', 'W', get_text('CL-W', 'Tournament'));
-			CreateClass($TourId, $i++, 18, 20, 0, 'U21M', 'U21M,M', get_text('CL-U21M', 'Tournament'));
-			CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W,W', get_text('CL-U21W', 'Tournament'));
+			CreateClass($TourId, $i++, 21, 49, 0, 'M', 'M', getClassName('M'));
+			CreateClass($TourId, $i++, 21, 49, 1, 'W', 'W', getClassName('W'));
+			CreateClass($TourId, $i++, 18, 20, 0, 'U21M', 'U21M,M', getClassName('U21M'));
+			CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W,W', getClassName('U21W'));
             if(in_array($Type, [3,37])) {
                 // 70m and 2x70m have U15 too
-                CreateClass($TourId, $i++,  15, 17, 0, 'U18M', 'U18M,U21M,M', get_text('CL-U18M', 'Tournament'));
-                CreateClass($TourId, $i++,  15, 17, 1, 'U18W', 'U18W,U21W,W', get_text('CL-U18W', 'Tournament'));
+                CreateClass($TourId, $i++,  15, 17, 0, 'U18M', 'U18M,U21M,M', getClassName('U18M'));
+                CreateClass($TourId, $i++,  15, 17, 1, 'U18W', 'U18W,U21W,W', getClassName('U18W'));
                 CreateClass($TourId, $i++,  1, 14, 0, 'U15M', 'U15M,U18M,U21M,M', 'Under 15 Men');
                 CreateClass($TourId, $i++,  1, 14, 1, 'U15W', 'U15W,U18W,U21W,W', 'Under 15 Women');
             } else {
                 // only U18
-                CreateClass($TourId, $i++,  1, 17, 0, 'U18M', 'U18M,U21M,M', get_text('CL-U18M', 'Tournament'));
-                CreateClass($TourId, $i++,  1, 17, 1, 'U18W', 'U18W,U21W,W', get_text('CL-U18W', 'Tournament'));
+                CreateClass($TourId, $i++,  1, 17, 0, 'U18M', 'U18M,U21M,M', getClassName('U18M'));
+                CreateClass($TourId, $i++,  1, 17, 1, 'U18W', 'U18W,U21W,W', getClassName('U18W'));
             }
 			CreateClass($TourId, $i++, 50,100, 0, '50M', '50M,M', '50+ Men');
 			CreateClass($TourId, $i++, 50,100, 1, '50W', '50W,W', '50+ Women');
 			break;
 		case '2':
 		case '5':
-			CreateClass($TourId, 1, 1,100, 0, 'M', 'M', get_text('CL-M', 'Tournament'));
-			CreateClass($TourId, 2, 1,100, 1, 'W', 'W', get_text('CL-W', 'Tournament'));
+			CreateClass($TourId, 1, 1,100, 0, 'M', 'M', getClassName('M'));
+			CreateClass($TourId, 2, 1,100, 1, 'W', 'W', getClassName('W'));
 			break;
 		case '3':
-			CreateClass($TourId, 1, 21,100, 0, 'M', 'M', get_text('CL-M', 'Tournament'));
-			CreateClass($TourId, 2, 21,100, 1, 'W', 'W', get_text('CL-W', 'Tournament'));
-			CreateClass($TourId, 3, 1, 20, 0, 'U21M', 'U21M,M', get_text('CL-U21M', 'Tournament'));
-			CreateClass($TourId, 4, 1, 20, 1, 'U21W', 'U21W,W', get_text('CL-U21W', 'Tournament'));
+			CreateClass($TourId, 1, 21,100, 0, 'M', 'M', getClassName('M'));
+			CreateClass($TourId, 2, 21,100, 1, 'W', 'W', getClassName('W'));
+			CreateClass($TourId, 3, 1, 20, 0, 'U21M', 'U21M,M', getClassName('U21M'));
+			CreateClass($TourId, 4, 1, 20, 1, 'U21W', 'U21W,W', getClassName('U21W'));
 			break;
 		case '4':
-			CreateClass($TourId, $i++, 18, 20, 0, 'U21M', 'U21M', get_text('CL-U21M', 'Tournament'));
-			CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W', get_text('CL-U21W', 'Tournament'));
+			CreateClass($TourId, $i++, 18, 20, 0, 'U21M', 'U21M', getClassName('U21M'));
+			CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W', getClassName('U21W'));
             if(in_array($Type, [3,37])) {
                 // 70m and 2x70m have U15 too
-                CreateClass($TourId, $i++,  15, 17, 0, 'U18M', 'U18M,U21M,M', get_text('CL-U18M', 'Tournament'));
-                CreateClass($TourId, $i++,  15, 17, 1, 'U18W', 'U18W,U21W,W', get_text('CL-U18W', 'Tournament'));
+                CreateClass($TourId, $i++,  15, 17, 0, 'U18M', 'U18M,U21M,M', getClassName('U18M'));
+                CreateClass($TourId, $i++,  15, 17, 1, 'U18W', 'U18W,U21W,W', getClassName('U18W'));
                 CreateClass($TourId, $i++,  1, 14, 0, 'U15M', 'U15M,U18M,U21M,M', 'Under 15 Men');
                 CreateClass($TourId, $i++,  1, 14, 1, 'U15W', 'U15W,U18W,U21W,W', 'Under 15 Women');
             } else {
                 // only U18
-                CreateClass($TourId, $i++,  1, 17, 0, 'U18M', 'U18M,U21M,M', get_text('CL-U18M', 'Tournament'));
-                CreateClass($TourId, $i++,  1, 17, 1, 'U18W', 'U18W,U21W,W', get_text('CL-U18W', 'Tournament'));
+                CreateClass($TourId, $i++,  1, 17, 0, 'U18M', 'U18M,U21M,M', getClassName('U18M'));
+                CreateClass($TourId, $i++,  1, 17, 1, 'U18W', 'U18W,U21W,W', getClassName('U18W'));
             }
 			break;
 	}
@@ -124,14 +220,14 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
 			$i=1;
             // RECURVE
             if($SubRule==1) {
-                CreateEventNew($TourId, 'RM',  'Recurve Men', $i++, $Options);
-                CreateEventNew($TourId, 'RW',  'Recurve Women', $i++, $Options);
+                CreateEventNew($TourId, 'RM',  getEventName('RM', $TourType) ?? 'Recurve Men', $i++, $Options);
+                CreateEventNew($TourId, 'RW',  getEventName('RW', $TourType) ?? 'Recurve Women', $i++, $Options);
             }
-			CreateEventNew($TourId, 'RU21M', 'Recurve Under 21 Men', $i++, $Options);
-			CreateEventNew($TourId, 'RU21W', 'Recurve Under 21 Women', $i++, $Options);
+			CreateEventNew($TourId, 'RU21M', getEventName('RU21M', $TourType) ?? 'Recurve Under 21 Men', $i++, $Options);
+			CreateEventNew($TourId, 'RU21W', getEventName('RU21W', $TourType) ?? 'Recurve Under 21 Women', $i++, $Options);
             $Options['EvDistance']=$DistanceRcm;
-            CreateEventNew($TourId, 'RU18M', 'Recurve Under 18 Men', $i++, $Options);
-            CreateEventNew($TourId, 'RU18W', 'Recurve Under 18 Women', $i++, $Options);
+            CreateEventNew($TourId, 'RU18M', getEventName('RU18M', $TourType) ?? 'Recurve Under 18 Men', $i++, $Options);
+            CreateEventNew($TourId, 'RU18W', getEventName('RU18W', $TourType) ?? 'Recurve Under 18 Women', $i++, $Options);
             if($allowU15) {
                 $Options['EvDistance']=$DistanceU15;
                 CreateEventNew($TourId, 'RU15M', 'Recurve Under 15 Men', $i++, $Options);
@@ -149,13 +245,13 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
             $Options['EvTargetSize']=$TargetSizeC;
             $Options['EvDistance']=$DistanceC;
             if($SubRule==1) {
-                CreateEventNew($TourId, 'CM',  'Compound Men', $i++, $Options);
-                CreateEventNew($TourId, 'CW',  'Compound Women', $i++, $Options);
+                CreateEventNew($TourId, 'CM',  getEventName('CM', $TourType) ?? 'Compound Men', $i++, $Options);
+                CreateEventNew($TourId, 'CW',  getEventName('CW', $TourType) ?? 'Compound Women', $i++, $Options);
             }
-            CreateEventNew($TourId, 'CU21M', 'Compound Under 21 Men', $i++, $Options);
-			CreateEventNew($TourId, 'CU21W', 'Compound Under 21 Women', $i++, $Options);
-			CreateEventNew($TourId, 'CU18M', 'Compound Under 18 Men', $i++, $Options);
-			CreateEventNew($TourId, 'CU18W', 'Compound Under 18 Women', $i++, $Options);
+            CreateEventNew($TourId, 'CU21M', getEventName('CU21M', $TourType) ?? 'Compound Under 21 Men', $i++, $Options);
+			CreateEventNew($TourId, 'CU21W', getEventName('CU21W', $TourType) ?? 'Compound Under 21 Women', $i++, $Options);
+			CreateEventNew($TourId, 'CU18M', getEventName('CU18M', $TourType) ?? 'Compound Under 18 Men', $i++, $Options);
+			CreateEventNew($TourId, 'CU18W', getEventName('CU18W', $TourType) ?? 'Compound Under 18 Women', $i++, $Options);
             if($allowU15) {
                 $Options['EvDistance']=$DistanceU15;
                 CreateEventNew($TourId, 'CU15M', 'Compound Under 15 Men', $i++, $Options);
@@ -174,13 +270,13 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
                 $Options['EvTargetSize']=$TargetSizeB;
                 $Options['EvDistance']=$DistanceB;
                 if($SubRule==1) {
-                    CreateEventNew($TourId, 'BM', 'Barebow Men', $i++, $Options);
-                    CreateEventNew($TourId, 'BW', 'Barebow Women', $i++, $Options);
+                    CreateEventNew($TourId, 'BM', getEventName('BM', $TourType) ?? 'Barebow Men', $i++, $Options);
+                    CreateEventNew($TourId, 'BW', getEventName('BW', $TourType) ?? 'Barebow Women', $i++, $Options);
                 }
-                CreateEventNew($TourId,'BU21M', 'Barebow Under 21 Men', $i++, $Options);
-                CreateEventNew($TourId,'BU21W', 'Barebow Under 21 Women', $i++, $Options);
-                CreateEventNew($TourId,'BU18M', 'Barebow Under 18 Men', $i++, $Options);
-                CreateEventNew($TourId,'BU18W', 'Barebow Under 18 Women', $i++, $Options);
+                CreateEventNew($TourId,'BU21M', getEventName('BU21M', $TourType) ?? 'Barebow Under 21 Men', $i++, $Options);
+                CreateEventNew($TourId,'BU21W', getEventName('BU21W', $TourType) ?? 'Barebow Under 21 Women', $i++, $Options);
+                CreateEventNew($TourId,'BU18M', getEventName('BU18M', $TourType) ?? 'Barebow Under 18 Men', $i++, $Options);
+                CreateEventNew($TourId,'BU18W', getEventName('BU18W', $TourType) ?? 'Barebow Under 18 Women', $i++, $Options);
                 if($allowU15) {
                     $Options['EvDistance']=$DistanceU15B;
                     CreateEventNew($TourId, 'BU15M', 'Barebow Under 15 Men', $i++, $Options);

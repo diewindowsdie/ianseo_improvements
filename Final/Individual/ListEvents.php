@@ -92,7 +92,7 @@
 			print '<tr id="Row_' . $MyRow->EvCode . '" class="rowHover">';
 			print '<td class="Center"><input type="button" ' . ($MyRow->ruleCnt == 0 ? 'class="red"' : '') . ' value="'.$MyRow->EvCode .'" onclick="location=\'SetEventRules.php?EvCode=' . $MyRow->EvCode . '\'"></td>';
 
-			print '<td class="Center"><input type="text" size="50" maxlength="64" name="d_EvEventName_' . $MyRow->EvCode . '" id="d_EvEventName_' . $MyRow->EvCode . '" value="' . $MyRow->EvEventName . '" onBlur="javascript:UpdateField(\'d_EvEventName_' . $MyRow->EvCode . '\');">';
+			print '<td class="Center"><input type="text" size="50" maxlength="100" name="d_EvEventName_' . $MyRow->EvCode . '" id="d_EvEventName_' . $MyRow->EvCode . '" value="' . $MyRow->EvEventName . '" onBlur="javascript:UpdateField(\'d_EvEventName_' . $MyRow->EvCode . '\');">';
 			print '</td>';
 
 			print '<td class="Center">';
@@ -212,7 +212,7 @@
 <tr id="RowDiv" class="Divider"><td colspan="10"></td></tr>
 <tr id="NewRow">
 <td class="Center"><input type="text" name="New_EvCode" id="New_EvCode" size="12" maxlength="10"></td>
-<td class="Center"><input type="text" size="50" maxlength="64" name="New_EvEventName" id="New_EvEventName"></td>
+<td class="Center"><input type="text" size="50" maxlength="100" name="New_EvEventName" id="New_EvEventName"></td>
 <td class="Center"><input type="checkbox" name="New_EvIsPara" id="New_EvIsPara"></td>
 <td class="Center"><input type="text" size="3" maxlength="3" name="New_EvProgr" id="New_EvProgr"></td>
 <td class="Center" id="listEventEliminations">

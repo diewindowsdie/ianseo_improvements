@@ -118,7 +118,7 @@ while ($MyRow=safe_fetch($Rs)) {
         </td>';
 
     print '<td class="Center">
-        <input type="text" size="50" maxlength="64" name="EvEventName" value="' . $MyRow->EvEventName . '" onBlur="UpdateField(this)">
+        <input type="text" size="50" maxlength="100" name="EvEventName" value="' . $MyRow->EvEventName . '" onBlur="UpdateField(this)">
         </td>';
 
     print '<td class="Center">
@@ -241,7 +241,7 @@ echo '<tr class="Divider"><td colspan="'.$NumCols.'"></td></tr>';
 // new event row
 echo '<tr team="0" ref="NewRow">';
 echo '<td class="Center"><input type="text" name="event" size="12" maxlength="10"></td>';
-echo '<td class="Center"><input type="text" size="50" maxlength="64" name="EvEventName"></td>';
+echo '<td class="Center"><input type="text" size="50" maxlength="100" name="EvEventName"></td>';
 echo '<td class="Center"><input type="text" size="3" maxlength="3" name="EvProgr"></td>';
 if($IsRunArchery) {
 	echo '<td class="Center"><select onchange="UpdateField(this)" name="EvElimType">
@@ -374,7 +374,7 @@ while ($MyRow=safe_fetch($Rs)) {
         </td>';
 
     print '<td class="Center">
-        <input type="text" size="50" maxlength="64" name="EvEventName" value="' . $MyRow->EvEventName . '" onBlur="UpdateField(this)">
+        <input type="text" size="50" maxlength="100" name="EvEventName" value="' . $MyRow->EvEventName . '" onBlur="UpdateField(this)">
         </td>';
 
     print '<td class="Center">
@@ -497,7 +497,7 @@ echo '<tr class="Divider"><td colspan="'.$NumCols.'"></td></tr>';
 // new event row
 echo '<tr team="1" ref="NewRow">';
 echo '<td class="Center"><input type="text" name="event" size="12" maxlength="10"></td>';
-echo '<td class="Center"><input type="text" size="50" maxlength="64" name="EvEventName"></td>';
+echo '<td class="Center"><input type="text" size="50" maxlength="100" name="EvEventName"></td>';
 echo '<td class="Center"><input type="text" size="3" maxlength="3" name="EvProgr"></td>';
 if($IsRunArchery) {
 	echo '<td class="Center"><select onchange="UpdateField(this)" name="EvElimType">
