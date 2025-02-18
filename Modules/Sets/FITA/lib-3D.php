@@ -9,19 +9,19 @@ function CreateStandard3DClasses($TourId, $SubRule) {
 	switch($SubRule) {
 		case '1':
 		case '3':
-			CreateClass($TourId, 1, 21, 49, 0, 'M', 'M', 'Men');
-			CreateClass($TourId, 2, 21, 49, 1, 'W', 'W', 'Women');
-			CreateClass($TourId, 3, 18, 20, 0, 'U21M', 'U21M,M', 'Under 21 Men');
-			CreateClass($TourId, 4, 18, 20, 1, 'U21W', 'U21W,W', 'Under 21 Women');
-			CreateClass($TourId, 5, 1, 17, 0, 'U18M', 'U18M,U21M,M', 'Cadet Men');
-			CreateClass($TourId, 6, 1, 17, 1, 'U18W', 'U18W,U21W,W', 'Cadet Women');
+			CreateClass($TourId, 1, 21, 49, 0, 'M', 'M', get_text('CL-M', 'Tournament'));
+			CreateClass($TourId, 2, 21, 49, 1, 'W', 'W', get_text('CL-W', 'Tournament'));
+			CreateClass($TourId, 3, 18, 20, 0, 'U21M', 'U21M,M', get_text('CL-U21M', 'Tournament'));
+			CreateClass($TourId, 4, 18, 20, 1, 'U21W', 'U21W,W', get_text('CL-U21W', 'Tournament'));
+			CreateClass($TourId, 5, 1, 17, 0, 'U18M', 'U18M,U21M,M', get_text('CL-U18M-3D', 'Tournament'));
+			CreateClass($TourId, 6, 1, 17, 1, 'U18W', 'U18W,U21W,W', get_text('CL-U18W-3D', 'Tournament'));
 			CreateClass($TourId, 7, 50,100, 0, '50M', '50M,M', '50+ Men');
 			CreateClass($TourId, 8, 50,100, 1, '50W', '50W,W', '50+ Women');
 			break;
 		case '2':
 		case '4':
-			CreateClass($TourId, 1, 1,100, 0, 'M', 'M', 'Men');
-			CreateClass($TourId, 2, 1,100, 1, 'W', 'W', 'Women');
+			CreateClass($TourId, 1, 1,100, 0, 'M', 'M', get_text('CL-M', 'Tournament'));
+			CreateClass($TourId, 2, 1,100, 1, 'W', 'W', get_text('CL-W', 'Tournament'));
 			break;
 	}
 }

@@ -16,15 +16,15 @@ if(empty($SubRule)) {
 function CreateStandardDivisions($TourId, $Type='FITA') {
 	$i=1;
 	if($Type!='3D') {
-	    CreateDivision($TourId, $i++, 'R', 'Recurve');
+	    CreateDivision($TourId, $i++, 'R', get_text('Div-R', 'Tournament'));
     }
-	CreateDivision($TourId, $i++, 'C', 'Compound');
+	CreateDivision($TourId, $i++, 'C', get_text('Div-C', 'Tournament'));
     if($Type!='FITA') {
-        CreateDivision($TourId, $i++, 'B', 'Barebow');
+        CreateDivision($TourId, $i++, 'B', get_text('Div-B', 'Tournament'));
     }
     if($Type=='3D') {
-		CreateDivision($TourId, $i++, 'L', 'Longbow');
-		CreateDivision($TourId, $i++, 'T', 'Traditional');
+		CreateDivision($TourId, $i++, 'L', get_text('Div-L', 'Tournament'));
+		CreateDivision($TourId, $i++, 'T', get_text('Div-T', 'Tournament'));
 	}
 }
 
@@ -32,48 +32,48 @@ function CreateStandardClasses($TourId, $SubRule, $Type='FITA') {
     $i=1;
 	switch($SubRule) {
 		case '1':
-			CreateClass($TourId, $i++, 21, 49, 0, 'M', 'M', 'Men');
-			CreateClass($TourId, $i++, 21, 49, 1, 'W', 'W', 'Women');
-			CreateClass($TourId, $i++, 18, 20, 0, 'U21M', 'U21M,M', 'Under 21 Men');
-			CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W,W', 'Under 21 Women');
+			CreateClass($TourId, $i++, 21, 49, 0, 'M', 'M', get_text('CL-M', 'Tournament'));
+			CreateClass($TourId, $i++, 21, 49, 1, 'W', 'W', get_text('CL-W', 'Tournament'));
+			CreateClass($TourId, $i++, 18, 20, 0, 'U21M', 'U21M,M', get_text('CL-U21M', 'Tournament'));
+			CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W,W', get_text('CL-U21W', 'Tournament'));
             if(in_array($Type, [3,37])) {
                 // 70m and 2x70m have U15 too
-                CreateClass($TourId, $i++,  15, 17, 0, 'U18M', 'U18M,U21M,M', 'Under 18 Men');
-                CreateClass($TourId, $i++,  15, 17, 1, 'U18W', 'U18W,U21W,W', 'Under 18 Women');
+                CreateClass($TourId, $i++,  15, 17, 0, 'U18M', 'U18M,U21M,M', get_text('CL-U18M', 'Tournament'));
+                CreateClass($TourId, $i++,  15, 17, 1, 'U18W', 'U18W,U21W,W', get_text('CL-U18W', 'Tournament'));
                 CreateClass($TourId, $i++,  1, 14, 0, 'U15M', 'U15M,U18M,U21M,M', 'Under 15 Men');
                 CreateClass($TourId, $i++,  1, 14, 1, 'U15W', 'U15W,U18W,U21W,W', 'Under 15 Women');
             } else {
                 // only U18
-                CreateClass($TourId, $i++,  1, 17, 0, 'U18M', 'U18M,U21M,M', 'Under 18 Men');
-                CreateClass($TourId, $i++,  1, 17, 1, 'U18W', 'U18W,U21W,W', 'Under 18 Women');
+                CreateClass($TourId, $i++,  1, 17, 0, 'U18M', 'U18M,U21M,M', get_text('CL-U18M', 'Tournament'));
+                CreateClass($TourId, $i++,  1, 17, 1, 'U18W', 'U18W,U21W,W', get_text('CL-U18W', 'Tournament'));
             }
 			CreateClass($TourId, $i++, 50,100, 0, '50M', '50M,M', '50+ Men');
 			CreateClass($TourId, $i++, 50,100, 1, '50W', '50W,W', '50+ Women');
 			break;
 		case '2':
 		case '5':
-			CreateClass($TourId, 1, 1,100, 0, 'M', 'M', 'Men');
-			CreateClass($TourId, 2, 1,100, 1, 'W', 'W', 'Women');
+			CreateClass($TourId, 1, 1,100, 0, 'M', 'M', get_text('CL-M', 'Tournament'));
+			CreateClass($TourId, 2, 1,100, 1, 'W', 'W', get_text('CL-W', 'Tournament'));
 			break;
 		case '3':
-			CreateClass($TourId, 1, 21,100, 0, 'M', 'M', 'Men');
-			CreateClass($TourId, 2, 21,100, 1, 'W', 'W', 'Women');
-			CreateClass($TourId, 3, 1, 20, 0, 'U21M', 'U21M,M', 'Under 21 Men');
-			CreateClass($TourId, 4, 1, 20, 1, 'U21W', 'U21W,W', 'Under 21 Women');
+			CreateClass($TourId, 1, 21,100, 0, 'M', 'M', get_text('CL-M', 'Tournament'));
+			CreateClass($TourId, 2, 21,100, 1, 'W', 'W', get_text('CL-W', 'Tournament'));
+			CreateClass($TourId, 3, 1, 20, 0, 'U21M', 'U21M,M', get_text('CL-U21M', 'Tournament'));
+			CreateClass($TourId, 4, 1, 20, 1, 'U21W', 'U21W,W', get_text('CL-U21W', 'Tournament'));
 			break;
 		case '4':
-			CreateClass($TourId, $i++, 18, 20, 0, 'U21M', 'U21M', 'Under 21 Men');
-			CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W', 'Under 21 Women');
+			CreateClass($TourId, $i++, 18, 20, 0, 'U21M', 'U21M', get_text('CL-U21M', 'Tournament'));
+			CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W', get_text('CL-U21W', 'Tournament'));
             if(in_array($Type, [3,37])) {
                 // 70m and 2x70m have U15 too
-                CreateClass($TourId, $i++,  15, 17, 0, 'U18M', 'U18M,U21M,M', 'Under 18 Men');
-                CreateClass($TourId, $i++,  15, 17, 1, 'U18W', 'U18W,U21W,W', 'Under 18 Women');
+                CreateClass($TourId, $i++,  15, 17, 0, 'U18M', 'U18M,U21M,M', get_text('CL-U18M', 'Tournament'));
+                CreateClass($TourId, $i++,  15, 17, 1, 'U18W', 'U18W,U21W,W', get_text('CL-U18W', 'Tournament'));
                 CreateClass($TourId, $i++,  1, 14, 0, 'U15M', 'U15M,U18M,U21M,M', 'Under 15 Men');
                 CreateClass($TourId, $i++,  1, 14, 1, 'U15W', 'U15W,U18W,U21W,W', 'Under 15 Women');
             } else {
                 // only U18
-                CreateClass($TourId, $i++,  1, 17, 0, 'U18M', 'U18M,U21M,M', 'Under 18 Men');
-                CreateClass($TourId, $i++,  1, 17, 1, 'U18W', 'U18W,U21W,W', 'Under 18 Women');
+                CreateClass($TourId, $i++,  1, 17, 0, 'U18M', 'U18M,U21M,M', get_text('CL-U18M', 'Tournament'));
+                CreateClass($TourId, $i++,  1, 17, 1, 'U18W', 'U18W,U21W,W', get_text('CL-U18W', 'Tournament'));
             }
 			break;
 	}
