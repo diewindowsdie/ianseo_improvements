@@ -6,7 +6,11 @@ require_once('Common/OrisFunctions.php');
 
 checkACL(array(AclIndividuals, AclTeams, AclCompetition), AclReadOnly);
 
-if ($_REQUEST["doPrint"]) {
+function landscapePagesNeccesary() {
+    return array_key_exists("country1", $_REQUEST) || array_key_exists("country2", $_REQUEST) || array_key_exists("country3", $_REQUEST);
+}
+
+if (array_key_exists("doPrint", $_REQUEST)) {
     //в этом отчете печатаем все
     $isCompleteResultBook = true;
 
@@ -37,7 +41,7 @@ if ($_REQUEST["doPrint"]) {
             $pagesPresent["IndividualRankings"],
             $pagesPresent["TeamBrackets"],
             $pagesPresent["TeamRankings"]
-        )) && ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"])) {
+        )) && landscapePagesNeccesary()) {
         $pageOrientation = 'L';
     }
     $pdf->AddPage($pageOrientation);
@@ -53,7 +57,7 @@ if ($_REQUEST["doPrint"]) {
                 $pagesPresent["IndividualRankings"],
                 $pagesPresent["TeamBrackets"],
                 $pagesPresent["TeamRankings"]
-            )) && ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"])) {
+            )) && landscapePagesNeccesary()) {
             $pageOrientation = 'L';
         }
         $pdf->AddPage($pageOrientation);
@@ -69,7 +73,7 @@ if ($_REQUEST["doPrint"]) {
                 $pagesPresent["IndividualRankings"],
                 $pagesPresent["TeamBrackets"],
                 $pagesPresent["TeamRankings"]
-            )) && ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"])) {
+            )) && landscapePagesNeccesary()) {
             $pageOrientation = 'L';
         }
         $pdf->AddPage($pageOrientation);
@@ -84,7 +88,7 @@ if ($_REQUEST["doPrint"]) {
                 $pagesPresent["IndividualRankings"],
                 $pagesPresent["TeamBrackets"],
                 $pagesPresent["TeamRankings"]
-            )) && ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"])) {
+            )) && landscapePagesNeccesary()) {
             $pageOrientation = 'L';
         }
         $pdf->AddPage($pageOrientation);
@@ -98,7 +102,7 @@ if ($_REQUEST["doPrint"]) {
         if (!in_array(true, array(
                 $pagesPresent["TeamBrackets"],
                 $pagesPresent["TeamRankings"]
-            )) && ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"])) {
+            )) && landscapePagesNeccesary()) {
             $pageOrientation = 'L';
         }
         $pdf->AddPage($pageOrientation);
@@ -111,7 +115,7 @@ if ($_REQUEST["doPrint"]) {
         //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
         if (!in_array(true, array(
                 $pagesPresent["TeamRankings"]
-            )) && ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"])) {
+            )) && landscapePagesNeccesary()) {
             $pageOrientation = 'L';
         }
         $pdf->AddPage($pageOrientation);
@@ -122,14 +126,14 @@ if ($_REQUEST["doPrint"]) {
         $pdf->Titolo = get_text('RankingSq');
         include '../../Final/Team/PrnRanking.php';
         //если есть хотя бы один отчет со статистикой по "регионам" - ставим альбомную ориентацию
-        if ($_REQUEST["country1"] || $_REQUEST["country2"] || $_REQUEST["country3"]) {
+        if (landscapePagesNeccesary()) {
             $pageOrientation = 'L';
         }
         $pdf->AddPage($pageOrientation);
     }
 
     //статистика по "регионам" по полю 1
-    if ($_REQUEST["country1"]) {
+    if (array_key_exists("country1", $_REQUEST)) {
         setcookie($_SESSION['TourId'] . "_checkedCountry1", "1", 0, $CFG->ROOT_DIR);
         if ($_REQUEST["StatHeader1"] != "") {
             setcookie($_SESSION['TourId'] . "_StatHeader1", $_REQUEST["StatHeader1"], 0, $CFG->ROOT_DIR);
@@ -138,7 +142,7 @@ if ($_REQUEST["doPrint"]) {
         $pdf->Titolo = get_text('Statistics', 'Tournament');
         include '../../Partecipants/PrnStatCountry.php';
         //если больше нет отчетов со статистикой по "регионам" - возвращаем портретную ориентацию
-        if (!$_REQUEST["country2"] && !$_REQUEST["country3"]) {
+        if (!array_key_exists("country2", $_REQUEST) && !array_key_exists("country3", $_REQUEST)) {
             $pageOrientation = 'P';
         }
         $pdf->AddPage($pageOrientation);
@@ -147,7 +151,7 @@ if ($_REQUEST["doPrint"]) {
     }
 
     //статистика по "регионам" по полю 2
-    if ($_REQUEST["country2"]) {
+    if (array_key_exists("country2", $_REQUEST)) {
         setcookie($_SESSION['TourId'] . "_checkedCountry2", "1", 0, $CFG->ROOT_DIR);
         if ($_REQUEST["StatHeader2"] != "") {
             setcookie($_SESSION['TourId'] . "_StatHeader2", $_REQUEST["StatHeader2"], 0, $CFG->ROOT_DIR);
@@ -156,7 +160,7 @@ if ($_REQUEST["doPrint"]) {
         $pdf->Titolo = get_text('Statistics', 'Tournament');
         include '../../Partecipants/PrnStatCountry.php';
         //если больше нет отчетов со статистикой по "регионам" - возвращаем портретную ориентацию
-        if (!$_REQUEST["country3"]) {
+        if (!array_key_exists("country3", $_REQUEST)) {
             $pageOrientation = 'P';
         }
         $pdf->AddPage($pageOrientation);
@@ -165,7 +169,7 @@ if ($_REQUEST["doPrint"]) {
     }
 
     //статистика по "регионам" по полю 3
-    if ($_REQUEST["country3"]) {
+    if (array_key_exists("country3", $_REQUEST)) {
         setcookie($_SESSION['TourId'] . "_checkedCountry3", "1", 0, $CFG->ROOT_DIR);
         if ($_REQUEST["StatHeader3"] != "") {
             setcookie($_SESSION['TourId'] . "_StatHeader3", $_REQUEST["StatHeader3"], 0, $CFG->ROOT_DIR);
@@ -191,7 +195,7 @@ if ($_REQUEST["doPrint"]) {
     include('Common/Templates/head.php');
 
     ?>
-    <form id="printProtocol" method="POST" action="Protocol.php?doPrint=1">
+    <form id="printProtocol" method="POST" action="Protocol.php?doPrint=1" target="_blank">
         <table class="Tabella">
             <tr>
                 <th style="width: 10%; text-align: left; padding-left: 20px">Включить в протокол соревнований информацию
@@ -200,7 +204,7 @@ if ($_REQUEST["doPrint"]) {
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country1" id="country1"
-                        <?= !isset($_COOKIE[$_SESSION['TourId'] . "_checkedCountry1"]) || $_COOKIE[$_SESSION['TourId'] . "_checkedCountry1"] == "1" ? ' checked' : ''?>><label style="padding-left: 5px"
+                        <?= !isset($_COOKIE[$_SESSION['TourId'] . "_checkedCountry1"]) || $_COOKIE[$_SESSION['TourId'] . "_checkedCountry1"] == "1" ? ' checked' : ''?> onchange="$('#StatHeader1').prop('disabled', !this.checked)"><label style="padding-left: 5px"
                                                                                   for="country1">Включить отчет о
                         странах/регионах первого уровня</label></td>
             </tr>
@@ -213,7 +217,7 @@ if ($_REQUEST["doPrint"]) {
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country2" id="country2"
-                        <?= !isset($_COOKIE[$_SESSION['TourId'] . "_checkedCountry2"]) || $_COOKIE[$_SESSION['TourId'] . "_checkedCountry2"] == "1" ? ' checked' : ''?>><label style="padding-left: 5px"
+                        <?= !isset($_COOKIE[$_SESSION['TourId'] . "_checkedCountry2"]) || $_COOKIE[$_SESSION['TourId'] . "_checkedCountry2"] == "1" ? ' checked' : ''?> onchange="$('#StatHeader2').prop('disabled', !this.checked)"><label style="padding-left: 5px"
                                                                                   for="country2">Включить отчет о
                         странах/регионах второго уровня</label></td>
             </tr>
@@ -226,7 +230,7 @@ if ($_REQUEST["doPrint"]) {
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country3" id="country3"
-                        <?= $_COOKIE[$_SESSION['TourId'] . "_checkedCountry3"] == "1" ? ' checked' : ''?>><label
+                        <?= $_COOKIE[$_SESSION['TourId'] . "_checkedCountry3"] == "1" ? ' checked' : ''?> onchange="$('#StatHeader3').prop('disabled', !this.checked)"><label
                             style="padding-left: 5px" for="country3">Включить отчет о странах/регионах третьего
                         уровня</label></td>
             </tr>
@@ -234,7 +238,7 @@ if ($_REQUEST["doPrint"]) {
                 <td class="Left" style="padding-left: 20px">
                     Заголовок отчета о странах/регионах третьего уровня. Например, "Спортивные клубы" или "Команды":<br/>
                     <input style="width: 500px; height: 25px" type="text" name="StatHeader3" id="StatHeader3"
-                           value="<?= $_COOKIE[$_SESSION['TourId'] . "_StatHeader3"] ?? get_text('RegionsAndCountries', 'Tournament'); ?>"/></td>
+                           value="<?= $_COOKIE[$_SESSION['TourId'] . "_StatHeader3"] ?? get_text('RegionsAndCountries', 'Tournament'); ?>" <?= $_COOKIE[$_SESSION['TourId'] . "_checkedCountry3"] != "1" ? ' disabled' : ''?>/></td>
             </tr>
             <tr>
                 <th class="Left" style="padding-left: 50px; padding-top: 10px; padding-bottom: 10px">
