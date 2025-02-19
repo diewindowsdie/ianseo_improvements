@@ -36,6 +36,10 @@ CreateStandard3DEvents($TourId, $SubRule, $TourType);
 // insert class in events
 InsertStandard3DEvents($TourId, $SubRule);
 
+if ($_REQUEST["createSubClasses"]) {
+    CreateStandardSubClasses($TourId, $_REQUEST['subclassesSet']);
+}
+
 // Elimination rounds
 //InsertStandard3DEliminations($TourId, $SubRule);
 

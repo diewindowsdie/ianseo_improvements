@@ -565,6 +565,26 @@ function InsertStandardEvents($TourId, $SubRule) {
     }
 }
 
+require_once("Common/Lib/Normative/Normative.php");
+function CreateStandardSubclasses($tournamentId, $subclassesSet="SportIdent") {
+    $fieldName = "codeSportIdent";
+    if ($subclassesSet == "LetterCodes") {
+        $fieldName = "codeLetters";
+    }
+
+    CreateSubClass($tournamentId, Normative::Esteemed["order"], Normative::Esteemed[$fieldName], Normative::Esteemed["name"]);
+    CreateSubClass($tournamentId, Normative::International["order"], Normative::International[$fieldName], Normative::International["name"]);
+    CreateSubClass($tournamentId, Normative::Master["order"], Normative::Master[$fieldName], Normative::Master["name"]);
+    CreateSubClass($tournamentId, Normative::Candidate["order"], Normative::Candidate[$fieldName], Normative::Candidate["name"]);
+    CreateSubClass($tournamentId, Normative::First["order"], Normative::First[$fieldName], Normative::First["name"]);
+    CreateSubClass($tournamentId, Normative::Second["order"], Normative::Second[$fieldName], Normative::Second["name"]);
+    CreateSubClass($tournamentId, Normative::Third["order"], Normative::Third[$fieldName], Normative::Third["name"]);
+    CreateSubClass($tournamentId, Normative::FirstJunior["order"], Normative::FirstJunior[$fieldName], Normative::FirstJunior["name"]);
+    CreateSubClass($tournamentId, Normative::SecondJunior["order"], Normative::SecondJunior[$fieldName], Normative::SecondJunior["name"]);
+    CreateSubClass($tournamentId, Normative::ThirdJunior["order"], Normative::ThirdJunior[$fieldName], Normative::ThirdJunior["name"]);
+    CreateSubClass($tournamentId, Normative::None["order"], Normative::None[$fieldName], Normative::None["nameForExisting"]);
+}
+
 /*
 
 FIELD DEFINITIONS (Target Tournaments)

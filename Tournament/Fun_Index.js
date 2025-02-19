@@ -86,3 +86,8 @@ function CheckIskStatus() {
 
 	return confirm(IskResetAlert);
 }
+
+function subclassesCheckboxChanged() {
+	var checkbox = document.querySelector("#createSubClasses")
+	$("#subclassesSet").prop("disabled", !checkbox.checked);
+}

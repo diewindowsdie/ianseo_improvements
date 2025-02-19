@@ -7,7 +7,12 @@ require_once(dirname(__FILE__).'/lib.php');
 require_once(dirname(dirname(__FILE__)).'/lib.php');
 
 // default Divisions
+
 CreateStandardDivisions($TourId,(in_array($TourType,array(3,6,7,8,37)) ? '70M':'FITA'));
+error_reporting(E_ALL);
+if ($_REQUEST["createSubClasses"]) {
+    CreateStandardSubClasses($TourId, $_REQUEST['subclassesSet']);
+}
 
 // default SubClasses
 //CreateSubClass($TourId, 1, '00', '00');

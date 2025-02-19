@@ -53,6 +53,7 @@ $lang['AddContact']='Add Contact';
 $lang['AddMaxRows']='Add all the available row';
 $lang['AddOnsItem']='Item #{$a}';
 $lang['AddSplitChannel']='Add Horizontal Split';
+$lang['AddSubclasses']='Subclasses';
 $lang['AddTournament']='Add Tournament';
 $lang['ADOfficer']='Anti Doping Officer';
 $lang['AdvancedParams']='Advanced Parameters';
