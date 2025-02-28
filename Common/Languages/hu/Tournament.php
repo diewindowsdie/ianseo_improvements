@@ -40,7 +40,6 @@ $lang['Action']='Intéz';
 $lang['ActualFlag']='Érvényben lévő zászló';
 $lang['AddMaxRows']='Összes meglévő sor hozzáadása';
 $lang['AddTournament']='Verseny hozzáadása';
-$lang['AfterDistance']='Rangsor az alábbi táv UTÁN:';
 $lang['AfterXDistance']='Eredmények a $a táv UTÁN';
 $lang['AllDistances']='Mind';
 $lang['AllEvents']='Minden esemény';

@@ -1,19 +1,19 @@
 <?php
 // settings for the READ server
 $CFG->R_HOST = 'localhost';
-$CFG->R_USER = 'ianseo_clean';
-$CFG->R_PASS = 'ianseo_clean';
+$CFG->R_USER = 'ianseo_dev';
+$CFG->R_PASS = 'ianseo_dev';
 
 // settings for the WRITE Server
 $CFG->W_HOST = 'localhost';
-$CFG->W_USER = 'ianseo_clean';
-$CFG->W_PASS = 'ianseo_clean';
+$CFG->W_USER = 'ianseo_dev';
+$CFG->W_PASS = 'ianseo_dev';
 
 /* DB Name */
-$CFG->DB_NAME = 'ianseo_clean';
+$CFG->DB_NAME = 'ianseo_dev';
 
 // set the root directory
-$CFG->ROOT_DIR = '/ianseo_clean/';
+$CFG->ROOT_DIR = '/ianseo_dev/';
 
 
 ?>

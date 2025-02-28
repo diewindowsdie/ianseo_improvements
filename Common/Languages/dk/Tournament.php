@@ -46,7 +46,6 @@ $lang['AddOnsItem']='Enhed #{$a}';
 $lang['AddTournament']='Tilføj turnering';
 $lang['ADOfficer']='Anti-doping ansvarlig';
 $lang['AdvancedParams']='Avancerede Parametre';
-$lang['AfterDistance']='Placering EFTER følgende afstand:';
 $lang['AfterXDistance']='Resultater EFTER afstand $a';
 $lang['AgeClass']='Aldersklasse';
 $lang['AllDistances']='Alle';

@@ -40,7 +40,6 @@ $lang['AddMaxRows']='Dodaj vse vrstice';
 $lang['AddTournament']='Dodaj tekmovanje';
 $lang['ADOfficer']='Antidoping agent';
 $lang['AdvancedParams']='Podrobne nastavitve';
-$lang['AfterDistance']='Razvrstitev PO zadnji razdalji';
 $lang['AfterXDistance']='Rezultati PO $a razdalji';
 $lang['AgeClass']='Kategorija';
 $lang['AllDistances']='Vse razdalje';

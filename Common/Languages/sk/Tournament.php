@@ -10,7 +10,6 @@ $lang['AclIndividuals']='Eliminácie Jednotlivci';
 $lang['AclParticipants']='Účastníci';
 $lang['AclQualification']='Kvalifikácia';
 $lang['AclSpeaker']='Moderátor';
-$lang['AfterDistance']='Umiestnenie PO v zdialenosti';
 $lang['AfterXDistance']='Výsledky Po Vzdialenositi $a';
 $lang['AllDistances']='Všetko';
 $lang['AllSessions']='Všetky skupiny';

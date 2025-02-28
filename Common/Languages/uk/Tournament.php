@@ -31,7 +31,6 @@ $lang['AclRoot']='Супер користувач';
 $lang['AclSpeaker']='Спікер';
 $lang['AclTeams']='Командні Фінали';
 $lang['AdvancedParams']='Розширені параметри';
-$lang['AfterDistance']='Ранг ПІСЛЯ наступної дистанції:';
 $lang['AfterXDistance']='Результати ПІСЛЯ дистанції $a';
 $lang['AgeClass']='Вікова категорія';
 $lang['AllDistances']='Всі';

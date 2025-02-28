@@ -46,7 +46,6 @@ $lang['AddOnsItem']='Element #{$a}';
 $lang['AddTournament']='Afegir torneig';
 $lang['ADOfficer']='Responsable Antidopatge';
 $lang['AdvancedParams']='Paràmetres Avançats';
-$lang['AfterDistance']='Classificació DESPRÉS de la següent distància:';
 $lang['AfterXDistance']='Resultats DESPRÉS de la Distància $a';
 $lang['AgeClass']='Classe d\'edat';
 $lang['AllDistances']='Tots';

@@ -79,7 +79,7 @@ if(!empty($_REQUEST['Id']) and isset($_REQUEST['RuleId'])) {
 		case 'LSPH':
 			$Cols[] = 'DIVCLAS';
 			$Cols[] = 'CATCODE';
-            if(count($_SESSION['FopLocations'])>1) {
+            if(count($_SESSION['FopLocations']??[])>1) {
                 $Cols[] = 'HALL';
             }
 			break;

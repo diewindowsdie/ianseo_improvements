@@ -74,10 +74,11 @@
 		        '<th class="Title w-5"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordCode=' . (isset($_REQUEST['ordCode']) ? ( $_REQUEST['ordCode']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Code','Tournament') . '</a></th>'.
 		        '<th class="Title w-25"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordName=' . (isset($_REQUEST['ordName']) ? ( $_REQUEST['ordName']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Athlete') . '</a></th>'.
                 '<th class="Title w-20" colspan="2"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordCountry=' . (isset($_REQUEST['ordCountry']) ? ($_REQUEST['ordCountry']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Country') . '</a></th>'.
-		        '<th class="Title w-10">' . get_text('WheelChair', 'Tournament') . '</th>'.
+                '<th class="Title w-10"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordScore=' . (isset($_REQUEST['ordScore']) ? ( $_REQUEST['ordScore']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Score', 'Tournament') . '</a></th>'.
+                '<th class="Title w-5">' . get_text('WheelChair', 'Tournament') . '</th>'.
 		        '<th class="Title w-5"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordDiv=' . (isset($_REQUEST['ordDiv']) ? ($_REQUEST['ordDiv']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Division') . '</a></th>'.
                 '<th class="Title w-5"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordCl=' . (isset($_REQUEST['ordCl']) ? ($_REQUEST['ordCl']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Class') . '</a></th>'.
-                '<td class="Title w-10">' . get_text('TargetType') . '</td>'.
+                '<th class="Title w-10">' . get_text('TargetType') . '</th>'.
 		    '</tr>';
 
 		$OrderBy = "QuSession ASC, QuTargetNo ASC, EnDivision, EnClass ";
@@ -94,10 +95,12 @@
             $OrderBy = "EnDivision " . $_REQUEST['ordDiv'] . " ";
         } elseif (isset($_REQUEST['ordCl']) && ($_REQUEST['ordCl']=='ASC' || $_REQUEST['ordCl']=='DESC')) {
             $OrderBy = "EnClass " . $_REQUEST['ordCl'] . " ";
+        } elseif (isset($_REQUEST['ordScore']) && ($_REQUEST['ordScore']=='ASC' || $_REQUEST['ordScore']=='DESC')) {
+            $OrderBy = "QuScore " . $_REQUEST['ordScore'] . ", QuGold " . $_REQUEST['ordScore'] . ", QuXNine " . $_REQUEST['ordScore'];
         }
 
 		$Select = "SELECT EnId,EnCode,EnName,EnFirstName,EnSex,EnId,EnTournament,EnDivision,EnClass,EnCountry,EnStatus, EnWChair, " .
-			"CoCode,CoName,QuSession, SUBSTRING(QuTargetNo,2) AS TargetNo, TfName " .
+			"CoCode,CoName,QuSession, SUBSTRING(QuTargetNo,2) AS TargetNo, TfName, QuScore, QuGold, QuXNine " .
 			"FROM Entries INNER JOIN Qualifications ON EnId=QuId ".
 			"INNER JOIN Countries ON EnCountry=CoId AND EnTournament=CoTournament " .
             "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId " .
@@ -144,11 +147,13 @@
 				echo '<td>' . ((!empty($MyRow->EnFirstName) OR !empty($MyRow->EnName)) ? $MyRow->EnFirstName . ' ' . $MyRow->EnName : '&nbsp;') . '</td>';
 				echo '<td class="Center w-5">' . (empty($MyRow->CoCode) ? '&nbsp;' : $MyRow->CoCode).'</td>';
 				echo '<td class="w-15">' . (empty($MyRow->CoName) ? '&nbsp;' : $MyRow->CoName) . '</td>';
+                echo '<td class="Right NoWrap">' . (empty($MyRow->QuScore) ? '&nbsp;' : $MyRow->QuScore . ' / ' . $MyRow->QuGold . ' / ' . $MyRow->QuXNine) . '</td>';
 				echo '<td class="Center">' . ($MyRow->EnWChair ? 'X' : '&nbsp;') . '</td>';
                 echo '<td class="Center">' . (empty($MyRow->EnDivision) ? '&nbsp;' : $MyRow->EnDivision) . '</td>';
 				echo '<td class="Center">' . (empty($MyRow->EnClass) ? '&nbsp;' : $MyRow->EnClass) . '</td>';
                 echo '<td class="Center">' . (empty($MyRow->TfName) ? '&nbsp;' : get_text($MyRow->TfName, 'Tournament', '', true)) . '</td>';
-				echo '</tr>';
+
+                echo '</tr>';
 			}
 		}
 		echo '</table>';

@@ -57,7 +57,7 @@ if (isset($_REQUEST['command'])) {
                $msg=get_text('Error');
             } else {
 	            $err=false;
-                $TargetOrder='ASC';
+                $RankOrder='ASC';
 				// e se è settata, la rank finale deve essere maggiore di quella iniziale
                 if ($sourceRankTo!='') {
 	                if (!preg_match('/^[0-9]+$/i',$sourceRankTo)) {
@@ -65,11 +65,11 @@ if (isset($_REQUEST['command'])) {
                         $err=true;
                     } else {
 	                    if ($sourceRankFrom>$sourceRankTo) {
-		                    $TargetOrder='DESC';
-//								$msg=get_text('Error');
-//								$err=true;
+                            $RankOrder='DESC';
                         }
                     }
+                } else {
+                    $sourceRankTo = 999999;
                 }
 
                 if (!$err) {
@@ -86,25 +86,22 @@ if (isset($_REQUEST['command'])) {
 
                         $SubStrLen=strlen($endSession . $start);
 
-                        $query = "SELECT AtTargetNo, substr(AtTargetNo,1,$SubStrLen) Target, substr(AtTargetNo,-1) Letter "
-                            . "FROM "
-                                . "AvailableTarget "
-                            . "WHERE "
-                                . "AtTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND "
-                                . "AtTargetNo>='" . $endSession . $start . 'A' . "' AND AtTargetNo<='" . $endSession . $end . 'Z' . "' "
-                            . "ORDER BY "
-                                . "Target $TargetOrder, Letter ASC ";
+                        $query = "SELECT AtTargetNo, substr(AtTargetNo,1,$SubStrLen) Target, substr(AtTargetNo,-1) Letter 
+                            FROM AvailableTarget 
+                            LEFT JOIN (
+                                SELECT QuTargetNo 
+                                FROM Entries 
+                                    INNER JOIN Qualifications ON EnId = QuId 
+                                WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND QuTargetNo >= '" . $endSession . $start . "A' AND QuTargetNo <= '" . $endSession . $end . "Z') as Sqy ON AtTargetNo=QuTargetNo
+                            WHERE AtTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND AtTargetNo>='" . $endSession . $start . "A' AND AtTargetNo<='" . $endSession . $end . "Z' AND QuTargetNo IS NULL 
+                            ORDER BY Target ASC, Letter ASC ";
                         $rs=safe_r_sql($query);
                         while ($row=safe_fetch($rs)) {
 	                        $targets[]=$row->AtTargetNo;
                         }
 
-                        /*print '<pre>';
-                        print_r($targets);
-                        print '</pre>';exit;*/
-
-                        $rank1=$sourceRankFrom;
-                        $rank2=$sourceRankTo!='' ? $sourceRankTo : 999999;
+                        $rank1 = min($sourceRankFrom,$sourceRankTo);
+                        $rank2 = max($sourceRankFrom,$sourceRankTo);
 
 						/*
 						 * ora faccio la query per tirar fuori la rank.
@@ -125,7 +122,7 @@ if (isset($_REQUEST['command'])) {
                                 INNER JOIN Entries ON ToId=EnTournament 
                                 INNER JOIN Qualifications ON EnId=QuId 
                                 WHERE CONCAT(EnDivision,EnClass) LIKE " . StrSafe_DB($filter) . " AND EnAthlete=1  AND EnStatus<=1 AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND QuScore<>0 
-                                ORDER BY QuClRank ASC, EnFirstName, EnName ";
+                                ORDER BY QuClRank $RankOrder, EnFirstName, EnName ";
                         } else {
                             // assoluti individuali
                             $query = "SELECT QuId, EnFirstName, EnName,EnWChair, EnDoubleSpace, CONCAT(EnDivision,EnClass) AS `Event`, QuSession, QuTargetNo, IndRank as `Rank` 
@@ -134,7 +131,7 @@ if (isset($_REQUEST['command'])) {
                                 INNER JOIN Qualifications ON EnId=QuId 
                                 INNER JOIN Individuals ON IndId=EnId AND IndTournament=EnTournament 
                                 WHERE EnAthlete=1 AND EnIndFEvent=1 AND EnStatus <= 1  AND QuScore<>'0' AND ToId = " . StrSafe_DB($_SESSION['TourId']) . " AND IndEvent LIKE " . StrSafe_DB($filter) . " 
-                                ORDER BY IndRank ASC, EnFirstName, EnName ";
+                                ORDER BY IndRank $RankOrder, EnFirstName, EnName ";
                         }
                         $Rs=safe_r_sql($query);
 

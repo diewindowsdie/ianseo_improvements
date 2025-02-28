@@ -9,7 +9,6 @@ $lang['Accomodation']='Smještaj';
 $lang['Accreditation']='Akreditacije';
 $lang['Action']='Akcija';
 $lang['AddMaxRows']='Dodaj sve raspoložive redove';
-$lang['AfterDistance']='Poredak nakon sljedeće udaljenosti :';
 $lang['AfterXDistance']='Poredak nakon udaljenosti $a';
 $lang['AllDistances']='Sve';
 $lang['AllEvents']='Sva događanja';

@@ -41,7 +41,6 @@ $lang['ActualFlag']='דגל בשימוש';
 $lang['AddContact']='הוסף איש קשר';
 $lang['AddMaxRows']='הוסף את כל השורות הזמינות';
 $lang['AddTournament']='הוסף תחרות';
-$lang['AfterDistance']='דירוג לאחר המרחק הבא:';
 $lang['AfterXDistance']='תוצאות לאחר מרחק $a';
 $lang['AgeClass']='קבוצת גיל';
 $lang['AllDistances']='הכל';

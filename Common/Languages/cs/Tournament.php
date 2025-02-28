@@ -9,7 +9,6 @@ $lang['Accomodation']='Ubytování';
 $lang['Accreditation']='Akreditace';
 $lang['Action']='Akce';
 $lang['AddMaxRows']='Přidat všechny dostupné řádky';
-$lang['AfterDistance']='Pořadí po této vzdálenosti:';
 $lang['AfterXDistance']='Výsledky po vzdálenosti $a';
 $lang['AllDistances']='Vše';
 $lang['AllEvents']='Všechny události';

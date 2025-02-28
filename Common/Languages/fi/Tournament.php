@@ -9,7 +9,6 @@ $lang['Accomodation']='Majoitus';
 $lang['Accreditation']='Akkreditointi';
 $lang['Action']='Toiminto';
 $lang['AddMaxRows']='Lisää kaikki mahdolliset rivit';
-$lang['AfterDistance']='Kyseisen matkan jälkeinen sijoitus:';
 $lang['AfterXDistance']='Tulokset matkan $a jälkeen';
 $lang['AllDistances']='Kaikki';
 $lang['AllEvents']='Kaikki lajit';

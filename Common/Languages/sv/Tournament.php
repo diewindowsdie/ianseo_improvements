@@ -38,7 +38,6 @@ $lang['AddMaxRows']='Lägg till alla tillgängliga rader';
 $lang['AddTournament']='Lägg till tävling';
 $lang['ADOfficer']='Dopingkontrollant';
 $lang['AdvancedParams']='Avancerade inställningar';
-$lang['AfterDistance']='Ranking efter följande avstånd:';
 $lang['AfterXDistance']='Resultat EFTER avstånd $a';
 $lang['AgeClass']='Åldersklass';
 $lang['AllDistances']='Alla';

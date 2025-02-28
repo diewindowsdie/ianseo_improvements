@@ -36,7 +36,6 @@ $lang['ActualFlag']='Используемый флаг';
 $lang['AddMaxRows']='Добавить все имеющиеся ряды';
 $lang['AddTournament']='Выбрать соревнование';
 $lang['AdvancedParams']='Расширенные параметры';
-$lang['AfterDistance']='Расположение согласно последней дистанции:';
 $lang['AfterXDistance']='Результаты после $a дистанции';
 $lang['AllDistances']='Все';
 $lang['AllRound']='Все туры';

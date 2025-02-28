@@ -3873,7 +3873,7 @@ Class Scheduler {
 														AND FwDay='$Date' and FwTime='$Time'
 														and FwTargets!=''
 													GROUP BY FwEvent
-													ORDER BY FwEvent,FwTargets";
+													ORDER BY FwTargets, FwEvent";
 												$t = safe_r_sql($MyQuery);
 												while($u=safe_fetch($t)) {
 													foreach(explode(',', $u->FwTargets) as $range) {
@@ -3973,7 +3973,7 @@ Class Scheduler {
 															AND GrPhase<=greatest(ifnull(PhId,0), ifnull(PhLevel,0), EvFinalFirstPhase)
 															group by FsEvent, FsTarget, GrPhase
 														".($this->TargetsInvolved ? ' HAVING '.sprintf($this->TargetsInvolved, 'FsTarget+0') : '')."
-															ORDER BY Warmup ASC, FsEvent, FSTarget ASC, FSMatchNo ASC";
+															ORDER BY Warmup ASC, FSTarget ASC, FsEvent, FSMatchNo ASC";
 												}
 												$t = safe_r_sql($MyQuery);
 												while($u=safe_fetch($t)) {
@@ -4266,7 +4266,7 @@ Class Scheduler {
 													WHERE FwTournament=" . StrSafe_DB($this->TourId) . "
 															AND date_format(FwDay, '%Y-%m-%d')='$Date' and FwTime='$Time'
 															and FwTargets!=''
-															ORDER BY FwEvent, FwTargets";
+															ORDER BY FwTargets, FwEvent";
 												$t = safe_r_sql($MyQuery);
 
 												$RowTgts=array();

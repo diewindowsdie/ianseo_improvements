@@ -17,7 +17,6 @@ $lang['Accreditation']='Akkreditierung';
 $lang['AccreditationBooth']='Nur Akkreditierungs-Stand!';
 $lang['Action']='Aktion';
 $lang['AddMaxRows']='Fügen Sie eine maximale Zeilenzahl hinzu';
-$lang['AfterDistance']='Ergebnisse NACH dieser Entfernung:';
 $lang['AfterXDistance']='Ergebnisse NACH Entfernung $a';
 $lang['AllDistances']='Alle';
 $lang['AllEvents']='Alle Turniere';

@@ -41,7 +41,6 @@ $lang['AddContact']='Adicione contato';
 $lang['AddMaxRows']='Adicione todas as linhas disponíveis';
 $lang['AddTournament']='Add torneio';
 $lang['ADOfficer']='Oficial Antidopagem';
-$lang['AfterDistance']='Ranking APÓS a seguinte distância';
 $lang['AfterXDistance']='Resultados APÓS a distância de $a';
 $lang['AgeClass']='Classe de idade';
 $lang['AllDistances']='Tudo';

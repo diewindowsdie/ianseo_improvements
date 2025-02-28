@@ -42,7 +42,6 @@ $lang['AddMaxRows']='Legg til alle tilgjengelige rader';
 $lang['AddTournament']='Legg til stevne';
 $lang['ADOfficer']='Antidopingansvarlig';
 $lang['AdvancedParams']='Avanserte innstillinger';
-$lang['AfterDistance']='Plass ETTER følgende avstand:';
 $lang['AfterXDistance']='Resultater ETTER avstand $a';
 $lang['AgeClass']='Aldersklasse';
 $lang['AllDistances']='Alle';

@@ -12,6 +12,7 @@ $lang['AutoCHK-Print']='Mostra automaticamente la finestra di dialogo di stampa'
 $lang['AutoImportSettings']='<b>Solo per Utenti Esperti</b><br>Cambiare i parametri di default può portare ad avere risultati non precisi.<br> E\' importante ricalcolare tutte le rank degli eventi che sono stati impostati manualmente PRIMA di inviare i risultati a ianseo.net o stampare i risultati e, in generale, sempre prima di fare qualsiasi tipo di distribuzione.';
 $lang['ChangeComponents']='<p>Per procedere con un cambio di componente, prima togliere l\'atleta che non è più nel team in modo da poter attivare le opzioni di sostituzione.</p> &#9654&nbsp;Punteggi inclusi nel totale del team nella fase di qualifica<br> &#9655&nbsp;Punteggi non inclusi nel totale del team nella fase di qualifica';
 $lang['CombiCompList']='Elenco dei Codici Competizione, separati da virgole';
+$lang['DeleteChannel']='Rimuovi canale. In questo modo si rimuovono tutte le divisioni dal canale e il canale stesso.';
 $lang['ExportAdvanced']='Esporta anche i dati dei partecipanti e del Paese/Società da fornire se mancanti al Destinatario';
 $lang['ExportCategories']='Scegliere quali Div.Cl/eventi esportare (nessuna selezione significa tutte)';
 $lang['ExportDistances']='Seleziona quali distanze esportare (nessuna selezione significa tutte le distanze)';
