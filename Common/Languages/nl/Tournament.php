@@ -43,7 +43,6 @@ $lang['ActualFlag']='Gebruikte vlag';
 $lang['AddMaxRows']='Voeg alle mogelijke rijen toe';
 $lang['AddTournament']='Toernooi toevoegen';
 $lang['AdvancedParams']='Instellen parameters uitgebreid';
-$lang['AfterDistance']='Stand NA de volgende afstand';
 $lang['AfterXDistance']='Resultaat Na Afstand $a';
 $lang['AllDistances']='Alles';
 $lang['AllEvents']='Alle onderdelen';

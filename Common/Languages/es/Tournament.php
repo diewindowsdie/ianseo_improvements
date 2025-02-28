@@ -44,7 +44,6 @@ $lang['AddOnsItem']='Item #{$a}';
 $lang['AddTournament']='Añadir Torneo';
 $lang['ADOfficer']='Responsable del Control Anti-Dopaje';
 $lang['AdvancedParams']='Parámetros avanzados';
-$lang['AfterDistance']='Clasificación DESPUÉS de la siguiente distancia:';
 $lang['AfterXDistance']='Resultados DESPUÉS de la distancia de $a';
 $lang['AgeClass']='Clase por edades';
 $lang['AllDistances']='Todos';

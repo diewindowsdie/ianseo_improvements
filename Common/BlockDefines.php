@@ -144,6 +144,11 @@ function getBlocksToSet() {
 
 function actualACL() {
     global $listACL, $CFG;
+    // in first installation no DB is configured!
+    if(defined('EmptyDbName') and EmptyDbName) {
+        return array_fill(0, count($listACL), AclReadWrite);
+    }
+
     $lockEnabled = getModuleParameter("ACL", "AclEnable", "00");
     list($authEnabled, $checkCompAcl) = isAuthEnabled();
     $ip = $_SERVER["REMOTE_ADDR"];
@@ -226,6 +231,9 @@ function checkFullACL($feature, $subFeature, $level, $redirect=true, $TourId=0) 
     if($authEnabled == 1) {
         $INFO->ACLEnabled = true;
         $INFO->ACLAuthEnabled = true;
+        if($checkCompAcl) {
+            $lockEnabled[0] = "1";
+        }
     }
     $ip = $_SERVER["REMOTE_ADDR"];
     if($ip == '127.0.0.1' OR $ip == '::1' OR in_array($ip,$CFG->ACLExcluded)) {

@@ -45,8 +45,8 @@ define("PageEncode", "UTF-8");		// spostato qui invece che come stringa "linguis
 
 define("IanseoLicenseCode", "FSL-1.1-ALv2");		// License code
 define("IanseoLicenseFullName", "Functional Source License, Version 1.1, ALv2 Future License");		// License full name
-define("IanseoLicense", $CFG->ROOT_DIR."LICENSE.html");		// License local
-define("IanseoLicenseExt", $CFG->IanseoServer."IanseoLicense-".IanseoLicenseCode.".html");		// Ianseo License on ianseo.net
+define("IanseoLicense", ($CFG->ROOT_DIR ?? (substr($_SERVER['SCRIPT_NAME'], 0, strlen(dirname(dirname(__FILE__))) + strlen($_SERVER['SCRIPT_NAME']) - strlen(realpath($_SERVER['SCRIPT_FILENAME']))) . '/'))."LICENSE.html");		// License local
+define("IanseoLicenseExt", "https://ianseo.net/IanseoLicense-".IanseoLicenseCode.".html");		// Ianseo License on ianseo.net
 define("IanseoLicensePicture", "fsl.jpg");		// License picture
 define("IanseoLicenseExternalSite", "https://fsl.software/");		// License original website
 

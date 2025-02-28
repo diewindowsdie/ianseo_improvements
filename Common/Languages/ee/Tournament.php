@@ -4,7 +4,6 @@ $lang['3DTourCategory']='3D võistlus';
 $lang['Accreditation']='Akrediteerimine';
 $lang['AclAccreditation']='Akrediteerimine';
 $lang['AclSpeaker']='Spiiker';
-$lang['AfterDistance']='Paremusjärjestus PEALE seda distantsi:';
 $lang['AllEvents']='Kõik arvestused';
 $lang['AllSessions']='Kõik eelringi laskmisgrupid';
 $lang['AllTargets']='Kõik matid';

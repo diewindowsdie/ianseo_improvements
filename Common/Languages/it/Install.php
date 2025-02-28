@@ -255,6 +255,7 @@ $lang['SetWAPools-JS']='Junior e Senior (WA 4 Gironi)';
 $lang['SetWAPools-One']='Classe unica (WA 4 Gironi)';
 $lang['SetYouthClass']='Classi giovanili';
 $lang['SpecialUpdate']='Stai usando una versione "testing".<br/>Solo pochi utenti hanno accesso a questa versione: inserisci la tua e-mail di registrazione per procedere.<br/>Sarà inviata una e-mail di notifica dell\'avvenuta operazione sia a te sia allo Staff Ianseo.';
+$lang['SpecialUpdatePassword']='Hai un\'installazione "Avanzata".<br/> Solo gli utenti selezionati possono disporre di questa funzione: fornire l\'e-mail e la password con cui si è registrati.<br/> Una notifica sarà inviata sia a voi che allo staff di Ianseo.<br/> Se non si ricorda la password, è possibile reimpostarla da $a';
 $lang['Start Ianseo']='Vai a I@NSEO';
 $lang['Status']='Stato';
 $lang['stdValue']='Valore';

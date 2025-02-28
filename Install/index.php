@@ -3,11 +3,12 @@ define('INSTALL', true);
 
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 
+define('EmptyDbName', empty($CFG->DB_NAME));
 // non si sa mai, ma il $CFG potrebbe essere vuoto!!!
 // quindi ricostruisco il $CFG
 $CFG->ROOT_DIR = substr($_SERVER['SCRIPT_NAME'], 0, strlen(dirname(dirname(__FILE__))) + strlen($_SERVER['SCRIPT_NAME']) - strlen(realpath($_SERVER['SCRIPT_FILENAME']))) . '/';
 
-if(isset($_REQUEST['accept-'.IanseoLicenseCode])) {
+if(isset($_REQUEST['acceptLicense'])) {
 	$_SESSION['Accept-'.IanseoLicenseCode]=true;
 }
 
@@ -53,7 +54,7 @@ La procdura di installazione è suddivisa in numerosi STEPS
 $STEP=1;
 if(!empty($_REQUEST['step'])) $STEP=max(0,min(4,intval($_REQUEST['step'])));
 
-// prepara i dati da richiedere
+// prepare data to be requested
 if(empty($CFG->W_HOST)) $CFG->W_HOST='localhost';
 if(empty($CFG->R_HOST)) $CFG->R_HOST='';
 if(empty($CFG->W_USER)) $CFG->W_USER='ianseo';
@@ -76,7 +77,10 @@ if(empty($_SESSION['INSTALL']['CFG'])) $_SESSION['INSTALL']['CFG']=array(
 if($_POST) @include('install-'.$STEP.'-post.php');
 
 // devo fare il check iniziale se posso creare/scrivere nella directory dei DUMP!!!
-if(!file_exists('./dbdumps')) {
+if(!is_writable(__DIR__)) {
+    $_SESSION['INSTALL']['CFG']['ERROR']=get_text('File permission error','Install');
+    $STEP=0;
+} elseif(!file_exists('./dbdumps')) {
 	if(!mkdir(dirname(__FILE__).'/dbdumps',0777)) {
 		$_SESSION['INSTALL']['CFG']['ERROR']=get_text('File permission error','Install');
 		$STEP=0;

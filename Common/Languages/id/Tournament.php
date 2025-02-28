@@ -46,7 +46,6 @@ $lang['AddOnsItem']='Item #{$a}';
 $lang['AddTournament']='Tambah Turnamen';
 $lang['ADOfficer']='Petugas Anti Doping';
 $lang['AdvancedParams']='Parameter Lanjut';
-$lang['AfterDistance']='Peringkat SETELAH jarak berikut:';
 $lang['AfterXDistance']='Hasil SETELAH Jarak $a';
 $lang['AgeClass']='Kelas Umur';
 $lang['AllDistances']='Semua';

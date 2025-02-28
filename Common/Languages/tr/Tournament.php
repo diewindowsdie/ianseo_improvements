@@ -39,7 +39,6 @@ $lang['ActualFlag']='Kullanılmış Bayrak';
 $lang['AddMaxRows']='Tüm uygun satırları ekle';
 $lang['AddTournament']='Turnuva Ekle';
 $lang['AdvancedParams']='Gelişmiş Parametreler';
-$lang['AfterDistance']='Şu mesafeden SONRAKİ sıralama:';
 $lang['AfterXDistance']='$a metreden SONRAKİ sıralama';
 $lang['AgeClass']='Yaş Sınıfı';
 $lang['AllDistances']='Tümü';

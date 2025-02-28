@@ -39,7 +39,6 @@ $lang['Action']='Darbība';
 $lang['ActualFlag']='Izlietots karogs';
 $lang['AddMaxRows']='Pievienot visu pieejamo rindu';
 $lang['AddTournament']='Pievienot turnīru';
-$lang['AfterDistance']='Vietu sadalījums PĒC sekojošas distances:';
 $lang['AfterXDistance']='Rezultāti PĒC $a distances';
 $lang['AgeClass']='Vecuma grupa';
 $lang['AllDistances']='Visi';

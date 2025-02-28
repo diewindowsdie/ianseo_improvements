@@ -332,7 +332,7 @@ if(count($EventCodes) != 0) {
         }
     }
 } else {
-    $Sql = "SELECT EvCode, EvEventName, EvNumQualified, EvShootOff, EvRunning, GROUP_CONCAT(DISTINCT itemNo) as SoCt " .
+    $Sql = "SELECT EvCode, EvEventName, EvNumQualified, EvShootOff, EvRunning, EvElimType, GROUP_CONCAT(DISTINCT itemNo) as SoCt " .
         "FROM Events " .
         "LEFT JOIN (
             SELECT TeEvent, CONCAT_WS('|', COUNT(*), TeSO) as itemNo 
@@ -363,9 +363,13 @@ if(count($EventCodes) != 0) {
             $canBesolved = false;
         }
         echo '<tr class="rowHover"  id="ev_'.$r->EvCode.'" toBeSolved="'.intval($toBesolved).'" canBeSolved="'.intval($canBesolved).'" >'.
-            '<th class="smallContainer" onclick="gotoShootOff(\''.$r->EvCode.'\',true)"><div class="so-status'.($canBesolved ? ($toBesolved ? ' notsolved':''):' notsolvable').'">&nbsp;</div></th>'.
-            '<td class="evCodeContainer" onclick="gotoShootOff(\''.$r->EvCode.'\',true)">'.$r->EvCode.'</td>'.
-            '<td class="evContainer" onclick="gotoShootOff(\''.$r->EvCode.'\',true)">'.$r->EvEventName.'</td>';
+            '<th class="smallContainer" '. ($r->EvElimType==0 ? 'onclick="gotoShootOff(\''.$r->EvCode.'\',true)"':'').'><div class="so-status'.($canBesolved ? ($toBesolved ? ' notsolved':''):' notsolvable').'">&nbsp;</div></th>'.
+            '<td class="evCodeContainer" '. ($r->EvElimType==0 ? 'onclick="gotoShootOff(\''.$r->EvCode.'\',true)"':'').'>'.$r->EvCode.'</td>'.
+            '<td class="evContainer" '. ($r->EvElimType==0 ? 'onclick="gotoShootOff(\''.$r->EvCode.'\',true)"':'').'>'.$r->EvEventName.'</td>';
+        if($r->EvElimType==5) {
+            echo '<td class="w-70" colspan="5"><a href="../../Modules/RoundRobin/AbsRobin.php?team=1" class="Button">'.get_text('DifferentEventSoManagement', 'RoundRobin').'</a></td>';
+            continue;
+        }
         $so=array();
         $ct=array();
         if(!is_null($r->SoCt)) {

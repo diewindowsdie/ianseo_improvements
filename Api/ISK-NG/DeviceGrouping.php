@@ -18,6 +18,9 @@ if($_SESSION['UseApi']==ISK_NG_LITE_CODE) {
     }
 }
 
+$Min=100000;
+$Max=0;
+
 $SQL="(select min(ifnull(SesFirstTarget, QuTarget)) as TargetMin, max(ifnull(SesTar4Session+SesFirstTarget-1, QuTarget)) as TargetMax
 	from Qualifications
 	inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']}
@@ -28,18 +31,26 @@ $SQL="(select min(ifnull(SesFirstTarget, QuTarget)) as TargetMin, max(ifnull(Ses
 	from FinSchedule
 	where FsTournament={$_SESSION['TourId']} and FsTarget+0>0)";
 
-$Min=100000;
-$Max=0;
 $q=safe_r_sql($SQL);
 while($r=safe_fetch($q)) {
 	if(is_null($r->TargetMin) and is_null($r->TargetMax)) {
 		continue;
 	}
-	if($Min==-1 or ($r->TargetMin>0 and $Min > $r->TargetMin)) $Min=$r->TargetMin;
+	if($Min==100000 or ($r->TargetMin>0 and $Min > $r->TargetMin)) $Min=$r->TargetMin;
 	if($Max < $r->TargetMax) $Max=$r->TargetMax;
 }
-if($Min==-1) {
+if($Min==100000) {
 	$Min=0;
+}
+
+if(!$Min and !$Max) {
+    // no targets have been assigned anywhere!
+    // Default Min and max are then based on the min and max of the available targets!
+    $q=safe_r_sql("select min(AtTarget) as MinTarget, max(AtTarget) as MaxTarget from AvailableTarget where AtTournament={$_SESSION['TourId']} group by AtTournament");
+    if($r=safe_fetch($q)) {
+        $Min=$r->MinTarget;
+        $Max=$r->MaxTarget;
+    }
 }
 
 

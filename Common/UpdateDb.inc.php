@@ -39,6 +39,11 @@ if($version<'2025-01-12 10:46:03') {
     db_save_version('2025-01-12 10:46:03');
 }
 
+if($version<'2025-02-24 14:17:01') {
+    safe_w_sql("ALTER TABLE `Events` ADD `EvLockResults` TINYINT NOT NULL DEFAULT 0 AFTER `EvLoopPenalty`",false,array(1054, 1060));
+    db_save_version('2025-02-24 14:17:01');
+}
+
 /*
 
 // TEMPLATE

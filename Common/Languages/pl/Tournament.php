@@ -35,7 +35,6 @@ $lang['ActualFlag']='Użyta flaga';
 $lang['AddMaxRows']='Dodaj wszystkie możliwe';
 $lang['AddTournament']='Dodaj zawody';
 $lang['AdvancedParams']='Parametry zaawansowane';
-$lang['AfterDistance']='Ranking po odległości:';
 $lang['AfterXDistance']='Wyniki po odległości $a';
 $lang['AgeClass']='Kategoria wiekowa';
 $lang['AllDistances']='Wszystkie';

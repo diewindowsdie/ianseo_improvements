@@ -39,7 +39,6 @@ $lang['AclTeams']=' ';
 $lang['Action']='';
 $lang['ActualFlag']=' ';
 $lang['AddMaxRows']='   ';
-$lang['AfterDistance']='  :';
 $lang['AfterXDistance']='   $a';
 $lang['AllDistances']='';
 $lang['AllEvents']=' ';

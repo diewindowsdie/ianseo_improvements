@@ -42,7 +42,6 @@ $lang['AddMaxRows']='Añadir todas las filas disponibles';
 $lang['AddTournament']='Añadir Competencia';
 $lang['ADOfficer']='Anti Doping';
 $lang['AdvancedParams']='Parámetros Avanzados';
-$lang['AfterDistance']='Clasificación DESPUES de la siguiente ronda:';
 $lang['AfterXDistance']='Resultados DESPUES de Ronda $a';
 $lang['AgeClass']='Código Clase';
 $lang['AllDistances']='Todas';
