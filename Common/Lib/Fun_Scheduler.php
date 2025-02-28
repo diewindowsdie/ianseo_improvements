@@ -1107,7 +1107,7 @@ Class Scheduler {
 												}
 												break;
 											default:
-												$lnk.=' Warmup';
+												$lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
 										}
 									}
 
@@ -1380,7 +1380,7 @@ Class Scheduler {
                                                 $lnk=$Item->Text.': '.$Item->Events.' '.'warmup';
                                                 break;
                                             default:
-                                                $lnk.=' Warmup';
+                                                $lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
                                         }
                                     }
                                     if($OldComment==$lnk) continue;
@@ -1933,7 +1933,7 @@ Class Scheduler {
 												}
 												break;
 											default:
-												$lnk.=' Warmup';
+                                                $lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
 										}
 									}
 									if($OldComment==$lnk) continue;
@@ -2216,7 +2216,7 @@ Class Scheduler {
 												$lnk=$Item->Text.': '.$Item->Events.' '.'warmup';
 												break;
 											default:
-												$lnk.=' Warmup';
+                                                $lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
 										}
 									}
 									if($OldComment==$lnk) continue;
@@ -2401,7 +2401,7 @@ Class Scheduler {
 												$lnk=$Item->Text.': '.$Item->Events.' '.'warmup';
 												break;
 											default:
-												$lnk.=' Warmup';
+                                                $lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
 										}
 									}
 									if($OldComment==$lnk) continue;
@@ -2799,7 +2799,7 @@ Class Scheduler {
 												$lnk=$Item->Text.': '.$Item->Events.' '.'warmup';
 												break;
 											default:
-												$lnk.=' Warmup';
+                                                $lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
 										}
 									}
 									if($OldComment==$lnk) continue;
@@ -3418,7 +3418,7 @@ Class Scheduler {
 												$lnk=$Item->Text.': '.$Item->Events.' '.'warmup';
 												break;
 											default:
-												$lnk.=' Warmup';
+                                                $lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
 										}
 									}
 									if($OldDate==$Date and $OldTime==$Time) $this->Ods->currentRow--;
