@@ -124,7 +124,7 @@ echo '<table class="Tabella">
 			<b>'.get_text('MenuLM_PrintScheduling').' (<a href="'.$CFG->ROOT_DIR.'Final/ManTraining.php" target="Warmup">'.get_text('MenuLM_Training').'</a>):</b><br/>
 			<input type="checkbox" name="Finalists" checked="checked">'.get_text('SchIncFinalists','Tournament').'&nbsp;&nbsp;
 			<input type="checkbox" name="Ranking">'.get_text('SchAddRank','Tournament').'&nbsp;&nbsp;
-			<input type="checkbox" name="Daily">'.get_text('DailySchedule', 'Tournament').'&nbsp;&nbsp;
+			<input type="checkbox" name="Daily" checked="checked">'.get_text('DailySchedule', 'Tournament').'&nbsp;&nbsp;
 			<input type="checkbox" name="NoLocations">'.get_text('NoLocations', 'Tournament').'&nbsp;&nbsp;
 			<input type="button" name="ODS" value="'.get_text('MenuLM_OdsExport').'" onclick="location.href=\'?ods=1\'">&nbsp;&nbsp;
 			<input type="button" name="ICS" value="'.get_text('ExportICS', 'Tournament').'" onclick="location.href=\'?ics=1\'">&nbsp;&nbsp;
