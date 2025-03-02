@@ -462,13 +462,13 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
 		case '2':
 		case '5':
 			$i=1;
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RM',  'Recurve Men', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RW',  'Recurve Women', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CM',  'Compound Men', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CW',  'Compound Women', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RM',  getEventName('RM', $TourType) , 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RW',  getEventName('RW', $TourType) , 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CM',  getEventName('CM', $TourType) , 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CW',  getEventName('CW', $TourType) , 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
             if($allowBB) {
-                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BM', 'Barebow Men', 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
-                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BW', 'Barebow Women', 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BM', getEventName('BM', $TourType) , 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BW', getEventName('BW', $TourType) , 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
             }
             $i=1;
 			CreateEvent($TourId, $i++, 1, 0, $TeamFirstPhase, $TargetR, 4, 6, 3, 4, 6, 3, 'RM',  'Recurve Men Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
@@ -491,19 +491,19 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
         break;
 		case '3':
 			$i=1;
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RM',  'Recurve Men', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RW',  'Recurve Women', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RU21M', 'Recurve Under 21 Men', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RU21W', 'Recurve Under 21 Women', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CM',  'Compound Men', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CW',  'Compound Women', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CU21M', 'Compound Under 21 Men', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CU21W', 'Compound Under 21 Women', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RM',  getEventName('RM', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RW',  getEventName('RW', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RU21M', getEventName('RU21M', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RU21W', getEventName('RU21W', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CM',  getEventName('CM', $TourType), 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CW',  getEventName('CW', $TourType), 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CU21M', getEventName('CU21M', $TourType), 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CU21W', getEventName('CU21W', $TourType), 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
             if($allowBB) {
-                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BM', 'Barebow Men', 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
-                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BW', 'Barebow Women', 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
-                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BU21M', 'Barebow Under 21 Men', 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
-                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BU21W', 'Barebow Under 21 Women', 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BM', getEventName('BM', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BW', getEventName('BW', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BU21M', getEventName('BU21M', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BU21W', getEventName('BU21W', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
             }
             $i=1;
 			CreateEvent($TourId, $i++, 1, 0, $TeamFirstPhase, $TargetR, 4, 6, 3, 4, 6, 3, 'RM',  'Recurve Men Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
