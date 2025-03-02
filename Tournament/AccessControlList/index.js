@@ -71,8 +71,8 @@ function saveIp(isTemplate) {
 function changeFeature(id, feature, isTemplate) {
     var ChangeIp = $('#row_'+isTemplate+'_'+id).attr('ip');
     $.getJSON('UpdateFeature.php?featureIP='+ChangeIp+"&featureID="+feature+"&isTemplate="+isTemplate, function(data) {
-        if(data.AclList[id].Ip==ChangeIp) {
-            $('#opt_'+id+'_'+feature).attr('src',RootDir+'Common/Images/ACL'+(data.AclList[id].Opt[feature]===undefined ? '0' : data.AclList[id].Opt[feature])+'.png');
+        if(data.AclTemplates[id].Ip==ChangeIp) {
+            $('#opt_'+id+'_'+feature).attr('src',RootDir+'Common/Images/ACL'+(data.AclTemplates[id].Opt[feature]===undefined ? '0' : data.AclTemplates[id].Opt[feature])+'.png');
         } else {
             createList(data);
         }
