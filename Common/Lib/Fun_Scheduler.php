@@ -1416,13 +1416,13 @@ Class Scheduler {
 	 */
 	function getSchedulePDF(&$pdf='') {
 		if(empty($pdf)) {
-			require_once('Common/pdf/OrisPDF.inc.php');
-			$pdf= new OrisPDF('C08', get_text('Schedule', 'Tournament'));
-			$pdf->EvPhase=get_text('IntSCHED', 'ODF');
-			$pdf->startPageGroup();
-		} else {
-			$pdf->EvPhase=get_text('IntSCHED', 'ODF');
+            require_once('Common/pdf/ResultPDF.inc.php');
+			$pdf=new ResultPDF(get_text('IntSCHED', 'ODF'));
 		}
+
+        $pdf->SetFont($pdf->FontStd,'B',11);
+        $pdf->Cell($pdf->getPageWidth() - 2 * IanseoPdf::sideMargin, 8, get_text('IntSCHED', 'ODF'),0,1,'C');
+
 
 		if($this->SchedVersion) {
 		//	$pdf->dy(-4.5*$FontAdjust);
@@ -1431,7 +1431,6 @@ Class Scheduler {
 			$pdf->setComment($this->SchedVersionText);
 		}
 		//$pdf->dy(3*$FontAdjust);
-		$pdf->AddPage();
 
 
 		$Start=true;
@@ -1442,19 +1441,11 @@ Class Scheduler {
 		$DurationWidth=10;
 		$CellHeight=5;
 		$RepeatTitle='';
-		if($this->DayByDay) {
-			$FontAdjust= 2;
-			$DelayWidth=20;
-			$TimingWidth=35;
-			$DurationWidth=20;
-			$StartX+=10;
-			$CellHeight=8;
-		}
 		$TimeColumns=$TimingWidth+$DurationWidth+$DelayWidth;
 		$descrSize=$pdf->getPageWidth() - 20-$TimeColumns;
 		$RepeatTile='';
 
-		$pdf->SetTopMargin(OrisPDF::topStart-5);
+		$pdf->SetTopMargin(ResultPDF::topMargin);
 
 		//$pdf->ln();
 		//$pdf->SetFont($pdf->FontStd, 'B', 20*$FontAdjust);
