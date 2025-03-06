@@ -46,7 +46,6 @@
 	function AdjustCaseTitle($string) {
 		$string=trim($string);
 		if(strstr($string, '.')) return $string;
-		if($string==mb_convert_case($string, MB_CASE_UPPER, "UTF-8") or $string==mb_convert_case($string, MB_CASE_LOWER, "UTF-8")) $string=mb_convert_case($string, MB_CASE_TITLE, "UTF-8");
 		if($string=='Usa') $string='USA';
 		return $string;
 	}
