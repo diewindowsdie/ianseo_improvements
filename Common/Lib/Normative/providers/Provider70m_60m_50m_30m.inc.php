@@ -3,7 +3,7 @@ class Provider70m_60m_50m_30m extends NormativeProvider {
     public function calcByTotalScore($class, $division, $score): array
     {
         if (str_ends_with('W', $class)) {
-            if ($division == 'C') {
+            if (str_starts_with($division, 'C')) {
                 if ($score >= 1380)
                     return Normative::International;
                 if ($score >= 1300)
@@ -16,7 +16,7 @@ class Provider70m_60m_50m_30m extends NormativeProvider {
                     return Normative::Second;
                 if ($score >= 950)
                     return Normative::Third;
-            } else if ($division == 'R') {
+            } else if (str_starts_with($division, 'R')) {
                 if ($score >= 1320)
                     return Normative::International;
                 if ($score >= 1250)
@@ -30,8 +30,8 @@ class Provider70m_60m_50m_30m extends NormativeProvider {
                 if ($score >= 900)
                     return Normative::Third;
             }
-        } else if ($class == 'U18M') {
-            if ($division == 'R') {
+        } else if (str_starts_with($class, 'U18M')) {
+            if (str_starts_with($division, 'R')) {
                 if ($score >= 1220)
                     return Normative::Candidate;
                 if ($score >= 1155)
@@ -46,7 +46,7 @@ class Provider70m_60m_50m_30m extends NormativeProvider {
                     return Normative::SecondJunior;
                 if ($score >= 890)
                     return Normative::ThirdJunior;
-            } else if ($division == 'C') {
+            } else if (str_starts_with($division, 'C')) {
                 if ($score >= 1280)
                     return Normative::Candidate;
                 if ($score >= 1210)
