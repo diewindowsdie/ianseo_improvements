@@ -136,7 +136,7 @@
 	echo '<tr>';
 	//Eventi
 	echo '<td class="Center w-50">';
-	$MySql = "SELECT EvCode, EvEventName FROM Events WHERE EvTeamEvent='0' AND EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvFinalFirstPhase!=0 and EvCodeParent='' ORDER BY EvProgr";
+	$MySql = "SELECT EvCode, EvEventName FROM Events WHERE EvTeamEvent='0' AND EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " and EvCodeParent='' ORDER BY EvProgr";
 	$Rs = safe_r_sql($MySql);
 	if(safe_num_rows($Rs)>0) {
 		echo get_text('Event') . '<br><select id="IndividualEvents" name="Event[]" multiple="multiple" size="10">';
