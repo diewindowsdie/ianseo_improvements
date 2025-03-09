@@ -4,7 +4,7 @@ class Provider18m_1_18m_2 extends NormativeProvider
 {
     public function calcByTotalScore($class, $division, $score): array
     {
-        if ($division == 'R' || $division == 'C') {
+        if (str_starts_with($division, 'R') || str_starts_with($division, 'C')) {
             if (str_ends_with($class, 'M')) {
                 if ($score >= 586)
                     return Normative::International;
@@ -44,7 +44,7 @@ class Provider18m_1_18m_2 extends NormativeProvider
                 if ($score >= 290)
                     return Normative::ThirdJunior;
             }
-        } else if ($division == 'B') {
+        } else if (str_starts_with($division, 'B')) {
             if (str_ends_with($class, 'M')) {
                 if ($score >= 553)
                     return Normative::International;
@@ -79,7 +79,7 @@ class Provider18m_1_18m_2 extends NormativeProvider
 
     public function calcByOneDistance($class, $division, $score): array
     {
-        if ($division == 'R' || $division == 'C') {
+        if (str_starts_with($division, 'R') || str_starts_with($division, 'C')) {
             if (str_ends_with($class, 'M')) {
                 if ($score >= 260)
                     return Normative::First;
@@ -107,7 +107,7 @@ class Provider18m_1_18m_2 extends NormativeProvider
                 if ($score >= 150)
                     return Normative::ThirdJunior;
             }
-        } else if ($division == 'B') {
+        } else if (str_starts_with($division, 'B')) {
             if (str_ends_with($class, 'M')) {
                 if ($score >= 243)
                     return Normative::First;

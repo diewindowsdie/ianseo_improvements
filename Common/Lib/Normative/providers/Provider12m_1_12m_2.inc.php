@@ -3,7 +3,7 @@ class Provider12m_1_12m_2 extends NormativeProvider
 {
     public function calcByTotalScore($class, $division, $score): array
     {
-        if ($division == 'R') {
+        if (str_starts_with($division, 'R')) {
             if (str_ends_with($class, 'M')) {
                 if ($score >= 420)
                     return Normative::FirstJunior;
@@ -19,7 +19,7 @@ class Provider12m_1_12m_2 extends NormativeProvider
                 if ($score >= 400)
                     return Normative::ThirdJunior;
             }
-        } else if ($division == 'C') {
+        } else if (str_starts_with($division, 'C')) {
             if (str_ends_with($class, 'M')) {
                 if ($score >= 440)
                     return Normative::FirstJunior;
@@ -42,7 +42,7 @@ class Provider12m_1_12m_2 extends NormativeProvider
 
     public function calcByOneDistance($class, $division, $score): array
     {
-        if ($division == 'R') {
+        if (str_starts_with($division, 'R')) {
             if (str_ends_with($class, 'M')) {
                 if ($score >= 220)
                     return Normative::FirstJunior;
@@ -58,7 +58,7 @@ class Provider12m_1_12m_2 extends NormativeProvider
                 if ($score >= 200)
                     return Normative::ThirdJunior;
             }
-        } else if ($division == 'C') {
+        } else if (str_starts_with($division, 'C')) {
             if (str_ends_with($class, 'M')) {
                 if ($score >= 230)
                     return Normative::FirstJunior;

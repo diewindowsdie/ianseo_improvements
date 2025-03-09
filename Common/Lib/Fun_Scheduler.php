@@ -1107,7 +1107,7 @@ Class Scheduler {
 												}
 												break;
 											default:
-												$lnk.=' Warmup';
+												$lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
 										}
 									}
 
@@ -1380,7 +1380,7 @@ Class Scheduler {
                                                 $lnk=$Item->Text.': '.$Item->Events.' '.'warmup';
                                                 break;
                                             default:
-                                                $lnk.=' Warmup';
+                                                $lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
                                         }
                                     }
                                     if($OldComment==$lnk) continue;
@@ -1416,13 +1416,13 @@ Class Scheduler {
 	 */
 	function getSchedulePDF(&$pdf='') {
 		if(empty($pdf)) {
-			require_once('Common/pdf/OrisPDF.inc.php');
-			$pdf= new OrisPDF('C08', get_text('Schedule', 'Tournament'));
-			$pdf->EvPhase=get_text('IntSCHED', 'ODF');
-			$pdf->startPageGroup();
-		} else {
-			$pdf->EvPhase=get_text('IntSCHED', 'ODF');
+            require_once('Common/pdf/ResultPDF.inc.php');
+			$pdf=new ResultPDF(get_text('IntSCHED', 'ODF'));
 		}
+
+        $pdf->SetFont($pdf->FontStd,'B',11);
+        $pdf->Cell($pdf->getPageWidth() - 2 * IanseoPdf::sideMargin, 8, get_text('IntSCHED', 'ODF'),0,1,'C');
+
 
 		if($this->SchedVersion) {
 		//	$pdf->dy(-4.5*$FontAdjust);
@@ -1431,7 +1431,6 @@ Class Scheduler {
 			$pdf->setComment($this->SchedVersionText);
 		}
 		//$pdf->dy(3*$FontAdjust);
-		$pdf->AddPage();
 
 
 		$Start=true;
@@ -1442,19 +1441,11 @@ Class Scheduler {
 		$DurationWidth=10;
 		$CellHeight=5;
 		$RepeatTitle='';
-		if($this->DayByDay) {
-			$FontAdjust= 2;
-			$DelayWidth=20;
-			$TimingWidth=35;
-			$DurationWidth=20;
-			$StartX+=10;
-			$CellHeight=8;
-		}
 		$TimeColumns=$TimingWidth+$DurationWidth+$DelayWidth;
 		$descrSize=$pdf->getPageWidth() - 20-$TimeColumns;
 		$RepeatTile='';
 
-		$pdf->SetTopMargin(OrisPDF::topStart-5);
+		$pdf->SetTopMargin(ResultPDF::topMargin);
 
 		//$pdf->ln();
 		//$pdf->SetFont($pdf->FontStd, 'B', 20*$FontAdjust);
@@ -1933,7 +1924,7 @@ Class Scheduler {
 												}
 												break;
 											default:
-												$lnk.=' Warmup';
+                                                $lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
 										}
 									}
 									if($OldComment==$lnk) continue;
@@ -2216,7 +2207,7 @@ Class Scheduler {
 												$lnk=$Item->Text.': '.$Item->Events.' '.'warmup';
 												break;
 											default:
-												$lnk.=' Warmup';
+                                                $lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
 										}
 									}
 									if($OldComment==$lnk) continue;
@@ -2401,7 +2392,7 @@ Class Scheduler {
 												$lnk=$Item->Text.': '.$Item->Events.' '.'warmup';
 												break;
 											default:
-												$lnk.=' Warmup';
+                                                $lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
 										}
 									}
 									if($OldComment==$lnk) continue;
@@ -2799,7 +2790,7 @@ Class Scheduler {
 												$lnk=$Item->Text.': '.$Item->Events.' '.'warmup';
 												break;
 											default:
-												$lnk.=' Warmup';
+                                                $lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
 										}
 									}
 									if($OldComment==$lnk) continue;
@@ -3418,7 +3409,7 @@ Class Scheduler {
 												$lnk=$Item->Text.': '.$Item->Events.' '.'warmup';
 												break;
 											default:
-												$lnk.=' Warmup';
+                                                $lnk = get_text("WarmUp", "Tournament") . ' ' . $lnk;
 										}
 									}
 									if($OldDate==$Date and $OldTime==$Time) $this->Ods->currentRow--;
@@ -3873,7 +3864,7 @@ Class Scheduler {
 														AND FwDay='$Date' and FwTime='$Time'
 														and FwTargets!=''
 													GROUP BY FwEvent
-													ORDER BY FwEvent,FwTargets";
+													ORDER BY FwTargets, FwEvent";
 												$t = safe_r_sql($MyQuery);
 												while($u=safe_fetch($t)) {
 													foreach(explode(',', $u->FwTargets) as $range) {
@@ -3973,7 +3964,7 @@ Class Scheduler {
 															AND GrPhase<=greatest(ifnull(PhId,0), ifnull(PhLevel,0), EvFinalFirstPhase)
 															group by FsEvent, FsTarget, GrPhase
 														".($this->TargetsInvolved ? ' HAVING '.sprintf($this->TargetsInvolved, 'FsTarget+0') : '')."
-															ORDER BY Warmup ASC, FsEvent, FSTarget ASC, FSMatchNo ASC";
+															ORDER BY Warmup ASC, FSTarget ASC, FsEvent, FSMatchNo ASC";
 												}
 												$t = safe_r_sql($MyQuery);
 												while($u=safe_fetch($t)) {
@@ -4266,7 +4257,7 @@ Class Scheduler {
 													WHERE FwTournament=" . StrSafe_DB($this->TourId) . "
 															AND date_format(FwDay, '%Y-%m-%d')='$Date' and FwTime='$Time'
 															and FwTargets!=''
-															ORDER BY FwEvent, FwTargets";
+															ORDER BY FwTargets, FwEvent";
 												$t = safe_r_sql($MyQuery);
 
 												$RowTgts=array();

@@ -4,7 +4,7 @@ class Provider90m_1_90m_2 extends NormativeProvider
 {
     public function calcByTotalScore($class, $division, $score): array
     {
-        if ($division == 'C') {
+        if (str_starts_with($division, 'C')) {
             if (str_ends_with($class, 'M')) {
                 if ($score >= 640)
                     return Normative::Master;
@@ -17,7 +17,7 @@ class Provider90m_1_90m_2 extends NormativeProvider
                 if ($score >= 450)
                     return Normative::Third;
             }
-        } else if ($division == 'R') {
+        } else if (str_starts_with($division, 'R')) {
             if (str_ends_with($class, 'M')) {
                 if ($score >= 580)
                     return Normative::Master;

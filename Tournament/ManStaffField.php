@@ -27,11 +27,11 @@ $Genders.='<option value="1">'.get_text('GenderShort1').'</option>';
 
 $JudgeAccreditations = '<option value="">---</option>';
 $JudgeAccreditations .= '<option value="10">' . get_text("JudgeAccreditation_10", "Tournament") . '</option>';
-$JudgeAccreditations .= '<option value="20">' . get_text("JudgeAccreditation_10", "Tournament") . '</option>';
-$JudgeAccreditations .= '<option value="30">' . get_text("JudgeAccreditation_10", "Tournament") . '</option>';
-$JudgeAccreditations .= '<option value="40">' . get_text("JudgeAccreditation_10", "Tournament") . '</option>';
-$JudgeAccreditations .= '<option value="50">' . get_text("JudgeAccreditation_10", "Tournament") . '</option>';
-$JudgeAccreditations .= '<option value="60">' . get_text("JudgeAccreditation_10", "Tournament") . '</option>';
+$JudgeAccreditations .= '<option value="20">' . get_text("JudgeAccreditation_20", "Tournament") . '</option>';
+$JudgeAccreditations .= '<option value="30">' . get_text("JudgeAccreditation_30", "Tournament") . '</option>';
+$JudgeAccreditations .= '<option value="40">' . get_text("JudgeAccreditation_40", "Tournament") . '</option>';
+$JudgeAccreditations .= '<option value="50">' . get_text("JudgeAccreditation_50", "Tournament") . '</option>';
+$JudgeAccreditations .= '<option value="60">' . get_text("JudgeAccreditation_60", "Tournament") . '</option>';
 
 
 $JS_SCRIPT = array(

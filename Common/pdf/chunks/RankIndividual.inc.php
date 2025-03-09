@@ -72,7 +72,7 @@ foreach($PdfData->rankData['sections'] as $section) {
 		if($section['meta']['elim2']) $ElimCols++;
 	}
 
-	$NumPhases=$section['meta']['firstPhase'] ? ceil(log($section['meta']['firstPhase'], 2))+1 : 1;
+	$NumPhases=$section['meta']['firstPhase'] ? ceil(log($section['meta']['firstPhase'], 2))+1 : 0;
 
 	//Se Esistono righe caricate....
 	if(count($section['items'])) {
@@ -99,8 +99,18 @@ foreach($PdfData->rankData['sections'] as $section) {
 					$pdf->Cell(12, 5, $section['meta']['fields']['elims']['e' . $i], 1, 0, 'C', 1);
 				foreach($section['meta']['fields']['finals'] as $k=>$v)
 				{
-					if(is_numeric($k) && $k!=1)
-						$pdf->Cell(15, 5, $v, 1, 0, 'C', 1);
+                    //в случае отсутствия финалов у группы в заголовках появляется лишнее поле. Пройдем по самим данным и проверим, есть ли для этого поля данные
+                    $reallyExists = false;
+                    foreach($section['items'] as $athlete) {
+                        if (array_key_exists($k, $athlete['finals'])) {
+                            $reallyExists = true;
+                            break;
+                        }
+                    }
+                    if ($reallyExists) {
+                        if (is_numeric($k) && $k != 1)
+                            $pdf->Cell(15, 5, $v, 1, 0, 'C', 1);
+                    }
 				}
 				$pdf->Cell(0, 5,'',0,1,'C',0);
 				$NeedTitle=false;

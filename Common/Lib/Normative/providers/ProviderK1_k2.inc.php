@@ -4,7 +4,7 @@ class ProviderK1_k2 extends NormativeProvider
 {
     public function calcByTotalScore($class, $division, $score): array
     {
-        if ($division == 'C') {
+        if (str_starts_with($division, 'C')) {
             if (str_ends_with("M", $class)) {
                 if ($score >= 980)
                     return Normative::International;
@@ -32,7 +32,7 @@ class ProviderK1_k2 extends NormativeProvider
                 if ($score >= 610)
                     return Normative::Third;
             }
-        } else if ($division == 'B') {
+        } else if (str_starts_with($division, 'B')) {
             if (str_ends_with("M", $class)) {
                 if ($score >= 880)
                     return Normative::International;
@@ -60,7 +60,7 @@ class ProviderK1_k2 extends NormativeProvider
                 if ($score >= 520)
                     return Normative::Third;
             }
-        } else if ($division == 'T') {
+        } else if (str_starts_with($division, 'T')) {
             if (str_ends_with("M", $class)) {
                 if ($score >= 810)
                     return Normative::International;
@@ -88,7 +88,7 @@ class ProviderK1_k2 extends NormativeProvider
                 if ($score >= 420)
                     return Normative::Third;
             }
-        } else if ($division == 'L') {
+        } else if (str_starts_with($division, 'L')) {
             if (str_ends_with("M", $class)) {
                 if ($score >= 740)
                     return Normative::International;
