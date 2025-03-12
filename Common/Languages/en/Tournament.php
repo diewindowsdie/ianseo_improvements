@@ -1175,6 +1175,7 @@ $lang['StartlistEachCountryExtra']='Participant List group by Country (one per p
 $lang['StartlistSession']='Participant List ordered by Target';
 $lang['StartlistSessionEmptyPlaces']='- only EMPTY targets -';
 $lang['StartlistSessionNoEmpty']='- without empty targets -';
+$lang['StartlistSessionNoEmptyWithTargetType']='-+ without empty targets and with target faces +-';
 $lang['StartlistSessionPicture']='Participant List ordered by Target with Picture';
 $lang['StartlistTeam']='Participant List ordered by Event';
 $lang['StatClasses']='Statistics (Classes and Divisions)';

@@ -1,6 +1,6 @@
 <?php
 $SinglePage=isset($_REQUEST['SinglePage']);
-$TargetFace=(isset($_REQUEST['tf']) && $_REQUEST['tf']==1);
+$TargetFace=(isset($_REQUEST['tf']) && ($_REQUEST['tf']==1 || $_REQUEST["tf"]=='on'));
 
 $pdf->HideCols = $PdfData->HideCols;
 $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
@@ -22,8 +22,8 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 
 		$pdf->SetFont($pdf->FontStd,'B',7);
 		$pdf->Cell(10, 4, '№', 1, 0, 'C', 1);
-		$pdf->Cell(40, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
-		$pdf->Cell(75, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
+		$pdf->Cell($TargetFace ? 33 : 40, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
+		$pdf->Cell($TargetFace ? 63 : 75, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
         $pdf->Cell(15, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'C', 1);
         $pdf->Cell(8, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
 		$pdf->Cell(7, 4,  $PdfData->Data['Fields']['Session'], 1, 0, 'C', 1);
@@ -63,8 +63,8 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 
 				$pdf->SetFont($pdf->FontStd,'B',7);
 				$pdf->Cell(10, 4, '№', 1, 0, 'C', 1);
-				$pdf->Cell(40, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
-				$pdf->Cell(75, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
+				$pdf->Cell($TargetFace ? 33 : 40, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
+				$pdf->Cell($TargetFace ? 63 : 75, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
                 $pdf->Cell(15, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'C', 1);
                 $pdf->Cell(8, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
 				$pdf->Cell(7, 4,  $PdfData->Data['Fields']['Session'], 1, 0, 'C', 1);
@@ -90,12 +90,12 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 		   	$pdf->SetFont($pdf->FontStd,'',7);
 			$pdf->Cell(10, 4 * $secondaryTeam, $athleteIndex, 1, 0, 'R', 0);
 		   	$pdf->SetFont($pdf->FontStd,'B',7);
-			$pdf->Cell(40, 4 * $secondaryTeam,  $MyRow->Athlete, 1, 0, 'L', 0);
+			$pdf->Cell($TargetFace ? 33 : 40, 4 * $secondaryTeam,  $MyRow->Athlete, 1, 0, 'L', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',7);
             $text = $MyRow->Nation .
                 ($MyRow->Nation2 != '' ? ", " . $MyRow->Nation2 : "") .
                 ($MyRow->Nation3 != '' ? ", " . $MyRow->Nation3 : "");
-			$pdf->Cell(75, 4,  $text, 'RTB', 0, 'L', 0);
+			$pdf->Cell($TargetFace ? 63 : 75, 4,  $text, 'RTB', 0, 'L', 0);
             $pdf->SetFont($pdf->FontStd,'',7);
             $pdf->Cell(15, 4 * $secondaryTeam,  $MyRow->DOB, 1, 0, 'C', 0);
             $pdf->Cell(8, 4 * $secondaryTeam,  ($MyRow->SubClassDescription), 1, 0, 'C', 0);

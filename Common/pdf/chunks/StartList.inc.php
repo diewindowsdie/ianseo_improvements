@@ -7,7 +7,7 @@ $ShowStatusLegend = false;
 $CurSession=-1;
 $OldTarget='';
 $Components=array('ok'=>false,'players'=>array(),'header'=>array());
-$TargetFace=(isset($_REQUEST['tf']) && $_REQUEST['tf']==1);
+$TargetFace=(isset($_REQUEST['tf']) && ($_REQUEST['tf']==1 || $_REQUEST["tf"]=='on'));
 $key='';
 
 $pdf->SetFont($pdf->FontStd,'B',12);
@@ -61,9 +61,9 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 		    $pdf->SetFont($pdf->FontStd,'B',7);
             //headers under the session name
 			$pdf->Cell(11, 4, $PdfData->Data['Fields']['TargetNo'], 1, 0, 'C', 1);
-			$pdf->Cell(34, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
-			$pdf->Cell(70, 4, $PdfData->Data['Fields']['NationCode'], 1, 0, 'L', 1);
-			if(!$pdf->HideCols && !$TargetFace) {
+			$pdf->Cell($TargetFace ? 28 : 34, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
+			$pdf->Cell($TargetFace ? 58 : 70, 4, $PdfData->Data['Fields']['NationCode'], 1, 0, 'L', 1);
+			if(!$pdf->HideCols) {
 				$pdf->Cell(12, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'C', 1);
 				$pdf->Cell(9, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
 			}
@@ -71,7 +71,6 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 			$pdf->Cell(12 + ($pdf->HideCols ? ($TargetFace ? 12 : 22) : 0), 4, $PdfData->Data['Fields']['ClassCode'], 1, 0, 'C', 1);
 
 			if ($TargetFace) {
-                $pdf->Cell(3, 4, $PdfData->Data['Fields']['Wheelchair'], 1, 0, 'C', 1);
                 $pdf->Cell(18, 4, $PdfData->Data['Fields']['TargetFace'], 1, 0, 'C', 1);
 			}
 
@@ -127,7 +126,6 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 		$temprow[]= ($MyRow->TfName ?? '');
 		$temprow[]= ($MyRow->NationCode3 ?? '');
 		$temprow[]= ($MyRow->Nation3 ?? '');
-        $temprow[]= ($MyRow->Wheelchair ?? '');
 
 		$ShowStatusLegend = ($ShowStatusLegend || ($MyRow->Status!=0));
 		$Components['players'][]=$temprow;

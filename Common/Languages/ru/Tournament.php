@@ -738,6 +738,7 @@ $lang['StartlistEachCountry']='Участники команд по регион
 $lang['StartlistSession']='Список спортсменов по мишеням';
 $lang['StartlistSessionEmptyPlaces']='- только пустые мишени-';
 $lang['StartlistSessionNoEmpty']='-исключить пустые мишени-';
+$lang['StartlistSessionNoEmptyWithTargetType']='-+ исключить пустые мишени и включить тип мишени +-';
 $lang['StartlistSessionPicture']='Список спортсменов по мишеням с фото';
 $lang['StartlistTeam']='Список участников по категориям';
 $lang['StatClasses']='Статистика участников по классу и дивизиону';

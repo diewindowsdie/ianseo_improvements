@@ -287,13 +287,7 @@ class IanseoPdf extends TCPDF {
 	public function setBarcodeHeader($num=0) {
 		$this->BarcodeHeader=$num;
 		$RightStart = IanseoPdf::sideMargin;
-		$ImgSizeReq=15;
-		if (count($this->StaffCategories)>0) $ImgSizeReq+=5;
-		if($this->ToPaths['ToRight']) {
-			$im=getimagesize($this->ToPaths['ToRight']);
-			$RightStart += ($im[0] * $ImgSizeReq / $im[1]);
-		}
-		$this->BarcodeHeaderX = $this->w - 5 - $RightStart - $num;
+		$this->BarcodeHeaderX = $this->w - $RightStart - $num;
 	}
 
 	public function setStaffVisibility($visible=true) {
