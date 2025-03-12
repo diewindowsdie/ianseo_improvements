@@ -66,6 +66,7 @@ $IncludeJquery=true;
 				<a href="PrnSession.php" class="Link" target="PrintOut">
 				<img src="../Common/Images/pdf.gif" alt="<?php print get_text('StartlistSession','Tournament');?>" border="0"><br><?php print get_text('StartlistSession','Tournament');?></a>
 				<br/><a href="PrnSession.php?Filled=1" class="Link" target="PrintOut"><?php print get_text('StartlistSessionNoEmpty','Tournament');?></a>
+                <br/><a href="PrnSession.php?Filled=1&tf=1" class="Link" target="PrintOut"><?php print get_text('StartlistSessionNoEmptyWithTargetType','Tournament');?></a>
 				<br/><a href="PrnSession.php?Empty=1" class="Link" target="PrintOut"><?php print get_text('StartlistSessionEmptyPlaces','Tournament');?></a>
 				<br/><a href="PrnSession.php?tf=1" class="Link" target="PrintOut">+ <?php print get_text('TargetType');?></a>
 			<?php } else { ?>
@@ -257,6 +258,8 @@ $IncludeJquery=true;
 echo '<td width="20%" class="Center">
 		<form action="PrnSession.php" method="get" target="PrintOut" class="smallForm">
 			<div>'. get_text('Session') . '&nbsp;&nbsp;&nbsp;'.$ComboSessions.'</div>
+			<div>'.get_text('TargetType').'&nbsp;&nbsp<input name="tf" type="checkbox"></div>
+			<div><input type="hidden" name="Filled" value="1"/></div>
 			<div><input type="submit" name="Submit" value="'.get_text('CmdOk').'"></div>
 		</form>
 	</td>';
@@ -299,6 +302,7 @@ echo '<td width="20%" class="Center">
 				<option value="2">'.get_text('Nation').'</option>
 			</select></div>
 			<div>'.get_text('DivisionClass').'&nbsp;&nbsp;&nbsp;<input name="ArcherCategories" type="text" size="20" maxlength="30"></div>
+			<div>'.get_text('TargetType').'&nbsp;&nbsp<input name="tf" type="checkbox"></div>
 			<div><input type="submit" name="Submit" value="'.get_text('CmdOk').'"></div>
 		</form>
 	</td>';
