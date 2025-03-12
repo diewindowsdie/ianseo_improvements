@@ -27,6 +27,8 @@
 
 	//error_reporting(E_ALL);
 
+    $barcodePrinted = false;
+    $qrPrinted = false;
 	$FillWithArrows=false;
 	if((isset($_REQUEST["ScoreFilled"]) && $_REQUEST["ScoreFilled"]==1))
 		$FillWithArrows=true;
@@ -123,19 +125,11 @@
         $ScoreWidth=($pdf->GetPageWidth()-3*$pdf->getSideMargin())/2;
 
 		$WhereStartX=array($pdf->getSideMargin(),$pdf->GetPageWidth()/2+$pdf->getSideMargin()/2);
-		$WhereStartY=array(60,60);
+		$WhereStartY=array(50,50);
 		$WhereX=NULL;
 		$WhereY=NULL;
 		$AtlheteName=NULL;
 		$FollowingRows=false;
-
-        $BarCodeX=$pdf->BarcodeHeaderX;
-        $BarCodeY=10;
-
-        if(!empty($_REQUEST['Margins'])) {
-            $BarCodeX=intval($_REQUEST['LeftMargin']??$BarCodeX);
-            $BarCodeY=intval($_REQUEST['TopMargin']??$BarCodeY);
-        }
 
 //DrawScore
 		while($MyRow=safe_fetch($Rs)) {
@@ -189,6 +183,8 @@
 			// Disegna lo score di destra
 			DrawScore($pdf, $MyRow, 'R');
 
+       //     $pdf->setY($pdf->getY() - 5);
+
 			//Judge Signatures, Timestamp & Annotations
 			if($pdf->PrintJudgeNotes) {
                 $pdf->SetLeftMargin($WhereStartX[0]);
@@ -199,34 +195,7 @@
                 $pdf->Ln(6);
                 $pdf->Cell(0, 4, (get_text('JudgeNotes')), 'B', 1, 'L', 0);
             }
-			// print barcode if any
-			if(!empty($_REQUEST['Barcode'])) {
-				$pdf->setxy($BarCodeX, $BarCodeY);
-				$pdf->SetFont('barcode','',25);
-				$pdf->SetFillColor(255);
-				$pdf->Cell($pdf->BarcodeHeader, 10, '*' . mb_convert_encoding($MyRow->MatchNo.'-0-'.$MyRow->Event, "UTF-8","cp1252") . "*",0,1,'C',1);
-				$pdf->SetDefaultColor();
-				$pdf->SetFont($pdf->FontStd,'',10);
-				$pdf->setxy($BarCodeX, $BarCodeY+10);
-				$pdf->Cell($pdf->BarcodeHeader, 4, mb_convert_encoding($MyRow->MatchNo.'-0-'.$MyRow->Event, "UTF-8","cp1252"),0,1,'C',0);
-			} else {
-				$pdf->setBarcodeHeader(10);
-			}
-
-            $QrcodeX=$BarCodeX-25;
-			if(!empty($_REQUEST['QRCode'])) {
-				foreach($_REQUEST['QRCode'] as $k => $Api) {
-					require_once('Api/'.$Api.'/DrawQRCode.php');
-					$Function='DrawQRCode_'.preg_replace('/[^a-z0-9]/sim', '_', $Api);
-					$Function($pdf, $QrcodeX, 5, $MyRow->Event, $MyRow->MatchNo, $MyRow->Phase, 0, "MI");
-                    $QrcodeX-=25;
-				}
-			}
-
-            if($_REQUEST['ScoreQrPersonal']??'') {
-                DrawScoreQrPersonal($pdf, intval($MyRow->Target), $QrcodeX, 5);
-            }
-		}
+        }
 //END OF DrawScore
 		safe_free_result($Rs);
 	}
@@ -270,7 +239,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
 //Intestazione Atleta
     $pdf->SetDefaultColor();
 	$pdf->SetLeftMargin($WhereStartX[$WhichScore]);
-	$pdf->SetY(35);
+	$pdf->SetY(25);
 // Flag of Country/Club
 	if($pdf->PrintFlags) {
 		if(is_file($file= $CFG->DOCUMENT_PATH.'TV/Photos/'.$_SESSION['TourCodeSafe'].'-Fl-'.$MyRow->{$Prefix.'CountryCode'}.'.jpg')) {
@@ -324,7 +293,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
 	$pdf->Cell($TotalW,6, (get_text('Target')) . ' ' . ltrim($MyRow->{$Prefix.'Target'}??'','0'), '1', 1, 'C', 1);
 
 	// Rank number
-	$pdf->SetXY($ScoreWidth-$TotalW+$WhereStartX[$WhichScore], 35);
+	$pdf->SetXY($ScoreWidth-$TotalW+$WhereStartX[$WhichScore], 25);
 	$pdf->SetFont($pdf->FontStd,'B',10);
 	$pdf->Cell($TotalW,6, (get_text('Rank')),'TLR',1,'C',1);
 	$pdf->SetXY($ScoreWidth-$TotalW+$WhereStartX[$WhichScore],$pdf->GetY());
@@ -460,7 +429,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
 
 //Shoot Off
 	$closeToCenter=false;
-	$pdf->SetXY($WhereX[$WhichScore],$WhereY[$WhichScore]+($pdf->ScoreCellHeight/4));
+	$pdf->SetXY($WhereX[$WhichScore],$WhereY[$WhichScore]+($pdf->ScoreCellHeight/4) + 7);
 	$pdf->SetFont($pdf->FontStd,'B',8);
 	$pdf->Cell($GoldW,$pdf->ScoreCellHeight*($MyRow->EvElimType ? 11 : 23)/8,(get_text('TB')),1,0,'C',1);
 	$ShootOffW=($tmp->so<=$NumCol ? $ArrowW : ($ArrowW*$NumCol)/$tmp->so);
@@ -511,6 +480,43 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
 		}
 	}
 
+    // print barcode if any
+    if(!empty($_REQUEST['Barcode']) && !$barcodePrinted) {
+        $x = $pdf->GetX();
+        $y = $pdf->GetY();
+        $padding = $pdf->getCellPaddings();
+
+        $additionalOffset = 12;
+        $pdf->setxy($pdf->BarcodeHeaderX, $y+$pdf->ScoreCellHeight + $additionalOffset);
+        $pdf->setCellPaddings(0, 0, 0, 0);
+        $pdf->SetFont('barcode','',25);
+        $pdf->SetFillColor(255);
+        $pdf->Cell($pdf->BarcodeHeader, 10, '*' . mb_convert_encoding($MyRow->MatchNo.'-0-'.$MyRow->Event, "UTF-8","cp1252") . "*",0,1,'R',1);
+        $pdf->SetDefaultColor();
+        $pdf->SetFont($pdf->FontStd,'',10);
+        $pdf->setxy($pdf->BarcodeHeaderX, $y+$pdf->ScoreCellHeight+10 + $additionalOffset);
+        $pdf->Cell($pdf->BarcodeHeader, 4, mb_convert_encoding($MyRow->MatchNo.'-0-'.$MyRow->Event, "UTF-8","cp1252"),0,1,'R',0);
+
+        $pdf->setXY($x, $y+5);
+        $pdf->setCellPaddings($padding['L'], $padding['T'], $padding['R'], $padding['B']);
+        $barcodePrinted = true;
+    } else {
+        $pdf->setBarcodeHeader(10);
+    }
+
+    $halfWidth = ($pdf->getPageWidth() - 2 * $pdf->getSideMargin() - $divider) / 2;
+    $QrcodeX= $pdf->getSideMargin() + $halfWidth - 30;
+    if(!empty($_REQUEST['QRCode']) && !$qrPrinted) {
+        foreach($_REQUEST['QRCode'] as $k => $Api) {
+            require_once('Api/'.$Api.'/DrawQRCode.php');
+            $Function='DrawQRCode_'.preg_replace('/[^a-z0-9]/sim', '_', $Api);
+            $Function($pdf, $QrcodeX, $pdf->GetY() + $pdf->ScoreCellHeight - 5 + 1, $MyRow->Event, $MyRow->MatchNo, $MyRow->Phase, 0, "MI");
+            $qrPrinted = true;
+        }
+
+        //$pdf->setY($pdf->getY() + 5);
+    }
+
     if($MyRow->EvCheckGolds) {
         $pdf->Cell($GoldW,$pdf->ScoreCellHeight,$FillWithArrows ? ($GoldsTotal??'') : '', 1, 0,'C',0);
     }
@@ -531,7 +537,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
 
 //Closet to the center
 	$pdf->SetFont($pdf->FontStd,'',9);
-	$pdf->SetXY($WhereX[$WhichScore]+$GoldW+$ShootOffW/2, $WhereY[$WhichScore]+$pdf->ScoreCellHeight*($MyRow->EvElimType ? 1 : 13)/8);
+	$pdf->SetXY($WhereX[$WhichScore]+$GoldW+$ShootOffW/2, $WhereY[$WhichScore]+$pdf->ScoreCellHeight*($MyRow->EvElimType ? 1 : 13)/8+7);
 	$pdf->Cell($ShootOffW/2,$pdf->ScoreCellHeight/2,'',1,0,'R',0);
 	if($closeToCenter) {
 		$tmpWidth=$pdf->GetLineWidth();
