@@ -3760,13 +3760,13 @@ Class Scheduler {
 													$Sql="select * from DistanceInformation where DiTournament={$this->TourId} and DiDay='$Date' and DiStart='$Time'";
 													$t=safe_r_sql($Sql);
 													while($u=safe_fetch($t)) {
-														$Sql="select distinct SesAth4Target, cast(substr(QuTargetNo,2) as unsigned) TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart from
+														$Sql="select distinct SesAth4Target, cast(substr(QuTargetNo,2) as unsigned) TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TfName, TarDim, DiDay, DiStart, DiWarmStart from
 															Entries
 															inner join Qualifications on EnId=QuId
 															inner join DistanceInformation on QuSession=DiSession and DiTournament={$this->TourId} and DiDistance={$u->DiDistance} and DiDay='$Date' and DiStart='$Time'
 															inner join Session on SesOrder=QuSession and SesType='{$Item->Type}' and SesTournament={$this->TourId}
 															left join TournamentDistances on concat(trim(EnDivision),trim(EnClass)) like TdClasses and EnTournament=TdTournament
-															left join (select TfId, TarDescr, TfW{$u->DiDistance} as TarDim, TfTournament from TargetFaces inner join Targets on TfT{$u->DiDistance}=TarId) tf on TfTournament=EnTournament and TfId=EnTargetFace
+															left join (select TfId, TarDescr, TfW{$u->DiDistance} as TarDim, TfName, TfTournament from TargetFaces inner join Targets on TfT{$u->DiDistance}=TarId) tf on TfTournament=EnTournament and TfId=EnTargetFace
 															where EnTournament={$this->TourId}
 															".($this->TargetsInvolved ? ' HAVING '.sprintf($this->TargetsInvolved, 'TargetNo') : '')."
 															order by TargetNo, Distance desc, TargetNo, TarDescr, TarDim";
@@ -3782,7 +3782,7 @@ Class Scheduler {
 																}
 
 																$bl=new TargetButt();
-																$bl->Target=get_text($w->TarDescr)." $w->TarDim cm";
+																$bl->Target=$w->TfName;
 																$bl->Distance=$w->Distance;
 																$DistanceMin=min($DistanceMin, $w->Distance);
 																$DistanceMax=max($DistanceMax, $w->Distance);
@@ -3966,6 +3966,7 @@ Class Scheduler {
 														".($this->TargetsInvolved ? ' HAVING '.sprintf($this->TargetsInvolved, 'FsTarget+0') : '')."
 															ORDER BY Warmup ASC, FSTarget ASC, FsEvent, FSMatchNo ASC";
 												}
+                                               // print_r($MyQuery);
 												$t = safe_r_sql($MyQuery);
 												while($u=safe_fetch($t)) {
 													$EndsArrows=get_text('EventDetailsShort', 'Tournament', array($u->ends, $u->arrows));
