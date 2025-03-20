@@ -197,7 +197,7 @@ foreach($rankData['sections'] as $Event => $section) {
 			}
 
 			// Target Numbers
-			if($ShowTargetNo && ($Match['target'] or $Match['oppTarget']) and !($Match['score'] or $Match['setScore']) and !($Match['oppScore'] or $Match['oppSetScore']) and !$Match['tie'] and !$Match['oppTie']) {
+			if($ShowTargetNo && ($Match['target'] or $Match['oppTarget']) and !($Match['score'] or $Match['setScore']) and !($Match['oppScore'] or $Match['oppSetScore']) and in_array($Match['tie'], [0, 2]) and in_array($Match['oppTie'], [0, 2])) {
 				if($FirstPhase) {
 					// Target numbers in front of the row
 					$pdf->SetXY($LineXstart-7, $OrgY);
@@ -205,9 +205,13 @@ foreach($rankData['sections'] as $Event => $section) {
 					if($Match['target']==$Match['oppTarget']) {
 						$pdf->Cell(7, $Cella*2, get_text('TargetWithoutN') . ' ' . ltrim($Match['target'],'0'), 0, 0, 'R', 0);
 					} else {
-						$pdf->Cell(7, $Cella, get_text('TargetWithoutN') . ' ' . ltrim($Match['target'],'0'), 0, 0, 'R', 0);
+						if ($Match['athlete']) {
+							$pdf->Cell(7, $Cella, get_text('TargetWithoutN') . ' ' . ltrim($Match['target'], '0'), 0, 0, 'R', 0);
+						}
 						$pdf->SetXY($LineXstart-7, $OrgY+$Cella);
-						$pdf->Cell(7, $Cella, get_text('TargetWithoutN') . ' ' . ltrim($Match['oppTarget'],'0'), 0, 0, 'R', 0);
+						if ($Match['oppAthlete']) {
+							$pdf->Cell(7, $Cella, get_text('TargetWithoutN') . ' ' . ltrim($Match['oppTarget'], '0'), 0, 0, 'R', 0);
+						}
 					}
 				} else {
 					// up and down
