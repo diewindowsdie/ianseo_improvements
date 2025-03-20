@@ -88,6 +88,7 @@ switch($_REQUEST['act']) {
 		}
 
 		$JSON['html']='';
+        $TabIndex=1;
 		$StartIdx=$Arrows*($End-1);
 		foreach($rank as $Team => $r) {
 			$r->read();
@@ -130,7 +131,6 @@ switch($_REQUEST['act']) {
 					$Html=['',''];
 
 					$Offset=1 + count($Items['items'])*2*($Arrows+1+(3*$Phases['meta'][$Items['meta']['FinElimChooser']?'elimSO':'finSO']));
-					$TabIndex=1;
 
 					foreach($Items['items'] as $Match) {
 						$Class=(($Match['winner'] or $Match['oppWinner'] or ($Match['irm'] and $Match['oppIrm'])) ? 'disabled'.($Match['winner'] ? ' win' : '') : '');
