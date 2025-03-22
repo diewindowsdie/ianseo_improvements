@@ -34,6 +34,7 @@ $lang['AM']='Cadet Men';
 $lang['AN']='Bare Bow';
 $lang['Archer']='Archer';
 $lang['Archers']='Archers';
+$lang['ArchersPerTarget']='Archers/Target';
 $lang['Arrow']='Arrow';
 $lang['ArrowAverage']='Avg';
 $lang['Athlete']='Athlete';

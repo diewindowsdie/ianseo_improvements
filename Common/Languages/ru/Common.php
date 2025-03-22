@@ -30,6 +30,7 @@ $lang['AM']='Кадеты муж.';
 $lang['AN']='Голый лук';
 $lang['Archer']='Спортсмен';
 $lang['Archers']='Спортсмены';
+$lang['ArchersPerTarget']='Спортсменов на щит';
 $lang['Arrow']='Стрела';
 $lang['Athlete']='Спортсмен';
 $lang['Athletes']='Спортсмен';
