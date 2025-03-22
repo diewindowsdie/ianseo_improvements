@@ -90,6 +90,7 @@ $lang['Arr4Set']='Arrows per Set';
 $lang['ArrowPhaseLegend1']='Arrows/End details for Elimination Rounds';
 $lang['ArrowPhaseLegend2']='Arrows/End details for Finals Rounds';
 $lang['Arrows']='Arrows';
+$lang['ArrowsPerEndForInput']='Arrows / End';
 $lang['Arrows4End']='Arrows/End: $a';
 $lang['ArrowsPerEnd']='Arrows/End';
 $lang['AssignAwarded']='Assign Awarded';

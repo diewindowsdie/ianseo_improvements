@@ -69,7 +69,7 @@ include('Common/Templates/head.php');
 <th class="SubTitle" width="25%"><?php print get_text('Events', 'Tournament');?></th>
 <th class="SubTitle" width="25%"><?php print get_text('Phase');?></th>
 <th class="SubTitle" width="8%"><?php print get_text('End (volee)');?></th>
-<th class="SubTitle" width="8%"><?php print get_text('Arrows', 'Tournament');?></th>
+<th class="SubTitle" width="8%"><?php print get_text('ArrowsPerEndForInput', 'Tournament');?></th>
 <th class="SubTitle" width="9%">&nbsp;</th>
 </tr>
 <tr>

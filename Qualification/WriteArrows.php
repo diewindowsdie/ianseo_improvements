@@ -89,7 +89,7 @@ include('Common/Templates/head.php');
 <th width="8%"><?php echo get_text('To','Tournament') ?></th>
 <th width="5%"><?php echo get_text('Distance','Tournament') ?></th>
 <th width="5%"><?php echo get_text('End (volee)') ?></th>
-<th width="5%"><?php echo get_text('Arrows','Tournament') ?></th>
+<th width="5%"><?php echo get_text('ArrowsPerEndForInput','Tournament') ?></th>
 <!--<th width="5%">X</th>-->
 <th width="5%">&nbsp;</th>
 <th>&nbsp;</th>

@@ -82,7 +82,7 @@ include('Common/Templates/head.php');
 	<th width="100"><?php print get_text('Session');?></th>
 	<th width="100"><?php print get_text('Events', 'Tournament');?></th>
 	<th width="100"><?php echo get_text('End (volee)') ?></th>
-	<th width="100"><?php echo get_text('Arrows','Tournament') ?></th>
+	<th width="100"><?php echo get_text('ArrowsPerEndForInput','Tournament') ?></th>
 	<th></th>
 </tr>
 <tr>
