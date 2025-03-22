@@ -49,6 +49,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     //личная квалификация
     if ($pagesPresent["IndividualQualification"]) {
         $pdf->Titolo = get_text('ResultIndAbs', 'Tournament');
+        $hideTempHeader = true;
         include '../../Qualification/PrnIndividualAbs.php';
         //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
         if (!in_array(true, array(

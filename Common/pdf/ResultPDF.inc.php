@@ -541,7 +541,7 @@ class ResultPDF extends IanseoPdf {
 		}
 	}
 
-	function writeGroupHeaderPrnIndividualAbs($section, $distSize, $addSize, $running, $distances, $double, $follows=false)
+	function writeGroupHeaderPrnIndividualAbs($section, $distSize, $addSize, $running, $distances, $double, $follows=false, $hideTempHeader=false)
 	{
 		$tmpHeader="";
 		$this->SetFont($this->FontStd,'B',$this->FontSizeTitle);
@@ -563,7 +563,7 @@ class ResultPDF extends IanseoPdf {
 		// testastampa
 		if (strlen($section['printHeader']))
 			$this->Cell(0, 7.5, $section['printHeader'], 0, 1, 'R', 0);
-		else if(strlen($tmpHeader)!=0 && !$section['running'])
+		else if(strlen($tmpHeader)!=0 && !$section['running'] && !$hideTempHeader)
 			$this->Cell(0, 7.5, $tmpHeader, 0, 1, 'R', 0);
 
 
