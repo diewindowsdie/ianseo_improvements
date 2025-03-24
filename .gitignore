@@ -8,4 +8,5 @@
 /dataSources.local.xml
 .htaccess
 .idea/*
+**/.DS_Store
 /TV/Photos/*.jpg
