@@ -492,7 +492,6 @@ $lang['URL']='URL';
 $lang['UserEnabled']='有効か否か';
 $lang['UseSubClasses']='チェックしてサブクラスを選択';
 $lang['ValidClass']='有効なクラス';
-$lang['ValidDivisions']='有効な部門（空欄：すべて有効）';
 $lang['ViewTeamComponents']='チームメンバーを確認';
 $lang['ViewTeamComponentsDescr']='メンバー表示順入';
 $lang['WarmUp']='練習';

@@ -164,7 +164,6 @@ $lang['MenuLM_Athlete Status Management']='Upravitelj statusom natjecatelja';
 $lang['MenuLM_Athletes Participation to Ind/Team Event']='Sudjelovanje natjecatelja u ind/tim serijama';
 $lang['MenuLM_Athletes Setup']='Podešavanje natjecatelja';
 $lang['MenuLM_Athletes Sync.']='Sinh. natjecatelja';
-$lang['MenuLM_Athlets fees status']='Status kotizacija';
 $lang['MenuLM_AutoCheckinSetup']='Konfiguracija auto prijavljivanja';
 $lang['MenuLM_Back Number Printout']='Ispis pozadinskih brojeva';
 $lang['MenuLM_Boinx']='Boinx Layers Setup';

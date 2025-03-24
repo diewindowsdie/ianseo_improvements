@@ -1162,7 +1162,6 @@ $lang['UserDetails']='Detalhes do usuário';
 $lang['UserEnabled']='Habilitado';
 $lang['UserName']='Usuário';
 $lang['UseSubClasses']='Aplicar a sub-classes específicas';
-$lang['ValidDivisions']='Divisões permitidas (vazio para todas)';
 $lang['VersionBracketsInd']='Chaves Individuais';
 $lang['VersionBracketsTeam']='Chaves de Equipe';
 $lang['VersionEntries']='Entradas';

@@ -163,7 +163,7 @@ if(empty($_REQUEST["Download"])
 			inner join Tournament on EnTournament=ToId
 			inner join LookUpEntries on ToIocCode=LueIocCode " . (empty($_REQUEST['CatWaId']) ? "and CoCode=LueCountry " : "") ." and ( (soundex(EnFirstName)=soundex(LueFamilyName) or soundex(EnName)=soundex(LueName)) or (soundex(EnFirstName)=soundex(LueName) or soundex(EnName)=soundex(LueFamilyName)))
 			where left(EnCode, 1)='_'
-		    and EnTournament={$_SESSION['TourId']} " . (empty($_REQUEST['CatWaId']) ? "" : " and CONCAT(TRIM(EnDivision),TRIM(Enclass)) LIKE " . StrSafe_DB($_REQUEST['CatWaId'])) . "
+		    and EnTournament={$_SESSION['TourId']} " . (empty($_REQUEST['CatWaId']) ? "" : " and CONCAT(TRIM(EnDivision),TRIM(Enclass)) LIKE " . StrSafe_DB(str_replace("!","",$_REQUEST['CatWaId']))) . "
 			order by 
 			    EnFirstName=LueFamilyName and EnName=LueName and (EnDob=LueCtrlCode or EnDob=0) desc,
 			    EnDob>0 and EnDoB=LueCtrlCode desc,
@@ -190,7 +190,9 @@ if(empty($_REQUEST["Download"])
 					$Style=' style="background-color:#ffff80"';
 				} elseif($r->EnDob==$r->LueCtrlCode) {
 					$Style=' style="background-color:#80ffff"';
-				}
+				} elseif(strpos($_REQUEST['CatWaId']??'','!')!==false) {
+                    continue;
+                }
 				echo '<tr'.$Style.'>';
 				echo '<td>'.$r->EnCode.'</td>';
 				echo '<td><a href="'.go_get(array('EnId'=>$r->EnId, 'WaId'=>$r->LueCode)).'">'.$r->LueCode.'</a></td>';

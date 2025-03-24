@@ -1414,7 +1414,6 @@ $lang['UserPasswordOld']='Contraseña antigua';
 $lang['UserPasswordRetype']='Vuelve a escribir la nueva Contraseña';
 $lang['UseSubClasses']='Aplicar a subclases específicas';
 $lang['ValidClass']='Clases asignables';
-$lang['ValidDivisions']='Divisiones permitidas (vacio pata todas)';
 $lang['VersionBracketsInd']='Cuadros de la Competición Individual';
 $lang['VersionBracketsTeam']='Cuadros de la Competición de Equipos';
 $lang['VersionEntries']='Inscripciones';

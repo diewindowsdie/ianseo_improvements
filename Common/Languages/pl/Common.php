@@ -215,7 +215,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='Uczestnictwo w konkure
 $lang['MenuLM_Athletes Setup']='Ustawienia zawodników';
 $lang['MenuLM_Athletes Sync.']='Synchronizacja zawodników';
 $lang['MenuLM_AthletesDiscrepancies']='Niezgodności zawodników';
-$lang['MenuLM_Athlets fees status']='Status opłat startowych';
 $lang['MenuLM_AutoCheckinSetup']='Ustawienia automatycznej rejestracji zawodników';
 $lang['MenuLM_Back Number Printout']='Drukowanie numerów startowych';
 $lang['MenuLM_Boinx']='Ustawienia warstw Boinx';

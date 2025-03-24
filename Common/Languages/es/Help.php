@@ -3,7 +3,6 @@ $lang['AutoCheckinAlreadyDone']='Usted ya ha sido verificado en <br>Si necesita 
 $lang['AutoCheckinConfirm']='Si todos los detalles son correctos pulse CONFIRMAR REGISTRO<br>Si no, pulse CANCELAR y acuda al mostrador de acreditación';
 $lang['AutoCheckinSearch']='Escanee el Código QR que ha recibido o teclee su nombre';
 $lang['AutoCHK-CanEdit']='Permitir a los encargados de las inscripciones editar Nombres, E-Mails, País/Club, etc.';
-$lang['AutoCHK-IP']='Listado de IP para el registro automático de dispositivos. Una dirección IP por linea.';
 $lang['AutoCHK-Print']='Muestra automáticamente imprimir dialogo.';
 $lang['CombiCompList']='Listado de Códigos de Competiciones, separados por una coma';
 $lang['ExportCategories']='Seleccione que categorías/eventos quiere exportar (no selección quiere decir todos)';

@@ -1498,7 +1498,6 @@ $lang['UserPasswordOld']='Gammelt kodeord';
 $lang['UserPasswordRetype']='Gentag nyt kodeord';
 $lang['UseSubClasses']='Sæt på specifikke skydeklasser';
 $lang['ValidClass']='Godkendte klasser';
-$lang['ValidDivisions']='Tilladte Divisioner. Tom hvis alle';
 $lang['VersionBracketsInd']='Individuelle skemaer';
 $lang['VersionBracketsTeam']='Hold skemaer';
 $lang['VersionEntries']='Poster';

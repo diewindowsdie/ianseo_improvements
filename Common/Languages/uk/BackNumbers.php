@@ -46,6 +46,7 @@ $lang['CompDetails']='Інформація о змаганнях';
 $lang['CompName']='Назва змагання';
 $lang['Content']='Зміст';
 $lang['E-Badge']='Номер спортсмена в Елімінаційному раунді';
+$lang['Event']='Етап';
 $lang['FamCamel']='Прізвище';
 $lang['FamCamel-GAlone']='Прізвище І.';
 $lang['FamCamel-GivCamel']='Прізвище Ім\'я';

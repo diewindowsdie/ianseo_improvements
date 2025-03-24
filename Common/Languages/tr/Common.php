@@ -194,7 +194,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='Sporcuların Birey./Ta
 $lang['MenuLM_Athletes Setup']='Sporcu Ayarı';
 $lang['MenuLM_Athletes Sync.']='Sporcu Eşleş.';
 $lang['MenuLM_AthletesDiscrepancies']='Sporcu Anlaşmazlıkları';
-$lang['MenuLM_Athlets fees status']='Sporcu ücret durumu';
 $lang['MenuLM_Back Number Printout']='Sırt Numarası Çıktısı';
 $lang['MenuLM_Category Result List']='Kategori Sonuç Listesi';
 $lang['MenuLM_ChangeNationsNames']='Millet Adlarını Değiştir';

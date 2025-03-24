@@ -205,7 +205,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='�
 $lang['MenuLM_Athletes Setup']=' ';
 $lang['MenuLM_Athletes Sync.']=' ';
 $lang['MenuLM_AthletesDiscrepancies']=' ';
-$lang['MenuLM_Athlets fees status']='  ';
 $lang['MenuLM_AutoCheckinSetup']='  ';
 $lang['MenuLM_Back Number Printout']=' ';
 $lang['MenuLM_Boinx']=' ';

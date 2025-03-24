@@ -216,7 +216,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='Participação dos atl
 $lang['MenuLM_Athletes Setup']='Configuração de Atletas';
 $lang['MenuLM_Athletes Sync.']='Gestão de atletas e clubes';
 $lang['MenuLM_AthletesDiscrepancies']='Discrepâncias';
-$lang['MenuLM_Athlets fees status']='Status de pagamento dos atletas';
 $lang['MenuLM_Authentication']='Autenticação de Usuários';
 $lang['MenuLM_AutoCheckinSetup']='Configuração de Auto Check-In';
 $lang['MenuLM_Automator']='Automação';

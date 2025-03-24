@@ -877,7 +877,6 @@ $lang['UpdatePNG']='wijzig bebehorende PNG-bestand?';
 $lang['URL']='URL';
 $lang['UserPassword']='Wachtwoord';
 $lang['ValidClass']='Geldige klasses';
-$lang['ValidDivisions']='Toegestane Div. (leeg voor allemaal)';
 $lang['VersionEntries']='Aanmeldingen';
 $lang['VersionFile']='bestand';
 $lang['VersionMajVersion']='Grote versie';

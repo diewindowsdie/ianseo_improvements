@@ -44,6 +44,15 @@ if($version<'2025-02-24 14:17:01') {
     db_save_version('2025-02-24 14:17:01');
 }
 
+if($version<'2025-02-24 20:03:00') {
+    safe_w_sql("ALTER TABLE `Individuals` 
+        ADD `IndScore` INT NOT NULL DEFAULT '-1' AFTER `IndIrmTypeFinal`, 
+        ADD `IndHits` INT NOT NULL DEFAULT '-1' AFTER `IndScore`, 
+        ADD `IndGold` INT NOT NULL DEFAULT '-1' AFTER `IndHits`, 
+        ADD `IndXnine` INT NOT NULL DEFAULT '-1' AFTER `IndGold`",false,array(1054, 1060));
+    db_save_version('2025-02-24 20:03:00');
+}
+
 /*
 
 // TEMPLATE

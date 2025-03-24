@@ -834,7 +834,6 @@ $lang['Type_SweForestRound']='Swedish Forest Round';
 $lang['Unisex']='Unisex';
 $lang['UpdateJPG']='također stvoriti JPG verziju';
 $lang['UpdatePNG']='Ažurirajte odgovarajuće PNG datoteke?';
-$lang['ValidDivisions']='Dopušteni Stilovi. (prazno za sve)';
 $lang['ViewTeamComponentsDescr']='Uključuje prikaz članova tima';
 $lang['WarmUp']='Zagrijavanje';
 $lang['Warning']='Upozorenje!';

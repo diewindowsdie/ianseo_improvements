@@ -186,7 +186,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='Participación de los 
 $lang['MenuLM_Athletes Setup']='Configurar Arqueros';
 $lang['MenuLM_Athletes Sync.']='Sincronizar Archivo de Arqueros';
 $lang['MenuLM_AthletesDiscrepancies']='Discrepancias en Arqueros';
-$lang['MenuLM_Athlets fees status']='Situación inscripción de los arqueros';
 $lang['MenuLM_Authentication']='Autenticación de Usuarios';
 $lang['MenuLM_Category Result List']='Imprimir Resultados por Categoría';
 $lang['MenuLM_Change Components']='Cambiar Componentes';

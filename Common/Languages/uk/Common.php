@@ -226,7 +226,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='Участь спор�
 $lang['MenuLM_Athletes Setup']='Налаштування спортсменів';
 $lang['MenuLM_Athletes Sync.']='Синхронізація спортсменів';
 $lang['MenuLM_AthletesDiscrepancies']='Невідповідності спортсменів';
-$lang['MenuLM_Athlets fees status']='Стан оплати внесків спортсменами';
 $lang['MenuLM_Authentication']='Аутентифікація користувачів';
 $lang['MenuLM_AutoCheckinSetup']='Налаштування автоматичної реєстрації';
 $lang['MenuLM_Back Number Printout']='Друк заднього номера';

@@ -6,7 +6,12 @@ Otherwise press CANCEL and proceed to the accreditation desk';
 $lang['AutoCheckinSearch']='Scan the QR Code you received or type your name';
 $lang['AutoCHK-CanEdit']='Allow check-in operators to edit Names, E-Mails, Country/Club, etc';
 $lang['AutoCHK-Code']='List of Competitions, one per line<br> First competition code will be used as header in auto-checkin kiosks';
-$lang['AutoCHK-IP']='List of IP of auto check-in devices. One IP Address per line';
+$lang['AutoCHK-IP']='List of IP of auto check-in devices. One IP Address per line, matching one of the following formats:<br>
+Device IP<br>
+Device IP | Accreditation Printer Queue <br>
+Device IP | Accreditation Printer Queue | Name Tag Printer Queue<br>
+Printer Queue in form: Queue Name [ @ Printer Server ]<br>
+If no Printer Queue is defined, then the standard print dialog will show';
 $lang['AutoCHK-IPinfo']='List of IP of self info points. One IP Address per line';
 $lang['AutoCHK-IPnoMgm']='List of IP of self check-in kiosks. One IP Address per line, matching one of the following formats:<br>
 Device IP<br>

@@ -173,7 +173,6 @@ $lang['MenuLM_Athlete Status Management']='Kilpailijoiden hallinta';
 $lang['MenuLM_Athletes Participation to Ind/Team Event']='Kilpailijoiden osallistuminen lajeihin: henkilökohtainen/joukkue';
 $lang['MenuLM_Athletes Setup']='Kilpailijoiden määritys';
 $lang['MenuLM_Athletes Sync.']='Kilpailijoiden synkronointi';
-$lang['MenuLM_Athlets fees status']='Osallistumismaksut';
 $lang['MenuLM_Back Number Printout']='Selkänumeroiden tulostus';
 $lang['MenuLM_Boinx']='Boinx kerroksen asetukset';
 $lang['MenuLM_BoinxMeteo']='Boinx Meteo kerroksen tiedot';

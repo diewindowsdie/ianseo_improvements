@@ -333,7 +333,6 @@ $lang['TVSelectPage']='Vyber druh zobrazenia';
 $lang['TVSetAsDefault']='Nastaviť ako predvolené';
 $lang['TVTournamentContents']='Obsah súťaže';
 $lang['TvViewENDS']='Pozrieť detaily sady';
-$lang['ValidDivisions']='Povolené Divízie (vynechať pre všetky)';
 $lang['VersionBracketsInd']='Pavúky Jednotlivcov';
 $lang['VersionBracketsTeam']='Pavúky Družstiev';
 $lang['WarmUp']='Tréning';

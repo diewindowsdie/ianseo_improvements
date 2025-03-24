@@ -22,4 +22,21 @@ foreach($AllowedTypes as $val) {
     }
 }
 
+
+$SetType['AT']['rules'][3] = array(
+    'SetAllClass',
+    'SetOneClass',
+    'LooserBrackets'
+);
+
+$SetType['AT']['rules'][6] = array(
+    'SetAllClass',
+    'SetOneClass',
+    'LooserBrackets'
+);
+
+
 /* No subrules requests as of today */
+
+
+

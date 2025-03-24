@@ -131,7 +131,6 @@ $lang['MenuLM_Athlete Status Management']='Gestione stato Arcieri';
 $lang['MenuLM_Athletes Participation to Ind/Team Event']='Partecipazzione Individuale - Squadre';
 $lang['MenuLM_Athletes Setup']='Setappe dell\'atleti';
 $lang['MenuLM_Athletes Sync.']='Aggiornamento dell\'Arcieri';
-$lang['MenuLM_Athlets fees status']='Arcieri coll\'iscrizzione aggratise';
 $lang['MenuLM_Back Number Printout']='Stampa de li pettorali';
 $lang['MenuLM_Broadcast Control']='Controllo Broddecaste';
 $lang['MenuLM_Broadcast Preview']='Visualizza';

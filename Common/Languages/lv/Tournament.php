@@ -932,7 +932,6 @@ $lang['UpdateJPG']='izveidot arī JPG versiju';
 $lang['UpdatePNG']='Atjaunināt atbilstošo PNG failu?';
 $lang['UploadFile']='Augšuplādēt failus (PDF)';
 $lang['URL']='URL';
-$lang['ValidDivisions']='Pieļautās div. (atstāt tukšu visām)';
 $lang['VersionFile']='Datne';
 $lang['VersionMajVersion']='Pamatversija';
 $lang['VersionMinVersion']='Apakšversija';

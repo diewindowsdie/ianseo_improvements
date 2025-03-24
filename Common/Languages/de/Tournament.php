@@ -805,7 +805,6 @@ $lang['Type_SweForestRound']='Schwedische Forest Runde';
 $lang['Unisex']='Unisex';
 $lang['UpdateJPG']='ebenso die JPG Version erzeugen';
 $lang['UpdatePNG']='Entsprechendes PNG File aktualisieren?';
-$lang['ValidDivisions']='Erlaubte Diszipl. (leer=alle)';
 $lang['ViewTeamComponentsDescr']='Schaltet die Anzeige der Mannschaftsmitglieder';
 $lang['WarmUp']='Aufwärmen';
 $lang['Warning']='ACHTUNG!';

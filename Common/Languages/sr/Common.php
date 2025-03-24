@@ -168,7 +168,6 @@ $lang['MenuLM_Athlete Status Management']='Postavke statusa sportiste';
 $lang['MenuLM_Athletes Participation to Ind/Team Event']='Učešće streličara po Ind/Tim etapama';
 $lang['MenuLM_Athletes Setup']='Podešavanja streličara';
 $lang['MenuLM_Athletes Sync.']='Sinhronizacija takmičara';
-$lang['MenuLM_Athlets fees status']='Status kotizacije streličara';
 $lang['MenuLM_AutoCheckinSetup']='Podešavanje automatskog čekiranja';
 $lang['MenuLM_Back Number Printout']='Štampanje takmičarskih brojeva';
 $lang['MenuLM_Boinx']='Podešavanje Boinx lejera';

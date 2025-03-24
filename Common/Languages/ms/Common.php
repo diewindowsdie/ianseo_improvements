@@ -232,7 +232,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='Penyertaan Atlet Dalam
 $lang['MenuLM_Athletes Setup']='Persediaan Atlet';
 $lang['MenuLM_Athletes Sync.']='Penyeragaman Atlet';
 $lang['MenuLM_AthletesDiscrepancies']='Pertindihan Atlet';
-$lang['MenuLM_Athlets fees status']='Status yuran atlet';
 $lang['MenuLM_Authentication']='Pengesahan Pengguna';
 $lang['MenuLM_AutoCheckinSetup']='Persediaan Masuk Automatik';
 $lang['MenuLM_Automator']='Automator';

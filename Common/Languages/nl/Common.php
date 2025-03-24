@@ -214,7 +214,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='Schutter neemt deel aa
 $lang['MenuLM_Athletes Setup']='Schutters setup';
 $lang['MenuLM_Athletes Sync.']='Athleten synchroniseren';
 $lang['MenuLM_AthletesDiscrepancies']='Verschillende schutters';
-$lang['MenuLM_Athlets fees status']='Schutters betaald status';
 $lang['MenuLM_AutoCheckinSetup']='Instelling automatisch inchecken';
 $lang['MenuLM_Back Number Printout']='Afdruk beginnend met de laatste bladzijde';
 $lang['MenuLM_Boinx']='Boinx modules setup';

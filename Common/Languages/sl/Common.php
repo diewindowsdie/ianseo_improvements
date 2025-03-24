@@ -182,7 +182,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='Nastopi tekm. na Pos./
 $lang['MenuLM_Athletes Setup']='Nastavitve tekmovalcev';
 $lang['MenuLM_Athletes Sync.']='Sinh. tekmovalcev';
 $lang['MenuLM_AthletesDiscrepancies']='Neskladnosti tekmovalcev';
-$lang['MenuLM_Athlets fees status']='Stanje štartnin';
 $lang['MenuLM_Authentication']='Overitev uporabnika';
 $lang['MenuLM_Back Number Printout']='Natisni številke (Back number)';
 $lang['MenuLM_Category Result List']='Rezultati po kategorijah';

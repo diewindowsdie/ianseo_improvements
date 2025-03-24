@@ -1154,7 +1154,6 @@ $lang['UpdateJPG']='  ';
 $lang['UpdatePNG']='  ?';
 $lang['URL']='';
 $lang['UseSubClasses']='  ';
-$lang['ValidDivisions']='  (  )';
 $lang['VersionBracketsInd']=' ';
 $lang['VersionBracketsTeam']=' ';
 $lang['VersionEntries']='';
