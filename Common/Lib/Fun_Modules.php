@@ -153,7 +153,17 @@ function runJack($JackEvent, $TourId=0, $param=array()) {
         $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
         if($sock !== false) {
             @socket_set_option($sock, SOL_SOCKET, SO_BROADCAST, 1);
-            @socket_sendto($sock, $msg, strlen($msg), 0, "255.255.255.255", $udpData['port']);
+            if(($ifList = net_get_interfaces())!==false) {
+                foreach ($ifList as $ifUni) {
+                    foreach ($ifUni['unicast'] as $if) {
+                        if (array_key_exists('broadcast', $if)) {
+                            @socket_sendto($sock, $msg, strlen($msg), 0, $if['broadcast'], $udpData['port']);
+                        }
+                    }
+                }
+            } else {
+                @socket_sendto($sock, $msg, strlen($msg), 0, "255.255.255.255", $udpData['port']);
+            }
             @socket_close($sock);
         }
     }

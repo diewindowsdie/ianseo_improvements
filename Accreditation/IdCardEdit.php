@@ -369,6 +369,8 @@ if(strstr('EITYZ', $CardType)) {
 // Diploma based on Ranking
 if(strstr('YZ', $CardType)) {
 	$Select.='<option value="FinalRanking">'.get_text('FinalRanking', 'BackNumbers').'</option>';
+	$Select.='<option value="SubclassRanking">'.get_text('SubclassRanking', 'BackNumbers').'</option>';
+    $Select.='<option value="PayoutAwarded">'.get_text('PayoutAwarded', 'BackNumbers').'</option>';
 }
 // Session
 $Select.='<option value="Session">'.get_text('Session', 'BackNumbers').'</option>';
@@ -541,6 +543,14 @@ function getFieldPos($r) {
 			}
         case 'QRScore':
             if(!isset($txt)) $txt=get_text('Score','Tournament');
+		case 'PayoutAwarded':
+			if(!isset($txt)) {
+                $txt='<select onchange="UpdateRowContent(this)" id="Content['.$r->IceOrder.'][PayoutAwarded]">
+                    <option value="Numbers"'   .($r->IceContent=='Numbers'   ?' selected':'').'>'.get_text('PayoutNumbers',    'BackNumbers').'</option>
+					<option value="Letters"'   .($r->IceContent=='Letters'   ?' selected':'').'>'.get_text('PayoutLetters',    'BackNumbers').'</option>
+					<option value="LettersWithDecimal"'   .($r->IceContent=='LettersWithDecimal'   ?' selected':'').'>'.get_text('PayoutLettersWithDecimal',    'BackNumbers').'</option>
+                </select>';
+            }
 		case 'Ranking':
 			if(!isset($txt)) {
                 $txt='<select onchange="UpdateRowContent(this)" id="Content['.$r->IceOrder.'][Ranking]">
@@ -552,6 +562,14 @@ function getFieldPos($r) {
 		case 'FinalRanking':
 			if(!isset($txt)) {
                 $txt='<select onchange="UpdateRowContent(this)" id="Content['.$r->IceOrder.'][FinalRanking]">
+                    <option value="Cardinal"'   .($r->IceContent=='Cardinal'   ?' selected':'').'>'.get_text('RnkCardinalEN',    'BackNumbers').'</option>
+                    <option value="Ordinal"'   .($r->IceContent=='Ordinal'   ?' selected':'').'>'.get_text('RnkOrdinal',    'BackNumbers').'</option>
+					<option value="Roman"'   .($r->IceContent=='Roman'   ?' selected':'').'>'.get_text('RnkRoman',    'BackNumbers').'</option>
+                </select>';
+            }
+		case 'SubclassRanking':
+			if(!isset($txt)) {
+                $txt='<select onchange="UpdateRowContent(this)" id="Content['.$r->IceOrder.'][SubclassRanking]">
                     <option value="Cardinal"'   .($r->IceContent=='Cardinal'   ?' selected':'').'>'.get_text('RnkCardinalEN',    'BackNumbers').'</option>
                     <option value="Ordinal"'   .($r->IceContent=='Ordinal'   ?' selected':'').'>'.get_text('RnkOrdinal',    'BackNumbers').'</option>
 					<option value="Roman"'   .($r->IceContent=='Roman'   ?' selected':'').'>'.get_text('RnkRoman',    'BackNumbers').'</option>
@@ -569,6 +587,9 @@ function getFieldPos($r) {
 					<option value="CatCode-EvDescr"'  .($r->IceContent=='CatCode-EvDescr' ? ' selected':'').'>'.get_text('EvCode-EvDescr',   'BackNumbers').'</option>
 					<option value="CatDescr"'  .($r->IceContent=='CatDescr'  ?' selected':'').'>'.get_text('EvDescr',   'BackNumbers').'</option>
 					<option value="CatDescrUpper"' . ($r->IceContent == 'CatDescrUpper' ? ' selected' : '') . '>' . get_text('EvDescrUpper', 'BackNumbers') . '</option>
+					<option value="EvSubCode"'   .($r->IceContent=='EvSubCode'   ?' selected':'').'>'.get_text('EvSubCode',    'BackNumbers').'</option>
+					<option value="EvSubCode-EvSubDescr"'  .($r->IceContent=='EvSubCode-EvSubDescr'  ?' selected':'').'>'.get_text('EvSubCode-EvSubDescr',   'BackNumbers').'</option>
+					<option value="EvSubDescr"'  .($r->IceContent=='EvSubDescr'  ?' selected':'').'>'.get_text('EvSubDescr',   'BackNumbers').'</option>
 					</select>';
                 if(!$r->IceOptions) $Options['BackCat']=1;
             }

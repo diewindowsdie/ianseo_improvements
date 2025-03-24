@@ -1218,7 +1218,6 @@ $lang['UpdateJPG']='צור גם גרסת JPG';
 $lang['UpdatePNG']='האם לעדכן קובץ PNG תואם?';
 $lang['URL']='URL';
 $lang['UseSubClasses']='החל לתת-קבוצות מסויימות';
-$lang['ValidDivisions']='סוגי קשתות מורשים (ריק עבור הכל)';
 $lang['VersionBracketsInd']='תרשים התמודדות אישית';
 $lang['VersionBracketsTeam']='תרשים התמודדות קבוצתית';
 $lang['VersionEntries']='הרשמות';

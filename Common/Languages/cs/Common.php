@@ -159,7 +159,6 @@ $lang['MenuLM_Athlete Status Management']='Správa statutu sportovců';
 $lang['MenuLM_Athletes Participation to Ind/Team Event']='Účast sportovců v událostech';
 $lang['MenuLM_Athletes Setup']='Nastavení sportovců';
 $lang['MenuLM_Athletes Sync.']='Synchr. sportovců';
-$lang['MenuLM_Athlets fees status']='Status poplatků sportovců';
 $lang['MenuLM_Back Number Printout']='Tisk startovních čísel';
 $lang['MenuLM_Boinx']='Nastavení Boinx vrstev';
 $lang['MenuLM_BoinxMeteo']='Boinx data meteo vrstvy';

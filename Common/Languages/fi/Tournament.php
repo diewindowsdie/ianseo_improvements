@@ -692,7 +692,6 @@ $lang['Type_SweForestRound']='Ruotsin metsäkierros';
 $lang['Unisex']='Yleinen';
 $lang['UpdateJPG']='luo myös JPG-muodossa';
 $lang['UpdatePNG']='Päivitä vastaavalla PNG-tiedostolla?';
-$lang['ValidDivisions']='Sallitut luokat (tyhjä = kaikki)';
 $lang['ViewTeamComponentsDescr']='Vaihtaa näyttöä joukkueiden jäsenten välillä';
 $lang['WarmUp']='Lämmittely';
 $lang['WarmUpMins']='Lämmittely (min.)';

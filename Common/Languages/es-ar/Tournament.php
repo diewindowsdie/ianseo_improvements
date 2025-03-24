@@ -1035,7 +1035,6 @@ $lang['UserPasswordOld']='Contraseña Anterior';
 $lang['UserPasswordRetype']='Confirmar Nueva Contraseña';
 $lang['UseSubClasses']='Aplicar a subclases específicas';
 $lang['ValidClass']='Clases Válidas';
-$lang['ValidDivisions']='Div. Permitidas (vacío para todas)';
 $lang['VersionBracketsInd']='Esquema Individual';
 $lang['VersionBracketsTeam']='Esquema por Equipos';
 $lang['VersionEntries']='Inscripciones';

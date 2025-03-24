@@ -34,7 +34,7 @@ echo '<table class="Tabella" id="MyTable">';
 echo '<tr><th class="Title" colspan="'.(6+$AddOnsEnabled).'">' .get_text('TeamDefinition') . '</th></tr>';
 echo '<tr class="Divider"><td colspan="'.(6+$AddOnsEnabled).'"></td></tr>';
 
-$Select = "SELECT Events.*, ToGoldsChars, ToGolds, ToXNineChars, ToXNine FROM Events inner join Tournament on ToId=EvTournament WHERE EvCode=" . StrSafe_DB($_REQUEST['EvCode']) . " AND EvTeamEvent='1' AND EvTournament=" . StrSafe_DB($_SESSION['TourId']);
+$Select = "SELECT Events.*, ToGoldsChars, ToGolds, ToXNineChars, ToXNine, ToNumDist FROM Events inner join Tournament on ToId=EvTournament WHERE EvCode=" . StrSafe_DB($_REQUEST['EvCode']) . " AND EvTeamEvent='1' AND EvTournament=" . StrSafe_DB($_SESSION['TourId']);
 $RsEv = safe_r_sql($Select);
 $RowEv=null;
 if (safe_num_rows($RsEv)==1) {
@@ -211,21 +211,10 @@ echo '<table class="Tabella">';
         echo '<th>'.get_text('EventNumQualified', 'Tournament').'</th>';
         echo '<th>'.get_text('EventStartPosition', 'Tournament').'</th>';
         echo '<th>'.get_text('EventHasMedal', 'Tournament').'</th>';
+        echo '<th>'.get_text('EventWinnerFinalRank', 'Tournament').'</th>';
         echo '<th>'.get_text('EventParentCode', 'Tournament').'</th>';
         echo '<th>'.get_text('EventParentWinningBranch', 'Tournament').'</th>';
-        echo '<th>'.get_text('EventWinnerFinalRank', 'Tournament').'</th>';
-        echo '<th>'.get_text('MaxTeamPersons', 'Tournament').'</th>';
-        echo '<th>'.get_text('WaCategory', 'Tournament').'</th>';
-        echo '<th>'.get_text('RecordCategory', 'Tournament').'</th>';
-        echo '<th>'.get_text('OdfEventCode', 'ODF').'</th>';
-        echo '<th>'.get_text('GoldLabel','Tournament').'</th>';
-        echo '<th>'.get_text('XNineLabel','Tournament').'</th>';
-        echo '<th>'.get_text('PointsAsGold','Tournament').'<br/><span style="font-weight: normal">'.get_text('CommaSeparatedValues').'</span></th>';
-        echo '<th>'.get_text('PointsAsXNine','Tournament').'<br/><span style="font-weight: normal">'.get_text('CommaSeparatedValues').'</span></th>';
-        echo '<th>'.get_text('CheckGoldsInMatch','Tournament').'</th>';
-        echo '<th>'.get_text('CheckXNinesInMatch','Tournament').'</th>';
-        echo '</tr>';
-
+    echo '</tr>';
     echo '<tr>';
         echo '<td class="Center"><input type="number" min="0" max="9999" value="'.$RowEv->EvNumQualified.'" id="fld=num&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';
         echo '<td class="Center"><input type="number" min="0" max="9999" value="'.$RowEv->EvFirstQualified.'" id="fld=first&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';
@@ -233,25 +222,59 @@ echo '<table class="Tabella">';
                 <option value="1" '.($RowEv->EvMedals ? ' selected="selected"' : '').'>'.get_text('Yes').'</option>
                 <option value="0" '.($RowEv->EvMedals ? '' : ' selected="selected"').'>'.get_text('No').'</option>
             </select></td>';
-        echo '<td class="Center"><select name="ParentRule" onchange="UpdateData(this)" id="fld=parent&team=1&event='.$_REQUEST['EvCode'].'">';
-                echo '<option value="">'.get_text('Select', 'Tournament').'</option>';
-                $q=safe_r_sql("select EvCode, EvEventName from Events where EvTeamEvent=1 and EvFinalFirstPhase>$RowEv->EvFinalFirstPhase and EvCode!='$RowEv->EvCode' and EvTournament={$_SESSION['TourId']}");
-                while($r=safe_fetch($q)) {
-                    echo '<option value="'.$r->EvCode.'" '.($RowEv->EvCodeParent==$r->EvCode ? ' selected="selected"' : '').'>'.$r->EvCode.' - '.$r->EvEventName.'</option>';
-                }
-                echo '</select></td>';
-        echo '<td class="Center"><input size="5" type="checkbox" '.($RowEv->EvCodeParentWinnerBranch ? 'checked="checked"' : ''). ' id="fld=parentWinner&team=1&event='.$_REQUEST['EvCode'].'" onclick="UpdateData(this)"></td>';
         echo '<td class="Center"><input type="number" min="0" max="9999" value="'.$RowEv->EvWinnerFinalRank.'" id="fld=final&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';
-        echo '<td class="Center"><input type="number" min="0" max="9999" value="'.$RowEv->EvMaxTeamPerson.'" id="fld=persons&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';
-        echo '<td class="Center"><input type="text" size="12" maxlength="10" value="'.$RowEv->EvWaCategory.'" id="fld=wacat&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';
-        echo '<td class="Center"><input type="text" size="12" maxlength="10" value="'.$RowEv->EvRecCategory.'" id="fld=reccat&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';
-        echo '<td class="Center"><input type="text" value="'.$RowEv->EvOdfCode.'" id="fld=odfcode&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';
+        echo '<td class="Center"><select name="ParentRule" onchange="UpdateData(this)" id="fld=parent&team=1&event='.$_REQUEST['EvCode'].'">';
+            echo '<option value="">'.get_text('Select', 'Tournament').'</option>';
+            $q=safe_r_sql("select EvCode, EvEventName from Events where EvTeamEvent=1 and EvFinalFirstPhase>$RowEv->EvFinalFirstPhase and EvCode!='$RowEv->EvCode' and EvTournament={$_SESSION['TourId']}");
+            while($r=safe_fetch($q)) {
+                echo '<option value="'.$r->EvCode.'" '.($RowEv->EvCodeParent==$r->EvCode ? ' selected="selected"' : '').'>'.$r->EvCode.' - '.$r->EvEventName.'</option>';
+            }
+        echo '</select></td>';
+    echo '<td class="Center"><input size="5" type="checkbox" '.($RowEv->EvCodeParentWinnerBranch ? 'checked="checked"' : ''). ' id="fld=parentWinner&team=1&event='.$_REQUEST['EvCode'].'" onclick="UpdateData(this)"></td>';
+    echo '</tr>';
+    echo '<tr>';
+        echo '<th>'.get_text('GoldLabel','Tournament').'</th>';
+        echo '<th>'.get_text('XNineLabel','Tournament').'</th>';
+        echo '<th>'.get_text('PointsAsGold','Tournament').'<br/><span style="font-weight: normal">'.get_text('CommaSeparatedValues').'</span></th>';
+        echo '<th>'.get_text('PointsAsXNine','Tournament').'<br/><span style="font-weight: normal">'.get_text('CommaSeparatedValues').'</span></th>';
+        echo '<th>'.get_text('CheckGoldsInMatch','Tournament').'</th>';
+        echo '<th>'.get_text('CheckXNinesInMatch','Tournament').'</th>';
+    echo '</tr>';
+    echo '<tr>';
         echo '<td class="Center"><input size="5" type="text" value="'.($RowEv->EvGolds ?: '').'" id="fld=golds&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';
         echo '<td class="Center"><input size="5" type="text" value="'.($RowEv->EvXNine ?: '').'" id="fld=xnines&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';
         echo '<td class="Center"><input size="5" type="text" value="'.implode(',', DecodeFromString($RowEv->EvGoldsChars ?: '', false, true)).'" id="fld=goldschars&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';
         echo '<td class="Center"><input size="5" type="text" value="'.implode(',', DecodeFromString($RowEv->EvXNineChars ?: '', false, true)).'" id="fld=xninechars&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';
         echo '<td class="Center"><input size="5" type="checkbox" '.($RowEv->EvCheckGolds ? 'checked="checked"' : ''). ' id="fld=checkGolds&team=1&event='.$_REQUEST['EvCode'].'" onclick="UpdateData(this)"></td>';
         echo '<td class="Center"><input size="5" type="checkbox" '.($RowEv->EvCheckXNines ? 'checked="checked"' : ''). ' id="fld=checkXnines&team=1&event='.$_REQUEST['EvCode'].'" onclick="UpdateData(this)"></td>';
+    echo '</tr>';
+    echo '<tr>';
+        echo '<th>'.get_text('AfterDistance', 'Tournament').'</th>';
+        echo '<th>'.get_text('MaxTeamPersons', 'Tournament').'</th>';
+        echo '<th>'.get_text('WaCategory', 'Tournament').'</th>';
+        if(module_exists('Records')) {
+            echo '<th>' . get_text('RecordCategory', 'Tournament') . '</th>';
+        }
+        if(module_exists('ODF')) {
+            echo '<th>' . get_text('OdfEventCode', 'ODF') . '</th>';
+        }
+        echo '</tr>';
+
+    echo '<tr>';
+        echo '<td class="Center"><select id="fld=lockresults&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)">'.
+            '<option value="0" '.($RowEv->EvLockResults==0 ? 'selected="selected"':'').'>' . get_text('Last','Tournament') . '</option>';
+        for($n=1; $n<=$RowEv->ToNumDist; $n++) {
+            echo '<option value="'.$n.'" '.($RowEv->EvLockResults==$n ? 'selected="selected"':'').'>' . $n . '</option>';
+        }
+        echo '</select></td>';
+        echo '<td class="Center"><input type="number" min="0" max="9999" value="'.$RowEv->EvMaxTeamPerson.'" id="fld=persons&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';
+        echo '<td class="Center"><input type="text" size="12" maxlength="10" value="'.$RowEv->EvWaCategory.'" id="fld=wacat&team=1&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';
+        if(module_exists('Records')) {
+            echo '<td class="Center"><input type="text" size="12" maxlength="10" value="' . $RowEv->EvRecCategory . '" id="fld=reccat&team=1&event=' . $_REQUEST['EvCode'] . '" onchange="UpdateData(this)"></td>';
+        }
+        if(module_exists('ODF')) {
+            echo '<td class="Center"><input type="text" value="' . $RowEv->EvOdfCode . '" id="fld=odfcode&team=1&event=' . $_REQUEST['EvCode'] . '" onchange="UpdateData(this)"></td>';
+        }
         echo '</tr>';
     echo '</tbody>';
     echo '</table>';

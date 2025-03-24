@@ -202,8 +202,11 @@ function draw_pip($r) {
 				switch($r->IceContent) {
 					case 'CatCode':$Text='CODE'; break;
 					case 'CatCode-EvDescr':$Text='CODE-Category'; break;
-					case 'CatDescr':$Text='Category'; break;
 					case 'CatDescrUpper':$Text='CATEGORY'; break;
+					case 'EvSubCode':$Text='SubCode'; break;
+					case 'EvSubCode-EvSubDescr':$Text='SubCode-Sub Category'; break;
+					case 'EvSubDescr':$Text='Sub Category'; break;
+					default:$Text='Category'; break;
 				}
 			}
 		case 'Session':
@@ -214,6 +217,10 @@ function draw_pip($r) {
 			if(!isset($Text)) $Text=get_text('Rank');
 		case 'FinalRanking':
 			if(!isset($Text)) $Text=get_text('FinalRanking','BackNumbers');
+		case 'SubclassRanking':
+			if(!isset($Text)) $Text=get_text('SubclassRanking','BackNumbers');
+		case 'PayoutAwarded':
+			if(!isset($Text)) $Text=get_text('PayoutAwarded','BackNumbers');
         case 'WRank':
             if(!isset($Text)) $Text=get_text('WRank','BackNumbers');
         case 'ExtraAddOns':

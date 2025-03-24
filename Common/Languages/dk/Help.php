@@ -5,7 +5,6 @@ $lang['AutoCheckinConfirm']='Hvis al information er korrekt, så tryk BEKRÆFT C
 $lang['AutoCheckinSearch']='Skan den modtagne QR koden eller indtast navn';
 $lang['AutoCHK-CanEdit']='Tillad check-in operatører at rette navn, E-Mails, klub etc';
 $lang['AutoCHK-Code']='List of Competitions, one per line<br> First competition code will be used as header in auto-checkin kiosks';
-$lang['AutoCHK-IP']='List of IP of auto check-in devices. One IP Address per line';
 $lang['AutoCHK-IPinfo']='List of IP of self info points. One IP Address per line';
 $lang['AutoCHK-IPnoMgm']='List of IP of self check-in kiosks. One IP Address per line, matching one of the following formats:<br> Device IP<br> Device IP | Accreditation Printer Queue <br> Device IP | Accreditation Printer Queue | Name Tag Printer Queue<br> Printer Queue in form: Queue Name [ @ Printer Server ]';
 $lang['AutoCHK-Print']='Automatisk Vis print dialog';

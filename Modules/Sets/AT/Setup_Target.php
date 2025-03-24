@@ -205,9 +205,13 @@ switch($TourType) {
                 CreateDistanceNew($TourId, $TourType, 'L%',   array(array('30m-1', 30), array('30m-2', 30)));
 				break;
 			case '2':
-				CreateDistanceNew($TourId, $TourType, 'R%', array(array('70m-1',70), array('70m-2',70)));
+			case '3':
+                CreateDistanceNew($TourId, $TourType, 'R%', array(array('70m-1',70), array('70m-2',70)));
                 CreateDistanceNew($TourId, $TourType, 'C%', array(array('50m-1',50), array('50m-2',50)));
                 CreateDistanceNew($TourId, $TourType, 'W1%', array(array('50m-1',50), array('50m-2',50)));
+                CreateDistanceNew($TourId, $TourType, 'B%',   array(array('50m-1', 50), array('50m-2', 50)));
+                CreateDistanceNew($TourId, $TourType, 'T%',   array(array('40m-1', 40), array('40m-2', 40)));
+                CreateDistanceNew($TourId, $TourType, 'L%',   array(array('30m-1', 30), array('30m-2', 30)));
 				break;
 		}
 		break;
@@ -357,9 +361,13 @@ switch($TourType) {
                 CreateDistanceNew($TourId, $TourType, 'L%',   array(array('30m-1',30), array('30m-2',30), array('30m-3',30), array('30m-4',30)));
                 break;
             case '2':
+            case '3':
                 CreateDistanceNew($TourId, $TourType, 'R%', array(array('70m-1',70), array('70m-2',70), array('70m-3',70), array('70m-4',70)));
                 CreateDistanceNew($TourId, $TourType, 'C%', array(array('50m-1',50), array('50m-2',50), array('50m-3',50), array('50m-4',50)));
                 CreateDistanceNew($TourId, $TourType, 'W1%', array(array('50m-1',50), array('50m-2',50), array('50m-3',50), array('50m-4',50)));
+                CreateDistanceNew($TourId, $TourType, 'B%', array(array('50m-1',50), array('50m-2',50), array('50m-3',50), array('50m-4',50)));
+                CreateDistanceNew($TourId, $TourType, 'T%', array(array('40m-1',40), array('40m-2',40), array('40m-3',40), array('40m-4',40)));
+                CreateDistanceNew($TourId, $TourType, 'L%', array(array('30m-1',30), array('30m-2',30), array('30m-3',30), array('30m-4',30)));
                 break;
         }
         break;
@@ -372,6 +380,100 @@ if($TourType==3 or $TourType==6 or $TourType==37) {
 
 	// Classes in Events
 	InsertStandardEvents($TourId, $SubRule, $TourType!=6);
+
+        // Add Loosers Matches if needed
+        if (($TourType == 3 and $SubRule == 3) or ($TourType == 6 and $SubRule == 3)) {
+            $TargetR=(($TourType != 6) ? TGT_OUT_FULL : TGT_IND_6_big10);
+            $TargetC=(($TourType != 6) ? TGT_OUT_5_big10 : TGT_IND_6_small10);
+            $TargetB=(($TourType != 6) ? TGT_OUT_FULL : TGT_IND_1_big10);
+            $TargetT=(($TourType != 6) ? TGT_OUT_FULL : TGT_IND_1_big10);
+            $TargetL=(($TourType != 6) ? TGT_OUT_FULL : TGT_IND_1_big10);
+            $TargetSizeR=(($TourType != 6) ? 122 : 40);
+            $TargetSizeC=(($TourType != 6) ? 80 : 40);
+            $TargetSizeB=(($TourType != 6) ? 122 : 40);
+            $TargetSizeT=(($TourType != 6) ? 122 : 40);
+            $TargetSizeL=(($TourType != 6) ? 122 : 60);
+            $DistanceR=(($TourType != 6) ? 70 : 18);
+            $DistanceC=(($TourType != 6) ? 50 : 18);
+            $DistanceB=(($TourType != 6) ? 50 : 18);
+            $DistanceT=(($TourType != 6) ? 40 : 18);
+            $DistanceL=(($TourType != 6) ? 30 : 18);
+
+            $i = 11;
+            CreateEvent($TourId, $i++, 0, 0, 4, $TargetR, 5, 3, 1, 5, 3, 1, 'RM-1', 'Recurve Herren - 9.-12. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeR, $DistanceR, 'RM', '0', '0', 9);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetR, 5, 3, 1, 5, 3, 1, 'RM-2', 'Recurve Herren - 5.-8. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeR, $DistanceR, 'RM', '0', '0', 5);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetR, 5, 3, 1, 5, 3, 1, 'RM-3', 'Recurve Herren - 13.-16. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeR, $DistanceR, 'RM-1', '0', '0', 13);
+
+            CreateEvent($TourId, $i++, 0, 0, 4, $TargetR, 5, 3, 1, 5, 3, 1, 'RW-1', 'Recurve Damen - 9.-12. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeR, $DistanceR, 'RW', '0', '0', 9);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetR, 5, 3, 1, 5, 3, 1, 'RW-2', 'Recurve Damen - 5.-8. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeR, $DistanceR, 'RW', '0', '0', 5);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetR, 5, 3, 1, 5, 3, 1, 'RW-3', 'Recurve Damen - 13.-16. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeR, $DistanceR, 'RW-1', '0', '0', 13);
+
+            CreateEvent($TourId, $i++, 0, 0, 4, $TargetC, 5, 3, 1, 5, 3, 1, 'CM-1', 'Compound Herren - 9.-12. Platz', 0, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeC, $DistanceC, 'CM', '0', '0', 9);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetC, 5, 3, 1, 5, 3, 1, 'CM-2', 'Compound Herren - 5.-8. Platz', 0, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeC, $DistanceC, 'CM', '0', '0', 5);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetC, 5, 3, 1, 5, 3, 1, 'CM-3', 'Compound Herren - 13.-16. Platz', 0, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeC, $DistanceC, 'CM-1', '0', '0', 13);
+
+            CreateEvent($TourId, $i++, 0, 0, 4, $TargetC, 5, 3, 1, 5, 3, 1, 'CW-1', 'Compound Damen - 9.-12. Platz', 0, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeC, $DistanceC, 'CW', '0', '0', 9);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetC, 5, 3, 1, 5, 3, 1, 'CW-2', 'Compound Damen - 5.-8. Platz', 0, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeC, $DistanceC, 'CW', '0', '0', 5);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetC, 5, 3, 1, 5, 3, 1, 'CW-3', 'Compound Damen - 13.-16. Platz', 0, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeC, $DistanceC, 'CW-1', '0', '0', 13);
+
+            CreateEvent($TourId, $i++, 0, 0, 4, $TargetB, 5, 3, 1, 5, 3, 1, 'BM-1', 'Blankbogen Herren - 9.-12. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeB, $DistanceB, 'BM', '0', '0', 9);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetB, 5, 3, 1, 5, 3, 1, 'BM-2', 'Blankbogen Herren - 5.-8. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeB, $DistanceB, 'BM', '0', '0', 5);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetB, 5, 3, 1, 5, 3, 1, 'BM-3', 'Blankbogen Herren - 13.-16. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeB, $DistanceB, 'BM-1', '0', '0', 13);
+
+            CreateEvent($TourId, $i++, 0, 0, 4, $TargetB, 5, 3, 1, 5, 3, 1, 'BW-1', 'Blankbogen Damen - 9.-12. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeB, $DistanceB, 'BW', '0', '0', 9);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetB, 5, 3, 1, 5, 3, 1, 'BW-2', 'Blankbogen Damen - 5.-8. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeB, $DistanceB, 'BW', '0', '0', 5);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetB, 5, 3, 1, 5, 3, 1, 'BW-3', 'Blankbogen Damen - 13.-16. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeB, $DistanceB, 'BW-1', '0', '0', 13);
+
+            CreateEvent($TourId, $i++, 0, 0, 4, $TargetT, 5, 3, 1, 5, 3, 1, 'TM-1', 'Traditional Herren - 9.-12. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeT, $DistanceT, 'TM', '0', '0', 9);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetT, 5, 3, 1, 5, 3, 1, 'TM-2', 'Traditional Herren - 5.-8. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeT, $DistanceT, 'TM', '0', '0', 5);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetT, 5, 3, 1, 5, 3, 1, 'TM-3', 'Traditional Herren - 13.-16. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeT, $DistanceT, 'TM-1', '0', '0', 13);
+
+            CreateEvent($TourId, $i++, 0, 0, 4, $TargetT, 5, 3, 1, 5, 3, 1, 'TW-1', 'Traditional Damen - 9.-12. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeT, $DistanceT, 'TW', '0', '0', 9);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetT, 5, 3, 1, 5, 3, 1, 'TW-2', 'Traditional Damen - 5.-8. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeT, $DistanceT, 'TW', '0', '0', 5);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetT, 5, 3, 1, 5, 3, 1, 'TW-3', 'Traditional Damen - 13.-16. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeT, $DistanceT, 'TW-1', '0', '0', 13);
+
+            CreateEvent($TourId, $i++, 0, 0, 4, $TargetT, 5, 3, 1, 5, 3, 1, 'LM-1', 'Langbogen Herren - 9.-12. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeT, $DistanceT, 'LM', '0', '0', 9);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetT, 5, 3, 1, 5, 3, 1, 'LM-2', 'Langbogen Herren - 5.-8. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeT, $DistanceT, 'LM', '0', '0', 5);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetT, 5, 3, 1, 5, 3, 1, 'LM-3', 'Langbogen Herren - 13.-16. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeT, $DistanceT, 'LM-1', '0', '0', 13);
+
+            CreateEvent($TourId, $i++, 0, 0, 4, $TargetT, 5, 3, 1, 5, 3, 1, 'LW-1', 'Langbogen Damen - 9.-12. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeT, $DistanceT, 'LW', '0', '0', 9);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetT, 5, 3, 1, 5, 3, 1, 'LW-2', 'Langbogen Damen - 5.-8. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeT, $DistanceT, 'LW', '0', '0', 5);
+            CreateEvent($TourId, $i++, 0, 0, 2, $TargetT, 5, 3, 1, 5, 3, 1, 'LW-3', 'Langbogen Damen - 13.-16. Platz', 1, FINAL_NO_ELIM, MATCH_SEP_FROM_4, 0, 0, '', '', $TargetSizeT, $DistanceT, 'LW-1', '0', '0', 13);
+
+// Create all Women Sub-Events (Individuals only)
+            foreach (array('R'=>'R_','C'=>'C_','B'=>'B_','L'=>'L_','T'=>'T_') as $kDiv=>$vDiv) {
+                $clsTmpArr = array('W','U21W','U18W','60W');
+                if($kDiv == 'R' AND $TourType == 3) {
+                    $clsTmpArr = array('W','U21W');
+                } else if($kDiv == 'T') {
+                    $clsTmpArr = array('W','U21W','60W');
+                    }
+                foreach($clsTmpArr as $kClass=>$vClass) {
+                    foreach(array('-1','-2','-3') as $MySubEvents) {
+                        $MyString = str_replace('_','W',$vDiv).$MySubEvents;
+                        InsertClassEvent($TourId, 0, 1, $MyString, $kDiv,  $vClass);
+                    }
+                }
+// Create all Men Sub-Events (Individuals only)
+                $clsTmpArr = array('M','U21M','U18M','60M');
+                if($kDiv == 'R' AND $TourType == 3) {
+                    $clsTmpArr = array('M','U21M');
+                } else if($kDiv == 'T') {
+                    $clsTmpArr = array('M','U21M','60M');
+                }
+                foreach($clsTmpArr as $kClass=>$vClass) {
+                    foreach(array('-1','-2','-3') as $MySubEvents) {
+                        $MyString = str_replace('_','M',$vDiv).$MySubEvents;
+                        InsertClassEvent($TourId, 0, 1, $MyString, $kDiv,  $vClass);
+                    }
+                }
+            }
+// END all Sub-Events
+
+            safe_w_sql("UPDATE Events SET EvMedals=0 WHERE EvCode IN ('RM-1','RM-2','RM-3','RW-1','RW-2','RW-3','CM-1','CM-2','CM-3','CW-1','CW-2','CW-3','BM-1','BM-2','BM-3','BW-1','BW-2','BW-3','TM-1','TM-2','TM-3','TW-1','TW-2','TW-3','LM-1','LM-2','LM-3','LW-1','LW-2','LW-3') AND EvTournament=$TourId");
+        }
+
+        // END Loosers Matches
 
 	// Finals & TeamFinals
 	CreateFinals($TourId);
@@ -388,7 +490,7 @@ switch($TourType) {
         CreateTargetFace($TourId, 1, '~Default', '%', '1', TGT_OUT_FULL, 122, TGT_OUT_FULL, 122, TGT_OUT_5_big10, 80, TGT_OUT_5_big10, 80, TGT_OUT_FULL, 122, TGT_OUT_FULL, 122, TGT_OUT_5_big10, 80, TGT_OUT_5_big10, 80);
         CreateTargetFace($TourId, 2, '~50: 5-X/30: 5-X', 'REG-^R|^C', '',TGT_OUT_FULL, 122, TGT_OUT_FULL, 122,TGT_OUT_5_big10, 80, TGT_OUT_5_big10, 80,TGT_OUT_FULL, 122, TGT_OUT_FULL, 122,TGT_OUT_5_big10, 80, TGT_OUT_5_big10, 80);
         break;
-	case 3:
+    case 3:
 	    if ($SubRule==1) {
             CreateTargetFace($TourId, 1, '~Default', 'REG-^R|^B|^T|^L|^CU13|^COU13|^W1U13|^W1U15', '1', TGT_OUT_FULL, 122, TGT_OUT_FULL, 122);
             CreateTargetFace($TourId, 2, '~DefaultCO', 'REG-^CU18|^CU21|^C60|^C[M|W]$', '1', TGT_OUT_5_big10, 80, TGT_OUT_5_big10, 80);
@@ -436,7 +538,7 @@ switch($TourType) {
             CreateTargetFace($TourId, 5, '~Default', 'REG-^T|^L', '1', TGT_IND_1_big10, 80, TGT_IND_1_big10, 80);
         }
         break;
-	case 8:
+    case 8:
         if($SubRule==1) {
             CreateTargetFace($TourId, 1, '~Default', 'REG-^RU18|^RU21|^R60|^R[M|W]$|^ROU18|^ROU21|^RO60|^RO[M|W]$', '1', TGT_IND_6_big10, 60, TGT_IND_6_big10, 60, TGT_IND_6_big10, 40, TGT_IND_6_big10, 40);
             CreateTargetFace($TourId, 2, '~DefaultCO', 'REG-^CU18|^CU21|^C60|^C[M|W]$|^COU18|^COU21|^CO60|^CO[M|W]$|^W1U21|^W160|^W1[M|W]$', '1', TGT_IND_6_small10, 60, TGT_IND_6_small10, 60, TGT_IND_6_small10, 40, TGT_IND_6_small10, 40);

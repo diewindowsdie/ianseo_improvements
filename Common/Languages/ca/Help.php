@@ -5,13 +5,15 @@ $lang['AutoCheckinConfirm']='Si totes les dades són correctes, premeu CONFIRMAR
 $lang['AutoCheckinSearch']='Escaneja el codi QR que has rebut o escriviu el vostre nom';
 $lang['AutoCHK-CanEdit']='Permet als operadors de registre editar Noms, Correus Electrònics, Associacions, etc';
 $lang['AutoCHK-Code']='Llista de Competicions, una per línia<br> El primer codi de competició s\'utilitzarà com a capçalera a les terminals de verificació automàtica';
-$lang['AutoCHK-IP']='Llista d\'IP dels dispositius de registre automàtic. Una adreça IP per línia';
+$lang['AutoCHK-IP']='Llista d\'IP dels dispositius de registre automàtic. Una adreça IP per línia, que coincideix amb un dels formats següents:<br> IP Dispositiu<br> IP Dispositiu | Cua Impressora Acreditació <br> IP Dispositiu | Cua Impressora Acreditació | 
+ Cua Impressora Nom Etiqueta<br> Cua Impressora en forma: Nom Cua [ @ Servidor Impressora ]<br> Si no hi ha cap Cua Impressora definida, es mostrarà diàleg impressió estàndard';
 $lang['AutoCHK-IPinfo']='Llista d\'IP dels punts d\'autoinformació. Una adreça IP per línia';
 $lang['AutoCHK-IPnoMgm']='Llista d\'IP de terminals auto-verificació. Una Adreça IP per línia, que coincideix amb un dels formats següents:<br> IP Dispositiu<br> IP Dispositiu | Nom Cua Impressora<br> IP Dispositiu | Nom Cua Impressora | IP Servidor Impressió';
 $lang['AutoCHK-Print']='Mostra el diàleg d\'impressió automàticament';
 $lang['AutoImportSettings']='<b>Només per a Usuaris Experts</b><br>Canviar el funcionament predeterminat podria provocar resultats inexactes.<br> És important tornar a calcular tots els rànquings que s\'han configurat com a "manualment" ABANS d\'enviar-los a ianseo.net o resultats d\'impressió i en general abans de qualsevol distribució de qualsevol tipus.';
 $lang['ChangeComponents']='<p>Per continuar amb un canvi de component, primer traieu l\'atleta que ja no forma part de l\'equip perquè es puguin activar les opcions de substitució.</p> &#9654&nbsp; Puntuacions incloses en el total de l\'equip a la ronda classificatòria<br>  &#9655&nbsp; Puntuació no inclosa en el total de l\'equip a la ronda classifictòria';
 $lang['CombiCompList']='Llista de Codis de Competició, separats per comes';
+$lang['DeleteChannel']='Elimina Canal. Això eliminarà totes les particions del canal i del propi canal.';
 $lang['ExportAdvanced']='També exporta Inscripció i Associació per crear-les si falten al endpoint';
 $lang['ExportCategories']='Trieu quines categories/esdeveniments voleu exportar (cap selecció vol dir tot)';
 $lang['ExportDistances']='Seleccioneu quin(es) distàncie(s) voleu exportar (sense selecció significa totes les distàncies)';

@@ -1503,7 +1503,6 @@ $lang['UserPasswordOld']='Password Lama';
 $lang['UserPasswordRetype']='Ketik Ulang Password Baru';
 $lang['UseSubClasses']='Terapkan ke subkelas spesifik';
 $lang['ValidClass']='Kelas Valid';
-$lang['ValidDivisions']='Divisi yang Diizinkan (kosongkan untuk semua)';
 $lang['VersionBracketsInd']='Braket Individual';
 $lang['VersionBracketsTeam']='Braket Beregu';
 $lang['VersionEntries']='Entri';

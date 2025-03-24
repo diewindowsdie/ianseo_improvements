@@ -174,7 +174,7 @@
 				EnDivision=" . StrSafe_DB($EnDivision) . ",
 				EnClass=" . StrSafe_DB(trim($_REQUEST['d_e_EnClass_'])) . ",
 				EnAthlete=" . StrSafe_DB($EnAthlete) . ",
-				EnSubClass=" . StrSafe_DB(trim($_REQUEST['d_e_EnSubClass_'])) . ",
+				EnSubClass=" . StrSafe_DB(trim($_REQUEST['d_e_EnSubClass_']??'')) . ",
 				EnAgeClass=" . StrSafe_DB(trim($_REQUEST['d_e_EnAgeClass_'])) . ",
 				EnSubTeam=" . StrSafe_DB($_REQUEST['d_e_EnSubTeam_']) . ",
 				EnCountry=-Country-,
@@ -242,8 +242,8 @@
 			LogAccBoothQuerry("delete from ExtraData where EdEmail='' and EdId=($SelectEnId) and EdType='E' and EdExtra=''");
 
 			// updates the flights for Vegas... if any
-			safe_w_sql("update Vegas set VeSubClass=".StrSafe_DB(trim($_REQUEST['d_e_EnSubClass_']))." where VeId=$id");
-			LogAccBoothQuerry("update Vegas set VeSubClass=".StrSafe_DB(trim($_REQUEST['d_e_EnSubClass_']))." where VeId=($SelectEnId)");
+			safe_w_sql("update Vegas set VeSubClass=".StrSafe_DB(trim($_REQUEST['d_e_EnSubClass_']??''))." where VeId=$id");
+			LogAccBoothQuerry("update Vegas set VeSubClass=".StrSafe_DB(trim($_REQUEST['d_e_EnSubClass_']??''))." where VeId=($SelectEnId)");
 
 			// if it is an email...
 			if(preg_match('/^[a-z0-9._#-]+@[a-z0-9._-]+$/sim', $_REQUEST['d_ed_EdEmail_'])) {

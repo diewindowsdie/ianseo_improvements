@@ -232,7 +232,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='Participación de los 
 $lang['MenuLM_Athletes Setup']='Configuración de los Atletas';
 $lang['MenuLM_Athletes Sync.']='Sincronización Archivo de Arqueros';
 $lang['MenuLM_AthletesDiscrepancies']='Discrepancias en Atletas';
-$lang['MenuLM_Athlets fees status']='Situación de las inscripciones de los Atletas';
 $lang['MenuLM_Authentication']='Autenticación del usuario';
 $lang['MenuLM_AutoCheckinSetup']='Configuración del auto registro';
 $lang['MenuLM_Automator']='Automator';

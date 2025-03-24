@@ -9,6 +9,7 @@
 $startSession=(isset($_REQUEST['startSession']) ? $_REQUEST['startSession'] : null);
 $endSession=(isset($_REQUEST['endSession']) ? $_REQUEST['endSession'] : null);
 $filter=((isset($_REQUEST['filter']) AND preg_match("/^[0-9A-Z%_]+$/i",$_REQUEST["filter"])) ? $_REQUEST['filter'] : null);
+$filterev=((isset($_REQUEST['filterev']) AND preg_match("/^[0-9A-Z]+$/i",$_REQUEST["filterev"])) ? $_REQUEST['filterev'] : null);
 $isEvent=(isset($_REQUEST['isEvent']) && $_REQUEST['isEvent']==1 ? $_REQUEST['isEvent'] : 0);
 $sourceRankFrom=(isset($_REQUEST['sourceRankFrom']) ? $_REQUEST['sourceRankFrom'] : 1);
 $sourceRankTo=(isset($_REQUEST['sourceRankTo']) ? $_REQUEST['sourceRankTo'] : 99999);
@@ -117,21 +118,23 @@ if (isset($_REQUEST['command'])) {
 							 * Un eventuale confronto con la classifica di classe potrebbe mostrare discrepanze
 							 * (l'elenco delle persone di questa query ha un numero di righe >= a quello della classifica di classe)
 							 */
-                            $query = "SELECT QuId, EnFirstName, EnName, EnWChair, EnDoubleSpace, CONCAT(EnDivision,EnClass) AS `Event`, QuSession, QuTargetNo, QuClRank as `Rank` 
+                            $query = "SELECT QuId, EnFirstName, EnName, EnWChair, EnDoubleSpace, CONCAT(EnDivision,EnClass) AS `Event`, QuSession, QuTargetNo, ".($filterev ? "QuSubClassRank" : "QuClRank")." as `Rank` 
                                 FROM Tournament 
                                 INNER JOIN Entries ON ToId=EnTournament 
                                 INNER JOIN Qualifications ON EnId=QuId 
-                                WHERE CONCAT(EnDivision,EnClass) LIKE " . StrSafe_DB($filter) . " AND EnAthlete=1  AND EnStatus<=1 AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND QuScore<>0 
-                                ORDER BY QuClRank $RankOrder, EnFirstName, EnName ";
+                                WHERE CONCAT(EnDivision,EnClass) LIKE " . StrSafe_DB($filter) . " AND EnAthlete=1  AND EnStatus<=1 AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND QuScore<>0 ".
+                                ($filterev ? " AND EnSubClass=".StrSafe_DB($filterev) : '').
+                                " ORDER BY QuClRank $RankOrder, EnFirstName, EnName ";
                         } else {
                             // assoluti individuali
-                            $query = "SELECT QuId, EnFirstName, EnName,EnWChair, EnDoubleSpace, CONCAT(EnDivision,EnClass) AS `Event`, QuSession, QuTargetNo, IndRank as `Rank` 
+                            $query = "SELECT QuId, EnFirstName, EnName,EnWChair, EnDoubleSpace, CONCAT(EnDivision,EnClass) AS `Event`, QuSession, QuTargetNo, ".($filterev ? "QuSubClassRank" : "IndRank")." as `Rank` 
                                 FROM Tournament 
                                 INNER JOIN Entries ON ToId=EnTournament 
                                 INNER JOIN Qualifications ON EnId=QuId 
                                 INNER JOIN Individuals ON IndId=EnId AND IndTournament=EnTournament 
-                                WHERE EnAthlete=1 AND EnIndFEvent=1 AND EnStatus <= 1  AND QuScore<>'0' AND ToId = " . StrSafe_DB($_SESSION['TourId']) . " AND IndEvent LIKE " . StrSafe_DB($filter) . " 
-                                ORDER BY IndRank $RankOrder, EnFirstName, EnName ";
+                                WHERE EnAthlete=1 AND EnIndFEvent=1 AND EnStatus <= 1  AND QuScore<>'0' AND ToId = " . StrSafe_DB($_SESSION['TourId']) . " AND IndEvent LIKE " . StrSafe_DB($filter) .
+                                ($filterev ? " AND EnSubClass=".StrSafe_DB($filterev) : '').
+                                " ORDER BY IndRank $RankOrder, EnFirstName, EnName ";
                         }
                         $Rs=safe_r_sql($query);
 
@@ -229,8 +232,9 @@ include('Common/Templates/head.php');
 				<?php print get_text('Session');?>: <?php print $comboStartSession;?>
 				&nbsp;&nbsp;
 				<?php print get_text('FilterOnDivCl','Tournament'); ?>: <input type="text" name="filter" id="filter" size="12" maxlength="10" value="<?php print (!is_null($filter) ? $filter : '');?>" />
-				&nbsp;&nbsp;
-				<input type="checkbox" name="isEvent" id="isEvent" value="1" <?php print ($isEvent==1 ? 'checked="yes"' : '');?>/>&nbsp;<?php print get_text('Event');?>
+            &nbsp;&nbsp;  <?php print get_text('FilterOnSubCl','Tournament'); ?>: <input type="text" name="filterev" id="filterev" size="5" maxlength="3" value="<?php print (!is_null($filterev) ? $filterev : '');?>" />
+
+                <input type="checkbox" name="isEvent" id="isEvent" value="1" <?php print ($isEvent==1 ? 'checked="yes"' : '');?>/>&nbsp;<?php print get_text('Event');?>
 				&nbsp;&nbsp;
 				<?php print get_text('Rank');?>
 				<?php print get_text('From','Tournament');?>: <input type="text" name="sourceRankFrom" id="sourceRankFrom" size="4" maxlength="4" value="<?php print $sourceRankFrom;?>" />

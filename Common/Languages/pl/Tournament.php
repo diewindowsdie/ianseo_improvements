@@ -1033,7 +1033,6 @@ $lang['Unset-DSQ']='Usuń DSQ';
 $lang['UpdateJPG']='tworzy również wersję JPG';
 $lang['UpdatePNG']='Aktualizować odpowiedni plik PNG?';
 $lang['URL']='URL';
-$lang['ValidDivisions']='Dozwolone Konk. (puste dla wszystkich)';
 $lang['VersionBracketsInd']='Drabinki indywidualne';
 $lang['VersionBracketsTeam']='Drabinki zespołowe';
 $lang['VersionEntries']='Zgłoszenia';

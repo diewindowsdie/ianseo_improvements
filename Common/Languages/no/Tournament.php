@@ -1228,7 +1228,6 @@ $lang['UserEnabled']='Aktivert';
 $lang['UserName']='Brukernavn';
 $lang['UseSubClasses']='Bruk på spesifikke underklasser';
 $lang['ValidClass']='Gyldig klasser';
-$lang['ValidDivisions']='Tillatte Div. (tom for alle)';
 $lang['VersionBracketsInd']='Individuelt oppsett';
 $lang['VersionBracketsTeam']='Lagoppsett';
 $lang['VersionEntries']='Starter';

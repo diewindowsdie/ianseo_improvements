@@ -205,7 +205,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='Sportistu dalība Ind/
 $lang['MenuLM_Athletes Setup']='Sportistu uzstādījumi';
 $lang['MenuLM_Athletes Sync.']='Sportistu sinhronizācija';
 $lang['MenuLM_AthletesDiscrepancies']='Atlētu Neatbilstības';
-$lang['MenuLM_Athlets fees status']='Sportista dalības maksas statuss';
 $lang['MenuLM_AutoCheckinSetup']='Automātiskās reģistrācijas uzstādījumi';
 $lang['MenuLM_Back Number Printout']='Starta numuru izdruka';
 $lang['MenuLM_Boinx']='Boinx slāņu uzstādījumi';

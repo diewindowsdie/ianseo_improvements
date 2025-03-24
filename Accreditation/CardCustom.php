@@ -45,6 +45,9 @@ require_once('CommonCard.php');
 
 $Rs=safe_r_sql($MyQuery);
 if (!safe_num_rows($Rs)) {
+    if($_REQUEST['FromMail']??'') {
+        die('');
+    }
 	include('Common/Templates/head-popup.php');
 	echo '<table style="margin-top:20vh" width="100%"><tr><td>';
 	echo '<div align="center">' . get_text('BadgeNoData', 'Tournament') . '';
@@ -56,6 +59,9 @@ if (!safe_num_rows($Rs)) {
 
 $q=safe_r_SQL("select * from IdCards where IcTournament in ($TourId) and IcType='$CardType' and IcNumber=$CardNumber");
 if(!($BackGround=safe_fetch($q))) {
+    if($_REQUEST['FromMail']??'') {
+        die('');
+    }
 	include('Common/Templates/head-popup.php');
 	echo '<table height="'.($_SESSION['WINHEIGHT']-50).'" width="100%"><tr><td>';
 	echo '<div align="center">' . get_text('BadgeNoData', 'Tournament') . '';
@@ -523,6 +529,9 @@ while ($MyRow=safe_fetch($Rs)) {
                             }
 							$Text=array($Code.$T);
 							break;
+                        case 'EvSubCode':$Text=array($MyRow->DivCode.$MyRow->ClassCode.'-'.$MyRow->SubClass); break;
+                        case 'EvSubCode-EvSubDescr':$Text=array($MyRow->DivCode.$MyRow->ClassCode.'-'.$MyRow->SubClass. ' '.$MyRow->DivDescription.' '.$MyRow->ClDescription.' '.$MyRow->ScDescription); break;
+                        case 'EvSubDescr':$Text=array($MyRow->DivDescription.' '.$MyRow->ClDescription.' '.$MyRow->ScDescription); break;
 						default:
 							if($MyRow->EnCaption) {
 								$T=$MyRow->EnCaption;
@@ -545,6 +554,25 @@ while ($MyRow=safe_fetch($Rs)) {
 						case 'Roman': $Text=array(inttoRoman($MyRow->Rank)); break;
                     }
                 }
+			case 'PayoutAwarded':
+				if(!isset($Text)) {
+                    $Award=number_format($MyRow->AwValue, 2, '.', ',');
+                    switch($Element->IceContent) {
+                        case '':
+                        case 'Numbers':
+                            $Text=[$Award];
+                            break;
+                        case 'Letters':
+                        case 'LettersWithDecimal':
+                            $nf = new NumberFormatter($MyRow->ToPrintLang, NumberFormatter::SPELLOUT);
+                            $Text=array($nf->format(intval($MyRow->AwValue)));
+                            $Text[0]= mb_convert_case($Text[0],MB_CASE_TITLE);
+                            if($Element->IceContent=='LettersWithDecimal') {
+                                $Text[0].=' and '.substr($Award,-2).'/100';
+                            }
+                            break;
+                    }
+                }
 			case 'FinalRanking':
                 if(!isset($Text)) {
                     switch($Element->IceContent) {
@@ -552,6 +580,15 @@ while ($MyRow=safe_fetch($Rs)) {
                         case 'Cardinal':  $Text=array($MyRow->RankFinal); break;
                         case 'Ordinal':  $Text=array(ordinal($MyRow->RankFinal)); break;
 						case 'Roman': $Text=array(inttoRoman($MyRow->RankFinal)); break;
+                    }
+                }
+			case 'SubclassRanking':
+                if(!isset($Text)) {
+                    switch($Element->IceContent) {
+                        case '':
+                        case 'Cardinal':  $Text=array($MyRow->SubclassRank); break;
+                        case 'Ordinal':  $Text=array(ordinal($MyRow->SubclassRank)); break;
+						case 'Roman': $Text=array(inttoRoman($MyRow->SubclassRank)); break;
                     }
                 }
             case 'WRank':

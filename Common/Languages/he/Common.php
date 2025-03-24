@@ -221,7 +221,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='השתתפות מתח�
 $lang['MenuLM_Athletes Setup']='הגדרת קשתים';
 $lang['MenuLM_Athletes Sync.']='סנכרון קשתים';
 $lang['MenuLM_AthletesDiscrepancies']='תיאורי מתחרים';
-$lang['MenuLM_Athlets fees status']='מצב תשלומי קשתים';
 $lang['MenuLM_Authentication']='אימות משתמשים';
 $lang['MenuLM_AutoCheckinSetup']='הגדרות העלאה אוטומטית';
 $lang['MenuLM_Back Number Printout']='הדפסת מספרי גב';

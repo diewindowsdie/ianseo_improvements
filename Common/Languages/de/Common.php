@@ -181,7 +181,6 @@ $lang['MenuLM_Athlete Status Management']='Verwaltung des Schützenstatus';
 $lang['MenuLM_Athletes Participation to Ind/Team Event']='Teilnahme Einzel - Mannschaft';
 $lang['MenuLM_Athletes Setup']='Eingabe der Athleten';
 $lang['MenuLM_Athletes Sync.']='Aktualisierung der Schützen';
-$lang['MenuLM_Athlets fees status']='Schützen mit kostenloser Teilnahme';
 $lang['MenuLM_AutoCheckinSetup']='Auto Check-In Setup';
 $lang['MenuLM_Back Number Printout']='Startnummern Druck';
 $lang['MenuLM_Boinx']='Boinx Layers Setup';

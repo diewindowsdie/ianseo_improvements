@@ -715,7 +715,6 @@ $lang['Type_SweForestRound']='Švédská lesní sestava';
 $lang['Unisex']='Unisex';
 $lang['UpdateJPG']='také vytvořit JPG verzi';
 $lang['UpdatePNG']='Změnit odpovídající PNG soubor?';
-$lang['ValidDivisions']='Povolené divize (prázdný pro všechny)';
 $lang['ViewTeamComponentsDescr']='Přepínače pro zobrazení členů týmu';
 $lang['WarmUp']='Trénink';
 $lang['Warning']='Upozornění!';

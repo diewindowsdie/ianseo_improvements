@@ -146,7 +146,6 @@ $lang['MenuLM_Arrow by Arrow (Scorecards)']='Flèche par flèche (vue carte de p
 $lang['MenuLM_Athletes Participation to Ind/Team Event']='Participation des athlètes  Indiv./équipes';
 $lang['MenuLM_Athletes Setup']='Configuration - Athlètes';
 $lang['MenuLM_Athletes Sync.']='Sync. Athlètes';
-$lang['MenuLM_Athlets fees status']='Athlètes - Statut des frais';
 $lang['MenuLM_AutoCheckinSetup']='Enregistrement automatique de la configuration';
 $lang['MenuLM_Back Number Printout']='Dossard imprimé';
 $lang['MenuLM_ChangeNationsNames']='Changer noms des pays';

@@ -1136,7 +1136,6 @@ $lang['UserDetails']='Felhasználó adatai';
 $lang['UserEnabled']='Engedélyezve';
 $lang['UserName']='Felhasználónév';
 $lang['UseSubClasses']='Alkalmazd a specifikus al-korcsoportokra';
-$lang['ValidDivisions']='Engedélyezett kategóriák (ha mind, hagyd üresen)';
 $lang['VersionBracketsInd']='Egyéni fésű';
 $lang['VersionBracketsTeam']='Csapat fésű';
 $lang['VersionEntries']='Nevezések';

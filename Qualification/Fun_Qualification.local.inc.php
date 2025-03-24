@@ -1084,7 +1084,7 @@ function MakeTeamsAbs($Societa=null, $Div=null, $Cl=null, $ToId=0)/*,$MoreTeam=t
         $Rs = safe_w_sql($Delete);
         //
         // Estraggo la lista di eventi per le finali a squadre
-        $Select = "SELECT DISTINCT EcCode, EvPartialTeam, EvMultiTeam, EvMultiTeamNo, EvMixedTeam, EvTeamCreationMode, EvRunning 
+        $Select = "SELECT DISTINCT EcCode, EvPartialTeam, EvMultiTeam, EvMultiTeamNo, EvMixedTeam, EvTeamCreationMode, EvRunning, EvLockResults
 		FROM EventClass 
 	    INNER JOIN Events ON EcCode=EvCode AND EvTeamEvent=1 AND EcTeamEvent!='0' AND EcTournament=EvTournament 
 		WHERE EcTournament=" . StrSafe_DB($ToId);
@@ -1123,11 +1123,27 @@ function MakeTeamsAbs($Societa=null, $Div=null, $Cl=null, $ToId=0)/*,$MoreTeam=t
                             $TeamNum[$MyRowDef->EcTeamEvent] = $MyRowDef->EcNumber;
 
                     }
+                    $tmp = array(array(),array(),array(),array());
+                    if($RowEv->EvLockResults) {
+                        foreach (range(1, $RowEv->EvLockResults) as $n) {
+                            $tmp[0][] = "QuD{$n}Score";
+                            $tmp[1][] = "QuD{$n}Gold";
+                            $tmp[2][] = "QuD{$n}Xnine";
+                            $tmp[3][] = "QuD{$n}Hits";
+                        }
+                        $tmp[0] = "(".implode('+', $tmp[0]).")";
+                        $tmp[1] = "(".implode('+', $tmp[1]).")";
+                        $tmp[2] = "(".implode('+', $tmp[2]).")";
+                        $tmp[3] = "(".implode('+', $tmp[3]).")";
+
+                    } else {
+                        $tmp = array('QuScore', 'QuGold', 'QuXnine', 'QuHits');
+                    }
                     $MyQuery = 'select * from (';
                     foreach ($TeamDef as $key => $value) {
                         $ifc = ifSqlForCountry($RowEv->EvTeamCreationMode);
                         $MyQuery .= "(SELECT {$ifc} AS Country, " . $key . " as CheQuery, EnId, EnSubTeam,
-						QuScore, QuGold, QuXnine, QuHits, " . ($RowEv->EvRunning == 1 ? "(QuScore/QuHits)" : "QuScore") . " As ScoreCalc
+						{$tmp[0]} as QuScore, {$tmp[1]} as QuGold, {$tmp[2]} as QuXnine, {$tmp[3]} as QuHits, " . ($RowEv->EvRunning == 1 ? "({$tmp[0]}/{$tmp[3]})" : "{$tmp[0]}") . " As ScoreCalc
 						FROM Entries 
 							INNER JOIN Qualifications ON EnId=QuId and (QuScore>0 or QuHits>0)
 						    inner join IrmTypes on IrmId=QuIrmType and IrmShowRank=1 

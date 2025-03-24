@@ -487,14 +487,32 @@ function deleteEvent($Event, $TeamEvent=0, $TourId=0) {
         // deletes warmup
         safe_w_sql("delete from FinWarmup where FwTournament={$TourId} and FwTeamEvent={$TeamEvent} and FwEvent={$EventSafe}");
         //	elimino le righe da EventClass
-        safe_w_sql("DELETE FROM EventClass  WHERE EcTournament={$TourId} AND EcTeamEvent={$TeamEvent} AND EcCode={$EventSafe}");
+        if($TeamEvent) {
+            safe_w_sql("DELETE FROM EventClass  WHERE EcTournament={$TourId} AND EcTeamEvent!=0 AND EcCode={$EventSafe}");
+        } else {
+            safe_w_sql("DELETE FROM EventClass  WHERE EcTournament={$TourId} AND EcTeamEvent=0 AND EcCode={$EventSafe}");
+        }
+
+        // remove Round Robin  and Run Archery items
+        safe_w_sql("delete from RoundRobinGrids where RrGridTournament={$TourId} and RrGridTeam={$TeamEvent} and RrGridEvent={$EventSafe}");
+        safe_w_sql("delete from RoundRobinGroup where RrGrTournament={$TourId} and RrGrTeam={$TeamEvent} and RrGrEvent={$EventSafe}");
+        safe_w_sql("delete from RoundRobinLevel where RrLevTournament={$TourId} and RrLevTeam={$TeamEvent} and RrLevEvent={$EventSafe}");
+        safe_w_sql("delete from RoundRobinMatches where RrMatchTournament={$TourId} and RrMatchTeam={$TeamEvent} and RrMatchEvent={$EventSafe}");
+        safe_w_sql("delete from RoundRobinParticipants where RrPartTournament={$TourId} and RrPartTeam={$TeamEvent} and RrPartEvent={$EventSafe}");
+        safe_w_sql("delete from RunArchery where RaTournament={$TourId} and RaTeam={$TeamEvent} and RaEvent={$EventSafe}");
+        safe_w_sql("delete from RunArcheryParticipants where RapTournament={$TourId} and RapTeamEvent={$TeamEvent} and RapEvent={$EventSafe}");
+        safe_w_sql("delete from RunArcheryRank where RarTournament={$TourId} and RarTeam={$TeamEvent} and RarEvent={$EventSafe}");
 
         if ($TeamEvent) {
             // elimino le righe da Teams
             safe_w_sql("DELETE FROM Teams WHERE TeTournament={$TourId} AND TeEvent={$EventSafe} AND TeFinEvent=1 ");
             // cancello i nomi
             safe_w_sql("DELETE FROM TeamComponent WHERE TcTournament={$TourId} AND TcFinEvent=1 AND TcEvent={$EventSafe}");
+            safe_w_sql("DELETE FROM TeamEligibleComponent WHERE TecTournament={$TourId} AND TecEvent={$EventSafe}");
             safe_w_sql("DELETE FROM TeamFinComponent WHERE TfcTournament={$TourId} AND TfcEvent={$EventSafe}");
+            safe_w_sql("DELETE FROM TeamFinComponentStats WHERE TfcStatTournament={$TourId} AND TfcStatEvent={$EventSafe}");
+            safe_w_sql("DELETE FROM TeamFinComponentLog WHERE TfclTournament={$TourId} AND TfclEvent={$EventSafe}");
+            safe_w_sql("DELETE FROM TeamDavis WHERE TeDaTournament={$TourId} AND TeDaEvent={$EventSafe}");
             // elimino le griglie
             safe_w_sql("DELETE FROM TeamFinals WHERE TfTournament={$TourId} AND TfEvent=$EventSafe");
         } else {

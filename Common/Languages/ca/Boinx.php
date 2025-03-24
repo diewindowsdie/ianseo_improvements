@@ -15,6 +15,7 @@ $lang['CssBoxLeft']='Box - Esquerra';
 $lang['CssBoxRight']='Box - Dreta';
 $lang['CssCountry']='Bloc Nom i Bandera - Codi País';
 $lang['CssCountryCommon']='País';
+$lang['CssCountryName']='Bloc Nom i Bandera - Nom del País';
 $lang['CssFlag']='Bloc Nom i Bandera - Bandera';
 $lang['CssFlexArrows']='Bloc Detall Fletxes - Comú';
 $lang['CssFlexArrowsDiv']='Fletxa Unica Div';

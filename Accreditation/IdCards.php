@@ -219,7 +219,7 @@ echo '<div class="CustomBadges">';
 		echo '<tr><th>'.get_text('BadgeName', 'BackNumbers').'</th>
 			<td><select name="CardNumber" id="BadgeNumber" onchange="location.href=\'?CardType='.$CardType.'&CardNumber=\'+this.value">';
 			while($r=safe_fetch($IdCards)) {
-				echo '<option value="'.$r->IcNumber.'"'.($CardNumber==$r->IcNumber ? ' selected="selected"' : '').'>'.$r->IcName.'</options>';
+				echo '<option value="'.$r->IcNumber.'"'.($CardNumber==$r->IcNumber ? ' selected="selected"' : '').'>'.$r->IcNumber.' - '.$r->IcName.'</options>';
 			}
 			echo '</select></td></tr>';
 

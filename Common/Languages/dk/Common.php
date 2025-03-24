@@ -234,7 +234,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='Skytter der deltager i
 $lang['MenuLM_Athletes Setup']='Skytte opsætning';
 $lang['MenuLM_Athletes Sync.']='Skytte synkronisering';
 $lang['MenuLM_AthletesDiscrepancies']='Skytte uoverensstemmelser';
-$lang['MenuLM_Athlets fees status']='Status for skytters afgift';
 $lang['MenuLM_Authentication']='Bruger godkendelse';
 $lang['MenuLM_AutoCheckinSetup']='Auto Check-In setup';
 $lang['MenuLM_Automator']='Automator';

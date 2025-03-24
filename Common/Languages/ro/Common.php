@@ -131,7 +131,6 @@ $lang['MenuLM_Athlete Status Management']='Management status atleti/sportivi';
 $lang['MenuLM_Athletes Participation to Ind/Team Event']='Participarea atletilor/sportivilor la probele individuale/pe echipe';
 $lang['MenuLM_Athletes Setup']='Organizarea atletilor/sportivilor';
 $lang['MenuLM_Athletes Sync.']='Sincronizarea atletilor/sportivilor';
-$lang['MenuLM_Athlets fees status']='Evidenta platii taxelor';
 $lang['MenuLM_Back Number Printout']='Lista numere de concurs';
 $lang['MenuLM_Broadcast Control']='Control transmisiuni';
 $lang['MenuLM_Broadcast Preview']='Anticipare transmisiuni';

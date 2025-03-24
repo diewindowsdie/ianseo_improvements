@@ -1028,7 +1028,6 @@ $lang['UpdatePNG']='Обновление соответствующего фай
 $lang['UploadFile']='Загрузка файла (PDF)';
 $lang['URL']='URL';
 $lang['UseSubClasses']='Использовать Разряды';
-$lang['ValidDivisions']='Допуск в дивизионы (пусто-для всех)';
 $lang['VersionBracketsInd']='Индивидуальные сетки';
 $lang['VersionBracketsTeam']='Командные сетки';
 $lang['VersionEntries']='Заявки';

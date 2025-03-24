@@ -391,10 +391,10 @@ switch($TourType) {
 	case 22:
 		if($SubRule==3) {
 			// Champs
-			CreateTargetFace($TourId, $i++, 'Tripple 40cm', 'REG-(^R[D|H](?!U16)|^B[D|H]$)', '1', TGT_IND_6_big10, 40, TGT_IND_6_big10, 40);
+            CreateTargetFace($TourId, $i++, '40cm (1-10)', 'REG-(^R[D|H](|5|U21|U18)$|^B[D|H]$)', '1', TGT_IND_1_big10, 40, TGT_IND_1_big10, 40);
+			CreateTargetFace($TourId, $i++, 'Vegas 40cm', 'REG-(^R[D|H](?!U16)|^B[D|H]$)', '0', TGT_IND_6_big10, 40, TGT_IND_6_big10, 40);
             CreateTargetFace($TourId, $i++, 'Tripple 40cm CO', 'REG-(^C[D|H](|5|U21|U18)$)', '1', TGT_IND_6_small10, 40, TGT_IND_6_small10, 40);
             CreateTargetFace($TourId, $i++, '40cm (1-10)', 'REG-(^B[D|H](U21|U18|5)$)|((^T|^LB)[D|H](5){0,1})$', '1', TGT_IND_1_big10, 40, TGT_IND_1_big10, 40);
-            CreateTargetFace($TourId, $i++, '40cm (1-10)', 'REG-(^R[D|H](|5|U21|U18)$|^B[D|H]$)', '', TGT_IND_1_big10, 40, TGT_IND_1_big10, 40);
 			CreateTargetFace($TourId, $i++, '60cm (1-10)', 'REG-((^R|^T|^B|^LB)[D|H]U16)$|((^T|^LB)[D|H](U21|U18))$|^VI|^OC', '1', TGT_IND_1_big10, 60, TGT_IND_1_big10, 60);
             CreateTargetFace($TourId, $i++, 'Tripple 60cm', 'REG-^C[D|H]U16$', '1', TGT_IND_6_small10, 60, TGT_IND_6_small10, 60);
 		} else {

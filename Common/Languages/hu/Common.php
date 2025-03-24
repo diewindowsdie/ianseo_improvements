@@ -199,7 +199,6 @@ $lang['MenuLM_Athletes Participation to Ind/Team Event']='Versenyzők részvéte
 $lang['MenuLM_Athletes Setup']='Versenyzői beállítások';
 $lang['MenuLM_Athletes Sync.']='Versenyzők szinkr.';
 $lang['MenuLM_AthletesDiscrepancies']='Versenyzők hiányosságai';
-$lang['MenuLM_Athlets fees status']='Díjfizetés státusza';
 $lang['MenuLM_AutoCheckinSetup']='Auto-bejelentkezés beállítása';
 $lang['MenuLM_Back Number Printout']='Hátszámok nyomtatása';
 $lang['MenuLM_Boinx']='Boinx rétegek beállítása';
