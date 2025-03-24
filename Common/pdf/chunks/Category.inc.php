@@ -92,10 +92,7 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 		   	$pdf->SetFont($pdf->FontStd,'B',7);
 			$pdf->Cell($TargetFace ? 33 : 40, 4 * $secondaryTeam,  $MyRow->Athlete, 1, 0, 'L', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',7);
-            $text = $MyRow->Nation .
-                ($MyRow->Nation2 != '' ? ", " . $MyRow->Nation2 : "") .
-                ($MyRow->Nation3 != '' ? ", " . $MyRow->Nation3 : "");
-			$pdf->Cell($TargetFace ? 63 : 75, 4,  $text, 'RTB', 0, 'L', 0);
+			$pdf->Cell($TargetFace ? 63 : 75, 4,  getFullCountryName($MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3), 'RTB', 0, 'L', 0);
             $pdf->SetFont($pdf->FontStd,'',7);
             $pdf->Cell(15, 4 * $secondaryTeam,  $MyRow->DOB, 1, 0, 'C', 0);
             $pdf->Cell(8, 4 * $secondaryTeam,  ($MyRow->SubClassDescription), 1, 0, 'C', 0);

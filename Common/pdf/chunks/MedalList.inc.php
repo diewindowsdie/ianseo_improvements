@@ -73,11 +73,7 @@ foreach($PdfData->rankData['events'] as $Event => $section) {
 				}
 				$pdf->setXY($tmpX+40, $tmpY);
 				//Elenco NOC
-				$pdf->Cell(80, 5 * count($item['athletes']),
-                    $item['countryName'] .
-                    ($item['countryName2'] != '' ? ', ' : '') . $item['countryName2'] .
-                    ($item['countryName3'] != '' ? ', ' : '') . $item['countryName3']
-                    , 'RTB', 1, 'L', 0);
+				$pdf->Cell(80, 5 * count($item['athletes']), getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']), 'RTB', 1, 'L', 0);
 // 				$pdf->Cell(60, 5 * count($item['athletes']), $item['countryCode'] . '-' . $item['countryName'], 1, 1, 'L', 0);
 			}
 		}

@@ -190,13 +190,17 @@
 					. " a.EnTvFamilyName TvFamilyName,"
 					. " a.EnTvGivenName TvGivenName,"
 					. " a.EnTvInitials TvInitials,"
-					. " CoId CountryId,"
-					. " CoCode CountryCode,"
-					. " CoMaCode MaCode,"
-					. " CoCaCode CaCode,"
-					. " left(CoName, 20) ShortCountry,"
-					. " CoName CountryName,"
-					. " CoIocCode CountryIocCode,"
+					. " co.CoId CountryId,"
+					. " co.CoCode CountryCode,"
+                    . " co2.CoCode CountryCode2,"
+                    . " co3.CoCode CountryCode3,"
+					. " co.CoMaCode MaCode,"
+					. " co.CoCaCode CaCode,"
+					. " left(co.CoName, 20) ShortCountry,"
+					. " co.CoNameComplete CountryName,"
+                    . " co2.CoNameComplete CountryName2,"
+                    . " co3.CoNameComplete CountryName3,"
+					. " co.CoIocCode CountryIocCode,"
 					. " IndRank QualRank,"
 					. " IndRankFinal FinRank,"
 					. " QuScore QualScore,"
@@ -241,14 +245,16 @@
                     . "left JOIN Divisions divs ON divs.DivTournament=FinTournament AND EnDivision=divs.DivId "
 					. "LEFT JOIN ExtraData ON EdId=a.EnId AND EdType='Z' "
 					. "LEFT JOIN Qualifications ON QuId=a.EnId "
-					. "LEFT JOIN Countries ON CoId=
+					. "LEFT JOIN Countries co ON co.CoId=
                         case EvTeamCreationMode 
                             when 0 then a.EnCountry
                             when 1 then a.EnCountry2
                             when 2 then a.EnCountry3
                             else a.EnCountry
                         end
-                        AND a.EnTournament=CoTournament "
+                        AND a.EnTournament=co.CoTournament "
+                    . "left join Countries co2 on co2.CoId=a.EnCountry2 and a.EnTournament=co2.CoTournament "
+                    . "left join Countries co3 on co3.CoId=a.EnCountry3 and a.EnTournament=co3.CoTournament "
 					. "LEFT JOIN FinSchedule fs1 ON fs1.FSEvent=FinEvent AND fs1.FSMatchNo=FinMatchNo AND fs1.FSTournament=FinTournament AND fs1.FSTeamEvent='0' "
 					. "LEFT JOIN FinSchedule fs2 ON fs2.FSEvent=FinEvent AND fs2.FSMatchNo=case FinMatchNo when 0 then 4 when 1 then 6 when 2 then 4 when 3 then 6 else FinMatchNo*2 end AND fs2.FSTournament=FinTournament AND fs2.FSTeamEvent='0' "
 					. (empty($this->opts['extended']) ? '' : "LEFT JOIN Reviews ON FinEvent=RevEvent AND FinMatchNo=RevMatchNo AND FinTournament=RevTournament AND RevTeamEvent=0 ")
@@ -279,13 +285,17 @@
                     . " a.EnTvFamilyName OppTvFamilyName,"
                     . " a.EnTvGivenName OppTvGivenName,"
                     . " a.EnTvInitials OppTvInitials,"
-					. " CoId OppCountryId,"
-					. " CoCode OppCountryCode,"
-					. " CoMaCode OppMaCode,"
-					. " CoCaCode OppCaCode,"
-					. " left(CoName, 20) OppShortCountry,"
-					. " CoName OppCountryName,"
-					. " CoIocCode OppCountryIocCode,"
+					. " co.CoId OppCountryId,"
+					. " co.CoCode OppCountryCode,"
+                    . " co2.CoCode OppCountryCode2,"
+                    . " co3.CoCode OppCountryCode3,"
+					. " co.CoMaCode OppMaCode,"
+					. " co.CoCaCode OppCaCode,"
+					. " left(co.CoName, 20) OppShortCountry,"
+					. " co.CoNameComplete OppCountryName,"
+                    . " co2.CoNameComplete OppCountryName2,"
+                    . " co3.CoNameComplete OppCountryName3,"
+					. " co.CoIocCode OppCountryIocCode,"
 					. " IndRank OppQualRank,"
 					. " IndRankFinal OppFinRank,"
 					. " QuScore OppQualScore,"
@@ -324,14 +334,16 @@
 					. "LEFT JOIN Entries a ON FinAthlete=a.EnId AND FinTournament=a.EnTournament "
 					. "LEFT JOIN ExtraData ON EdId=a.EnId AND EdType='Z' "
 					. "LEFT JOIN Qualifications ON QuId=a.EnId "
-					. "LEFT JOIN Countries ON CoId=
+					. "LEFT JOIN Countries co ON co.CoId=
                         case EvTeamCreationMode 
                             when 0 then a.EnCountry
                             when 1 then a.EnCountry2
                             when 2 then a.EnCountry3
                             else a.EnCountry
                         end
-                        AND a.EnTournament=CoTournament "
+                        AND a.EnTournament=co.CoTournament "
+                    . "left join Countries co2 on co2.CoId=a.EnCountry2 and a.EnTournament=co2.CoTournament "
+                    . "left join Countries co3 on co3.CoId=a.EnCountry3 and a.EnTournament=co3.CoTournament "
 					. "LEFT JOIN FinSchedule fs1 ON fs1.FSEvent=FinEvent AND fs1.FSMatchNo=FinMatchNo AND fs1.FSTournament=FinTournament AND fs1.FSTeamEvent='0' "
 					. "LEFT JOIN FinSchedule fs2 ON fs2.FSEvent=FinEvent AND fs2.FSMatchNo=case FinMatchNo when 0 then 4 when 1 then 6 when 2 then 4 when 3 then 6 else FinMatchNo*2 end AND fs2.FSTournament=FinTournament AND fs2.FSTeamEvent='0' "
 					. (empty($this->opts['extended']) ? '' : "LEFT JOIN Reviews ON FinEvent=RevEvent AND FinMatchNo=RevMatchNo AND FinTournament=RevTournament AND RevTeamEvent=0 ")
@@ -605,7 +617,11 @@
 					'gender' => $myRow->Gender,
 					'countryId' => $myRow->CountryId,
 					'countryCode' => $myRow->CountryCode,
+                    'countryCode2' => $myRow->CountryCode2,
+                    'countryCode3' => $myRow->CountryCode3,
 					'countryName' => $myRow->CountryName,
+                    'countryName2' => $myRow->CountryName2,
+                    'countryName3' => $myRow->CountryName3,
 					'contAssoc' => $myRow->CaCode,
 					'memberAssoc' => $myRow->MaCode,
 					'countryIocCode'=> $myRow->CountryIocCode,
@@ -668,7 +684,11 @@
 					'oppGender' => $myRow->OppGender,
 					'oppCountryId' => $myRow->OppCountryId,
 					'oppCountryCode' => $myRow->OppCountryCode,
+                    'oppCountryCode2' => $myRow->OppCountryCode2,
+                    'oppCountryCode3' => $myRow->OppCountryCode3,
 					'oppCountryName' => $myRow->OppCountryName,
+                    'oppCountryName2' => $myRow->OppCountryName2,
+                    'oppCountryName3' => $myRow->OppCountryName3,
 					'oppContAssoc' => $myRow->OppCaCode,
 					'oppMemberAssoc' => $myRow->OppMaCode,
 					'oppCountryIocCode'=> $myRow->OppCountryIocCode,

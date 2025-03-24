@@ -16,6 +16,10 @@ $spaceBetweenSections = 5;
 
 $legendStatusProvider = new StatusLegendProvider($pdf, true);
 
+if (!isset($hideTempHeader)) {
+    $hideTempHeader = false;
+}
+
 if(count($rankData['sections'])) {
 	$DistSize = 11;
 	$AddSize=0;
@@ -55,7 +59,7 @@ if(count($rankData['sections'])) {
             if(!$pdf->SamePage(15+(strlen($section['meta']['printHeader']) ? 8:0)+($section['meta']['sesArrows'] ? 8:0)))
                 $pdf->AddPage();
         }
-		$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], false);
+		$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], false, $hideTempHeader);
 		$EndQualified = ($section['meta']['qualifiedNo']==0);
         $StartQualified = ($section['meta']['firstQualified']==1);
 		foreach($section['items'] as $item) {
@@ -64,7 +68,7 @@ if(count($rankData['sections'])) {
 		        $pdf->Cell(190, 1,  '', 1, 1, 'C', 1);
                 if (!$pdf->SamePage(4* ($rankData['meta']['double'] ? 2 : 1))) {
                     $pdf->AddPage();
-                    $pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true);
+                    $pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, $hideTempHeader);
                 }
                 $StartQualified = true;
             }
@@ -73,14 +77,14 @@ if(count($rankData['sections'])) {
 				$pdf->Cell(190, 1,  '', 1, 1, 'C', 1);
 				if (!$pdf->SamePage(4* ($rankData['meta']['double'] ? 2 : 1))) {
 					$pdf->AddPage();
-					$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true);
+					$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, $hideTempHeader);
 				}
 				$EndQualified = true;
 			}
 
 			if (!$pdf->SamePage(4* ($rankData['meta']['double'] ? 2 : 1))) {
 				$pdf->AddPage();
-				$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true);
+				$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, $hideTempHeader);
 			}
 			$pdf->writeDataRowPrnIndividualAbs($item, $DistSize, $AddSize, $section['meta']['running'],$section['meta']['numDist'], $rankData['meta']['double'], ($PdfData->family=='Snapshot' ? $section['meta']['snapDistance']: 0));
 

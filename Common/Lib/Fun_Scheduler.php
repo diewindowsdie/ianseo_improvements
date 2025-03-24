@@ -4624,7 +4624,7 @@ Class Scheduler {
 						$RangeWidth=(1+$Range[1]-$Range[0])*$TgtWidth;
 						$RangeStart=$tmp['left'] + 1 + $TimeWidth + $TgtWidth*($Range[0]-$Blocks['min']);
 						$pdf->setXY($RangeStart, $Range[2] + $TgtFaceHeight);
-						$pdf->Cell($RangeWidth, $ArcTgtHeight, $Targetface.' Arc/Tgt', 'LR', 1, 'C');
+						$pdf->Cell($RangeWidth, $ArcTgtHeight, $Targetface . ' ' . mb_strtolower(get_text('ArchersPerTarget')), 'LR', 1, 'C');
 						$Gap=max($Gap, $pdf->gety());
 					}
 				}

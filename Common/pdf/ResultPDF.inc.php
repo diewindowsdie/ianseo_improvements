@@ -395,10 +395,7 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(10, 4 * ($double ? 2 : 1), ($item['subclassName']), $border.'L', 0, 'C', 0);
 		//Nazione
 		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-		$this->Cell(54 + $addSize, 4 * ($double ? 2 : 1),
-			$item['countryName'] .
-			($item['countryName2'] != '' ? ', ' : '') . $item['countryName2'] .
-			($item['countryName3'] != '' ? ', ' : '') . $item['countryName3'], $border.'L', 0, 'L', 0);
+		$this->Cell(54 + $addSize, 4 * ($double ? 2 : 1), getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']), $border.'L', 0, 'L', 0);
 		$this->SetFont($this->FontFix,'',$this->FontSizeHead);
 		if (!$hasIRMStatus) {
 			if(!$double) {
@@ -541,7 +538,7 @@ class ResultPDF extends IanseoPdf {
 		}
 	}
 
-	function writeGroupHeaderPrnIndividualAbs($section, $distSize, $addSize, $running, $distances, $double, $follows=false)
+	function writeGroupHeaderPrnIndividualAbs($section, $distSize, $addSize, $running, $distances, $double, $follows=false, $hideTempHeader=false)
 	{
 		$tmpHeader="";
 		$this->SetFont($this->FontStd,'B',$this->FontSizeTitle);
@@ -563,7 +560,7 @@ class ResultPDF extends IanseoPdf {
 		// testastampa
 		if (strlen($section['printHeader']))
 			$this->Cell(0, 7.5, $section['printHeader'], 0, 1, 'R', 0);
-		else if(strlen($tmpHeader)!=0 && !$section['running'])
+		else if(strlen($tmpHeader)!=0 && !$section['running'] && !$hideTempHeader)
 			$this->Cell(0, 7.5, $tmpHeader, 0, 1, 'R', 0);
 
 

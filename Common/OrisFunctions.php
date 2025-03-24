@@ -872,7 +872,7 @@ function getStatEntriesByCountries($ORIS='', $Athletes=false, $countryIndex=1) {
     //заберем из базы названия дивизионов и классов
     $query = "select concat(trim(DivId), '|', trim(ClId)) as Code, 
         concat(trim(DivDescription), '|', trim(ClDescription)) as Description
-        from Divisions cross join classes 
+        from Divisions cross join Classes 
         where DivTournament = " . StrSafe_DB($_SESSION['TourId']) . " and ClTournament = " . StrSafe_DB($_SESSION['TourId']);
     $resultSet = safe_r_sql($query);
     while ($row = safe_fetch($resultSet)) {
