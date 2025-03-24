@@ -230,14 +230,15 @@ function rotAbs($TVsettings, $RULE) {
 			$tmp.='<div class="CountryCode Rotate Rev1'.$Class.'">' . $archer['countryCode'] . '</div>';
 		}
 		if($ViewFlag) {
-			$tmp.='<div class="FlagDiv">'.get_flag_ianseo($archer['countryCode'], '', '', $IsCode).'</div>';
+            //here
+			$tmp.='<div class="FlagDiv">'.get_flag_ianseo($archer['countryCode'], $archer['countryCode2'], $archer['countryCode3'], 10, '', $IsCode).'</div>';
 		}
 
 		$tmp.='<div class="Target">' . ltrim($archer['target'],'0') . '</div>';
 		$tmp.='<div class="Athlete">'.$archer['familynameUpper'].' '.($TVsettings->TVPNameComplete==0 ? FirstLetters($archer['givenname']) : $archer['givenname']).'</div>';
 		if($ViewTeams) {
 			if($TVsettings->TVPViewNationName) {
-				$tmp.='<div class="CountryDescr">' . $archer['countryName'] . '</div>';
+				$tmp.='<div class="CountryDescr">' . getFullCountryName($archer['countryName'], $archer['countryName2'], $archer['countryName3']) . '</div>';
 			} else {
 				$tmp.='<div class="CountryDescr">' . $archer['countryCode'] . '</div>';
 			}
@@ -313,8 +314,8 @@ function getPageDefaults(&$RMain) {
 		'FlagDiv' => 'flex: 0 0 4.35vw;',
 		'Flag' => 'height:2.8vw; border:0.05vw solid #888;box-sizing:border-box;',
 		'Target' => 'flex: 0 0 6vw; text-align:right;margin-right:0.5em;',
-		'Athlete' => 'flex: 1 1 20vw;white-space:nowrap;overflow:hidden;',
-		'CountryDescr' => 'flex: 0 1 20vw;white-space:nowrap;overflow:hidden;',
+		'Athlete' => 'flex: 0 1 24vw;white-space:nowrap;overflow:hidden;font-size: 1.5vw;',
+		'CountryDescr' => 'flex: 1 1 20vw;white-space:nowrap;overflow:hidden;font-size: 1.2vw;',
 		'Arrows' => 'flex: 0 0 5vw; text-align:right; font-size:1em;margin-right:0.5rem;',
 		'DistScore' => 'flex: 0 0 5vw; text-align:right; font-size:0.8em;',
 		'DistPos' => 'flex: 0 0 3vw; text-align:left; font-size:0.7em;',

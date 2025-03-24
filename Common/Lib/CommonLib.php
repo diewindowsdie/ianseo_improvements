@@ -552,9 +552,25 @@ function get_photo_ianseo($r, $h=0, $side=false, $Extra='', $force=false, $direc
 	return '<img src="'.$CFG->ROOT_DIR.$img.'" '.($h?' height="'.$h.'"':''). ($side ? ' align="left"' : '') . ' '.$Extra.'/>';
 }
 
-function get_flag_ianseo($r, $h=0, $align='', $direct='') {
+function getFullCountryName($countryName, $countryName2=null, $countryName3=null) {
+    return $countryName .
+        ($countryName2 != '' ? ', ' : '') . $countryName2 .
+        ($countryName3 != '' ? ', ' : '') . $countryName3;
+}
+
+function get_flag_ianseo($r0, $r2=null, $r3=null, $h=0, $align='', $direct='') {
 	global $TourCode, $CFG;
 	if($direct) {
+        if (is_file($f=$CFG->DOCUMENT_PATH.($img='TV/Photos/'.$direct.'-Fl-'.$r0.'.jpg'))) {
+            $r = $r0;
+        }
+        if (strlen($r3) > 0 && is_file($f=$CFG->DOCUMENT_PATH.($img='TV/Photos/'.$direct.'-Fl-'.$r3.'.jpg'))) {
+            $r = $r3;
+        }
+        if (strlen($r2) > 0 && is_file($f=$CFG->DOCUMENT_PATH.($img='TV/Photos/'.$direct.'-Fl-'.$r2.'.jpg'))) {
+            $r = $r2;
+        }
+
 		if(is_file($f=$CFG->DOCUMENT_PATH.($img='TV/Photos/'.$direct.'-Fl-'.$r.'.jpg'))) {
 			return '<img src="'.$CFG->ROOT_DIR.$img.'" '.($h?' height="'.$h.'"':'').' class="Flag" '.($align ? 'align="'.$align.'"' : '').' />';
 		}

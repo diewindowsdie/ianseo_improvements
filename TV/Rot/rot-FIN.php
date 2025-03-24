@@ -154,12 +154,12 @@ function rotFin($TVsettings, $RULE) {
 					$tmp2.='<div class="CountryCode Rotate Rev1e">'.$item['oppCountryCode'].'</div>';
 				}
 				if($ViewFlag) {
-					$tmp1.='<div class="FlagDiv">'.get_flag_ianseo($item['countryCode'], '', '', $IsCode).'</div>';
-					$tmp2.='<div class="FlagDiv">'.get_flag_ianseo($item['oppCountryCode'], '', '', $IsCode).'</div>';
+					$tmp1.='<div class="FlagDiv">'.get_flag_ianseo($item['countryCode'], $item['countryCode2'], $item['countryCode3'], '', '', $IsCode).'</div>';
+					$tmp2.='<div class="FlagDiv">'.get_flag_ianseo($item['oppCountryCode'], $item['oppCountryCode2'], $item['oppCountryCode3'], '', '', $IsCode).'</div>';
 				}
 				if($ViewTeams) {
-					$tmp1.='<div class="CountryDescr">'.$item['countryName'].'</div>';
-					$tmp2.='<div class="CountryDescr">'.$item['oppCountryName'].'</div>';
+                    $tmp1.='<div class="CountryDescr">'.getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']).'</div>';
+                    $tmp2.='<div class="CountryDescr">'.getFullCountryName($item['oppCountryName'], $item['oppCountryName2'], $item['oppCountryName3']).'</div>';
 				}
 
 				if($tmp1) $ret[] = '<div class="GridId"><div class="IdPanel">'.$tmp1.'</div><div class="IdScore"></div><div class="IdPanel">'.$tmp2.'</div></div>';
@@ -229,16 +229,16 @@ function rotFin($TVsettings, $RULE) {
 				}
 
 				if($ViewFlag) {
-					$tmp1.='<div class="FlagDiv">'.get_flag_ianseo($item['countryCode'], '', '', $IsCode).'</div>';
-					$tmp2.='<div class="FlagDiv">'.get_flag_ianseo($item['oppCountryCode'], '', '', $IsCode).'</div>';
+					$tmp1.='<div class="FlagDiv">'.get_flag_ianseo($item['countryCode'], $item['countryCode2'], $item['countryCode3'], '', '', $IsCode).'</div>';
+					$tmp2.='<div class="FlagDiv">'.get_flag_ianseo($item['oppCountryCode'], $item['oppCountryCode2'], $item['oppCountryCode3'], '', '', $IsCode).'</div>';
 				}
 
 				$tmp1.='<div class="Athlete">'.$item['athlete'].'</div>';
 				$tmp2.='<div class="Athlete">'.$item['oppAthlete'].'</div>';
 
 				if($ViewTeams) {
-					$tmp1.='<div class="CountryDescr">'.$item['countryName'].'</div>';
-					$tmp2.='<div class="CountryDescr">'.$item['oppCountryName'].'</div>';
+					$tmp1.='<div class="CountryDescr">'.getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']).'</div>';
+					$tmp2.='<div class="CountryDescr">'.getFullCountryName($item['oppCountryName'], $item['oppCountryName2'], $item['oppCountryName3']).'</div>';
 				}
 
                 if($ViewSchedule) {
@@ -368,15 +368,15 @@ function getPageDefaults(&$RMain) {
 		'FlagDiv' => 'flex: 0 0 4.35vw;',
 		'Flag' => 'height:2.8vw; border:0.05vw solid #888;box-sizing:border-box;',
 		'Target' => 'flex: 0 0 6vw; text-align:right;margin-right:0.5em;',
-		'Athlete' => 'flex: 1 1 20vw;white-space:nowrap;overflow:hidden;',
-		'CountryDescr' => 'flex: 0 1 20vw;white-space:nowrap;overflow:hidden;',
+		'Athlete' => 'flex: 0 1 24vw;white-space:nowrap;overflow:hidden;font-size: 1.5vw;',
+		'CountryDescr' => 'flex: 1 1 20vw;white-space:nowrap;overflow:hidden;font-size: 1.2vw;',
 		'DistScore' => 'flex: 0 0 5vw; text-align:right; font-size:0.8em;',
 		'DistPos' => 'flex: 0 0 3vw; text-align:left; font-size:0.7em;',
 		'Schedule' => 'flex: 1 0 12vw; text-align:left; white-space:nowrap; font-size:1.1em;margin-right:0.5rem;',
 		'Score' => 'flex: 0 0 6vw; text-align:right; font-size:1.25em;margin-right:0.5rem;',
 		'Gold' => 'flex: 0 0 3vw; text-align:right; font-size:1em;',
 		'XNine' => 'flex: 0 0 3vw; text-align:right; font-size:1em;',
-		'EndPoints' => 'flex: 0 0 17ch; text-align:left; font-size:0.8em;',
+		'EndPoints' => 'flex: 0 0 17ch; text-align:left; font-size:1.3vw;',
 		'IdTarget' => 'border-top-left-radius:1em; border-top-right-radius:1em; width:100%; margin-top:1em; padding:0.5em; box-sizing:border-box; font-size:1em;',
 		'IdAthletes' => 'flex:2 0 20%; font-size:1.5em; text-align: center; padding:0 0.5em; ',
 		'IdPanel' => 'flex:2 0 20%; display:flex;flex-flow:row nowrap; justify-content:center;align-items:center',
