@@ -1466,7 +1466,8 @@ Class Scheduler {
 
 			// DAY
 			$pdf->SetFont($pdf->FontStd,'B',8*$FontAdjust);
-			$pdf->Cell(0, $CellHeight, formatTextDate($Date, true) ,0,1,'L',1);
+			$pdf->Cell(0, $CellHeight, formatTextDate($Date, true) ,1,1,'L',1);
+            $pdf->SetY($pdf->GetY()+0.1);
 			$pdf->SetFont($pdf->FontStd,'');
 
 			$OldTitle='';
@@ -1494,13 +1495,13 @@ Class Scheduler {
 								$pdf->AddPage();
 								// Day...
 								$pdf->SetFont('', 'B');
-								$pdf->Cell(0, $CellHeight, formatTextDate($Date, true) . '    ('.get_text('Continue').')',0,1,'L',1);
+								$pdf->Cell(0, $CellHeight, formatTextDate($Date, true) . '    ('.get_text('Continue').')',1,1,'L',1);
 								$FirstTitle=true;
 
 								// maybe the session title?
 								if($Item->Type!='Z' and $OldTitle==$Item->Title and $RepeatTitle) {
 									$pdf->SetX($StartX+$TimeColumns);
-									$pdf->Cell($descrSize, $CellHeight, $RepeatTitle . ", " . formatWeekDayLong($Date) . '    ('.get_text('Continue').')',0,1,'L',0);
+									$pdf->Cell($descrSize, $CellHeight, $RepeatTitle . ", " . formatWeekDayLong($Date) . '    ('.get_text('Continue').')',1,1,'L',0);
 								}
 								$pdf->SetFont('', '');
 							}
@@ -1519,9 +1520,23 @@ Class Scheduler {
 									if(!$IsTitle) {
 										if(!$FirstTitle) $pdf->ln(2);
 										$pdf->SetX($StartX+$TimeColumns);
-										$pdf->SetFont('', 'B');
-										$pdf->Cell($descrSize, $CellHeight, strip_tags($Item->Title).(($Item->SubTitle or $Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
+										$pdf->SetFont('', 'BI');
+                                        $titleAlign = "L";
+                                        $titleCellHeight = $CellHeight;
+                                        $fill = 0;
+                                        $cellWidth = $descrSize;
+                                        if ($Item->UID == "") {
+                                            $pdf->SetFont('', 'B');
+                                            $pdf->SetFontSize(10);
+                                            $pdf->SetX($StartX + 5);
+                                            $cellWidth = $descrSize + $TimeColumns - 10;
+                                            $titleAlign = 'C';
+                                            $titleCellHeight = 8;
+                                            $fill = 1;
+                                        }
+										$pdf->Cell($cellWidth, $titleCellHeight, strip_tags($Item->Title).(($Item->SubTitle or $Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, $titleAlign, $fill);
 										$pdf->SetFont('', '');
+                                        $pdf->SetFontSize(8);
 										$RepeatTitle=$Item->Title;
 									}
 									$OldTitle=$Item->Title;
@@ -1586,10 +1601,28 @@ Class Scheduler {
 									// Title
 									if(!$IsTitle) {
 										if(!$FirstTitle) $pdf->ln(2);
-										$pdf->SetX($StartX+$TimeColumns);
 										$pdf->SetFont('', 'B');
-										$pdf->Cell($descrSize, $CellHeight, $Item->Title.(($Item->SubTitle or $Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
+
+                                        $mainText = $Item->SubTitle;
+                                        $pdf->SetFontSize(10);
+                                        $pdf->SetX($StartX + 5);
+                                        $titleDescrSize = $descrSize + $TimeColumns - 10;;
+                                        $titleAlign = 'C';
+                                        $titleCellHeight = 8;
+                                        $fill = 1;
+                                        if (!$FirstTitle) {
+                                            $mainText = $Item->Title;
+                                            $titleAlign = "L";
+                                            $pdf->SetX($StartX+$TimeColumns);
+                                            $titleDescrSize = $descrSize;
+                                            $titleCellHeight = $CellHeight;
+                                            $pdf->setFont('', "BI");
+                                            $pdf->SetFontSize(8);
+                                            $fill = 0;
+                                        }
+										$pdf->Cell($titleDescrSize, $titleCellHeight, $mainText.(($Item->SubTitle or $Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, $titleAlign, $fill);
 										$pdf->SetFont('', '');
+                                        $pdf->SetFontSize(8);
 										$RepeatTitle=$Item->Title;
 									}
 									$OldTitle=$Item->Title;
@@ -1604,7 +1637,7 @@ Class Scheduler {
 									// SubTitle
 									$pdf->SetX($StartX+$TimeColumns);
 									$pdf->SetFont('', 'BI');
-									$pdf->Cell($descrSize, $CellHeight, $Item->SubTitle.(($Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
+									$pdf->Cell($descrSize, $CellHeight, $Item->Title.(($Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
 									$pdf->SetFont('', '');
 									$OldSubTitle=$Item->SubTitle;
 									$IsTitle=false;
