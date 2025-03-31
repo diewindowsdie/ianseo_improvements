@@ -290,15 +290,15 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
 	$pdf->SetFont($pdf->FontStd,'B',10);
 	$pdf->Cell($ScoreWidth-20-2*$TotalW,6, get_text($MyRow->EventDescr,'','',true), 'B', 0, 'L', 0);
 	$pdf->SetFont($pdf->FontStd,'B',10);
-	$pdf->Cell($TotalW,6, (get_text('Target')) . ' ' . ltrim($MyRow->{$Prefix.'Target'}??'','0'), '1', 1, 'C', 1);
+	$pdf->Cell($TotalW,6, (get_text('Rank')) . ': ' . ($MyRow->{$Prefix.'QualRank'} ?? ''), '1', 1, 'C', 1);
 
-	// Rank number
+	// Target
 	$pdf->SetXY($ScoreWidth-$TotalW+$WhereStartX[$WhichScore], 25);
 	$pdf->SetFont($pdf->FontStd,'B',10);
-	$pdf->Cell($TotalW,6, (get_text('Rank')),'TLR',1,'C',1);
+	$pdf->Cell($TotalW,6, get_text('Target'),'TLR',1,'C',1);
 	$pdf->SetXY($ScoreWidth-$TotalW+$WhereStartX[$WhichScore],$pdf->GetY());
 	$pdf->SetFont($pdf->FontStd,'B',25);
-	$pdf->Cell($TotalW,$RankHeight, ($MyRow->{$Prefix.'QualRank'} ?? ''),'BLR',1,'C',1);
+	$pdf->Cell($TotalW,$RankHeight, ltrim($MyRow->{$Prefix.'Target'}??'','0'),'BLR',1,'C',1);
 
 //Header
 	$PhaseName='';

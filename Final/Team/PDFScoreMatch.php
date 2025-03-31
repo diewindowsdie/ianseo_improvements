@@ -363,15 +363,15 @@ function DrawScore(&$pdf, $MyRow, $Side='L', $Athletes=array()) {
 	$pdf->SetFont($pdf->FontStd,'B',10);
 	$pdf->Cell($ScoreWidth-20-$TotalW-2*$GoldW,6, get_text($MyRow->EventDescr,'','',true), 'B', 0, 'L', 0);
 	$pdf->SetFont($pdf->FontStd,'B',10);
-	$pdf->Cell($TotalW,6, (get_text('Target')) . ' ' . ltrim($MyRow->{$Prefix.'Target'}??'','0'), '1', 1, 'C', 1);
+    $pdf->Cell($TotalW,6, (get_text('Rank')) . ': ' . ($MyRow->{$Prefix.'QualRank'} ?? ''), '1', 1, 'C', 1);
 
-	// Rank number
+	// Target
 	$pdf->SetXY($ScoreWidth-2*$GoldW+$WhereStartX[$WhichScore], 35);
 	$pdf->SetFont($pdf->FontStd,'B',10);
-	$pdf->Cell(2*$GoldW,6, (get_text('Rank')),'TLR',1,'C',1);
+	$pdf->Cell(2*$GoldW,6, (get_text('Target')),'TLR',1,'C',1);
 	$pdf->SetXY($ScoreWidth-2*$GoldW+$WhereStartX[$WhichScore],$pdf->GetY());
 	$pdf->SetFont($pdf->FontStd,'B',25);
-	$pdf->Cell(2*$GoldW,$RankHeight+(count($Athletes)<=1 ? 6:4)*max(count($Athletes),1), ($MyRow->{$Prefix.'QualRank'} ?? ''),'BLR',1,'C',1);
+	$pdf->Cell(2*$GoldW,$RankHeight+(count($Athletes)<=1 ? 6:4)*max(count($Athletes),1), ltrim($MyRow->{$Prefix.'Target'}??'','0'),'BLR',1,'C',1);
 
     //Readjust start of score where needed
     if($WhereY[0] <= $pdf->getY()+5) {
