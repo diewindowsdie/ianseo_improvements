@@ -277,6 +277,7 @@ $lang['ERR_OK']='Без ошибок';
 $lang['EventAccess']='Участие спортсменов  Инд/Ком.';
 $lang['EventCodeDeclared']='Онлайн код события';
 $lang['EventDetails']='$a[0] по $a[1] + $a[2] перестр.';
+$lang['EventDetailsShort']='$a[0] серий по $a[1] стрел(ы)';
 $lang['EventHasMedal']='Группа награждается?';
 $lang['EventNumQualified']='Количество спортсменов/команд для выбора';
 $lang['Events']='Финальный раунд';
