@@ -32,8 +32,6 @@ define('debug',false);
 
 				list(,,$Campo,$Chiave) = explode('_',$Key);
 				$Id=$Chiave;
-				if (str_replace(' ','',$Value)!='')
-				{
 					if (preg_match('/^[0-9]{1,' . TargetNoPadding . '}[a-z]{1}$/i',$Value))
 					{
 					// verifico che in db ci sia settata la sessione != 0
@@ -79,17 +77,14 @@ define('debug',false);
 						else
 							$Errore=1;
 					}
-					elseif($Value==0)
+					else
 					{
-						$Update = "UPDATE Qualifications SET QuTargetNo='0', QuTarget=0, QuLetter=0, QuBacknoPrinted=0, QuTimestamp=QuTimestamp WHERE QuId=" . StrSafe_DB($Chiave);
+						$Update = "UPDATE Qualifications SET QuTargetNo='', QuTarget=0, QuLetter=0, QuBacknoPrinted=0, QuTimestamp=QuTimestamp WHERE QuId=" . StrSafe_DB($Chiave);
 						$RsUp=safe_w_sql($Update);
 						if(safe_w_affected_rows()) {
 							safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId='{$Chiave}'");
 						}
 					}
-					else
-						$Errore=1;
-				}
 			}
 		}
 	}
