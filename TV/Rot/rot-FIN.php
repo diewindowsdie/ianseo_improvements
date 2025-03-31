@@ -204,7 +204,10 @@ function rotFin($TVsettings, $RULE) {
 		$Return['Block']='Grid';
 		$Return['BlockCss']='height:2em; width:100%; padding-right:0.5rem; overflow:hidden; font-size:2em; display:flex; flex-direction:row; justify-content:left; align-items:center; box-sizing:border-box;';
 
-		$ret[] = '<div class="Title">' . $section['meta']['eventName'] . '</div>';
+        $ret[] = '<div class="Title" >
+				<div class="TitleImg" style="float:left;"><img src="'.$CFG->ROOT_DIR.'TV/Photos/'.$IsCode.'-ToLeft.jpg"></div>
+				<div class="TitleImg" style="float:right;"><img src="'.$CFG->ROOT_DIR.'TV/Photos/'.$IsCode.'-ToRight.jpg"></div>
+				' . $section['meta']['eventName'] . $Title2Rows . $phase['meta']['phaseName'] . '</div>' ;
 		$ret[]='<div id="content" data-direction="up">';
 		$NumColBase = 3 + $ViewTeams;
 		foreach($section['phases'] as $IdPhase => $phase) {
