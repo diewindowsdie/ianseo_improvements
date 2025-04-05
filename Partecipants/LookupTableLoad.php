@@ -99,7 +99,12 @@ if(empty($_REQUEST["Download"])
                 <div><input id="onlyMissing-'.$u->LupIocCode.'" name="OnlyMissingPhoto['.$u->LupIocCode.']" type="checkbox" disabled="disabled" checked="checked">'.get_text('OnlyMissing', 'Tournament').'</div>
                 <div><input id="force-'.$u->LupIocCode.'" name="ForceOldPhoto['.$u->LupIocCode.']" type="checkbox" disabled="disabled">'.get_text('ForceOldPhotos', 'Tournament').'</div>';
         }
-		$LupFlagsPath    =$u->LupFlagsPath && ($u->LupFlagsPath[0]!='%' or file_exists($CFG->DOCUMENT_PATH.substr($u->LupFlagsPath, 1))) ? '<input name="Flags['.$u->LupIocCode.']" type="checkbox">'.($u->LupIocCode ? '(<input type="checkbox" name="fisu"> FISU)' : '') : '';
+        $LupFlagsPath='';
+		if($u->LupFlagsPath && ($u->LupFlagsPath[0]!='%' or file_exists($CFG->DOCUMENT_PATH.substr($u->LupFlagsPath, 1)))) {
+            $LupFlagsPath = '<div><input name="Flags['.$u->LupIocCode.']" type="checkbox" onclick="document.getElementById(\'onlyMissingFlags-'.$u->LupIocCode.'\').disabled=!this.checked;">'.($u->LupIocCode ? '(<input type="checkbox" name="fisu"> FISU)' : '').'</div>'.
+            '<div><input id="onlyMissingFlags-'.$u->LupIocCode.'" name="onlyMissingFlags['.$u->LupIocCode.']" type="checkbox" disabled="disabled" checked="checked">'.get_text('OnlyMissing', 'Tournament').'</div>';
+        }
+
 		$LupRankingPath  =$u->LupRankingPath && ($u->LupRankingPath[0]!='%' or file_exists($CFG->DOCUMENT_PATH.substr($u->LupRankingPath, 1))) ? '<input name="Rank['.$u->LupIocCode.']" type="checkbox">' : '';
 		$LupClubNamesPath=$u->LupClubNamesPath && ($u->LupClubNamesPath[0]!='%' or file_exists($CFG->DOCUMENT_PATH.substr($u->LupClubNamesPath, 1))) ? '<input name="Clubs['.$u->LupIocCode.']" type="checkbox">' : '';
 		$LupRecordsPath  =$u->LupRecordsPath && ($u->LupRecordsPath[0]!='%' or file_exists($CFG->DOCUMENT_PATH.substr($u->LupRecordsPath, 1))) ? '<input name="Records['.$u->LupIocCode.']" type="checkbox">' : '';
@@ -259,7 +264,7 @@ if(empty($_REQUEST["Download"])
 		if($u->LupFlagsPath and !empty($_REQUEST["Flags"][$u->LupIocCode])) {
 			echo $head;
 			$head='';
-			DoLookupFlags($u);
+			DoLookupFlags($u, isset($_REQUEST["onlyMissingFlags"][$u->LupIocCode]));
 		}
 		if($u->LupRankingPath and !empty($_REQUEST["Rank"][$u->LupIocCode])) {
 			echo $head;
@@ -549,12 +554,14 @@ function DoLookupPhoto($u, $OnlyMissing=false, $ForceOld=false) {
 	}
 }
 
-function DoLookupFlags($u) {
+function DoLookupFlags($u, $OnlyMissing=false) {
 	require_once('Common/CheckPictures.php');
     $q=safe_r_sql("SELECT DISTINCT CoCode, CoName 
         from Countries  
         left join Flags ON FlTournament=CoTournament AND FlCode=CoCode 
-        where CoTournament={$_SESSION['TourId']} AND CoId IN (
+        where CoTournament={$_SESSION['TourId']} 
+          ".($OnlyMissing ? " AND (FlCode is null or FlSVG = '' or FlJPG = '') " : '')."
+          AND CoId IN (
             SELECT EnCountry from Entries WHERE EnTournament={$_SESSION['TourId']} AND EnIocCode='$u->LupIocCode'
             UNION 
             SELECT EnCountry2 from Entries WHERE EnTournament={$_SESSION['TourId']} AND EnIocCode='$u->LupIocCode'
@@ -572,7 +579,7 @@ function DoLookupFlags($u) {
 	}
     $FlagsDone=[];
 	while($r=safe_fetch($q)) {
-        $FlagToCheck=($u->LupIocCode=='FITA' ? substr($r->CoCode,0,3) : $r->CoCode);
+        $FlagToCheck=(($u->LupIocCode=='FITA' and preg_match('/^[A-Za-z]{3}$/',substr($r->CoCode,0,3))) ? substr($r->CoCode,0,3) : $r->CoCode);
 
         if($u->LupIocCode=='FITA' and ($FlagsDone[$FlagToCheck]??'')) {
             $SQL="FlCode='$r->CoCode',

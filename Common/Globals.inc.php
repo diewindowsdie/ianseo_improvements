@@ -489,7 +489,7 @@ function CreateTourSession($TourId) {
         }
 
 		$MyRow=safe_fetch($Rs);
-        $dateTimeZone = new DateTimeZone($MyRow->ToTimeZone);
+        $dateTimeZone = new DateTimeZone($MyRow->ToTimeZone?:'UTC');
         $dateTimeZone->getOffset(new DateTime("now", new DateTimeZone('UTC')));
 
 		$_SESSION['TourId']=$MyRow->ToId;

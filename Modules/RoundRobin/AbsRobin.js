@@ -53,7 +53,7 @@ function buildPhases(phases, EvCode) {
     let ret='';
     let newRows=false;
     $.each(phases, function(idx) {
-        let cssClass=(this.disabled==1 ? 'disabled' : '');
+        let cssClass=((this.disabled==1 || this.levDisabled==1) ? 'disabled' : '');
         if(newRows) {
             ret+='<tr soEvent="'+EvCode+'" soLevel="'+idx+'" soGroup="1">';
         }
@@ -75,7 +75,7 @@ function buildPhases(phases, EvCode) {
             ret+='<div>'+this+'</div>';
         });
         ret+='</td>';
-        ret+=buildGroups(this.groups, EvCode, idx, cssClass);
+        ret+=buildGroups(this.groups, EvCode, idx, this.disabled==1 ? 'disabled' : '');
     });
     return ret;
 }

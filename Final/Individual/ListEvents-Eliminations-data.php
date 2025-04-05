@@ -57,7 +57,6 @@ switch($_REQUEST['act']) {
 						EvElim1=2, EvE1Arrows=0, EvE1Ends=0, EvE1SO=0, 
 						EvElim2=0, EvE2Arrows=0, EvE2Ends=0, EvE2SO=0, 
 						EvFinalAthTarget=0, EvMatchArrowsNo=0,
-						EvElimEnds=0, EvElimArrows=0, EvElimSO=0,
 						EvElimType=$Type where EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvTeamEvent='0' and EvCode=".StrSafe_DB($_REQUEST['ev']));
 		            $q=safe_r_sql($EventSQL);
 		            $EVENT=safe_fetch($q);

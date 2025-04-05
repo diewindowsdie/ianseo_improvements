@@ -34,9 +34,13 @@ function getEventDetail() {
             // Group
             $('#EvGroup').empty();
             $('#EvGroup').append('<option value="0">---</option>');
-            $.each(data.groups, function() {
-                $('#EvGroup').append('<option value="'+this.gId+'">'+this.gName+'</option>');
-            });
+            if(Object.keys(data.groups).length==1) {
+                $.each(data.groups, function(idx, groups) {
+                    $.each(groups.groups, function() {
+                        $('#EvGroup').append('<option value="'+this.gId+'">'+this.gName+'</option>');
+                    });
+                });
+            }
             $('#EvGroup').val(data.evGroup);
 
             // Round

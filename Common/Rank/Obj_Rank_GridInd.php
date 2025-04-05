@@ -634,7 +634,7 @@
 					'scoreConfirmed'=>$myRow->Confirmed,
 					'record' => $this->ManageBitRecord($myRow->RecBitLevel, $myRow->CaCode, $myRow->MaCode, $myRow->EvIsPara),
 					'shootFirst'=>$myRow->ShootFirst,
-				 	'position'=> $myRow->QualRank ? $myRow->QualRank : ($myRow->Position>$myRow->EvNumQualified ? 0 : $myRow->Position),
+				 	'position'=> ($myRow->QualRank and in_array($myRow->EvElimType, [0,3,4])) ? $myRow->QualRank : ($myRow->Position>$myRow->EvNumQualified ? 0 : $myRow->Position),
 				 	'saved'=> ($myRow->Position>0 and $myRow->Position<=SavedInPhase($myRow->EvFinalFirstPhase)),
 //
 					'oppLastUpdated' => $myRow->OppLastUpdated,
@@ -697,7 +697,7 @@
 					'oppScoreConfirmed'=>$myRow->OppConfirmed,
 					'oppRecord' => $this->ManageBitRecord($myRow->OppRecBitLevel, $myRow->OppCaCode, $myRow->OppMaCode, $myRow->EvIsPara),
 					'oppShootFirst'=>$myRow->OppShootFirst,
-				 	'oppPosition'=> $myRow->OppQualRank ? $myRow->OppQualRank : ($myRow->OppPosition>$myRow->EvNumQualified ? 0 : $myRow->OppPosition),
+				 	'oppPosition'=> ($myRow->OppQualRank and in_array($myRow->EvElimType, [0,3,4])) ? $myRow->OppQualRank : ($myRow->OppPosition>$myRow->EvNumQualified ? 0 : $myRow->OppPosition),
 				 	'oppSaved'=> ($myRow->OppPosition>0 and $myRow->OppPosition<=SavedInPhase($myRow->EvFinalFirstPhase)),
 					);
 

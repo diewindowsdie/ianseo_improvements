@@ -223,7 +223,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 					EvMaxTeamPerson, EvProgr, EvFinalFirstPhase,coalesce(OdfTrOdfCode,'') as OdfUnitCode, EvOdfCode, QuConfirm, EvMixedTeam, 
 					ClDescription, DivDescription,
 					EnId,EnCode,ifnull(EdExtra,EnCode) as LocalBib, EnSex,EnNameOrder,EnFirstName,upper(EnFirstName) EnFirstNameUpper,EnName,EnClass,EnDivision,EnAgeClass,EnSubClass,EnCoCode,EnDob,
-					coalesce(RrLevGroups*RrLevGroupArchers, EvNumQualified) AS QualifiedNo, EvFirstQualified, EvQualPrintHead,
+					coalesce(RoundRobinQualified, EvNumQualified) AS QualifiedNo, EvFirstQualified, EvQualPrintHead,
 					SUBSTRING(QuTargetNo,1,1) AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo,
 					TeHits AS Arrows_Shot, TeScore, TeRank, TeGold, TeXnine, 
 					IF(EvLockResults, QuD1Score+IF(EvLockResults<2,0,QuD2Score)+IF(EvLockResults<3,0,QuD3Score)+IF(EvLockResults<4,0,QuD4Score)+IF(EvLockResults<5,0,QuD5Score)+IF(EvLockResults<6,0,QuD6Score)+IF(EvLockResults<7,0,QuD7Score)+IF(EvLockResults<8,0,QuD8Score), QuScore) as QuScore, 
@@ -260,7 +260,12 @@ require_once('Common/Lib/ArrTargets.inc.php');
 					INNER JOIN Divisions ON EnDivision=DivId AND EnTournament=DivTournament
 					INNER JOIN Classes ON EnClass=ClId AND EnTournament=ClTournament
 				    {$EnFilter}
-					left join RoundRobinLevel on RrLevTournament=ToId and RrLevTeam=EvTeamEvent and RrLevEvent=EvCode and RrLevLevel=1 and EvElimType=5
+                    left join (
+                        select max(RrPartSourceRank) as RoundRobinQualified, RrPartTeam, RrPartEvent
+                        from RoundRobinParticipants
+                        where RrPartSourceLevel=0 and RrPartSourceGroup=0 and RrPartTournament={$this->tournament}
+                        group by RrPartEvent, RrPartTeam
+                        ) RoundRobinQualified on RrPartTeam=EvTeamEvent and RrPartEvent=EvCode and EvElimType=5
 				    left join ExtraData on EdId=EnId and EdType='Z'
 				/* Contatori per CT (gialli)*/
 					LEFT JOIN (

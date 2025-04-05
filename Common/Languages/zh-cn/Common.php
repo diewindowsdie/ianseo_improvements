@@ -51,12 +51,6 @@ $lang['TieArrows']='加射';
 $lang['TM']='男子团体';
 $lang['Total']='合计';
 $lang['TotaleScore']='合计';
-$lang['TrgCOIndComplete']='室内复合 (1-10)';
-$lang['TrgCOIndSmall']='室内复合小 (6-10)';
-$lang['TrgField']='场地射箭';
-$lang['TrgIndComplete']='室内标准 (1-10)';
-$lang['TrgIndSmall']='室内小 (6-10)';
-$lang['TrgOutdoor']='室外射箭（1-X）';
 $lang['UnexpectedError']='错误';
 $lang['Yes']='是';
 ?>

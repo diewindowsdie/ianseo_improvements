@@ -246,7 +246,7 @@
 					IF(EvRunning=1,IFNULL(ROUND(QuScore/QuHits,3),0),0) as RunningScore,
 					EvCode,EvEventName,EvRunning, EvFinalFirstPhase, EvElim1, EvElim2, EvIsPara, coalesce(OdfTrOdfCode,'') as OdfUnitCode, EvOdfCode,
 					{$tmp} AS Arrows_Shot,
-					coalesce(RrLevGroups*RrLevGroupArchers, IF(EvElim1=0 && EvElim2=0, EvNumQualified ,IF(EvElim1=0,EvElim2,EvElim1))) as QualifiedNo, EvFirstQualified, EvQualPrintHead as PrintHeader,
+					coalesce(RoundRobinQualified, IF(EvElim1=0 && EvElim2=0, EvNumQualified ,IF(EvElim1=0,EvElim2,EvElim1))) as QualifiedNo, EvFirstQualified, EvQualPrintHead as PrintHeader,
 					{$MyRank} AS `Rank`, " . (!empty($comparedTo) ? 'IFNULL(IopRank,0)' : '0') . " as OldRank, Qu{$dd}Score AS Score, Qu{$dd}Gold AS Gold,Qu{$dd}Xnine AS XNine, Qu{$dd}Hits AS Hits, 
 					IndIrmType, IrmType, IrmShowRank, IrmHideDetails, ";
 			$q.="IndRecordBitmap as RecBitLevel, EvIsPara, CoMaCode, CoCaCode, "; // records management
@@ -297,7 +297,12 @@
 					) hasSO on SOevent=IndEvent 
 				left join Session on SesTournament=ToId and SesOrder=QuSession and SesType='Q'
 				left join SubClass on ScTournament=ToId and ScId=EnSubClass
-				left join RoundRobinLevel on RrLevTournament=ToId and RrLevTeam=EvTeamEvent and RrLevEvent=EvCode and RrLevLevel=1 and EvElimType=5
+				left join (
+				    select max(RrPartSourceRank) as RoundRobinQualified, RrPartTeam, RrPartEvent
+				    from RoundRobinParticipants
+				    where RrPartSourceLevel=0 and RrPartSourceGroup=0 and RrPartTournament={$this->tournament}
+				    group by RrPartEvent, RrPartTeam
+				    ) RoundRobinQualified on RrPartTeam=EvTeamEvent and RrPartEvent=EvCode and EvElimType=5
 				left join ExtraData on EdId=EnId and EdType='Z'
 				LEFT JOIN DocumentVersions DV1 on EvTournament=DV1.DvTournament AND DV1.DvFile = 'QUAL-IND' and DV1.DvEvent=''
 				LEFT JOIN DocumentVersions DV2 on EvTournament=DV2.DvTournament AND DV2.DvFile = 'QUAL-IND' and DV2.DvEvent=EvCode

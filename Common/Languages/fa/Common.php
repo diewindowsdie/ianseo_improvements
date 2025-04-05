@@ -119,7 +119,6 @@ $lang['TimeFmt']='%H:%i';
 $lang['TM']='تيم اقايان';
 $lang['Total']='مجموع';
 $lang['TotaleScore']='مجموع';
-$lang['TrgField']='رقابت خارج از سالن';
 $lang['U']='مختلط';
 $lang['UnexpectedError']='خطاي پيش بيني نشده';
 $lang['Winner']='برنده';

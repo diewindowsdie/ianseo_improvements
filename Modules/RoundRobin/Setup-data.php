@@ -46,8 +46,15 @@ switch($_REQUEST['act']) {
 		}
 
 		$JSON['error']=0;
-		$q=safe_r_sql("select RoundRobinLevel.*, EvElim1, EvMatchMode, EvElimArrows, EvElimEnds, EvElimSO from Events 
+		$q=safe_r_sql("select RoundRobinLevel.*, EvElim1, EvMatchMode, EvElimArrows, EvElimEnds, EvElimSO, coalesce(sqySelector, 0) as HasBegun
+            from Events 
 		    left join RoundRobinLevel on RrLevTournament=EvTournament and RrLevTeam=EvTeamEvent and RrLevEvent=EvCode and RrLevLevel=$Level
+            left join (
+                select RrMatchLevel as sqySelector 
+                from RoundRobinMatches
+                where RrMatchTournament={$_SESSION['TourId']} and RrMatchLevel=$Level and RrMatchEvent=".StrSafe_DB($Event)." and RrMatchTeam=$Team and RrMatchAthlete>0 
+                limit 1
+            ) sqy on sqySelector=RrLevLevel
 			where EvElimType=5 and EvTeamEvent=$Team and EvCode=".StrSafe_DB($Event)." and  EvTournament={$_SESSION['TourId']}");
 		$LEVEL=safe_fetch($q);
 
@@ -56,6 +63,8 @@ switch($_REQUEST['act']) {
 		$JSON['level']=min($Level, $EVENT->EvElim1);
 		$JSON['cmdSave']=get_text('CmdSave');
 		$JSON['showAlert']=(!is_null($LEVEL->RrLevGroups));
+        $JSON['disabled']=$LEVEL->HasBegun;
+        $JSON['disabledMessage']='<div>'.get_text('SettingsDisabled','RoundRobin').'</div><div>'.get_text('SettingsDisabled-1','RoundRobin').'</div><div>'.get_text('SettingsDisabled-2','RoundRobin').'</div>';
 
 		// normalize details of this event...
 		$JSON['details']=array(

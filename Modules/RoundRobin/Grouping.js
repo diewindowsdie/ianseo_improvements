@@ -7,7 +7,7 @@ function getEventDetail() {
     let form={
         Team:$('#EvTeam').val(),
         Event:$('#EvCode').val(),
-        Level:$('#EvLevel').val(),
+        Level:$('#EvLevel :checked').val(),
         act:'getDetails',
     };
     $.getJSON('Grouping-data.php', form, function(data) {
@@ -22,9 +22,8 @@ function getEventDetail() {
 
             $('#EvLevel').empty();
             $.each(data.levels, function() {
-                $('#EvLevel').append('<option value="'+this.val+'"'+(this.disabled ? ' disabled="disabled"' : '')+'>'+this.text+'</option>');
+                $('#EvLevel').append('<span class="mx-2 text-dark Button"><input style="margin-left: 0" type="radio" name="EvLevel" value="'+this.val+'" onclick="getEventDetail()" '+(this.val==data.level ? 'checked="checked"' : '')+'>'+this.text+'</span>');
             });
-            $('#EvLevel').val(data.level);
 
             // prepare the sessions
             let sessions='';
@@ -130,6 +129,16 @@ function getEventDetail() {
                 });
             });
 
+            if(data.disabled && data.disabled!='0') {
+                $('#LevDetails input').each(function() {
+                    $(this).prop('disabled', true);
+                })
+                $('#LevDetails select').each(function() {
+                    $(this).prop('disabled', true);
+                })
+                $('#LevDetails').prepend('<tr><td colspan="4"><div class="alert alert-info p-2">'+data.disabledMessage+'</div></td></tr>');
+            }
+
             checkDuplicates();
         } else if(data.msg!='') {
             $.alert(data.msg);
@@ -143,7 +152,7 @@ function autoSeed(type) {
         type:type,
         Team:$('#EvTeam').val(),
         Event:$('#EvCode').val(),
-        Level:$('#EvLevel').val(),
+        Level:$('#EvLevel :checked').val(),
     }
     $('.success').removeClass('success');
     $('.danger').removeClass('danger');
@@ -224,7 +233,7 @@ function updateField(obj, name) {
         val:obj.value,
         Team:$('#EvTeam').val(),
         Event:$('#EvCode').val(),
-        Level:$('#EvLevel').val(),
+        Level:$('#EvLevel :checked').val(),
         Group:$(obj).closest('tr').attr('ref'),
         Item:$(obj).closest('tr').attr('item'),
     }
@@ -251,7 +260,7 @@ function checkDuplicates() {
         act:'checkDuplicates',
         Team:$('#EvTeam').val(),
         Event:$('#EvCode').val(),
-        Level:$('#EvLevel').val(),
+        Level:$('#EvLevel :checked').val(),
     }
     $('[name="srcRank"].danger').removeClass('success danger');
     $.getJSON('Grouping-data.php', form, function(data) {

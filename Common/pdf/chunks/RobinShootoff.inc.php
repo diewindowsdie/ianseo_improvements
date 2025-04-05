@@ -30,9 +30,9 @@ if(count($rankData['sections']))
 		$Header=false;
 		$colW1=10;
 		$colW2=15;
-		$colW3=($pdf->getPageWidth()-20-($colW1*3)-$colW2)/2;
-		foreach($section['levels'] as $idLevel => $level) {
-			foreach($level['ranks'] as $idGroup => $group) {
+        foreach($section['levels'] as $idLevel => $level) {
+            $colW3=($pdf->getPageWidth()-20-($colW1*3)-($colW2*($level['tiebreaker2']?2:1)))/2;
+            foreach($level['ranks'] as $idGroup => $group) {
 				$ShootOff=[];
 				foreach($group['items'] as $item) {
 					if(!$item['so'] and !$item['ct']) {
@@ -55,7 +55,8 @@ if(count($rankData['sections']))
 						$OldLevel=$idLevel;
 						$OldGroup=-1;
 						$Header=false;
-					}
+
+                    }
 					if($OldGroup!=$idGroup) {
 						$pdf->dy(2);
 						$pdf->SetFont('','b',10);
@@ -73,7 +74,9 @@ if(count($rankData['sections']))
 						$pdf->cell($colW3,0, $section['meta']['fields']['countryName'],'1',0, 'L', '1');
 						$pdf->cell($colW1,0, $section['meta']['fields']['score'],'1',0, 'C', '1');
 						$pdf->cell($colW2,0, $level['tiebreaker'],'1',0, 'C', '1');
-						$pdf->cell($colW2,0, $level['tiebreaker2'],'1',0, 'C', '1');
+                        if($level['tiebreaker2']) {
+                            $pdf->cell($colW2,0, $level['tiebreaker2'],'1',0, 'C', '1');
+                        }
 						$pdf->cell($colW1,0, '','1',1, 'C', '1');
 						$pdf->SetFont('','',8);
 						$Header=true;
@@ -84,7 +87,9 @@ if(count($rankData['sections']))
 					$pdf->cell($colW3,0, $item['countryName'],'1',0, 'L');
 					$pdf->cell($colW1,0, $item['score'],'1',0, 'C');
 					$pdf->cell($colW2,0, $item['tieBreaker'],'1',0, 'C');
-					$pdf->cell($colW2,0, $item['tieBreaker2'],'1',0, 'C');
+                    if($level['tiebreaker2']) {
+                        $pdf->cell($colW2,0, $item['tieBreaker2'],'1',0, 'C');
+                    }
 					$pdf->SetFont('','i',8);
 					if($item['so']) {
 						$pdf->cell($colW1,0, $section['meta']['fields']['so'],'1',1, 'C', '1');
