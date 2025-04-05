@@ -70,7 +70,7 @@ echo '<tr>';
 echo '<th class="Title" colspan="5">';
 echo $Teams;
 echo '<select id="EvCode" onchange="getEventDetail()">'.$Events.'</select>';
-echo '<select id="EvLevel" onchange="getEventDetail()"></select>';
+echo '<div id="EvLevel" style="display: inline;font:9pt Arial,Verdana,Sans"></div>';
 echo '</th>';
 echo '</tr>';
 

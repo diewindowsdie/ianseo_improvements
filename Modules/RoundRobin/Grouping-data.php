@@ -12,7 +12,7 @@ require_once('Common/Lib/CommonLib.php');
 $Team=intval($_REQUEST['Team'] ?? 0);
 $Event=($_REQUEST['Event'] ?? '');
 $Level=max(intval($_REQUEST['Level'] ?? 1), 1);
-$IsBracket=($_REQUEST['Level']=='B');
+$IsBracket=(($_REQUEST['Level']??'1')=='B');
 $Group=intval($_REQUEST['Group'] ?? 0);
 $Item=intval($_REQUEST['Item'] ?? 0);
 $TotLevels=0;
@@ -63,7 +63,8 @@ switch($_REQUEST['act']) {
 		foreach(range(1, $TotLevels) as $l) {
 			$lvls[]="select $l as Level";
 		}
-		$q=safe_r_sql("select Level, RrLevName from (".implode (' UNION ', $lvls).") lvls
+		$q=safe_r_sql("select Level, RrLevName
+            from (".implode (' UNION ', $lvls).") lvls
     		left join RoundRobinLevel on RrLevLevel=Level and RrLevTournament={$_SESSION['TourId']} and RrLevTeam=$Team and RrLevEvent=".StrSafe_DB($Event));
 		while($r=safe_fetch($q)) {
 			$JSON['levels'][]=array(
@@ -94,26 +95,60 @@ switch($_REQUEST['act']) {
 			// bracket Participants have group and level 0
 			$RealPhase=valueFirstPhase($EVENT->EvFinalFirstPhase);
 			$Position=($RealPhase==$EVENT->EvFinalFirstPhase ? 'GrPosition' : 'GrPosition2');
-			$q=safe_r_sql("select RrPartGroup, RrPartSourceLevel, RrPartSourceGroup, RrPartSourceRank, RrPartDestItem, '' as RrGrName, 0 as RrGrSession, 0 as RrGrTargetArchers, 0 as RrGrArcherWaves, coalesce(concat(upper(EnFirstName), ' ', EnName), concat(CoCode, '-', CoName, if(TeSubTeam>0, concat(' (', TeSubTeam, ')'), ''))) as PartName from RoundRobinParticipants
-				inner join Events on EvTournament=RrPartTournament and EvTeamEvent=RrPartTeam and EvCode=RrPartEvent
-    			inner join Grids on GrPhase=$RealPhase and $Position=RrPartDestItem
-    			left join Entries on EnId=RrPartParticipant and RrPartTeam=0
-				left join Teams on TeCoId=RrPartParticipant and TeSubTeam=RrPartSubTeam and TeFinEvent=1 and TeEvent=RrPartEvent and RrPartTeam=1
-				left join Countries on CoId=TeCoId and CoTournament=RrPartTournament
-				where RrPartLevel=0 and RrPartGroup=0 and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($Event)." and  RrPartTournament={$_SESSION['TourId']}
-				order by GrMatchNo");
+            if($Team) {
+                $q=safe_r_sql("select RrPartGroup, RrPartSourceLevel, RrPartSourceGroup, RrPartSourceRank, RrPartDestItem, 999 as RrLevGroupArchers, '' as RrGrName, 0 as RrGrSession, 0 as RrGrTargetArchers, 0 as RrGrArcherWaves, coalesce(concat(CoCode, '-', CoName, if(TeSubTeam>0, concat(' (', TeSubTeam, ')'), '')), '') as PartName, coalesce(sqySelector,0) as HasBegun
+                    from RoundRobinParticipants
+                    inner join Events on EvTournament=RrPartTournament and EvTeamEvent=RrPartTeam and EvCode=RrPartEvent
+                    inner join Grids on GrPhase=$RealPhase and $Position=RrPartDestItem
+                    left join Teams on TeCoId=RrPartParticipant and TeSubTeam=RrPartSubTeam and TeFinEvent=1 and TeEvent=RrPartEvent and RrPartTeam=1
+                    left join Countries on CoId=TeCoId and CoTournament=RrPartTournament
+                    left join (
+                        select TfEvent as sqySelector 
+                        from TeamFinals 
+                        where TfTournament={$_SESSION['TourId']} and TfEvent=".StrSafe_DB($Event)." and TfTeam > 0
+                        limit 1
+                    ) sqy on sqySelector=EvCode
+                    where RrPartLevel=0 and RrPartGroup=0 and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($Event)." and  RrPartTournament={$_SESSION['TourId']}
+                    order by GrMatchNo");
+            } else {
+                $q=safe_r_sql("select RrPartGroup, RrPartSourceLevel, RrPartSourceGroup, RrPartSourceRank, RrPartDestItem, 999 as RrLevGroupArchers, '' as RrGrName, 0 as RrGrSession, 0 as RrGrTargetArchers, 0 as RrGrArcherWaves, coalesce(concat(upper(EnFirstName), ' ', EnName), '') as PartName, coalesce(sqySelector,0) as HasBegun
+                    from RoundRobinParticipants
+                    inner join Events on EvTournament=RrPartTournament and EvTeamEvent=RrPartTeam and EvCode=RrPartEvent
+                    inner join Grids on GrPhase=$RealPhase and $Position=RrPartDestItem
+                    left join Entries on EnId=RrPartParticipant and RrPartTeam=0
+                    left join (
+                        select FinEvent as sqySelector 
+                        from Finals 
+                        where FinTournament={$_SESSION['TourId']} and FinEvent=".StrSafe_DB($Event)." and FinAthlete>0 
+                        limit 1
+                    ) sqy on sqySelector=EvCode
+                    where RrPartLevel=0 and RrPartGroup=0 and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($Event)." and  RrPartTournament={$_SESSION['TourId']}
+                    order by GrMatchNo");
+            }
 		} else {
-			$q=safe_r_sql("select RrPartGroup, RrPartSourceLevel, RrPartSourceGroup, RrPartSourceRank, RrPartDestItem, RrGrName, RrGrSession, RrGrTargetArchers, RrGrArcherWaves, coalesce(concat(upper(EnFirstName), ' ', EnName), concat(CoCode, '-', CoName, if(TeSubTeam>0, concat(' (', TeSubTeam, ')'), ''))) as PartName from RoundRobinParticipants
+			$q=safe_r_sql("select RrPartGroup, RrPartSourceLevel, RrPartSourceGroup, RrPartSourceRank, RrPartDestItem, RrLevGroupArchers,  RrGrName, RrGrSession, RrGrTargetArchers, RrGrArcherWaves, coalesce(concat(upper(EnFirstName), ' ', EnName), concat(CoCode, '-', CoName, if(TeSubTeam>0, concat(' (', TeSubTeam, ')'), ''))) as PartName, coalesce(sqySelector,0) as HasBegun
+                from RoundRobinParticipants
 	            inner join RoundRobinGroup on RrGrTournament=RrPartTournament and RrGrTeam=RrPartTeam and RrGrEvent=RrPartEvent and RrGrLevel=RrPartLevel and RrGrGroup=RrPartGroup
+	            inner join RoundRobinLevel on RrLevTournament=RrPartTournament and RrLevTeam=RrPartTeam and RrLevEvent=RrPartEvent and RrLevLevel=RrPartLevel
 				left join Entries on EnId=RrPartParticipant and RrPartTeam=0
 				left join Teams on TeCoId=RrPartParticipant and TeSubTeam=RrPartSubTeam and TeFinEvent=1 and TeEvent=RrPartEvent and RrPartTeam=1
 				left join Countries on CoId=TeCoId and CoTournament=RrPartTournament
 				left join Session on SesTournament=RrPartTournament and SesType='R' and SesOrder=RrGrSession
+                left join (
+                    select RrMatchLevel as sqySelector 
+                    from RoundRobinMatches
+                    where RrMatchTournament={$_SESSION['TourId']} and RrMatchLevel=$Level and RrMatchEvent=".StrSafe_DB($Event)." and RrMatchTeam=$Team and RrMatchAthlete>0 
+                    limit 1
+                ) sqy on sqySelector=RrPartLevel
 				where RrPartLevel=$Level and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($Event)." and  RrPartTournament={$_SESSION['TourId']}
 				order by RrPartGroup, RrPartDestItem");
 		}
 
 		while($r=safe_fetch($q)) {
+            if(!isset($JSON['disabled'])) {
+                $JSON['disabled']=$r->HasBegun;
+                $JSON['disabledMessage']='<div>'.get_text('SettingsDisabled','RoundRobin').'</div><div>'.get_text('SettingsDisabled-1','RoundRobin').'</div><div>'.get_text('SettingsDisabled-2','RoundRobin').'</div>';
+            }
 			if(empty($JSON['groups'][$r->RrPartGroup])) {
 				$JSON['groups'][$r->RrPartGroup]=[
 					'id'=>$r->RrPartGroup,
@@ -126,6 +161,9 @@ switch($_REQUEST['act']) {
 				];
 
 			}
+            if(count($JSON['groups'][$r->RrPartGroup]['grComponents'])>=$r->RrLevGroupArchers) {
+                continue;
+            }
 			$JSON['groups'][$r->RrPartGroup]['grComponents'][]=[
 				'source' => $r->RrPartSourceLevel.'-'.$r->RrPartSourceGroup,
 				'srcRank' => $r->RrPartSourceRank,

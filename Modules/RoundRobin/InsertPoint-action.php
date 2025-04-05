@@ -13,6 +13,9 @@ $Level=intval($_REQUEST['level'] ?? -1);
 $Group=intval($_REQUEST['group'] ?? -1);
 $Round=intval($_REQUEST['round'] ?? -1);
 $Schedule=($_REQUEST['sched'] ?? '');
+if($Schedule=='-1') {
+    $Schedule='';
+}
 
 if(!CheckTourSession() or !hasFullACL(AclRobin, '',AclReadWrite) or empty($_REQUEST['act']) or ($Team==-1 and !$Schedule)) {
 	JsonOut($JSON);
@@ -57,7 +60,7 @@ switch($_REQUEST['act']) {
 			$JSON['tiesAllowed']=$r->RrLevTieAllowed;
 			$JSON['groups'][]=['val'=>$r->RrGrGroup, 'txt'=>$r->RrGrName];
 			if(!$JSON['rounds']) {
-				for($n=1;$n<$r->RrLevGroupArchers;$n++) {
+				for($n=1;$n<ceil($r->RrLevGroupArchers/2)*2;$n++) {
 					$JSON['rounds'][]=['val'=>$n, 'txt'=>get_text('RoundNum', 'RoundRobin', $n)];
 				}
 			}

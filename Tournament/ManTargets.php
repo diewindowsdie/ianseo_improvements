@@ -36,7 +36,7 @@ $rs=safe_r_sql($select);
 
 if ($r=safe_fetch($rs) and $r->TtNumDist) {
     $numDist=$r->TtNumDist;
-    $colspan=2+$numDist+$Advanced;
+    $colspan=3+$numDist;
 
     $select = "SELECT DISTINCT *
         FROM TargetFaces

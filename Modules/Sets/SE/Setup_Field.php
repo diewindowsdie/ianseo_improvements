@@ -32,12 +32,13 @@ switch($TourType) {
         CreateTargetFace($TourId, $i++, 'Blå påle',       'REG-^[R](U18|50|60)[MW]', '1', 6, 0, 6, 0);
         CreateTargetFace($TourId, $i++, 'Blå påle',       'REG-^[B]U21[MW]', '1', 6, 0, 6, 0);
         CreateTargetFace($TourId, $i++, 'Blå påle',       'REG-^[BT][MW]', '1', 6, 0, 6, 0);
-        CreateTargetFace($TourId, $i++, 'Svart påle',     'REG-^[L][MW]', '1', 6, 0, 6, 0);
-        CreateTargetFace($TourId, $i++, 'Svart påle',     'REG-^[LT]U21[MW]', '1', 6, 0, 6, 0);
+        CreateTargetFace($TourId, $i++, 'Svart påle',     'REG-^[T]U21[MW]', '1', 6, 0, 6, 0);
         CreateTargetFace($TourId, $i++, 'Svart påle',     'REG-^[RC]U15[MW]', '1', 6, 0, 6, 0);
         CreateTargetFace($TourId, $i++, 'Svart påle',     'REG-^[B](U18|50|60)[MW]', '1', 6, 0, 6, 0);
         CreateTargetFace($TourId, $i++, 'Svart påle',     'REG-^[B]21', '1', 6, 0, 6, 0);
-        CreateTargetFace($TourId, $i++, 'Svart/vit påle', 'REG-^[LT](U15|U18|50|60)[MW]', '1', 6, 0, 6, 0);
+        CreateTargetFace($TourId, $i++, 'Svart/vit påle', 'REG-^[L][MW]', '1', 6, 0, 6, 0);
+        CreateTargetFace($TourId, $i++, 'Svart/vit påle', 'REG-^[L](U15|U18|50|60)[MW]', '1', 6, 0, 6, 0);
+        CreateTargetFace($TourId, $i++, 'Svart/vit påle', 'REG-^[T](U15|U18|50|60)[MW]', '1', 6, 0, 6, 0);
         CreateTargetFace($TourId, $i++, 'Svart/vit påle', 'REG-^[LT]21', '1', 6, 0, 6, 0);
         CreateTargetFace($TourId, $i++, 'Svart/vit påle', 'REG-^[B]U15[MW]', '1', 6, 0, 6, 0);
         CreateTargetFace($TourId, $i++, 'Vit påle',       'REG-^[RCBLT]U13[MW]', '1', 6, 0, 6, 0);

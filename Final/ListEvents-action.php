@@ -154,8 +154,27 @@ switch($_REQUEST['act']) {
 									}
 									safe_w_SQL("insert ignore into RoundRobinParticipants (RrPartTournament, RrPartTeam, RrPartEvent, RrPartLevel, RrPartGroup, RrPartDestItem) 
 										values ".implode(', ', $sqlPart));
-									safe_w_sql("update ignore RoundRobinParticipants set RrPartSourceLevel=0, RrPartSourceGroup=0, RrPartSourceRank=0, RrPartDestItem=0, RrPartParticipant=0, RrPartSubTeam=0 
+									safe_w_sql("update ignore RoundRobinParticipants 
+                                        set RrPartParticipant=0, RrPartSubTeam=0 
 										where (RrPartTournament, RrPartTeam, RrPartEvent, RrPartLevel, RrPartGroup) = ({$_SESSION['TourId']}, $Team, ".StrSafe_DB($Event).", 0, 0)");
+                                    // resets Group SO
+                                    safe_w_sql("update RoundRobinGroup 
+                                        inner join (
+                                            select distinct RrPartSourceLevel, RrPartSourceGroup
+                                            from RoundRobinParticipants
+                                            where (RrPartTournament, RrPartTeam, RrPartEvent, RrPartLevel, RrPartGroup) = ({$_SESSION['TourId']}, $Team, ".StrSafe_DB($Event).", 0, 0)         
+                                        ) RoundRobinParticipants on RrPartSourceLevel=RrGrLevel and RrPartSourceGroup=RrGrGroup
+                                        set RrGrSoSolved=0
+										where (RrGrTournament, RrGrTeam, RrGrEvent) = ({$_SESSION['TourId']}, $Team, ".StrSafe_DB($Event).")");
+                                    // resets Level SO
+                                    safe_w_sql("update RoundRobinLevel 
+                                        inner join (
+                                            select distinct RrPartSourceLevel
+                                            from RoundRobinParticipants
+                                            where (RrPartTournament, RrPartTeam, RrPartEvent, RrPartLevel, RrPartGroup) = ({$_SESSION['TourId']}, $Team, ".StrSafe_DB($Event).", 0, 0)         
+                                        ) RoundRobinParticipants on RrPartSourceLevel=RrLevLevel
+                                        set RrLevSoSolved=0
+										where (RrLevTournament, RrLevTeam, RrLevEvent) = ({$_SESSION['TourId']}, $Team, ".StrSafe_DB($Event).")");
 								}
 							}
 

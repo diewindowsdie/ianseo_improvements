@@ -8,8 +8,8 @@ $pdf->TotalShort=$PdfData->TotalShort;
 $pdf->ShotOffShort=$PdfData->ShotOffShort;
 $pdf->CoinTossShort=$PdfData->CoinTossShort;
 
-$pdf->ShowMatches=($pdf->ShowMatches??1);
-$pdf->ShowRank=($pdf->ShowRank??1);
+$ShowMatches=($PdfData->ShowMatches??1);
+$ShowRank=($PdfData->ShowRank??1);
 
 // if(!$pdf->ShowRank) {
 // 	$pdf->setPageOrientation('L');
@@ -27,7 +27,7 @@ if(count($rankData['sections'])) {
 			// this is for upload purposes!
 			$Desc=$section['meta']['descr'];
 		}
-		if($pdf->ShowRank) {
+		if($ShowRank) {
 			//Verifico se l'header e qualche riga ci stanno nella stessa pagina altrimenti salto alla prosisma
 			// if(!$pdf->SamePage(15+(strlen($section['meta']['printHeader']) ? 8:0)))
 			if(!$pdf->SamePage(15) or $OldTitle) {
@@ -115,7 +115,7 @@ if(count($rankData['sections'])) {
 			}
 		}
 
-		if($pdf->ShowMatches) {
+		if($ShowMatches) {
 			if(!$pdf->SamePage(15) or $OldTitle) {
 				$pdf->AddPage();
 			}

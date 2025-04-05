@@ -54,4 +54,5 @@ echo '<tr><th class="Title OneRow">
 
 echo '<tbody id="tbody"></tbody>';
 echo '</table>';
+echo '<div id="InsertDiv"></div>';
 include('Common/Templates/tail.php');

@@ -142,6 +142,7 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 				. " EvShootOff,"
 				. " EvCodeParent,"
 				. " EvMixedTeam,"
+				. " EvElimType,"
 				. " GrPhase Phase,"
 				. " @BitPhase:=if(GrPhase=0, 1, pow(2, ceil(log2(GrPhase))+1)),"
 				. " @BitPhase & EvMatchArrowsNo!=0 as FinElimChooser,"
@@ -558,7 +559,7 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 					'scoreConfirmed'=>$myRow->Confirmed,
 					'shootFirst'=>$myRow->ShootFirst,
 					'record' => $this->ManageBitRecord($myRow->RecBitLevel, $myRow->CaCode, $myRow->MaCode, $myRow->EvIsPara),
-				 	'position'=> $myRow->QualRank ? $myRow->QualRank : (useGrPostion2($myRow->EvFinalFirstPhase, $myRow->Phase) ? ($myRow->Position2 ? $myRow->Position2:'') : $myRow->Position),
+				 	'position'=> ($myRow->QualRank and in_array($myRow->EvElimType, [0,3,4])) ? $myRow->QualRank : (useGrPostion2($myRow->EvFinalFirstPhase, $myRow->Phase) ? ($myRow->Position2 ? $myRow->Position2:'') : $myRow->Position),
                     'saved'=> ($myRow->Position>0 and $myRow->Position<=SavedInPhase($myRow->EvFinalFirstPhase)),
 				 	'teamId'=> $myRow->Team,
 				 	'subTeam'=> $myRow->SubTeam,
@@ -608,7 +609,7 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 					'oppScoreConfirmed'=>$myRow->OppConfirmed,
 					'oppShootFirst'=>$myRow->OppShootFirst,
 					'oppRecord' => $this->ManageBitRecord($myRow->OppRecBitLevel, $myRow->OppCaCode, $myRow->OppMaCode, $myRow->EvIsPara),
-				 	'oppPosition'=> $myRow->OppQualRank ? $myRow->OppQualRank : (useGrPostion2($myRow->EvFinalFirstPhase, $myRow->Phase) ? ($myRow->OppPosition2 ? $myRow->OppPosition2:'') : $myRow->OppPosition),
+				 	'oppPosition'=> ($myRow->OppQualRank and in_array($myRow->EvElimType, [0,3,4])) ? $myRow->OppQualRank : (useGrPostion2($myRow->EvFinalFirstPhase, $myRow->Phase) ? ($myRow->OppPosition2 ? $myRow->OppPosition2:'') : $myRow->OppPosition),
                     'oppSaved'=> ($myRow->OppPosition>0 and $myRow->OppPosition<=SavedInPhase($myRow->EvFinalFirstPhase)),
                     'oppTeamId'=> $myRow->OppTeam,
 				 	'oppSubTeam'=> $myRow->OppSubTeam,

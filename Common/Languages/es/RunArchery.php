@@ -1,5 +1,7 @@
 <?php
 $lang['Accepted']='Aceptado';
+$lang['AdjustedTime']='Ajuste';
+$lang['ArrowPenaltyTime']='Tiempo de penalización de flecha';
 $lang['ArrowShort']='Flecha';
 $lang['ArrowsShot']='Flechas tiradas';
 $lang['Bib']='Dorsal';
@@ -34,9 +36,12 @@ $lang['MoveToNextPhase']='Mover a la siguiente fase';
 $lang['OfficialName']='Nombre Oficial';
 $lang['OfficialPracticeForEvents']='Prácticas oficiales en el campo de tiro de la competición';
 $lang['ParticipantList']='Participantes ordenados por hora de salida';
+$lang['PenaltyTime']='Tiempo de penalización';
 $lang['PhaseName-0']='Calificación';
 $lang['PhaseName-1']='Finales';
 $lang['PhaseName-2']='Semifinales';
+$lang['PlusTime']='Ajuste de tiempo (+)';
+$lang['PostCheckByJudges']='Verificación posterior a la competición por parte de los jueces';
 $lang['PrintDelays']='Imprimir Informe de Retrasos';
 $lang['PrintSpotterScore']='Imprimir hoja de puntuación del Observador';
 $lang['QualifiedFinal']='Clasificado para las Finales';
@@ -46,6 +51,8 @@ $lang['ResultRunArchery']='Resultados Carrera-Arco';
 $lang['ResultsIndividual']='Resultados Individuales';
 $lang['ResultsTeam']='Resultados por Equipos';
 $lang['RunningTime']='Tiempo de Carrera';
+$lang['ScheduledDay']='Día programado';
+$lang['ScheduledTime']='Tiempo programado';
 $lang['SemiFinalName']='Semifinal $a';
 $lang['Shooting']='Tiro';
 $lang['ShootingReport']='Informe del Tiro';
@@ -56,5 +63,6 @@ $lang['StartTime']='Hora de Salida';
 $lang['StartType']='Salida retrasada';
 $lang['TargetsHit']='Impactos en diana';
 $lang['TimeSheetImportedSuccess']='¡La hoja de tiempos se ha importado correctamente! La página se volverá a cargar para actualizar la hoja importada: ¡por favor compruebelo con cuidado!';
+$lang['TimeToDeduct']='Tiempo a ser deducido(s)';
 $lang['TotalTime']='Tiempo Total';
 ?>

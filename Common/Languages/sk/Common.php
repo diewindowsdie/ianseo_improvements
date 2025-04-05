@@ -219,13 +219,6 @@ $lang['Teams']='Družstvá';
 $lang['ToAll']='Nastaviť všetko';
 $lang['Total']='Spolu';
 $lang['TotaleScore']='Spolu';
-$lang['TrgCOIndComplete']='Halový (1 - malá 10)';
-$lang['TrgCOIndSmall']='Halový (6 - malá 10)';
-$lang['TrgCOOutdoor']='Vonkajší (5-X)';
-$lang['TrgCOOutdoorSmall']='Vonkajší (6-X)';
-$lang['TrgIndComplete']='Halový (1 - veľká 10)';
-$lang['TrgIndSmall']='Halový (6 - veľká 10)';
-$lang['TrgOutdoor']='Vonkajší (1-X)';
 $lang['Winner']='Víťaz';
 $lang['Yes']='Áno';
 ?>

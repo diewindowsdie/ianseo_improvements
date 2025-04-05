@@ -136,8 +136,8 @@ class Obj_Rank_Robin_calc extends Obj_Rank_Robin{
 		$PartFilterSource=$this->safeFilter('Participants', 'S');
 		// creates the group rank
 		$q=safe_r_sql("select RrMatchAthlete, RrMatchSubTeam, sum(RrMatchRoundPoints) as Points, sum(RrMatchTieBreaker) as TieBreaker, sum(RrMatchTieBreaker2) as TieBreaker2
-			from RoundRobinMatches
-			where $MatchFilter
+			from RoundRobinMatches 
+			where $MatchFilter and RrMatchAthlete>0
 			group by RrMatchAthlete, RrMatchSubTeam
 			order by Points desc, TieBreaker desc, TieBreaker2 desc");
 		$rank=0;
@@ -179,10 +179,10 @@ class Obj_Rank_Robin_calc extends Obj_Rank_Robin{
 				left join (
 				    select count(*) as NumQualified, 1 as selector
 				    from RoundRobinParticipants
-					where $PartFilterSource
+					where $PartFilterSource -- and RrPartParticipant!=0
 					group by RrPartTournament, RrPartTeam, RrPartEvent, RrPartSourceLevel, RrPartSourceGroup
 				    ) sqy on selector=1
-				where NumQualified>=RrPartGroupRankBefSO and $PartFilter
+				where NumQualified>=RrPartGroupRankBefSO and RrPartParticipant!=0 and $PartFilter
 				group by RrPartGroupRankBefSO
 				having count(*)>1");
 			while($r=safe_fetch($q)) {
@@ -211,13 +211,15 @@ class Obj_Rank_Robin_calc extends Obj_Rank_Robin{
 		safe_w_sql("update RoundRobinParticipants
 			set RrPartLevelRank=0, RrPartLevelRankBefSO=0
 			where $PartFilter");
+        // we need to remove all the qualified directly from group level
 		$q=safe_r_SQL("select RrPartParticipant, RrPartSubTeam, RrPartPoints, RrPartTieBreaker, RrPartTieBreaker2, RrPartTournament, RrPartTeam, RrPartEvent, RrPartLevel, RrPartGroup, RrPartDestItem
 			from RoundRobinParticipants
 		    inner join RoundRobinLevel on RrLevTournament=RrPartTournament and RrLevEvent=RrPartEvent and RrLevTeam=RrPartTeam and RrLevLevel=RrPartLevel
 			left join (
-			    select RrPartParticipant as sqyPart, RrPartSubTeam as sqySub 
+			    select RrPartParticipant as sqyPart, RrPartSubTeam as sqySub, RrPartEvent as sqyEvent, RrPartTeam as sqyTeam
 				from RoundRobinParticipants
-			    where RrPartSourceGroup!=0 and $PartFilter
+				inner join Events on EvTournament=RrPartTournament and EvTeamEvent=RrPartTeam
+			    where RrPartSourceGroup!=0 and $PartFilterSource
 			    ) sqy on sqyPart=RrPartParticipant and sqySub=RrPartSubTeam
 			where sqyPart IS NULL and $PartFilter
 			order by if(RrLevBestRankMode=0, RrPartPoints, 0) desc, RrPartTieBreaker desc, RrPartTieBreaker2 desc");

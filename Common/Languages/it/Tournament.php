@@ -27,7 +27,13 @@ $lang['AclISKClient']='App ISK';
 $lang['AclISKServer']='Gestione ISK';
 $lang['AclModules']='Moduli';
 $lang['ACLNoAccess']='Accesso Vietato';
-$lang['AclNotes']='<b>Note sulla sicurezza di rete</b><ul><li>le restrizioni impostate sono "basate sulla gara specifica" e non "basate sul server"</li><li>quando i criteri sono abilitati, il comportamento predefinito per i client non elencati è " Nessun accesso"</li><li>localhost (127.0.0.1 o :: 1) non può essere limitato</li><li>I criteri impostati possono essere disabilitati chiamando dal server stesso<b>{$a}</b></ul>';
+$lang['AclNotes']='<b>Note sulla sicurezza di rete</b>
+<ul>
+<li>le restrizioni impostate sono "basate sulla gara specifica" e non "basate sul server"</li>
+<li>quando i criteri sono abilitati, il comportamento predefinito per i client non elencati è "Nessun accesso"</li>
+<li>localhost (127.0.0.1 o :: 1) non può essere limitato</li>
+<li>I criteri impostati possono essere disabilitati chiamando dal server stesso<b>{$a}</b></li>
+</ul>';
 $lang['AclOdf']='Gestione ODF';
 $lang['AclOutput']='Uscite';
 $lang['AclParticipants']='Partecipanti';
@@ -228,6 +234,7 @@ $lang['CheckWaIds']='Controlla i WAID degli arcieri';
 $lang['CheckXNinesInMatch']='Controlla gli X/Nove nei Pareggi';
 $lang['Classes']='Classi';
 $lang['ClearField']='Svuota presenze sul campo';
+$lang['ClickMovesPosition']='Aggiorna solo la posizione delle frecce';
 $lang['ClickToMailRequest']='Clicca per aprire una mail precompilata';
 $lang['ClickToRequestCode']='Clicca qui per chiedere un codice';
 $lang['Clone']='Clona';
@@ -966,7 +973,7 @@ $lang['ReportCopy2']='Copia per la società';
 $lang['ReportCopy3']='Copia per la federazione';
 $lang['RePrint']='Stampa di nuovo';
 $lang['RequestAuthCode']='Inserisci una password a tua scelta';
-$lang['RequestDisclaimer']='L\'invio della mail non implica la sua accettazione. Il servizio viene offerto così com\'è e può essere sospeso in qualunque momento senza preavviso. Se una competizione non ha risultati (per esempio Classifiche di Classe) dopo la fine della gara, potrà essere cancellata senza preavviso.';
+$lang['RequestDisclaimer']='L\'invio della mail non implica la sua accettazione. Accertati di richiedere il codice di pubblicazione almeno una settimana prima dell\'inizio della gara: considera sempre che è un servizio offerto gratuitamente e su base volontaria, che potremmo essere in un altro fuso orario o impegnati in faccende della nostra vita reale. Il servizio viene offerto così com\'è e può essere sospeso in qualunque momento senza preavviso. Se una competizione non ha risultati (per esempio Classifiche di Classe) dopo la fine della gara, potrà essere cancellata senza preavviso.';
 $lang['RequestedDescription']='Questi campi DEVONO essere presenti nel file. Il separatore dei campi è il tabulatore, il separatore dei record è il ritorno a capo.';
 $lang['RequestEmail']='Email del Responsabile dei Risultati';
 $lang['RequestHeader']='Vorrei ricevere i codici di accesso per questa competizione (RICORDA DI INSERIRE UNA PASSWORD!):';
@@ -1536,6 +1543,7 @@ $lang['UserPasswordOld']='Vecchia Password';
 $lang['UserPasswordRetype']='Digitare nuovamente la nuova password';
 $lang['UseSubClasses']='Applica a categorie specifiche';
 $lang['ValidClass']='Classi Ammesse';
+$lang['ValidDivisions']='Div. ammesse (vuoto=tutti)';
 $lang['VersionBracketsInd']='Griglie individuali';
 $lang['VersionBracketsTeam']='Griglie a squadre';
 $lang['VersionEntries']='Partecipanti';

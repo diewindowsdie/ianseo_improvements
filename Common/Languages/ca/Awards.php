@@ -1,4 +1,13 @@
 <?php
+$lang['Aw-Anthem']='Línia himne';
+$lang['Aw-Anthem-TPE']='TPE línia himne';
+$lang['Aw-Applause']='Línia aplaudiments';
+$lang['Aw-Intro']='Línia introducció';
+$lang['Aw-Med1']='Nom guardó 1r lloc';
+$lang['Aw-Med2']='Nom guardó 2n lloc';
+$lang['Aw-Med3']='Nom guardó 3r lloc';
+$lang['Aw-Med4']='Nom guardó 4t lloc';
+$lang['Aw-representing']='Línia representant/defensant';
 $lang['CM0']='Compost Home';
 $lang['CM1']='Equip Compost Home';
 $lang['CustomAward']='Premi personalitzat';

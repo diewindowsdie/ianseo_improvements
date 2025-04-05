@@ -64,3 +64,7 @@ table.Tabella#MyTable {width:auto;margin:auto;box-sizing: border-box;}
 }
 .SoCell > div > div {padding:0.1em 0;}
 .SoCell span {margin-right:0.5em;white-space: nowrap;}
+
+.GroupPoints {background-color: var(--header-dark); color:white; font-size:1.2rem; padding:0.5em;margin-top:1em;font-weight: bold;}
+.GroupDiv {display:flex;justify-content: space-evenly;flex-wrap: wrap;}
+.RoundTable {margin: 0.5em;}

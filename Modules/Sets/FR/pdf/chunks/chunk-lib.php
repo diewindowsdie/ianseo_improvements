@@ -59,7 +59,9 @@ function writeGroupHeaderPrnIndividualAbs(&$pdf, $section, $distSize, $addSize, 
 		$pdf->setXY($pdf->GetX(),$TmpY);
 	}
 	if(!$running) {
-        $pdf->Cell(8, 4 * ($double ? 2 : 1),  'Hon.', 1, 0, 'C', 1);
+        if(!empty($pdf->Beursault)) {
+            $pdf->Cell(8, 4 * ($double ? 2 : 1),  'Hon.', 1, 0, 'C', 1);
+        }
         $pdf->Cell(12, 4 * ($double ? 2 : 1),  $section['fields']['score'], 1, 0, 'C', 1);
     }
 	if($pdf->ShowTens)
@@ -193,8 +195,10 @@ function writeDataRowPrnIndividualAbs(&$pdf, $item, $distSize, $addSize, $runnin
 	if(!$running)
 	{
 		if($snapDistance==0) {
-            $pdf->Cell(8, 4 * ($double ? 2 : 1), number_format($item['hits']-$item['miss'], 0, '', $pdf->NumberThousandsSeparator), $border . 'LR', 0, 'R', 0);
-            $pdf->Cell(12, 4 * ($double ? 2 : 1), number_format($item['score'], 0, '', $pdf->NumberThousandsSeparator), $border . 'LR', 0, 'R', 0);
+            if(!empty($pdf->Beursault)) {
+                $pdf->Cell(8, 4 * ($double ? 2 : 1), number_format(intval($item['hits'])-intval($item['miss']), 0, '', $pdf->NumberThousandsSeparator), $border . 'LR', 0, 'R', 0);
+            }
+            $pdf->Cell(12, 4 * ($double ? 2 : 1), number_format(intval($item['score']), 0, '', $pdf->NumberThousandsSeparator), $border . 'LR', 0, 'R', 0);
         } else {
 			$pdf->Cell(6, 4 * ($double ? 2 : 1), number_format($item['scoreSnap'],0,'',$pdf->NumberThousandsSeparator), $border.'L', 0, 'R', 0);
 			$pdf->SetFont($pdf->FontFix,'',$pdf->FontSizeHead);

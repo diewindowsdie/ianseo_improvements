@@ -97,6 +97,28 @@ class Obj_Rank_Robin extends Obj_Rank{
 						}
 				}
 				break;
+			case 'S':
+				$ret=array(
+					"RrPartTournament={$this->tournament}",
+				);
+
+				if (isset($this->opts['team'])) {
+					$ret[] = "RrPartTeam=" . $this->opts['team'];
+				}
+
+				if (array_key_exists('events',$this->opts)) {
+					$ret[]="RrPartEvent in (".implode(',', StrSafe_DB($this->opts['events'])).")";
+				} elseif (array_key_exists('event',$this->opts)) {
+					$ret[]="RrPartEvent = ".StrSafe_DB($this->opts['event']);
+				}
+
+                if (array_key_exists('level',$this->opts)) {
+                    $ret[]="RrPartSourceLevel = {$this->opts['level']}";
+                }
+                if (array_key_exists('group',$this->opts)) {
+                    $ret[]="RrPartSourceGroup = {$this->opts['group']}";
+                }
+				break;
 			case 'M':
 				$ret=array(
 					"RrMatchTournament={$this->tournament}",
@@ -163,7 +185,7 @@ class Obj_Rank_Robin extends Obj_Rank{
 				break;
 		}
 
-		if($ret) {
+		if(!empty($ret)) {
 			return implode(' AND ', $ret);
 		}
 

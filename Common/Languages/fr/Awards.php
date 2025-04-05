@@ -1,4 +1,8 @@
 <?php
+$lang['Aw-Med1']='Nom du lauréat de la 1ère place';
+$lang['Aw-Med2']='Nom du lauréat de la 2ème place';
+$lang['Aw-Med3']='Nom du lauréat de la 3ème place';
+$lang['Aw-Med4']='Nom du lauréat de la 4ème place';
 $lang['CM0']='compound/Poulies Homme';
 $lang['CM1']='Equipe Compound/Poulies Homme';
 $lang['CustomAward']='Prix spécial';

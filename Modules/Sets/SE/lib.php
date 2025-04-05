@@ -48,6 +48,7 @@ function CreateStandardSubClasses($TourId) {
 	$i=1;
 	CreateSubClass($TourId, $i++, 'M', 'Motion');
 	CreateSubClass($TourId, $i++, 'DM', 'Distriktsmästerskap');
+    CreateSubClass($TourId, $i++, 'DT', 'Distanstävlande');
 }
 
 function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=true) {

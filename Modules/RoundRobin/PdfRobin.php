@@ -19,15 +19,8 @@ if(!empty($_REQUEST['Event'])) {
 	$options['events']=$_REQUEST['Event'];
 }
 $pdf = new ResultPDF(get_text('ResultsRobin','Tournament'));
-$PdfData = getRobin($options);
+$PdfData = getRobin($options, false, (empty($_REQUEST['IncRankings']) or !empty($_REQUEST['IncBrackets'])), (empty($_REQUEST['IncBrackets']) or !empty($_REQUEST['IncRankings'])));
 $rankData = $PdfData->rankData;
-
-$pdf->ShowTargetNo=($_REQUEST['ShowTargetNo']??0);
-$pdf->ShowSchedule=($_REQUEST['ShowSchedule']??0);
-$pdf->ShowSetArrows=($_REQUEST['ShowSetArrows']??0);
-
-$pdf->ShowMatches=(empty($_REQUEST['IncRankings']) or !empty($_REQUEST['IncBrackets']));
-$pdf->ShowRank=(empty($_REQUEST['IncBrackets']) or !empty($_REQUEST['IncRankings']));
 
 if(!empty($_REQUEST['ShowOris'])) {
 	// ORIS
