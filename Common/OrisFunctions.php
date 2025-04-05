@@ -1605,7 +1605,7 @@ function getQualificationIndividual($EventRequested='', $ORIS=false, $ShowRecord
 	return $Data;
 }
 
-function getRobin($options=[], $ORIS=false) {
+function getRobin($options=[], $ORIS=false, $ShowTargetNo=true, $ShowRank=true) {
 	$Data=new StdClass();
 
 	$Data->Code='ROBIN';
@@ -1622,6 +1622,8 @@ function getRobin($options=[], $ORIS=false) {
 	$Data->Continue=get_text('Continue');
 	$Data->TotalShort=get_text('TotalShort','Tournament');
 	$Data->IndexName=get_text('ResultIndAbs', 'Tournament');
+    $Data->ShowTargetNo = $ShowTargetNo;
+    $Data->ShowRank = $ShowRank;
 
 	if(!$ORIS) {
 		$Data->Description=get_text('ResultsRobin','Tournament');

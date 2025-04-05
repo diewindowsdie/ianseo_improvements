@@ -231,7 +231,6 @@ function get_which_menu($on=false) {
             $ret['QUAL'][] = MENU_DIVIDER;
             $ret['QUAL'][] = get_text('MenuLM_Scorecard Printout') . '|' . $CFG->ROOT_DIR . 'Qualification/PrintScore.php';
             $ret['QUAL'][] = get_text('MenuLM_NewBacknumbers') . '|' . $CFG->ROOT_DIR . 'Accreditation/IdCards.php?CardType=Q';
-            $ret['QUAL'][] = get_text('MenuLM_Qualification Field of Play Layout') . '|' . $CFG->ROOT_DIR . 'Qualification/FopSetup.php|||PrintOut';
             $ret['QUAL'][] = MENU_DIVIDER;
             $ret['QUAL'][] = get_text('MenuLM_Personal Rank') . '|' . $CFG->ROOT_DIR . 'Qualification/RankPersonal1.php';
             $ret['QUAL'][] = MENU_DIVIDER;

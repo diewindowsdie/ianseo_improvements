@@ -591,7 +591,7 @@ function get_flag_ianseo($r0, $r2=null, $r3=null, $h=0, $align='', $direct='') {
 	if(!is_file($f=$CFG->DOCUMENT_PATH.($img='TV/Photos/'.$TourCode.'-Fl-'.$r->FlCode.'.jpg')) or filemtime($f)<$r->FlModded) {
 		if($im=@imagecreatefromstring(base64_decode($r->FlJPG))) Imagejpeg($im, $f, 95);
 	}
-	return '<img src="'.$CFG->ROOT_DIR.$img.'" '.($h?' height="'.$h.'"':'').' class="Flag" '.($align ? 'align="'.$align.'"' : '').' />';
+	return '<img src="'.$CFG->ROOT_DIR.$img.'" class="Flag" '.($align ? 'align="'.$align.'"' : '').' />';
 }
 
 function CssToObject($css) {

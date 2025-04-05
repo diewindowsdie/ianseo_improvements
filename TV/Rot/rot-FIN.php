@@ -204,7 +204,10 @@ function rotFin($TVsettings, $RULE) {
 		$Return['Block']='Grid';
 		$Return['BlockCss']='height:2em; width:100%; padding-right:0.5rem; overflow:hidden; font-size:2em; display:flex; flex-direction:row; justify-content:left; align-items:center; box-sizing:border-box;';
 
-		$ret[] = '<div class="Title">' . $section['meta']['eventName'] . '</div>';
+        $ret[] = '<div class="Title" >
+				<div class="TitleImg" style="float:left;"><img src="'.$CFG->ROOT_DIR.'TV/Photos/'.$IsCode.'-ToLeft.jpg"></div>
+				<div class="TitleImg" style="float:right;"><img src="'.$CFG->ROOT_DIR.'TV/Photos/'.$IsCode.'-ToRight.jpg"></div>
+				' . $section['meta']['eventName'] . $Title2Rows . $phase['meta']['phaseName'] . '</div>' ;
 		$ret[]='<div id="content" data-direction="up">';
 		$NumColBase = 3 + $ViewTeams;
 		foreach($section['phases'] as $IdPhase => $phase) {
@@ -366,14 +369,14 @@ function getPageDefaults(&$RMain) {
 		'Loser' => 'opacity:0.3;',
 		'CountryCode' => 'flex: 0 0 3.5vw; font-size:0.8vw; margin-left:-3.75ch',
 		'FlagDiv' => 'flex: 0 0 4.35vw;',
-		'Flag' => 'height:2.8vw; border:0.05vw solid #888;box-sizing:border-box;',
+		'Flag' => 'height: auto; max-height:2.8vw; width: auto; max-width:4.35vw; border:0.05vw solid #888;box-sizing:border-box;',
 		'Target' => 'flex: 0 0 6vw; text-align:right;margin-right:0.5em;',
-		'Athlete' => 'flex: 0 1 24vw;white-space:nowrap;overflow:hidden;font-size: 1.5vw;',
-		'CountryDescr' => 'flex: 1 1 20vw;white-space:nowrap;overflow:hidden;font-size: 1.2vw;',
+		'Athlete' => 'flex: 0 1 20vw;white-space:nowrap;overflow:hidden;font-size: 1.4vw;',
+		'CountryDescr' => 'flex: 1 1 20vw;white-space:nowrap;overflow:hidden;font-size: 1.3vw;',
 		'DistScore' => 'flex: 0 0 5vw; text-align:right; font-size:0.8em;',
 		'DistPos' => 'flex: 0 0 3vw; text-align:left; font-size:0.7em;',
 		'Schedule' => 'flex: 1 0 12vw; text-align:left; white-space:nowrap; font-size:1.1em;margin-right:0.5rem;',
-		'Score' => 'flex: 0 0 6vw; text-align:right; font-size:1.25em;margin-right:0.5rem;',
+		'Score' => 'flex: 0 0 5vw; text-align:right; font-size:1.25em;margin-right:0.5rem;',
 		'Gold' => 'flex: 0 0 3vw; text-align:right; font-size:1em;',
 		'XNine' => 'flex: 0 0 3vw; text-align:right; font-size:1em;',
 		'EndPoints' => 'flex: 0 0 17ch; text-align:left; font-size:1.3vw;',
