@@ -163,6 +163,7 @@
 
 			$EnName=AdjustCaseTitle($_REQUEST['d_e_EnName_']);
 			$EnFirstName=AdjustCaseTitle($_REQUEST['d_e_EnFirstName_']);
+            $EnMiddleName=AdjustCaseTitle($_REQUEST['d_e_EnMiddleName_']);
 
 			$EnCode=trim($_REQUEST['d_e_EnCode_']);
 			$EnIocCode=$_REQUEST['LupSelect'];
@@ -184,6 +185,7 @@
 				EnCode=" . StrSafe_DB($EnCode) . ",
 				EnName=" . StrSafe_DB($EnName) . ",
 				EnFirstName=" . StrSafe_DB($EnFirstName) . ",
+				EnMiddleName=" . StrSafe_DB($EnMiddleName) . ",
 				EnSex=" . StrSafe_DB($_REQUEST['d_e_EnSex_']) . ",
 				EnTargetFace=" . StrSafe_DB($_REQUEST['d_e_EnTargetFace_']) . ",
 				EnStatus=" . StrSafe_DB($_REQUEST['d_e_EnStatus_']) . ",
@@ -370,6 +372,7 @@
 	if ($id!=0)
 	{
 		$record=GetRows($id);
+        print_r($record[0]);
 		$record=$record[0];
 		$record['dob']=dateRenderer($record['dob'],get_text('DateFmt'));
 	}
@@ -384,6 +387,7 @@
 			'targetno' => $tar!==null ? $tar : '',
 			'firstname' => '',
 			'name' => '',
+            'middlename' => '',
 			'email' => '',
 			'sex_id' => 0,
 			'sex' => get_text('ShortMale','Tournament'),
@@ -859,10 +863,14 @@
 		</tr>
 		<tr>
 			<th class="TitleLeft"><?php print get_text('Name','Tournament');?></th>
-			<td><input type="text" maxlength="20" size="20" name="d_e_EnName_" id="d_e_EnName_" value=""/></td>
-			<th class="TitleLeft"><?php echo $combos['indcl']['descr']; ?></th>
-			<td><?php echo $combos['indcl']['combo']; ?></td>
+			<td colspan="3"><input type="text" maxlength="20" size="20" name="d_e_EnName_" id="d_e_EnName_" value=""/></td>
 		</tr>
+        <tr>
+            <th class="TitleLeft"><?php print get_text('MiddleName','Tournament');?></th>
+            <td><input type="text" maxlength="20" size="20" name="d_e_EnMiddleName_" id="d_e_EnMiddleName_" value=""/></td>
+            <th class="TitleLeft"><?php echo $combos['indcl']['descr']; ?></th>
+            <td><?php echo $combos['indcl']['combo']; ?></td>
+        </tr>
 		<tr>
 			<th class="TitleLeft"><?php print get_text('DOB','Tournament');?></th>
 			<td><input type="text" maxlength="16" name="d_e_EnCtrlCode_" id="d_e_EnCtrlCode_" value="" onblur="CheckCtrlCode(this);"/></td>

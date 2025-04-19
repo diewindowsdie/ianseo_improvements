@@ -742,6 +742,7 @@ $lang['MedallistsByEvent']='Medallists by Event';
 $lang['MedalSqClass']='Class & Division Results  - Team Medals';
 $lang['MediaResp']='Media Manager';
 $lang['MedOfficer']='Medical Officer';
+$lang['MiddleName']='Middle Name';
 $lang['Missing Credentials']='Missing Credentials';
 $lang['Missing Tournament']='Missing Tournament';
 $lang['MissingAgileConfig']='Missing Agile Configuration';

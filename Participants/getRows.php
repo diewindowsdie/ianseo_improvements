@@ -373,14 +373,14 @@ function GetRows($RowKey, $TourId, $OrderBy=null, $AllTargets=false, $ExtraWhere
 	} else {
 		$Select = "(SELECT RowKey, EnId, EnIocCode, EnTournament, EnDivision, EnClass, EnSubClass, EnAgeClass, ToCode, ToId,
 				EnCountry, EnSubTeam, EnCountry2, EnCountry3, EnCtrlCode, Dob,
-				EnCode, EnName, EnFirstName, EnBadgePrinted, EnAthlete, EnSex, EnWChair, EnSitting, EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent, EnTeamMixEvent, EnDoubleSpace, 
+				EnCode, EnName, EnFirstName, EnMiddleName, EnBadgePrinted, EnAthlete, EnSex, EnWChair, EnSitting, EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent, EnTeamMixEvent, EnDoubleSpace, 
 				EnPays, EnStatus, EnTargetFace, EnTimestamp, TfName, CoCode, CoName, CoCode2, CoName2, CoCode3, CoName3, 
 				SUBSTRING(AtTargetNo,1,1) AS `Session`, SUBSTRING(AtTargetNo,2) AS TargetNo, AtTargetNo QuTargetNo, sq.ToWhenFrom, EdEmail, EdExtra locBib, AccrCaption, HasPhoto  
 			FROM  AvailableTarget 
 			INNER JOIN Tournament ON AtTournament=ToId 
 			LEFT JOIN (SELECT $RowKey, EnId, EnIocCode, EnTournament, EnDivision, EnClass, EnSubClass, EnAgeClass, eextra.EdEmail, zextra.EdExtra, cextra.EdExtra AccrCaption, 
 					EnCountry, EnSubTeam, EnCountry2, EnCountry3, EnCtrlCode, IF(EnDob!='0000-00-00',EnDob,'0000-00-00 00:00:00') AS Dob, 
-					EnCode, EnName, EnFirstName, EnBadgePrinted, EnAthlete, EnSex, EnWChair, EnSitting, EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent, EnTeamMixEvent, EnDoubleSpace,
+					EnCode, EnName, EnFirstName, EnMiddleName,  EnBadgePrinted, EnAthlete, EnSex, EnWChair, EnSitting, EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent, EnTeamMixEvent, EnDoubleSpace,
 					EnPays, EnStatus, EnTargetFace, EnTimestamp, TfName, c.CoCode AS CoCode, c.CoName AS CoName, c2.CoCode AS CoCode2, c2.CoName AS CoName2, c3.CoCode AS CoCode3, c3.CoName AS CoName3, 
 					q.QuSession AS `Session`, SUBSTRING(q.QuTargetNo,2) AS TargetNo, q.QuTargetNo AS QuTargetNo, ToWhenFrom, PhPhoto is not null as HasPhoto  
 				FROM Entries AS e 
@@ -399,7 +399,7 @@ function GetRows($RowKey, $TourId, $OrderBy=null, $AllTargets=false, $ExtraWhere
 			UNION ALL  
 			(SELECT $RowKey, EnId, EnIocCode, EnTournament, EnDivision, EnClass, EnSubClass, EnAgeClass, ToCode, ToId, 
 				EnCountry, EnSubTeam, EnCountry2, EnCountry3, EnCtrlCode, IF(EnDob!='0000-00-00',EnDob,'0000-00-00 00:00:00') AS Dob, 
-				EnCode, EnName, EnFirstName, EnBadgePrinted, EnAthlete, EnSex, EnWChair, EnSitting, EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent, EnTeamMixEvent, EnDoubleSpace,
+				EnCode, EnName, EnFirstName, EnMiddleName, EnBadgePrinted, EnAthlete, EnSex, EnWChair, EnSitting, EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent, EnTeamMixEvent, EnDoubleSpace,
 				EnPays, EnStatus, EnTargetFace, EnTimestamp, TfName, c.CoCode AS CoCode, c.CoName AS CoName, c2.CoCode AS CoCode2, c2.CoName AS CoName2, c3.CoCode AS CoCode3, c3.CoName AS CoName3, 
 				q.QuSession AS `Session`, SUBSTRING(q.QuTargetNo,2) AS TargetNo, QuTargetNo, ToWhenFrom, eextra.EdEmail, zextra.EdExtra locBib, cextra.EdExtra AccrCaption, PhPhoto is not null as HasPhoto  
 			FROM  Entries 
@@ -450,6 +450,7 @@ function GetRows($RowKey, $TourId, $OrderBy=null, $AllTargets=false, $ExtraWhere
 					'targetno' => $MyRow->TargetNo,
 					'firstname' => stripslashes($MyRow->EnFirstName),
 					'name' => stripslashes($MyRow->EnName),
+                    'middlename' => stripslashes($MyRow->EnMiddleName),
 					'email' => stripslashes($MyRow->EdEmail),
 					'sex_id' => $MyRow->EnSex,
 					'sex' =>  $MyRow->EnId!==null ? $MyRow->EnSex==0 ? get_text('ShortMale','Tournament') : get_text('ShortFemale','Tournament') : '',

@@ -37,6 +37,7 @@ function loadRecord()
 	document.getElementById('d_e_EnCode_').value = record['code'];
 	document.getElementById('d_e_EnFirstName_').value = record['firstname'];
 	document.getElementById('d_e_EnName_').value = record['name'];
+	document.getElementById('d_e_EnMiddleName_').value = record['middlename'];
 	document.getElementById('d_e_EnCtrlCode_').value = record['dob'];
 	document.getElementById('d_e_EnSex_').value = record['sex_id'];
 	document.getElementById('d_e_EnCountry_').value = record['country_id'];

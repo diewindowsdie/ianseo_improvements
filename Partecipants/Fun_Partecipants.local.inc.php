@@ -284,7 +284,7 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 		$Select
 			= "(SELECT EnId,EnIocCode,EnTournament,EnDivision,EnClass,EnSubClass,EnAgeClass,"
 				. "EnCountry,EnSubTeam,EnCountry2,EnCountry3,EnCtrlCode,Dob,"
-				. "EnCode,EnName,EnFirstName,EnBadgePrinted,EnAthlete,"
+				. "EnCode,EnName,EnFirstName,EnMiddleName,EnBadgePrinted,EnAthlete,"
 				. "EnSex,EnWChair,EnSitting,EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,EnTeamMixEvent,"
 				. "EnDoubleSpace,EnPays,EnStatus,EnTargetFace,EnTimestamp,EnOdfShortname,TfName, "
 				. "CoCode,CoName,CoCode2,CoName2,CoCode3,CoName3,"
@@ -294,7 +294,7 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 					. "SELECT "
 						. "EnId,EnIocCode,EnTournament,EnDivision,EnClass,EnSubClass,EnAgeClass,eextra.EdEmail,zextra.EdExtra, cextra.EdExtra EnCaption,"
 						. "EnCountry,EnSubTeam,EnCountry2,EnCountry3,EnCtrlCode,IF(EnDob!='0000-00-00',EnDob,'0000-00-00') AS Dob,"
-						. "EnCode,EnName,EnFirstName,EnBadgePrinted,EnAthlete,"
+						. "EnCode,EnName,EnFirstName,EnMiddleName,EnBadgePrinted,EnAthlete,"
 						. "EnSex,EnWChair,EnSitting,EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,EnTeamMixEvent,"
 						. "EnDoubleSpace,EnPays,EnStatus,EnTargetFace,EnTimestamp,EnOdfShortname,TfName, "
 						. "c.CoCode AS CoCode,c.CoName AS CoName,c2.CoCode AS CoCode2,c2.CoName AS CoName2,c3.CoCode AS CoCode3,c3.CoName AS CoName3, q.QuSession AS `Session`,SUBSTRING(q.QuTargetNo,2) AS TargetNo,q.QuTargetNo AS QuTargetNo,ToWhenFrom "
@@ -318,7 +318,7 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 
 			. "(SELECT EnId,EnIocCode,EnTournament,EnDivision,EnClass,EnSubClass,EnAgeClass,"
 				. "EnCountry,EnSubTeam,EnCountry2,EnCountry3,EnCtrlCode,IF(EnDob!='0000-00-00',EnDob,'0000-00-00') AS Dob,"
-				. "EnCode,EnName,EnFirstName,EnBadgePrinted,EnAthlete,"
+				. "EnCode,EnName,EnFirstName,EnMiddleName,EnBadgePrinted,EnAthlete,"
 				. "EnSex,EnWChair,EnSitting,EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,EnTeamMixEvent,"
 				. "EnDoubleSpace,EnPays,EnStatus,EnTargetFace,EnTimestamp,EnOdfShortname,TfName, "
 				. "c.CoCode AS CoCode,c.CoName AS CoName,c2.CoCode AS CoCode2,c2.CoName AS CoName2,c3.CoCode AS CoCode3,c3.CoName AS CoName3,"
@@ -371,6 +371,7 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 				'targetno' => $MyRow->TargetNo,
 				'firstname' => stripslashes($MyRow->EnFirstName),
 				'name' => stripslashes($MyRow->EnName),
+                'middlename' => stripslashes($MyRow->EnMiddleName),
 				'tvname' => stripslashes($MyRow->EnOdfShortname),
 				'email' => stripslashes($MyRow->EdEmail ?? ''),
 				'sex_id' => $MyRow->EnSex,
