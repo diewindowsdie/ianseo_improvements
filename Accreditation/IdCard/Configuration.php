@@ -22,6 +22,7 @@ http://localhost:8080/requests/status.xml?command=in_play&input=v4l2%3A%2F%2F%2F
 $JS_SCRIPT=array(
 	'<script type="text/javascript" src="Fun_AJAX_GetImage.js"></script>',
 	'<script type="text/javascript" src="../Fun_JS.js"></script>',
+    '<link rel="stylesheet" type="text/css" href="./IdCard.css">',
 	);
 
 $ONLOAD=(' onLoad="javascript:reloadPicture()"');
@@ -39,16 +40,17 @@ pre {border:1px solid black; padding:3px; margin:0;}
 	<th class="Title"><?php echo get_text('CamUrlSocket', 'Tournament'); ?></th>
 	<th class="Title"><?php echo get_text('CamPreview', 'Tournament'); ?></th>
 </tr>
-<tr height="480" valign="top">
+<tr  valign="top">
 	<td width="50%">
 		<div class="Para"><b><?php echo get_text('CamUrlInsert', 'Tournament'); ?></b>
-		<br/><input type="text" name="SetCamUrl" style="width:100%" value="<?php echo (empty($_COOKIE["CamUrl"]) ? 'http://localhost:8050/stream.mjpg' : $_COOKIE["CamUrl"]) ?>" /></div>
+		<br/><input type="text" name="SetCamUrl" style="width:100%" value="<?php echo (empty($_COOKIE["CamUrl"]) ? 'http://localhost:8050/' : $_COOKIE["CamUrl"]) ?>" /></div>
 		<div class="Para" align="center"><input type="submit" value="<?php echo get_text('CmdSend', 'Tournament'); ?>" /></div>
-		<div class="Para"><?php echo get_text('CamDescriptionVLC', 'Tournament', array("sh " . $CFG->DOCUMENT_PATH . "Scripts", "VCL-Linux.sh", $CFG->DOCUMENT_PATH . "Scripts", "VCL-Windows.bat")); ?></div>
+		<div class="Para"><?php echo get_text('CamDescriptionVLC', 'Tournament', array("sh " . $CFG->DOCUMENT_PATH . "Scripts", "VLC-Linux.sh", $CFG->DOCUMENT_PATH . "Scripts", "VLC-Windows.bat")); ?></div>
 		<div class="Para"><?php echo get_text('CamDescriptionIPCamera', 'Tournament'); ?></div>
+		<div class="Para Center" style="margin-top: 1em"><div class="Button"><?php echo get_text('Back'); ?></div></div>
 	</td>
-	<td width="640">
-		<img id="imgGrabbed" src="./grabImage.php" alt="Grab" height="480" width="640"/>
+	<td>
+		<img id="imgGrabbed" src="./grabImage.php" alt="Grab"/>
 	</td>
 </tr>
 </table>

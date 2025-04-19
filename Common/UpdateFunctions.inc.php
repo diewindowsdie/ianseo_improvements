@@ -902,3 +902,7 @@ function updateAclTemplates_20240920($ToId) {
         GROUP BY  `AclTournament`, `AclIP`",false,array(1146, 1060));
     safe_w_sql("DELETE FROM `ACL` WHERE `AclTournament`=$ToId AND `AclIP` LIKE '0.0.0.%'",false,array(1146, 1060));
 }
+
+function updateNfaaIndoor_20250407($ToId) {
+    safe_w_sql("UPDATE `Tournament` SET `ToTypeSubRule` = 'NFAAIndoor-Nationals' WHERE `ToId` = {$ToId}",false,array());
+}

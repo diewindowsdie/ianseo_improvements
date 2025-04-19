@@ -5,7 +5,7 @@
  * @param mixed $file  can be an image file, an upload variable or a string
  * @param boolean $direct  if true, $file is an image file
  * @param boolean $String if true $file is a string image
- * @return the resized image as an escaped base64 encoded string on success
+ * @return string the resized image as an escaped base64 encoded string on success
  */
 function photoresize($file, $direct=false, $String=false) {
 	global $errMsg;

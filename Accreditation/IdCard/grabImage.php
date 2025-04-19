@@ -67,6 +67,10 @@ if(!$camurl or !$f) {
 		setcookie("getPhotoY",$y,time()+24*60);
 		setcookie("getPhotoW",$w,time()+24*60);
 		$tmpname=tempnam('/tmp', 'enphoto');
+        //        we need to get x, y, w and h of the image
+        $Photo=imagecreatetruecolor($w, $h);
+        imagecopyresampled($Photo, $im, 0, 0, $x, $y, $w, $h, $w, $h);
+        imagepng($Photo,$tmpname);
 		$Booth='';
 		if($_SESSION['AccBooth']) {
 			// pictures will be recorded in a Database!
@@ -74,10 +78,13 @@ if(!$camurl or !$f) {
 			$Booth=safe_fetch($q);
 		}
 
+        require_once('Common/PhotoResize.php');
+        require_once('Common/CheckPictures.php');
 		if($athId and $img=photoresize($tmpname, true) and InsertPhoto($athId, $img, $Booth)) {
 			$lineColor=imagecolorallocate($im,0,0,255);
 			imagesetthickness($im,10);
 		}
+    	imagedestroy($Photo);
 	}
 
 	imagerectangle($im,$x,$y,$x+$w,$y+$h,$lineColor);

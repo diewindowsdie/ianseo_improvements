@@ -1,17 +1,44 @@
 <?php
+$lang['AuthTourCode']='Zarezom razdvojena lista kodova turnira kojima korisnik može da upravlja.<br>Dozvoljen džoker znak: "%"';
+$lang['AutoCheckinAlreadyDone']='Već ste se prijavili<br>Ako treba da promijenite bilo kakve informacije, obratite se na šalter za prijavu.';
+$lang['AutoCheckinConfirm']='Ako su svi podaci tačni, pritisnite POTVRDI PRIJAVU<br>U suprotnom pritisnite OTKAŽI i obratite se akreditacionom stolu';
 $lang['AutoCheckinSearch']='Očitajte QR kod koji ste primili ili unesite svoje ime';
+$lang['AutoCHK-CanEdit']='Dozvoli operaterima za prijavu da uređuju imena, email adrese, državu/klub itd.';
 $lang['AutoCHK-Code']='Lista takmičenja, jedno po liniji<br> Kod prvog takmičenja biće korišćen kao naslov na kioscima za automatsku prijavu';
 $lang['AutoCHK-IP']='Spisak IP adresa uređaja za automatsku prijavu. Jedna IP adresa po liniji, u jednom od sljedećih formata:<br>IP adresa uređaja<br>IP adresa uređaja | Red štampača za akreditacije<br>
 IP adresa uređaja | Red štampača za akreditacije | Red štampača za bedževe<br>Red štampača je u formatu: Naziv reda [ @ Server štampača ]<br>Ako red štampača nije definisan, prikazaće se standardni dijalog za štampanje.';
+$lang['AutoCHK-IPinfo']='Lista IP adresa samouslužnih info tačaka. Jedna IP adresa po liniji.';
+$lang['AutoCHK-IPnoMgm']='Lista IP adresa samouslužnih kioska za prijavu. Jedna IP adresa po liniji, u jednom od sljedećih formata:<br> IP adresa uređaja<br> IP adresa uređaja | Red za akreditacione štampače<br> IP adresa uređaja | Red za akreditacione štampače | Red za štampače akreditacija<br> Red štampača u formatu: Naziv reda [ @ server štampača ]';
 $lang['AutoCHK-Print']='Automatski prikaži dijalog za štampanje';
 $lang['AutoImportSettings']='<b>Samo za iskusne korisnike</b><br> Promjena podrazumijevaih postavki može dovesti do netačnih rezultata.<br> Važno je ponovo izračunati sve rangove koji su postavljeni kao "ručno" PRIJE nego što se pošalju na ianseo.net ili štampaju rezultati, kao i generalno prije svake distribucije bilo koje vrste.';
+$lang['ChangeComponents']='<p>Da biste nastavili sa izmjenom, prvo uklonite takmičare koji više nisu u timu kako bi se aktivirale dostupne opcije.</p> &#9654&nbsp; Rezultat se računa u ukupan plasman u kvalifikacionoj rundi ekipe<br> ▷  Rezultat se ne računa u ukupan plasman u kvalifikacionoj rundi ekipe';
+$lang['CombiCompList']='Lista kodova takmičenja, odvojena zarezima';
+$lang['DeleteChannel']='Ukloni kanal. Ovo će ukloniti sve podjele iz kanala, kao i sam kanal.';
+$lang['ExportAdvanced']='Takođe izvozi podatke o prijavama i državama kako bi ih kreirao ako nedostaju na krajnjoj tački';
+$lang['ExportCategories']='Izaberite koje kategorije/termine želite da izvezete (ako ništa ne izaberete, biće izvezeni svi)';
+$lang['ExportDistances']='Izaberite koje distance želite da izvezete (ako ništa ne izaberete, biće izvezene sve distance)';
+$lang['ExportSchedule']='Izaberite iz rasporeda koji termin želite da izvezete';
+$lang['ExportScheduleToday']='Prikazuje samo zakazane termine za danas';
+$lang['FontFamily']='Ime fonta koje treba koristiti u CSS-u';
 $lang['FontFile']='Lokacija fajla na disku';
+$lang['FontName']='Actual name of the font';
+$lang['FontStyle']='Stil fonta u CSS-u';
+$lang['FontWeight']='Debljina fonta u CSS-u';
 $lang['GetBarcodeSeparator']='Nakon štampanja referentne liste bar kodova, očitajte bar kod «SEPARATOR» kako biste aktivirali odgovarajuće stavke čitača.';
 $lang['HomePage']='Ovo je stranica na kojoj možete odabrati ili kreirati takmičenje';
 $lang['ISK-LockedSessionHelp']='Ikone {$a} pokazuju da li aplikacija može da unosi rezultate ili ne u tom terminu.';
 $lang['ISK-ServerUrlPin']='<b>NE DIJELITE OVAJ BROJ</b><br>Koristite PIN po vašem izboru (4 numeričke cifre) koji će se koristiti za pristup vašem takmičenju.<br> Uređaji mogu unositi rezultate u vaše takmičenje samo čitajući QR kod koji je odštampao IANSEO.<br> U slučaju ručnog unosa u Ianseo Scorekeeper LITE aplikaciji, takmičarski kod koji treba koristiti je <b>{$a}</b>';
+$lang['QrCodeLandscape']='Jedan ili dva znaka "<" nacrtaće strelicu ulijevo, jedan ili dva znaka ">" nacrtaće strelicu udesno, jedan ili dva znaka "^" nacrtaće strelicu nagore, jedan ili dva znaka "v" nacrtaće strelicu nadolje';
+$lang['QrCodePortrait']='Polje podržava HTML. Ako unesete nešto unutar oznaka <qrcode>...</qrcode>, sadržaj će biti pretvoren u QR kod.';
+$lang['ScoreBarCodeShortcuts']='Pročitajte barkod odštampan na listi sa rezultatima.<br> Ručno unošenje znaka # praćenog imenom takmičara pretražuje bazu podataka kako bi se pronašao taj takmičar.<br> Unošenje znaka @ praćenog brojem mete pretražuje tu metu. Distanca MORA biti podešena. Termin treba biti naveden (prva cifra), a broj mete treba biti dopunjen nulama do 3 cifre.';
+$lang['ScoreboardFreetext-Texts']='Unesite {{date}} da biste ubacili datum u engleskom formatu (npr: january 4, 2024).<br> Unesite {{date-lang}} da biste ubacili datum na lokalnom jeziku (npr: {{date-de}} za 4. Januar 2024)<br> Unesite {{time}} da biste ubacili tekuće vrijeme u ISO formatu (npr: 15:03:23)<br> Unesite {{time-am}} za tekuće vrijeme u AM/PM formatu (npr: 3:03:23 PM)<br> Unesite {{counter-datetime}} da biste ubacili odbrojavanje do datuma (npr: [[[dani:]sati:]minuti:]sekunde — format, gdje je datetime vrijeme u ISO formatu, npr: 2024-12-04T09:00:00 za lokalno vrijeme)<br> Samo jedno od ovih polja može biti prisutno u tekstu';
+$lang['TargetRequests-Printout']='Štampa QR kodove za tražene mete kako bi lični uređaji mogli brzo biti ponovo povezani sa odgovarajućom metom.<br> Izaberite koju grupu(e) uređaja želite da štampate i opseg meta:<br> 1-10 štampa QR kodove za mete od 1 do 10<br> 1,7,12-15 štampa QR kodove za mete 1, 7 i od 12 do 15';
 $lang['TargetScoring-Printout']='Štampa QR kodove za tražene mete za bodovanje u odgovarajućem terminu-meti-udaljenosti sa ISK NG Lite. To je isti QR kod koji možete pronaći na listama za bodovanje.<br> Odaberite koje termine želite da ispišete i opseg meta:<br> 1-10 štampa QR kodove za mete od 1 do 10<br> 1,7,12-15 štampa QR kodove za mete 1, 7 i od 12 do 15';
+$lang['TV-ChannelSetup']='= Podešavanje kanala = Nakon što podesite kanale po želji, povežite brauzer uređaja koji želite da povežete sa kanalom na adresu <code>http://IP.ADRESA.IANSEO/tv.php?id=KANAL</code>, gdje je \'\'\'IP.ADRESA.IANSEO\'\'\' IP adresa na kojoj IANSEO radi (uključujući direktorijum ako postoji), a \'\'\'KANAL\'\'\' je ID kanala.';
 $lang['TV-RotEdit']='<div>Prezentaciona stranica se sastoji od najmanje jedne stranice sa sadržajem.</div> <div>Stranice sa sadržajem će se zatim prikazivati jedna za drugom i ponovo početi.</div> <div><b>NAPOMENA:</b> Kkod običnih i light verzija sistema, prvi sadržaj se ponovo prikazuje na kraju, pa je preporučeno da kao prvi sadržaj ubacite sliku (npr. logo takmičenja).</div> <div>Sadržaji mogu biti vezani za takmičenjeu (lista startnih takmičara, kvalifikacije, mečevi...) ili "multimedijalni" (slike, HTML poruke,...).</div>';
+$lang['TV-RotEdit-DB']='<h2>Upravljanje CSS3 (Napredni modul)</h2> <h3>Jedinice dužine</h3> <ul> <li><b>rem:</b> visina osnovnog karaktera</li> <li><b>em:</b> visina trenutnog karaktera</li> <li><b>ex:</b> visina malog slova "x"</li> <li><b>ch:</b> širina broja "0"</li> <li><b>vh:</b> 1/100 visine ekrana</li> <li><b>vw:</b> 1/100 širine ekrana</li> <li><b>vmin:</b> 1/100 minimalne vrijednosti između visine i širine ekrana</li> <li><b>vmax:</b> 1/100 maksimalne vrijednosti između visine i širine ekrana</li> </ul> <h3>Fleksibilni kvadrati</h3> <li><b>flex A B C:</b> <ul> <li><b>A</b>: ako je 0, kvadrat se ne može širiti; ako je >1, kvadrat se može širiti tom "brzinom" u odnosu na druge kvadrate (ako kvadrat 1 ima 2, a kvadrat 2 ima 3, kvadrat 2 će se širiti 1,5 puta više od kvadrata 1 koja će se širiti dvostruko više od kvadrata koji ima postavljenu vrijednost 1)</li> <li><b>B:</b> ako je 0, kvadrat se ne može smanjivati; ako je 1, kvadrat se može smanjivati</li> <li><b>C:</b> početne dimenzije kvadrata</li> </ul> </li> <h3>CSS referenca</h3> <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference">https://developer.mozilla.org/en-US/docs/Web/CSS/Reference</a>';
+$lang['TV-RotList']='<div>Ovo je lista dostupnih prezentacijskih stranica koje možete poslati na videopanel, monitore ili emitovanje.</div> <div>Dostupna su 3 različita enginea, kliknite na link da ih aktivirate:</div> <ul> <li>Standardni modul kompatibilan sa većinom brauzera</li> <li>Light verzija koja troši manje resursa, ali radi na većini brauzera</li> <li>Napredna verzija koja koristi HTML5 mogućnosti modernih brauzera</li> </ul>';
 $lang['UserName']='Mora biti jedinstveno u sistemu. Minimalna dužina: 6 karaktera.';
 $lang['UserPassword']='Ostavite prazno polje da biste zadržali trenutnu lozinku.';
+$lang['ZeroBased']='Broj zasnovan na nuli';
 ?>

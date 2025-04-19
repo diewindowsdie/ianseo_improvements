@@ -5,6 +5,7 @@ $lang['AutoCheckinConfirm']='Jika semua detail sudah benar, tekan CONFIRM CHECK-
 $lang['AutoCheckinSearch']='Scan Kode QR yang Anda terima atau ketik nama Anda';
 $lang['AutoCHK-CanEdit']='Izinkan operator check-in untuk mengedit Nama, Email, Negara/Klub, dll';
 $lang['AutoCHK-Code']='Daftar Kompetisi, satu per baris<br> Kode kompetisi pertama akan digunakan sebagai header di kios check-in otomatis';
+$lang['AutoCHK-IP']='Daftar IP perangkat check-in otomatis. Satu Alamat IP per baris, yang cocok dengan salah satu format berikut:<br> IP Perangkat<br> IP Perangkat | Antrean Printer Akreditasi <br> IP Perangkat | Antrean Printer Akreditasi | Antrean Printer Label Nama<br> Antrean Printer dalam bentuk: Nama Antrean [ @ Server Printer ]<br> Jika tidak ada Antrean Printer yang ditetapkan, maka dialog cetak standar akan ditampilkan';
 $lang['AutoCHK-IPinfo']='Daftar IP poin info diri. Satu Alamat IP per baris';
 $lang['AutoCHK-IPnoMgm']='Daftar IP kios check-in mandiri. Satu Alamat IP per baris, cocok dengan salah satu format berikut:<br> IP Perangkat<br> IP Perangkat | Antrian Printer Akreditasi <br> IP Perangkat | Antrian Printer Akreditasi | Name Tag Antrian Printer<br> Antrian Printer berupa: Nama Antrian [ @ Printer Server ]';
 $lang['AutoCHK-Print']='Secara otomatis menampilkan dialog cetak';
@@ -13,6 +14,7 @@ $lang['ChangeComponents']='<p>Untuk melanjutkan perubahan, hapus dulu atlet yang
 &#9654&nbsp;Skor termasuk dalam total babak kualifikasi tim<br>
 &#9655&nbsp;Skor tidak termasuk dalam total babak kualifikasi tim';
 $lang['CombiCompList']='Daftar Kode Kompetisi, dipisahkan koma';
+$lang['DeleteChannel']='Hapus Saluran. Ini akan menghapus semua pemecahan dari saluran dan saluran itu sendiri.';
 $lang['ExportAdvanced']='Juga mengekspor data Entri dan Negara untuk dibuat jika hilang di titik akhir';
 $lang['ExportCategories']='Pilih kategori/acara yang akan diekspor (tidak ada pilihan berarti semuanya)';
 $lang['ExportDistances']='Pilih jarak yang akan diekspor (tidak ada pilihan berarti semua jarak)';

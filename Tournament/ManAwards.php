@@ -324,7 +324,7 @@ $Lines=array(
 
 foreach($Lines as $k) {
     echo '<tr>
-        <th colspan="6" class="Right" nowrap="nowrap">'.substr($k,3).'</th>
+        <th colspan="6" class="Right" nowrap="nowrap">'.get_text($k,'Awards').'</th>
         <td onclick="insertInput(\''.$k.'-1\')"><div id="'.$k.'-1" ref="'.$k.'-1">'.getModuleParameter('Awards', $k.'-1').'</div></td>
         <td onclick="insertInput(\''.$k.'-2\')"><div id="'.$k.'-2" ref="'.$k.'-2" class="SecondLanguage">'.($SecondLanguage ? getModuleParameter('Awards', $k.'-2') : '').'</div></td>
         <td></td>

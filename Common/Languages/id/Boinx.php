@@ -15,6 +15,7 @@ $lang['CssBoxLeft']='Kotak - Kiri';
 $lang['CssBoxRight']='Kotak - Kanan';
 $lang['CssCountry']='Blok Nama dan Bendera - Kode Negara';
 $lang['CssCountryCommon']='Negara';
+$lang['CssCountryName']='Blok Nama dan Bendera - Nama Negara';
 $lang['CssFlag']='Blok Nama dan Bendera - Bendera';
 $lang['CssFlexArrows']='Blok Detail Panah - Umum';
 $lang['CssFlexArrowsDiv']='Div Panah Tunggal';

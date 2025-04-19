@@ -8,6 +8,7 @@
 	$JS_SCRIPT=array(
 		'<script type="text/javascript" src="Fun_AJAX_GetImage.js"></script>',
 		'<script type="text/javascript" src="../Fun_JS.js"></script>',
+        '<link rel="stylesheet" type="text/css" href="./IdCard.css">',
 		);
 
 	$txtHeader="";
@@ -59,17 +60,17 @@
 	include('Common/Templates/head-popup.php');
 ?>
 
-<table class="Tabella">
+<table class="Tabella ImgToGrab">
 	<tr><th colspan="2"><?php  echo $txtHeader; ?></th></tr>
 	<tr>
-	<td width="80%" class="Center"><img id="imgGrabbed" src="./grabImage.php" alt="Grab" onClick="javascript:centerBox(event);"/></td>
+	<td width="100%" class="Center"><img id="imgGrabbed" src="./grabImage.php" alt="Grab" onClick="javascript:centerBox(event);"/></td>
 	<script type="text/javascript">
 	<!--
 		var myImg = document.getElementById("imgGrabbed");
-		myImg.onmousedown = GetCoordinates;
+		// myImg.onmousedown = GetCoordinates;
 	//-->
 	</script>
-	<td width="20%" class="Center">
+	<td class="Center">
 	<table class="Tabella">
 		<tr>
 			<td colspan="2" class="Center"><a href="javascript:moveBox('N');">Su</a></td>
@@ -86,8 +87,8 @@
 			<td class="Center"><a href="javascript:moveBox('O');">Zoom +</a></td>
 		</tr>
 		<tr>
-			<td class="Center"><a href="javascript:moveBox('II');">Zoom ---</a></td>
-			<td class="Center"><a href="javascript:moveBox('OO');">Zoom +++</a></td>
+			<td class="Center nowrap"><a href="javascript:moveBox('II');">Zoom ---</a></td>
+			<td class="Center NoWrap"><a href="javascript:moveBox('OO');">Zoom +++</a></td>
 		</tr>
 
 

@@ -187,6 +187,11 @@ function UpdatePreOpen($TournamentID) {
         to_save_version($TournamentID, '2024-09-20 08:00:07');
     }
 
+    if($version<'2025-04-07 11:00:05') {
+        updateNfaaIndoor_20250407($TournamentID);
+        to_save_version($TournamentID, '2025-04-07 11:00:05');
+    }
+
     to_save_version($TournamentID, $DbVersion);
 }
 
