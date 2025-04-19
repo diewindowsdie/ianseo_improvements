@@ -390,12 +390,12 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(8, 4 * ($double ? 2 : 1),  ($hasIRMStatus ? $item['score'] : $item['rank']), $border.'LR', 0, 'R', 0);
 		//Atleta
 		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-		$this->Cell(20+ $addSize, 4 * ($double ? 2 : 1),  $item['athlete'], $border. 'R', 0, 'L', 0);
+		$this->Cell(35 + $addSize, 4 * ($double ? 2 : 1),  $item['athlete'], $border. 'R', 0, 'L', 0);
 		$this->Cell(12, 4 * ($double ? 2 : 1), ($item['birthdate']), $border.'L', 0, 'C', 0);
-		$this->Cell(10, 4 * ($double ? 2 : 1), ($item['subclassName']), $border.'L', 0, 'C', 0);
+		$this->Cell(8, 4 * ($double ? 2 : 1), ($item['subclassName']), $border.'L', 0, 'C', 0);
 		//Nazione
 		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-		$this->Cell(54 + $addSize, 4 * ($double ? 2 : 1), getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']), $border.'L', 0, 'L', 0);
+		$this->Cell(41 + $addSize, 4 * ($double ? 2 : 1), getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']), $border.'L', 0, 'L', 0);
 		$this->SetFont($this->FontFix,'',$this->FontSizeHead);
 		if (!$hasIRMStatus) {
 			if(!$double) {
@@ -575,11 +575,11 @@ class ResultPDF extends IanseoPdf {
 	   	$this->SetFont($this->FontStd,'B',$this->FontSizeHead);
 		$this->Cell(8, 4 * ($double ? 2 : 1),  $section['fields']['rank'], 1, 0, 'C', 1);
 
-		$this->Cell(20 + $addSize, 4 * ($double ? 2 : 1),  $section['fields']['athlete'], 1, 0, 'L', 1);
+		$this->Cell(35 + $addSize, 4 * ($double ? 2 : 1),  $section['fields']['athlete'], 1, 0, 'L', 1);
 		$this->Cell(12, 4 * ($double ? 2 : 1),  $section['fields']['birthdate'], 1, 0, 'C', 1);
-		$this->Cell(10, 4 * ($double ? 2 : 1),  $section['fields']['subclass'], 1, 0, 'C', 1);
+		$this->Cell(8, 4 * ($double ? 2 : 1),  $section['fields']['subclass'], 1, 0, 'C', 1);
 
-		$this->Cell(54 + $addSize, 4 * ($double ? 2 : 1),  $section['fields']['countryName'], 1, 0, 'L', 1);
+		$this->Cell(41 + $addSize, 4 * ($double ? 2 : 1),  $section['fields']['countryName'], 1, 0, 'L', 1);
 		if(!$double)
 		{
 			for($i=1; $i<=$distances;$i++)
