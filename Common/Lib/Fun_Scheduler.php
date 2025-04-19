@@ -4444,14 +4444,14 @@ Class Scheduler {
 			if(!$Blocks['min'] and !$Blocks['max']) continue;
 			$TwoColumns=false;
 			if($FirstPage) {
-				$pdf = new ResultPDF(get_text('FopSetup'), $Blocks['max']-$Blocks['min']<=32);
+                $pdf = new ResultPDF(get_text('FopSetup'), false);
 				$pdf->Version=$this->FopVersion;
 				$pdf->SetCellPadding(0.1);
 				$pdf->SetFillColor(200);
 				$pdf->SetTextColor(0);
 // 				$pdf->SetAutoPageBreak(false);
 			} else {
-				$pdf->AddPage($Blocks['max']-$Blocks['min']>32 ? 'L' : 'P');
+				$pdf->AddPage("L");
 			}
 			$FirstPage=false;
 			$FirstDate=true;
@@ -4465,7 +4465,7 @@ Class Scheduler {
 			$pdf->SetFont('', '', 8);
 
 			// calculates the width of the targets
-			$TgtWidthOrg=min(7, ($pdf->getPageWidth()-21-$TimeWidth)/(1+$Blocks['max']-$Blocks['min']));
+			$TgtWidthOrg=min(12, ($pdf->getPageWidth()-21-$TimeWidth)/(1+$Blocks['max']-$Blocks['min']));
 			$pdf->ln(6);
 
 			$SecondColumn=0;
@@ -4485,7 +4485,7 @@ Class Scheduler {
 			foreach($Blocks['times'] as $Time => $Block) {
 				if(!($CurrentXOffset%2) or !$SecondColumn) {
 					if(!$pdf->SamePage(11 + $DistHeight + $TgtHeight + $EventHeight + $PhaseHeight + $TgtFaceHeight + $ArcTgtHeight)) {
-						$pdf->AddPage();
+						$pdf->AddPage("L");
 						$FirstDate=true;
 						$pdf->SetFont('', 'B', 16);
 						$pdf->Cell(0, 0, formatTextDate($Day, true).' ('.get_text('Continue').')', 'B', 1, 'C');
@@ -4554,8 +4554,6 @@ Class Scheduler {
 				$pdf->ln();
 				$OrgY=$pdf->GetY();
 
-				$larCell=$TgtWidth/5;
-
 				foreach($Block['targets'] as $Range) {
 					$Y=$OrgY;
 					$pdf->SetFillColor($Range->Colour[0], $Range->Colour[1], $Range->Colour[2]);
@@ -4597,18 +4595,21 @@ Class Scheduler {
 							$pdf->SetFillColor(255);
 							$pdf->Rect($colX, $Y, $TgtWidth, $ArcTgtHeight, "DF");
 							$pdf->SetFillColor(127);
+                            $targetsPerFace = $Range->ArcTarget != 3 ? $Range->ArcTarget : 2;
+                            $larCell=$TgtWidth/($targetsPerFace + 1) - 0.05 * $targetsPerFace;
+                            $dividerWidth = ($TgtWidth - $larCell * $targetsPerFace) / ($targetsPerFace + 1);
 							if($Range->ArcTarget & 4) {
-								$pdf->Rect($colX + 1*$larCell - 0.5, $Y + 0.5, $larCell, 1, "DF");
-								$pdf->Rect($colX + 2*$larCell - 0.5, $Y + 0.5, $larCell, 1, "DF");
-								$pdf->Rect($colX + 3*$larCell - 0.5, $Y + 0.5, $larCell, 1, "DF");
-								$pdf->Rect($colX + 4*$larCell - 0.5, $Y + 0.5, $larCell, 1, "DF");
+								$pdf->Rect($colX + 1*$dividerWidth + 0*$larCell, $Y + 0.5, $larCell, 1, "DF");
+								$pdf->Rect($colX + 2*$dividerWidth + 1*$larCell, $Y + 0.5, $larCell, 1, "DF");
+								$pdf->Rect($colX + 3*$dividerWidth + 2*$larCell, $Y + 0.5, $larCell, 1, "DF");
+								$pdf->Rect($colX + 4*$dividerWidth + 3*$larCell, $Y + 0.5, $larCell, 1, "DF");
 							} else {
 								if($Range->ArcTarget & 1) {
-									$pdf->Rect($colX + 2*$larCell, $Y + 0.5, $larCell, 1, "DF");
+									$pdf->Rect($colX + 1*$dividerWidth + 0*$larCell, $Y + 0.5, $larCell, 1, "DF");
 								}
 								if($Range->ArcTarget & 2) {
-									$pdf->Rect($colX + 1*$larCell, $Y + 0.5, $larCell, 1, "DF");
-									$pdf->Rect($colX + 3*$larCell, $Y + 0.5, $larCell, 1, "DF");
+									$pdf->Rect($colX + 1*$dividerWidth + 0*$larCell, $Y + 0.5, $larCell, 1, "DF");
+									$pdf->Rect($colX + 2*$dividerWidth + 1*$larCell, $Y + 0.5, $larCell, 1, "DF");
 								}
 							}
 						}
