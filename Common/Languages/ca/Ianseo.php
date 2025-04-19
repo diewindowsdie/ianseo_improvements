@@ -8,6 +8,7 @@ $lang['Cert-Level4']='Curs Màster';
 $lang['Cert-Level5']='Grup de treball Ianseo';
 $lang['CertificateManagement']='Certificat de Gestió';
 $lang['GenerateFile']='Crea Fitxer';
+$lang['GenerateFileRyngDyng']='Crea Seqüència Ordres Ryngdyng';
 $lang['ResetItems']='Restableix Elements.<br>Aquesta acció no demanarà confirmació i no es pot desfer!<br>Restablint les qualificacions també es restabliran tots els esdeveniments posteriors!';
 $lang['ResetResult']='Les sessions sol·licitades s\'han restablert';
 $lang['ResetSessions']='Confirmeu Reinici';

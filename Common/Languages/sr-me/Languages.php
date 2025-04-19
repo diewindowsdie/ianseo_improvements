@@ -1,7 +1,7 @@
 <?php
 $lang['Aggiorna']='Ažuriraj';
 $lang['CA-Ev-RMT']='Rikrv muška ekipa';
-$lang['CA-H']='Lovački';
+$lang['CA-H']='Hunter';
 $lang['CA-L']='Dugi luk';
 $lang['CA-O']='Otvori';
 $lang['CA-R']='Zakrivljeni';

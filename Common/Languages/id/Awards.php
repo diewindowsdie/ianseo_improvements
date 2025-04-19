@@ -1,4 +1,13 @@
 <?php
+$lang['Aw-Anthem']='Baris lagu kebangsaan';
+$lang['Aw-Anthem-TPE']='TPE baris lagu kebangsaan';
+$lang['Aw-Applause']='Baris tepuk tangan';
+$lang['Aw-Intro']='Baris pengantar';
+$lang['Aw-Med1']='Nama penghargaan tempat pertama';
+$lang['Aw-Med2']='Nama penghargaan tempat kedua';
+$lang['Aw-Med3']='Nama penghargaan tempat ketiga';
+$lang['Aw-Med4']='Nama penghargaan tempat keempat';
+$lang['Aw-representing']='Garis mewakili';
 $lang['CM0']='Compound Pria';
 $lang['CM1']='Compound Pria Beregu';
 $lang['CustomAward']='Penghargaan Kustom';

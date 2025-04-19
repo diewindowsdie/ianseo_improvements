@@ -53,6 +53,35 @@ if($version<'2025-02-24 20:03:00') {
     db_save_version('2025-02-24 20:03:00');
 }
 
+if($version<'2025-04-06 19:03:00') {
+    safe_w_sql("ALTER TABLE `Events` 
+        ADD `EvQualDistances` tinyint NOT NULL DEFAULT 0, 
+        ADD `EvLuckyDogDistance` tinyINT NOT NULL DEFAULT 0, 
+        ADD `EvSoDistance` tinyINT NOT NULL DEFAULT 0, 
+        ADD `EvTiePositionSO` INT NOT NULL DEFAULT 0
+        ",false,array(1054, 1060));
+    db_save_version('2025-04-06 19:03:00');
+}
+
+if($version<'2025-04-07 11:00:05') {
+    $q = safe_r_SQL("SELECT `FlTournament`,`FlCode`, `ToIocCode` as refCode, 
+       GROUP_CONCAT(CONCAT('#',`FlIocCode`,'#') ORDER BY `FlIocCode`) as allCodes,  sum(if(`FlIocCode`=`ToIocCode`, 1, 0)) as refPresent
+        FROM `Flags` INNER JOIN `Tournament` on `FlTournament`=`ToId`
+        GROUP BY `FlTournament`,`FlCode` HAVING  count(`FlCode`)>1");
+    while($r=safe_fetch($q)) {
+        if(!$r->refPresent) {
+            $tmp = explode(',', $r->allCodes);
+            $r->refCode = str_replace("#","",$tmp[0]);
+        }
+        safe_w_sql("DELETE FROM `Flags` WHERE `FlTournament`={$r->FlTournament} AND `FlCode`='{$r->FlCode}' AND `FlIocCode`!='{$r->refCode}'");
+    }
+    safe_w_sql("ALTER TABLE `Flags` DROP PRIMARY KEY, ADD PRIMARY KEY (`FlTournament`, `FlCode`) USING BTREE",false,array(1072, 1062));
+    safe_w_sql("ALTER TABLE `Events` ADD `EvQualBestOfDistances` tinyint NOT NULL DEFAULT 0",false,array(1054, 1060));
+    safe_w_sql("UPDATE `Tournament` SET `ToTypeSubRule` = 'NFAAIndoor-Nationals' WHERE `ToType` = 32",false,array());
+    db_save_version('2025-04-07 11:00:05');
+}
+
+
 /*
 
 // TEMPLATE

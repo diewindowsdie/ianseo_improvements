@@ -163,6 +163,7 @@ $lang['StagePool2']='ワールドゲームズ ２ プール形式';
 $lang['StagePool4']='WA 4 プール形式';
 $lang['StageQ']='予選ラウンド';
 $lang['Status']='ステータス：';
+$lang['Superuser']='管理者';
 $lang['SwipeDown']='<strong>下へスワイプ</strong></br>現在の選手の前のエンドに移動する。';
 $lang['SwipeLeft']='<strong>左へスワイプ</strong><br/>同じエンドの次の選手に移動する。';
 $lang['SwipeRight']='<strong>右へスワイプ</strong></br>同じエンドの前の選手に移動する。';

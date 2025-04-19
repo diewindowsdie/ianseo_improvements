@@ -639,6 +639,7 @@ $lang['NumberOfEntriesByCountry']='Nombre de participants par Pays/Clubs';
 $lang['NumberOfEntriesByEvent']='Nombre de participants par évènement';
 $lang['NumResult']='N. de Places (0: tous)';
 $lang['NumSession']='Nombre de départs';
+$lang['NumTieAtPosition']='{$a[0]} archers à égalité, Place : {$a[1]}';
 $lang['Officials']='Officiels';
 $lang['OnlineId']='N° en-ligne';
 $lang['OnlyAccredited']='Seulement si accrédité';

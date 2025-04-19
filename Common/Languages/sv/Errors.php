@@ -19,4 +19,5 @@ $lang['NoPrivilege']='Behörighet saknas. Redigering är låst.';
 $lang['NoSameOrders']='Ordningstalet kan inte vara samma som på en annan del i kanalen.';
 $lang['NoTargetSet']='Klasser som saknar tapet-/mål-inställningar';
 $lang['PhpOutdated']='Din PHP-version är föråldrad. Ianseo kan fungera men vissa funktioner behöver version {$a}.</br>Uppdatera så snart som möjligt din PHP version till {$a} eller högre.';
+$lang['TooManyDistancesMatch']='Klasser som har flera olika avstånd inställda';
 ?>

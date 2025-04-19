@@ -8,6 +8,7 @@ $lang['Cert-Level4']='Master kurs';
 $lang['Cert-Level5']='Ianseo tim';
 $lang['CertificateManagement']='Menadžment sertifikata';
 $lang['GenerateFile']='Kreiraj fajl';
+$lang['GenerateFileRyngDyng']='Kreiraj Ryngdyng sekvencu naredbi';
 $lang['ResetItems']='Resetuj stavke.<br>Ova radnja neće tražiti potvrdu i ne može se poništiti!<br>Resetovanje kvalifikacija će resetovati i sve naredne događaje!';
 $lang['ResetResult']='Zahtijevane sesije su resetovane';
 $lang['ResetSessions']='Potvrdi resetovanje.';
