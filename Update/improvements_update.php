@@ -9,6 +9,7 @@ require_once 'improvements/update_judges.php';
 require_once 'improvements/update_tournament_code.php';
 require_once 'improvements/judges_order.php';
 require_once 'improvements/update_event_name.php';
+require_once 'improvements/add_middle_name.php';
 
 if ($log) fclose($log);
 ?>
