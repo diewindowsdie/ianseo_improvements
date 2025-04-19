@@ -62,6 +62,7 @@ if($DataSource) {
 		<th>' . get_text('MixedTeamFinEvent', 'Tournament') . '</th>
 		<th>' . get_text('FamilyName','Tournament') . '</th>
 		<th>' . get_text('Name','Tournament') . '</th>
+		<th>' . get_text('MiddleName','Tournament') . '</th>
 		<th>' . get_text('Sex','Tournament') . '</th>
 		<th>' . get_text('Country') . '</th>
 		<th>' . get_text('Nation') . '</th>
@@ -77,6 +78,7 @@ if($DataSource) {
 		<th>'. get_text('Code','Tournament') . '</th>
 		<th>' . get_text('FamilyName','Tournament') . '<br/>Import / DB</th>
 		<th>' . get_text('Name','Tournament') . '<br/>Import / DB</th>
+		<th>' . get_text('MiddleName','Tournament') . '</th>
 		<th>' . get_text('DOB','Tournament') . '<br/>Import / DB</th>
 		<th>' . get_text('Sex','Tournament') . '<br/>Import / DB</th>
 		<th>'. get_text('Class') . '<br/>Import / DB</th>
@@ -126,7 +128,7 @@ if($DataSource) {
 					$ImportResult['Refused'][]='<tr class="error"><td>Row ' . $Line  . ' incorrect, Invalid NOC Code<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
 					continue;
 				}
-			}elseif($tmpString[0]== "##WHEELCHAIR##") {
+			} elseif($tmpString[0]== "##WHEELCHAIR##") {
 				if(count($tmpString)!=3) {
 					$ImportResult['Refused'][]='<tr class="error"><td>Row ' . $Line  . ' incorrect, wrong number of fields<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
 					continue;
@@ -606,17 +608,18 @@ if($DataSource) {
 				continue;
 			}
 
-			if(count($tmpString)>=14 && strlen($tmpString[13])>10) {
+            //todo начиная отсюда
+			if(count($tmpString)>=15 && strlen($tmpString[14])>10) {
 				$ImportResult['Refused'][]= '<tr class="error"><td>Country Code ['.$tmpString[13].'] too long (max 10 characters)<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
 				continue;
 			}
 
-			if(count($tmpString)>=19 && strlen($tmpString[17])>10) {
+			if(count($tmpString)>=20 && strlen($tmpString[18])>10) {
 				$ImportResult['Refused'][]= '<tr class="error"><td>Country Code ['.$tmpString[17].'] too long (max 10 characters)<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
 				continue;
 			}
 
-			if(count($tmpString)>=21 && strlen($tmpString[19])>10) {
+			if(count($tmpString)>=22 && strlen($tmpString[20])>10) {
 				$ImportResult['Refused'][]= '<tr class="error"><td>Country Code ['.$tmpString[19].'] too long (max 10 characters)<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
 				continue;
 			}
@@ -644,15 +647,16 @@ if($DataSource) {
 			/* MixedTeamFinEvent */ $ShootFinMixTeam2Save = (count($tmpString)<=9 || !empty($tmpString[9]) ? '1' : '0');
 			/* FamilyName        */ $FirstName2Save = (count($tmpString)>=11 && $tmpString[10] ? AdjustCaseTitle($tmpString[10]) : '');
 			/* Name              */ $Name2Save = (count($tmpString)>=12 && $tmpString[11] ? AdjustCaseTitle($tmpString[11]) : '');
-			/* Sex               */ $Sex2Save = (count($tmpString)>=13 && (intval($tmpString[12]) || ($tmpString[12]!=='0' and $tmpString[12] !='M')) ? "1" : "0");
-			/* Country           */	$Country2Save = (count($tmpString)>=14 && $tmpString[13] ? UpperText($tmpString[13]) : '');
-			/* Nation            */	$Nation2Save = (count($tmpString)>=15 && $tmpString[14] ? AdjustCaseTitle($tmpString[14]) : '');
-			/* DOB               */ $DoB2Save = (count($tmpString)>=16 ? ConvertDateLoc($tmpString[15]) : "0000-00-00");
-			/* SubClass          */ $SubClass2Save = (count($tmpString)>=17 ? $tmpString[16] : "");
-			/* Country 2         */ $SecondCountry2Save = (count($tmpString)>=18 ? UpperText($tmpString[17]) : "");
-			/* Nation 2          */ $SecondNation2Save = (count($tmpString)>=19 ? AdjustCaseTitle($tmpString[18]) : "");
-			/* Country 3         */ $ThirdCountry2Save = (count($tmpString)>=20 ? UpperText($tmpString[19]) : "");
-			/* Nation 3          */ $ThirdNation2Save = (count($tmpString)>=21 ? AdjustCaseTitle($tmpString[20]) : "");
+            /* MiddleName        */ $MiddleName2Save = (count($tmpString)>=13 && $tmpString[12] ? AdjustCaseTitle($tmpString[12]) : '');
+			/* Sex               */ $Sex2Save = (count($tmpString)>=14 && (intval($tmpString[13]) || ($tmpString[13]!=='0' and $tmpString[13] !='M')) ? "1" : "0");
+			/* Country           */	$Country2Save = (count($tmpString)>=15 && $tmpString[14] ? UpperText($tmpString[14]) : '');
+			/* Nation            */	$Nation2Save = (count($tmpString)>=16 && $tmpString[15] ? AdjustCaseTitle($tmpString[15]) : '');
+			/* DOB               */ $DoB2Save = (count($tmpString)>=17 ? ConvertDateLoc($tmpString[16]) : "0000-00-00");
+			/* SubClass          */ $SubClass2Save = (count($tmpString)>=18 ? $tmpString[17] : "");
+			/* Country 2         */ $SecondCountry2Save = (count($tmpString)>=19 ? UpperText($tmpString[18]) : "");
+			/* Nation 2          */ $SecondNation2Save = (count($tmpString)>=20 ? AdjustCaseTitle($tmpString[19]) : "");
+			/* Country 3         */ $ThirdCountry2Save = (count($tmpString)>=21 ? UpperText($tmpString[20]) : "");
+			/* Nation 3          */ $ThirdNation2Save = (count($tmpString)>=22 ? AdjustCaseTitle($tmpString[21]) : "");
 			/* Para Status       */ $Para2Save = 0;
 
 			$CtrlCode2Save = "";
@@ -729,19 +733,19 @@ if($DataSource) {
 					$Status2Save = $MyRow->LueStatus;
 
 					// campi nazione
-					if(!isset($tmpString[13])) {
+					if(!isset($tmpString[14])) {
 						$Country2Save = UpperText($MyRow->LueCountry);
 						$Nation2Save = AdjustCaseTitle($MyRow->LueCoShort);
 						$NationComplete2Save = AdjustCaseTitle($MyRow->LueCoDescr);
 					}
 
-					if(!isset($tmpString[17])) {
+					if(!isset($tmpString[18])) {
 						$SecondCountry2Save = UpperText($MyRow->LueCountry2);
 						$SecondNation2Save = AdjustCaseTitle($MyRow->LueCoShort2);
 						$SecondNationComplete2Save = AdjustCaseTitle($MyRow->LueCoDescr2);
 					}
 
-					if(!isset($tmpString[19])) {
+					if(!isset($tmpString[20])) {
 						$ThirdCountry2Save = UpperText($MyRow->LueCountry3);
 						$ThirdNation2Save = AdjustCaseTitle($MyRow->LueCoShort3);
 						$ThirdNationComplete2Save = AdjustCaseTitle($MyRow->LueCoDescr3);
@@ -858,6 +862,7 @@ if($DataSource) {
 					, EnCode=".StrSafe_DB($Code2Save)."
 					, EnName=".StrSafe_DB($Name2Save)."
 					, EnFirstName=".StrSafe_DB($FirstName2Save)."
+					, EnMiddleName=".StrSafe_DB($MiddleName2Save)."
 					, EnNameOrder=".intval($NameOrder)."
 					, EnSex=$Sex2Save
 					, EnIndClEvent=$ShootInd2Save
@@ -943,28 +948,29 @@ if($DataSource) {
 						if($Class2Save!=$r->EnClass) $tmpString[3]="<del>$r->EnClass</del><br/>$Class2Save";
 						$switch=count($tmpString);
 						switch(true) {
-							case ($switch>=21 and $TeamUpdate): if($TeamsFromDb['3']['id']!=$r->EnCountry3) {
+							case ($switch>=22 and $TeamUpdate): if($TeamsFromDb['3']['id']!=$r->EnCountry3) {
 													$t=safe_r_sql("select * from Countries where CoId=$r->EnCountry3");
 													$u=safe_fetch($t);
-													$tmpString[19]="<del>$u->CoCode</del><br/>{$TeamsFromDb['3']['code']}";
-													$tmpString[20]="<del>$u->CoName</del><br/>{$TeamsFromDb['3']['dbshort']}";
+													$tmpString[20]="<del>$u->CoCode</del><br/>{$TeamsFromDb['3']['code']}";
+													$tmpString[21]="<del>$u->CoName</del><br/>{$TeamsFromDb['3']['dbshort']}";
 												}
-							case ($switch>=19 and $TeamUpdate): if($TeamsFromDb['2']['id']!=$r->EnCountry2) {
+							case ($switch>=20 and $TeamUpdate): if($TeamsFromDb['2']['id']!=$r->EnCountry2) {
 													$t=safe_r_sql("select * from Countries where CoId=$r->EnCountry2");
 													$u=safe_fetch($t);
-													$tmpString[17]="<del>$u->CoCode</del><br/>{$TeamsFromDb['2']['code']}";
-													$tmpString[18]="<del>$u->CoName</del><br/>{$TeamsFromDb['3']['dbshort']}";
+													$tmpString[18]="<del>$u->CoCode</del><br/>{$TeamsFromDb['2']['code']}";
+													$tmpString[19]="<del>$u->CoName</del><br/>{$TeamsFromDb['3']['dbshort']}";
 												}
-							case ($switch>=17): if($SubClass2Save!=$r->EnSubClass) $tmpString[16]="<del>$r->EnSubClass</del><br/>$SubClass2Save";
-							case ($switch>=16): if($DoB2Save!=$r->EnDob) $tmpString[15]="<del>$r->EnDob</del><br/>$DoB2Save";
-							case ($switch>=14 and $TeamUpdate): if($TeamsFromDb['1']['id']!=$r->EnCountry) {
+							case ($switch>=18): if($SubClass2Save!=$r->EnSubClass) $tmpString[17]="<del>$r->EnSubClass</del><br/>$SubClass2Save";
+							case ($switch>=17): if($DoB2Save!=$r->EnDob) $tmpString[16]="<del>$r->EnDob</del><br/>$DoB2Save";
+							case ($switch>=15 and $TeamUpdate): if($TeamsFromDb['1']['id']!=$r->EnCountry) {
 													$t=safe_r_sql("select * from Countries where CoId=$r->EnCountry");
 													if($u=safe_fetch($t)) {
-                                                        $tmpString[13] = "<del>$u->CoCode</del><br/>{$TeamsFromDb['1']['code']}";
-                                                        $tmpString[14] = "<del>$u->CoName</del><br/>{$TeamsFromDb['1']['dbshort']}";
+                                                        $tmpString[14] = "<del>$u->CoCode</del><br/>{$TeamsFromDb['1']['code']}";
+                                                        $tmpString[13] = "<del>$u->CoName</del><br/>{$TeamsFromDb['1']['dbshort']}";
                                                     }
 												}
-							case ($switch>=13): if($Sex2Save!=$r->EnSex) $tmpString[12]="<del>$r->EnSex</del><br/>$Sex2Save";
+							case ($switch>=14): if($Sex2Save!=$r->EnSex) $tmpString[13]="<del>$r->EnSex</del><br/>$Sex2Save";
+                            case ($switch>=13): if($MiddleName2Save!=$r->EnMiddleName) $tmpString[12]="<del>$r->EnMiddleName</del><br/>$MiddleName2Save";
 							case ($switch>=12): if($Name2Save!=$r->EnName) $tmpString[11]="<del>$r->EnName</del><br/>$Name2Save";
 							case ($switch>=11): if($FirstName2Save!=$r->EnFirstName) $tmpString[10]="<del>$r->EnFirstName</del><br/>$FirstName2Save";
 							case ($switch>=10): if($ShootFinMixTeam2Save!=$r->EnTeamMixEvent) $tmpString[9]="<del>$r->EnTeamMixEvent</del><br/>$ShootFinMixTeam2Save";
@@ -979,20 +985,20 @@ if($DataSource) {
 						if($TeamsFromDb['1']['id']!=$r->EnCountry) {
 							$t=safe_r_sql("select * from Countries where CoId=$r->EnCountry");
 							$u=safe_fetch($t);
-							$tmpString[13]="<del>{$TeamsFromDb['1']['code']}</del><br/>$u->CoCode";
-							$tmpString[14]="<del>{$TeamsFromDb['1']['dbshort']}</del><br/>$u->CoName";
+							$tmpString[14]="<del>{$TeamsFromDb['1']['code']}</del><br/>$u->CoCode";
+							$tmpString[15]="<del>{$TeamsFromDb['1']['dbshort']}</del><br/>$u->CoName";
 						}
 						if($TeamsFromDb['2']['id']!=$r->EnCountry2) {
 							$t=safe_r_sql("select * from Countries where CoId=$r->EnCountry2");
 							$u=safe_fetch($t);
-							$tmpString[13]="<del>{$TeamsFromDb['2']['code']}</del><br/>$u->CoCode";
-							$tmpString[14]="<del>{$TeamsFromDb['2']['dbshort']}</del><br/>$u->CoName";
+							$tmpString[14]="<del>{$TeamsFromDb['2']['code']}</del><br/>$u->CoCode";
+							$tmpString[15]="<del>{$TeamsFromDb['2']['dbshort']}</del><br/>$u->CoName";
 						}
 						if($TeamsFromDb['3']['id']!=$r->EnCountry3) {
 							$t=safe_r_sql("select * from Countries where CoId=$r->EnCountry3");
 							$u=safe_fetch($t);
-							$tmpString[13]="<del>{$TeamsFromDb['3']['code']}</del><br/>$u->CoCode";
-							$tmpString[14]="<del>{$TeamsFromDb['3']['dbshort']}</del><br/>$u->CoName";
+							$tmpString[14]="<del>{$TeamsFromDb['3']['code']}</del><br/>$u->CoCode";
+							$tmpString[15]="<del>{$TeamsFromDb['3']['dbshort']}</del><br/>$u->CoName";
 						}
 						$ImportResult['Blocked'][] = '<tr><td><a href="#" onclick="window.open(\'./ForceUpdate.php?EnId='.$EnIdToUpdate.'&EnCo1='.$TeamsFromDb['1']['id'].'&EnCo2='.$TeamsFromDb['2']['id'].'&EnCo3='.$TeamsFromDb['3']['id'].'\')"" target="ForceUpdate">Force Update</a></td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
 					} else {
@@ -1057,6 +1063,7 @@ if($DataSource) {
 				<td>$ShootFinMixTeam2Save</td>
 				<td>$FirstName2Save</td>
 				<td>$Name2Save</td>
+				<td>$MiddleName2Save</td>
 				<td>$Sex2Save</td>
 				<td>{$TeamsFromDb['1']['code']}</td>
 				<td>{$TeamsFromDb['1']['short']}</td>
@@ -1170,15 +1177,16 @@ echo "9)&nbsp;" . get_text('TeamFinEvent', 'Tournament') . "<br>";
 echo "10)&nbsp;" . get_text('MixedTeamFinEvent', 'Tournament') . "<br>";
 echo "11)&nbsp;" . get_text('FamilyName','Tournament') . "<br>";
 echo "12)&nbsp;" . get_text('Name','Tournament') . "<br>";
-echo "13)&nbsp;" . get_text('Sex','Tournament') . "<br>";
-echo "14)&nbsp;" . get_text('Country') . "<br>";
-echo "15)&nbsp;" . get_text('Nation') . "<br>";
-echo "16)&nbsp;" . get_text('DOB','Tournament') . "<br>";
-echo "17)&nbsp;" . get_text('SubClass','Tournament') . "<br>";
-echo "18)&nbsp;" . get_text('Country') . " 2<br>";
-echo "19)&nbsp;" . get_text('Nation') . " 2<br>";
-echo "20)&nbsp;" . get_text('Country') . " 3<br>";
-echo "21)&nbsp;" . get_text('Nation') . " 3<br>";
+echo "13)&nbsp;" . get_text('MiddleName','Tournament') . "<br>";
+echo "14)&nbsp;" . get_text('Sex','Tournament') . "<br>";
+echo "15)&nbsp;" . get_text('Country') . "<br>";
+echo "16)&nbsp;" . get_text('Nation') . "<br>";
+echo "17)&nbsp;" . get_text('DOB','Tournament') . "<br>";
+echo "18)&nbsp;" . get_text('SubClass','Tournament') . "<br>";
+echo "19)&nbsp;" . get_text('Country') . " 2<br>";
+echo "20)&nbsp;" . get_text('Nation') . " 2<br>";
+echo "21)&nbsp;" . get_text('Country') . " 3<br>";
+echo "22)&nbsp;" . get_text('Nation') . " 3<br>";
 
 echo "</td><td>";
 
@@ -1206,7 +1214,7 @@ foreach(array('Session', 'ID-OC', 'DOB', 'Caption', 'SubClass', 'Wheelchair', 'N
 }
 else
 {
-	$Cols=22;
+	$Cols=23;
 	echo '<table class="Tabella">';
 	echo '<tr><th class="Title" colspan="'.$Cols.'">'.get_text('ListLoad', 'Tournament').'</th></tr>';
 	// Refused rows
