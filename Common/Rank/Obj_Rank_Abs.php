@@ -402,7 +402,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 
 						// adding the full distance info here
 						$FullDistInfo=[];
-						foreach(explode(',',$myRow->FdiDetails) as $d) {
+                        foreach($myRow->FdiDetails != null ? explode(',',$myRow->FdiDetails) : [] as $d) {
 							$t=explode('|', $d);
 							$FullDistInfo['dist_' . $t[0]]=[
 								'ends'=>($t[1]??0),
