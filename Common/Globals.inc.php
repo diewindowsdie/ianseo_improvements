@@ -812,6 +812,20 @@ function getTournamentType($TourId='')
 
 	}
 
+if (!function_exists('mb_ucfirst') && function_exists('mb_substr')) {
+    function mb_ucfirst($string) {
+        $string = mb_strtoupper(mb_substr($string, 0, 1)) . mb_substr($string, 1);
+        return $string;
+    }
+}
+
+if (!function_exists('mb_lcfirst') && function_exists('mb_substr')) {
+    function mb_lcfirst($string) {
+        $string = mb_strtolower(mb_substr($string, 0, 1)) . mb_substr($string, 1);
+        return $string;
+    }
+}
+
 /*
 	- SelectLanguage()
 	La funzione serve a settare il linguaggio giusto.

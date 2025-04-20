@@ -479,6 +479,7 @@ $lang['FinalRankTeams']='Final Ranking Teams';
 $lang['FinalReportTitle']='Competition Report';
 $lang['Finals']='Finals';
 $lang['FinalSchedule']='Finals schedule';
+$lang['FinalScheduleDetailed']='Detailed finals schedule';
 $lang['FinalShort']='Fin.';
 $lang['FinalTarget']='Finals target';
 $lang['FinalTeamLabels']='Team Finalists Labels';

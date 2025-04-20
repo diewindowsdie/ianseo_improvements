@@ -306,6 +306,7 @@ $lang['FinalRank']='финальный ранг';
 $lang['FinalReportTitle']='Отчёт соревнования';
 $lang['Finals']='Финалы';
 $lang['FinalSchedule']='Программа финалов';
+$lang['FinalScheduleDetailed']='Подробная программа финалов';
 $lang['FinalShort']='Финал.';
 $lang['FinalTeamLabels']='Ярлыки Команд Финалистов';
 $lang['FindArcher']='Поиск Спортсмена';

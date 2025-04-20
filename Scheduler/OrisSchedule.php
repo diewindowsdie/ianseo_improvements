@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-require_once('Common/pdf/OrisPDF.inc.php');
+require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/Lib/Obj_RankFactory.php');
 checkFullACL(AclCompetition, 'cSchedule', AclReadOnly);
 
@@ -10,12 +10,14 @@ CheckTourSession(true);
 
 $PrintNames=isset($_REQUEST['teamcomponents']);
 
-$pdf = new OrisPDF('C58', 'DETAILED COMPETITION SCHEDULE');
+$pdf=new ResultPDF(get_text('FinalScheduleDetailed', 'Tournament'));
 
-$pdf->SetTopMargin(OrisPDF::topStart);
+$pdf->SetFont($pdf->FontStd,'B',11);
+$pdf->Cell($pdf->getPageWidth() - 2 * IanseoPdf::sideMargin, 8, get_text('FinalScheduleDetailed', 'Tournament'),0,1,'C');
+$pdf->SetFont($pdf->FontStd, '', 8);
 
 $Date='';
-if(!empty($_REQUEST['FromDayDay'])) {
+if(!empty($_REQUEST['FromDay Day'])) {
     if(strtolower(substr($_REQUEST['FromDayDay'], 0, 1))=='d') {
         $Date=date('Y-m-d', strtotime(sprintf('%+d days', substr($_REQUEST['FromDayDay'], 1) -1), $_SESSION['ToWhenFromUTS']));
     } else {
@@ -29,7 +31,6 @@ $Sql = "SELECT CONCAT(FsEvent, '|', FsTeamEvent, '|', FsMatchNo) as SesKey,
 	left join Session on SesTournament=FsTournament and (CONCAT(FsScheduledDate, ' ', FsScheduledTime) >= SesDtStart AND CONCAT(FsScheduledDate, ' ', FsScheduledTime) < SesDtEnd)
 	WHERE FsTournament=".$_SESSION['TourId'] ." AND (FsMatchNo%2=0)".(empty($_REQUEST['OnlyMedals']) ? '' : ($_REQUEST['OnlyMedals']==1 ? ' and FsMatchno in (0,2) ' : ' and FsMatchno = 0 ' )).($Date ? " AND FsScheduledDate='$Date'" : '')." and FSScheduledDate>0
 	ORDER BY FsScheduledDate, FsScheduledTime, FsOdfMatchName";
-
 $q=safe_r_SQL($Sql);
 $SessionMatches = array();
 while($r=safe_fetch($q)) {
@@ -82,32 +83,31 @@ foreach($SessionMatches as $vSes => $items) {
             if ($runningDay != $item["scheduledDate"]
                 or $ChangePage) {
                 // close the cell...
-                if (!$FirstPage) $pdf->Line(OrisPDF::leftMargin, $y1 = $pdf->GetY(), OrisPDF::leftMargin + 25, $y1);
+//                if (!$FirstPage) $pdf->Line(IanseoPdf::sideMargin, $y1 = $pdf->GetY(), IanseoPdf::sideMargin + 25, $y1);
 
-                $pdf->AddPage();
+//                $pdf->AddPage();
 
-                $pdf->SetXY(OrisPDF::leftMargin, OrisPDF::topStart);
+//                $pdf->SetXY(IanseoPdf::sideMargin, IanseoPdf::topMargin);
                 $pdf->SetFont('', 'B');
-                $pdf->Cell(25, CellH, "Date/Session", 1, 0, 'L', 0);
-                $pdf->Cell(7, CellH, "Match", 1, 0, 'C', 0);
-                $pdf->Cell(9, CellH / 2, "Start", 'TLR', 0, 'C', 0);
-                $pdf->SetXY($pdf->GetX() - 9, $pdf->GetY() + CellH / 2);
-                $pdf->Cell(9, CellH / 2, "Time", 'BLR', 0, 'C', 0);
+                $pdf->dy(2);
+                $pdf->Cell(30, CellH, get_text("Date", "Tournament") . "/" . get_text("Session"), 1, 0, 'L', 0);
+                $pdf->Cell(11, CellH / 2, get_text("Start", "ODF"), 'TLR', 0, 'C', 0, 0, true, false, 'T', 'B');
+                $pdf->SetXY($pdf->GetX() - 11, $pdf->GetY() + CellH / 2);
+                $pdf->Cell(11, CellH / 2, get_text("Time", "ODF"), 'BLR', 0, 'C', 0, 0, true, false, 'T', 'T');;
                 $pdf->SetXY($pdf->GetX(), $pdf->GetY() - CellH / 2);
-                $pdf->Cell(30, CellH, "Event", 1, 0, 'L', 0);
-                $pdf->Cell(9, CellH, "Round", 1, 0, 'L', 0);
+                $pdf->Cell(39, CellH, get_text("EventFinals"), 1, 0, 'L', 0);
 
-                $pdf->Cell(10, CellH / 2, "R.R.", 'TLR', 0, 'C', 0);
+                $pdf->Cell(10, CellH / 2, get_text("RankScoreShort"), 'TLR', 0, 'C', 0, 0, true, false, 'T', 'B');
                 $pdf->SetXY($pdf->GetX() - 10, $pdf->GetY() + CellH / 2);
-                $pdf->Cell(10, CellH / 2, "Rank", 'BLR', 0, 'C', 0);
+                $pdf->Cell(10, CellH / 2, mb_lcfirst(get_text("Rank")), 'BLR', 0, 'C', 0, 0, true, false, 'T', 'T');
                 $pdf->SetXY($pdf->GetX(), $pdf->GetY() - CellH / 2);
-                $pdf->Cell(45, CellH, "Participant 1", 1, 0, 'L', 0);
+                $pdf->Cell(45, CellH, get_text("ParticipantSchedule", "Tournament", "1"), 1, 0, 'L', 0);
 
-                $pdf->Cell(10, CellH / 2, "R.R.", 'TLR', 0, 'C', 0);
+                $pdf->Cell(10, CellH / 2, get_text("RankScoreShort"), 'TLR', 0, 'C', 0, 0, true, false, 'T', 'B');
                 $pdf->SetXY($pdf->GetX() - 10, $pdf->GetY() + CellH / 2);
-                $pdf->Cell(10, CellH / 2, "Rank", 'BLR', 0, 'C', 0);
+                $pdf->Cell(10, CellH / 2, mb_lcfirst(get_text("Rank")), 'BLR', 0, 'C', 0, 0, true, false, 'T', 'T');
                 $pdf->SetXY($pdf->GetX(), $pdf->GetY() - CellH / 2);
-                $pdf->Cell(45, CellH, "Participant 2", 1, 1, 'L', 0);
+                $pdf->Cell(45, CellH, get_text("ParticipantSchedule", "Tournament", "2"), 1, 1, 'L', 0);
                 $pdf->SetFont('', '');
                 if ($runningDay != $item["scheduledDate"]) {
                     $sesInDay = 0;
@@ -122,24 +122,22 @@ foreach($SessionMatches as $vSes => $items) {
                 $evInSession = 0;
                 $sesInDay++;
                 $sesCnt++;
-                $pdf->Line(OrisPDF::leftMargin, $y1 = $pdf->GetY(), OrisPDF::leftMargin + 25, $y1);
-                $pdf->dy(1);
+                $pdf->Line(IanseoPdf::sideMargin, $y1 = $pdf->GetY(), IanseoPdf::sideMargin + 30, $y1);
             } else {
                 $evInSession++;
             }
 
             $OrgY = $pdf->getY();
 
-            $SessionText = '<b>'.(new DateTime($runningDay))->format('D j M') .'</b>' . $Continue . "<br>".
-                "<b>Session " . $sesInDay . "</b><br>".
+            $SessionText = '<b>'. mb_ucfirst(IntlDateFormatter::create(SelectLanguage(), IntlDateFormatter::NONE, IntlDateFormatter::NONE, null, null, "EEEE, dd MMMM")->format(new DateTime($runningDay))) .'</b>' . $Continue . "<br><br>".
+                "<b>" . get_text("Session") . " " . $sesInDay . ":</b><br>".
                 $r->SesName;
             if($evInSession == 0) {
-                $pdf->MultiCell(25, CellH + $ExtraLineHeight, $SessionText, 'TLR', 'L', 0, 0, '', '', true, 0, true, true, 0);
+                $pdf->MultiCell(30, CellH + $ExtraLineHeight, $SessionText, 'TLR', 'L', 0, 0, '', '', true, 0, true, true, 0);
             } else {
-                $pdf->Cell(25, CellH + $ExtraLineHeight,'','LR' . ($evInSession == 0 ? 'T' : ''), 0, 'L', 0);
+                $pdf->Cell(30, CellH + $ExtraLineHeight,'','LR' . ($evInSession == 0 ? 'T' : ''), 0, 'L', 0);
             }
-            $pdf->Cell(7, CellH + $ExtraLineHeight, $item['odfMatchName'], 1, 0, 'C', 0);
-            $pdf->Cell(9, CellH + $ExtraLineHeight, (new DateTime($item["scheduledTime"]))->format('H:i'), 1, 0, 'C', 0);
+            $pdf->Cell(11, CellH + $ExtraLineHeight, (new DateTime($item["scheduledTime"]))->format('H:i'), 1, 0, 'C', 0);
             $pdf->Cell(30, CellH + $ExtraLineHeight, $rankData["sections"][$eventCode]["meta"]["eventName"], 1, 0, 'L', 0);
             $pdf->Cell(9, CellH + $ExtraLineHeight, $rankData["sections"][$eventCode]["phases"][key($rankData["sections"][$eventCode]["phases"])]["meta"]["phaseName"], 1, 0, 'L', 0);
 
@@ -178,9 +176,7 @@ foreach($SessionMatches as $vSes => $items) {
             $lastSes = $vSes;
         }
 	}
+    $pdf->Line($pdf->GetX(), $pdf->GetY(), $pdf->GetX()+30, $pdf->GetY());
 }
-$pdf->Line($pdf->GetX(), $pdf->GetY(), $pdf->GetX()+25, $pdf->GetY());
-
-
 
 $pdf->Output();

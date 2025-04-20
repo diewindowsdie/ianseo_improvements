@@ -4,7 +4,7 @@ define('debug',false);	// settare a true per l'output di debug
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/GlobalsLanguage.inc.php');
 require_once('Language/lib.php');
-
+/*
 if(!empty($_REQUEST['UpdateLanguage']) and preg_match('/^[A-Z-]+$/', $_REQUEST['UpdateLanguage'])) {
 	// gets the content of the language pack from ianseo!
 	if( $package=@file_get_contents("https://translations.ianseo.net/getpackage.php?lang={$_REQUEST['UpdateLanguage']}")) {
@@ -80,6 +80,7 @@ if(!empty($_REQUEST['FindLanguage'])) {
         $Lingue_esterne=@unserialize(gzinflate($package)) ;
     }
 }
+*/
 $IncludeJquery = true;
 $JS_SCRIPT[] = '<script type="text/javascript" src="./lang.js"></script>';
 $JS_SCRIPT[] = '<style>.updated {background-color:#e0ffe0}</style>';

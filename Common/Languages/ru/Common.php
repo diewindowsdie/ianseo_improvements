@@ -116,6 +116,7 @@ $lang['EndScore']='Сумма';
 $lang['Error']='Ошибка!';
 $lang['EvCode']='Код группы';
 $lang['Event']='Название группы';
+$lang['EventFinals']='Поединок';
 $lang['EventClass']='Допущенные Дивизионы и Классы';
 $lang['EvName']='Название группы';
 $lang['F']='Жен.';
