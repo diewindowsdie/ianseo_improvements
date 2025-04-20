@@ -6,17 +6,39 @@ $pdf->setDocUpdate($PdfData->rankData['meta']['lastUpdate']);
 
 $legendStatusProvider = new StatusLegendProvider($pdf);
 
-$spaceBetweenSections = 5;
-
 // se ho degli eventi
 $FirstPage=true;
+
+$pdf->SetFont($pdf->FontStd,'B',12);
+$pdf->Cell(190, 10, get_text('FinalStanding', 'Tournament'), 0, 1, 'C', 0);
+
+$currentSectionIndex = 0;
+$spaceBetweenSections = 5;
+
 foreach($PdfData->rankData['sections'] as $section) {
-	$NumPhases=$section['meta']['firstPhase'] ? ceil(log($section['meta']['firstPhase'], 2))+1 : 1;
+    $currentSectionIndex++;
+    if ($currentSectionIndex == count($PdfData->rankData['sections'])) {
+        //last group:
+        //check if header message, group header, group, officials information and legend fits on the same page
+        $headerSize = 7.5 + //division and class
+            5; //table header
+
+        $rowHeight = 4 * (count($section["items"]) > 0 ? max(1, count(array_values($section["items"])[0]['athletes'])) : 1);
+        $dataSize = $rowHeight * count($section['items']) + $spaceBetweenSections;
+        $officialsSize = TournamentOfficials::getOfficialsBlockHeight();
+        $IRMLegendSize = $legendStatusProvider->getLegendBlockHeight();
+
+        if (!$pdf->SamePage($headerSize + $dataSize + $officialsSize + $IRMLegendSize)) {
+            $pdf->AddPage();
+            $NeedTitle=true;
+        }
+    }
+
+    $NumPhases=$section['meta']['firstPhase'] ? ceil(log($section['meta']['firstPhase'], 2))+1 : 1;
 	$NeedTitle=true;
 
 	// Se Esistono righe caricate....
 	if(count($section['items'])) {
-		if(!$FirstPage) $pdf->AddPage();
 		$FirstPage=false;
 
 		foreach($section['items'] as $item) {
@@ -25,11 +47,6 @@ foreach($PdfData->rankData['sections'] as $section) {
 
 			//Valuto Se è necessario il titolo
 			if($NeedTitle) {
-				// testastampa
-				if ($section['meta']['printHeader']) {
-			   		$pdf->SetFont($pdf->FontStd,'B',10);
-					$pdf->Cell(190, 7.5,  $section['meta']['printHeader'], 0, 1, 'R', 0);
-				}
 				// Titolo della tabella
 			   	$pdf->SetFont($pdf->FontStd,'B',10);
 				$pdf->Cell(190, 7.5,  $section['meta']['descr'], 1, 1, 'C', 1);
@@ -120,7 +137,5 @@ foreach($PdfData->rankData['sections'] as $section) {
 }
 
 TournamentOfficials::printOfficials($pdf);
-
 $legendStatusProvider->printLegend();
-
 ?>
