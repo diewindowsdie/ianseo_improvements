@@ -1,6 +1,12 @@
 <?php
+require_once('Common/Lib/TournamentOfficials.php');
+require_once('Common/Lib/StatusesLegendProvider.php');
 
 $pdf->setDocUpdate($PdfData->rankData['meta']['lastUpdate']);
+
+$legendStatusProvider = new StatusLegendProvider($pdf);
+
+$spaceBetweenSections = 5;
 
 // se ho degli eventi
 $FirstPage=true;
@@ -96,8 +102,12 @@ foreach($PdfData->rankData['sections'] as $section) {
 			}
 			$pdf->Cell(0.1, 4*$NumComponenti,'',0,1,'C',0);
 		}
-	}
+        $pdf->SetY($pdf->GetY() + $spaceBetweenSections);
+    }
 }
 
+TournamentOfficials::printOfficials($pdf);
+
+$legendStatusProvider->printLegend();
 
 ?>
