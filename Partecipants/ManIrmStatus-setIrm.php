@@ -43,6 +43,22 @@ if(isset($_REQUEST['note'])) {
                     where FinTournament={$_SESSION['TourId']} and FinEvent=".StrSafe_DB($Event)." and FinAthlete=$EnId");
 			}
 			break;
+        case '1M':
+            //team events
+            $Phase=$Items[2];
+            $Event=$Items[3];
+            $CoId=intval($Items[4]);
+            $SubTeam=intval($Items[5]);
+
+            if($Phase=='Q') {
+                safe_w_sql("update Teams set TeNotes=".StrSafe_DB($_REQUEST['note'])." where TeTournament={$_SESSION['TourId']} and TeEvent=".StrSafe_DB($Event)." and TeCoId=$CoId and TeSubTeam=$SubTeam");
+                $JSON['error']=0;
+            } elseif(is_numeric($Phase)) {
+                $JSON['error']=0;
+                safe_w_sql("update TeamFinals set TfNotes=".StrSafe_DB($_REQUEST['note'])."
+				where TfTeam=$CoId and TfSubTeam=$SubTeam and TfTournament={$_SESSION['TourId']} and TfEvent=".StrSafe_DB($Event));
+            }
+            break;
 	}
 	JsonOut($JSON);
 }

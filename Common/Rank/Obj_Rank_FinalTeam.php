@@ -287,7 +287,7 @@
                             'qualScore'		=> $myRow->TeScore,
                             'qualRank'		=> $myRow->QualRank,
                             'rank'			=> $myRow->IrmShowRank ? $myRow->FinalRank : $myRow->IrmType,
-                            'notes'		    => $myRow->TeNotes,
+                            'qualNotes'	    => $myRow->TeNotes,
                             'irm'   		=> $myRow->TeIrmTypeFinal,
                             'irmText'   	=> $myRow->IrmType,
                             'finals'		=> array(),

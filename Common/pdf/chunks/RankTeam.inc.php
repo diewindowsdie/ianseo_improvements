@@ -64,6 +64,7 @@ foreach($PdfData->rankData['sections'] as $section) {
 				$NeedTitle=false;
 			}
 
+            $isIRMStatus = !is_numeric($item['rank']);
 			$pdf->SetFont($pdf->FontStd,'B',1);
 			$pdf->Cell(190, 0.2,'',0,1,'C',0);
 		   	$pdf->SetFont($pdf->FontStd,'B',8);
@@ -88,14 +89,22 @@ foreach($PdfData->rankData['sections'] as $section) {
 			} else {
 				$pdf->Cell(55, 4*$NumComponenti, '', 'RTB', 0, 'L', 0);
 			}
+            $spaceUsed = 10 + 30+(15*(5-$NumPhases)) + 55;
 
 			$pdf->SetFont($pdf->FontFix,'',8);
-			$pdf->Cell(20, 4*$NumComponenti,  number_format($item['qualScore'],0,$PdfData->NumberDecimalSeparator,$PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['qualRank'],-2,2), 1, 0, 'R', 0);
-			//Risultati  delle varie fasi
+			$pdf->Cell(20, 4*$NumComponenti, is_numeric($item['qualScore']) ? number_format($item['qualScore'],0,$PdfData->NumberDecimalSeparator,$PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['qualRank'],-2,2) : '', 1, 0, 'R', 0);
+            $spaceUsed += 20;
+            if ($isIRMStatus && $item['qualNotes'] != '') {
+                $pdf->Cell(190 - $spaceUsed, 4*$NumComponenti, $item['qualNotes'], 1, 1, 'L', 0);
+                continue;
+            }
+            //Risultati  delle varie fasi
 			foreach($item['finals'] as $k=>$v)
 			{
-				if($v['tie']==2)
-					$pdf->Cell(15, 4*$NumComponenti,  $PdfData->Bye, 1, 0, 'L', 0);
+				if($v['tie']==2) {
+                    $pdf->Cell(15, 4 * $NumComponenti, $PdfData->Bye, 1, 0, 'L', 0);
+                    $spaceUsed += 15;
+                }
 				else
 				{
 					$pdf->SetFont($pdf->FontFix,'',8);
@@ -112,6 +121,7 @@ foreach($PdfData->rankData['sections'] as $section) {
                             $pdf->SetXY($previousX, $previousY);
                         }
                         $pdf->Cell(15, $tiebreakScore ? 2*$NumComponenti : 4*$NumComponenti, $v['setScore'] . '(' . $v['score'] . ')', ($tiebreakScore ? 'RTL' : 1), 0, 'L', 0, '', 1, false, 'T', $tiebreakScore ? 'B' : 'C');
+                        $spaceUsed += 15;
                     }
 					else
 					{
@@ -127,11 +137,17 @@ foreach($PdfData->rankData['sections'] as $section) {
                             $pdf->SetXY($previousX, $previousY);
 						}
                         $pdf->Cell(15, $tiebreakScore ? 2*$NumComponenti : 4*$NumComponenti, ($section['meta']['matchMode']==0 ? $v['score'] : $v['setScore']) . ($k<=1 && $v['tie']==1 && strlen($v['tiebreak'])==0 ? '*' : ''), ($tiebreakScore ? 'RTL' : 1), 0, 'L', 0, '', 1, false, 'T', $tiebreakScore ? 'B' : 'C');
+                        $spaceUsed += 15;
 					}
 				}
 			}
-			$pdf->Cell(0.1, 4*$NumComponenti,'',0,1,'C',0);
-		}
+//            print_r($item['finals']);
+//            print_r("<br>");
+            if ($isIRMStatus) {
+                $pdf->Cell(190 - $spaceUsed, 4*$NumComponenti, array_values($item['finals'])[count($item['finals']) - 1]['notes'], 1, 0, 'L', 0);
+            }
+            $pdf->Cell(0, 4*$NumComponenti,'',0,1,'C',0);
+        }
         $pdf->SetY($pdf->GetY() + $spaceBetweenSections);
     }
 }
