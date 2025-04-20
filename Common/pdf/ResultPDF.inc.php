@@ -615,7 +615,7 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(0, 0.5,  '', 1, 1, 'C', 0);
 	}
 
-	function writeGroupHeaderPrnTeamAbs($section,$follows=false) {
+	function writeGroupHeaderPrnTeamAbs($section,$follows=false, $hideTempHeader=false) {
 		$tmpHeader="";
 		$this->SetFont($this->FontStd,'B',$this->FontSizeTitle);
 		if (!empty($section['sesArrows'])) {
@@ -635,7 +635,7 @@ class ResultPDF extends IanseoPdf {
 		// testastampa
 		if (strlen($section['printHeader'])) {
 			$this->Cell(190, 7.5, $section['printHeader'], 0, 1, 'R', 0);
-		} else if(strlen($tmpHeader)!=0 && !$section['running']) {
+		} else if(strlen($tmpHeader)!=0 && !$section['running'] && !$hideTempHeader) {
 			$this->Cell(190, 7.5, $tmpHeader, 0, 1, 'R', 0);
 		}
 
@@ -649,11 +649,9 @@ class ResultPDF extends IanseoPdf {
 
 		$this->SetFont($this->FontStd,'B',$this->FontSizeHead);
 		$this->Cell(9, 4,  $section['fields']['rank'], 1, 0, 'C', 1);
-		$this->Cell(53 - ($section['running'] ? 5 : 0), 4, $section['fields']['countryName'], 1, 0, 'L', 1);
-		$this->Cell(43 - ($section['running'] ? 5 : 0), 4, $section['fields']['athletes']['name'], 1, 0, 'L', 1);
-		$this->Cell(10, 4, $section['fields']['athletes']['fields']['div'], 1, 0, 'C', 1);
-		$this->Cell(10, 4, $section['fields']['athletes']['fields']['ageclass'], 1, 0, 'C', 1);
-		$this->Cell(10, 4, $section['fields']['athletes']['fields']['class'], 1, 0, 'C', 1);
+		$this->Cell(63 - ($section['running'] ? 5 : 0), 4, $section['fields']['countryName'], 1, 0, 'L', 1);
+		$this->Cell(51 - ($section['running'] ? 5 : 0), 4, $section['fields']['athletes']['name'], 1, 0, 'L', 1);
+		$this->Cell(12, 4, $section['fields']['athletes']['fields']['birthdate'], 1, 0, 'C', 1);
 		$this->Cell(8, 4,  $section['fields']['athletes']['fields']['subclass'], 1, 0, 'C', 1);
 		if($section['running'])
 			$this->Cell(15, 4, $section['fields']['hits'], 1, 0, 'C', 1);
@@ -703,9 +701,8 @@ class ResultPDF extends IanseoPdf {
 		$this->SetFont($this->FontStd,'B',$this->FontSizeLines);
 		$this->Cell(9, $height,  $item['rank'], 1, 0, 'R', 0);
 
-		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-		$this->Cell(8, $height,  $item['countryCode'], 'LTB', 0, 'C', 0);
-		$this->Cell(45 - ($running ? 5 : 0), $height,  $item['countryName'] . (intval($item['subteam'])<=1 ? '' : ' (' . $item['subteam'] .')'), 'RTB', 0, 'L', 0);
+		$this->SetFont($this->FontStd,'B', $this->FontSizeHead);
+		$this->Cell(63 - ($running ? 5 : 0), $height,  $item['countryName'] . (intval($item['subteam'])<=1 ? '' : ' (' . $item['subteam'] .')'), 'RTB', 0, 'L', 0);
 
 		$X=$this->GetX();
 		$Y=$this->GetY();
@@ -738,16 +735,14 @@ class ResultPDF extends IanseoPdf {
 
 		foreach ($item['athletes'] as $a) {
 			$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-			$this->Cell(43 - ($running ? 5 : 0), 4,  $a['athlete'], 1, 0, 'L', 0);
-			$this->Cell(10, 4,  $a['div'], 1, 0, 'C', 0);
-			$this->Cell(10, 4,  $a['ageclass'], 1, 0, 'C', 0);
-			$this->Cell(10, 4,  $a['class'], 1, 0, 'C', 0);
-			$this->Cell(8, 4,  $a['subclass'], 1, ($running ? 1 : 0), 'C', 0);
+			$this->Cell(51 - ($running ? 5 : 0), 4,  $a['athlete'], 1, 0, 'L', 0);
+			$this->Cell(12, 4,  $a['birthdate'], 1, 0, 'C', 0);
+			$this->Cell(8, 4,  $a['subclassName'], 1, ($running ? 1 : 0), 'C', 0);
 			$this->SetFont($this->FontFix,'',$this->FontSizeHead);
 			if(!$running) {
 				$this->Cell(9, 4, number_format(intval($a['quscore']), 0, '', $this->NumberThousandsSeparator), 1, 1, 'R', 0);
 			}
-			$this->SetX(72 - ($running ? 5 : 0));
+			$this->SetX(82 - ($running ? 5 : 0));
 		}
 
 		$this->SetX(10);

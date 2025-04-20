@@ -222,7 +222,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 					TeTournament,CoId,TeSubTeam,CoCode,CoName, CoCaCode, CoMaCode, TeEvent,EvEventName,ToNumEnds,ToNumDist,ToMaxDistScore,FlContAssoc,
 					EvMaxTeamPerson, EvProgr, EvFinalFirstPhase,coalesce(OdfTrOdfCode,'') as OdfUnitCode, EvOdfCode, QuConfirm, EvMixedTeam, 
 					ClDescription, DivDescription,
-					EnId,EnCode,ifnull(EdExtra,EnCode) as LocalBib, EnSex,EnNameOrder,EnFirstName,upper(EnFirstName) EnFirstNameUpper,EnName,EnClass,EnDivision,EnAgeClass,EnSubClass,EnCoCode,EnDob,
+					EnId,EnCode,ifnull(EdExtra,EnCode) as LocalBib, EnSex,EnNameOrder,EnFirstName,upper(EnFirstName) EnFirstNameUpper,EnName,EnClass,EnDivision,EnAgeClass,EnSubClass,ScDescription,EnCoCode,EnDob,
 					coalesce(RoundRobinQualified, EvNumQualified) AS QualifiedNo, EvFirstQualified, EvQualPrintHead,
 					SUBSTRING(QuTargetNo,1,1) AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo,
 					TeHits AS Arrows_Shot, TeScore, TeRank, TeGold, TeXnine, 
@@ -256,6 +256,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 						) AS tie ON Teams.TeEvent=tie.tieEvent AND Teams.TeTournament=tie.tieTournament AND Teams.TeFinEvent=tie.tieFinEvent AND Teams.TeScore=tie.tieScore
 					INNER JOIN TeamComponent AS tc ON Teams.TeCoId=tc.TcCoId AND Teams.TeSubTeam=tc.TcSubTeam AND  Teams.TeEvent=tc.TcEvent AND Teams.TeTournament=tc.TcTournament AND Teams.TeFinEvent=tc.TcFinEvent
 					INNER JOIN (select Entries.*, CoCode as EnCoCode from Entries inner join Countries on CoId=EnCountry where EnTournament=$this->tournament) Entries ON TcId=EnId
+					left join SubClass on ScId = EnSubClass and EnTournament = ScTournament
 					INNER JOIN Qualifications ON EnId=QuId
 					INNER JOIN Divisions ON EnDivision=DivId AND EnTournament=DivTournament
 					INNER JOIN Classes ON EnClass=ClId AND EnTournament=ClTournament
@@ -341,6 +342,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 									'gender' => get_text('Sex', 'Tournament'),
 									'div' => get_text('Division'),
 									'class' => get_text('Cl'),
+                                    'birthdate' => get_text('ArcherDoB', 'Service'),
 									'ageclass' => get_text('AgeCl'),
 									'subclass' => get_text('SubCl','Tournament'),
 									'quscore' => get_text('TotaleScore')
@@ -469,7 +471,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 							'id' => $row->EnId,
 							'bib' => $row->EnCode,
 							'localbib' => $row->LocalBib,
-							'birthdate' => $row->EnDob,
+                            'birthdate' => $row->EnDob ? DateTime::createFromFormat('Y-m-d', $row->EnDob)->format('d.m.Y') : '',
 							'countryCode' => $row->EnCoCode,
 							'session' => $row->Session,
 							'target' => $row->TargetNo,
@@ -483,6 +485,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 							'class' => $row->EnClass,
 							'ageclass' => $row->EnAgeClass,
 							'subclass' => $row->EnSubClass,
+                            'subclassName' => $row->ScDescription,
 							'quscore' => $row->QuIrmType ? $row->IrmType : $row->QuScore,
 							'qugolds' => $row->QuIrmType ? '' : $row->QuGold,
 							'quxnine' => $row->QuIrmType ? '' : $row->QuXnine,
