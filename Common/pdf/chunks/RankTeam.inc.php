@@ -52,8 +52,10 @@ foreach($PdfData->rankData['sections'] as $section) {
 		   	$pdf->SetFont($pdf->FontStd,'B',8);
 			$pdf->Cell(10, 4*$NumComponenti, ($item['rank'] ? $item['rank'] : ''), 1, 0, 'C', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',8);
-			$pdf->Cell(10, 4*$NumComponenti,   $item['countryCode'], 'LTB', 0, 'C', 0);
-			$pdf->Cell(25+(15*(5-$NumPhases)), 4*$NumComponenti, $item['countryName'] . ($item['subteam']<=1 ? '' : ' (' . $item['subteam'] .')'), 'TB', 0, 'L', 0);
+            $paddings = $pdf->getCellPaddings();
+            $pdf->setCellPaddings($paddings["L"]+1.5, $paddings["T"], $paddings["R"]+1.5, $paddings["B"]);
+			$pdf->Cell(30+(15*(5-$NumPhases)), 4*$NumComponenti, $item['countryName'] . ($item['subteam']<=1 ? '' : ' (' . $item['subteam'] .')'), 'TB', 0, 'L', 0);
+            $pdf->setCellPaddings($paddings["L"], $paddings["T"], $paddings["R"], $paddings["B"]);
 
 			//Metto i nomi dei Componenti se li ho
 			if(count($item['athletes'])) {
@@ -63,11 +65,11 @@ foreach($PdfData->rankData['sections'] as $section) {
 				foreach($item['athletes'] as $k =>$v)
 				{
 					$pdf->SetXY($tmpX, $tmpY+(4*$NameCount++));
-					$pdf->Cell(50, 4, $v['athlete'], 1, 0, 'L', 0);
+					$pdf->Cell(55, 4, $v['athlete'], 1, 0, 'L', 0);
 				}
-				$pdf->SetXY($tmpX+50, $tmpY);
+				$pdf->SetXY($tmpX+55, $tmpY);
 			} else {
-				$pdf->Cell(50, 4*$NumComponenti, '', 'RTB', 0, 'L', 0);
+				$pdf->Cell(55, 4*$NumComponenti, '', 'RTB', 0, 'L', 0);
 			}
 
 			$pdf->SetFont($pdf->FontFix,'',8);
