@@ -76,27 +76,38 @@ foreach($PdfData->rankData['sections'] as $section) {
 			foreach($item['finals'] as $k=>$v)
 			{
 				if($v['tie']==2)
-					$pdf->Cell(15, 4*$NumComponenti,  $PdfData->Bye, 1, 0, 'R', 0);
+					$pdf->Cell(15, 4*$NumComponenti,  $PdfData->Bye, 1, 0, 'L', 0);
 				else
 				{
 					$pdf->SetFont($pdf->FontFix,'',8);
 					if($k==4 && $section['meta']['matchMode']!=0 && $item['rank']>=5)
 					{
-						$pdf->Cell(11, 4*$NumComponenti, '(' . $v['score'] . ')', 'LTB', 0, 'R', 0);
-						$pdf->Cell(4, 4*$NumComponenti, $v['setScore'], 'RTB', 0, 'R', 0);
-					}
+                        $tiebreakScore = false;
+                        if(strlen($v['tiebreak'])>0) {
+                            $tiebreakScore = true;
+                            $previousX = $pdf->GetX();
+                            $previousY = $pdf->GetY();
+                            $pdf->SetXY($previousX, $previousY + 2 * $NumComponenti);
+
+                            $pdf->Cell(15, 2 * $NumComponenti, "T." . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RBL', 0, 'R', 0, '', 1, false, 'T', 'T');
+                            $pdf->SetXY($previousX, $previousY);
+                        }
+                        $pdf->Cell(15, $tiebreakScore ? 2*$NumComponenti : 4*$NumComponenti, $v['setScore'] . '(' . $v['score'] . ')', ($tiebreakScore ? 'RTL' : 1), 0, 'L', 0, '', 1, false, 'T', $tiebreakScore ? 'B' : 'C');
+                    }
 					else
 					{
 						$pdf->SetFont($pdf->FontFix,'',7);
-						$pdf->Cell(15 - (strlen($v['tiebreak'])>0 && $k<=1 ? 7 : 0), 4*$NumComponenti, ($section['meta']['matchMode']==0 ? $v['score'] : $v['setScore']) . ($k<=1 && $v['tie']==1 && strlen($v['tiebreak'])==0 ? '*' : ''), ($k<=1 && strlen($v['tiebreak'])>0 ? 'LTB' : 1), 0, 'R', 0);
-						if(strlen($v['tiebreak'])>0 && $k<=1)
+                        $tiebreakScore = false;
+						if(strlen($v['tiebreak'])>0)
 						{
-							$tmpTxt="";
-							$tmpArr=explode("|",$v['tiebreak']);
-							for($countArr=0; $countArr<count($tmpArr); $countArr+=$NumComponenti)
-								$tmpTxt .= array_sum(array_slice($tmpArr,$countArr,$NumComponenti)). ",";
-							$pdf->Cell(7, 4*$NumComponenti,  "T.".substr($tmpTxt,0,-1), 'RTB', 0, 'R', 0);
+                            $tiebreakScore = true;
+                            $previousX = $pdf->GetX();
+                            $previousY = $pdf->GetY();
+                            $pdf->SetXY($previousX, $previousY + 2 * $NumComponenti);
+							$pdf->Cell(15, 2*$NumComponenti,  "T." . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RBL', 0, 'R', 0, '', 1, false, 'T', 'T');
+                            $pdf->SetXY($previousX, $previousY);
 						}
+                        $pdf->Cell(15, $tiebreakScore ? 2*$NumComponenti : 4*$NumComponenti, ($section['meta']['matchMode']==0 ? $v['score'] : $v['setScore']) . ($k<=1 && $v['tie']==1 && strlen($v['tiebreak'])==0 ? '*' : ''), ($tiebreakScore ? 'RTL' : 1), 0, 'L', 0, '', 1, false, 'T', $tiebreakScore ? 'B' : 'C');
 					}
 				}
 			}
