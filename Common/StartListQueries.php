@@ -744,7 +744,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 	if ($includedRegionIndexes[1]) {
 		$MyQuery .= "(SELECT"
 			. " EnCode as Bib"
-			. ", concat(upper(EnFirstName), ' ', EnName) AS Athlete"
+			. ", trim(concat(upper(EnFirstName), ' ', EnName, ' ', coalesce(EnMiddleName, ''))) AS Athlete"
 			. ", QuSession AS Session"
 			. ", SesName"
 			. ", SUBSTRING(QuTargetNo,2) AS TargetNo"
@@ -760,6 +760,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", DivAthlete and ClAthlete as IsAthlete"
 			. ", EnAgeClass as AgeClass"
 			. ", EnSubClass as SubClass"
+			. ", ScDescription as SubClassDescription"
 			. ", EnStatus as Status"
 			. ", EnIndClEvent AS `IC`"
 			. ", EnTeamClEvent AS `TC`"
@@ -783,6 +784,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		$MyQuery .= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
 		$MyQuery .= "LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament ";
 		$MyQuery .= "LEFT JOIN Classes ON TRIM(EnClass)=TRIM(ClId) AND EnTournament=ClTournament ";
+		$MyQuery .= "LEFT JOIN SubClass ON TRIM(EnSubClass)=TRIM(ScId) AND EnTournament=ScTournament ";
 		$MyQuery .= "LEFT JOIN Session on EnTournament=SesTournament and SesType='Q' and SesOrder=QuSession ";
 		$MyQuery .= "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId ";
 		$MyQuery .= "LEFT JOIN Rankings on EnTournament=RankTournament and RankEvent=IndEvent and RankTeam=0 and EnCode=RankCode and ToIocCode='FITA' and EnIocCode in ('', 'FITA') and RankIocCode='FITA' ";
@@ -812,7 +814,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		}
 		$MyQuery .= "(SELECT"
 			. " EnCode as Bib"
-			. ", concat(upper(EnFirstName), ' ', EnName) AS Athlete"
+			. ", trim(concat(upper(EnFirstName), ' ', EnName, ' ', coalesce(EnMiddleName, ''))) AS Athlete"
 			. ", QuSession AS Session"
 			. ", SesName"
 			. ", SUBSTRING(QuTargetNo,2) AS TargetNo"
@@ -828,6 +830,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", DivAthlete and ClAthlete as IsAthlete"
 			. ", EnAgeClass as AgeClass"
 			. ", EnSubClass as SubClass"
+			. ", ScDescription as SubClassDescription"
 			. ", EnStatus as Status"
 			. ", EnIndClEvent AS `IC`"
 			. ", EnTeamClEvent AS `TC`"
@@ -851,6 +854,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		$MyQuery .= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
 		$MyQuery .= "LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament ";
 		$MyQuery .= "LEFT JOIN Classes ON TRIM(EnClass)=TRIM(ClId) AND EnTournament=ClTournament ";
+		$MyQuery .= "LEFT JOIN SubClass ON TRIM(EnSubClass)=TRIM(ScId) AND EnTournament=ScTournament ";
 		$MyQuery .= "LEFT JOIN Session on EnTournament=SesTournament and SesType='Q' and SesOrder=QuSession ";
 		$MyQuery .= "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId ";
 		$MyQuery .= "LEFT JOIN Rankings on EnTournament=RankTournament and RankEvent=IndEvent and RankTeam=0 and EnCode=RankCode and ToIocCode='FITA' and EnIocCode in ('', 'FITA') and RankIocCode='FITA' ";
@@ -880,7 +884,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		}
 		$MyQuery .= "(SELECT"
 			. " EnCode as Bib"
-			. ", concat(upper(EnFirstName), ' ', EnName) AS Athlete"
+			. ", trim(concat(upper(EnFirstName), ' ', EnName, ' ', coalesce(EnMiddleName, ''))) AS Athlete"
 			. ", QuSession AS Session"
 			. ", SesName"
 			. ", SUBSTRING(QuTargetNo,2) AS TargetNo"
@@ -896,6 +900,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", DivAthlete and ClAthlete as IsAthlete"
 			. ", EnAgeClass as AgeClass"
 			. ", EnSubClass as SubClass"
+			. ", ScDescription as SubClassDescription"
 			. ", EnStatus as Status"
 			. ", EnIndClEvent AS `IC`"
 			. ", EnTeamClEvent AS `TC`"
@@ -919,6 +924,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		$MyQuery .= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
 		$MyQuery .= "LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament ";
 		$MyQuery .= "LEFT JOIN Classes ON TRIM(EnClass)=TRIM(ClId) AND EnTournament=ClTournament ";
+		$MyQuery .= "LEFT JOIN SubClass ON TRIM(EnSubClass)=TRIM(ScId) AND EnTournament=ScTournament ";
 		$MyQuery .= "LEFT JOIN Session on EnTournament=SesTournament and SesType='Q' and SesOrder=QuSession ";
 		$MyQuery .= "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId ";
 		$MyQuery .= "LEFT JOIN Rankings on EnTournament=RankTournament and RankEvent=IndEvent and RankTeam=0 and EnCode=RankCode and ToIocCode='FITA' and EnIocCode in ('', 'FITA') and RankIocCode='FITA' ";
@@ -940,7 +946,10 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			$MyQuery .= " AND (" . $TmpWhere . ")";
 		if ($NoPhoto) $MyQuery .= "AND (length(PhPhoto)='' or PhPhoto is null) ";
 		$MyQuery .= " GROUP BY SesName, DivDescription, ClDescription, IsAthlete, Bib, Athlete,  Session, TargetNo, NationCode, Nation";
-		$MyQuery .= ") ORDER BY " . ($orderByName ? "Nation" : "NationCode") . ", " . ($SinglePage ? 'Session, ' : '') . " EnSex, DivCode, ClassCode, Athlete, TargetNo ";
+		$MyQuery .= ") ";
+	}
+	if ($MyQuery != "") {
+		$MyQuery .= " ORDER BY " . ($orderByName ? "Nation" : "NationCode") . ", " . ($SinglePage ? 'Session, ' : '') . "Athlete, EnSex, DivCode, ClassCode, TargetNo ";
 	}
 	return $MyQuery;
 }
