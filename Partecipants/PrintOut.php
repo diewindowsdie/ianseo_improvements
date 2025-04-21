@@ -93,19 +93,19 @@ $IncludeJquery=true;
 	<tr><th class="SubTitle" colspan="<?php print ($SesNo+1);?>"><?php print get_text('StartlistCountry','Tournament');?></th></tr>
 	<tr>
 		<td class="Center">
-			<a href="PrnCountry.php" class="Link" target="PrintOut">
+			<a href="PrnCountry.php?includeRegion2=on&includeRegion3=on" class="Link" target="PrintOut">
 			<img src="../Common/Images/pdf.gif" alt="<?php print get_text('StartlistCountry','Tournament');?>" border="0">
 			<br/><?php print get_text('StartlistCountry','Tournament');?></a>
-			<br/><a href="PrnCountry.php?SinglePage=1" class="Link" target="PrintOut"><?php print get_text('StartlistEachCountry','Tournament');?></a>
-			<br/><a href="PrnCountry.php?tf=1" class="Link" target="PrintOut">+ <?php print get_text('TargetType');?></a>
+			<br/><a href="PrnCountry.php?SinglePage=1&includeRegion2=on&includeRegion3=on" class="Link" target="PrintOut"><?php print get_text('StartlistEachCountry','Tournament');?></a>
+			<br/><a href="PrnCountry.php?tf=1&includeRegion2=on&includeRegion3=on" class="Link" target="PrintOut">+ <?php print get_text('TargetType');?></a>
 		</td>
 		<?php foreach ($sessions as $s) { ?>
 			<td class="Center" width="<?php print $SmallCellW;?>%">
-				<a href="PrnCountry.php?Session=<?php print $s->SesOrder;?>" class="Link" target="PrintOut">
+				<a href="PrnCountry.php?Session=<?php print $s->SesOrder;?>&includeRegion2=on&includeRegion3=on" class="Link" target="PrintOut">
 					<img src="../Common/Images/pdf_small.gif" alt="<?php print get_text('StartlistCountry','Tournament');?>" border="0"><br>
 					<?php print $s->Descr;?>
 				</a>
-				<br/><a href="PrnCountry.php?Session=<?php print $s->SesOrder;?>&tf=1" class="Link" target="PrintOut">+ <?php print get_text('TargetType');?></a>
+                <br/><a href="PrnCountry.php?Session=<?php print $s->SesOrder;?>&tf=1&includeRegion2=on&includeRegion3=on" class="Link" target="PrintOut">+ <?php print get_text('TargetType');?></a>
                 <br/><a href="OrisCountry.php?Session=<?php print $s->SesOrder;?>" class="Link" target="ORISPrintOut"><?php print get_text('StdORIS','Tournament');?></a>
 			</td>
 		<?php }?>
@@ -274,6 +274,9 @@ echo '<td width="20%" class="Center">
 				<option value="0">'.get_text('CountryCode').'</option>
 				<option value="1">'.get_text('Nation').'</option>
 			</select></div>
+			<div>'.get_text('Country').'&nbsp;2&nbsp;&nbsp;&nbsp;<input name="includeRegion2" type="checkbox"></div>
+			<div>'.get_text('Country').'&nbsp;3&nbsp;&nbsp;&nbsp;<input name="includeRegion3" type="checkbox"></div>
+			</div>
 			<div>'.get_text('NoPhoto').'&nbsp;&nbsp;&nbsp;<input name="NoPhoto" type="checkbox"></div>
 			<div>'.get_text('Email', 'Tournament').'&nbsp;&nbsp;&nbsp;<input name="Email" type="checkbox"></div>
 			<div><input type="submit" name="Submit" value="'.get_text('CmdOk').'"></div>

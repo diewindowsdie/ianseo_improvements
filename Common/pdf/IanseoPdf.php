@@ -131,8 +131,10 @@ class IanseoPdf extends TCPDF {
 	}
 
 	public function setDocUpdate($newDate)
-	{
-		$this->docUpdate=DateTime::createFromFormat('Y-m-d H:i:s', $newDate)->format('d.m.Y H:i:s');
+    {
+        if ($newDate) {
+            $this->docUpdate = DateTime::createFromFormat('Y-m-d H:i:s', $newDate)->format('d.m.Y H:i:s');
+        }
 	}
 
 	public function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=0, $link='', $stretch=1, $ignore_min_height=false, $calign='T', $valign='M') {

@@ -661,7 +661,7 @@ function getCountryList() {
 }
 
 
-function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=false, $Events=array(), $Sessions=array()) {
+function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=false, $Events=array(), $Sessions=array(), $includedRegionIndexes=array(1 => true, 2 => true, 3 => true)) {
 	$SinglePage = isset($_REQUEST['SinglePage']);
 	$TargetFace=(isset($_REQUEST['tf']) && $_REQUEST['tf']==1);
 	$NoPhoto=isset($_REQUEST['NoPhoto']);
@@ -740,7 +740,9 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		return $MyQuery;
 	}
 
-	$MyQuery = "(SELECT"
+	$MyQuery = "";
+	if ($includedRegionIndexes[1]) {
+		$MyQuery .= "(SELECT"
 			. " EnCode as Bib"
 			. ", concat(upper(EnFirstName), ' ', EnName) AS Athlete"
 			. ", QuSession AS Session"
@@ -764,46 +766,51 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", EnIndFEvent AS `IF`"
 			. ", EnTeamFEvent as `TF`"
 			. ", EnTeamMixEvent as `TM`"
-            . ", IFNULL(GROUP_CONCAT(EvCode order by EvProgr SEPARATOR ', '), '')  as RealEventCode"
-            . ", IFNULL(GROUP_CONCAT(EvEventName order by EvProgr SEPARATOR ', '), '')  as RealEventName"
-            . ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
-            . ", GROUP_CONCAT(RankRanking) as Ranking"
-        	. ", IF(EnCountry2=0,0,1) as secTeam "
+			. ", IFNULL(GROUP_CONCAT(EvCode order by EvProgr SEPARATOR ', '), '')  as RealEventCode"
+			. ", IFNULL(GROUP_CONCAT(EvEventName order by EvProgr SEPARATOR ', '), '')  as RealEventName"
+			. ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
+			. ", GROUP_CONCAT(RankRanking) as Ranking"
+			. ", IF(EnCountry2=0,0,1) as secTeam "
 			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, EnDob ";
-	$MyQuery.= "FROM Entries AS e ";
-	$MyQuery.= "inner JOIN Tournament ON ToId=EnTournament ";
-	$MyQuery.= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
-	$MyQuery.= "left join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0  ";
-	$MyQuery.= "LEFT JOIN Photos ON e.EnId=PhEnId ";
-	$MyQuery.= "LEFT JOIN ExtraData as edmail ON edmail.EdId=EnId and edmail.EdType='E' ";
-	$MyQuery.= "LEFT JOIN ExtraData as edbib ON edbib.EdId=EnId and edbib.EdType='Z' ";
-	$MyQuery.= "LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament ";
-	$MyQuery.= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
-	$MyQuery.= "LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament ";
-	$MyQuery.= "LEFT JOIN Classes ON TRIM(EnClass)=TRIM(ClId) AND EnTournament=ClTournament ";
-	$MyQuery.= "LEFT JOIN Session on EnTournament=SesTournament and SesType='Q' and SesOrder=QuSession ";
-	$MyQuery.= "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId ";
-	$MyQuery.= "LEFT JOIN Rankings on EnTournament=RankTournament and RankEvent=IndEvent and RankTeam=0 and EnCode=RankCode and ToIocCode='FITA' and EnIocCode in ('', 'FITA') and RankIocCode='FITA' ";
-	$MyQuery.= "WHERE EnTournament = " . intval($_SESSION['TourId']);
+		$MyQuery .= "FROM Entries AS e ";
+		$MyQuery .= "inner JOIN Tournament ON ToId=EnTournament ";
+		$MyQuery .= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
+		$MyQuery .= "left join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0  ";
+		$MyQuery .= "LEFT JOIN Photos ON e.EnId=PhEnId ";
+		$MyQuery .= "LEFT JOIN ExtraData as edmail ON edmail.EdId=EnId and edmail.EdType='E' ";
+		$MyQuery .= "LEFT JOIN ExtraData as edbib ON edbib.EdId=EnId and edbib.EdType='Z' ";
+		$MyQuery .= "LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament ";
+		$MyQuery .= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
+		$MyQuery .= "LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament ";
+		$MyQuery .= "LEFT JOIN Classes ON TRIM(EnClass)=TRIM(ClId) AND EnTournament=ClTournament ";
+		$MyQuery .= "LEFT JOIN Session on EnTournament=SesTournament and SesType='Q' and SesOrder=QuSession ";
+		$MyQuery .= "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId ";
+		$MyQuery .= "LEFT JOIN Rankings on EnTournament=RankTournament and RankEvent=IndEvent and RankTeam=0 and EnCode=RankCode and ToIocCode='FITA' and EnIocCode in ('', 'FITA') and RankIocCode='FITA' ";
+		$MyQuery .= "WHERE EnTournament = " . intval($_SESSION['TourId']);
 
-	if($Athletes) $MyQuery.= " AND EnAthlete=1 ";
+		if ($Athletes) $MyQuery .= " AND EnAthlete=1 ";
 
-	if($Events) {
-		$MyQuery .= " AND IndEvent in (" . implode(',', StrSafe_DB($Events)) . ") ";
+		if ($Events) {
+			$MyQuery .= " AND IndEvent in (" . implode(',', StrSafe_DB($Events)) . ") ";
+		}
+
+		if ($Sessions) {
+			$MyQuery .= " AND QuSession in (" . implode(',', $Sessions) . ") ";
+		} elseif (isset($_REQUEST["Session"]) && is_numeric($_REQUEST["Session"])) {
+			$MyQuery .= " AND QuSession = " . StrSafe_DB($_REQUEST["Session"]) . " ";
+		}
+
+		if ($TmpWhere != "")
+			$MyQuery .= " AND (" . $TmpWhere . ")";
+		if ($NoPhoto) $MyQuery .= " AND (length(PhPhoto)='' or PhPhoto is null) ";
+		$MyQuery .= " GROUP BY SesName, DivDescription, ClDescription, IsAthlete, Bib, Athlete,  Session, TargetNo, NationCode, Nation";
+		$MyQuery .= ")";
 	}
-
-	if($Sessions) {
-		$MyQuery .= " AND QuSession in (" . implode(',', $Sessions) . ") ";
-	} elseif(isset($_REQUEST["Session"]) && is_numeric($_REQUEST["Session"])) {
-		$MyQuery .= " AND QuSession = " . StrSafe_DB($_REQUEST["Session"]) . " ";
-	}
-
-	if($TmpWhere != "")
-		$MyQuery .= " AND (" . $TmpWhere . ")";
-	if($NoPhoto) $MyQuery .= " AND (length(PhPhoto)='' or PhPhoto is null) ";
-    $MyQuery .= " GROUP BY SesName, DivDescription, ClDescription, IsAthlete, Bib, Athlete,  Session, TargetNo, NationCode, Nation";
-	$MyQuery .= ") UNION ALL ";
-	$MyQuery .= "(SELECT"
+	if ($includedRegionIndexes[2]) {
+		if ($MyQuery != "") {
+			$MyQuery .= " UNION ALL ";
+		}
+		$MyQuery .= "(SELECT"
 			. " EnCode as Bib"
 			. ", concat(upper(EnFirstName), ' ', EnName) AS Athlete"
 			. ", QuSession AS Session"
@@ -827,47 +834,51 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", EnIndFEvent AS `IF`"
 			. ", EnTeamFEvent as `TF`"
 			. ", EnTeamMixEvent as `TM`"
-            . ", IFNULL(GROUP_CONCAT(EvCode order by EvProgr SEPARATOR ', '), '')  as RealEventCode"
-            . ", IFNULL(GROUP_CONCAT(EvEventName order by EvProgr SEPARATOR ', '), '')  as RealEventName"
-            . ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
-            . ", GROUP_CONCAT(RankRanking) as Ranking"
-            . ", 2 as secTeam "
+			. ", IFNULL(GROUP_CONCAT(EvCode order by EvProgr SEPARATOR ', '), '')  as RealEventCode"
+			. ", IFNULL(GROUP_CONCAT(EvEventName order by EvProgr SEPARATOR ', '), '')  as RealEventName"
+			. ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
+			. ", GROUP_CONCAT(RankRanking) as Ranking"
+			. ", 2 as secTeam "
 			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, EnDob ";
-	$MyQuery.= "FROM Entries AS e ";
-	$MyQuery.= "inner JOIN Tournament ON ToId=EnTournament ";
-	$MyQuery.= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
-	$MyQuery.= "left join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0   ";
-	$MyQuery.= "LEFT JOIN Photos ON e.EnId=PhEnId ";
-	$MyQuery.= "LEFT JOIN ExtraData as edmail ON edmail.EdId=EnId and edmail.EdType='E' ";
-	$MyQuery.= "LEFT JOIN ExtraData as edbib ON edbib.EdId=EnId and edbib.EdType='Z' ";
-	$MyQuery.= "LEFT JOIN Countries AS c ON e.EnCountry2=c.CoId AND e.EnTournament=c.CoTournament ";
-	$MyQuery.= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
-	$MyQuery.= "LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament ";
-	$MyQuery.= "LEFT JOIN Classes ON TRIM(EnClass)=TRIM(ClId) AND EnTournament=ClTournament ";
-	$MyQuery.= "LEFT JOIN Session on EnTournament=SesTournament and SesType='Q' and SesOrder=QuSession ";
-	$MyQuery.= "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId ";
-	$MyQuery.= "LEFT JOIN Rankings on EnTournament=RankTournament and RankEvent=IndEvent and RankTeam=0 and EnCode=RankCode and ToIocCode='FITA' and EnIocCode in ('', 'FITA') and RankIocCode='FITA' ";
-	$MyQuery.= "WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND EnCountry2!=0 AND (EnTeamClEvent!=0 OR EnTeamFEvent!=0 OR EnTeamMixEvent!=0) ";
+		$MyQuery .= "FROM Entries AS e ";
+		$MyQuery .= "inner JOIN Tournament ON ToId=EnTournament ";
+		$MyQuery .= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
+		$MyQuery .= "left join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0   ";
+		$MyQuery .= "LEFT JOIN Photos ON e.EnId=PhEnId ";
+		$MyQuery .= "LEFT JOIN ExtraData as edmail ON edmail.EdId=EnId and edmail.EdType='E' ";
+		$MyQuery .= "LEFT JOIN ExtraData as edbib ON edbib.EdId=EnId and edbib.EdType='Z' ";
+		$MyQuery .= "LEFT JOIN Countries AS c ON e.EnCountry2=c.CoId AND e.EnTournament=c.CoTournament ";
+		$MyQuery .= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
+		$MyQuery .= "LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament ";
+		$MyQuery .= "LEFT JOIN Classes ON TRIM(EnClass)=TRIM(ClId) AND EnTournament=ClTournament ";
+		$MyQuery .= "LEFT JOIN Session on EnTournament=SesTournament and SesType='Q' and SesOrder=QuSession ";
+		$MyQuery .= "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId ";
+		$MyQuery .= "LEFT JOIN Rankings on EnTournament=RankTournament and RankEvent=IndEvent and RankTeam=0 and EnCode=RankCode and ToIocCode='FITA' and EnIocCode in ('', 'FITA') and RankIocCode='FITA' ";
+		$MyQuery .= "WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND EnCountry2!=0 AND (EnTeamClEvent!=0 OR EnTeamFEvent!=0 OR EnTeamMixEvent!=0) ";
 
-	if($Athletes) $MyQuery.= " AND EnAthlete=1 ";
+		if ($Athletes) $MyQuery .= " AND EnAthlete=1 ";
 
-	if($Events) {
-		$MyQuery .= "AND IndEvent in (" . implode(',', StrSafe_DB($Events)) . ") ";
+		if ($Events) {
+			$MyQuery .= "AND IndEvent in (" . implode(',', StrSafe_DB($Events)) . ") ";
+		}
+
+		if ($Sessions) {
+			$MyQuery .= " AND QuSession in (" . implode(',', $Sessions) . ") ";
+		} elseif (isset($_REQUEST["Session"]) && is_numeric($_REQUEST["Session"])) {
+			$MyQuery .= " AND QuSession = " . StrSafe_DB($_REQUEST["Session"]) . " ";
+		}
+
+		if ($TmpWhere != "")
+			$MyQuery .= " AND (" . $TmpWhere . ")";
+		if ($NoPhoto) $MyQuery .= " AND (length(PhPhoto)='' or PhPhoto is null) ";
+		$MyQuery .= " GROUP BY SesName, DivDescription, ClDescription, IsAthlete, Bib, Athlete,  Session, TargetNo, NationCode, Nation";
+		$MyQuery .= ")";
 	}
-
-	if($Sessions) {
-		$MyQuery .= " AND QuSession in (" . implode(',', $Sessions) . ") ";
-	} elseif(isset($_REQUEST["Session"]) && is_numeric($_REQUEST["Session"])) {
-		$MyQuery .= " AND QuSession = " . StrSafe_DB($_REQUEST["Session"]) . " ";
-	}
-
-	if($TmpWhere != "")
-		$MyQuery .= " AND (" . $TmpWhere . ")";
-	if($NoPhoto) $MyQuery .= " AND (length(PhPhoto)='' or PhPhoto is null) ";
-    $MyQuery .= " GROUP BY SesName, DivDescription, ClDescription, IsAthlete, Bib, Athlete,  Session, TargetNo, NationCode, Nation";
-	$MyQuery.= ") UNION ALL ";
-
-	$MyQuery .= "(SELECT"
+	if ($includedRegionIndexes[3]) {
+		if ($MyQuery != "") {
+			$MyQuery .= " UNION ALL ";
+		}
+		$MyQuery .= "(SELECT"
 			. " EnCode as Bib"
 			. ", concat(upper(EnFirstName), ' ', EnName) AS Athlete"
 			. ", QuSession AS Session"
@@ -891,46 +902,46 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", EnIndFEvent AS `IF`"
 			. ", EnTeamFEvent as `TF`"
 			. ", EnTeamMixEvent as `TM`"
-            . ", IFNULL(GROUP_CONCAT(EvCode order by EvProgr SEPARATOR ', '), '')  as RealEventCode"
-            . ", IFNULL(GROUP_CONCAT(EvEventName order by EvProgr SEPARATOR ', '), '')  as RealEventName"
-            . ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
-            . ", GROUP_CONCAT(RankRanking) as Ranking"
-            . ", 3 as secTeam "
+			. ", IFNULL(GROUP_CONCAT(EvCode order by EvProgr SEPARATOR ', '), '')  as RealEventCode"
+			. ", IFNULL(GROUP_CONCAT(EvEventName order by EvProgr SEPARATOR ', '), '')  as RealEventName"
+			. ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
+			. ", GROUP_CONCAT(RankRanking) as Ranking"
+			. ", 3 as secTeam "
 			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, EnDob ";
-	$MyQuery.= "FROM Entries AS e ";
-	$MyQuery.= "inner JOIN Tournament ON ToId=EnTournament ";
-	$MyQuery.= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
-	$MyQuery.= "left join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0  ";
-	$MyQuery.= "LEFT JOIN Photos ON e.EnId=PhEnId ";
-	$MyQuery.= "LEFT JOIN ExtraData as edmail ON edmail.EdId=EnId and edmail.EdType='E' ";
-	$MyQuery.= "LEFT JOIN ExtraData as edbib ON edbib.EdId=EnId and edbib.EdType='Z' ";
-	$MyQuery.= "LEFT JOIN Countries AS c ON e.EnCountry3=c.CoId AND e.EnTournament=c.CoTournament ";
-	$MyQuery.= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
-	$MyQuery.= "LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament ";
-	$MyQuery.= "LEFT JOIN Classes ON TRIM(EnClass)=TRIM(ClId) AND EnTournament=ClTournament ";
-	$MyQuery.= "LEFT JOIN Session on EnTournament=SesTournament and SesType='Q' and SesOrder=QuSession ";
-	$MyQuery.= "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId ";
-	$MyQuery.= "LEFT JOIN Rankings on EnTournament=RankTournament and RankEvent=IndEvent and RankTeam=0 and EnCode=RankCode and ToIocCode='FITA' and EnIocCode in ('', 'FITA') and RankIocCode='FITA' ";
-	$MyQuery.= "WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND EnCountry3!=0 ";
+		$MyQuery .= "FROM Entries AS e ";
+		$MyQuery .= "inner JOIN Tournament ON ToId=EnTournament ";
+		$MyQuery .= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
+		$MyQuery .= "left join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0  ";
+		$MyQuery .= "LEFT JOIN Photos ON e.EnId=PhEnId ";
+		$MyQuery .= "LEFT JOIN ExtraData as edmail ON edmail.EdId=EnId and edmail.EdType='E' ";
+		$MyQuery .= "LEFT JOIN ExtraData as edbib ON edbib.EdId=EnId and edbib.EdType='Z' ";
+		$MyQuery .= "LEFT JOIN Countries AS c ON e.EnCountry3=c.CoId AND e.EnTournament=c.CoTournament ";
+		$MyQuery .= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
+		$MyQuery .= "LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament ";
+		$MyQuery .= "LEFT JOIN Classes ON TRIM(EnClass)=TRIM(ClId) AND EnTournament=ClTournament ";
+		$MyQuery .= "LEFT JOIN Session on EnTournament=SesTournament and SesType='Q' and SesOrder=QuSession ";
+		$MyQuery .= "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId ";
+		$MyQuery .= "LEFT JOIN Rankings on EnTournament=RankTournament and RankEvent=IndEvent and RankTeam=0 and EnCode=RankCode and ToIocCode='FITA' and EnIocCode in ('', 'FITA') and RankIocCode='FITA' ";
+		$MyQuery .= "WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND EnCountry3!=0 ";
 
-	if($Athletes) $MyQuery.= " AND EnAthlete=1 ";
+		if ($Athletes) $MyQuery .= " AND EnAthlete=1 ";
 
-	if($Events) {
-		$MyQuery .= " AND IndEvent in (" . implode(',', StrSafe_DB($Events)) . ") ";
+		if ($Events) {
+			$MyQuery .= " AND IndEvent in (" . implode(',', StrSafe_DB($Events)) . ") ";
+		}
+
+		if ($Sessions) {
+			$MyQuery .= " AND QuSession in (" . implode(',', $Sessions) . ") ";
+		} elseif (isset($_REQUEST["Session"]) && is_numeric($_REQUEST["Session"])) {
+			$MyQuery .= " AND QuSession = " . StrSafe_DB($_REQUEST["Session"]) . " ";
+		}
+
+		if ($TmpWhere != "")
+			$MyQuery .= " AND (" . $TmpWhere . ")";
+		if ($NoPhoto) $MyQuery .= "AND (length(PhPhoto)='' or PhPhoto is null) ";
+		$MyQuery .= " GROUP BY SesName, DivDescription, ClDescription, IsAthlete, Bib, Athlete,  Session, TargetNo, NationCode, Nation";
+		$MyQuery .= ") ORDER BY " . ($orderByName ? "Nation" : "NationCode") . ", " . ($SinglePage ? 'Session, ' : '') . " EnSex, DivCode, ClassCode, Athlete, TargetNo ";
 	}
-
-	if($Sessions) {
-		$MyQuery .= " AND QuSession in (" . implode(',', $Sessions) . ") ";
-	} elseif(isset($_REQUEST["Session"]) && is_numeric($_REQUEST["Session"])) {
-		$MyQuery .= " AND QuSession = " . StrSafe_DB($_REQUEST["Session"]) . " ";
-	}
-
-	if($TmpWhere != "")
-		$MyQuery .= " AND (" . $TmpWhere . ")";
-	if($NoPhoto) $MyQuery .= "AND (length(PhPhoto)='' or PhPhoto is null) ";
-    $MyQuery .= " GROUP BY SesName, DivDescription, ClDescription, IsAthlete, Bib, Athlete,  Session, TargetNo, NationCode, Nation";
-	$MyQuery.= ") ORDER BY " . ($orderByName ? "Nation" : "NationCode") . ", ".($SinglePage?'Session, ':'')." EnSex, DivCode, ClassCode, Athlete, TargetNo ";
-
 	return $MyQuery;
 }
 

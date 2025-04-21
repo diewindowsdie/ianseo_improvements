@@ -928,7 +928,7 @@ function getCompetitionOfficials($ORIS=false) {
     return $Data;
 }
 
-function getStartListByCountries($ORIS=false, $Athletes=false, $orderByName=false, $Events=array(), $Sessions=array()) {
+function getStartListByCountries($ORIS=false, $Athletes=false, $orderByName=false, $Events=array(), $Sessions=array(), $includedRegionIndexes=array(1 => true, 2 => true, 3 => true)) {
 	$Data=new StdClass();
 
 	$Data->Code='C32E';
@@ -1001,7 +1001,7 @@ function getStartListByCountries($ORIS=false, $Athletes=false, $orderByName=fals
 		$Data->HideCols = GetParameter("IntEvent");
 		$Data->Description=get_text('StartlistCountry','Tournament');
 	}
-	$MyQuery = getStartListCountryQuery($ORIS, $Athletes, $orderByName, $Events, $Sessions);
+	$MyQuery = getStartListCountryQuery($ORIS, $Athletes, $orderByName, $Events, $Sessions, $includedRegionIndexes);
 
 	//echo $MyQuery;exit;
 	$Rs=safe_r_sql($MyQuery);
