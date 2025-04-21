@@ -12,11 +12,14 @@ $OldSession='qwe';
 
 $LongCell=$pdf->getPageWidth()/4;
 $SesCell=7; // session
-$TgtCell=10; // target, bib, division, class, ageclass, subclass, status, photo
+$TgtCell=10; // target  subclass, status
 $PalCell=14; // 1-5 squares
+$divAndClassCell=20;
 
-$W=$SesCell+$PalCell+($TgtCell*8);
-$NatAtlCell=($pdf->getPageWidth()-$W-20)/2;
+$W=$SesCell+$PalCell+($TgtCell*3) + $divAndClassCell*2;
+$t=($pdf->getPageWidth()-$W-20)/2;
+$nationCell = $t - 10;
+$athleteCell = $t + 10;
 
 if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0) {
 	if(isset($_REQUEST['Email'])) {

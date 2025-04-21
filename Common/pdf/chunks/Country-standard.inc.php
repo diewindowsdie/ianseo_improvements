@@ -20,17 +20,15 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 			if ($FirstTime OR !$pdf->SamePage(4)) {
 				$pdf->SetDefaultColor();
 			   	$pdf->SetFont($pdf->FontStd,'B',7);
-				$pdf->Cell($NatAtlCell, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
+				$pdf->Cell($nationCell, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
 				$pdf->Cell($SesCell, 4, $PdfData->Data['Fields']['Session'], 1, 0, 'C', 1);
 				$pdf->Cell($TgtCell, 4, $PdfData->Data['Fields']['TargetNo'], 1, 0, 'C', 1);
-				$pdf->Cell($TgtCell, 4, $PdfData->Data['Fields']['Bib'], 1, 0, 'C', 1);
-				$pdf->Cell($NatAtlCell, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
+				$pdf->Cell($athleteCell, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
 				if(!$PdfData->HideCols and !$TargetFace) {
-					$pdf->Cell($TgtCell, 4, $PdfData->Data['Fields']['AgeClass'], 1, 0, 'C', 1);
 					$pdf->Cell($TgtCell, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
 				}
-				$pdf->Cell($TgtCell + ($PdfData->HideCols==true ? $TgtCell:0), 4, $PdfData->Data['Fields']['DivDescription'], 1, 0, 'C', 1);
-				$pdf->Cell($TgtCell + ($PdfData->HideCols==true ? $TgtCell:0), 4, $PdfData->Data['Fields']['ClDescription'], 1, 0, 'C', 1);
+				$pdf->Cell($divAndClassCell + ($PdfData->HideCols==true ? $divAndClassCell:0), 4, $PdfData->Data['Fields']['DivDescription'], 1, 0, 'C', 1);
+				$pdf->Cell($divAndClassCell + ($PdfData->HideCols==true ? $divAndClassCell:0), 4, $PdfData->Data['Fields']['ClDescription'], 1, 0, 'C', 1);
 
 				if ($TargetFace) {
 					$pdf->Cell($TgtCell*2, 4, $PdfData->Data['Fields']['TargetFace'], 1, 0, 'C', 1);
@@ -41,9 +39,7 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 					$pdf->DrawParticipantHeader();
 				   	$pdf->SetFont($pdf->FontStd,'B',7);
 					$pdf->Cell($TgtCell, 4, $PdfData->Data['Fields']['Status'], 1, 0, 'C', 1);
-                    $pdf->Cell($TgtCell, 4, $PdfData->Data['Fields']['Photo'], 1, 0, 'C', 1);
 				}
-                $pdf->Cell(0, 4, '', 1, 0, 'C', 1);
 
 				$pdf->ln();
 				$OldTeam='';
@@ -58,18 +54,16 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
                 //$pdf->Cell($NatAtlCell, 4,  $MyRow->Nation, '1', 0, 'L', 0);
 				$OldTeam = $MyRow->NationCode;
 			}
-            $pdf->Cell($NatAtlCell, 4, '', 0, 0, 'C', 0);
+            $pdf->Cell($nationCell, 4, '', 0, 0, 'C', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',7);
 			$pdf->Cell($SesCell, 4,  ($MyRow->Session && $MyRow->IsAthlete ? $MyRow->Session : ''), 1, 0, 'R', 0);
 			$pdf->Cell($TgtCell, 4,  ($MyRow->IsAthlete && $MyRow->TargetNo ? (!empty($PdfData->BisTarget) && (intval(substr($MyRow->TargetNo,1)) > $PdfData->NumEnd) ? str_pad((substr($MyRow->TargetNo,0,-1)-$PdfData->NumEnd),3,"0",STR_PAD_LEFT) . substr($MyRow->TargetNo,-1,1) . ' bis'  : $MyRow->TargetNo) : ''), 1, 0, 'R', 0);
-			$pdf->Cell($TgtCell, 4,  $MyRow->Bib, 1, 0, 'R', 0);
-			$pdf->Cell($NatAtlCell, 4,  $MyRow->Athlete . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
+			$pdf->Cell($athleteCell, 4,  $MyRow->Athlete . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
 			if(!$PdfData->HideCols AND !$TargetFace) {
-				$pdf->Cell($TgtCell, 4,  ($MyRow->AgeClass), 1, 0, 'C', 0);
-				$pdf->Cell($TgtCell, 4,  ($MyRow->SubClass), 1, 0, 'C', 0);
+				$pdf->Cell($TgtCell, 4,  ($MyRow->SubClassDescription), 1, 0, 'C', 0);
 			}
-			$pdf->Cell($TgtCell + ($PdfData->HideCols==true ? $TgtCell:0), 4,  ($PdfData->HideCols==true ? $MyRow->DivDescription : $MyRow->DivCode), 1, 0, 'C', 0);
-			$pdf->Cell($TgtCell + ($PdfData->HideCols==true ? $TgtCell:0), 4,  ($PdfData->HideCols==true ? $MyRow->ClDescription : $MyRow->ClassCode), 1, 0, 'C', 0);
+			$pdf->Cell($divAndClassCell + ($PdfData->HideCols==true ? $divAndClassCell:0), 4,  ($PdfData->HideCols==true ? $MyRow->DivDescription : $MyRow->DivDescription), 1, 0, 'C', 0);
+			$pdf->Cell($divAndClassCell + ($PdfData->HideCols==true ? $divAndClassCell:0), 4,  ($PdfData->HideCols==true ? $MyRow->ClDescription : $MyRow->ClDescription), 1, 0, 'C', 0);
 
 			if ($TargetFace) {
 				$pdf->Cell($TgtCell*2, 4, $MyRow->TfName, 1, 0, 'C', 0);
@@ -93,10 +87,8 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 				$pdf->SetFont($pdf->FontStd,'',7);
 				$ShowStatusLegend = ($ShowStatusLegend || ($MyRow->Status!=0));
 				$pdf->Cell($TgtCell, 4,  ($MyRow->Status==0 ? '' : ($MyRow->Status)) , 1, 0, 'C', 0);
-                $pdf->Rect($x=$pdf->GetX()+1, $y=$pdf->GetY()+1, 2, 2, 'DF',array('all'=>1), ($MyRow->HasPhoto ? array(0,0,0) : array(255,255,255)));
 
 			}
-            $pdf->Cell(0, 4,  '' , 1, 0, 'C', 0);
 
 			$pdf->ln();
 
