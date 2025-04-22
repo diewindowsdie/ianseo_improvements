@@ -354,8 +354,8 @@ class ResultPDF extends IanseoPdf {
 					$this->Cell(4, $this->RealCellHeight,  $row[0], 1, 0, 'R', 0);
 				}
 				$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-				$this->Cell($TargetFace ? 28 : 34, $this->RealCellHeight,  $row[1]??'', 1, 0, 'L', 0);
-				$this->Cell($TargetFace ? 58 : 70, $this->RealCellHeight,  $row[3]??'' . ($row[10]==null ? "" : " (" . $row[10] . " " . $row[11]. ")") . ($row[13]==null ? "" : " (" . $row[13]." ". $row[14].")"), 'RTB', 0, 'L', 0);
+				$this->Cell($TargetFace ? 38 : 44, $this->RealCellHeight,  $row[1]??'', 1, 0, 'L', 0);
+				$this->Cell($TargetFace ? 48 : 60, $this->RealCellHeight,  $row[3]??'' . ($row[10]==null ? "" : " (" . $row[10] . " " . $row[11]. ")") . ($row[13]==null ? "" : " (" . $row[13]." ". $row[14].")"), 'RTB', 0, 'L', 0);
 				if(!$this->HideCols) {
 					$this->Cell(12, $this->RealCellHeight,  $row[4], 1, 0, 'C', 0);
 					$this->Cell( 9, $this->RealCellHeight,  $row[5], 1, 0, 'C', 0);
