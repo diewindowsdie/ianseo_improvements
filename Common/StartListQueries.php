@@ -1232,7 +1232,7 @@ function getStartListCategoryQuery($ORIS=false, $orderByTeam=0, $Events=array())
 			" . ($ORIS ? ' EvCode as EventCode ' :" IFNULL(EvCode,CONCAT(TRIM(EnDivision),TRIM(EnClass))) as EventCode") . ", 
 			SesName, 
 			EnCode as Bib, 
-			concat(upper(EnFirstName $Collation), ' ', EnName $Collation) AS Athlete, 
+			trim(concat(upper(EnFirstName $Collation), ' ', EnName $Collation, ' ', EnMiddleName $Collation)) AS Athlete, 
 			QuSession AS Session, 
 			SUBSTRING(QuTargetNo,2) AS TargetNo, 
 			case EvTeamCreationMode
