@@ -603,7 +603,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 
 					$item=$item+$distFields;
                     error_reporting(E_ALL);
-                    $item['normative'] = calcNormative($distances, $myRow->EnClass, $myRow->EnDivision, $distFields);
+                    $item['normative'] = calcNormative($distances, $myRow->EnClass, $myRow->EnDivision, $distFields)["name"];
 
 					//Gestisco il numero di frecce tirate per sessione
 					if($myRow->IndIrmType==0 AND (empty($section["meta"]["arrowsShot"][$myRow->Session]) OR $section["meta"]["arrowsShot"][$myRow->Session]<=$myRow->Arrows_Shot)) {

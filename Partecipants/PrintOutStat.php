@@ -13,6 +13,7 @@
 	echo '<tr><th class="Title" colspan="5">' . get_text('PrintList','Tournament')  . '</th></tr>';
 	echo '<tr>';
 	echo '<th class="SubTitle" width="20%">' . get_text('StatClasses','Tournament')  . '</th>';
+    echo '<th class="SubTitle" width="20%">' . get_text('StatSubclassesNormatives','Tournament')  . '</th>';
 	echo '<th class="SubTitle" width="20%">' . get_text('StatEvents','Tournament')  . '</th>';
 	echo '<th class="SubTitle" width="20%">' . get_text('StatCountries','Tournament')  . '</th>';
 	echo '<th class="SubTitle" width="20%">' . get_text('StatRecordsStanding','Tournament')  . '</th>';
@@ -26,6 +27,12 @@
 	echo '<img src="../Common/Images/pdf.gif" alt="' . get_text('StatClasses','Tournament') . '" border="0"><br>';
 	echo get_text('StatClasses','Tournament');
 	echo '</a></td>';
+
+// Divisions and Classes
+    echo '<td class="Center"><br><a href="PrnStatSubclasses.php" class="Link" target="PrintOut">';
+    echo '<img src="../Common/Images/pdf.gif" alt="' . get_text('StatSubclassesNormatives','Tournament') . '" border="0"><br>';
+    echo get_text('StatSubclassesNormatives','Tournament');
+    echo '</a></td>';
 
 // Events
 	echo '<td class="Center"><br><a href="PrnStatEvents.php" class="Link" target="PrintOut">';
