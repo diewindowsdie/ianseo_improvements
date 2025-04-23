@@ -175,8 +175,8 @@ foreach($SessionMatches as $vSes => $items) {
             }
             $lastSes = $vSes;
         }
+        $pdf->Line($pdf->GetX(), $pdf->GetY(), $pdf->GetX()+30, $pdf->GetY());
 	}
-    $pdf->Line($pdf->GetX(), $pdf->GetY(), $pdf->GetX()+30, $pdf->GetY());
 }
 
 $pdf->Output();
