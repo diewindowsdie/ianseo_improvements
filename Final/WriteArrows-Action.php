@@ -6,6 +6,7 @@ require_once("Common/Obj_Target.php");
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Fun_MatchTotal.inc.php');
 require_once('Fun_Final.local.inc.php');
+error_reporting(E_ALL);
 
 $JSON=['error'=>1, 'msg'=>get_text('ErrGenericError', 'Errors'),];
 
@@ -38,9 +39,17 @@ switch($_REQUEST['act']) {
 			if(strlen($options['schedule'])==16) {
 				$options['schedule'].=':00';
 			}
-			if($Events) {
-				$options['events']=$Events;
-			}
+            foreach($Events as $Team => $Event) {
+                $options['events'] = $Event;
+                if ($Phases[$Team] ?? []) {
+                    $options['events'] = [];
+                    foreach ($Event as $e) {
+                        foreach ($Phases[$Team] as $p) {
+                            $options['events'][] = $e . '@' . $p;
+                        }
+                    }
+                }
+            }
 			if($Team=$Schedule[0]) {
 				if(!hasFullACL(AclTeams, '', AclReadWrite)) {
 					JsonOut($JSON);

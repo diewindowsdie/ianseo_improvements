@@ -235,7 +235,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 
 			$q="
 				SELECT ".($this->Flighted ? "concat(EvCode,EnSubClass)" : "EvCode")." as EventKey,
-					EnId, EnCode, ifnull(EdExtra, EnCode) as LocalId, if(EnDob=0, '', EnDob) as BirthDate, EnOdfShortname, EnSex, EnNameOrder, upper(EnIocCode) EnIocCode, EnName AS Name, EnFirstName AS FirstName, upper(EnFirstName) AS FirstNameUpper, QuSession as Session, SesName,
+					EnId, EnCode, ifnull(EdExtra, EnCode) as LocalId, if(EnDob=0, '', EnDob) as BirthDate, EnOdfShortname, EnSex, EnNameOrder, upper(EnIocCode) EnIocCode, EnName AS Name, EnFirstName AS FirstName, upper(EnFirstName) AS FirstNameUpper, EnMiddleName, QuSession as Session, SesName,
 					SUBSTRING(QuTargetNo,2) AS TargetNo, FlContAssoc,
 					EvProgr, ToNumEnds,ToNumDist,ToMaxDistScore, FdiDetails,
 					co.CoId, co.CoCode, co.CoNameComplete, co.CoMaCode, co.CoCaCode, co2.CoNameComplete as CoNameComplete2, co3.CoNameComplete as CoNameComplete3, co2.CoCode as CoCode2, co3.CoCode as CoCode3, EnClass, EnDivision,EnAgeClass,  EnSubClass,  ScDescription,
@@ -402,7 +402,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 
 						// adding the full distance info here
 						$FullDistInfo=[];
-						foreach(explode(',',$myRow->FdiDetails) as $d) {
+                        foreach($myRow->FdiDetails != null ? explode(',',$myRow->FdiDetails) : [] as $d) {
 							$t=explode('|', $d);
 							$FullDistInfo['dist_' . $t[0]]=[
 								'ends'=>($t[1]??0),
@@ -537,7 +537,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 						'session' => $myRow->Session,
 						'sessionName' => $myRow->SesName,
 						'target' => $myRow->TargetNo,
-						'athlete' => $myRow->FirstNameUpper . ' ' . $myRow->Name,
+						'athlete' => $myRow->FirstNameUpper . ' ' . $myRow->Name . ($myRow->EnMiddleName ? " " . $myRow->EnMiddleName : ""),
 						'familyname' => $myRow->FirstName,
 						'familynameUpper' => $myRow->FirstNameUpper,
 						'givenname' => $myRow->Name,
@@ -603,7 +603,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 
 					$item=$item+$distFields;
                     error_reporting(E_ALL);
-                    $item['normative'] = calcNormative($distances, $myRow->EnClass, $myRow->EnDivision, $distFields);
+                    $item['normative'] = calcNormative($distances, $myRow->EnClass, $myRow->EnDivision, $distFields)["name"];
 
 					//Gestisco il numero di frecce tirate per sessione
 					if($myRow->IndIrmType==0 AND (empty($section["meta"]["arrowsShot"][$myRow->Session]) OR $section["meta"]["arrowsShot"][$myRow->Session]<=$myRow->Arrows_Shot)) {

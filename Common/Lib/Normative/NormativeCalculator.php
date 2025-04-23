@@ -37,11 +37,11 @@ function calcNormative($distances, $class, $division, $scoreByDistances)
         require_once('providers/' . $fileName);
 
         $provider = new $className();
-        return $provider->calculateNormativeInternal($class, $division, $scoreByDistances)["name"];
+        return $provider->calculateNormativeInternal($class, $division, $scoreByDistances);
     } catch (\Throwable $e) {
         error_log("Provider not found: distances=(" . implode(",", $distances) . "), filename=" . $fileName);
 
-        return Normative::None["name"];
+        return Normative::None;
     }
 }
 

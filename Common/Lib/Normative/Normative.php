@@ -11,5 +11,22 @@ class Normative {
     public const SecondJunior = ["order" => 2, "name" => "2ю", "codeLetters" => "2J", "codeSportIdent" => "2"];
     public const ThirdJunior = ["order" => 1, "name" => "3ю", "codeLetters" => "3J", "codeSportIdent" => "3"];
     public const None = ["order" => 0, "name" => "", "nameForExisting" => "б/р", "codeLetters" => "NO", "codeSportIdent" => "11"];
+
+    public static function all(): array
+    {
+        return [
+            self::None,
+            self::ThirdJunior,
+            self::SecondJunior,
+            self::FirstJunior,
+            self::Third,
+            self::Second,
+            self::First,
+            self::Candidate,
+            self::Master,
+            self::International,
+            self::Esteemed
+        ];
+    }
 }
 ?>

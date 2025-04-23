@@ -145,6 +145,7 @@ $lang['ErrorIndTeamsRank']='An error occured recalculating Individual and Team r
 $lang['EvCode']='Event Code';
 $lang['Event']='Event';
 $lang['EventClass']='Division and Classes Allowed';
+$lang['EventFinals']='Event';
 $lang['EvName']='Event Name';
 $lang['F']='Women';
 $lang['FilterRules']='Filter';

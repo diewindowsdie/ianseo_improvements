@@ -22,12 +22,6 @@ $maxRegionNameLength = 0;
 
 $athleteNameColumnLength = 0;
 
-function getRegionTitle($item) {
-    return $item['countryName'] .
-        ($item['countryName2'] != '' ? ', ' : '') . $item['countryName2'] .
-        ($item['countryName3'] != '' ? ', ' : '') . $item['countryName3'];
-}
-
 foreach ($PdfData->rankData['sections'] as $section) {
     //сначала, найдем самые "большие" финалы и на их основе посчитаем, сколько у нас есть место под имя спортсмена плюс информацию о регионе
     $ElimCols=0;
@@ -42,7 +36,7 @@ foreach ($PdfData->rankData['sections'] as $section) {
     //пробежимся по всем спортсменам и регионам и найдем самые длинные строки
     foreach($section['items'] as $item) {
         $maxAthleteNameLength = max($maxAthleteNameLength, strlen($item['athlete']));
-        $maxRegionNameLength = max($maxRegionNameLength, strlen(getRegionTitle($item)));
+        $maxRegionNameLength = max($maxRegionNameLength, strlen(getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3'])));
     }
 }
 
@@ -120,8 +114,11 @@ foreach($PdfData->rankData['sections'] as $section) {
 		   	$pdf->SetFont($pdf->FontStd,'B',8);
 			$pdf->Cell(8, 4, ($item['rank'] ? $item['rank'] : ''), 1, 0, 'C', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',8);
+            $previousPadding = $pdf->getCellPaddings();
+            $pdf->setCellPaddings($previousPadding["L"] + 0.3, $previousPadding["T"], $previousPadding["R"] + 0.3, $previousPadding["B"]);
 			$pdf->Cell($athleteNameLength, 4, $item['athlete'], 'RBT', 0, 'L', 0);
-			$pdf->Cell(190-8-12-$athleteNameLength-12*$ElimCols-15*$NumPhases, 4, getRegionTitle($item), 'RTB', 0, 'L', 0);
+			$pdf->Cell(190-8-12-$athleteNameLength-12*$ElimCols-15*$NumPhases, 4, getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']), 'RTB', 0, 'L', 0);
+            $pdf->setCellPaddings($previousPadding["L"], $previousPadding["T"], $previousPadding["R"], $previousPadding["B"]);
             $spaceUsed = 190-12*$ElimCols-15*$NumPhases;
 			$pdf->SetFont($pdf->FontFix,'',7);
 			$pdf->Cell(12, 4,  is_numeric($item['qualScore']) ? (number_format($item['qualScore'],0,$PdfData->NumberDecimalSeparator,$PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['qualRank'],-2,2)) : '', 1, 0, 'C', 0);
