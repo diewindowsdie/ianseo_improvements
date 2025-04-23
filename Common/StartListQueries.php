@@ -861,7 +861,9 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		$MyQuery .= "LEFT JOIN Session on EnTournament=SesTournament and SesType='Q' and SesOrder=QuSession ";
 		$MyQuery .= "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId ";
 		$MyQuery .= "LEFT JOIN Rankings on EnTournament=RankTournament and RankEvent=IndEvent and RankTeam=0 and EnCode=RankCode and ToIocCode='FITA' and EnIocCode in ('', 'FITA') and RankIocCode='FITA' ";
-		$MyQuery .= "WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND EnCountry2!=0 AND (EnTeamClEvent!=0 OR EnTeamFEvent!=0 OR EnTeamMixEvent!=0) ";
+		$MyQuery .= "WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND EnCountry2!=0 ";
+		//зачем тут это ограничение, не вполне понятно, поэтому оставлю закомментированным
+		//$MyQuery .= " AND (EnTeamClEvent!=0 OR EnTeamFEvent!=0 OR EnTeamMixEvent!=0) ";
 
 		if ($Athletes) $MyQuery .= " AND EnAthlete=1 ";
 
