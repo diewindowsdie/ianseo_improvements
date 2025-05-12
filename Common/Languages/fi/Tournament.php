@@ -330,7 +330,6 @@ $lang['OtherTourCategory']='Muu';
 $lang['OutdoorTourCategory']='Ulkokilpailu';
 $lang['OvrRefresh']='Päivitä sivu (ei lähetystä)';
 $lang['OvrSendSerial']='Lähetä OVR:ään (sarjaportti)';
-$lang['PaperSize']='Paperin koko';
 $lang['ParamWarning']='HUOMIO!<br/>Syöttämällä vääriä arvoja näihin kenttiin voi kokoonpanosi hajota!<br/>Käytä ÄÄRIMMÄISTÄ varovaisuutta!';
 $lang['PartecipantLabel']='Osallistujalista - Tarrat';
 $lang['PartecipantListError']='Osallistujalista - Varoitukset';

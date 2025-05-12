@@ -396,7 +396,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 								'versionDate' => $row->DocVersionDate,
 								'versionNotes' => $row->DocNotes,
 								'lastUpdate' => '0000-00-00 00:00:00',
-								'hasShootOff' => '',
+								'hasShootOff' => 0,
 								),
 							'records' => array(),
 							'items' => array(),

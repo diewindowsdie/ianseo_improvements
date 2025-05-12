@@ -276,7 +276,6 @@ $lang['Order']='順番';
 $lang['OutdoorTourCategory']='アウトドア大会';
 $lang['OverwritePreviousArchers']='既存の選手を上書きする';
 $lang['PageBreakBeforeDays']='指定日で改ページ';
-$lang['PaperSize']='用紙サイズ';
 $lang['PartecipantLabel']='出場者リスト ー ラベル';
 $lang['PartecipantListError']='出場者リスト ー 注意';
 $lang['ParticipantSchedule']='選手 $a';

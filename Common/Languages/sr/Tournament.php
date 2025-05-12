@@ -221,7 +221,6 @@ $lang['NumSession']='Broj termina';
 $lang['OnlineId']='Internet ID';
 $lang['OpDelete']='Zatražena operacija: Brisanje';
 $lang['Order']='Redosled';
-$lang['PaperSize']='Format papira';
 $lang['ParamWarning']='PAŽNJA!<br/>Unošenjem pogrešnih vrednosti u ovim poljima može da pokvari podešavanja!<br/>Savetujemo VELIKU pažnju!';
 $lang['PartecipantLabel']='Spisak učesnika - Oznake';
 $lang['PartecipantListError']='Spisak učesnika - Upozorenja';

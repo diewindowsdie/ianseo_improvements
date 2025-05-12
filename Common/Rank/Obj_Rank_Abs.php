@@ -276,7 +276,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 					ToDouble, DiEnds, DiArrows, ToGoldsChars as QualGoldChars, ToXNineChars as QualXNineChars,
 					ifnull(concat(DV2.DvMajVersion, '.', DV2.DvMinVersion) ,concat(DV1.DvMajVersion, '.', DV1.DvMinVersion)) as DocVersion,
 					date_format(ifnull(DV2.DvPrintDateTime, DV1.DvPrintDateTime), '%e %b %Y %H:%i UTC') as DocVersionDate,
-					ifnull(DV2.DvNotes, DV1.DvNotes) as DocNotes, hasShootOff
+					ifnull(DV2.DvNotes, DV1.DvNotes) as DocNotes, 0 as hasShootOff
 					{$only4zero}
 				FROM Tournament
 				INNER JOIN Entries ON ToId=EnTournament
@@ -294,12 +294,6 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 				left JOIN Countries co3 ON EnCountry3=co3.CoId AND EnTournament=co3.CoTournament AND EnTournament={$this->tournament}
 				INNER JOIN Qualifications ON EnId=QuId
 				INNER JOIN IrmTypes ON IrmId=IndIrmType
-				inner join (
-					select max(QuD5Score) as hasShootOff, IndEvent as SOevent 
-					from Qualifications 
-					inner join Individuals on IndId=QuId and IndTournament={$this->tournament}
-					group by IndEvent
-					) hasSO on SOevent=IndEvent 
 				left join Session on SesTournament=ToId and SesOrder=QuSession and SesType='Q'
 				left join SubClass on ScTournament=ToId and ScId=EnSubClass
 				left join (
@@ -490,7 +484,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 								'versionDate' => $myRow->DocVersionDate,
 								'versionNotes' => $myRow->DocNotes,
 								'lastUpdate' => '0000-00-00 00:00:00',
-								'hasShootOff' => '',
+								'hasShootOff' => 0,
 								'distanceInfo'=>$FullDistInfo,
 								'shootOffStarted'=>$myRow->hasShootOff,
 								'qualGoldChars'=>$myRow->QualGoldChars,

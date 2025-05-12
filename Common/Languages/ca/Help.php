@@ -1,4 +1,5 @@
 <?php
+$lang['AclNotSuperuser']='Sense permisos de \'SUPERUSER\', l\'accés a aquesta secció estarà restringit i no podràs habilitar les Polítiques d\'Accés.';
 $lang['AuthTourCode']='Llista codis torneigs separats per comes que l\'usuari pot gestionar.<br>Commodin permés: "%"';
 $lang['AutoCheckinAlreadyDone']='Ja us heu registrat<br>Si necessiteu canviar qualsevol informació, aneu al taulell d\'acreditació';
 $lang['AutoCheckinConfirm']='Si totes les dades són correctes, premeu CONFIRMAR CHECK-IN<br> En cas contrari, premeu CANCEL·LAR i aneu a la TAULA d\'acreditació';

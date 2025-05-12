@@ -417,7 +417,6 @@ $lang['OutdoorTourCategory']='Outdoor natjecanje';
 $lang['OverwritePreviousArchers']='prebrisati prethodne streličare';
 $lang['OvrRefresh']='Osvježi stranicu (bez slanja)';
 $lang['OvrSendSerial']='Poslati na OVR (serijski)';
-$lang['PaperSize']='Veličina papira';
 $lang['ParamWarning']='PAŽNJA! <br/> Umetanje pogrešne vrijednosti u ovim poljima mogu uništiti vaše postavke! <br/> koristiti s krajnjim oprezom!';
 $lang['PartecipantLabel']='Popis sudionika - Oznake';
 $lang['PartecipantListError']='Popis sudionika - Upozorenja';

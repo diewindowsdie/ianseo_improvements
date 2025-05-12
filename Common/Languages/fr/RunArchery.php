@@ -79,6 +79,7 @@ $lang['SpotterName']='Nom du Spotteur';
 $lang['Start']='Départ';
 $lang['StartTime']='Horaire de départ';
 $lang['StartType']='Décalage au départ';
+$lang['StopwatchTime']='Chronomètre';
 $lang['TargetGroupShort']='Cible/Groupe';
 $lang['TargetsHit']='Honneurs';
 $lang['TargetToHit']='Cibles à toucher';

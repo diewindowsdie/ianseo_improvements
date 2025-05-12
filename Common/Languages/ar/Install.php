@@ -1,9 +1,12 @@
 <?php
+$lang['AcceptGPL-Accept']='موافق';
+$lang['AcceptLicense-Accept']='موافق';
 $lang['Database name']='إسم قاعدة البيانات';
 $lang['SetKidClass']='مراحل الشباب فقط';
 $lang['SetOneClass']='مرحلة واحدة للجميع';
 $lang['SetOrdinary']='بطولة عادية';
 $lang['SetOrdinaryFinals']='بطورة عادية بها نهائيات';
+$lang['SetSE_WaDist']='مسافات الاتحاد الدولي';
 $lang['SetUkJunNationals']='بطولة محلية للشباب';
 $lang['SetUkNationals']='بطولة محلية';
 $lang['Setup-NO']='بطولة نرويجية';

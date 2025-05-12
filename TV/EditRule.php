@@ -36,6 +36,9 @@ if(!empty($_GET['contdel'])) {
 
 	if(safe_num_rows($q) == 0) {
 		safe_w_sql("delete from TVContents where TVCTournament=$TourId and TVCId=".intval($_GET['contdel']));
+        if(file_exists($ImName=$CFG->DOCUMENT_PATH.'TV/Photos/TV-'.$_SESSION['TourCodeSafe'].'-'.intval($_GET['contdel']).'.jpg')) {
+            unlink($ImName);
+        }
 	}
 	cd_redirect(go_get('contdel', '', true));
 }

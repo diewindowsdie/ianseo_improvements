@@ -37,7 +37,6 @@ if(!empty($_REQUEST['export'])) {
 
 $TourId=0;
 if(!empty($_SESSION['TourId'])) $TourId=$_SESSION['TourId'];
-if(!empty($_REQUEST['TourId'])) $TourId=$_REQUEST['TourId'];
 $lvl = 0;
 if($TourId) {
     $lvl = checkFullACL(AclOutput,'outTv', AclReadOnly, true, $TourId);

@@ -235,7 +235,8 @@ switch($TourType)
 		CreateDistanceNew($TourId, $TourType, 'C60_',  array(array('40m',40)));
 		CreateDistanceNew($TourId, $TourType, 'R_',    array(array('30m',30)));
         CreateDistanceNew($TourId, $TourType, 'RU18_', array(array('30m',30)));
-		CreateDistanceNew($TourId, $TourType, 'RU21_', array(array('30m',30)));
+		CreateDistanceNew($TourId, $TourType, 'RU21M', array(array('30m',30)));
+        CreateDistanceNew($TourId, $TourType, 'RU21W', array(array('30m',30)));
 		CreateDistanceNew($TourId, $TourType, 'R21',   array(array('30m',30)));
 		CreateDistanceNew($TourId, $TourType, 'R50_',  array(array('30m',30)));
 		CreateDistanceNew($TourId, $TourType, 'R60_',  array(array('30m',30)));
@@ -370,12 +371,14 @@ switch($TourType)
 
 	case 39:  // SBF36 round, 1 Dist
 		CreateTargetFace($TourId, $i++, '10 ring 122cm', '_U13_', '1', 5, 122);
-		CreateTargetFace($TourId, $i++, '10 ring 80cm', 'REG-^[RBLT](U16|U21|21|50|60)?[MW]', '1', 5, 80);
-		CreateTargetFace($TourId, $i++, '6 ring 80cm',   'REG-^[RBLT](U16|U21|21|50|60)?[MW]', '0', 9, 80);
+		CreateTargetFace($TourId, $i++, '10 ring 80cm', 'REG-^[RBLT](U15|U18|U21|21|50|60)?[MW]', '1', 5, 80);
+		CreateTargetFace($TourId, $i++, '6 ring 80cm',   'REG-^[RBLT](U15|U18|U21|21|50|60)?[MW]', '0', 9, 80);
         CreateTargetFace($TourId, $i++, '10 ring 80cm', 'REG-^[RBLT]21', '1', 5, 80);
         CreateTargetFace($TourId, $i++, '6 ring 80cm',   'REG-^[RBLT]21', '0', 9, 80);
-		CreateTargetFace($TourId, $i++, '6 ring 80cm',   'REG-^[C](U16|U21|21|50|60)?[MW]', '1', 9, 80);
-		CreateTargetFace($TourId, $i++, '10 ring 80cm', 'REG-^[C](U16|U21|21|50|60)?[MW]', '0', 5, 80);
+        CreateTargetFace($TourId, $i++, '10 ring 80cm', 'REG-^[R]U21O', '1', 5, 80);
+        CreateTargetFace($TourId, $i++, '6 ring 80cm',   'REG-^[R]U21O', '0', 9, 80);
+		CreateTargetFace($TourId, $i++, '6 ring 80cm',   'REG-^[C](U15|U18|U21|21|50|60)?[MW]', '1', 9, 80);
+		CreateTargetFace($TourId, $i++, '10 ring 80cm', 'REG-^[C](U15|U18|U21|21|50|60)?[MW]', '0', 5, 80);
         CreateTargetFace($TourId, $i++, '6 ring 80cm',   'REG-^[C]21', '1', 9, 80);
         CreateTargetFace($TourId, $i++, '10 ring 80cm', 'REG-^[C]21', '0', 5, 80);
 		break;

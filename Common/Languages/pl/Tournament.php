@@ -565,7 +565,6 @@ $lang['OverwritePreviousArchers']='Nadpisz poprzednich zawodników';
 $lang['OvrRefresh']='Odśwież stronę (nie wysyłaj)';
 $lang['OvrSendSerial']='Wyślij do OVR (Serial)';
 $lang['PageBreakBeforeDays']='Podział strony przed kolejnymi dniami';
-$lang['PaperSize']='Format papieru';
 $lang['ParamWarning']='UWAGA!<br/>Wprowadzenie nieprawidłoych wartości może zniszczyć twoje ustawienia!<br/>Używać z NAJWYŻSZĄ ostrożnością!';
 $lang['PartecipantLabel']='Lista Zawodników- Etykiety';
 $lang['PartecipantListError']='Lista Zawodników- Ostrzeżenia';

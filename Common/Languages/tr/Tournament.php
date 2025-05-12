@@ -195,7 +195,6 @@ $lang['Options']='Seçenekler';
 $lang['OR-Record']='Olimpiyat rekoru';
 $lang['OR-short']='OR';
 $lang['Order']='Sırala';
-$lang['PaperSize']='Kağıt Boyutu';
 $lang['PhaseBlock_1']='Sıralama';
 $lang['PhaseBlock_11']='Robin Turu';
 $lang['PhaseBlock_2']='Eleme';

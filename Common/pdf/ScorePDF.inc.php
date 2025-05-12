@@ -117,7 +117,7 @@ class ScorePDF extends IanseoPdf {
 				$ArrowEnds[$Event][$CurDist] = array('ends' => $Data["ScoringEnds{$CurDist}"], 'totEnds' => $Data["NumEnds".$CurDist], 'arrows' => $Data["NumArrows".$CurDist], 'offset'=>$Data["ScoringOffset".$CurDist]);
 			}
 			$ArrowEnds[$Event][$CurDist]['offset']=($ArrowEnds[$Event][$CurDist]['offset']??0);
-			$ArrowEnds[$Event][$CurDist]['totEnds']=($ArrowEnds[$Event][$CurDist]['totEnds']??$Data["NumEnds".$CurDist]);
+			$ArrowEnds[$Event][$CurDist]['totEnds']=($ArrowEnds[$Event][$CurDist]['totEnds']??($Data["NumEnds".$CurDist]??0));
 		}
 
 		$prnGolds = (empty($Data["Golds"]) ? $this->prnGolds : $Data["Golds"] );
@@ -614,7 +614,7 @@ class ScorePDF extends IanseoPdf {
 
 		// $ArrowEnds will contain the ends per arrows of each event and distance
         //$CurDist=(empty($CurDist) ? 1 : $CurDist);
-        $ScoringEnds=$Data['ScoringEnds'.$CurDist]?:$Data['NumEnds'.$CurDist];
+        $ScoringEnds=($Data['ScoringEnds'.$CurDist]??'')?:$Data['NumEnds'.$CurDist];
         $FlipEnd=$Data['NumEnds'.$CurDist];
         if($this->IsRedding) {
             $NumEnd=$ScoringEnds;
@@ -622,7 +622,7 @@ class ScorePDF extends IanseoPdf {
             $NumEnd=$ScoringEnds/2;
         }
 		if($SesTar4Session==0 || $SesTar4Session!=$Data['NumEnds'.$CurDist]) {
-			$SesTar4Session = $Data['ScoringEnds'.$CurDist]?:$Data['NumEnds'.$CurDist];
+			$SesTar4Session = ($Data['ScoringEnds'.$CurDist]??'')?:$Data['NumEnds'.$CurDist];
 		}
 
 		$FirstDist=($CurDist==1);
@@ -645,8 +645,8 @@ class ScorePDF extends IanseoPdf {
 		//PARAMETRI CALCOLATI
 		$TopOffset=30;
 		$BottomImage=0;
-		$TargetNo=(!empty($Data["AtTarget"]) ? intval($Data["AtTarget"]) : 1)+$Data["ScoringOffset{$CurDist}"];
-		$TargetNoApp=(!empty($Data["AtTarget"]) ? intval($Data["AtTarget"]) : 1)+$Data["ScoringOffset{$CurDist}"];
+		$TargetNo=(!empty($Data["AtTarget"]) ? intval($Data["AtTarget"]) : 1)+($Data["ScoringOffset{$CurDist}"]??0);
+		$TargetNoApp=(!empty($Data["AtTarget"]) ? intval($Data["AtTarget"]) : 1)+($Data["ScoringOffset{$CurDist}"]??0);
 
 		if($TargetNo-($SesFirstTarget-1)>$FlipEnd) {
 			$TargetNo = (($TargetNo-1) % $FlipEnd) + $SesFirstTarget;

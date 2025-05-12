@@ -497,7 +497,7 @@ function tour_import($filename, $isString=false) {
                     if(!is_null($val)) {
                         $query[] = "`$key` = " . strsafe_db($val);
                     } else {
-                        $query[] = "`$key` = NULL";
+//                        $query[] = "`$key` = NULL";
                     }
 				}
 			}

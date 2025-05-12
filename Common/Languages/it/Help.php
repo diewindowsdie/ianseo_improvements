@@ -1,4 +1,5 @@
 <?php
+$lang['AclNotSuperuser']='Senza l\'accesso “SUPERUTENTE” sarete bloccati fuori da questa sezione e quindi non potrete abilitare la Gestione Controllo Accessi.';
 $lang['AuthTourCode']='Elenco separato da virgole dei codici gara gestibili dall\'utente.<br>Carattere jolly ammesso: "%"';
 $lang['AutoCheckinAlreadyDone']='Hai già effettuato il check-in<br>Se hai bisogno di modificare qualsiasi informazione, procedi al banco dell\'accreditamento';
 $lang['AutoCheckinConfirm']='Se tutti i dati sono corretti premi CONFERMA CHECK-IN<br> Altrimenti premi ANNULLA e procedi al DESK di accreditamento';

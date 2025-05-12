@@ -586,9 +586,9 @@ while ($MyRow=safe_fetch($Rs)) {
                 if(!isset($Text)) {
                     switch($Element->IceContent) {
                         case '':
-                        case 'Cardinal':  $Text=array($MyRow->SubclassRank); break;
-                        case 'Ordinal':  $Text=array(ordinal($MyRow->SubclassRank)); break;
-						case 'Roman': $Text=array(inttoRoman($MyRow->SubclassRank)); break;
+                        case 'Cardinal':  $Text=array($MyRow->SubFinalRank); break;
+                        case 'Ordinal':  $Text=array(ordinal($MyRow->SubFinalRank)); break;
+						case 'Roman': $Text=array(inttoRoman($MyRow->SubFinalRank)); break;
                     }
                 }
             case 'WRank':

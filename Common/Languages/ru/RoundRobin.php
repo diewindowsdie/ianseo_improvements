@@ -13,6 +13,7 @@ $lang['Item']='Номер';
 $lang['ItemName']='Имя спортсмена';
 $lang['LevelName']='Название';
 $lang['QualifiedArchers']='Отобранных спортсменов';
+$lang['RegularBrackets']='Обычные сетки';
 $lang['Round']='Раунд';
 $lang['RoundNum']='Круг {$a}';
 $lang['RoundRobinSetup']='Round Robin Настройки';

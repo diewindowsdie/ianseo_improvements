@@ -588,7 +588,6 @@ $lang['OverwritePreviousArchers']='Korábbi versenyzők felülírása';
 $lang['OvrRefresh']='Oldal frissítése (nincs küldés)';
 $lang['OvrSendSerial']='Küldés OVR-nek (Sorozat)';
 $lang['PageBreakBeforeDays']='Oldaltörés a napok előtt';
-$lang['PaperSize']='Papírméret';
 $lang['ParamWarning']='FIGYELEM!<br/>Ha rossz adatot írsz ezekbe a mezőkbe, elronthatod a beállításokat!<br/> Használd FOKOZOTT figyelemmel!';
 $lang['PartecipantLabel']='Résztvevők listája - címkék';
 $lang['PartecipantListError']='Résztvevők listája - Figyelmeztetések';

@@ -154,15 +154,14 @@ function UpdateArrowPosition($MatchNo, $EvCode, $TeamEvent, $ArrowIndex, $Positi
         }
         if(!is_null($Wind)) {
             foreach($Wind as $k=>$v) {
-                if ($k="Ws" AND (!array_key_exists("Ws", $ArrowData[$ArrowIndex]) OR  $ArrowData[$ArrowIndex][$k] != round(floatval($v),1))) {
+                if ($k=="Ws" AND (!array_key_exists("Ws", $ArrowData[$ArrowIndex]) OR  $ArrowData[$ArrowIndex][$k] != round(floatval($v),1))) {
                     $MatchUpdated = true;
                     $ArrowData[$ArrowIndex][$k] = round(floatval($v),1);
                 }
-                if ($k="Wd" AND (!array_key_exists("Wd", $ArrowData[$ArrowIndex]) OR $ArrowData[$ArrowIndex][$k] != intval($v))) {
+                if ($k=="Wd" AND (!array_key_exists("Wd", $ArrowData[$ArrowIndex]) OR $ArrowData[$ArrowIndex][$k] != intval($v))) {
                     $MatchUpdated = true;
                     $ArrowData[$ArrowIndex][$k] = intval($v);
                 }
-                $ArrowData[$ArrowIndex][$k]=$v;
             }
         }
         if(!is_null($Time)) {

@@ -549,7 +549,6 @@ $lang['OtherTourCategory']='Otra';
 $lang['OutdoorTourCategory']='Competencia Aire Libre';
 $lang['OverwritePreviousArchers']='Sobreescribir Arqueros Anteriores';
 $lang['OvrSignalSendAll']='Enviar Todo';
-$lang['PaperSize']='Tamaño Papel';
 $lang['ParamWarning']='ATENCION!<br/>Ingresando los valores incorrectos en éste campo puede dañar su configuración!<br/>Usar con EXTREMA precaución!';
 $lang['PartecipantLabel']='Listado de Participantes - Etiquetas';
 $lang['PartecipantListError']='Listado de Participantes - Avisos';

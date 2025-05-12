@@ -518,7 +518,6 @@ $lang['Order']='stand';
 $lang['OrgResponsible']='Organisatie';
 $lang['OtherTourCategory']='Ander';
 $lang['OutdoorTourCategory']='Outdoor wedstrijd';
-$lang['PaperSize']='Papier grootte';
 $lang['ParamWarning']='Let op!<br/>Toevoegen van verkeerde waardes in deze velden kan de opzet van de wedstrijd ongedaan maken!<br/>Gebruik heel voorzichtig';
 $lang['PartecipantLabel']='deelnemerslijst stickers';
 $lang['PartecipantListError']='deelnemerslijst meldingen';

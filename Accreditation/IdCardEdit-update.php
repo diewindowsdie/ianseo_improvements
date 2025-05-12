@@ -31,6 +31,9 @@ if(!empty($_REQUEST["Content"])) {
         if (!empty($Options['FinalRanking'])) {
             $SQL[] = 'IceContent=' . StrSafe_DB($Options['FinalRanking']);
         }
+        if (!empty($Options['SubclassRanking'])) {
+            $SQL[] = 'IceContent=' . StrSafe_DB($Options['SubclassRanking']);
+        }
         if (!empty($Options['PayoutAwarded'])) {
             $SQL[] = 'IceContent=' . StrSafe_DB($Options['PayoutAwarded']);
         }

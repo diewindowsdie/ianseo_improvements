@@ -770,7 +770,6 @@ $lang['OvrSendSerial']='Enviar a OVR (en Serie)';
 $lang['OVRSignals']='Enviar Señales OVR';
 $lang['OvrSignalSendAll']='Enviar todo';
 $lang['PageBreakBeforeDays']='Cambiar de página antes de cada día';
-$lang['PaperSize']='Tamaño del papel';
 $lang['ParamWarning']='¡ATENCION!<br/>¡Introducir valores erróneos en estos campos puede destruir su configuración!<br/>¡Utilizar con EXTREMA precaución!';
 $lang['PartecipantLabel']='Listado de Participantes - Etiquetas';
 $lang['PartecipantListError']='Listado de Participantes - Avisos';

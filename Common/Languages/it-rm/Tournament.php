@@ -203,7 +203,6 @@ $lang['NumSession']='Nummero de la sessione';
 $lang['OnlineId']='Identificativo Onlain';
 $lang['OpDelete']='Hai chiesto da eliminà';
 $lang['Order']='Ordine';
-$lang['PaperSize']='Dimenzioni de la carta';
 $lang['ParamWarning']='ABBADA!<br>L\'inzerimento de li dati sbajiati in de \'sta paggina pò fà evaporà la Tua istallazzione de Ianzeo!<br>Utilizzà cò ESTREMA cautela!';
 $lang['PartecipantLabel']='Elenco Participanti - Etichette';
 $lang['PartecipantListError']='Elenco Partecipanti - Anomalie';

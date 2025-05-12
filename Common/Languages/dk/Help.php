@@ -1,16 +1,19 @@
 <?php
+$lang['AclNotSuperuser']='Without "SUPERUSER" access you will be locked out of this section and therefore you cannot enable Access Policies';
 $lang['AuthTourCode']='Kommasepareret liste af turneringskoder som kan håndteres af brugeren.<br>Man kan bruge "%" som wildcard.';
 $lang['AutoCheckinAlreadyDone']='Du er allerede indchecket<br>Hvis du vil ændre data, så henvend dig ved indcheckning';
 $lang['AutoCheckinConfirm']='Hvis al information er korrekt, så tryk BEKRÆFT CHECK-IN<br> Ellers tryk AFBRYD og henvend dig ved indcheckning';
 $lang['AutoCheckinSearch']='Skan den modtagne QR koden eller indtast navn';
 $lang['AutoCHK-CanEdit']='Tillad check-in operatører at rette navn, E-Mails, klub etc';
 $lang['AutoCHK-Code']='List of Competitions, one per line<br> First competition code will be used as header in auto-checkin kiosks';
+$lang['AutoCHK-IP']='List of IP of auto check-in devices. One IP Address per line, matching one of the following formats:<br> Device IP<br> Device IP | Accreditation Printer Queue <br> Device IP | Accreditation Printer Queue | Name Tag Printer Queue<br> Printer Queue in form: Queue Name [ @ Printer Server ]<br> If no Printer Queue is defined, then the standard print dialog will show';
 $lang['AutoCHK-IPinfo']='List of IP of self info points. One IP Address per line';
 $lang['AutoCHK-IPnoMgm']='List of IP of self check-in kiosks. One IP Address per line, matching one of the following formats:<br> Device IP<br> Device IP | Accreditation Printer Queue <br> Device IP | Accreditation Printer Queue | Name Tag Printer Queue<br> Printer Queue in form: Queue Name [ @ Printer Server ]';
 $lang['AutoCHK-Print']='Automatisk Vis print dialog';
 $lang['AutoImportSettings']='<b>Kun for ekspert brugere </b><br>Ændring af standardopsætningen kan resultere i ukorrekt resultater.<br> Det er vigtigt at genberegne alle placeringer som er opsat som "manuelle" FØR afsendelse til ianseo.net, udskrivning af resultater eller på anden måde videreformidle resultater.';
 $lang['ChangeComponents']='<p>For at fortsætte med ændringen, skal man først fjerne skytten som ikke længere skal være på holdet for herefter at vælge alternativ skytte.</p> &#9654&nbsp;Score inkluderet i holdtotal efter kvalifikationsrunden<br> &#9655&nbsp;Score ikke inkluderet i holdtotal efter kvalifikationsrunden';
 $lang['CombiCompList']='Liste af konkurrence koder, adskilt af komma';
+$lang['DeleteChannel']='Remove Channel. This will remove all splits from the channel and the channel itself.';
 $lang['ExportAdvanced']='Also exports Entry and Country data to create if missing at the endpoint';
 $lang['ExportCategories']='Vælg hvilke kategorier/stævner til eksport (ingen valgte giver alle)';
 $lang['ExportDistances']='Vælg hvilke afstande til eksport (ingen valgte giver alle)';

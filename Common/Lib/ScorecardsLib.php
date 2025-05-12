@@ -577,11 +577,16 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
                         if($Cards[$n+1] ?? '') {
                             $pdf->DrawScoreField($defScoreX2, $defScoreY, $defScoreW, $defScoreH, 1, $Cards[$n+1], $Data->SesTar4Session, $Data->SesFirstTarget);
                         }
-                        $pdf->AddPage('L');
-                        $pdf->DrawScoreField($defScoreX, $defScoreY, $defScoreW, $defScoreH, 3, $Cards[$n], $Data->SesTar4Session, $Data->SesFirstTarget);
-                        if($Cards[$n+1] ?? '') {
-                            $pdf->DrawScoreField($defScoreX2, $defScoreY, $defScoreW, $defScoreH, 3, $Cards[$n+1], $Data->SesTar4Session, $Data->SesFirstTarget);
+                        if(count($Cards)!=1) {
+                            $pdf->AddPage('L');
+                            $pdf->DrawScoreField($defScoreX, $defScoreY, $defScoreW, $defScoreH, 3, $Cards[$n], $Data->SesTar4Session, $Data->SesFirstTarget);
+                            if($Cards[$n+1] ?? '') {
+                                $pdf->DrawScoreField($defScoreX2, $defScoreY, $defScoreW, $defScoreH, 3, $Cards[$n+1], $Data->SesTar4Session, $Data->SesFirstTarget);
+                            }
+                        } else {
+                            $pdf->DrawScoreField($defScoreX2, $defScoreY, $defScoreW, $defScoreH, 3, $Cards[$n], $Data->SesTar4Session, $Data->SesFirstTarget);
                         }
+
                     }
                 }
             } else {
@@ -949,7 +954,7 @@ function GetElimScoreBySessionQuery($Session, $Phase, $FromTgt, $ToTgt, $Include
 		LEFT JOIN Session ON ElSession=SesOrder AND ElTournament=SesTournament AND SesType='E' 
 		WHERE ElTournament = {$_SESSION['TourId']} and ElElimPhase=" . intval($Phase)
 		. (!(empty($FromTgt) && empty($ToTgt)) ? " AND ElTargetNo>='" . str_pad($FromTgt,'3','0',STR_PAD_LEFT) . "A' AND ElTargetNo<='" . str_pad($ToTgt,'3','0',STR_PAD_LEFT) . "Z' " : "")
-		. (!empty($Session) ? " AND ElSession=". $Session : "")
+		. (!empty($Session) ? " AND ElSession=". ($Session) : "")
 		. ' ORDER BY ElSession, SesOrder, ElElimPhase, ElTargetNo ASC, EnFirstName, EnName, CoCode';
 
 	return $MyQuery;
@@ -962,7 +967,8 @@ function GetScoreBySessionQuery($Session, $FromTgt, $ToTgt, $IncludeEmpty=true, 
 			(SELECT DISTINCT EnTournament TgtTournament, QuTarget as TgtNo, QuSession as TgtSession
 			FROM Qualifications
 			INNER JOIN Entries On QuId=EnId
-			WHERE EnTournament = {$_SESSION['TourId']} AND EnAthlete=1 " . ($Session!=-1 ? "AND QuSession=$Session ".(($FromTgt+$ToTgt > 0) ? " and QuTarget between $FromTgt and $ToTgt " : "")  : "") .
+			WHERE EnTournament = {$_SESSION['TourId']} AND EnAthlete=1 " . ($Session!=-1 ? "AND QuSession=$Session ".
+                (!empty($FromTgt) ? (is_numeric($FromTgt) ? " and QuTarget between $FromTgt and $ToTgt " : " and QuTargetNo between '$Session" . str_pad($FromTgt,TargetNoPadding+1,'0',STR_PAD_LEFT)."' and '$Session".str_pad($ToTgt,TargetNoPadding+1,'0',STR_PAD_LEFT)."' ") : "")  : "") .
 			") as Tgt ON TgtTournament=AtTournament AND TgtNo=AtTarget and TgtSession=AtSession";
 	}
 	$EndSql='d1.DiEnds as NumEnds0, d1.DiArrows as NumArrows0, d1.DiScoringEnds as ScoringEnds0, d1.DiScoringOffset as ScoringOffset0';
@@ -1001,7 +1007,8 @@ function GetScoreBySessionQuery($Session, $FromTgt, $ToTgt, $IncludeEmpty=true, 
 			left join DistanceInformation d8 on d8.DiTournament=AtTournament and d8.DiType='Q' and d8.DiSession=AtSession and d8.DiDistance=8
 		$NoEmpty
 		where AtTournament={$_SESSION['TourId']} ".
-        ($Session!=-1 ? " AND AtSession=$Session ".(($FromTgt+$ToTgt > 0) ? " and AtTarget between $FromTgt and $ToTgt " : "") : "").
+        ($Session!=-1 ? " AND AtSession=$Session ".
+            (!empty($FromTgt) ? (is_numeric($FromTgt) ? " and AtTarget between $FromTgt and $ToTgt " : " and AtTargetNo between '$Session" . str_pad($FromTgt,TargetNoPadding+1,'0',STR_PAD_LEFT)."' and '$Session".str_pad($ToTgt,TargetNoPadding+1,'0',STR_PAD_LEFT)."' ") : "")  : "") .
 		($EnId ? " and EnId=$EnId " : "").
 		"ORDER BY AtTargetNo ASC, Ath, Noc";
 	return $MyQuery;

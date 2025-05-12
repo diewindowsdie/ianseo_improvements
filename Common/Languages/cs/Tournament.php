@@ -349,7 +349,6 @@ $lang['OutdoorTourCategory']='Venkovní závod';
 $lang['OverwritePreviousArchers']='Přepsat předešlé lukostřelce';
 $lang['OvrRefresh']='Obnova stránky (bez odeslání)';
 $lang['OvrSendSerial']='Poslat do OVR (sériově)';
-$lang['PaperSize']='Velikost papíru';
 $lang['ParamWarning']='VAROVÁNÍ!<br/>Vložení špatné hodnoty do těchto polí může zničit vaše nastavení!<br/>Použij s VELKOU opatrností!';
 $lang['PartecipantLabel']='Seznam účastníků - štítky';
 $lang['PartecipantListError']='Seznam účastníků - upozornění';

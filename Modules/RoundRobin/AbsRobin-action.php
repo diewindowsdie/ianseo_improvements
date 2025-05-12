@@ -275,10 +275,10 @@ switch($_REQUEST['act']) {
             if(!$soLevel and !$soGroup) {
                 $filter="";
             }
-			$q = safe_r_sql("select least(max(RrPartSourceRank), ActParts) as LastQualified, EvFinalTargetType
+			$q = safe_r_sql("select least(max(RrPartSourceRank), coalesce(ActParts,9999)) as LastQualified, EvFinalTargetType
 				from RoundRobinParticipants 
                 inner join Events on EvTournament=RrPartTournament and EvCode=RrPartEvent and EvTeamEvent=RrPartTeam
-				inner join (
+				left join (
 				    select count(*) as ActParts, RrPartLevel as ActLevel, ".($soGroup ? "RrPartGroup" : "0")." as ActGroup
 				    from RoundRobinParticipants 
 				    where $filter RrPartLevel=$soLevel and  RrPartEvent=" . StrSafe_DB($soEvent) . " and RrPartTeam=$Team and RrPartTournament='{$_SESSION['TourId']}'
@@ -703,14 +703,14 @@ switch($_REQUEST['act']) {
 								$row['field']=[
 									'type' => 'h',
 									'name' => 'R',
-									'value' => $item['rankBeforeSO'],
+									'value' => ($R[$section['meta']['event']][$item['id']] ?? $item['rank']),
 								];
 							}
 						} else {
 							$row['field']=[
 								'type' => 'h',
 								'name' => 'bSO',
-								'value' => $item['rankBeforeSO'],
+								'value' => ($R[$section['meta']['event']][$item['id']] ?? $item['rank']),
 							];
 						}
 						$row['item']=$item[$Team?'countryCode':'athlete'];

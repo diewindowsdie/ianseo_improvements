@@ -1,4 +1,13 @@
 <?php
+$lang['Aw-Anthem']='Linea Inno';
+$lang['Aw-Anthem-TPE']='Linea Inno TPE';
+$lang['Aw-Applause']='Linea applausi';
+$lang['Aw-Intro']='Linea introduzione';
+$lang['Aw-Med1']='Nome Trofeo 1° Posto';
+$lang['Aw-Med2']='Nome Trofeo 2° Posto';
+$lang['Aw-Med3']='Nome Trofeo 3° Posto';
+$lang['Aw-Med4']='Nome Trofeo 4° Posto';
+$lang['Aw-representing']='Linea rappresentanza';
 $lang['CM0']='Compound Uomini';
 $lang['CM1']='Compound Squadra Uomini';
 $lang['CustomAward']='Premiazione Personalizzata';

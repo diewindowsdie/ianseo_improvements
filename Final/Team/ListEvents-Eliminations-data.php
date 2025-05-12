@@ -67,7 +67,7 @@ switch($_REQUEST['act']) {
 		            if($EVENT->EvFinalFirstPhase) {
 						@include_once('Modules/RoundRobin/Lib.php');
 						if(function_exists('CreateFinalLevel')) {
-							CreateFinalLevel(0, $_REQUEST['ev'], $EVENT->EvNumQualified);
+							CreateFinalLevel(1, $_REQUEST['ev'], $EVENT->EvNumQualified);
 						}
 		            }
 		            $_SESSION['HasRobin']=1;

@@ -85,9 +85,14 @@ while($r=safe_fetch($q)) {
 	echo '<tr><td><input type="radio" name="d_TVMultimedia" value="'.$sel.'"'.($sel==$ActId ?' checked="checked"':'').'></td>';
 	echo '<td>'.$r->TVCName.'</td>';
 	echo '<td>';
-	if($r->TVCTournament!=-1) echo '<a href="'.go_get('contdel', $r->TVCId).'"><img src="../Common/Images/drop.png" border="0"></a>';
-	else echo '&nbsp;';
-	echo '</td></tr>';
+	if($r->TVCTournament!=-1) {
+        echo '<a href="'.go_get('contdel', $r->TVCId).'"><img src="../Common/Images/drop.png" border="0"></a>';
+    }
+	echo '</td><td>';
+    if(file_exists($ImName=$CFG->DOCUMENT_PATH.'TV/Photos/TV-'.($r->TVCTournament==-1?'BaseIanseo':$_SESSION['TourCodeSafe']).'-'.($r->TVCName=='IdCardFooter' ? $r->TVCName : $r->TVCId).'.jpg')) {
+        echo '<a href="'.$CFG->ROOT_DIR. 'TV/Photos/TV-'.($r->TVCTournament==-1?'BaseIanseo':$_SESSION['TourCodeSafe']).'-'.($r->TVCName=='IdCardFooter' ? $r->TVCName : $r->TVCId).'.jpg" target="imgView"><img style="height: 50px; border: 1px black solid; margin-left: 2em" src="'.$CFG->ROOT_DIR. 'TV/Photos/TV-'.($r->TVCTournament==-1?'BaseIanseo':$_SESSION['TourCodeSafe']).'-'.($r->TVCName=='IdCardFooter' ? $r->TVCName : $r->TVCId).'.jpg" ></a>';
+    }
+    echo'</td></tr>';
 }
 
 if($HasImageL==1 or $HasImageR==1) {

@@ -176,7 +176,6 @@ $lang['OpponentSignature']='Podpis súpera';
 $lang['Options']='Možnosti';
 $lang['Order']='Poradie';
 $lang['OverwritePreviousArchers']='Prepísať existujúcich strelcov';
-$lang['PaperSize']='Formát papiera';
 $lang['PartecipantLabel']='Zoznam Účastníkov - Štítky';
 $lang['PartecipantListError']='Zoznam Účastníkov - Upozornenie';
 $lang['ParticipantSchedule']='Účastníci $a';
