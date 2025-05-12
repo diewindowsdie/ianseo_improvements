@@ -49,7 +49,7 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 			   	$pdf->SetFont($pdf->FontStd,'B',1);
 				$pdf->Cell(0, 1,  '', 0, 1, 'C', 0);
 				$pdf->SetFont($pdf->FontStd,'B',8);
-				$pdf->Cell($TgtCell*1.5, 6,  $MyRow->NationCode, 'LTB', 0, 'L', 0);
+				$pdf->Cell($TgtCell*1.5, 6, "", 'LTB', 0, 'L', 0);
 				$pdf->Cell(0, 6,  $MyRow->NationComplete ? $MyRow->NationComplete : $MyRow->Nation, 'RTB', 1, 'L', 0);
                 //$pdf->Cell($NatAtlCell, 4,  $MyRow->Nation, '1', 0, 'L', 0);
 				$OldTeam = $MyRow->NationCode;
