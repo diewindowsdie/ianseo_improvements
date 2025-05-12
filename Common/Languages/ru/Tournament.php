@@ -546,6 +546,7 @@ $lang['OutdoorTourCategory']='Уличные соревнования';
 $lang['OverwritePreviousArchers']='Перезаписать пред. лучников';
 $lang['OvrRefresh']='Только обновить (не отправлять)';
 $lang['PageBreakBeforeDays']='Разделение страниц по дням';
+$lang['PaperSize']='Размер бумаги (мм)';
 $lang['ParamWarning']='ВНИМАНИЕ! <br/> Вставка неверных значений в эти поля может нарушить ваши настройки! <br/> Используйте с ОСОБОЙ осторожностью !';
 $lang['PartecipantLabel']='Список участников - Этикетки';
 $lang['PartecipantListError']='Список участников - Обратить внимание!';

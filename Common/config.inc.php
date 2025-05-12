@@ -13,7 +13,7 @@ $CFG->W_PASS = 'ianseo_dev';
 $CFG->DB_NAME = 'ianseo_dev';
 
 // set the root directory
-$CFG->ROOT_DIR = '/ianseo_dev/';
+$CFG->ROOT_DIR = '/';
 
 
 ?>

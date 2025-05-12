@@ -38,6 +38,7 @@ $lang['BadgeComplete']='Все бейджи';
 $lang['BadgeCreate']='Создать новый бейдж';
 $lang['BadgeCustom']='Подготовить бейдж';
 $lang['BadgeDelete']='Удалить бейдж';
+$lang['BadgeDimention']='Размер бейджа (мм)';
 $lang['BadgeEdit']='Редактировать бейдж';
 $lang['BadgeExportLayout']='Экспортировать расположение бейджа';
 $lang['BadgeImportLayout']='Импортировать расположение бейджа';
