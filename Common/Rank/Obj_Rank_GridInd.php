@@ -204,6 +204,7 @@
 					. " IndRank QualRank,"
 					. " IndRankFinal FinRank,"
 					. " QuScore QualScore,"
+					. " QuHits QualHits,"
 					. " IndNotes QualNotes,"
 					. "	EvFinEnds, EvFinArrows, EvFinSO, EvElimEnds, EvElimArrows, EvElimSO, "
 					. " FinIrmType Irm,"
@@ -229,6 +230,14 @@
 					. " FinStatus Status, "
 					. " FinConfirmed Confirmed, "
 					. " FinRecordBitmap  as RecBitLevel, EvIsPara, "
+					. " coalesce (FinOdfStartlist,'0') as OdfStartList,
+                        coalesce(FinOdfGettingReady,'0') as OdfGettingReady,
+                        coalesce(FinOdfLive,'0') as OdfLive,
+                        coalesce(FinOdfUnconfirmed,'0') as OdfUnconfirmed,
+                        coalesce(FinOdfUnofficial,'0') as OdfUnofficial,
+                        coalesce(FinOdfOfficial,'0') as OdfOfficial,
+                        coalesce(FinOdfArrows,'') as OdfArrows,
+                        coalesce(FinOdfTiming,'') as OdfTiming, "
                     . " fs1.FsLJudge as jLine, fs1.FsTJudge as jTarget, "
 					. " FinLive LiveFlag, FinNotes Notes, FinShootFirst as ShootFirst, if(EvFinalFirstPhase%12=0, GrPosition2, GrPosition) as GridPosition "
 					. "FROM Finals "
@@ -257,6 +266,7 @@
                     . "left join Countries co3 on co3.CoId=a.EnCountry3 and a.EnTournament=co3.CoTournament "
 					. "LEFT JOIN FinSchedule fs1 ON fs1.FSEvent=FinEvent AND fs1.FSMatchNo=FinMatchNo AND fs1.FSTournament=FinTournament AND fs1.FSTeamEvent='0' "
 					. "LEFT JOIN FinSchedule fs2 ON fs2.FSEvent=FinEvent AND fs2.FSMatchNo=case FinMatchNo when 0 then 4 when 1 then 6 when 2 then 4 when 3 then 6 else FinMatchNo*2 end AND fs2.FSTournament=FinTournament AND fs2.FSTeamEvent='0' "
+					. "LEFT JOIN FinOdfTiming ON FinOdfEvent=FinEvent AND FinOdfMatchno=FinMatchNo AND FinOdfTournament=FinTournament AND FinOdfTeamEvent='0' "
 					. (empty($this->opts['extended']) ? '' : "LEFT JOIN Reviews ON FinEvent=RevEvent AND FinMatchNo=RevMatchNo AND FinTournament=RevTournament AND RevTeamEvent=0 ")
 					. "WHERE FinMatchNo%2=0 "
 					. " AND FinTournament = " . $this->tournament . " " . $filter
@@ -299,6 +309,7 @@
 					. " IndRank OppQualRank,"
 					. " IndRankFinal OppFinRank,"
 					. " QuScore OppQualScore,"
+                    . " QuHits OppQualHits,"
 					. " IndNotes OppQualNotes,"
 					. " FinIrmType OppIrm,"
 					. " i1.IrmType OppIrmText,"
@@ -322,6 +333,14 @@
                     . " FinTbDecoded OppTieDecoded, "
 					. " FinConfirmed OppConfirmed, "
 					. " FinRecordBitmap  as OppRecBitLevel, "
+                    . " coalesce (FinOdfStartlist,'0') as OppOdfStartList,
+                        coalesce(FinOdfGettingReady,'0') as OppOdfGettingReady,
+                        coalesce(FinOdfLive,'0') as OppOdfLive,
+                        coalesce(FinOdfUnconfirmed,'0') as OppOdfUnconfirmed,
+                        coalesce(FinOdfUnofficial,'0') as OppOdfUnofficial,
+                        coalesce(FinOdfOfficial,'0') as OppOdfOfficial,
+                        coalesce(FinOdfArrows,'') as OppOdfArrows,
+                        coalesce(FinOdfTiming,'') as OppOdfTiming, "
 					. " FinStatus OppStatus, FinNotes OppNotes, FinShootFirst as OppShootFirst, if(EvFinalFirstPhase%12=0, GrPosition2, GrPosition) as OppGridPosition  "
 					. "FROM "
 					. " Finals "
@@ -346,6 +365,7 @@
                     . "left join Countries co3 on co3.CoId=a.EnCountry3 and a.EnTournament=co3.CoTournament "
 					. "LEFT JOIN FinSchedule fs1 ON fs1.FSEvent=FinEvent AND fs1.FSMatchNo=FinMatchNo AND fs1.FSTournament=FinTournament AND fs1.FSTeamEvent='0' "
 					. "LEFT JOIN FinSchedule fs2 ON fs2.FSEvent=FinEvent AND fs2.FSMatchNo=case FinMatchNo when 0 then 4 when 1 then 6 when 2 then 4 when 3 then 6 else FinMatchNo*2 end AND fs2.FSTournament=FinTournament AND fs2.FSTeamEvent='0' "
+                    . "LEFT JOIN FinOdfTiming ON FinOdfEvent=FinEvent AND FinOdfMatchno=FinMatchNo AND FinOdfTournament=FinTournament AND FinOdfTeamEvent='0' "
 					. (empty($this->opts['extended']) ? '' : "LEFT JOIN Reviews ON FinEvent=RevEvent AND FinMatchNo=RevMatchNo AND FinTournament=RevTournament AND RevTeamEvent=0 ")
 					. "WHERE FinMatchNo%2=1 "
 					. " AND FinTournament = " . $this->tournament . " " . $filter
@@ -603,6 +623,12 @@
                     'odfUnitcode' => $myRow->OdfUnitCode ? $myRow->EvOdfCode.$myRow->OdfUnitCode : '',
 					'odfPath' => $myRow->OdfPreviousMatch && intval($myRow->OdfPreviousMatch)==0 ? $myRow->OdfPreviousMatch : get_text(($myRow->MatchNo==2 or $myRow->MatchNo==3) ? 'LoserMatchName' : 'WinnerMatchName', 'ODF', $myRow->OdfPreviousMatch ? $myRow->OdfPreviousMatch : $myRow->PreviousMatchTime),
 					'birthDate' => $myRow->BirthDate,
+					'odfStartList' => $myRow->OdfStartList[0]!='0'  ? $myRow->OdfStartList : ($myRow->OppOdfStartList[0]!='0'  ? $myRow->OppOdfStartList : ''),
+					'odfGettingReady' => $myRow->OdfGettingReady[0]!='0'  ? $myRow->OdfGettingReady : ($myRow->OppOdfGettingReady[0]!='0'  ? $myRow->OppOdfGettingReady : ''),
+					'odfLive' => $myRow->OdfLive[0]!='0'  ? $myRow->OdfLive : ($myRow->OppOdfLive[0]!='0'  ? $myRow->OppOdfLive : ''),
+                    'odfOdfUnconfirmed' => $myRow->OdfUnconfirmed[0]!='0'  ? $myRow->OdfUnconfirmed : ($myRow->OppOdfUnconfirmed[0]!='0'  ? $myRow->OppOdfUnconfirmed : ''),
+                    'odfOdfUnofficial' => $myRow->OdfUnofficial[0]!='0'  ? $myRow->OdfUnofficial : ($myRow->OppOdfUnofficial[0]!='0'  ? $myRow->OppOdfUnofficial : ''),
+                    'odfOdfOfficial' => $myRow->OdfOfficial[0]!='0'  ? $myRow->OdfOfficial : ($myRow->OppOdfOfficial[0]!='0'  ? $myRow->OppOdfOfficial : ''),
 					'id' => $myRow->EnId,
 					'target' => ltrim($myRow->Target ?? '', '0'),
 					'athlete' => $athlete,
@@ -629,6 +655,7 @@
 					'qualIrm' => $myRow->IrmQual,
 					'qualIrmText' => $myRow->IrmTextQual,
 					'qualScore'=> $myRow->QualScore,
+					'qualHits'=> $myRow->QualHits,
 					'qualNotes'=> $myRow->QualNotes,
 					'finRank' => $myRow->FinRank,
 					'showRank' => $myRow->ShowRankFin,
@@ -656,6 +683,8 @@
 					'shootFirst'=>$myRow->ShootFirst,
 				 	'position'=> ($myRow->QualRank and in_array($myRow->EvElimType, [0,3,4])) ? $myRow->QualRank : ($myRow->Position>$myRow->EvNumQualified ? 0 : $myRow->Position),
 				 	'saved'=> ($myRow->Position>0 and $myRow->Position<=SavedInPhase($myRow->EvFinalFirstPhase)),
+                    'odfArrows' => $myRow->OdfArrows ? json_decode($myRow->OdfArrows, true) : [],
+                    'odfTiming' => $myRow->OdfTiming ? json_decode($myRow->OdfTiming, true) : [],
 //
 					'oppLastUpdated' => $myRow->OppLastUpdated,
 					'oppMatchNo' => $myRow->OppMatchNo,
@@ -696,6 +725,7 @@
 					'oppQualIrm' => $myRow->OppIrmQual,
 					'oppQualIrmText' => $myRow->OppIrmTextQual,
 					'oppQualScore'=> $myRow->OppQualScore,
+					'oppQualHits'=> $myRow->OppQualHits,
 					'oppQualNotes'=> $myRow->OppQualNotes,
 					'oppFinRank' => $myRow->OppFinRank,
 					'oppShowRank' => $myRow->OppShowRankFin,
@@ -723,6 +753,8 @@
 					'oppShootFirst'=>$myRow->OppShootFirst,
 				 	'oppPosition'=> ($myRow->OppQualRank and in_array($myRow->EvElimType, [0,3,4])) ? $myRow->OppQualRank : ($myRow->OppPosition>$myRow->EvNumQualified ? 0 : $myRow->OppPosition),
 				 	'oppSaved'=> ($myRow->OppPosition>0 and $myRow->OppPosition<=SavedInPhase($myRow->EvFinalFirstPhase)),
+                    'oppOdfArrows' => $myRow->OppOdfArrows ? json_decode($myRow->OppOdfArrows, true) : [],
+                    'oppOdfTiming' => $myRow->OppOdfTiming ? json_decode($myRow->OppOdfTiming, true) : [],
 					);
 
                 if(!empty($this->opts['extended'])) {
