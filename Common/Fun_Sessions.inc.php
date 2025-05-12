@@ -94,55 +94,35 @@ function GetNumQualSessions() {
  * @param int $elim: 1 o 2 e indica il girone
  * @return bool: true se ok false altrimenti
  */
-	function CreateElimRows($event,$elim, $ignore=false, $TourId=0)
-	{
-		$max=0;
-		$ret=true;
+function CreateElimRows($event,$elim, $ignore=false, $TourId=0) {
+    if(!$TourId) {
+        $TourId=$_SESSION['TourId'];
+    }
 
-		if(!$TourId) $TourId=$_SESSION['TourId'];
+    // numero di righe da creare
+    $q="SELECT EvElim{$elim} AS `q`
+        FROM Events
+        WHERE EvCode='{$event}' AND EvTournament={$TourId} AND EvTeamEvent=0";
+    $r=safe_r_sql($q);
+    if (safe_num_rows($r)==1 and $max=safe_fetch($r) and $max->q > 0) {
+        $tuple=array();
+        $e=$elim-1;
 
-	// numero di righe da creare
-		$q="
-			SELECT EvElim{$elim} AS `q`
-			FROM
-				Events
-			WHERE
-				EvCode='{$event}' AND EvTournament={$TourId} AND EvTeamEvent=0
-		";
-		$r=safe_r_sql($q);
-	//print $q.'<br><br>';exit;
-		if ($r && safe_num_rows($r)==1)
-		{
-			$max=safe_fetch($r)->q;
-			if ($max>0)
-			{
-				$tuple=array();
-				$e=$elim-1;
+        foreach(range(1, $max->q) as $i) {
+            // id,girone,evento,torneo,rank di qualifica,score,hits,gold,x,rank,timestamp
+            $tuple[]="(0,{$e},'{$event}',{$TourId},{$i},0,0,0,0,0,'0000-00-00 00:00:00')";
+        }
 
-				for ($i=1;$i<=$max;++$i)
-				{
-				// id,girone,evento,torneo,rank di qualifica,score,hits,gold,x,rank,timestamp
-					$tuple[]="(0,{$e},'{$event}',{$TourId},{$i},0,0,0,0,0,'0000-00-00 00:00:00')";
-				}
+        $q="INSERT ".($ignore ? 'ignore' : '')." INTO Eliminations
+            (ElId,ElElimPhase,ElEventCode,ElTournament,ElQualRank,ElScore,ElHits,ElGold,ElXnine,ElRank,ElDateTime) VALUES
+            " . implode(',',$tuple);
+        safe_w_sql($q);
 
-				$q="
-					INSERT ".($ignore ? 'ignore' : '')." INTO Eliminations
-					(ElId,ElElimPhase,ElEventCode,ElTournament,ElQualRank,ElScore,ElHits,ElGold,ElXnine,ElRank,ElDateTime) VALUES
-				" . implode(',',$tuple) . " ";
-				$r=safe_w_sql($q);
-				//print $q.'<br>';
-				$ret=($r!==false);
-			}
+        return true;
+    }
 
-			//print '<br>'.$q;
-		}
-		else
-		{
-			$ret=false;
-		}
-
-		return $ret;
-	}
+    return false;
+}
 
 /**
  * DeleteElimRows()

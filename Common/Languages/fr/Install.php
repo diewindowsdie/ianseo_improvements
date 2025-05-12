@@ -204,6 +204,10 @@ $lang['Setup-WAN']='Règles Nordiques';
 $lang['SetVegas-KOA']='Rois de l\'archerie - Hollande';
 $lang['SetVegas-WAF']='Festival Mondial de l\'archerie - Las Vegas';
 $lang['SpecialUpdate']='Vous utilisez une installation "testing".<br/>Seuls les utilisateurs autorisés peuvent utiliser cette fonctionnalité: Veuillez fournir le courriel avec lequel vous vous êtes enregistré.<br/> Une notification vous sera envoyée ainsi qu\'à l\'équipe Ianseo.';
+$lang['SpecialUpdatePassword']='Vous disposez d\'une installation « avancée ».
+<br> Seuls les utilisateurs sélectionnés peuvent bénéficier de cette fonctionnalité : veuillez fournir l\'adresse e-mail et le mot de passe avec lesquels vous êtes inscrit.
+<br> Une notification vous sera envoyée, ainsi qu\'à l\'équipe Ianseo.
+<br> Mot de passe oublié, vous pouvez le réinitialiser à partir de $a';
 $lang['Start Ianseo']='Lancer IANSEO !';
 $lang['Status']='Etat';
 $lang['stdValue']='Valeur';

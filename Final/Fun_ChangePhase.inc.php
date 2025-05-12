@@ -971,7 +971,14 @@ function move2NextPhaseTeam($Phase=NULL, $Event=NULL, $MatchNo=NULL, $TourId=0, 
  * @return void
  */
 function updateOdfTiming($Type, $TourId, $Event, $TeamEvent, $Matchno) {
-	$date=date('Y-m-d H:i:s');
+    static $Timezone='';
+    if(!$Timezone) {
+        $q=safe_r_sql("select ToTimeZone from Tournament where ToId=$TourId");
+        $r=safe_fetch($q);
+        $Timezone=$r->ToTimeZone;
+    }
+    $usersNow = new DateTime('now', new DateTimeZone($Timezone));
+	$date=$usersNow->format('Y-m-d H:i:s');
 	switch($Type[0]) {
 		case 'S': // ODF Startlist: every time an opponent is changed
 			if(!is_array($Matchno)) {

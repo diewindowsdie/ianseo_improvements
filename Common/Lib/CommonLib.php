@@ -370,19 +370,20 @@ function getPoolGridsWA() {
 }
 
 /**
- * @return array as a static grid of rank => matchno
+ * @param integer $MatchNo Matchno to consider (left side so even number)
+ * @return int loser rank position matchno
  * @see getPoolMatches();
  */
 function getPoolLooserRank($MatchNo) {
 	switch($MatchNo) {
-		case '96': return 11; break;
-		case '94': return 11; break;
-		case '46': return  9; break;
-		case '48': return  9; break;
-		case '24': return  7; break;
-		case '22': return  7; break;
-		case '10': return  5; break;
-		case '12': return  5; break;
+		case '96': return 11;
+		case '94': return 11;
+		case '46': return  9;
+		case '48': return  9;
+		case '24': return  7;
+		case '22': return  7;
+		case '10': return  5;
+		case '12': return  5;
 	}
 
 	return false;
@@ -1750,8 +1751,8 @@ function CheckBisTargets($tgt, $flip, $space='-') {
 
 /**
  * Translitterate into pure ASCII characters, and change case based on $type. See https://odf.olympictech.org/2024-Paris/general/PDF/Language_Guidelines_R-SOG-2024_LANG.pdf
- * @param $Name Name to change
- * @param $Type <ul><li>A(llcaps): all chars will be set uppercase</li><li>L(limited mixed): all chars will be set uppercase apart Mc[Something]</li><li>T(itle): $Name will be transformed Title Case, taking care of alikes of McCormick or O'Brien</li></ul>
+ * @param string $Name Name to change
+ * @param string $Type <ul><li>A(llcaps): all chars will be set uppercase</li><li>L(limited mixed): all chars will be set uppercase apart Mc[Something]</li><li>T(itle): $Name will be transformed Title Case, taking care of alikes of McCormick or O'Brien</li></ul>
  * @return array|string|string[]
  */
 function OdfCapitalise($Name, $Type='A') {

@@ -57,9 +57,10 @@ echo '<table class="Tabella">';
 echo '<tr><th class="Title" colspan="'.(3+count($listACL)).'">'.get_text('Block_Manage','Tournament').'</th></tr>';
 echo '<tr><th colspan="3">'.get_text('EnableAccess','Tournament').'</th><td colspan="'.count($listACL).'">
     <select onchange="ActivateACL()" id="AclEnable">
-		<option value="0" '.(substr($lockEnabled,0,1)=="0" ? 'selected="selected"' : '').'>'.get_text('No').'</option>
-		<option value="1" '.(substr($lockEnabled,0,1)=="1" ? 'selected="selected"' : '').'>'.get_text('Yes').'</option>
+		<option value="0" '.(substr($lockEnabled,0,1)=="0" ? 'selected="selected"' : '').'>'.get_text('OptionDisabled').'</option>
+		<option value="1" '.(substr($lockEnabled,0,1)=="1" ? 'selected="selected"' : '').'>'.get_text('OptionEnabled').'</option>
 	</select>
+    <span id="AclEnableHelp" class="d-none ml-3">'.get_text('AclNotSuperuser', 'Help').'</span>
 	</td></tr>';
 echo '<tr><th colspan="3">'.get_text('RecordAccess','Tournament').'</th><td colspan="'.count($listACL).'">
     <select onchange="ActivateACL()" id="AclRecord">

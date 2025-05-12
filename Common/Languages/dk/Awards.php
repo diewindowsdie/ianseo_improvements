@@ -1,4 +1,13 @@
 <?php
+$lang['Aw-Anthem']='Linie for nationalsang';
+$lang['Aw-Anthem-TPE']='TPE Linie for nationalsang';
+$lang['Aw-Applause']='Tilskuerlinie';
+$lang['Aw-Intro']='Introduktions linie';
+$lang['Aw-Med1']='Navn for 1. plads';
+$lang['Aw-Med2']='Navn for 2. plads';
+$lang['Aw-Med3']='Navn for 3. plads';
+$lang['Aw-Med4']='Navn for 3. plads';
+$lang['Aw-representing']='Præsentationslinie';
 $lang['CM0']='Compound herrer';
 $lang['CM1']='Compound herre hold';
 $lang['CustomAward']='Brugertilpassede præmier';

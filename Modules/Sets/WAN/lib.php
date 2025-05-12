@@ -28,7 +28,8 @@ function CreateStandardClasses($TourId, $SubRule=0, $Field='', $TourType=0) {
     CreateClass($TourId, $i++, 16,  17, 1, 'U18W', 'U18W', 'Under 18 (16-17) Women',1, 'R,B,C,L,I');
     CreateClass($TourId, $i++, 18,  20, 0, 'U21M', 'U21M', 'Under 21 (18-20) Men',1, 'R,B,C,L,I');
     CreateClass($TourId, $i++, 18,  20, 1, 'U21W', 'U21W', 'Under 21 (18-20) Women',1, 'R,B,C,L,I');
-    CreateClass($TourId, $i++, 13,  20, -1, 'U21O', 'U21O', 'Under 21 Open (13-20)',1, 'R');
+    CreateClass($TourId, $i++, 13,  20, 0, 'U21OM', 'U21OM', 'Under 21 Open (13-20) Men',1, 'R');
+    CreateClass($TourId, $i++, 13,  20, 1, 'U21OW', 'U21OW', 'Under 21 Open (13-20) Women',1, 'R');
     CreateClass($TourId, $i++, 1,  99, -1, 'Jg', 'Jg', 'Judge',0, 'OF');
     CreateClass($TourId, $i++, 1,  99, -1, 'Tm', 'Tm', 'Team Manager',0, 'OF');
     CreateClass($TourId, $i++, 1,  99, -1, 'Co', 'Co', 'Coach',0, 'OF');
@@ -77,9 +78,11 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=true) {
         }
         foreach($dvOpen as $k_dv => $v_dv) {
             foreach($clOpen as $k_cl => $v_cl) {
-                $CurrTarget = ($k_dv=='C' ? $TargetC : ($k_dv=='R' ? $TargetR : $TargetOther));
-                $CurrTargetSize = ($k_dv=='C' ? $TargetSizeC : $TargetSizeR);
-                CreateEvent($TourId, $i++, 0, 0, ($Outdoor ? 32 : 16), $CurrTarget, 5, 3, 1, 5, 3, 1, $k_dv . $k_cl,  $v_dv . ' ' . $v_cl, ($k_dv=='C' ? 0 : 1), 240, $AthTarget, array(), array(), '', '', $CurrTargetSize);
+                foreach($ge as $k_ge => $v_ge) {
+                    $CurrTarget = ($k_dv == 'C' ? $TargetC : ($k_dv == 'R' ? $TargetR : $TargetOther));
+                    $CurrTargetSize = ($k_dv == 'C' ? $TargetSizeC : $TargetSizeR);
+                    CreateEvent($TourId, $i++, 0, 0, ($Outdoor ? 32 : 16), $CurrTarget, 5, 3, 1, 5, 3, 1, $k_dv . $k_cl . $k_ge, $v_dv . ' ' . $v_cl . ' ' . $v_ge, ($k_dv == 'C' ? 0 : 1), 240, $AthTarget, array(), array(), '', '', $CurrTargetSize);
+                }
             }
         }
 
@@ -107,7 +110,7 @@ function InsertStandardEvents($TourId, $TourType, $SubRule, $Outdoor=true) {
     $dv = array('R','B','C','L','T');
     $cl = array('U16'=>array('U16M','U16W'), 'U18'=>array('U18M','U18W'), 'U21'=>array('U21M','U21W'));
     $dvOpen = array('R');
-    $clOpen = array('U21O'=>array('U21O'));
+    $clOpen = array('U21O'=>array('U21OM','U21OW'));
 
     if($TourType==3) {
         foreach($dv as $v_dv) {
@@ -125,9 +128,9 @@ function InsertStandardEvents($TourId, $TourType, $SubRule, $Outdoor=true) {
         foreach($dvOpen as $v_dv) {
             foreach($clOpen as $k_cl => $v_cl) {
                 foreach($v_cl as $dett_cl) {
-                    echo 'InsertStandardEvent - '.$v_dv.', '.$k_cl.', '.$v_cl.', '.$dett_cl;
+                    echo 'InsertStandardEvent - '.$v_dv.', '.$dett_cl.', '.$dett_cl.', '.$dett_cl;
                     //Indvidual event
-                    InsertClassEvent($TourId, 0, 1, $v_dv.$k_cl, $v_dv, $dett_cl);
+                    InsertClassEvent($TourId, 0, 1, $v_dv.$dett_cl, $v_dv, $dett_cl);
                     //Team composition
                     InsertClassEvent($TourId, 1, 3, $v_dv.$k_cl.'T', $v_dv, $dett_cl);
                 }

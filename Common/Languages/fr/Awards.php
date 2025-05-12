@@ -1,8 +1,13 @@
 <?php
+$lang['Aw-Anthem']='Hymne';
+$lang['Aw-Anthem-TPE']='Hymne de Tapei';
+$lang['Aw-Applause']='Applaudissement';
+$lang['Aw-Intro']='Intro';
 $lang['Aw-Med1']='Nom du lauréat de la 1ère place';
 $lang['Aw-Med2']='Nom du lauréat de la 2ème place';
 $lang['Aw-Med3']='Nom du lauréat de la 3ème place';
 $lang['Aw-Med4']='Nom du lauréat de la 4ème place';
+$lang['Aw-representing']='représentant';
 $lang['CM0']='compound/Poulies Homme';
 $lang['CM1']='Equipe Compound/Poulies Homme';
 $lang['CustomAward']='Prix spécial';
@@ -16,6 +21,7 @@ $lang['CX']='Equipe Compound/Poulies Mixte';
 $lang['CX1']='Equipe Compound/Poulies Mixte';
 $lang['EvNameTranslated']='Evénement traduit';
 $lang['PrecisionPrizeEvent']='Prix de la Précision';
+$lang['PrecPrizePresentation']='Prix de la meilleur Flèche Poulies Homme';
 $lang['RM0']='Recurve/Classique Homme';
 $lang['RM1']='Equipe Recurve/Classique Homme';
 $lang['RW0']='Recurve/Classique Dame';

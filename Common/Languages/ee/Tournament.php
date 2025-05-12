@@ -99,7 +99,6 @@ $lang['NoTour']='Ühtegi võistlust ei ole valitud';
 $lang['NoTourExists']='Sellist võistlust ei eksisteeri!';
 $lang['NumSession']='Sessioonide arv';
 $lang['OrisTeamList']='ORIS võistkondade nimekiri';
-$lang['PaperSize']='Paberi suurus';
 $lang['PhaseBlock_8']='Akrediteerimine';
 $lang['Q-Session']='Kvalifikatsioon';
 $lang['R-Session']='Robin Round';

@@ -15,6 +15,7 @@ $lang['CssBoxLeft']='Box - venstre';
 $lang['CssBoxRight']='Box - højre';
 $lang['CssCountry']='Navn og flag blok - klubkode';
 $lang['CssCountryCommon']='Klub';
+$lang['CssCountryName']='Name and Flag Block - Country Name';
 $lang['CssFlag']='Navn og flag blok - flag';
 $lang['CssFlexArrows']='Pile detaljeblok - fælles';
 $lang['CssFlexArrowsDiv']='Enkelt pil div';

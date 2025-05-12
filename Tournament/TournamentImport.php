@@ -27,24 +27,9 @@ if($_FILES and !empty($_FILES['Gara']['tmp_name'])){
         checkFullACL(AclRoot, '', AclReadWrite, true, $TourId);
     }
 
-    if($CFG->USERAUTH AND !empty($_SESSION['AUTH_ENABLE']) AND empty($_SESSION['AUTH_ROOT'])) {
-        $compInList = false;
-        if($CFG->USERAUTH AND !empty($_SESSION['AUTH_ENABLE']) AND empty($_SESSION['AUTH_ROOT'])) {
-            foreach ($_SESSION["AUTH_COMP"] as $comp) {
-                if($importedToCode===$comp) {
-                    $compInList = true;
-                } else {
-                    $pattern = str_replace('%', '.*', preg_quote($comp,'/'));
-                    if(preg_match("/^{$pattern}$/i", $importedToCode)) {
-                        $compInList = true;
-                    }
-                }
-            }
-        }
-        if(!$compInList){
-            CD_redirect($CFG->ROOT_DIR);
-            exit;
-        }
+    if($CFG->USERAUTH AND !empty($_SESSION['AUTH_ENABLE']) AND empty($_SESSION['AUTH_ROOT']) and !possibleFeature(AclRoot, AclReadWrite,$importedToCode)) {
+        CD_redirect($CFG->ROOT_DIR);
+        exit;
     }
 
 	$TourId = tour_import($_FILES['Gara']['tmp_name']);

@@ -504,11 +504,11 @@ function get_which_menu($on=false) {
 	} else {
 		// MENU OFF!!!
 		$ret['COMP'][] = get_text('MenuLM_Competition');
-        if (subFeatureAcl($acl,AclRoot) == AclReadWrite) {
+        if (subFeatureAcl($acl,AclRoot) == AclReadWrite or possibleFeature(AclRoot, AclReadWrite)) {
             $ret['COMP'][] = get_text('MenuLM_New') . '|' . $CFG->ROOT_DIR . 'Tournament/index.php?New=';
         }
 		$ret['COMP'][] = get_text('MenuLM_Open') .'|'.$CFG->ROOT_DIR.'index.php';
-        if (subFeatureAcl($acl,AclRoot) == AclReadWrite) {
+        if (subFeatureAcl($acl,AclRoot) == AclReadWrite or possibleFeature(AclRoot, AclReadWrite)) {
             $ret['COMP'][] = get_text('MenuLM_Import Tournament') . '|' . $CFG->ROOT_DIR . 'Tournament/TournamentImport.php';
         }
 		$ret['COMP'][] = MENU_DIVIDER;

@@ -527,7 +527,6 @@ $lang['OtherTourCategory']='Cits';
 $lang['OverwritePreviousArchers']='Pārrakstīt iepriekšējos loka šāvējus';
 $lang['OvrRefresh']='Atsvaidzināt lapu (nenosūtīt)';
 $lang['OvrSendSerial']='Nosūtīt uz OVR (Serial)';
-$lang['PaperSize']='Izdruku papīra izmērs';
 $lang['ParamWarning']='UZMANĪBU!<br/>Ievadot nepareizas vērtības šajos laukos var tikt iznīcināti jūsu uzstādījumi!<br/> Izmantojiet ar ĪPAŠU piesardzību!';
 $lang['PartecipantLabel']='Dalībnieku saraksts - Etiķetes';
 $lang['PartecipantListError']='Dalībnieku saraksts - brīdinājumi';

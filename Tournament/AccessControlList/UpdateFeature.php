@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+require_once(dirname(__FILE__, 3) . '/config.php');
 checkFullACL(AclRoot, '', AclReadWrite);
 if (!CheckTourSession()) {
     exit;
@@ -159,9 +159,19 @@ if(isset($_REQUEST["AclOnOff"]) AND preg_match("/^[0|1]$/",$_REQUEST["AclOnOff"]
     }
     $tmpSort=array_keys($tmpIP);
     natsort($tmpSort);
+
+    $Json['isSuperUser']=false;
+    $myActualip = $_SERVER["REMOTE_ADDR"];
+    if($myActualip == '127.0.0.1' OR $myActualip == '::1' OR in_array($myActualip,$CFG->ACLExcluded) OR (isAuthEnabled()[0] AND hasFullACL(AclRoot, '', AclReadWrite))) {
+        $Json['isSuperUser']=true;
+    }
     foreach ($tmpSort as $vSort) {
         $Json['AclList'][] = $tmpIP[$vSort];
+        if(!$Json['isSuperUser'] AND $myActualip==$vSort AND $tmpIP[$vSort]['Opt'][AclRoot]) {
+            $Json['isSuperUser']=true;
+        }
     }
+
     $Sql = "SELECT AclTePattern, AclTeNick, AclTeFeatures as Features
       FROM AclTemplates
       WHERE AclTeTournament=" . StrSafe_DB($_SESSION['TourId']) . "

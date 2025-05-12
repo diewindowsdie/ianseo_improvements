@@ -625,7 +625,6 @@ $lang['OutdoorTourCategory']='Competição Outdoor';
 $lang['OverwritePreviousArchers']='Sobrescrever arqueiros anteriores';
 $lang['OvrSendSerial']='Envia OVR (Serial)';
 $lang['PageBreakBeforeDays']='Quebrar páginas antes da data';
-$lang['PaperSize']='Tamanho do Papel';
 $lang['ParamWarning']='ATENÇÃO!<br>Inserir valores errados nestes campos pode destruir toda a sua configuração!<br>Use com EXTREMO cuidado!';
 $lang['PartecipantLabel']='Lista de Participantes - Etiquetas';
 $lang['PartecipantListError']='Lista de Participantes - Avisos';

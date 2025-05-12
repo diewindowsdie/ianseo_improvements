@@ -407,7 +407,6 @@ $lang['OutdoorTourCategory']='Outdoor Turnier';
 $lang['OverwritePreviousArchers']='Vorgängige Schützen überschreiben';
 $lang['OvrRefresh']='Seite aktialisieren (nicht absenden)';
 $lang['OvrSendSerial']='An OVR senden (seriell)';
-$lang['PaperSize']='Papiergröße';
 $lang['ParamWarning']='ACHTUNG!<br/>In diese Felder falsche Werte einzugeben kann das Setup zerstören!<br/>Sei EXTREM vorsichtig!';
 $lang['PartecipantLabel']='Teilnehmerlisten - Etiketten';
 $lang['PartecipantListError']='Teilnehmerlisten - Unregelmäßigkeiten';

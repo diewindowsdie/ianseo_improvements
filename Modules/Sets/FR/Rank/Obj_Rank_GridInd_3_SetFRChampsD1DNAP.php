@@ -95,6 +95,7 @@ require_once('Common/Rank/Obj_Rank_GridInd.php');
 				. " IndRank QualRank,"
 				. " IndRankFinal FinRank,"
 				. " QuScore QualScore,"
+                . " QuHits QualHits,"
 				. " IndNotes QualNotes,"
 				. "	EvFinEnds, EvFinArrows, EvFinSO, EvElimEnds, EvElimArrows, EvElimSO, "
 				. " FinIrmType Irm,"
@@ -118,6 +119,7 @@ require_once('Common/Rank/Obj_Rank_GridInd.php');
 				. " FinStatus Status, "
 				. " FinConfirmed Confirmed, "
 				. " FinRecordBitmap  as RecBitLevel, EvIsPara, "
+                . " 0 as OdfStartList, 0 as OdfGettingReady, 0 as OdfLive, 0 as OdfUnconfirmed, 0 as OdfUnofficial, 0 as OdfOfficial, '' as OdfArrows, '' as OdfTiming, "
 				. " fs1.FsLJudge as jLine, fs1.FsTJudge as jTarget, "
 				. " FinLive LiveFlag, FinNotes Notes, FinShootFirst as ShootFirst, if(EvFinalFirstPhase%12=0, GrPosition2, GrPosition) as GridPosition
 					FROM  Finals "
@@ -174,6 +176,7 @@ require_once('Common/Rank/Obj_Rank_GridInd.php');
 				. " IndRank OppQualRank,"
 				. " IndRankFinal OppFinRank,"
 				. " QuScore OppQualScore,"
+                . " QuHits OppQualHits,"
 				. " IndNotes OppQualNotes,"
 				. " FinIrmType OppIrm,"
 				. " i1.IrmType OppIrmText,"
@@ -195,6 +198,7 @@ require_once('Common/Rank/Obj_Rank_GridInd.php');
 				. " FinTbDecoded OppTieDecoded, "
 				. " FinConfirmed OppConfirmed, "
 				. " FinRecordBitmap  as OppRecBitLevel, "
+                . " 0 as OppOdfStartList, 0 as OppOdfGettingReady, 0 as OppOdfLive, 0 as OppOdfUnconfirmed, 0 as OppOdfUnofficial, 0 as OppOdfOfficial, '' as OppOdfArrows, '' as OppOdfTiming, "
 				. " FinStatus OppStatus, FinNotes OppNotes, FinShootFirst as OppShootFirst, if(EvFinalFirstPhase%12=0, GrPosition2, GrPosition) as OppGridPosition
 					FROM Finals "
 				. "INNER JOIN Grids ON FinMatchNo=GrMatchNo "

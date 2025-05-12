@@ -2,6 +2,8 @@
 $lang['AllFieldsMandatory']='Semua ruangan perlu diisi';
 $lang['AllMailsRedirect']='Semua mesej akan dihantar ke';
 $lang['Anomalies']='Anomali';
+$lang['BarCodeSession']='Ada kesalahan di dalam tetapan: cuba tetapan sesi!';
+$lang['BarCodeSettings']='Ada kesalahan di dalam tetapan';
 $lang['ClassFromToError']='Dari dan Ke mesti berupa nilai berangka';
 $lang['ClubNotFound']='Kod Kelab tidak ditemui dalam kelab sedia ada. Sila kemas kini pangkalan data dahulu!';
 $lang['DecodeError']='Nyahkod Ralat';

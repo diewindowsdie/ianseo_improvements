@@ -52,7 +52,7 @@ if(!empty($_REQUEST['lev'])) {
 				$Discipline='E';
 			}
 			if($COMP->ToWhenFrom>='2019-01-01') {
-                $_REQUEST['lev']=='SP' ? 'H' : 'T';
+                $Discipline= $_REQUEST['lev']=='SP' ? 'H' : 'T';
 			}
 			break;
 		case 2:
@@ -64,9 +64,9 @@ if(!empty($_REQUEST['lev'])) {
 		case 8:
 			$Discipline='3';
 			break;
-		//case 16: inveted... should be 2 more
+		case 16: // invented... should be 2 more
 		//	$Discipline='N'; // Nature
-		//	$Discipline='B'; // Beursault
+			$Discipline='B'; // Beursault
         // PARA 18m => I
         // PARA Exterieur => H
         // Jeunesse => J

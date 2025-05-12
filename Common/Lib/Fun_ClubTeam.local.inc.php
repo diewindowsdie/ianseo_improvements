@@ -58,8 +58,8 @@ function makeComboRound()
 
 function roundPager($round,$qs)
 {
-	$prev='<a class="Link" href="' . $_SERVER['PHP_SELF'] . '?Round=' . ($round-1) . '&' . $qs . '">&lt;&lt;</a>';
-	$next='<a class="Link" href="' . $_SERVER['PHP_SELF'] . '?Round=' . ($round+1) . '&' . $qs . '">&gt;&gt;</a>';
+	$prev='<a class="Link" href="?Round=' . ($round-1) . '&' . $qs . '">&lt;&lt;</a>';
+	$next='<a class="Link" href="?Round=' . ($round+1) . '&' . $qs . '">&gt;&gt;</a>';
 
 	if ($round==MaxRound)
 	{

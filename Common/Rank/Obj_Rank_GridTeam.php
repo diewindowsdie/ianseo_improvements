@@ -163,6 +163,7 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 				. " i1.IrmType IrmText,"
 				. " i1.IrmShowRank ShowRank,"
 				. " TeScore QualScore, "
+				. " TeHits QualHits, "
 				. " TeNotes QualNotes, "
 				. " TfWinLose Winner, "
 				. " TfDateTime LastUpdated, "
@@ -180,6 +181,14 @@ require_once('Common/Lib/Fun_PrintOuts.php');
                 . " TfTbDecoded TieDecoded,"
 				. " TfStatus Status, "
 				. " TfRecordBitmap  as RecBitLevel, EvIsPara, "
+                . " coalesce (FinOdfStartlist,'0') as OdfStartList,
+                        coalesce(FinOdfGettingReady,'0') as OdfGettingReady,
+                        coalesce(FinOdfLive,'0') as OdfLive,
+                        coalesce(FinOdfUnconfirmed,'0') as OdfUnconfirmed,
+                        coalesce(FinOdfUnofficial,'0') as OdfUnofficial,
+                        coalesce(FinOdfOfficial,'0') as OdfOfficial,
+                        coalesce(FinOdfArrows,'') as OdfArrows,
+                        coalesce(FinOdfTiming,'') as OdfTiming, "
 				. " TfConfirmed Confirmed, "
 				. " TfSetPoints SetPoints, "
 				. " TfSetPointsByEnd SetPointsByEnd, "
@@ -204,6 +213,7 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 				. " LEFT JOIN Countries ON TfTeam=CoId AND TfTournament=CoTournament and CoTournament=$this->tournament "
 				. " LEFT JOIN FinSchedule fs1 ON TfEvent=fs1.FSEvent AND fs1.FSMatchNo=TfMatchNo AND TfTournament=fs1.FSTournament AND fs1.FSTeamEvent='1' and fs1.FSTournament=$this->tournament "
 				. " LEFT JOIN FinSchedule fs2 ON TfEvent=fs2.FSEvent AND fs2.FSMatchNo=case TfMatchNo when 0 then 4 when 1 then 6 when 2 then 4 when 3 then 6 else TfMatchNo*2 end AND TfTournament=fs2.FSTournament AND fs2.FSTeamEvent='1' and fs2.FSTournament=$this->tournament "
+                . " LEFT JOIN FinOdfTiming ON FinOdfEvent=TfEvent AND FinOdfMatchno=TfMatchNo AND FinOdfTournament=TfTournament AND FinOdfTeamEvent='1' "
 				. " WHERE TfMatchNo%2=0 AND TfTournament = " . $this->tournament . " " . $filter
 				. ") f1 inner join ("
 				. "select"
@@ -228,6 +238,7 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 				. " i1.IrmType OppIrmText,"
 				. " i1.IrmShowRank OppShowRank,"
 				. " TeScore OppQualScore, "
+				. " TeHits OppQualHits, "
 				. " TeNotes OppQualNotes, "
 				. " TfWinLose OppWinner, "
 				. " TfDateTime OppLastUpdated, "
@@ -246,6 +257,14 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 				. " TfStatus OppStatus, "
 				. " TfConfirmed OppConfirmed, "
 				. " TfRecordBitmap  as OppRecBitLevel, "
+                . " coalesce (FinOdfStartlist,'0') as OppOdfStartList,
+                        coalesce(FinOdfGettingReady,'0') as OppOdfGettingReady,
+                        coalesce(FinOdfLive,'0') as OppOdfLive,
+                        coalesce(FinOdfUnconfirmed,'0') as OppOdfUnconfirmed,
+                        coalesce(FinOdfUnofficial,'0') as OppOdfUnofficial,
+                        coalesce(FinOdfOfficial,'0') as OppOdfOfficial,
+                        coalesce(FinOdfArrows,'') as OppOdfArrows,
+                        coalesce(FinOdfTiming,'') as OppOdfTiming, "
 				. " TfSetPoints OppSetPoints, "
 				. " TfSetPointsByEnd OppSetPointsByEnd, "
 				. " TfArrowstring OppArrowstring, "
@@ -263,6 +282,7 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 				. " LEFT JOIN Countries ON TfTeam=CoId AND TfTournament=CoTournament and CoTournament=$this->tournament "
 				. " LEFT JOIN FinSchedule fs1 ON fs1.FSEvent=TfEvent AND fs1.FSMatchNo=TfMatchNo AND fs1.FSTournament=TfTournament AND fs1.FSTeamEvent='1' and fs1.FSTournament=$this->tournament "
 				. " LEFT JOIN FinSchedule fs2 ON fs2.FSEvent=TfEvent AND fs2.FSMatchNo=case TfMatchNo when 0 then 4 when 1 then 6 when 2 then 4 when 3 then 6 else TfMatchNo*2 end AND fs2.FSTournament=TfTournament AND fs2.FSTeamEvent='1' and fs2.FSTournament=$this->tournament "
+                . " LEFT JOIN FinOdfTiming ON FinOdfEvent=TfEvent AND FinOdfMatchno=TfMatchNo AND FinOdfTournament=TfTournament AND FinOdfTeamEvent='1' "
 				. " WHERE TfMatchNo%2=1 AND TfTournament = " . $this->tournament . " " . $filter
 				. ") f2 on Tournament=OppTournament and Event=OppEvent and MatchNo=OppMatchNo-1
 				LEFT JOIN DocumentVersions DV1 on Tournament=DV1.DvTournament AND DV1.DvFile = 'B-TEAM' and DV1.DvEvent=''
@@ -519,6 +539,12 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 					'odfMatchName' => $myRow->OdfMatchName ? $myRow->OdfMatchName : '',
                     'odfUnitcode' => $myRow->OdfUnitCode ? $myRow->EvOdfCode.$myRow->OdfUnitCode : '',
 					'odfPath' => $myRow->OdfPreviousMatch && intval($myRow->OdfPreviousMatch)==0 ? $myRow->OdfPreviousMatch : get_text(($myRow->MatchNo==2 or $myRow->MatchNo==3) ? 'LoserMatchName' : 'WinnerMatchName', 'ODF', $myRow->OdfPreviousMatch ? $myRow->OdfPreviousMatch : $myRow->PreviousMatchTime),
+                    'odfStartList' => $myRow->OdfStartList[0]!='0'  ? $myRow->OdfStartList : ($myRow->OppOdfStartList[0]!='0'  ? $myRow->OppOdfStartList : ''),
+                    'odfGettingReady' => $myRow->OdfGettingReady[0]!='0'  ? $myRow->OdfGettingReady : ($myRow->OppOdfGettingReady[0]!='0'  ? $myRow->OppOdfGettingReady : ''),
+                    'odfLive' => $myRow->OdfLive[0]!='0'  ? $myRow->OdfLive : ($myRow->OppOdfLive[0]!='0'  ? $myRow->OppOdfLive : ''),
+                    'odfOdfUnconfirmed' => $myRow->OdfUnconfirmed[0]!='0'  ? $myRow->OdfUnconfirmed : ($myRow->OppOdfUnconfirmed[0]!='0'  ? $myRow->OppOdfUnconfirmed : ''),
+                    'odfOdfUnofficial' => $myRow->OdfUnofficial[0]!='0'  ? $myRow->OdfUnofficial : ($myRow->OppOdfUnofficial[0]!='0'  ? $myRow->OppOdfUnofficial : ''),
+                    'odfOdfOfficial' => $myRow->OdfOfficial[0]!='0'  ? $myRow->OdfOfficial : ($myRow->OppOdfOfficial[0]!='0'  ? $myRow->OppOdfOfficial : ''),
 					'target' => ltrim($myRow->Target ?? '','0'),
 					'coach' => $myRow->Coach,
 					'coachGivName' => $myRow->CoachGivName,
@@ -534,6 +560,7 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 					'memberAssoc' => $myRow->MaCode,
 					'qualRank' => $myRow->ShowRankQual ? $myRow->QualRank : $myRow->IrmTextQual,
 					'qualScore'=> $myRow->QualScore,
+					'qualHits'=> $myRow->QualHits,
 					'qualNotes'=> $myRow->QualNotes,
 					'finRank' => $myRow->FinRank,
 					'showRank' => $myRow->ShowRankFin,
@@ -563,6 +590,8 @@ require_once('Common/Lib/Fun_PrintOuts.php');
                     'saved'=> ($myRow->Position>0 and $myRow->Position<=SavedInPhase($myRow->EvFinalFirstPhase)),
 				 	'teamId'=> $myRow->Team,
 				 	'subTeam'=> $myRow->SubTeam,
+                    'odfArrows' => $myRow->OdfArrows ? json_decode($myRow->OdfArrows, true) : [],
+                    'odfTiming' => $myRow->OdfTiming ? json_decode($myRow->OdfTiming, true) : [],
 //
 					'oppLastUpdated' => $myRow->OppLastUpdated,
 					'oppMatchNo' => $myRow->OppMatchNo,
@@ -584,6 +613,7 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 					'oppMemberAssoc' => $myRow->OppMaCode,
 					'oppQualRank' => $myRow->OppShowRankQual ? $myRow->OppQualRank : $myRow->OppIrmTextQual,
 					'oppQualScore'=> $myRow->OppQualScore,
+					'oppQualHits'=> $myRow->OppQualHits,
 					'oppQualNotes'=> $myRow->OppQualNotes,
 					'oppFinRank' => $myRow->OppFinRank,
 					'oppShowRank' => $myRow->OppShowRankFin,
@@ -612,7 +642,10 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 				 	'oppPosition'=> ($myRow->OppQualRank and in_array($myRow->EvElimType, [0,3,4])) ? $myRow->OppQualRank : (useGrPostion2($myRow->EvFinalFirstPhase, $myRow->Phase) ? ($myRow->OppPosition2 ? $myRow->OppPosition2:'') : $myRow->OppPosition),
                     'oppSaved'=> ($myRow->OppPosition>0 and $myRow->OppPosition<=SavedInPhase($myRow->EvFinalFirstPhase)),
                     'oppTeamId'=> $myRow->OppTeam,
+                    'oppTeamId'=> $myRow->OppTeam,
 				 	'oppSubTeam'=> $myRow->OppSubTeam,
+                    'oppOdfArrows' => $myRow->OppOdfArrows ? json_decode($myRow->OppOdfArrows, true) : [],
+                    'oppOdfTiming' => $myRow->OppOdfTiming ? json_decode($myRow->OppOdfTiming, true) : [],
 					);
 
                 if(!empty($this->opts['extended'])) {

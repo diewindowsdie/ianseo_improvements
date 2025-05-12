@@ -101,6 +101,9 @@ if($CFG->USERAUTH) {
             return AclNoAccess;
         }
     }
+    function possibleFeature($feature, $level, $toCode=null) {
+        return false;
+    }
 }
 /*
  * La chiave rappresenta il bit di cui si è chiesto l'unset

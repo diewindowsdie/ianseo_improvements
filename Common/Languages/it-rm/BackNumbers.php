@@ -10,7 +10,6 @@ $lang['CharColor']='Colore Car.';
 $lang['CharType']='Tipo de carattere';
 $lang['Heigh']='Artezza';
 $lang['Italic']='Corzivo';
-$lang['PageDimension']='Dimenzioni Paggina';
 $lang['PosX']='Posizzione (Icchese)';
 $lang['PosY']='Posizzione (Ippesilon)';
 $lang['PrintBackNo']='Stampa Pettorali';

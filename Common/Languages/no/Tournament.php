@@ -660,7 +660,6 @@ $lang['OverwritePreviousArchers']='Overskrive forrige skytter';
 $lang['OvrRefresh']='Frisk opp siden (sender ikke)';
 $lang['OvrSendSerial']='Send til OVR (Serie)';
 $lang['PageBreakBeforeDays']='Sideskift før dager';
-$lang['PaperSize']='Papirformat';
 $lang['ParamWarning']='OBS!<br/>Å sette inn feil verdier i disse feltene kan ødelegge oppsettet!<br/>Brukes med forsiktighet!!';
 $lang['PartecipantLabel']='Deltakerliste - Etiketter';
 $lang['PartecipantListError']='Deltakerliste - Advarsler';

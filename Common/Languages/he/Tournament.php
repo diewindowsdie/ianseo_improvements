@@ -618,7 +618,6 @@ $lang['OvrRefresh']='רענן תצוגת כמוד (ללא שליחה)';
 $lang['OvrSendSerial']='שלח ל-OVR (טורי)';
 $lang['OvrSignalSendAll']='שלח הכל';
 $lang['PageBreakBeforeDays']='מעבר עמוד לפני ימים';
-$lang['PaperSize']='גודל דף';
 $lang['ParamWarning']='שימו לב!<br/>הזנת ערכים לא נכונים בשדות אלה עשויה להזיק להגדרות!<br/>השתמשו בזהירות המירבית!';
 $lang['PartecipantLabel']='רשימת משתמשים - תוויות';
 $lang['PartecipantListError']='רשימת משתתפים - אזהרות';

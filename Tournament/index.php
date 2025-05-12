@@ -11,11 +11,8 @@ if(file_exists($CFG->DOCUMENT_PATH.'Api/ISK-NG/config_defines.php')) {
     include_once($CFG->DOCUMENT_PATH.'Api/ISK-NG/config_defines.php');
 }
 
-checkFullACL(AclCompetition, 'cData', AclReadWrite);
-
-if (!isset($_REQUEST['New']) && !CheckTourSession(true)) {
-    print get_text('CrackError');
-    exit;
+if(!isset($_REQUEST['New']) and CheckTourSession(true)) {
+    checkFullACL(AclCompetition, 'cData', AclReadWrite);
 }
 
 $SetTypes=GetExistingTournamentTypes();
@@ -34,6 +31,10 @@ if (isset($_REQUEST['Command'])) {
     if ($_REQUEST['Command']=='SAVE') { // /*and (!isset($_REQUEST['New']) or !empty($_REQUEST['d_Rule']))*/)
         if (!IsBlocked(BIT_BLOCK_TOURDATA)) {
             $ToCode=preg_replace('/[^0-9a-z._-]+/sim', '_', $_REQUEST['d_ToCode']);
+            if(isset($_REQUEST['New']) and $_SESSION['TourId']==-1 and $CFG->USERAUTH AND !empty($_SESSION['AUTH_ENABLE']) AND empty($_SESSION['AUTH_ROOT']) and !possibleFeature(AclRoot, AclReadWrite,$ToCode)) {
+                CD_redirect($CFG->ROOT_DIR);
+                exit;
+            }
             $TheString=preg_replace('/ +/', '', $_REQUEST['d_ToTimeZone']);
             $sign=($TheString[0]=='-' ? '-' : '+');
             $tmp=explode(':', $TheString);

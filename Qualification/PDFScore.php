@@ -17,5 +17,5 @@ if(!empty($_REQUEST['SessionType']) and $_REQUEST['SessionType']=='E') {
 }
 
 
-$pdf=CreateSessionScorecard($Session, $_REQUEST['x_From'], $_REQUEST['x_To'], $_REQUEST);
+$pdf=CreateSessionScorecard($Session, $_REQUEST['x_From'], (empty($_REQUEST['x_To']) ? $_REQUEST['x_From'] : $_REQUEST['x_To']), $_REQUEST);
 $pdf->output();

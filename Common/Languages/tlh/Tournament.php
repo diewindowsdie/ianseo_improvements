@@ -576,7 +576,6 @@ $lang['OverwritePreviousArchers']=' �
 $lang['OvrRefresh']='  ( )';
 $lang['OvrSendSerial']='  ()';
 $lang['PageBreakBeforeDays']='  ';
-$lang['PaperSize']='';
 $lang['ParamWarning']='!<br>    !<br/>   !<br/>  !';
 $lang['PartecipantLabel']=' - ';
 $lang['PartecipantListError']=' - ';

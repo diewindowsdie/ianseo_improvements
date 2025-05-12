@@ -1,15 +1,35 @@
 <?php
+$lang['AuthTourCode']='Liste séparée par des virgules des codes de compétitions qui peuvent être gérés par l\'utilisateur.<br> Charactère générique autorisé : « % »';
 $lang['AutoCheckinAlreadyDone']='Vous êtes déjà enregistré pour la compétition! Si vous devez modifier des informations, retournez au greffe.';
+$lang['AutoCheckinConfirm']='Si tous les détails sont corrects, appuyez sur CONFIRMER L\'ENREGISTREMENT. Sinon, appuyez sur ANNULER et rendez-vous au Greffe.';
 $lang['AutoCheckinSearch']='Scannez le QR Code que vous avez reçu ou saisissez votre nom!';
+$lang['AutoCHK-CanEdit']='Autoriser les utilisateurs à modifier les noms, les e-mails, le pays/club, etc.';
+$lang['AutoCHK-Code']='Liste des concours, un par ligne<br> Le premier code de concours sera utilisé comme en-tête dans les bornes d\'enregistrement automatique.';
+$lang['AutoCHK-IP']='Liste des IP des appareils d\'enregistrement automatique. Une adresse IP par ligne, correspondant à l\'un des formats suivants :<br> IP de l\'appareil<br> IP de l\'appareil | File d\'attente d\'imprimante d\'accréditation <br> IP du périphérique | File d\'attente d\'impression d\'accréditation | Étiquette de nom de file d\'attente d\'imprimante<br> File d\'attente d\'imprimante sous la forme : Nom de la file d\'attente [ @ Serveur d\'impression ]<br> Si aucune file d\'attente d\'imprimante n\'est définie, la boîte de dialogue d\'impression standard s\'affiche';
+$lang['AutoCHK-IPinfo']='Liste des IP des Bornes d\'auto-information. (Une adresse IP par ligne)';
+$lang['AutoCHK-IPnoMgm']='List of IP of self check-in kiosks. One IP Address per line, matching one of the following formats:<br> Device IP<br> Device IP | Accreditation Printer Queue <br> Device IP | Accreditation Printer Queue | Name Tag Printer Queue<br> Printer Queue in form: Queue Name [ @ Printer Server ]';
 $lang['AutoCHK-Print']='Impressions automatique';
 $lang['AutoImportSettings']='<b>Uniquement pour les utilisateurs experts</b><br>La modification du comportement par défaut peut <b>entrainer des résultats inexacts.</b> <br> Il est important de recalculer tous les rangs qui ont été configurés comme "manuellement" AVANT d’envoyer à ianseo.net ou d’imprimer des résultats et en général avant toute distribution de quelque nature que ce soit.';
+$lang['ChangeComponents']='<p>Pour procéder à un changement, supprimez d\'abord les athlètes qui ne font plus partie de l\'équipe afin d\'activer les options possibles.</p> ▶ Score inclus dans le total du tour de qualification par équipe <br> ▶ Score non inclus dans le total du tour de qualification par équipe';
 $lang['CombiCompList']='Liste des codes de compétitions! Séparateur","';
 $lang['DeleteChannel']='Supprimer le canal. Cela va supprimer toutes les séparation et le canal';
+$lang['ExportCategories']='Choisissez les catégories/épreuves à exporter (aucune sélection signifie tout)';
+$lang['ExportDistances']='Sélectionnez la ou les distances à exporter (aucune sélection signifie toutes les distances)';
+$lang['ExportSchedule']='Sélectionnez dans le planning le départ à exporter.';
+$lang['ExportScheduleToday']='Affiche uniquement le(s) départ(s) programmé(s) pour aujourd\'hui';
 $lang['GetBarcodeSeparator']='Aprèsl\'mpression du tableau de référence des codes barres, lire le "SÉPARATEUR" du code barre pour activer la lecture correcte des élément.';
 $lang['HomePage']='Voici la page où vous pouvez sélectionner ou créer un tournoi.';
+$lang['ISK-LockedSessionHelp']='Les icônes {$a} indiquent si l\'application autorise la saisie ou non dans ce départ.';
 $lang['ISK-ServerUrlPin']='<b>Ne pas partager ce code</b><br>Utiliser un code Pin à 4 chiffres pour sécuriser votre compétition.<br>Les tablettes peuvent se connecter à la compétition via le QR-Code.<br> En cas de saisie manuelle dans l\'application, utiliser ce code <b>{$a}</b>';
 $lang['QrCodeLandscape']='Un simple ou double "<" fera une flèche vers la gauche, un simple ou double ">" fera une flèche vers la droite, n simple ou double "^" fera une flèche vers le haut et un simple ou double "v" fera une flèche vers la bas';
 $lang['ScoreBarCodeShortcuts']='Lire le code-barre de la feuille de marque.<br/> Insertion Manuelle d\'un # suivi par le nom de l\'Athlète recherche dans la base de données pour le trouver<br/> Insérer un @ suivit d\'un N° de cible recherche cette cible. La distance doit être indiquée; la session doit être spécifiée (un chiffre) et la cible 000 (3 chiffres)';
+$lang['TargetRequests-Printout']='Imprime les QRCodes des cibles demandées pour permettre aux périphériques d\'être rapidement réaffectés à la bonne cible.<br> Sélectionnez le(s) groupe(s) d\'appareils que vous souhaitez imprimer et la plage de cibles :
+<br> 1-10 => Imprime le QRCode des cibles 1 à 10
+<br> 1,7,12-15 => Imprime le QRCode des cibles 1, 7 et de 12 à 15';
+$lang['TargetScoring-Printout']='Imprime les QRCodes des cibles demandées pour permettre aux périphériques d\'être rapidement réaffectés à la bonne cible. Il s\'agit du meme QR-Code que celui présent sur les feuilles de marques.
+<br> Sélectionnez le(s) groupe(s) d\'appareils que vous souhaitez imprimer et la plage de cibles :
+<br> 1-10 => Imprime le QRCode des cibles 1 à 10
+<br> 1,7,12-15 => Imprime le QRCode des cibles 1, 7 et de 12 à 15';
 $lang['TV-RotEdit-DB']='<h2>Unités de Longueur CSS</h2>
 <ul>
   <li><b>rem :</b> Basé sur la hauteur du texte de l\'élément racine.</li>
@@ -36,4 +56,5 @@ $lang['TV-RotEdit-DB']='<h2>Unités de Longueur CSS</h2>
 <h2>Référence CSS</h2>
 <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference">Référence CSS sur MDN</a>';
 $lang['UserName']='Identifant unique dans le systeme. Minimum de 6 caractères';
+$lang['UserPassword']='Laisser vide pour garder le mot de passe actuel';
 ?>
