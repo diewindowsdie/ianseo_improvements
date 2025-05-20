@@ -201,18 +201,10 @@ class ScorePDF extends IanseoPdf {
 			$tmpPad=$this->getCellPaddings();
 			$this->SetCellPadding(0);
 			$this->SetColors(true);
-	    	$this->SetFont($this->FontStd,'B',9);
+	    	$this->SetFont($this->FontStd,'B',8);
 			$this->SetXY($TopX+$TmpLeft,$TopY);
 			$this->MultiCell($Width-$TmpLeft-$TmpRight, 4, $this->Name, 0, 'L', 0);
     		$this->SetFont($this->FontStd,'',7);
-			$this->SetXY($TopX+$TmpLeft, $this->GetY());
-			if($this->GetStringWidth($this->Where . ", " . TournamentDate2String($this->WhenF,$this->WhenT))>=$Width-$TmpLeft-$TmpRight) {
-				$this->MultiCell($Width-$TmpLeft-$TmpRight, 4, $this->Where, 0, 'L', 0);
-				$this->SetXY($TopX+$TmpLeft, $this->GetY());
-				$this->MultiCell($Width-$TmpLeft-$TmpRight, 4, TournamentDate2String($this->WhenF,$this->WhenT), 0, 'L', 0);
-			} else {
-				$this->MultiCell($Width-$TmpLeft-$TmpRight, 4, $this->Where . ", " . TournamentDate2String($this->WhenF,$this->WhenT), 0, 'L', 0);
-			}
 			$this->SetCellPaddings($tmpPad['L'], $tmpPad['T'], $tmpPad['R'], $tmpPad['B']);
 		}
 
@@ -232,29 +224,30 @@ class ScorePDF extends IanseoPdf {
 		$this->SetXY($FlagOffset+$TopX, $TopY+($TopOffset*7/12));
 		$this->SetFont($this->FontStd,'',8);
 		$this->SetColors(false);
+        $this->setFillColor(255, 255, 255);
 		$ArcherStringLength=$this->GetStringWidth((get_text('Archer') . ": "));
-		$this->Cell($ArcherStringLength,$TopOffset/6, (get_text('Archer') . ": "),'B',0,'L',0);
+		$this->Cell($ArcherStringLength,$TopOffset/6, (get_text('Archer') . ": "),'B',0,'L',1);
 		$this->SetY($this->gety()-2, false);
 		$this->SetFont($this->FontStd,'B',13);
 		$this->SetColors(true);
-		$this->Cell($Width-(($this->PrintTotalCols && empty($FirstDist)) ? 2.7*$CellW : 1.6*$CellW)-$ArcherStringLength - $FlagOffset,2+($TopOffset/6), ($Data["Ath"] ?? ' '),'B',0,'L',0);
+        $this->setFillColor(255, 255, 255);
+		$this->Cell($Width-(($this->PrintTotalCols && empty($FirstDist)) ? 2.7*$CellW : 1.6*$CellW)-$ArcherStringLength - $FlagOffset,2+($TopOffset/6), ($Data["Ath"] ?? ' '),'B',0,'L',1);
 		$this->SetXY($FlagOffset+$TopX, $TopY+($TopOffset*19/24));
 		$this->SetFont($this->FontStd,'',8);
 
 		// Country
 		$this->SetColors(false);
 		$CountryWidth=$this->GetStringWidth((get_text('Country') . ": "));
-		$this->Cell($CountryWidth, $TopOffset/6, (get_text('Country') . ": "),'B',0,'L',0);
+        $this->setFillColor(255, 255, 255);
+		$this->Cell($CountryWidth, $TopOffset/6, (get_text('Country') . ": "),'B',0,'L',1);
 		$this->SetFont($this->FontStd,'B',8);
 		$this->SetColors(true);
 		$CellTmpWidth=$Width-(($this->PrintTotalCols && empty($FirstDist)) ? 2.7*$CellW : 1.6*$CellW)-$CountryWidth - $FlagOffset;
+        $this->setFillColor(255, 255, 255);
 		if(!empty($Data["Noc"])) {
-			$str=empty($Data['CoCode']) ? '' : $Data['CoCode'].' -';
-			$strW=$this->GetStringWidth($str);
-			$this->Cell($strW, $TopOffset/6, $str,'B',0,'L',0);
-			$this->Cell($CellTmpWidth-$strW, $TopOffset/6, ($Data['CoName'] ?? ''),'B',0,'L',0);
+			$this->Cell($CellTmpWidth, $TopOffset/6, ($Data['CoName'] ?? ''),'B',0,'L',1);
 		} else {
-			$this->Cell($CellTmpWidth,$TopOffset/6, ' ','B',0,'L',0);
+			$this->Cell($CellTmpWidth,$TopOffset/6, ' ','B',0,'L',1);
 		}
 
 		//PAGLIONE
