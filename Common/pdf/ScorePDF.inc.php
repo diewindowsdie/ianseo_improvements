@@ -310,16 +310,16 @@ class ScorePDF extends IanseoPdf {
 		for($j=1; $j<=$NumArrow; $j++) {
 			$this->Cell($ArCellW  + ($NumArrow==1 ? $TotalCellW:0), $CellH, $j, 1, 0, 'C', 1);
 		}
-		$this->SetFont($this->FontStd,'B',$StdFontSmall-($CellH*0.5 < 3? 2.5:0));
+		$this->SetFont($this->FontStd,'B',$StdFontSmall-($CellH*0.5 < 3.5? 1:0));
 		$this->SetColors(true);
-		$this->Cell(($TotalCellW*($NumArrow>5 ? 1.5 : 2))+($this->PrintTotalCols ? $CellW*1.1 : 0)+($XNineW*(($this->NoTensOnlyX or $prnGolds==$prnXNine) ? 1 : 2)) - ($NumArrow==1 ? $TotalCellW:0), $CellH*0.5, (isset($Data['SesName']) ? ($Data['SesName']!=='' ? $Data['SesName'] : get_text('Session') . ': ' . $Data["Session"]) : '' ),1,1,'R',1);
+		$this->Cell(($TotalCellW*($NumArrow>6 ? 1.5 : 2))+($this->PrintTotalCols ? $CellW*1.1 : 0)+($XNineW*(($this->NoTensOnlyX or $prnGolds==$prnXNine) ? 1 : 2)) - ($NumArrow==1 ? $TotalCellW:0), $CellH*0.5, (isset($Data['SesName']) ? ($Data['SesName']!=='' ? $Data['SesName'] : get_text('Session') . ': ' . $Data["Session"]) : '' ),1,1,'R',1);
 		$this->SetColors(false);
 		$this->SetXY($TopX+$EndNumCellW+($ArCellW*$NumArrow) + ($NumArrow==1 ? $TotalCellW:0), $TopY+$TopOffset+$CellH * 0.5);
-	   	$this->SetFont($this->FontStd,'B', $StdFontSmall-($CellH*0.5 < 3? 2.5:0));
+	   	$this->SetFont($this->FontStd,'B', $StdFontSmall-($CellH*0.5 < 3.5? 1:0));
         if($NumArrow>1) {
-            $this->Cell($TotalCellW * ($NumArrow > 5 ? 3 / 4 : 1), $CellH * 0.5, (get_text('TotalProg', 'Tournament')), 1, 0, 'C', 1);
+            $this->Cell($TotalCellW * ($NumArrow > 6 ? 3 / 4 : 1), $CellH * 0.5, (get_text('TotalProg', 'Tournament')), 1, 0, 'C', 1);
         }
-        $this->Cell($TotalCellW * ($NumArrow > 5 ? 5 / 4 : 1), $CellH * 0.5, (get_text('TotalShort', 'Tournament')), 1, 0, 'C', 1);
+        $this->Cell($TotalCellW * ($NumArrow > 6 ? 5 / 4 : 1), $CellH * 0.5, (get_text('TotalShort', 'Tournament')), 1, 0, 'C', 1);
         if($this->PrintTotalCols) {
 			$this->SetFillColor(0xFF,0xE8,0xE8);
 			$this->Cell($CellW*1.1,$CellH*0.5, (get_text('Total')),1,0,'C',1);
@@ -365,16 +365,16 @@ class ScorePDF extends IanseoPdf {
 			$ScoreGold += $ScoreEndGold;
 			$ScoreXnine += $ScoreEndXnine;
             if($NumArrow>1) {
-                $this->Cell($TotalCellW * ($ArrowEnds[$Event][$CurDist]['arrows'] > 5 ? 3 / 4 : 1), $CellH, (($StopFillingtotals OR empty($Data['Arr' . $Distance])) ? '' : $ScoreEndTotal), 1, 0, 'C', 0);
+                $this->Cell($TotalCellW * ($ArrowEnds[$Event][$CurDist]['arrows'] > 6 ? 3 / 4 : 1), $CellH, (($StopFillingtotals OR empty($Data['Arr' . $Distance])) ? '' : $ScoreEndTotal), 1, 0, 'C', 0);
             }
 			$this->SetFont($this->FontStd,'',$StdFont);
 			if(($NumArrow*$i)%$ArrowEnds[$Event][$CurDist]['arrows']) {
-				$this->Cell($TotalCellW*($ArrowEnds[$Event][$CurDist]['arrows']>5 ? 5/4 : 1), $CellH,'',1,0,'C',0);
-				$this->Line($x1=$this->getX(), $y1=$this->getY(), $x1-$TotalCellW*($ArrowEnds[$Event][$CurDist]['arrows']>5 ? 5/4 : 1), $y1+$CellH);
-				$this->Line($x1-$TotalCellW*($ArrowEnds[$Event][$CurDist]['arrows']>5 ? 5/4 : 1), $y1, $x1, $y1+$CellH);
+				$this->Cell($TotalCellW*($ArrowEnds[$Event][$CurDist]['arrows']>6 ? 5/4 : 1), $CellH,'',1,0,'C',0);
+				$this->Line($x1=$this->getX(), $y1=$this->getY(), $x1-$TotalCellW*($ArrowEnds[$Event][$CurDist]['arrows']>6 ? 5/4 : 1), $y1+$CellH);
+				$this->Line($x1-$TotalCellW*($ArrowEnds[$Event][$CurDist]['arrows']>6 ? 5/4 : 1), $y1, $x1, $y1+$CellH);
 				$StartCell=false;
 			} else {
-				if($ArrowEnds[$Event][$CurDist]['arrows']>5) {
+				if($ArrowEnds[$Event][$CurDist]['arrows']>6) {
 					$this->Cell($TotalCellW*2/4, $CellH,(($StopFillingtotals OR empty($Data['Arr'.$Distance])) ? '' : $ScoreMultiLineTotal),1,0,'C',0);
 					$this->Cell($TotalCellW*3/4, $CellH,(($StopFillingtotals OR empty($Data['Arr'.$Distance])) ? '' : $ScoreTotal),1,0,'C',0);
 					$ScoreMultiLineTotal = 0;
@@ -438,10 +438,10 @@ class ScorePDF extends IanseoPdf {
 
 		$this->SetXY($TopX + $BCode, $TopY+$TopOffset+$CellH*($NumEnd +1));
 	   	$this->SetFont($this->FontStd,'B',11);
-		$this->Cell(($NumArrow+($this->PrintTotalCols ? 1.5 : 2.2))*$CellW - $BCode + ($ArrowEnds[$Event][$CurDist]['arrows']>5 ? $TotalCellW/4 : 0),$CellH, (get_text('Total') . " "),0,0,'R',0);
-		$this->Cell($TotalCellW*($ArrowEnds[$Event][$CurDist]['arrows']>5 ? 3/4 : 1),$CellH,(($StopFillingtotals OR empty($Data['Arr'.$Distance]))? '' : $ScoreTotal),1,0,'C',0);
+		$this->Cell(($NumArrow+($this->PrintTotalCols ? 1.5 : 2.2))*$CellW - $BCode + ($ArrowEnds[$Event][$CurDist]['arrows']>6 ? $TotalCellW/4 : 0),$CellH, (get_text('Total') . " "),0,0,'R',0);
+		$this->Cell($TotalCellW*($ArrowEnds[$Event][$CurDist]['arrows']>6 ? 3/4 : 1),$CellH,(($StopFillingtotals OR empty($Data['Arr'.$Distance]))? '' : $ScoreTotal),1,0,'C',0);
 		if($this->FillWithArrows && $ErScoreTotal)
-			$this->Line($x1 = $this->getx() - (($this->PrintTotalCols ? 1 : 1.4)*$CellW*($ArrowEnds[$Event][$CurDist]['arrows']>5 ? 3/4 : 1)), $y1=$this->gety()+$CellH, $x1+($this->PrintTotalCols ? 1 : 1.4)*$CellW*($ArrowEnds[$Event][$CurDist]['arrows']>5 ? 3/4 : 1), $y1-$CellH);
+			$this->Line($x1 = $this->getx() - (($this->PrintTotalCols ? 1 : 1.4)*$CellW*($ArrowEnds[$Event][$CurDist]['arrows']>6 ? 3/4 : 1)), $y1=$this->gety()+$CellH, $x1+($this->PrintTotalCols ? 1 : 1.4)*$CellW*($ArrowEnds[$Event][$CurDist]['arrows']>6 ? 3/4 : 1), $y1-$CellH);
 		if($this->PrintTotalCols) {
 			$this->SetFillColor(0xFF,0xE8,0xE8);
 			$this->Cell(1.1*$CellW,$CellH,(($StopFillingtotals OR empty($Data['Arr'.$Distance])) ? '' : $ScoreTotal + $Data['Tot'.$Distance]),1,0,'C',1);
@@ -480,8 +480,8 @@ class ScorePDF extends IanseoPdf {
             $this->ln($CellH/2);
 			$this->SetX($TopX + $BCode);
 		   	$this->SetFont($this->FontStd,'B',11);
-			$this->Cell(($NumArrow+($this->PrintTotalCols ? 1.5 : 2.2))*$CellW - $BCode + ($ArrowEnds[$Event][$CurDist]['arrows']>5 ? $TotalCellW/4 : 0),$CellH, (get_text('SignedTotal', 'Tournament') . " "),0,0,'R',0);
-			$this->Cell($TotalCellW * ($ArrowEnds[$Event][$CurDist]['arrows']>5 ? 3/4 : 1),$CellH, $Data["QuD{$Distance}"] ,1,0,'C',0);
+			$this->Cell(($NumArrow+($this->PrintTotalCols ? 1.5 : 2.2))*$CellW - $BCode + ($ArrowEnds[$Event][$CurDist]['arrows']>6 ? $TotalCellW/4 : 0),$CellH, (get_text('SignedTotal', 'Tournament') . " "),0,0,'R',0);
+			$this->Cell($TotalCellW * ($ArrowEnds[$Event][$CurDist]['arrows']>6 ? 3/4 : 1),$CellH, $Data["QuD{$Distance}"] ,1,0,'C',0);
 			if($this->PrintTotalCols)
 			{
 				$this->Cell(1.1*$CellW,$CellH,'',0,0,'C',0);
