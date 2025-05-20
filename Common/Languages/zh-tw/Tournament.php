@@ -49,7 +49,6 @@ $lang['F_Phase']='金牌賽';
 $lang['MatchName-0']='金牌賽';
 $lang['SetupPDA']='PDA設定';
 $lang['TourRuleResetDescr']='這個動作會重新設定比賽相關選項至系統定義之數值:弓種,級別,距離,靶位等.請你確認已經了解後再進行!';
-$lang['TVCss3Gold']='金牌賽';
 $lang['VersionBracketsInd']='個人對抗表';
 $lang['WarmUp']='熱身';
 ?>

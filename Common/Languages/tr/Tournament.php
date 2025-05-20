@@ -289,7 +289,6 @@ $lang['TourWhere']='Yer';
 $lang['TVContentName']='Ad';
 $lang['TVCss3CountryCode']='Kulüp Kodu';
 $lang['TVCss3CountryDescr']='Kulüp Adı';
-$lang['TVCss3Gold']='Altın';
 $lang['TVCss3Rank']='Sıra';
 $lang['TVCss3Target']='Hedef';
 $lang['Type']='Tip';

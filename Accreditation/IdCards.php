@@ -40,10 +40,10 @@ if(isset($_REQUEST['CardNumber'])) {
     }
 } else {
 	$q=safe_r_sql("select * from IdCards where IcTournament={$_SESSION['TourId']} and IcType='$CardType' order by IcNumber");
-	if($r=safe_fetch($q)) {
-		$CardNumber=$r->IcNumber;
+    if($r=safe_fetch($q)) {
+        $CardNumber=$r->IcNumber;
 		cd_redirect(basename(__FILE__).go_get('CardNumber', $CardNumber));
-	}
+    }
 }
 
 
@@ -97,9 +97,9 @@ if(!empty($_FILES['ImportBackNumbers']['size']) AND $lvl==AclReadWrite) {
 				$SQL[]=$f.'='.StrSafe_DB($v);
 			}
 			safe_w_sql("insert ignore into IdCardElements set ".implode(',', $SQL));
-			CheckPictures();
-		}
-	}
+        }
+        CheckPictures();
+    }
 }
 
 if(!empty($_REQUEST['ExportLayout'])) {
@@ -141,16 +141,13 @@ $IncludeJquery = true;
 $JS_SCRIPT = array(
 	'<script type="text/javascript" src="'.$CFG->ROOT_DIR.'Common/ajax/ObjXMLHttpRequest.js"></script>',
 	'<script type="text/javascript" src="Fun_AJAX_IdCards.js"></script>',
+    '<link href="./IdCardEdit.css" rel="stylesheet" type="text/css"></link>',
 	);
 
 $JS_SCRIPT[]='<script type="text/javascript">';
 $JS_SCRIPT[]='	var SesQNo='.$SesQNo.';';
 $JS_SCRIPT[]='	var SesENo='.$SesENo.';';
 $JS_SCRIPT[]='</script>';
-$JS_SCRIPT[]='<style>';
-$JS_SCRIPT[]='#SpecificBadges {display:flex;justify-content:center;flex-wrap:wrap;}';
-$JS_SCRIPT[]='#SpecificBadges div {margin-left:1em;margin-right:1em;}';
-$JS_SCRIPT[]='</style>';
 
 $PAGE_TITLE=get_text($CardType.'-Badge', 'BackNumbers');
 
@@ -167,7 +164,7 @@ echo '<form method="POST" target="Badges" enctype="multipart/form-data">';
 echo '<table class="Tabella">' ;
 echo '<tr><th class="Title" colspan="2">' . $PAGE_TITLE  . '</th></tr>';
 echo '<tr>';
-echo '<td class="w-50">';
+echo '<td class="w-50" valign="top">';
 
 // tipo di badge
 if($CardType=='A') {
@@ -187,10 +184,11 @@ if($CardType=='A') {
 
 // this stays on the opened competition, so on session
 echo '<div class="CustomBadges">';
+
 	// little table with the badge selector...
 	echo '<table class="Tabella" style="margin-right:auto; margin-bottom:2em;">';
 	echo '<tr><th>'.get_text('BadgeType', 'Tournament').'</th>
-		<td><select id="BadgeType" name="CardType" onchange="location.href=\'?CardType=\'+this.value">';
+		<td colspan="2"><select id="BadgeType" name="CardType" onchange="location.href=\'?CardType=\'+this.value">';
 
 	$TypeArray=array();
 	if(hasFullACL(AclAccreditation, 'acStandard', AclReadOnly)) {
@@ -216,23 +214,33 @@ echo '<div class="CustomBadges">';
 
 	$IdCards=safe_r_sql("select * from IdCards where IcTournament={$_SESSION['TourId']} and IcType='$CardType' order by IcNumber");
 	if(safe_num_rows($IdCards)) {
+        // Badge Number
 		echo '<tr><th>'.get_text('BadgeName', 'BackNumbers').'</th>
-			<td><select name="CardNumber" id="BadgeNumber" onchange="location.href=\'?CardType='.$CardType.'&CardNumber=\'+this.value">';
+			<td colspan="2"><select name="CardNumber" id="BadgeNumber" onchange="location.href=\'?CardType='.$CardType.'&CardNumber=\'+this.value">';
 			while($r=safe_fetch($IdCards)) {
 				echo '<option value="'.$r->IcNumber.'"'.($CardNumber==$r->IcNumber ? ' selected="selected"' : '').'>'.$r->IcNumber.' - '.$r->IcName.'</options>';
 			}
 			echo '</select></td></tr>';
 
+        // Badge Pages
+        echo '<tr><th>'.get_text('BadgePages', 'BackNumbers').'</th>
+			<td colspan="2"><select name="CardPages" id="BadgePages" onchange="UpdateCardSettings(this)">
+			    <option value="1"'.($RowBn->Pages==1 ? ' selected="selected"' : '').'>'.get_text('BadgePage-1','BackNumbers').'</options>
+			    <option value="2"'.($RowBn->Pages==2 ? ' selected="selected"' : '').'>'.get_text('BadgePage-2','BackNumbers').'</options>
+            </select></td></tr>';
+
+        // Dimensions, offset
+
 		$CategoryMatches=getModuleParameter('Accreditation', 'Matches-'.$CardType.'-'.$CardNumber, '');
 		echo '<tr><th>'.get_text('AccreditationMatches', 'BackNumbers').'</th>
-			<td>'.$CategoryMatches.'</td></tr>';
+			<td colspan="2">'.str_replace(',',', ',$CategoryMatches).'</td></tr>';
 	}
     if($lvl==AclReadWrite) {
         echo '<tr><th>' . get_text('NewBadgeName', 'BackNumbers') . '</th>
-		    <td><input type="text" id="newBadgeName">
+		    <td colspan="2"><input type="text" id="newBadgeName">
 			    <input type="button" value="' . get_text('BadgeCreate', 'BackNumbers') . '" onclick="CreateNewBadge()">';
         if (safe_num_rows($IdCards)) {
-            echo ' <input type="button" value="' . get_text('BadgeDelete', 'BackNumbers') . '" onclick="if(confirm(\'' . get_text('MsgAreYouSure') . '\')) {location.href=\''.$_SERVER["PHP_SELF"].'?delete=1&CardType='.$CardType.'&CardNumber='.$CardNumber.'\'}">';
+            echo '<div class="mt-3"><input type="button" value="' . get_text('BadgeDelete', 'BackNumbers') . '" onclick="if(confirm(\'' . get_text('MsgAreYouSure') . '\')) {location.href=\''.$_SERVER["PHP_SELF"].'?delete=1&CardType='.$CardType.'&CardNumber='.$CardNumber.'\'}"></div>';
         }
         echo '</td></tr>';
     }
@@ -249,8 +257,13 @@ if (safe_num_rows($IdCards)) {
 
 	if($lvl==AclReadWrite) {
 	    echo '<div class="CustomBadges">';
-	    echo '<div><input type="button" value="' . get_text('BadgeEdit', 'BackNumbers') . '" onClick="window.open(\'' . $CFG->ROOT_DIR . 'Accreditation/IdCardEdit.php?' . $GlobalLink . '\')"></div>';
-	    echo '<div><input type="submit" name="ExportLayout" value="' . get_text('BadgeExportLayout', 'BackNumbers') . '" onclick="baseForm(this)"></div>';
+        if($RowBn->Pages==1) {
+            echo '<div><input type="button" value="' . get_text('BadgeEdit', 'BackNumbers') . '" onClick="window.open(\'' . $CFG->ROOT_DIR . 'Accreditation/IdCardEdit.php?' . $GlobalLink . '&CardPage=1\')"></div>';
+        } else {
+            echo '<div><input class="mr-3" type="button" value="' . get_text('BadgeEditPage1', 'BackNumbers') . '" onClick="window.open(\'' . $CFG->ROOT_DIR . 'Accreditation/IdCardEdit.php?' . $GlobalLink . '&CardPage=1\')">
+                <input type="button" value="' . get_text('BadgeEditPage2', 'BackNumbers') . '" onClick="window.open(\'' . $CFG->ROOT_DIR . 'Accreditation/IdCardEdit.php?' . $GlobalLink . '&CardPage=2\')"></div>';
+        }
+	    echo '<div class="my-3"><input type="submit" name="ExportLayout" value="' . get_text('BadgeExportLayout', 'BackNumbers') . '" onclick="baseForm(this)"></div>';
 	    echo '<div></div><input type="file" name="ImportBackNumbers" />&nbsp;&nbsp;&nbsp;';
 	    echo '<input type="submit" name="ImportLayout" value="' . get_text('BadgeImportLayout', 'BackNumbers') . '" onclick="baseForm(this)"></div>';
 	    echo '</div>';
@@ -260,8 +273,15 @@ if (safe_num_rows($IdCards)) {
 	//Header e Immagini
 	// immagine fittizia del badge
 		echo '<td class="w-50 Center">';
-			echo '<div class="CustomBadges">';
-			if(safe_num_rows($t)) echo '<img src="ImgIdCard.php?'.$GlobalLink.'">';
+			echo '<div class="CustomBadges d-flex">';
+			if(safe_num_rows($t)) {
+                echo '<div id="ImgPage1" class="mr-3"><img src="ImgIdCard.php?'.$GlobalLink.'&CardPage=1"></div>';
+                if($RowBn->Pages==2) {
+                    echo '<div id="ImgPage2" class=""><img src="ImgIdCard.php?'.$GlobalLink.'&CardPage=2"></div>';
+                } else {
+                    echo '<div id="ImgPage2" class="d-none"></div>';
+                }
+            }
 			echo '</div>';
 
 		echo '</td>';

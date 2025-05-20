@@ -816,13 +816,13 @@ class OrisPDF extends IanseoPdf {
                 $this->ln();
                 $this->setX(($this->getPageWidth()-((2*$CellWidthLong+4*$JudgesLabel)+10))/2);
                 $this->Cell(2*$JudgesLabel, $CellHeight, $TeamComponents[$Data['teamId']][$Data['subTeam']][$i]['familyUpperName'] . ' '. $TeamComponents[$Data['teamId']][$Data['subTeam']][$i]['givenName'], 1,0, 'L');
-                $this->Cell($CellWidthLong, $CellHeight, number_format($AthAvg[0][$i],2,'.',''),1, 0, 'C');
+                $this->Cell($CellWidthLong, $CellHeight, isset($AthAvg[0][$i]) ? number_format($AthAvg[0][$i],2,'.','') : '',1, 0, 'C');
                 $this->SetFont($this->FontSymbol);
                 $this->SetSymbolColor();
                 $this->Cell(10, $CellHeight, $symbols[$i][0], 'LTB', 0, 'C');
                 $this->SetDefaultColor();
                 $this->SetFont($this->FontStd);
-                $this->Cell($CellWidthLong, $CellHeight, number_format($AthAvg[1][$i],2,'.',''),1, 0, 'C');
+                $this->Cell($CellWidthLong, $CellHeight, isset($AthAvg[1][$i]) ? number_format($AthAvg[1][$i],2,'.','') : '',1, 0, 'C');
                 $this->Cell(2*$JudgesLabel, $CellHeight, $TeamComponents[$Data['oppTeamId']][$Data['oppSubTeam']][$i]['familyUpperName'] . ' '. $TeamComponents[$Data['oppTeamId']][$Data['oppSubTeam']][$i]['givenName'], 1,0, 'L');
             }
         }

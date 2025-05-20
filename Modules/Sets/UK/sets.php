@@ -1,7 +1,7 @@
 <?php
 $version='2020-03-27 13:33:00';
 
-$AllowedTypes=array(1,2,3,6,7,8,37,40);
+$AllowedTypes=array(1,2,3,6,7,8,9,10,12,37,40);
 
 $SetType['UK']['descr']=get_text('Setup-UK', 'Install');
 $SetType['UK']['noc'] = 'GBR';
@@ -40,4 +40,11 @@ foreach(array(1,2,3,6,7,8,37) as $val) {
 
         );
 }
+foreach(array(9,10,12) as $val) {
+    $SetType['UK']['rules']["$val"] = array(
+        'SetUK_Field',
+
+    );
+    }
+
 

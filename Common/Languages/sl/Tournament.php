@@ -484,7 +484,6 @@ $lang['TVContentName']='Ime';
 $lang['TVCss3Athlete']='Tekmovalec/-ka';
 $lang['TVCss3CountryCode']='Koda države/kluba';
 $lang['TVCss3CountryDescr']='Ime države/kluba';
-$lang['TVCss3Gold']='Zlata';
 $lang['TVCss3Rank']='Uvrstitev';
 $lang['TVCss3Session']='Izmena';
 $lang['TVCss3Target']='Tarča';

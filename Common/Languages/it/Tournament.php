@@ -52,7 +52,7 @@ $lang['AddOnsItem']='Elemento #{$a}';
 $lang['AddSplitChannel']='Aggiungere una divisione orizzontale';
 $lang['AddTournament']='Aggiungi Gara';
 $lang['ADOfficer']='Responsabile Antidoping';
-$lang['AdvancedParams']='Parameteri Avanzati';
+$lang['AdvancedParams']='Parametri Avanzati';
 $lang['AfterDistance']='Classifica dopo la distanza seguente:';
 $lang['AfterXDistance']='Risultati AL TERMINE della Distanza $a';
 $lang['AgeClass']='Classe di età';
@@ -162,7 +162,7 @@ $lang['Bill']='Ricevute';
 $lang['BillAndCash']='Totale Pagamenti';
 $lang['Birthdays']='Compleanni';
 $lang['BlockDescrLimit']='Al momento <b>SOLO L\'OPERATORE IN LOCALE E I PC CON I SEGUENTI IPv4</b> possono fare modifiche in Ianseo, sempre che la pagina non sia già bloccata tramite le <a href="$a"><b>impostazioni di blocco</b></a>.<br/> <b>Per eliminare un accesso basta svuotare il relativo campo IP.</b>';
-$lang['BlockDescrNoLimit']='Al momento NON ci sono limiti di accesso: chiunque possa vedere Ianseo può apportare le modifiche che vuole, a meno che la pagina non sia bloccata tramite le <a href="$a"><b>impostazioni di blocco</b></a>.';
+$lang['BlockDescrNoLimit']='Al momento NON ci sono limiti di accesso: chiunque possa vedere I@nseo può apportare le modifiche che vuole, a meno che la pagina non sia bloccata tramite le <a href="$a"><b>impostazioni di blocco</b></a>.';
 $lang['BlockedPhase']='Fase bloccata';
 $lang['BlockFill']='Non riempire la riga';
 $lang['BlockSet']='Imposta blocco';
@@ -194,17 +194,17 @@ $lang['CalcRankOk']='Rank calcolata con successo!';
 $lang['CalcSnapshot']='Salva risultati per lo snapshot';
 $lang['CalcSnapshotDist']='Ricalcola snapshot per la distanza n. $a';
 $lang['CamDescriptionIPCamera']='<b>IP Camera</b><br/> Si possono scattare le foto da una IP Camera. In questo caso bisogna inserire <b>«http://<i>IP della IP Camera</i>/jpg/image.jpg»</b>';
-$lang['CamDescriptionVLC']='<b>Web Cam USB</b><br/> Si possono scattare foto da una webcam USB collegata a un computer in rete, a patto di aver installato sullo stesso PC il programma <a href="http://www.videolan.org/vlc/" target="_blank">VLC Media Player</a>. Nel campo bisogna inserire <b>«http://<i>IP del PC</i>:8050/stream.mjpg»</b> dove "<i>IP del PC</i>" è l\'indirizzo IP del computer cui è collegata la webcam<br/>
-<b>Linux configuration</b>:<br/>
-- Se la webcam si trova sullo stesso PC dove gira ianseo, apri un terminale e lancia manualmente questo comando:
+$lang['CamDescriptionVLC']='<b>Web Cam USB</b><br> Si possono scattare foto da una webcam USB collegata a un computer in rete, a patto di aver installato sullo stesso PC il programma <a href="http://www.videolan.org/vlc/" target="_blank">VLC Media Player</a>. Nel campo bisogna inserire <b>«http://<i>IP del PC</i>:8050/stream.mjpg»</b> dove "<i>IP del PC</i>" è l\'indirizzo IP del computer cui è collegata la webcam<br>
+<b>Linux configuration</b>:<br>
+- Se la webcam si trova sullo stesso PC dove gira i@nseo, apri un terminale e lancia manualmente questo comando:
 <pre>$a[0]/$a[1]</pre>
-- Se invece la webcam è collegata a un altro computer, copiarvi il file «$a[1]» che si trova nella cartella Scripts dell\'installazione di Ianseo e lanciarlo allo stesso modo.<br/>
-- Puoi anche creare una voce di menu che punta a questo comando per lanciare da menu VLC<br/>
-<b>Windows configuration</b>:<br/>
-- Con Blocco Note apri il file «$a[3]» che si trova nella cartella Scripts di Ianseo, aggiusta il percorso inserendo quello del programma VLC e salva.<br/>
-- Se la webcam si trova sullo stesso PC dove gira ianseo, apri un terminale e lancia manualmente questo comando:
+- Se invece la webcam è collegata a un altro computer, copiarvi il file «$a[1]» che si trova nella cartella Scripts dell\'installazione di I@nseo e lanciarlo allo stesso modo.<br>
+- Puoi anche creare una voce di menu che punta a questo comando per lanciare da menu VLC<br>
+<b>Windows configuration</b>:<br>
+- Con Blocco Note apri il file «$a[3]» che si trova nella cartella Scripts di I@nseo, aggiusta il percorso inserendo quello del programma VLC e salva.<br>
+- Se la webcam si trova sullo stesso PC dove gira i@nseo, apri un terminale e lancia manualmente questo comando:
 <pre>$a[2]/$a[3]</pre>
-- Se invece la webcam è collegata a un altro computer, copiarvi il file «$a[3]» che si trova nella cartella Scripts dell\'installazione di Ianseo e lanciarlo allo stesso modo.<br/>
+- Se invece la webcam è collegata a un altro computer, copiarvi il file «$a[3]» che si trova nella cartella Scripts dell\'installazione di I@nseo e lanciarlo allo stesso modo.<br>
 - Puoi anche creare una voce di menu che punta a questo comando per lanciare da menu VLC';
 $lang['Camera']='Webcam';
 $lang['CamPreview']='Visualizzazione';
@@ -226,12 +226,10 @@ $lang['ChairmanJury']='Commissione di Garanzia (Presidente)';
 $lang['ChangeLookUpTable']='Cambia tabella di ricerca';
 $lang['ChangeNationsNames']='Cambia Nomi Società';
 $lang['Channel']='Canale';
-$lang['CheckGoldsInMatch']='Controlla gli ori nei Pareggi';
 $lang['CheckRefMail']='Verifica EMail di riferimento...';
 $lang['CheckScorecards']='Controlla Score';
 $lang['CheckTargetUpdate']='Stato degli Inserimenti';
 $lang['CheckWaIds']='Controlla i WAID degli arcieri';
-$lang['CheckXNinesInMatch']='Controlla gli X/Nove nei Pareggi';
 $lang['Classes']='Classi';
 $lang['ClearField']='Svuota presenze sul campo';
 $lang['ClickMovesPosition']='Aggiorna solo la posizione delle frecce';
@@ -341,8 +339,8 @@ $lang['DescNOC']='##NOC##&nbsp;<i>&lt;tab&gt;</i>&nbsp;BIB&nbsp;<i>&lt;tab&gt;</
 Per impostare il codice Paese/Società dell\'arciere identificato con "BIB"';
 $lang['DescPhotoName']='Mostra Codice';
 $lang['Descr']='Descrizione';
-$lang['DescSession']='##SESSION##&nbsp;<i>&lt;tab&gt;</i>&nbsp;ORDER&nbsp;<i>&lt;tab&gt;</i>&nbsp;NAME&nbsp;<i>&lt;tab&gt;</i>&nbsp;TARGETNO<br>
-Una riga tabulata che inizia con ##SESSION## seguito dal numero della sessione, dal nome della sessione e dal numero di bersagli in quella sessione creerà/aggiornerà quella sessione in ianseo.';
+$lang['DescSession']='##SESSION## <i><tab></i> ORDER <i><tab></i> NAME <i><tab></i> TARGETNO<br>
+Una riga tabulata che inizia con ##SESSION## seguito dal numero della sessione, dal nome della sessione e dal numero di bersagli in quella sessione creerà/aggiornerà quella sessione in i@nseo.';
 $lang['DescSubClass']='##SUBCLASS##&nbsp;<i>&lt;tab&gt;</i>&nbsp;BIB&nbsp;<i>&lt;tab&gt;</i>&nbsp;SUBCLASSCODE<br>Imposta la Categoria dell\'arciere identificato da "BIB"';
 $lang['DescTarget']='##TARGET##&nbsp;<i>&lt;tab&gt;</i>&nbsp;BIB&nbsp;<i>&lt;tab&gt;</i>&nbsp;DIVISION&nbsp;<i>&lt;tab&gt;</i>&nbsp;CLASS&nbsp;<i>&lt;tab&gt;</i>&nbsp;TARGET<br>
 Una riga tabulata che inizia con ##TARGET## seguito da Tessera, codice Divisione, codice Classe e tipo di bersaglio assegnerà quel tipo di bersaglio a quell\'atleta che tira in quella divisione e classe.';
@@ -541,7 +539,6 @@ $lang['GetArcInfo']='Raccogli email e date di nascita degli arcieri';
 $lang['GetCredentials']='Recupera Credenziali';
 $lang['GetCredentialsExplained']='Puoi richiedere di ospitare la gara su <b><a href="http://ianseo.net/TourList.php" target="_blank">ianseo.net</a></b>.<br/> Il servizio è offerto gratuitamente ma i termini e le condizioni possono cambiare in qualunque momento senza preavviso.';
 $lang['GivenName']='Nome';
-$lang['GoldLabel']='Testo Gold';
 $lang['GoLive']='Segui dal vivo!';
 $lang['GoogleMap']='Incolla l\'<a href="$a" target="GoogleMap">indirizzo della Mappa di Google</a> che mostra il luogo della gara.';
 $lang['GoToRunning']='Vai alla sessione in esecuzione';
@@ -568,7 +565,7 @@ $lang['ImportARFFile']='Importazione file ARF';
 $lang['ImportedEntries']='Punteggi importati';
 $lang['ImportedTour']='Torneo importato';
 $lang['ImportNames']='Importa nomi';
-$lang['IncompatibleVersions']='Non è stato possibile importare la gara perché è più recente di Ianseo.<br/>Aggiorna Ianseo all\'ultimo rilascio da $a.';
+$lang['IncompatibleVersions']='Non è stato possibile importare la gara perché è più recente di I@nseo.<br>Aggiorna I@nseo all\'ultimo rilascio da $a.';
 $lang['IndClEvent']='Classe Individuale';
 $lang['IndFin']='Individuale - Fasi Finali';
 $lang['IndFinEvent']='Finali Individuali';
@@ -591,7 +588,7 @@ $lang['IrmStatus']='Stato IRM';
 $lang['IrmUpdateIndAndTeams']='Aggiorna manualmente la Ranking Individuale e a Squadre';
 $lang['IrmUpdateIndividual']='Aggiorna manualmente la Ranking Individuale';
 $lang['IrmUpdateTeams']='Aggiorna manualmente la Ranking a Squadre';
-$lang['IsDbVersionTooOld']='La versione del DB Infosystem è più vecchia di quella di ianseo';
+$lang['IsDbVersionTooOld']='La versione del DB Infosystem è più vecchia di quella di i@nseo';
 $lang['IsGenericConfig']='Configurazione generica';
 $lang['IsParamWarning']='Setup InfoSystem!<br/>Usare con ESTREMA cautela!';
 $lang['IsSpecificConfig']='Elementi specifici della competizione';
@@ -850,7 +847,7 @@ $lang['OVRSignals']='Invia segnali OVR';
 $lang['OvrSignalSendAll']='Invia tutti';
 $lang['PageBreakBeforeDays']='Interruzione di pagina prima dei giorni';
 $lang['PaperSize']='Dimensione carta (mm)';
-$lang['ParamWarning']='ATTENZIONE!<br/>L\'inserimento di dati errati in questa pagina può distruggere la vostra installazione di IANSEO!<br/>Usare con ESTREMA cautela!';
+$lang['ParamWarning']='ATTENZIONE!<br>L\'inserimento di dati errati in questa pagina può distruggere la vostra installazione di I@NSEO!<br>Usare con ESTREMA cautela!';
 $lang['PartecipantLabel']='Elenco Partecipanti - Etichette';
 $lang['PartecipantListError']='Elenco Partecipanti - Anomalie';
 $lang['ParticipantSchedule']='Partecipante $a';
@@ -890,8 +887,6 @@ $lang['PhotoUploaded']='Foto caricata!';
 $lang['PictureThere']='C\'è già una foto. Si prega di eliminare quella vecchia.';
 $lang['PlacesNo']='{$a} Posti';
 $lang['Points']='Punti';
-$lang['PointsAsGold']='Punti usati come Gold';
-$lang['PointsAsXNine']='Punti usati come XNine';
 $lang['PoolName']='Girone $a';
 $lang['PostProcError']='Errore post-processing';
 $lang['Poule']='Gruppo';
@@ -932,8 +927,8 @@ $lang['PrintScoreInd']='Stampa Score Individuali';
 $lang['PrintScoreTeam']='Stampa Score Squadre';
 $lang['PrintText']='Testo da inserire come intestazione nelle stampe dei risultati';
 $lang['PrintTextTitle']='Intestazione Risultati';
-$lang['Privacy-1']='Ianseo non trattiene dati personali salvo autorizzazione da parte dell\'utente. Il software Ianseo può essere utilizzato per conservare i dati personali se il titolare del trattamento ha un interesse legittimo in tali dati.';
-$lang['Privacy-2']='Ianseo pubblica i dati delle competizioni di tiro con l\'arco nell\'interesse dei documenti storici.';
+$lang['Privacy-1']='I@nseo non trattiene dati personali salvo autorizzazione da parte dell\'utente. Il software I@nseo può essere utilizzato per conservare i dati personali se il titolare del trattamento ha un interesse legittimo in tali dati.';
+$lang['Privacy-2']='I@nseo pubblica i dati delle competizioni di tiro con l\'arco nell\'interesse dei documenti storici.';
 $lang['Privacy-GDPR']='http://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32016R0679';
 $lang['Q-Session']='Sessioni di Qualificazione';
 $lang['QF_Phase']='Quarti di Finale';
@@ -1117,7 +1112,7 @@ $lang['ShowCountry2']='Mostra Paese 2';
 $lang['ShowCountry3']='Mostra Paese 3';
 $lang['ShowDisable']='Mostra sedia a rotelle';
 $lang['ShowEmail']='Mostra Email';
-$lang['ShowIanseoMenu']='Mostra Menù Ianseo';
+$lang['ShowIanseoMenu']='Mostra Menù I@nseo';
 $lang['ShowLocalCode']='Mostra Identificativo Locale';
 $lang['ShowMissing']='Mostra score mancanti';
 $lang['ShowPdfFlags']='Mostra bandiere in PDF';
@@ -1359,7 +1354,6 @@ $lang['TVCss3FontRev1-odd']='colore inverso<br/>(riga 1 - dispari)';
 $lang['TVCss3FontRev2-even']='colore inverso<br/>(riga 2 - pari)';
 $lang['TVCss3FontRev2-odd']='colore inverso<br/>(riga 2 - dispari)';
 $lang['TVCss3FontSize']='dimensione del carattere';
-$lang['TVCss3Gold']='Totale Ori';
 $lang['TVCss3Hall']='Sala';
 $lang['TVCss3Headers']='Intestazioni di colonna';
 $lang['TVCss3IdAthletes']='ID arcieri';
@@ -1389,7 +1383,6 @@ $lang['TVCss3TgtAssign']='Blocco di posizione assegnato';
 $lang['TVCss3TgtBlock']='Blocca Bersaglio';
 $lang['TVCss3Title']='Titolo';
 $lang['TVCss3TopRow']='Riga superiore';
-$lang['TVCss3XNine']='Totale X/9';
 $lang['TVDefault']='Predefinito';
 $lang['TVDefault-Scroll']='Torneo: caratteri e colori predefiniti<br>Multimedia: Tempo di scorrimento';
 $lang['TVDefaultScroll']='Tempo di scorrimento predefinito';
@@ -1539,9 +1532,9 @@ $lang['UDPPort']='Porta UDP';
 $lang['UDPSquawkIdent']='Squawk Ident';
 $lang['Unisex']='Unisex';
 $lang['Unset-DSQ']='Togli squalificato';
-$lang['UpdateIanseo']='La tua versione di Ianseo non è compatibile con il servizio richiesto: ti preghiamo di aggiornarla!';
+$lang['UpdateIanseo']='La tua versione di I@nseo non è compatibile con il servizio richiesto: ti preghiamo di aggiornarla!';
 $lang['UpdateJPG']='crea anche immagine in formato JPG';
-$lang['UpdateNeeded']='Devi aggiornare Ianseo all\'ultima versione per caricare i risultati';
+$lang['UpdateNeeded']='Devi aggiornare I@nseo all\'ultima versione per caricare i risultati';
 $lang['UpdatePNG']='Aggiornare anche il file PNG?';
 $lang['UploadFile']='Carica file (PDF)';
 $lang['URL']='URL';
@@ -1584,7 +1577,6 @@ $lang['WheelchairShort']='W';
 $lang['Wikipedia']='Wikipedia';
 $lang['WR-Record']='Record Mondiale';
 $lang['WR-short']='WR';
-$lang['XNineLabel']='Testo XNine';
 $lang['YearEnd']='Anno Fine';
 $lang['YearStart']='Anno Inizio';
 $lang['YourFollowingMatches']='Lista dei possibili scontri in base al risultato del tuo scontro';

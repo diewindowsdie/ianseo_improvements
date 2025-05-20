@@ -104,8 +104,8 @@
 
 			$q="
 				SELECT
-					TeTournament,TeCoId,TeSubTeam,TeEvent, IF(EvFinalFirstPhase=0,99999,coalesce(RrQualified, EvNumQualified)) AS QualifiedNo, EvFinalFirstPhase, TeRank AS ActualRank,
-                    TeScore, TeGold, TeXnine,
+					TeTournament,TeCoId,TeSubTeam,TeEvent, coalesce(RrQualified, IF(EvFinalFirstPhase=0,99999,EvNumQualified)) AS QualifiedNo, EvFinalFirstPhase, TeRank AS ActualRank,
+                    TeScore, TeGold, TeXnine, coalesce(RrQualified, EvFinalFirstPhase>0) as CalcSO,
 					IF(EvRunning=1,IFNULL(ROUND(TeScore/TeHits,3),0),TeScore) AS TeScore, 
                     IF(EvRunning=1,IFNULL(ROUND(TeGold/TeHits,3),0),TeGold) AS TeGold,
                     IF(EvRunning=1,IFNULL(ROUND(TeXnine/TeHits,3),0),TeXnine) AS TeXnine,
@@ -208,7 +208,7 @@
 						}
 					}
 
-					if($myRow->EvFinalFirstPhase==0 OR $myRank>$myRow->QualifiedNo) {
+					if(!$myRow->CalcSO OR $myRank > $myRow->QualifiedNo) {
                         $so = 0;
                     }
 
@@ -234,7 +234,7 @@
 								'event'		=> $myRow->TeEvent,
 								'so'		=> ($so * $myRank),
 								'rank'		=> $myRank,
-                                'finalrank' => ($myRow->EvFinalFirstPhase ? -1 : $myRank),
+                                'finalrank' => ($myRow->CalcSO ? -1 : $myRank),
 								'tiebreak'	=> '',
 								'decoded'	=> '',
                                 'closest'   => 0

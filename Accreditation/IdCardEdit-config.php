@@ -2,8 +2,11 @@
 
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 
-$CardType=(empty($_REQUEST['CardType']) ? 'A' : $_REQUEST['CardType']);
-$CardNumber=(empty($_REQUEST['CardNumber']) ? 0 : intval($_REQUEST['CardNumber']));
+$CardType = ($_REQUEST['CardType']??'A');
+$CardNumber = intval($_REQUEST['CardNumber']??0);
+$CardPage = intval($_REQUEST['CardPage']??1);
+
+$IceFilter="IceTournament={$_SESSION['TourId']} and IceCardType='{$CardType}' and IceCardNumber={$CardNumber} and IceCardPage={$CardPage}";
 
 if(isset($JSON)) {
 	if(!CheckTourSession()) {
@@ -36,40 +39,40 @@ if(isset($JSON)) {
 }
 
 
-function switchOrder($Old, $New, $CardType, $CardNumber) {
+function switchOrder($Old, $New, $CardType, $CardNumber, $CardPage) {
 	global $CFG;
 	if($New==$Old or !$New) return;
 	$min=min($New, $Old);
 	$max=max($New, $Old);
-	safe_w_sql("update IdCardElements set IceNewOrder=IceOrder where IceCardType='$CardType' and IceCardNumber='$CardNumber' and IceTournament={$_SESSION['TourId']}");
+	safe_w_sql("update IdCardElements set IceNewOrder=IceOrder where IceCardType='$CardType' and IceCardNumber='$CardNumber' and IceCardPage='$CardPage' and IceTournament={$_SESSION['TourId']}");
 	if($New<$Old) {
-		safe_w_sql("update IdCardElements set IceNewOrder=IceOrder+1 where IceCardType='$CardType' and IceCardNumber='$CardNumber' and IceTournament={$_SESSION['TourId']} and IceOrder between $min and $max");
+		safe_w_sql("update IdCardElements set IceNewOrder=IceOrder+1 where IceCardType='$CardType' and IceCardNumber='$CardNumber' and IceCardPage='$CardPage' and IceTournament={$_SESSION['TourId']} and IceOrder between $min and $max");
 	} else {
-		safe_w_sql("update IdCardElements set IceNewOrder=IceOrder-1 where IceCardType='$CardType' and IceCardNumber='$CardNumber' and IceTournament={$_SESSION['TourId']} and IceOrder between $min and $max");
+		safe_w_sql("update IdCardElements set IceNewOrder=IceOrder-1 where IceCardType='$CardType' and IceCardNumber='$CardNumber' and IceCardPage='$CardPage' and IceTournament={$_SESSION['TourId']} and IceOrder between $min and $max");
 	}
-	safe_w_sql("update IdCardElements set IceNewOrder=$New where IceCardType='$CardType' and IceCardNumber='$CardNumber' and IceTournament={$_SESSION['TourId']} and IceOrder=$Old");
-	safe_w_sql("update IdCardElements set IceOrder=IceNewOrder where IceCardType='$CardType' and IceCardNumber='$CardNumber' and IceTournament={$_SESSION['TourId']}");
+	safe_w_sql("update IdCardElements set IceNewOrder=$New where IceCardType='$CardType' and IceCardNumber='$CardNumber' and IceCardPage='$CardPage' and IceTournament={$_SESSION['TourId']} and IceOrder=$Old");
+	safe_w_sql("update IdCardElements set IceOrder=IceNewOrder where IceCardType='$CardType' and IceCardNumber='$CardNumber' and IceCardPage='$CardPage' and IceTournament={$_SESSION['TourId']}");
 
 	// removes all pictures
 	$Images=array('Image','ImageSvg','RandomImage');
 	foreach($Images as $type) {
 
-		foreach(glob($CFG->DOCUMENT_PATH . 'TV/Photos/' . $_SESSION['TourCodeSafe'] . '-' . $type . '-' . $CardType . '-'. $CardNumber . '-*') as $file) {
+		foreach(glob($CFG->DOCUMENT_PATH . 'TV/Photos/' . $_SESSION['TourCodeSafe'] . '-' . $type . '-' . $CardType . '-'. $CardNumber . '-'. $CardPage . '-*') as $file) {
 			unlink($file);
 		}
 	}
 
 	// redraws all pictures
-	$SQL="select * from IdCardElements where IceContent>'' and IceType in (".implode(',', StrSafe_DB($Images)).") and IceCardType='$CardType' and IceCardNumber='$CardNumber' and IceTournament={$_SESSION['TourId']}";
+	$SQL="select * from IdCardElements where IceContent>'' and IceType in (".implode(',', StrSafe_DB($Images)).") and IceCardType='$CardType' and IceCardNumber='$CardNumber' and IceCardPage='$CardPage' and IceTournament={$_SESSION['TourId']}";
 	$q=safe_r_sql($SQL);
 	while($r=safe_fetch($q)) {
 		if($r->IceType=='ImageSvg') {
-			$ImName=$CFG->DOCUMENT_PATH.'TV/Photos/'.$_SESSION['TourCodeSafe'].'-'.$r->IceType.'-'.$r->IceCardType.'-'.$r->IceCardNumber.'-'.$r->IceOrder.'.svg';
+			$ImName=$CFG->DOCUMENT_PATH.'TV/Photos/'.$_SESSION['TourCodeSafe'].'-'.$r->IceType.'-'.$r->IceCardType.'-'.$r->IceCardNumber . '-'. $r->IceCardPage.'-'.$r->IceOrder.'.svg';
 			if($im=@gzinflate($r->IceContent)) {
 				file_put_contents($ImName, $im);
 			}
 		} else {
-			$ImName=$CFG->DOCUMENT_PATH.'TV/Photos/'.$_SESSION['TourCodeSafe'].'-'.$r->IceType.'-'.$r->IceCardType.'-'.$r->IceCardNumber.'-'.$r->IceOrder.'.jpg';
+			$ImName=$CFG->DOCUMENT_PATH.'TV/Photos/'.$_SESSION['TourCodeSafe'].'-'.$r->IceType.'-'.$r->IceCardType.'-'.$r->IceCardNumber . '-'. $r->IceCardPage.'-'.$r->IceOrder.'.jpg';
 			if($im=@imagecreatefromstring($r->IceContent)) {
 				imagejpeg($im, $ImName, 90);
 			}

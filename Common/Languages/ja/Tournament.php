@@ -468,7 +468,6 @@ $lang['TVCss3Arrows']='ヒット';
 $lang['TVCss3Athlete']='選手名';
 $lang['TVCss3CountryCode']='国コード';
 $lang['TVCss3CountryDescr']='国名';
-$lang['TVCss3Gold']='ゴール';
 $lang['TVCss3Rank']='予選順位';
 $lang['TVCss3Score']='点数';
 $lang['TVCss3Session']='セッション';

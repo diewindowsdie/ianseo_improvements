@@ -1,0 +1,65 @@
+.d-flex {
+	display:flex;
+}
+.d-flex > div {
+	margin:0 0.5em;
+}
+.d-flex img {
+	max-width:30vw;
+	max-height:30vw;
+}
+.d-flex#CategoryList {
+	flex-wrap: wrap;
+}
+.d-flex#CategoryList > div {
+	flex:0 0 8ch;
+	white-space: nowrap;
+}
+#SpecificBadges {display:flex;justify-content:center;flex-wrap:wrap;}
+#SpecificBadges div {margin-left:1em;margin-right:1em;}
+
+.updated {
+	/*background-color: transparent;*/
+	animation-name: updated;
+	animation-duration: 3s;
+}
+
+.animatedError {
+	/*background-color: transparent;*/
+	animation-name: error;
+	animation-duration: 3s;
+}
+
+@keyframes updated {
+	0%   {background-color: #00bb00;}
+	70%   {background-color: #00aa00;}
+	80%   {background-color: #00ff00;}
+	90%   {background-color: #00aa00;}
+	100% {background-color: initial;}
+}
+@keyframes error {
+	0%   {background-color: #bb0000;}
+	70%   {background-color: #aa0000;}
+	80%   {background-color: #ff0000;}
+	90%   {background-color: #aa0000;}
+	100% {background-color: initial;}
+}
+
+.detached {
+	position: fixed;
+	top:0;
+	right:0;
+	padding:3em;
+	background-color: white;
+}
+
+#IdCardImage {
+	max-height:40vh;
+	max-width:50vw;
+	height:30em;
+	width:auto;
+}
+#IdCardBackground {
+	max-height:25vh;
+	max-width:50vw;
+}
