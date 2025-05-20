@@ -1633,7 +1633,7 @@ Class Scheduler {
 								//	// skip to nex item!
 								//	continue;
 								//}
-								if($OldSubTitle!=$Item->SubTitle) {
+								if($OldSubTitle!=$Item->SubTitle && $Item->Title != $mainText) {
 									// SubTitle
 									$pdf->SetX($StartX+$TimeColumns);
 									$pdf->SetFont('', 'BI');

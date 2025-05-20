@@ -128,44 +128,44 @@ function CreateStandardClasses($TourId, $SubRule, $Type='FITA') {
     $i=1;
 	switch($SubRule) {
 		case '1':
-			CreateClass($TourId, $i++, 21, 49, 0, 'M', 'M', getClassName('M'));
-			CreateClass($TourId, $i++, 21, 49, 1, 'W', 'W', getClassName('W'));
-			CreateClass($TourId, $i++, 18, 20, 0, 'U21M', 'U21M,M', getClassName('U21M'));
-			CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W,W', getClassName('U21W'));
-            if(in_array($Type, [3,37])) {
+			CreateClass($TourId, $i++, 11, 100, 0, 'M', 'M', getClassName('M'));
+			CreateClass($TourId, $i++, 11, 100, 1, 'W', 'W', getClassName('W'));
+			CreateClass($TourId, $i++, 11, 20, 0, 'U21M', 'U21M,M', getClassName('U21M'));
+			CreateClass($TourId, $i++, 11, 20, 1, 'U21W', 'U21W,W', getClassName('U21W'));
+            if(in_array($Type, [3,6,37])) {
                 // 70m and 2x70m have U15 too
-                CreateClass($TourId, $i++,  15, 17, 0, 'U18M', 'U18M,U21M,M', getClassName('U18M'));
-                CreateClass($TourId, $i++,  15, 17, 1, 'U18W', 'U18W,U21W,W', getClassName('U18W'));
-                CreateClass($TourId, $i++,  1, 14, 0, 'U15M', 'U15M,U18M,U21M,M', 'Under 15 Men');
-                CreateClass($TourId, $i++,  1, 14, 1, 'U15W', 'U15W,U18W,U21W,W', 'Under 15 Women');
+                CreateClass($TourId, $i++,  11, 17, 0, 'U18M', 'U18M,U21M,M', getClassName('U18M'));
+                CreateClass($TourId, $i++,  11, 17, 1, 'U18W', 'U18W,U21W,W', getClassName('U18W'));
+                CreateClass($TourId, $i++,  11, 13, 0, 'U14M', 'U14M,U18M,U21M,M', getClassName('U14M'));
+                CreateClass($TourId, $i++,  11, 13, 1, 'U14W', 'U14W,U18W,U21W,W', getClassName('U14W'));
             } else {
                 // only U18
-                CreateClass($TourId, $i++,  1, 17, 0, 'U18M', 'U18M,U21M,M', getClassName('U18M'));
-                CreateClass($TourId, $i++,  1, 17, 1, 'U18W', 'U18W,U21W,W', getClassName('U18W'));
+                CreateClass($TourId, $i++,  11, 17, 0, 'U18M', 'U18M,U21M,M', getClassName('U18M'));
+                CreateClass($TourId, $i++,  11, 17, 1, 'U18W', 'U18W,U21W,W', getClassName('U18W'));
             }
 			CreateClass($TourId, $i++, 50,100, 0, '50M', '50M,M', '50+ Men');
 			CreateClass($TourId, $i++, 50,100, 1, '50W', '50W,W', '50+ Women');
 			break;
 		case '2':
 		case '5':
-			CreateClass($TourId, 1, 1,100, 0, 'M', 'M', getClassName('M'));
-			CreateClass($TourId, 2, 1,100, 1, 'W', 'W', getClassName('W'));
+			CreateClass($TourId, 1, 11,100, 0, 'M', 'M', getClassName('M'));
+			CreateClass($TourId, 2, 11,100, 1, 'W', 'W', getClassName('W'));
 			break;
 		case '3':
-			CreateClass($TourId, 1, 21,100, 0, 'M', 'M', getClassName('M'));
-			CreateClass($TourId, 2, 21,100, 1, 'W', 'W', getClassName('W'));
-			CreateClass($TourId, 3, 1, 20, 0, 'U21M', 'U21M,M', getClassName('U21M'));
-			CreateClass($TourId, 4, 1, 20, 1, 'U21W', 'U21W,W', getClassName('U21W'));
+			CreateClass($TourId, 1, 11,100, 0, 'M', 'M', getClassName('M'));
+			CreateClass($TourId, 2, 11,100, 1, 'W', 'W', getClassName('W'));
+			CreateClass($TourId, 3, 11, 20, 0, 'U21M', 'U21M,M', getClassName('U21M'));
+			CreateClass($TourId, 4, 11, 20, 1, 'U21W', 'U21W,W', getClassName('U21W'));
 			break;
 		case '4':
-			CreateClass($TourId, $i++, 18, 20, 0, 'U21M', 'U21M', getClassName('U21M'));
-			CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W', getClassName('U21W'));
-            if(in_array($Type, [3,37])) {
+			CreateClass($TourId, $i++, 11, 20, 0, 'U21M', 'U21M', getClassName('U21M'));
+			CreateClass($TourId, $i++, 11, 20, 1, 'U21W', 'U21W', getClassName('U21W'));
+            if(in_array($Type, [3,6,37])) {
                 // 70m and 2x70m have U15 too
-                CreateClass($TourId, $i++,  15, 17, 0, 'U18M', 'U18M,U21M,M', getClassName('U18M'));
-                CreateClass($TourId, $i++,  15, 17, 1, 'U18W', 'U18W,U21W,W', getClassName('U18W'));
-                CreateClass($TourId, $i++,  1, 14, 0, 'U15M', 'U15M,U18M,U21M,M', 'Under 15 Men');
-                CreateClass($TourId, $i++,  1, 14, 1, 'U15W', 'U15W,U18W,U21W,W', 'Under 15 Women');
+                CreateClass($TourId, $i++,  11, 17, 0, 'U18M', 'U18M,U21M,M', getClassName('U18M'));
+                CreateClass($TourId, $i++,  11, 17, 1, 'U18W', 'U18W,U21W,W', getClassName('U18W'));
+                CreateClass($TourId, $i++,  11, 13, 0, 'U14M', 'U14M,U18M,U21M,M', getClassName('U14M'));
+                CreateClass($TourId, $i++,  11, 13, 1, 'U14W', 'U14W,U18W,U21W,W', getClassName('U14W'));
             } else {
                 // only U18
                 CreateClass($TourId, $i++,  1, 17, 0, 'U18M', 'U18M,U21M,M', getClassName('U18M'));
@@ -178,7 +178,7 @@ function CreateStandardClasses($TourId, $SubRule, $Type='FITA') {
 function CreateStandardEvents($TourId, $SubRule, $TourType) {
     $Outdoor=($TourType!=6);
     $allowBB=(in_array($TourType,array(3,6,7,8,37)));
-    $allowU15=(in_array($TourType, [3,37]));
+    $allowU15=(in_array($TourType, [3,6,37]));
 	$TargetR=($Outdoor?5:2);
 	$TargetC=($Outdoor?($TourType==1 ? 5 : 9):4);
     $TargetB=($Outdoor?5:1);
@@ -187,8 +187,8 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
     $TargetSizeB=($Outdoor ? 122 : 40);
 	$DistanceR=($Outdoor ? 70 : 18);
 	$DistanceRcm=($Outdoor ? 60 : 18);
-	$DistanceU15=($Outdoor ? 40 : 18);
-	$DistanceU15B=($Outdoor ? 30 : 18);
+	$DistanceU15=($Outdoor ? 40 : 12);
+	$DistanceU15B=($Outdoor ? 30 : 12);
 	$DistanceC=($Outdoor ? ($TourType==1 ? 70 : 50) : 18);
     $DistanceCcm=($Outdoor ? ($TourType==1 ? 60 : 50) : 18);
     $DistanceB=($Outdoor ? 50 : 18);
@@ -231,8 +231,8 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
             CreateEventNew($TourId, 'RU18W', getEventName('RU18W', $TourType) ?? 'Recurve Under 18 Women', $i++, $Options);
             if($allowU15) {
                 $Options['EvDistance']=$DistanceU15;
-                CreateEventNew($TourId, 'RU15M', 'Recurve Under 15 Men', $i++, $Options);
-                CreateEventNew($TourId, 'RU15W', 'Recurve Under 15 Women', $i++, $Options);
+                CreateEventNew($TourId, 'RU14M', getEventName('RU14M', $TourType) ?? 'Recurve Under 14 Men', $i++, $Options);
+                CreateEventNew($TourId, 'RU14W', getEventName('RU14W', $TourType) ?? 'Recurve Under 14 Women', $i++, $Options);
             }
             if($SubRule==1) {
                 $Options['EvDistance']=$DistanceRcm;
@@ -256,8 +256,8 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
 			CreateEventNew($TourId, 'CU18W', getEventName('CU18W', $TourType) ?? 'Compound Under 18 Women', $i++, $Options);
             if($allowU15) {
                 $Options['EvDistance']=$DistanceU15;
-                CreateEventNew($TourId, 'CU15M', 'Compound Under 15 Men', $i++, $Options);
-                CreateEventNew($TourId, 'CU15W', 'Compound Under 15 Women', $i++, $Options);
+                CreateEventNew($TourId, 'CU14M', getEventName('CU14M', $TourType) ?? 'Compound Under 14 Men', $i++, $Options);
+                CreateEventNew($TourId, 'CU14W', getEventName('CU14W', $TourType) ?? 'Compound Under 14 Women', $i++, $Options);
             }
             if($SubRule==1) {
                 $Options['EvDistance']=$DistanceC;
@@ -281,8 +281,8 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
                 CreateEventNew($TourId,'BU18W', getEventName('BU18W', $TourType) ?? 'Barebow Under 18 Women', $i++, $Options);
                 if($allowU15) {
                     $Options['EvDistance']=$DistanceU15B;
-                    CreateEventNew($TourId, 'BU15M', 'Barebow Under 15 Men', $i++, $Options);
-                    CreateEventNew($TourId, 'BU15W', 'Barebow Under 15 Women', $i++, $Options);
+                    CreateEventNew($TourId, 'BU14M', getEventName('BU14M', $TourType) ?? 'Barebow Under 14 Men', $i++, $Options);
+                    CreateEventNew($TourId, 'BU14W', getEventName('BU14W', $TourType) ?? 'Barebow Under 14 Women', $i++, $Options);
                 }
                 if($SubRule==1) {
                     $Options['EvDistance'] = $DistanceB;
@@ -321,8 +321,8 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
 			CreateEventNew($TourId,'RU18W', 'Recurve Under 18 Women Team', $i++, $Options);
             if($allowU15) {
                 $Options['EvDistance']=$DistanceU15;
-                CreateEventNew($TourId,'RU15M', 'Recurve Under 15 Men Team', $i++, $Options);
-                CreateEventNew($TourId,'RU15W', 'Recurve Under 15 Women Team', $i++, $Options);
+                CreateEventNew($TourId,'RU14M', 'Recurve Under 14 Men Team', $i++, $Options);
+                CreateEventNew($TourId,'RU14W', 'Recurve Under 14 Women Team', $i++, $Options);
             }
             if($SubRule==1) {
                 $Options['EvDistance'] = $DistanceRcm;
@@ -346,7 +346,7 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
 				CreateEventNew($TourId,'RU18X', 'Recurve Under 18 Mixed Team', $i++, $Options);
                 if($allowU15) {
                     $Options['EvDistance']=$DistanceU15;
-                    CreateEventNew($TourId,'RU15X', 'Recurve Under 15 Mixed Team', $i++, $Options);
+                    CreateEventNew($TourId,'RU14X', 'Recurve Under 14 Mixed Team', $i++, $Options);
                 }
                 if($SubRule==1) {
                     $Options['EvDistance'] = $DistanceRcm;
@@ -375,8 +375,8 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
 			CreateEventNew($TourId,'CU18W', 'Compound Under 18 Women Team', $i++, $Options);
             if($allowU15) {
                 $Options['EvDistance']=$DistanceU15;
-                CreateEventNew($TourId,'CU15M', 'Compound Under 15 Men Team', $i++, $Options);
-                CreateEventNew($TourId,'CU15W', 'Compound Under 15 Women Team', $i++, $Options);
+                CreateEventNew($TourId,'CU14M', 'Compound Under 14 Men Team', $i++, $Options);
+                CreateEventNew($TourId,'CU14W', 'Compound Under 14 Women Team', $i++, $Options);
             }
             if($SubRule==1) {
                 $Options['EvDistance'] = $DistanceC;
@@ -398,7 +398,7 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
 				CreateEventNew($TourId, 'CU18X', 'Compound Under 18 Mixed Team',$i++, $Options);
                 if($allowU15) {
                     $Options['EvDistance']=$DistanceU15;
-                    CreateEventNew($TourId,'CU15X', 'Compound Under 15 Mixed Team', $i++, $Options);
+                    CreateEventNew($TourId,'CU14X', 'Compound Under 14 Mixed Team', $i++, $Options);
                 }
                 if($SubRule==1) {
                     $Options['EvDistance'] = $DistanceC;
@@ -427,8 +427,8 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
                 CreateEventNew($TourId,'BU18W', 'Barebow Under 18 Women Team', $i++, $Options);
                 if($allowU15) {
                     $Options['EvDistance']=$DistanceU15B;
-                    CreateEventNew($TourId,'BU15M', 'Barebow Under 15 Men Team', $i++, $Options);
-                    CreateEventNew($TourId,'BU15W', 'Barebow Under 15 Women Team', $i++, $Options);
+                    CreateEventNew($TourId,'BU14M', 'Barebow Under 14 Men Team', $i++, $Options);
+                    CreateEventNew($TourId,'BU14W', 'Barebow Under 14 Women Team', $i++, $Options);
                 }
                 if($SubRule==1) {
                     $Options['EvDistance'] = $DistanceB;
@@ -450,7 +450,7 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
                     CreateEventNew($TourId,'BU18X', 'Barebow Under 18 Mixed Team', $i++, $Options);
                     if($allowU15) {
                         $Options['EvDistance']=$DistanceU15B;
-                        CreateEventNew($TourId,'BU15X', 'Barebow Under 15 Mixed Team', $i++, $Options);
+                        CreateEventNew($TourId,'BU14X', 'Barebow Under 14 Mixed Team', $i++, $Options);
                     }
                     if($SubRule==1) {
                         $Options['EvDistance'] = $DistanceB;
@@ -540,7 +540,7 @@ function InsertStandardEvents($TourId, $SubRule) {
     $divs=['R','C','B'];
 	switch($SubRule) {
 		case '1':
-            $cls=['','U21','U18','U15','50'];
+            $cls=['','U21','U18','U14','50'];
 			break;
 		case '2':
 		case '5':
@@ -550,7 +550,7 @@ function InsertStandardEvents($TourId, $SubRule) {
             $cls=['','U21'];
 			break;
 		case '4':
-            $cls=['U21','U18','U15'];
+            $cls=['U21','U18','U14'];
 			break;
 	}
     foreach($divs as $div) {
