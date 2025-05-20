@@ -333,7 +333,7 @@ switch($_REQUEST['act']) {
 					$obj=getEventArrowsParams($soEvent,64, $Team);
 					foreach ($R as $IdSubTeam => $AssignedRank) {
 						list($EnId, $SubTeam)=explode('-', $IdSubTeam);
-						$tmpValue = array('ath' => $EnId, 'event' => $soEvent, 'dist' => 0, 'rank' => $AssignedRank);
+						$tmpValue = array(($Team ? 'team' : 'ath') => $EnId, 'event' => $soEvent, 'dist' => 0, 'rank' => $AssignedRank);
 						if($Team) {
 							$tmpValue['subteam']=$SubTeam;
 						}

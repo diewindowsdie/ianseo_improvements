@@ -315,7 +315,6 @@ $lang['TVCss3Athlete']='Športovec';
 $lang['TVCss3CountryCode']='Kód Klubu';
 $lang['TVCss3CountryDescr']='Meno klubu';
 $lang['TVCss3Divider']='Rozdelenie';
-$lang['TVCss3Gold']='Zlato';
 $lang['TVCss3Loser']='Nenajdená modfikácia';
 $lang['TVCss3Session']='Skupina';
 $lang['TVCss3Target']='Terčovnica';

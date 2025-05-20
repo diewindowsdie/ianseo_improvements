@@ -224,7 +224,6 @@ $lang['TVContentName']='名称';
 $lang['TVCss3Athlete']='运动员';
 $lang['TVCss3CountryDescr']='国家名';
 $lang['TVCss3Divider']='分配器';
-$lang['TVCss3Gold']='金牌';
 $lang['TVCss3Loser']='输者修正';
 $lang['TVCss3MainContent']='内容';
 $lang['TVCss3Rank']='排名';

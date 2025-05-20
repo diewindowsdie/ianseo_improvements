@@ -118,7 +118,7 @@
 					where IndTournament={$this->tournament}");
 
 			$q="SELECT IndId AS `athId`,IndEvent AS `EventCode`, IndRank as actualRank, EvFinalFirstPhase, EvElim1, EvElim2, EvElimType,
-                IF(EvFinalFirstPhase=0,999999,coalesce(RrQualified, IF(EvElimType=0, EvNumQualified, IF(EvElim1=0,EvElim2,EvElim1)))) as QualifiedNo, EvFirstQualified, ";
+                coalesce(RrQualified, IF(EvFinalFirstPhase=0,999999,IF(EvElimType=0, EvNumQualified, IF(EvElim1=0,EvElim2,EvElim1)))) as QualifiedNo, EvFirstQualified, ";
             if($this->opts['dist']==0) {
                 $q .= "IF(EvRunning=1,IFNULL(ROUND(QuScore/QuHits,3),0),QuScore) AS Score, 
                 IF(EvRunning=1,IFNULL(ROUND(QuGold/QuHits,3),0),QuGold) AS Gold,

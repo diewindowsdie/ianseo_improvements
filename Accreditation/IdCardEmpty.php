@@ -1,27 +1,35 @@
 <?php
 function emptyIdCard($sets='') {
-	$ret=new StdClass();
-	$ret->Settings=array();
-	$ret->Background = '';
-	$ret->ImgSize = 0;
+	$ret=(object) [
+        'Settings'=> [
+            'Height' => $_SESSION['ToPaper'] ? 139 : 148,
+            'OffsetY' => '0;'.$_SESSION['ToPaper'] ? 139 : 148,
+            'PaperHeight' => $_SESSION['ToPaper'] ? 278 : 297,
+            'Width' => $_SESSION['ToPaper'] ? 108 : 105,
+            'OffsetX' => '0;'.$_SESSION['ToPaper'] ? 108 : 105,
+            'PaperWidth' => $_SESSION['ToPaper'] ? 216 : 210,
+            'IdBgX' => 0,
+            'IdBgY' => 0,
+            'IdBgH' => 0,
+            'IdBgW' => 0,
+        ],
+        'Background' =>'',
+        'ImgSize'=>0,
+        'Pages'=>1,
+    ];
 	if($sets) {
-		$ret->Settings = unserialize($sets->IcSettings);
+        if($sets->IcSettings) {
+            foreach(unserialize($sets->IcSettings) as $k => $v) {
+                $ret->Settings[$k]=$v;
+            }
+        }
 		$ret->Background = $sets->IcBackground;
-		if(!empty($sets->ImgSize)) $ret->ImgSize = $sets->ImgSize;
+		if(!empty($sets->ImgSize)) {
+            $ret->ImgSize = $sets->ImgSize;
+        }
+        $ret->Pages=$sets->IcPage;
 	}
 
-	if(!isset($ret->Settings["Height"])) $ret->Settings["Height"] = $_SESSION['ToPaper'] ? 139 : 148;
-	if(!isset($ret->Settings["OffsetY"])) $ret->Settings["OffsetY"] = '0;'.$ret->Settings["Height"];
-	if(!isset($ret->Settings["PaperHeight"])) $ret->Settings["PaperHeight"] = $_SESSION['ToPaper'] ? 278 : 297;
-	if(!isset($ret->Settings["Width"])) $ret->Settings["Width"] = $_SESSION['ToPaper'] ? 108 : 105;
-	if(!isset($ret->Settings["OffsetX"])) $ret->Settings["OffsetX"] = '0;'.$ret->Settings["Width"];
-	if(!isset($ret->Settings["PaperWidth"])) $ret->Settings["PaperWidth"] = $_SESSION['ToPaper'] ? 216 : 210;
-
-
-	if(!isset($ret->Settings["IdBgX"])) $ret->Settings["IdBgX"] = 0;
-	if(!isset($ret->Settings["IdBgY"])) $ret->Settings["IdBgY"] = 0;
-	if(!isset($ret->Settings["IdBgH"])) $ret->Settings["IdBgH"] = 0;
-	if(!isset($ret->Settings["IdBgW"])) $ret->Settings["IdBgW"] = 0;
 
 	return $ret;
 }

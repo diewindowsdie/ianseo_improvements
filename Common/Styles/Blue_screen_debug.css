@@ -39,6 +39,7 @@ table.Tabella2 th.Title,
 #GrdDiv div.Title,
 #Accreditation div.Title,
 #AccreditationSync div.Title,
+#PrnParameters div.Title,
 #AwaDiv div.Title { background-color:#884400; color: #FFF9F2; }
 table.Tabella th.TitleLeft { background-color:#884400; color: #FFF9F2; }
 table.Tabella th.TitleNeg { background-color:#FFF9F2; color: #884400; }

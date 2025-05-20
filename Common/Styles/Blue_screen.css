@@ -189,6 +189,7 @@ table.Tabella th.Title,
 #GrdDiv div.Title,
 #Accreditation div.Title,
 #AccreditationSync div.Title,
+#PrnParameters div.Title,
 #AwaDiv div.Title { background-color:var(--header-dark); text-align:center; padding-left:2px; padding-right:2px; font-weight:bold; color: var(--row-main-text); font-size:120%}
 table.Tabella th.TitleLeft { background-color:var(--header-dark); text-align:left; padding-left:2px; padding-right:2px; font-weight:bold; color: var(--row-main-text); font-size:100%}
 table.Tabella th.TitleNeg { background-color:var(--row-main-text); text-align:center; padding-left:2px; padding-right:2px; font-weight:bold; color: var(--header-dark); font-size:120%}
@@ -448,6 +449,11 @@ body.loading .modal {
 .wmin-10ch {min-width:10ch;}
 .wmin-15ch {min-width:15ch;}
 .wmin-20ch {min-width:20ch;}
+.w-3ch {width:3ch;}
+.w-5ch {width:5ch;}
+.w-7ch {width:7ch;}
+.w-10ch {width:10ch;}
+.w-15ch {width:15ch;}
 
 .h-0 {height: 0; vertical-align: top;}
 
@@ -458,7 +464,7 @@ body.loading .modal {
 .p-5 {padding:3em;}
 
 .Center > table {margin:auto;}
-div.Center  {text-align: center; margin: auto}
+div.Center  {text-align: center; margin-left: auto; margin-right: auto}
 
 .jconfirm-title  {
 	font-size: 20px;

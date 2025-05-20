@@ -81,6 +81,19 @@ if($version<'2025-04-07 11:00:05') {
     db_save_version('2025-04-07 11:00:05');
 }
 
+if($version<'2025-05-07 09:25:02') {
+    safe_w_sql("alter table IdCards add IcPage tinyint not null default 1");
+    safe_w_sql("alter table IdCardElements add IceCardPage tinyint not null default 1, drop index IceTournament, drop index IceTournament_2, drop index IceTournament_3, add index (IceTournament, IceCardType, IceCardNumber, IceCardPage, IceOrder)");
+    db_save_version('2025-05-07 09:25:02');
+}
+
+if($version<'2025-05-20 09:47:02') {
+    safe_w_sql("REPLACE INTO `Targets` (`TarId`, `TarDescr`, `TarArray`, `TarStars`, `TarOrder`, `TarFullSize`, `A_size`, `A_color`, `B_size`, `B_color`, `C_size`, `C_color`, `D_size`, `D_color`, `E_size`, `E_color`, `F_size`, `F_color`, `G_size`, `G_color`, `H_size`, `H_color`, `I_size`, `I_color`, `J_size`, `J_color`, `K_size`, `K_color`, `L_size`, `L_color`, `M_size`, `M_color`, `N_size`, `N_color`, `O_size`, `O_color`, `P_size`, `P_color`, `Q_size`, `Q_color`, `R_size`, `R_color`, `S_size`, `S_color`, `T_size`, `T_color`, `U_size`, `U_color`, `V_size`, `V_color`, `W_size`, `W_color`, `X_size`, `X_color`, `Y_size`, `Y_color`, `Z_size`, `Z_color`, `TarDummyLine`, `1_size`, `1_color`, `2_size`, `2_color`, `3_size`, `3_color`, `4_size`, `4_color`, `5_size`, `5_color`, `6_size`, `6_color`, `7_size`, `7_color`, `8_size`, `8_color`, `9_size`, `9_color`, `TarIskDefinition`) 
+        VALUES (29, 'TrgLancSix', 'TrgLancSix', 'ag-l', '24', '100', '0', '', '0', 'FFFFFF', '0', 'FFFFFF', '0', '000000', '0', '000000', '0', '00A3D1', '50', '00A3D1', '40', 'ED2939', '30', 'ED2939', '20', 'F9E11E', '0', '', '10', 'F9E11E', '5', 'F9E11E', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', ''),
+        (30, 'TrgLancFive', 'TrgLancFive', 'af-l', '24', '100', '0', '', '0', 'FFFFFF', '0', 'FFFFFF', '0', '000000', '0', '000000', '60', '00A3D1', '50', '00A3D1', '40', 'ED2939', '30', 'ED2939', '20', 'F9E11E', '0', '', '10', 'F9E11E', '5', 'F9E11E', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', ''),
+        (31, 'TrgLancSixShootUp', 'TrgLancSixShootUp', 'ag-j', '24', '100', '0', '', '0', 'FFFFFF', '0', 'FFFFFF', '0', '000000', '0', '000000', '0', '00A3D1', '50', '00A3D1', '40', 'ED2939', '30', 'ED2939', '20', 'F9E11E', '0', '', '10', 'F9E11E', '5', 'F9E11E', '2', 'FFFFFF', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '')");
+    db_save_version('2025-05-20 09:47:00');
+}
 
 /*
 
@@ -88,9 +101,9 @@ if($version<'2025-04-07 11:00:05') {
 IMPORTANT: InfoSystem related things MUST be changed in the lib.php file!!!
 REMEMBER TO CHANGE ALSO Common/Lib/UpdateTournament.inc.php!!!
 
-if($version<'2024-06-08 15:25:00') {
+if($version<'2025-05-07 09:25:00') {
     safe_w_sql("alter table RoundRobinMatches add index (RrMatchTournament, RrMatchTeam, RrMatchEvent)");
-	db_save_version('2024-06-08 15:25:00');
+	db_save_version('2025-05-07 09:25:00');
 }
 
 */

@@ -1,8 +1,8 @@
 <?php
 $lang['Activate']='Attivare';
-$lang['Archery3SetsScores.qtz']='Questo layer crea una sovrapposizione con i risultati in tempo reale della competizione nella parte sottostante quella superiore della pagina. L\'aggiornamento manuale o sincronizzato dei dati proviene dallo Ianseo eventi live. Ciò mostra il totale dei punti dei Set e tutti i punti dei set precedenti.';
-$lang['Archery5SetsScores.qtz']='Questo layer crea una sovrapposizione con con i risultati in tempo reale della competizione nella parte sottostante quella superiore della pagina. L\'aggiornamento manuale o sincronizzato dei dati proviene dallo Ianseo eventi live. Ciò mostra il totale dei punti dei Set e tutti i precedenti punti dei Set.';
-$lang['ArcheryEventHeader.qtz']='Questo layer crea una sovrapposizione con il titolo della competizione nella parte siperiore della pagina. I dati provengono da Ianseo eventi Live ma necessitano di un aggiornamento manuale.';
+$lang['Archery3SetsScores.qtz']='Questo layer crea una sovrapposizione con i risultati in tempo reale della competizione nella parte sottostante quella superiore della pagina. L\'aggiornamento manuale o sincronizzato dei dati proviene dallo I@nseo eventi live. Ciò mostra il totale dei punti dei Set e tutti i punti dei set precedenti.';
+$lang['Archery5SetsScores.qtz']='Questo layer crea una sovrapposizione con con i risultati in tempo reale della competizione nella parte sottostante quella superiore della pagina. L\'aggiornamento manuale o sincronizzato dei dati proviene dallo I@nseo eventi live. Ciò mostra il totale dei punti dei Set e tutti i precedenti punti dei Set.';
+$lang['ArcheryEventHeader.qtz']='Questo layer crea una sovrapposizione con il titolo della competizione nella parte siperiore della pagina. I dati provengono da I@nseo eventi Live ma necessitano di un aggiornamento manuale.';
 $lang['ArcheryTeamScores.qtz']='Come Archery5SetsScores.qtz ma per le squadre.';
 $lang['ArcheryTopScoring.qtz']='Mostra i risultati in tempo reale di uno scontro nell\'angolo in alto a sinistra dello schermo o dello schermo intero. È anche possibile collegare la foto o bandiera dell\'arciere. Con lo score a set o cumulativo.';
 $lang['BoinxLayer']='Layer Boinx';
@@ -103,12 +103,12 @@ $lang['CssWindSpeed']='Pannello Velocità del Vento';
 $lang['CssWinner']='Blocco vincitore - Common';
 $lang['DirNotWriteable']='Il percorso non è scrivibile!';
 $lang['Download']='Scarica';
-$lang['HowToUse']='Come integrare Ianseo e Boinx';
+$lang['HowToUse']='Come integrare I@nseo e Boinx';
 $lang['Ianseo30.qtz']='Una piccola animazione per celebrare una grandiosa volée.<br/>La stessa animazione (con diverse frecce in arrivo) per i punteggi perfetti 20, 30, 40, 60.<br/>Differenti animazioni per i 29, 39, 59.';
 $lang['IanseoCrono.qtz']='Cronometraggio per scontri a tiri alternati. Questo layer necessita di un computer molto veloce per non perdere la sincronizzazione. Fermando un timer partirà l\'altro. Interamente controllato manualmente. Nel futuro prenderà i dati dal Dispositivo DoS Danage.';
 $lang['IanseoGrid.qtz']='Questo layer mostra la griglia degli scontri per l\'evento selezionato. La fase iniziale parte sempre dai Quarti di Finale.';
 $lang['IanseoMeteo.qtz']='Questo layer mostra una pagina con differenti dati metereoligici, ad esemio: direzione e velocità del vento, temperatura, umidità.<br/>Impostare posizione e dimensione. I dati provengono dal file boinxmeteo.xml e sono generati da un adeguato dispositivo.';
-$lang['IanseoStanding.qtz']='Layer per la Cerimonia di Premiazione.Medaglie e nomi dei vincitori (prossimamente) direttamente da ianseo.';
+$lang['IanseoStanding.qtz']='Layer per la Cerimonia di Premiazione.Medaglie e nomi dei vincitori (prossimamente) direttamente da i@nseo.';
 $lang['IanseoTurn.qtz']='Una piccola freccia che indica l\'arciere o la squadra che sta tirando al momento. Dipende da Archery5SetScores.qtz. Al momento il controllo è interamente manuale.';
 $lang['IanseoWind.qtz']='Questo layer sovrappone una piccola"Rosa dei venti" alla direzione e velocità del vento.<br/>Impostare posizione e dimensione. I dat provengono dal file boinxmeteo.xml e sono generati da un appropriato dispositivo.';
 $lang['IanseoXToWin.qtz']='Questo layer crea una sovrapposizione che oscura i cerchi esterni del bersaglio portando l\'attensione sui cerchi che l\'archiere dovrebbe colpire per vincere il set/scontro.<br/>Dopo aver settato la telecamera, setta anche il layer per unire il centro virtuale con quellovero, necessario per entrambi i bersagli.';

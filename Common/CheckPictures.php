@@ -194,9 +194,9 @@ function CheckPictures($TourCode='', $open=false, $all=false, $force=false) {
             }
 		}
 	}
-	$q=safe_r_sql("select IceContent, IceOrder, IceType, IceCardType, IceCardNumber from IdCardElements where IceTournament = $TourId and IceType in ('Image', 'RandomImage', 'WRankImage', 'ExtraAddOnsImage')");
+	$q=safe_r_sql("select IceContent, IceCardPage, IceOrder, IceType, IceCardType, IceCardNumber from IdCardElements where IceTournament = $TourId and IceType in ('Image', 'ImageSvg', 'RandomImage', 'WRankImage', 'ExtraAddOnsImage')");
 	while($r=safe_fetch($q)) {
-		$ImName=$CFG->DOCUMENT_PATH.'TV/Photos/'.$TourCodeSafe.'-'.$r->IceType.'-'.$r->IceCardType.'-'.$r->IceCardNumber.'-'.$r->IceOrder.'.jpg';
+		$ImName=$CFG->DOCUMENT_PATH.'TV/Photos/'.$TourCodeSafe.'-'.$r->IceType.'-'.$r->IceCardType.'-'.$r->IceCardNumber.'-'.$r->IceCardPage.'-'.$r->IceOrder.'.jpg';
 		if($r->IceContent and $im=@imagecreatefromstring($r->IceContent)) {
 			if($force or !file_exists($ImName)) imagejpeg($im, $ImName, 90);
 		} else {
@@ -388,10 +388,10 @@ function RedrawPictures($TourCode='', $Force=false) {
             }
         }
     }
-	$q=safe_r_sql("select IceContent, IceType, IceOrder, IceCardType, IceCardNumber from IdCardElements where IceContent>'' and IceTournament = $TourId and IceType in ('Image', 'ImageSvg', 'RandomImage', 'WRankImage', 'ExtraAddOnsImage')");
+	$q=safe_r_sql("select IceContent, IceCardPage, IceType, IceOrder, IceCardType, IceCardNumber from IdCardElements where IceContent>'' and IceTournament = $TourId and IceType in ('Image', 'ImageSvg', 'RandomImage', 'WRankImage', 'ExtraAddOnsImage')");
 	while($r=safe_fetch($q)) {
 		if($r->IceType=='ImageSvg') {
-			$ImName=$CFG->DOCUMENT_PATH.'TV/Photos/'.$TourCodeSafe.'-'.$r->IceType.'-'.$r->IceCardType.'-'.$r->IceCardNumber.'-'.$r->IceOrder.'.svg';
+			$ImName=$CFG->DOCUMENT_PATH.'TV/Photos/'.$TourCodeSafe.'-'.$r->IceType.'-'.$r->IceCardType.'-'.$r->IceCardNumber.'-'.$r->IceCardPage.'-'.$r->IceOrder.'.svg';
 			if($im=@gzinflate($r->IceContent)) {
 				if($Force or !file_exists($ImName)) file_put_contents($ImName, $im);
 			} else {
@@ -400,7 +400,7 @@ function RedrawPictures($TourCode='', $Force=false) {
                 }
 			}
 		} else {
-			$ImName=$CFG->DOCUMENT_PATH.'TV/Photos/'.$TourCodeSafe.'-'.$r->IceType.'-'.$r->IceCardType.'-'.$r->IceCardNumber.'-'.$r->IceOrder.'.jpg';
+			$ImName=$CFG->DOCUMENT_PATH.'TV/Photos/'.$TourCodeSafe.'-'.$r->IceType.'-'.$r->IceCardType.'-'.$r->IceCardNumber.'-'.$r->IceCardPage.'-'.$r->IceOrder.'.jpg';
 			if($im=@imagecreatefromstring($r->IceContent)) {
 				if($Force or !file_exists($ImName)) imagejpeg($im, $ImName, 90);
 			} else {
