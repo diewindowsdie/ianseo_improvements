@@ -2,6 +2,7 @@
 
 require_once(dirname(__FILE__) . '/config.php');
 require_once('Common/Lib/CommonLib.php');
+require_once('Common/pdf/ResultPDF.inc.php');
 
 CheckTourSession(true);
 if(!($_SESSION["UseApi"] == ISK_NG_PRO_CODE or ($_SESSION["UseApi"] == ISK_NG_LIVE_CODE AND module_exists('ISK-NG_Live')))) {
@@ -30,7 +31,7 @@ if($_REQUEST['Groups']??'') {
     $QrCodeBlock=min(floatval($_REQUEST['QrCodeWidth']), $PageWidth, $PageHeight);
 
     require_once('Common/Lib/ScorecardsLib.php');
-    $pdf=new TCPDF('P', 'mm', [$PageWidth, $PageHeight]);
+    $pdf=new IanseoPdf("", 'P', "", false);
 
     error_reporting(E_ALL);
     $pdf->setFontSize(min(10, $QrCodeBlock/3));

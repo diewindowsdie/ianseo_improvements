@@ -19,7 +19,7 @@ if($_REQUEST['Sessions']??'') {
     $PageHeight=floatval($_REQUEST['PageHeight']);
     $QrCodeBlock=max(25, $PageWidth/min(intval($_REQUEST["NumDistances"]),4));
 
-    $pdf=new TCPDF('P', 'mm', [$PageWidth, $PageHeight]);
+    $pdf=new IanseoPdf("", 'P');
 
     error_reporting(E_ALL);
     $pdf->setFontSize(min(10, $QrCodeBlock/3));
