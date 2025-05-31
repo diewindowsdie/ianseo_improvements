@@ -22,7 +22,6 @@ if (!isset($hideTempHeader)) {
 
 if(count($rankData['sections'])) {
 	$DistSize = 11;
-	$AddSize=0;
 	$pdf->setDocUpdate($rankData['meta']['lastUpdate']);
     $currentSectionIndex = 0;
 
@@ -30,6 +29,7 @@ if(count($rankData['sections'])) {
     $pdf->Cell(190, 10, get_text("Q-Session", "Tournament"), 0, 1, 'C', 0, '', 1, false, 'T', 'T');
 
     foreach($rankData['sections'] as $section) {
+        $AddSize=0;
         $currentSectionIndex++;
 		//Calcolo Le Misure per i Campi
 		if($section['meta']['numDist']>=4 && !$rankData['meta']['double'])

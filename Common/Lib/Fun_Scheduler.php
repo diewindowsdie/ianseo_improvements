@@ -192,27 +192,27 @@ Class Scheduler {
 				} else {
 					$tmp->Text=$r->SesName ? $r->SesName : get_text('Session'). ' ' . $r->Session;
 				}
-				$tmp->Target=$r->Target;
+				$tmp->Target=$r->BestTarget;
 				break;
 			case 'Z':
 				$tmp->Title=$r->SesName;
 				$tmp->SubTitle=$r->Options;
 				$tmp->Text=$r->Events;
-				$tmp->Target=$r->Target;
+				$tmp->Target=$r->BestTarget;
 				break;
 			case 'R':
 				list($LevelName, $Level, $GroupName, $Group, $Round)=explode('|', $r->Session);
 				$tmp->Text=($LevelName ?: get_text('LevelNum', 'RoundRobin', $Level)).' '.($GroupName ?: get_text('GroupNum', 'RoundRobin', $Group)).' '.get_text('RoundNum', 'RoundRobin', $Round);
 				$tmp->SubTitle=$r->Options;
 				// $tmp->Text=$r->Events;
-				$tmp->Target=$r->Target;
+				$tmp->Target=$r->BestTarget;
 				break;
 			case 'RA':
 				list($Phase, $Pool, $Group)=explode('-', $r->Session);
 				$tmp->Title=get_text('PhaseName-'.$Phase, 'RunArchery');
 				$tmp->SubTitle=$r->Options;
 				$tmp->Text=$r->Events;
-				$tmp->Target=$r->Target;
+				$tmp->Target=$r->BestTarget;
 				if($Phase==1) {
 					// finals
 					$tmp->Events=get_text('Final'.$Pool,'RunArchery');
@@ -250,7 +250,7 @@ Class Scheduler {
 				}
 				if($tmp->Text[0]==',') $tmp->Text=substr($tmp->Text,2);
 				// check if there is a location
-				if($r->Target and empty($_REQUEST['NoLocations']) and !empty($this->FopLocations) and $r->Locations) {
+				if($r->BestTarget and empty($_REQUEST['NoLocations']) and !empty($this->FopLocations) and $r->Locations) {
 					$tmp->Events.= " ($r->Locations)";
 				}
 				break;
@@ -329,7 +329,7 @@ Class Scheduler {
 					'1' EvFirstRank,
 					'' EvElimType,
 					'' grPos,
-					SchTargets Target,
+					SchTargets as `BestTarget`,
 					'Z' Type,
 					SchDay Day,
 					'-' Session,
@@ -387,7 +387,7 @@ Class Scheduler {
 						'1' EvFirstRank,
 						'' EvElimType,
 						'' grPos,
-						DiTargets Target,
+						DiTargets as `BestTarget`,
 						DiType Type,
 						DiDay Day,
 						DiSession Session,
@@ -442,7 +442,7 @@ Class Scheduler {
 						'1' EvFirstRank,
 						'' EvElimType,
 						'' grPos,
-						DiTargets Target,
+						DiTargets as `BestTarget`,
 						DiType Type,
 						DiDay Day,
 						DiSession Session,
@@ -485,7 +485,7 @@ Class Scheduler {
 					'1' EvFirstRank,
 					'' EvElimType,
 					'' grPos,
-					'0' Target,
+					'0' as `BestTarget`,
 					'E' Type,
 					DiDay Day,
 					DiSession Session,
@@ -524,7 +524,7 @@ Class Scheduler {
 				'1' EvFirstRank,
 				'' EvElimType,
 				'' grPos,
-				'0' Target,
+				'0' as `BestTarget`,
 				if(FwTeamEvent=0, 'I', 'T') Type,
 				FwDay Day,
 				'' Session,
@@ -562,7 +562,7 @@ Class Scheduler {
 					'1' EvFirstRank,
 					'' EvElimType,
 					'' grPos,
-					'0' Target,
+					'0' as `BestTarget`,
 					'Z' Type,
 					date_format(SesDtStart, '%Y-%m-%d') Day,
 					'-' Session,
@@ -597,7 +597,7 @@ Class Scheduler {
 				EvWinnerFinalRank as EvFirstRank,
 				EvElimType,
 				EvFinalFirstPhase=48 or EvFinalFirstPhase = 24 As grPos,
-				max(FsTarget*1) as Target,
+				max(FsTarget*1) as `BestTarget`,
 				if(FsTeamEvent=0, 'I', 'T') Type,
 				FsScheduledDate Day,
 				GrPhase Session,
@@ -647,7 +647,7 @@ Class Scheduler {
 				EvWinnerFinalRank as EvFirstRank,
 				EvElimType,
 				EvFinalFirstPhase=48 or EvFinalFirstPhase = 24 As grPos,
-				max(RrMatchTarget*1) as Target,
+				max(RrMatchTarget*1) as `BestTarget`,
 				'R' Type,
 				RrMatchScheduledDate Day,
 				concat_ws('|', RrLevName, RrMatchLevel, RrGrName, RrMatchGroup, RrMatchRound) Session,
@@ -695,7 +695,7 @@ Class Scheduler {
 				EvWinnerFinalRank as EvFirstRank,
 				EvElimType,
 				if(RarCallTime=0, '', date_format(RarCallTime, '%H:%i')) As grPos,
-				max(RarGroup) as Target,
+				max(RarGroup) as `BestTarget`,
 				'RA' Type,
 				date(RarStartlist) Day,
 				concat_ws('-', RarPhase, RarPool, RarGroup) Session,
@@ -728,7 +728,7 @@ Class Scheduler {
 		$sql='select * from (('.implode(') UNION (', $SQL).')) 
 			as Schedule 
 			'.($ExtraWheres ? ' where '.$ExtraWheres : '').'
-			order by Day, if(Start>0, if(WarmStart>0, least(Start, WarmStart), Start), WarmStart), Type!=\'Z\', OrderPhase+0 asc, Distance';
+			order by Day, if(Start>0, if(WarmStart>0, least(Start, WarmStart), Start), WarmStart), Type!=\'Z\', OrderPhase+0 asc, Distance, `BestTarget`=0';
 
 		$q=safe_r_SQL($sql);
 		$debug=array();
@@ -2989,7 +2989,7 @@ Class Scheduler {
 								$OldEnd=$Item->Duration;
 								$OldComment='';
 
-								// is there a terget assigment?
+								// is there a target assigment?
 								if($Item->Target) {
 									$rows=array();
 									$MaxTgt=0;
@@ -4723,7 +4723,7 @@ Class Scheduler {
 				$SQL[]="select distinct
 				'' EvShootOff,
 				'' grPos,
-					SchTargets Target,
+					SchTargets `BestTarget`,
 					'Z' Type,
 					SchDay Day,
 					'-' Session,
@@ -4752,7 +4752,7 @@ Class Scheduler {
 			$SQL[]="select distinct
 			'' EvShootOff,
 			'' grPos,
-				DiTargets Target,
+				DiTargets `BestTarget`,
 				DiType Type,
 				DiDay Day,
 				DiSession Session,
@@ -4782,7 +4782,7 @@ Class Scheduler {
 			$SQL[]="select distinct
 			'' EvShootOff,
 			'' grPos,
-				'0' Target,
+				'0' `BestTarget`,
 				'E' Type,
 				DiDay,
 				DiSession,
@@ -4812,7 +4812,7 @@ Class Scheduler {
 			$SQL[]="select distinct
 			'' EvShootOff,
 			'' grPos,
-			'0' Target,
+			'0' `BestTarget`,
 			if(FwTeamEvent=0, 'I', 'T'),
 			FwDay,
 			'',
@@ -4844,7 +4844,7 @@ Class Scheduler {
 			$SQL[]="select distinct
 				'' EvShootOff,
 			'' grPos,
-				'0' Target,
+				'0' `BestTarget`,
 				'Z' Type,
 				date_format(SesDtStart, '%Y-%m-%d') Day,
 				'-' Session,
@@ -4872,7 +4872,7 @@ Class Scheduler {
 			$SQL[]="select distinct
 					EvShootOff,
 					EvFinalFirstPhase=48 or EvFinalFirstPhase = 24 As grPos,
-					max(FsTarget*1) as Target,
+					max(FsTarget*1) as `BestTarget`,
 					if(FsTeamEvent=0, 'I', 'T') Type,
 					FsScheduledDate Day,
 					GrPhase Session,
@@ -4900,7 +4900,7 @@ Class Scheduler {
 				group by FsTeamEvent, FsScheduledDate, FsScheduledTime, Locations, GrPhase, FwTime
 				";
 
-			$sql='('.implode(') UNION (', $SQL).') order by Day, if(Start>0, if(WarmStart>0, least(Start, WarmStart), Start), WarmStart), Type!=\'Z\', OrderPhase, Distance';
+			$sql='('.implode(') UNION (', $SQL).') order by Day, if(Start>0, if(WarmStart>0, least(Start, WarmStart), Start), WarmStart), Type!=\'Z\', OrderPhase, Distance, `BestTarget`=0';
 
 			$q=safe_r_SQL($sql);
 			$Ret=array();

@@ -5,7 +5,7 @@ class ProviderK1_k2 extends NormativeProvider
     public function calcByTotalScore($class, $division, $score): array
     {
         if (str_starts_with($division, 'C')) {
-            if (str_ends_with("M", $class)) {
+            if (str_ends_with($class, "M")) {
                 if ($score >= 980)
                     return Normative::International;
                 if ($score >= 950)
@@ -18,7 +18,7 @@ class ProviderK1_k2 extends NormativeProvider
                     return Normative::Second;
                 if ($score >= 720)
                     return Normative::Third;
-            } else if (str_ends_with("W", $class)) {
+            } else if (str_ends_with($class, "W")) {
                 if ($score >= 920)
                     return Normative::International;
                 if ($score >= 880)
@@ -33,7 +33,7 @@ class ProviderK1_k2 extends NormativeProvider
                     return Normative::Third;
             }
         } else if (str_starts_with($division, 'B')) {
-            if (str_ends_with("M", $class)) {
+            if (str_ends_with($class, "M")) {
                 if ($score >= 880)
                     return Normative::International;
                 if ($score >= 830)
@@ -46,7 +46,7 @@ class ProviderK1_k2 extends NormativeProvider
                     return Normative::Second;
                 if ($score >= 560)
                     return Normative::Third;
-            } else if (str_ends_with("W", $class)) {
+            } else if (str_ends_with($class, "W")) {
                 if ($score >= 820)
                     return Normative::International;
                 if ($score >= 770)
@@ -61,7 +61,7 @@ class ProviderK1_k2 extends NormativeProvider
                     return Normative::Third;
             }
         } else if (str_starts_with($division, 'T')) {
-            if (str_ends_with("M", $class)) {
+            if (str_ends_with($class, "M")) {
                 if ($score >= 810)
                     return Normative::International;
                 if ($score >= 760)
@@ -74,7 +74,7 @@ class ProviderK1_k2 extends NormativeProvider
                     return Normative::Second;
                 if ($score >= 520)
                     return Normative::Third;
-            } else if (str_ends_with("W", $class)) {
+            } else if (str_ends_with($class, "W")) {
                 if ($score >= 710)
                     return Normative::International;
                 if ($score >= 660)
@@ -89,7 +89,7 @@ class ProviderK1_k2 extends NormativeProvider
                     return Normative::Third;
             }
         } else if (str_starts_with($division, 'L')) {
-            if (str_ends_with("M", $class)) {
+            if (str_ends_with($class, "M")) {
                 if ($score >= 740)
                     return Normative::International;
                 if ($score >= 690)
@@ -102,7 +102,7 @@ class ProviderK1_k2 extends NormativeProvider
                     return Normative::Second;
                 if ($score >= 450)
                     return Normative::Third;
-            } else if (str_ends_with("W", $class)) {
+            } else if (str_ends_with($class, "W")) {
                 if ($score >= 640)
                     return Normative::International;
                 if ($score >= 590)
