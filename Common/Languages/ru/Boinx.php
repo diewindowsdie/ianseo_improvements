@@ -1,6 +1,7 @@
 <?php
 $lang['Activate']='Активировать';
 $lang['BoinxLayer']='Boinx Слой';
+$lang['CssReminder']='Не забудьте сохранить изменения!';
 $lang['DirNotWriteable']='Директория закрыта для записи !';
 $lang['Download']='Загрузить';
 $lang['HowToUse']='Как интегрировать Ianseo и Boinx';

@@ -25,7 +25,7 @@ echo '<tr class="Divider"><td  colspan="2"></td></tr>';
 echo '<tr>';
 echo '<td class="Center">';
 
-$MySql = "SELECT EvCode, EvEventName FROM Events WHERE EvElimType=5 and EvTeamEvent='0' AND EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvFinalFirstPhase!=0 and EvCodeParent='' ORDER BY EvProgr";
+$MySql = "SELECT EvCode, EvEventName FROM Events WHERE EvElimType=5 and EvTeamEvent='0' AND EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvCodeParent='' ORDER BY EvProgr";
 $Rs = safe_r_sql($MySql);
 if(safe_num_rows($Rs)>0) {
 	echo '<form id="PrnParametersInd" action="'.$CFG->ROOT_DIR.'Final/Individual/' . ($_SESSION['ISORIS'] ? 'Oris' : 'Prn') . 'Individual.php" method="get" target="PrintOutWorking">';
@@ -56,7 +56,7 @@ echo '</td>';
 
 //Filtri per a Squadre
 echo '<td class="Center">';
-$MySql = "SELECT EvCode, EvEventName FROM Events WHERE EvElimType=5 and EvTeamEvent='1' AND EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvFinalFirstPhase!=0 and EvCodeParent='' ORDER BY EvProgr";
+$MySql = "SELECT EvCode, EvEventName FROM Events WHERE EvElimType=5 and EvTeamEvent='1' AND EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvCodeParent='' ORDER BY EvProgr";
 $Rs = safe_r_sql($MySql);
 if(safe_num_rows($Rs)>0) {
 	echo '<form class="Center" id="PrnParametersTeam" action="'.$CFG->ROOT_DIR.'Final/Team/' . ($_SESSION['ISORIS'] ? 'Oris' : 'Prn') . 'Team.php" method="get" target="PrintOutWorking">';

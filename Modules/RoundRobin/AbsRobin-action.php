@@ -764,6 +764,32 @@ switch($_REQUEST['act']) {
 
 		// other levels...
 		// count the number of people OK for the group selection
+		$NumGroups=0;
+		$NumSO=[];
+
+        // in case the following phase has no selection nased on group rank, set the SO solved for those groups
+        $SQL="select RrGrGroup, MaxQualified, RrGrSoSolved
+            from RoundRobinGroup
+            inner join Events on EvTournament=RrGrTournament and EvTeamEvent=RrGrTeam and EvCode=RrGrEvent
+            left join (
+                select max(RrPartSourceRank) as MaxQualified, RrPartSourceGroup r3Gr
+                from RoundRobinParticipants
+                where RrPartTournament = {$_SESSION['TourId']} and RrPartSourceLevel=$Level and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($Event)."
+                group by RrPartTournament, RrPartSourceGroup
+            ) as r3 on r3Gr=RrGrGroup
+            where RrGrTournament={$_SESSION['TourId']} and RrGrTeam=$Team and RrGrEvent=".StrSafe_DB($Event)." and RrGrLevel=$Level
+                and MaxQualified is null
+            order by RrGrGroup";
+        $q=safe_r_SQL($SQL);
+        while($r=safe_fetch($q)) {
+            // assign the group SO as solved!
+            safe_w_sql("update RoundRobinGroup 
+                set RrGrSoSolved=1 
+                where RrGrTournament={$_SESSION['TourId']} and RrGrTeam=$Team and RrGrEvent=".StrSafe_DB($Event)." and RrGrLevel=$Level and RrGrGroup={$r->RrGrGroup}");
+            $NumGroups++;
+            $NumSO[$r->RrGrGroup]=1;
+        }
+
 		$SQL="select RrLevGroups, RrGrSoSolved, RrPartGroupRank, RrPartGroupRankBefSO, RrPartParticipant, RrPartSubTeam, RrPartGroup, RrPartPoints, RrPartTieBreaker, RrPartTieBreaker2, RrPartGroupTieBreak, RrPartGroupTbClosest,
        		RrPartGroupTiesForSO, RrPartGroupTiesForCT, RrPartLevelTiesForSO, RrPartLevelTiesForCT, EvEventName, RrLevEnds, RrLevArrows, RrLevSO, RrLevTieBreakSystem, RrLevTieBreakSystem2,
 			coalesce(EnId, CoId, 0)  as id, coalesce(concat(upper(EnFirstName),' ', EnName), concat(CoCode, '/',RrPartSubTeam), '') as athlete, coalesce(EnCoCode, CoName,'') as country,
@@ -779,7 +805,7 @@ switch($_REQUEST['act']) {
 		        where RrPartTournament = {$_SESSION['TourId']}
 			    group by RrPartTournament, RrPartTeam, RrPartEvent, RrPartSourceLevel, RrPartSourceGroup
 			    ) as r3 on r3To=RrPartTournament and r3Te=RrPartTeam and r3Ev=RrPartEvent and r3Le=RrPartLevel and r3Gr=RrPartGroup and RrPartGroupRankBefSO<=MaxQualified
-		    left join (select EnTournament, EnId, EnFirstName, EnName, CoCode as EnCoCode, CoName as EnCoName from Entries inner join Countries on CoId=EnCountry and CoTournament=EnTournament where EnTournament={$_SESSION['TourId']}) Entries on EnTournament=RrPartTournament and EnId=RrPartParticipant and RrPartTeam=$Team
+		    left join (select EnTournament, EnId, EnFirstName, EnName, CoCode as EnCoCode, CoName as EnCoName from Entries inner join Countries on CoId=EnCountry and CoTournament=EnTournament where EnTournament={$_SESSION['TourId']}) Entries on EnTournament=RrPartTournament and EnId=RrPartParticipant and RrPartTeam=0
 			left join Countries on CoTournament=RrLevTournament and CoId=RrPartParticipant and RrPartTeam=1
 			where RrLevTournament={$_SESSION['TourId']} and RrLevTeam=$Team and RrLevEvent=".StrSafe_DB($Event)." and RrLevLevel=$Level
 			order by RrGrGroup, RrPartGroupRankBefSO, RrPartGroupRank, RrPartLevelRankBefSO, RrPartLevelRank";
@@ -789,8 +815,6 @@ switch($_REQUEST['act']) {
 		$NumRow=-1;
 		$GroupSoSolved=true;
 		$LevelSoSolved=false;
-		$NumGroups=0;
-		$NumSO=[];
 		while($r=safe_fetch($q)) {
 			$LevelSoSolved=$r->RrLevSoSolved;
 			$NumGroups=$r->RrLevGroups;
@@ -855,7 +879,7 @@ switch($_REQUEST['act']) {
 				$row['field']=[
 					'type' => 'i',
 					'name' => 'R',
-					'value' => ($R[$Event][$key] ?? $r->RrPartGroupRank),
+					'value' => ($R[$key] ?? $r->RrPartGroupRank),
 				];
 			} else if ($r->IrmId < 10) {
 				//This part for DNF
@@ -867,7 +891,7 @@ switch($_REQUEST['act']) {
 					];
 					$IsCtSo = true;
 					for ($i = $r->RrPartGroupRankBefSO; $i < $r->RrPartGroupRankBefSO+$r->RrPartGroupTiesForSO; ++$i) {
-						$row['field']['value'][]=['k'=>$i, 's'=>(($R[$Event][$key] ?? $r->RrPartGroupRank) == $i)];
+						$row['field']['value'][]=['k'=>$i, 's'=>(($R[$key] ?? $r->RrPartGroupRank) == $i)];
 					}
 				} elseif ($r->RrPartGroupTiesForCT) {
 					$row['field']=[
@@ -877,7 +901,7 @@ switch($_REQUEST['act']) {
 					];
 					$IsCtSo = true;
 					for ($i = $r->RrPartGroupRankBefSO; $i < $r->RrPartGroupRankBefSO+$r->RrPartGroupTiesForCT; ++$i) {
-						$row['field']['value'][]=['k'=>$i, 's'=>(($R[$Event][$key] ?? $r->RrPartGroupRank) == $i)];
+						$row['field']['value'][]=['k'=>$i, 's'=>(($R[$key] ?? $r->RrPartGroupRank) == $i)];
 					}
 				} else {
 					$row['field']=[
@@ -912,7 +936,7 @@ switch($_REQUEST['act']) {
 							'type'=>'i',
 							'name'=>'T',
 							'index'=>$idx,
-							'value'=>(strlen($r->RrPartGroupTieBreak) > $idx ? DecodeFromLetter($r->RrPartGroupTieBreak[$idx]) : ($T[$Event][$r->id][$idx] ?? '')),
+							'value'=>(strlen($r->RrPartGroupTieBreak) > $idx ? DecodeFromLetter($r->RrPartGroupTieBreak[$idx]) : ($T[$r->id][$idx] ?? '')),
 						];
 					}
 
@@ -921,12 +945,14 @@ switch($_REQUEST['act']) {
 				$row['closest']=[
 					'type'=>'c',
 					'name'=>'C',
-					'sel'=>(($C[$Event][$r->id] ?? $r->RrPartGroupTbClosest) ? 'checked="checked"' : ''),
+					'sel'=>(($C[$r->id] ?? $r->RrPartGroupTbClosest) ? 'checked="checked"' : ''),
 				];
 			}
 			$EvRows['rows'][]=$row;
 		}
-		$JSON['tables'][]=$EvRows;
+        if($EvRows) {
+            $JSON['tables'][]=$EvRows;
+        }
 
 		if($GroupSoSolved and $NumGroups and $NumGroups==count($NumSO)) {
 			// check if there are "best of level" selection
@@ -935,7 +961,9 @@ switch($_REQUEST['act']) {
 				inner join Events on EvTeamEvent=RrPartTeam and EvTournament=RrPartTournament and EvCode=RrPartEvent
 				where RrPartSourceLevel=$Level and RrPartSourceGroup=0 and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($Event));
 			if($LEVELS=safe_fetch($q)) {
-				if(!$LevelSoSolved) {
+                // check if the SO has already been done
+                $t=safe_r_sql("select RrLevSoSolved from RoundRobinLevel where RrLevTournament={$_SESSION['TourId']} and RrLevTeam=$Team and RrLevLevel=$soLevel and RrLevEvent=".StrSafe_DB($Event));
+                if($u=safe_fetch($t) and !$u->RrLevSoSolved) {
 					calculateLevelRank($Team, $Event, $Level);
 				}
 
@@ -1045,19 +1073,20 @@ switch($_REQUEST['act']) {
 						$row['field']=[
 							'type' => 'i',
 							'name' => 'R',
-							'value' => ($R[$Event][$key] ?? $r->RrPartLevelRank),
+							'value' => ($R[$key] ?? $r->RrPartLevelRank),
 						];
 					} else if ($r->IrmId < 10) {
 						//This part for DNF
-						if ($r->GroupTies>1 and $r->RrPartLevelRankBefSO+$r->GroupTies >= $r->MaxQualified) {
+//						if ($r->GroupTies>1 and $r->RrPartLevelRankBefSO+$r->GroupTies >= $r->MaxQualified) {
+						if ($r->GroupTies>1) {
 							$row['field']=[
 								'type' => 's',
 								'name' => 'R',
 								'value' => [],
 							];
-							$IsCtSo = true;
+							$IsCtSo = ($r->RrPartLevelRankBefSO+$r->GroupTies >= $r->MaxQualified);
 							for ($i = $r->RrPartLevelRankBefSO; $i < $r->RrPartLevelRankBefSO+$r->GroupTies; ++$i) {
-								$row['field']['value'][]=['k'=>$i, 's'=>(($R[$Event][$key] ?? $r->RrPartLevelRank) == $i)];
+								$row['field']['value'][]=['k'=>$i, 's'=>(($R[$key] ?? $r->RrPartLevelRank) == $i)];
 							}
 						} else {
 							$row['field']=[
@@ -1092,7 +1121,7 @@ switch($_REQUEST['act']) {
 									'type'=>'i',
 									'name'=>'T',
 									'index'=>$idx,
-									'value'=>(strlen($r->RrPartLevelTieBreak) > $idx ? DecodeFromLetter($r->RrPartLevelTieBreak[$idx]) : ($T[$Event][$r->id][$idx] ?? '')),
+									'value'=>(strlen($r->RrPartLevelTieBreak) > $idx ? DecodeFromLetter($r->RrPartLevelTieBreak[$idx]) : ($T[$r->id][$idx] ?? '')),
 								];
 							}
 
@@ -1101,7 +1130,7 @@ switch($_REQUEST['act']) {
 						$row['closest']=[
 							'type'=>'c',
 							'name'=>'C',
-							'sel'=>(($C[$Event][$r->id] ?? $r->RrPartLevelTbClosest) ? 'checked="checked"' : ''),
+							'sel'=>(($C[$r->id] ?? $r->RrPartLevelTbClosest) ? 'checked="checked"' : ''),
 						];
 					}
 					$EvRows['rows'][]=$row;
