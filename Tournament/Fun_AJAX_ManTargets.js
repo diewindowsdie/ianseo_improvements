@@ -25,7 +25,7 @@ function fillBody(data) {
 			'<td ref="categories">'+this.categories+'</td>' +
 			'<td class="Center" ref="name" golds="'+this.golds+'" xnine="'+this.xnine+'" goldschars="'+this.goldschars+'" xninechars="'+this.xninechars+'">' + this.name + '</td>' +
 			'<td class="Center" ref="filter">'+this.filter+'</td>' +
-			'<td class="Center" ref="regexp" hasregexp="'+(typeof this.regexp!='undefined'?1:0)+'">'+(typeof this.regexp!='undefined' ? this.regexp : '')+'</td>' +
+			'<td class="Center" ref="regexp" hasregexp="'+(typeof this.regexp!='undefined'?1:0)+'">'+(typeof this.regexp!='undefined' ? this.regexp.toString() : '')+'</td>' +
 			'</tr>');
 		$.each(this.targets, function(idx) {
 			let td=$('<td class="Center DistanceDetails" ref="-'+(idx+1)+'" targettype="'+this.type+'" diameter="'+this.diam+'" warning="'+this.warning+'" goldschars="'+this.goldschars+'" xninechars="'+this.xninechars+'"></td>');
@@ -34,6 +34,7 @@ function fillBody(data) {
 			td.append(select.find('[value="'+this.type+'"]').text()+' ø (cm) '+this.diam);
 			row.append(td);
 		});
+		row.find('[hasregexp="1"]').text(this.regexp);
 		row.append('<td class="Center" ref="default" default="'+this.default+'">'+(this.default=='1' ? '<i class="fa fa-2x fa-check-circle text-success"></i>' : '')+'</td>' +
 			'<td class="Center"><i class="fa fa-2x fa-edit text-primary mr-2" onclick="updateRow(this)"></i><i class="far fa-2x fa-trash-can text-danger" onclick="deleteTarget(this)"></i></td>');
 		$('#tbody').append(row);

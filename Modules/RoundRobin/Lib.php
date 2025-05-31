@@ -505,7 +505,7 @@ function setWinner($m1, $EV, $ScoreField, $Totals=true) {
 		$SQL1="RrMatchWinLose=0, RrMatchTiebreak='', RrMatchTiebreaker='', RrMatchTiebreaker2='', RrMatchTbClosest=0, RrMatchTbDecoded='', RrMatchTiePosition='', RrMatchSetScore=0, RrMatchSetPointsByEnd='', RrMatchRoundPoints=0, RrMatchTie=0";
 		$SQL2="RrMatchWinLose=1, RrMatchTiebreak='', RrMatchTiebreaker='', RrMatchTiebreaker2='', RrMatchTbClosest=0, RrMatchTbDecoded='', RrMatchTiePosition='', RrMatchSetScore=0, RrMatchSetPointsByEnd='', RrMatchRoundPoints={$EV->WinPoints}";
 	} else {
-		if($Totals) {
+		if($Totals or (!$r->EndPoints1 and !$r->EndPoints2)) {
 			$set1=$r->Total1;
 			$set2=$r->Total2;
 			switch($EV->TieSystem) {

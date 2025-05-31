@@ -51,6 +51,7 @@ $lang['BadgeName']='ID-kort navn';
 $lang['BadgePage-1']='Enkeltside udskrivning';
 $lang['BadgePage-2']='Forside-bagside udskrivning';
 $lang['BadgePages']='Udskriftsmuligheder';
+$lang['BadgePreview']='Forhåndsvisning';
 $lang['BadgeSetup']='ID-kort opsætning';
 $lang['BadgeTest']='Test ID-kort';
 $lang['Barcode']='Stregkode';

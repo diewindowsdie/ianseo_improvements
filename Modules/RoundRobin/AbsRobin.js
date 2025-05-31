@@ -178,6 +178,9 @@ function gotoShootOff(form) {
         // creates the tables, one for each event
         $.each(data.tables, function() {
             let tableData=this;
+            if(this.length==0) {
+                return;
+            }
             let table='<table class="Tabella" ref="'+tableData.code+'" level="'+tableData.level+'" group="'+tableData.group+'">';
 
             // header

@@ -15,7 +15,7 @@
 global $CFG;
 
 define ("ProgramName","Ianseo");	// Nome del programma
-define ("ProgramVersion","2025-02-10"); // "The greatest enemy of knowledge is not ignorance, it is the illusion of knowledge. (Stephen Hawking)"
+define ("ProgramVersion","2025-05-29"); // "Truly wonderful the mind of a child is! Welcome Giorgio a.k.a. Gaba 2.0"
 
 define ("TargetNoPadding",3);		// Padding del targetno
 

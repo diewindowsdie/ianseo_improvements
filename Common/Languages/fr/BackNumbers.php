@@ -39,13 +39,27 @@ $lang['BadgeComplete']='Tous les Badges';
 $lang['BadgeCreate']='Créer un nouveau Badge';
 $lang['BadgeCustom']='Badge personnalisé';
 $lang['BadgeDelete']='Supprimer un badge';
+$lang['BadgeDimention']='Dimensions du Badge';
 $lang['BadgeEdit']='Edition du Badge';
+$lang['BadgeEditPage1']='Editer le badge - Face avant (recto)';
+$lang['BadgeEditPage2']='Editer le badge - Face arrière (verso)';
 $lang['BadgeExportLayout']='Exporter la mise en page du badge';
 $lang['BadgeImportLayout']='Importer la mise en page du Badge';
 $lang['BadgeName']='Nom du badge';
+$lang['BadgePage-2']='Imprimer le badge (recto)';
+$lang['BadgePages']='Options d\'impresssion';
+$lang['BadgePreview']='Aperçu';
 $lang['BadgeSetup']='organiser le badge';
 $lang['BadgeTest']='Teste du Badge';
 $lang['Barcode']='Code-Barre';
+$lang['BarCodeFields']='<ul>
+<li><b>Blank:</b> une chaîne de caractères séparée par des tirets avec le code d\'entrée, la division et la classe sera imprimée</li>
+<li><b>{ENCODE}:</b> {ENCODE} sera traduit par le code d\'entrée</li>
+<li><b>{COUNTRY}:</b> {COUNTRY} sera traduit par le code pays</li>
+<li><b>{DIVISION}:</b> {DIVISION} sera traduit par le code de division</li>
+<li><b>{CLASS}:</b> {CLASS} sera traduit par le code de la classe</li>
+<li><b>{TOURNAMENT}:</b> {TOURNAMENT} sera traduit par le code de la compétition</li>
+</ul>';
 $lang['BarcodeSeparator']='Séparateur de code-barre';
 $lang['BgImage']='Image de fond';
 $lang['BibNumber']='Numéro du tournoi';
@@ -53,6 +67,7 @@ $lang['BlackWhite']='Noir & Blanc';
 $lang['Bold']='Gras';
 $lang['Category']='Catégorie';
 $lang['CharColor']='Couleur Car.';
+$lang['CharSize']='Taille de police';
 $lang['CharType']='Type de caractères';
 $lang['CheckBarcodeSeparator']='Vérifier le séparateur de Code Barre';
 $lang['Club']='Détails Pays / Club';
@@ -106,6 +121,7 @@ $lang['HLine']='Ligne Horizontale';
 $lang['I-Badge']='Dossard des matchs individuels';
 $lang['IdCardHor']='Nombre de carte en largeur';
 $lang['IdCardNumber']='Nombre de badges de la mise en page';
+$lang['IdCardOffsets']='Marge: 0 si il y a une seule carte ID par page, les décalages en mm séparées par ";" si plus d\'un mm';
 $lang['IdCardVer']='Nombre de carte en hauteur';
 $lang['IdLayout']='Orientation';
 $lang['IdMarginH']='Marge en hauteur';
@@ -129,6 +145,7 @@ $lang['Offest2nd']='Décalage du 2ème dossard (si nécessaire)';
 $lang['OneLine']='En Ligne';
 $lang['OnlyAthletes']='Athlètes uniquement';
 $lang['OpenPictureScreen']='Ouvrir un second ecran';
+$lang['PageDimension']='Dimension de la page';
 $lang['PaperDimention']='Dimention du papier';
 $lang['PhaseFrom']='Depuis la phase';
 $lang['PhaseTo']='Jusqu\'à la phase';
@@ -140,6 +157,14 @@ $lang['PrintBackNo']='Imprimer les dossards';
 $lang['PrintHasPlastic']='Uniquement les détenteurs de Cartes Lanyards';
 $lang['PrintSyncResult']='$a dossards ont été imprimés!';
 $lang['Q-Badge']='Qualification Athlète Numéro';
+$lang['QrCodeFields']='<ul>
+<li><b>Blank:</b> une chaîne de caractères séparée par des tirets avec le code d\'entrée, la division et la classe sera imprimée</li>
+<li><b>{ENCODE}:</b> {ENCODE} sera traduit par le code d\'entrée</li>
+<li><b>{COUNTRY}:</b> {COUNTRY} sera traduit par le code pays</li>
+<li><b>{DIVISION}:</b> {DIVISION} sera traduit par le code de division</li>
+<li><b>{CLASS}:</b> {CLASS} sera traduit par le code de la classe</li>
+<li><b>{TOURNAMENT}:</b> {TOURNAMENT} sera traduit par le code de la compétition</li>
+</ul>';
 $lang['QRScore']='Score des qualifications';
 $lang['QualPosition']='Classement des qualifications';
 $lang['RandomImage']='Image aléatoire';
@@ -150,6 +175,7 @@ $lang['ResetBackNo']='Réinitialiser la mise en page du N° d\'athlète';
 $lang['ResetBarcodeSeparator']='Reset du séparateur de code-barre';
 $lang['RnkCardinalEN']='Numérotation standard (1,2,...,10)';
 $lang['RnkOrdinal']='Numérotation de place (1er, 2ème,....,10ème) - FR';
+$lang['RnkRoman']='Chiffres Romains (I, II, ... IV, ... CM)';
 $lang['Schedule']='Programme';
 $lang['Session']='Session de Qualification';
 $lang['SessionTarget']='Code de session et cible';

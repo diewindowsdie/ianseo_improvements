@@ -8,6 +8,7 @@ $lang['AcceptGPL-Logo']='Meer informatie';
 $lang['AcceptGPL-ReadTXT']='Gelezen licentie';
 $lang['AcceptGPL-Start']='Om Ianseo te installeren, op te waarderen en gebruiken, klik op de volgende selectievakjes:';
 $lang['Changed']='Gewijzigd';
+$lang['cmdForceUpdate']='Forceer update';
 $lang['Config write failed']='Het installatiebestand kon niet worden bewaard. Controleer de "common" map in de map waar waar ianseo is geinstalleerd.';
 $lang['Create']='Maak gebruiker en de database';
 $lang['CreateStandardCatColors']='Maak accreditatie';

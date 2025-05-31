@@ -496,6 +496,7 @@ function getFieldPos($r, $new=false) {
             }
         case 'TgtSequence':
             if(!isset($txt)) {
+                require_once('Common/Lib/Fun_Phases.inc.php');
                 $tmpPhases = getStandardPhases();
                 if(!isset($Options['FromPhase'])) $Options['FromPhase']=$tmpPhases[0];
                 if(!isset($Options['ToPhase'])) $Options['ToPhase']=0;
