@@ -15,7 +15,7 @@ function calculateClassName($distances)
     $className = '';
     //склеиваем все дистанции через символ подчеркивания, и заменяем в их именах дефис на символ подчеркивания
     foreach (array_values($distances) as $distance) {
-        if (trim($distance) == '') {
+        if (trim($distance) === '' || trim($distance) === '-') {
             break;
         }
         $className .= $className != '' ? '_' : '';
