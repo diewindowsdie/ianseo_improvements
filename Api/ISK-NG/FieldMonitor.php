@@ -29,6 +29,8 @@ $JS_SCRIPT=array(
     '<link href="./isk.css" rel="stylesheet" type="text/css">',
 );
 
+include('Common/Templates/head.php');
+
 //Socket Header
 echo '<table class="Tabella mb-3">';
 echo '<tr><th class="Title" colspan="3">' . $PAGE_TITLE . '</th></tr>';
@@ -56,7 +58,5 @@ echo '</table>';
 echo '<div id="DeviceGroupsContainers"></div>';
 
 
-
-include('Common/Templates/head-min.php');
 
 include('Common/Templates/tail.php');
