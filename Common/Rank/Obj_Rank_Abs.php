@@ -596,7 +596,6 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 					}
 
 					$item=$item+$distFields;
-                    error_reporting(E_ALL);
                     $item['normative'] = calcNormative($distances, $myRow->EnClass, $myRow->EnDivision, $distFields)["name"];
 
 					//Gestisco il numero di frecce tirate per sessione

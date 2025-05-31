@@ -1,4 +1,6 @@
 <?php
+require_once('Common/Lib/Normative/NormativeCalculator.php');
+
 /**
  * Obj_Rank_DivClass
  * Implementa l'algoritmo di default per il calcolo della rank di qualifica di classe individuale.
@@ -382,10 +384,13 @@
 							'score' => get_text('TotaleScore'),
 							'gold' => $myRow->GoldLabel,
 							'xnine' => $myRow->XNineLabel,
-							'hits' => get_text('Arrows','Tournament')
+							'hits' => get_text('Arrows','Tournament'),
+                            'normative' => get_text('Normative')
 						);
 
 						$fields=$fields+$distFields;
+
+                        $distances = $distFields;
 
 						$section=array(
 							'meta' => array(
@@ -477,6 +482,7 @@
 						$distFields["D{$n}Arrowstring"]=$myRow->{'QuD' . $n . 'ArrowString'} ;
 
 					}
+                    $item['normative'] = calcNormative($distances, $myRow->EnClass, $myRow->EnDivision, $distFields)["name"];
 
 					$item=$item+$distFields;
 

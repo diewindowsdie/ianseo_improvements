@@ -58,19 +58,15 @@ function writeDataRowPrnIndividual($pdf, $item, $distSize, $addSize, $distances,
 	$pdf->SetFont($pdf->FontStd,'B',8);
 	$pdf->Cell(8, 4 * ($double ? 2 : 1),  $item['rank'], 1, 0, 'R', 0);
 	$pdf->SetFont($pdf->FontStd,'',7);
-	$pdf->Cell(7, 4 * ($double ? 2 : 1),  ($item['session'] . "- " . $item['target']), 'TLB', 0, 'R', 0);
-	$pdf->SetFont($pdf->FontStd,'',7);
 	//Per gare tipo "internazionali" mette qui le colonne "nascoste"
-	$pdf->Cell(37+ $addSize + ($pdf->HideCols ? 8:0) , 4 * ($double ? 2 : 1),  $item['athlete'], 'TRB', 0, 'L', 0);
+	$pdf->Cell(42+ $addSize + ($pdf->HideCols ? 8:0) , 4 * ($double ? 2 : 1),  $item['athlete'], 'TRB', 0, 'L', 0);
    	if(!$pdf->HideCols)
    	{
 		$pdf->SetFont($pdf->FontStd,'',6);
-		$pdf->Cell(4, 4 * ($double ? 2 : 1), ($item['class']!=$item['ageclass'] ?  $item['ageclass'] : ''), 'TLB', 0, 'C', 0);
-		$pdf->Cell(4, 4 * ($double ? 2 : 1),  ($item['subclass']), 'TBR', 0, 'C', 0);
+		$pdf->Cell(8, 4 * ($double ? 2 : 1),  ($item['subclassName']), 'TBR', 0, 'C', 0);
    	}
 	$pdf->SetFont($pdf->FontStd,'',7);
-	$pdf->Cell(8, 4 * ($double ? 2 : 1),  $item['countryCode'], 'LTB', 0, 'L', 0);
-	$pdf->Cell(42 + $addSize, 4 * ($double ? 2 : 1),  $item['countryName'], 'RTB', 0, 'L', 0);
+	$pdf->Cell(50 + $addSize, 4 * ($double ? 2 : 1),  $item['countryName'], 'RTB', 0, 'L', 0);
 	$pdf->SetFont($pdf->FontFix,'',7);
 	if(!$double)
 	{
@@ -168,35 +164,36 @@ function writeDataRowPrnIndividual($pdf, $item, $distSize, $addSize, $distances,
 	}
   	$pdf->SetFont($pdf->FontFix,'B',8);
   	if($snapDistance==0)
-		$pdf->Cell(12, 4 * ($double ? 2 : 1), is_numeric($item['score']) ? number_format($item['score'],0,'',$pdf->NumberThousandsSeparator) : '', 1, 0, 'R', 0);
+		$pdf->Cell(8, 4 * ($double ? 2 : 1), is_numeric($item['score']) ? number_format($item['score'],0,'',$pdf->NumberThousandsSeparator) : '', 1, 0, 'R', 0);
 	else
 	{
-		$pdf->Cell(6, 4 * ($double ? 2 : 1), number_format($item['scoreSnap'],0,'',$pdf->NumberThousandsSeparator), 'TBL', 0, 'R', 0);
+		$pdf->Cell(4, 4 * ($double ? 2 : 1), number_format($item['scoreSnap'],0,'',$pdf->NumberThousandsSeparator), 'TBL', 0, 'R', 0);
 		$pdf->SetFont($pdf->FontFix,'',7);
-		$pdf->Cell(6, 4 * ($double ? 2 : 1), ($item['score']==$item['scoreSnap'] ? '' : '(' . number_format($item['score'],0,'',$pdf->NumberThousandsSeparator) . ')'), 'TBR', 0, 'R', 0);
+		$pdf->Cell(4, 4 * ($double ? 2 : 1), ($item['score']==$item['scoreSnap'] ? '' : '(' . number_format($item['score'],0,'',$pdf->NumberThousandsSeparator) . ')'), 'TBR', 0, 'R', 0);
 	}
 	$pdf->SetFont($pdf->FontFix,'',8);
   	if(!$HideGolds)
   	{
 		if($snapDistance==0)
-			$pdf->Cell(10, 4 * ($double ? 2 : 1), $item['gold'], 1, 0, 'R', 0);
+			$pdf->Cell(8, 4 * ($double ? 2 : 1), $item['gold'], 1, 0, 'R', 0);
 		else
 		{
-			$pdf->Cell(5, 4 * ($double ? 2 : 1), number_format($item['goldSnap'],0,'',$pdf->NumberThousandsSeparator), 'TBL', 0, 'R', 0);
+			$pdf->Cell(4, 4 * ($double ? 2 : 1), number_format($item['goldSnap'],0,'',$pdf->NumberThousandsSeparator), 'TBL', 0, 'R', 0);
 			$pdf->SetFont($pdf->FontFix,'',7);
-			$pdf->Cell(5, 4 * ($double ? 2 : 1), ($item['gold']==$item['goldSnap'] ? '' : '(' . number_format($item['gold'],0,'',$pdf->NumberThousandsSeparator) . ')'), 'TBR', 0, 'R', 0);
+			$pdf->Cell(4, 4 * ($double ? 2 : 1), ($item['gold']==$item['goldSnap'] ? '' : '(' . number_format($item['gold'],0,'',$pdf->NumberThousandsSeparator) . ')'), 'TBR', 0, 'R', 0);
 		}
   	}
 	$pdf->SetFont($pdf->FontFix,'',8);
 	if($snapDistance==0)
-		$pdf->Cell(10, 4 * ($double ? 2 : 1), $item['xnine'], 1, 1, 'R', 0);
+		$pdf->Cell(8, 4 * ($double ? 2 : 1), $item['xnine'], 1, 0, 'R', 0);
 	else
 	{
-		$pdf->Cell(5, 4 * ($double ? 2 : 1), number_format($item['xnineSnap'],0,'',$pdf->NumberThousandsSeparator), 'TBL', 0, 'R', 0);
+		$pdf->Cell(4, 4 * ($double ? 2 : 1), number_format($item['xnineSnap'],0,'',$pdf->NumberThousandsSeparator), 'TBL', 0, 'R', 0);
 		$pdf->SetFont($pdf->FontFix,'',7);
-		$pdf->Cell(5, 4 * ($double ? 2 : 1), ($item['xnine']==$item['xnineSnap'] ? '' : '(' . number_format($item['xnine'],0,'',$pdf->NumberThousandsSeparator) . ')'), 'TBR', 1, 'R', 0);
+		$pdf->Cell(4, 4 * ($double ? 2 : 1), ($item['xnine']==$item['xnineSnap'] ? '' : '(' . number_format($item['xnine'],0,'',$pdf->NumberThousandsSeparator) . ')'), 'TBR', 0, 'R', 0);
 	}
-
+	$pdf->SetFont($pdf->FontStd,'B',7);
+	$pdf->Cell(10, 4 * ($double ? 2 : 1), $item['normative'], 'TBR', 1, 'C', 0);
 }
 
 function writeGroupHeaderPrnIndividual($pdf, $section, $distSize, $addSize, $distances, $double, $follows=false, $HideGolds=false)
@@ -231,7 +228,7 @@ function writeGroupHeaderPrnIndividual($pdf, $section, $distSize, $addSize, $dis
    	$pdf->SetFont($pdf->FontStd,'B',7);
 	$pdf->Cell(8, 4 * ($double ? 2 : 1),  $section['fields']['rank'], 1, 0, 'C', 1);
 
-	$pdf->Cell(44 + $addSize + ($pdf->HideCols ? 8:0), 4 * ($double ? 2 : 1),  $section['fields']['athlete'], 1, 0, 'L', 1);
+	$pdf->Cell(42 + $addSize + ($pdf->HideCols ? 8:0), 4 * ($double ? 2 : 1),  $section['fields']['athlete'], 1, 0, 'L', 1);
 	if(!$pdf->HideCols)
 		$pdf->Cell(8, 4 * ($double ? 2 : 1),  $section['fields']['subclass'], 1, 0, 'C', 1);
 	$pdf->Cell(50 + $addSize, 4 * ($double ? 2 : 1),  $section['fields']['countryName'], 1, 0, 'L', 1);
@@ -253,11 +250,12 @@ function writeGroupHeaderPrnIndividual($pdf, $section, $distSize, $addSize, $dis
 		$pdf->Cell($distSize, 4, $pdf->TotalShort, 1, 0, 'C', 1);
 		$pdf->setXY($pdf->GetX(),$TmpY);
 	}
-	$pdf->Cell(12, 4 * ($double ? 2 : 1),  $section['fields']['score'], 1, 0, 'C', 1);
+	$pdf->Cell(8, 4 * ($double ? 2 : 1),  $section['fields']['score'], 1, 0, 'C', 1);
 
 	if(!$HideGolds)
-		$pdf->Cell(10, 4 * ($double ? 2 : 1),  $section['fields']['gold'], 1, 0, 'C', 1);
-	$pdf->Cell(10, 4 * ($double ? 2 : 1),  $section['fields']['xnine'], 1, 1, 'C', 1);
+		$pdf->Cell(8, 4 * ($double ? 2 : 1),  $section['fields']['gold'], 1, 0, 'C', 1);
+	$pdf->Cell(8, 4 * ($double ? 2 : 1),  $section['fields']['xnine'], 1, 0, 'C', 1);
+	$pdf->Cell(10, 4 * ($double ? 2 : 1), $section['fields']['normative'], 1, 1, 'C', 1);
 	$pdf->SetFont($pdf->FontStd,'',1);
 	$pdf->Cell(190, 0.5,  '', 1, 1, 'C', 0);
 }
