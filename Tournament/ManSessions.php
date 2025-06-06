@@ -256,7 +256,9 @@
 		$sessions[$v]=array();
 
 		$q="
-			SELECT *
+			SELECT *,
+		    date_format(SesDtStart, '". get_text('DateFmtDB') . ' ' . get_text('TimeFmt') . "') as SesDtStartFormatted,
+		    date_format(SesDtEnd, '". get_text('DateFmtDB') . ' ' . get_text('TimeFmt') . "') as SesDtEndFormatted
 			FROM
 				Session
 			WHERE
@@ -390,8 +392,8 @@ foreach ($sessions as $k=>$v) {
                     ' . $s->SesName . '
                 </td>
                 <td>' . $s->SesLocation . '</td>
-                <td class="Right">' . (intval($s->SesDtStart) ? substr($s->SesDtStart, 0, -3) : '') . '</td>
-                <td class="Right">' . (intval($s->SesDtEnd) ? substr($s->SesDtEnd, 0, -3) : '') . '</td>
+                <td class="Right">' . (intval($s->SesDtStartFormatted) ? $s->SesDtStartFormatted : '') . '</td>
+                <td class="Right">' . (intval($s->SesDtEndFormatted) ? $s->SesDtEndFormatted : '') . '</td>
                 <td class="Right">
                     <input type="hidden" id="tar4session-' . $id . '" value="' . $s->SesTar4Session . '" />
                     ' . $s->SesTar4Session . '
