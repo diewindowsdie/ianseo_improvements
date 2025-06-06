@@ -39,30 +39,30 @@ if(count($rankData['sections'])) {
 		else
 			$AddSize = (44-($section['meta']['numDist']*11))/2;
 
-        if ($currentSectionIndex == count($rankData['sections'])) {
-            //last group:
-            //check if header message, group header, group, officials information and legend fits on the same page
-            $headerSize = 7.5 + //message
-                6 + //table header
-                0.5; //separator before data starts
-            $dataSize = 4 * count($section['items']) + $spaceBetweenSections;
-            if (count($section['items']) > $section['meta']['qualifiedNo']) {
-                $dataSize += 1;
-            }
-            $officialsSize = TournamentOfficials::getOfficialsBlockHeight();
-            $legendSize = $legendStatusProvider->getLegendBlockHeight();
+        $officialsSize = TournamentOfficials::getOfficialsBlockHeight();
+        $legendSize = $legendStatusProvider->getLegendBlockHeight();
 
-            if (!$pdf->SamePage($headerSize + $dataSize + $officialsSize + $legendSize))
-                $pdf->AddPage();
-        } else {
-            //Verifico se l'header e qualche riga ci stanno nella stessa pagina altrimenti salto alla prosisma
-            if(!$pdf->SamePage(15+(strlen($section['meta']['printHeader']) ? 8:0)+($section['meta']['sesArrows'] ? 8:0)))
-                $pdf->AddPage();
-        }
+        //Verifico se l'header e qualche riga ci stanno nella stessa pagina altrimenti salto alla prosisma
+        if(!$pdf->SamePage(15+(strlen($section['meta']['printHeader']) ? 8:0)+($section['meta']['sesArrows'] ? 8:0)))
+            $pdf->AddPage();
 		$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], false, $hideTempHeader);
 		$EndQualified = ($section['meta']['qualifiedNo']==0);
         $StartQualified = ($section['meta']['firstQualified']==1);
+        $dataIndex = 0;
 		foreach($section['items'] as $item) {
+            $dataIndex++;
+            //хотим, чтобы как минимум три строки были на той же странице, что и легенда и подписи ГСК
+            if ($dataIndex + 2 === count($section['items'])) {
+                $spaceNeeded = 4 * 3 + $officialsSize + $legendSize +
+                    $spaceBetweenSections + //отступ до подписей
+                    + 5; //отступ до легенды
+                //если три последние строки + легенда + подписи не лезут - разрываем страницу
+                //проверяем только последнюю группу
+                if (!$pdf->SamePage($spaceNeeded) && $currentSectionIndex == count($rankData['sections'])) {
+                    $pdf->AddPage();
+                    $pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, $hideTempHeader);
+                }
+            }
 		    if(!$StartQualified AND ($section['meta']['finished'] ? $item['rank']: $item['rankBeforeSO']+$item['ct'])>=$section['meta']['firstQualified']) {
                 $pdf->SetFont($pdf->FontStd,'',1);
 		        $pdf->Cell(190, 1,  '', 1, 1, 'C', 1);
