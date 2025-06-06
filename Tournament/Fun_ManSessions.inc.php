@@ -28,7 +28,7 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
     if($SesDtStart) {
         $SQL[]="SesDtStart=". StrSafe_DB($SesDtStart);
     }
-    if($SesDtEnd=0) {
+    if($SesDtEnd) {
         $SQL[]="SesDtEnd=". StrSafe_DB($SesDtEnd);
     }
     if($SesOdfCode) {
