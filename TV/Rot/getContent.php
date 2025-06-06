@@ -81,8 +81,6 @@ if($tmp=='NOTHING TO FOLLOW') {
 	echo '<div id="Settings" NextBlock="'.$NextBlock.'" NextSubBlock="'.$tmp['NextSubBlock'].'" StopTime="'.$tmp['StopTime'].'" ScrollTime="'.$tmp['ScrollTime'].'"></div>';
 	echo getCss($TourId, $Rule);
 	echo $tmp['Html'];
-} else {
-	echo file_get_contents('http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].go_get(array('block'=>$OrgBlock+1, 'subblock'=>1) ));
 }
 die();
 

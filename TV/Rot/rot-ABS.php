@@ -53,6 +53,7 @@ function rotAbs($TVsettings, $RULE) {
 	if(!empty($Fixed)) {
 		list(,$Fixed) = explode(":",reset($Fixed));
 	}
+    $options['includeAll']=1;
 
 	$rank=Obj_RankFactory::create('Abs',$options);
 	$rank->read();

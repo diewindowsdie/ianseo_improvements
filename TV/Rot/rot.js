@@ -37,11 +37,15 @@ function GetContent(hide) {
                     });
                 } else {
                     $('#body').fadeIn(function() {
+                        var timeout = parseInt(Settings.attr('StopTime'));
+                        if (isNaN(timeout)) {
+                            timeout = 10000;
+                        }
                         setTimeout(function() {
                             $('#body').fadeOut(function() {
                                 GetContent();
                             });
-                        }, parseInt(Settings.attr('StopTime')));
+                        0}, timeout);
                     });
                 }
             }
