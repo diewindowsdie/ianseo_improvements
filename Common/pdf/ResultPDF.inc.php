@@ -468,11 +468,11 @@ class ResultPDF extends IanseoPdf {
 			$this->SetFont($this->FontFix,'B',$this->FontSizeLines);
 			if(!$running) {
 				if($snapDistance==0) {
-					$this->Cell(12, 4 * ($double ? 2 : 1), (is_numeric($item['score']) ? number_format(floatval($item['score']), 0, '', $this->NumberThousandsSeparator) : $item['score']), $border . 'LR', 0, 'R', 0);
+					$this->Cell(12, 4 * ($double ? 2 : 1), $item['score'], $border . 'LR', 0, 'R', 0);
 				} else {
 					$this->Cell(6, 4 * ($double ? 2 : 1), number_format($item['scoreSnap'],0,'',$this->NumberThousandsSeparator), $border.'L', 0, 'R', 0);
 					$this->SetFont($this->FontFix,'',$this->FontSizeHead);
-					$this->Cell(6, 4 * ($double ? 2 : 1), ($item['score']==$item['scoreSnap'] ? '' : '(' . number_format($item['score'],0,'',$this->NumberThousandsSeparator) . ')'), $border.'R', 0, 'R', 0);
+					$this->Cell(6, 4 * ($double ? 2 : 1), ($item['score']==$item['scoreSnap'] ? '' : '(' . $item['score'] . ')'), $border.'R', 0, 'R', 0);
 				}
 			}
 			$this->SetFont($this->FontFix,'',$this->FontSizeLines);
@@ -496,7 +496,7 @@ class ResultPDF extends IanseoPdf {
 			if($running) {
 				$this->Cell(8, 4 * ($double ? 2 : 1),  $item['hits'], $border.'LR', 0, 'R', 0);
 				$this->SetFont($this->FontFix,'B',$this->FontSizeLines);
-				$this->Cell(12, 4 * ($double ? 2 : 1),  is_numeric($item['score'])?number_format($item['score'],3,$this->NumberDecimalSeparator,$this->NumberThousandsSeparator):$item['score'], $border.'LR', 0, 'R', 0);
+				$this->Cell(12, 4 * ($double ? 2 : 1),  $item['score'], $border.'LR', 0, 'R', 0);
 				if($this->PrintWeight and !empty($item['tieWeightDecoded'])) {
 					$this->SetFont($this->FontFix,'',$this->FontSizeLines);
 					$this->Cell(20, 4 * ($double ? 2 : 1),  $item['tieWeightDecoded'], $border.'LR', 1, 'L', 0);
@@ -712,7 +712,7 @@ class ResultPDF extends IanseoPdf {
 			$this->Cell(15, $height, $item['hits'], 1, 0, 'R', 0);
 		}
 		$this->SetFont($this->FontFix,'B',$this->FontSizeLines);
-		$this->Cell(11 + ($running ? 4 : 0), $height, (empty(floatval($item['score'])) ? $item['score'] :  number_format($item['score'],($running ? 3:0),$this->NumberDecimalSeparator,$this->NumberThousandsSeparator)), 1, 0, 'R', 0);
+		$this->Cell(11 + ($running ? 4 : 0), $height, (empty(floatval($item['score'])) ? $item['score'] : number_format($item['score'],($running ? 3:0),$this->NumberDecimalSeparator,$this->NumberThousandsSeparator)), 1, 0, 'R', 0);
 
 		$this->SetFont($this->FontFix,'',$this->FontSizeLines);
 		$this->Cell(9, $height,  $item['gold'], 1, 0, 'R', 0);
@@ -765,7 +765,7 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(91, 4, substr($tmpNames,0,-2), $border.'LR', 0, 'L', 0);
 
 		$this->SetFont($this->FontFix,'B',$this->FontSizeLines);
-		$this->Cell(12, 4,  number_format($item['score'],0,'',$this->NumberThousandsSeparator), $border.'LR', 0, 'R', 0);
+		$this->Cell(12, 4, $item['score'], $border.'LR', 0, 'R', 0);
 
 		$this->SetFont($this->FontFix,'',$this->FontSizeLines);
 		$this->Cell(8, 4,  $item['gold'], $border.'LR', 0, 'R', 0);
@@ -846,9 +846,9 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(10, 4, $item['xnine'], 1, 0, 'R', 0);
 		if($running) {
 			$this->Cell(14, 4, $item['hits'], 1, 0, 'R', 0);
-			$this->Cell(12, 4, is_numeric($item['score']) ? number_format($item['score'],3,$this->NumberDecimalSeparator,$this->NumberThousandsSeparator):$item['score'], 1, 1, 'R', 0);
+			$this->Cell(12, 4, $item['score'], 1, 1, 'R', 0);
 		} else {
-			$this->Cell(14, 4, number_format($item['score'],0,'',$this->NumberThousandsSeparator), 1, 0, 'R', 0);
+			$this->Cell(14, 4, $item['score'], 1, 0, 'R', 0);
 			//Definizione dello spareggio/Sorteggio
 			$this->SetFont($this->FontStd,'I',5);
 			if($item['so']>0)  //Spareggio
@@ -919,7 +919,7 @@ class ResultPDF extends IanseoPdf {
 		$X=$this->GetX();
 		$Y=$this->GetY();
 		$this->Cell(40, 4,  $item['countryName'] . (intval($item['subteam'])<=1 ? '' : ' (' . $item['subteam'] .')'), 'TLR', 0, 'L', 0);
-		$this->Cell(10, 4, (!is_numeric($item['score']) ? $item['score'] :  number_format($item['score'],0,$this->NumberDecimalSeparator,$this->NumberThousandsSeparator)), 'TLR', 0, 'R', 0);
+		$this->Cell(10, 4, $item['score'], 'TLR', 0, 'R', 0);
 		$this->SetFont($this->FontFix,'',$this->FontSizeLines);
 		$this->Cell(8, 4,  $item['gold'], 'TLR', 0, 'R', 0);
 		$this->Cell(8, 4,  $item['xnine'], 'TLR', 0, 'R', 0);
