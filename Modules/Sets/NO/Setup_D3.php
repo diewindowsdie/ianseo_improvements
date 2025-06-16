@@ -33,15 +33,18 @@ if($tourDetNumDist==1) {
 		CreateDistanceNew($TourId, $TourType, 'CH%', array(array('Rød',0)));
 		CreateDistanceNew($TourId, $TourType, 'CR%', array(array('Blå',0)));
 		CreateDistanceNew($TourId, $TourType, 'BUBU', array(array('Rød',0)));
-		CreateDistanceNew($TourId, $TourType, 'BU18', array(array('Blå',0)));
-		CreateDistanceNew($TourId, $TourType, 'BR', array(array('Gul',0)));
-		CreateDistanceNew($TourId, $TourType, 'B_i', array(array('Blå',0)));
-		CreateDistanceNew($TourId, $TourType, 'LBU18', array(array('Blå',0)));
-		CreateDistanceNew($TourId, $TourType, 'LBR', array(array('Gul',0)));
-		CreateDistanceNew($TourId, $TourType, 'LB_i', array(array('Blå',0)));
-		CreateDistanceNew($TourId, $TourType, 'TU18', array(array('Blå',0)));
-		CreateDistanceNew($TourId, $TourType, 'TR', array(array('Gul',0)));
-		CreateDistanceNew($TourId, $TourType, 'T_i', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'B_U21', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'B_U18', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'B_U16', array(array('Gul',0)));
+		CreateDistanceNew($TourId, $TourType, 'B_', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'LB_U21', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'LB_U18', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'LB_U16', array(array('Gul',0)));
+		CreateDistanceNew($TourId, $TourType, 'LB_', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'T_U21', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'T_U18', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'T_U16', array(array('Gul',0)));
+		CreateDistanceNew($TourId, $TourType, 'T_', array(array('Blå',0)));
 	} else {
 		CreateDistanceNew($TourId, $TourType, '%', array(array('Bane',0)));
 	}

@@ -135,7 +135,6 @@ $lang['System value']='Rendszer által megadott érték';
 $lang['UpdatePrepared']='A telepítésed hamarosan automatikusan frissítésre kerül. Ne felejts el biztonsági mentést készíteni valamennyi versenyedről, mielőtt a frissítést megkezded. A frissítés hosszabb ideig is eltarthat az internet kapcsolatod sebességétől és a frissítendő elemek számától függően. <br/>Ne felejtsd el, hogy a "Moduls/Custom" mappa kivételével valamennyi nem eredeti fájl törlésre kerül!<br/>';
 $lang['Updating']='Az Ianseo helyi példánya frissítésre kerül';
 $lang['UpdatingLanguages']='Frissítjük a telepített nyelveket';
-$lang['UpgradeFinished']='A frissítés befejeződött';
 $lang['User']='Felhasználó neve';
 $lang['Value']='Érték (indexelt mátrix elemek kulcs1::érték1|kulcs2::érték2)';
 $lang['WhatIanseoDoes01']='<b> WA szabályoknak megfelelő</b> Az Ianseo mindig megfelel a WA szabályainak. A fejlesztők rendelkezésre állnak, hogy a nemzeti vagy verseny specifikus szabályoknak megfeleltessék a programot!';

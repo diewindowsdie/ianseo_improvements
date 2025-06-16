@@ -529,6 +529,14 @@ switch($_REQUEST['act']) {
 									    ) sqy on SrcRank=RrPartSourceRank and SrcLevel=RrPartSourceLevel and SrcGroup=RrPartSourceGroup
 									set RrPartParticipant=SrcPart, RrPartSubTeam=SrcSubteam, TfTeam=SrcPart, TfSubTeam=SrcSubTeam
 									where RrPartLevel=0 and RrPartGroup=0 and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent));
+                                // must fill in the TeamFinComponent table too
+                                $now = getToday('now', 'Y-m-d H:i:s');
+                                safe_w_sql("delete from TeamFinComponent where TfcTournament={$_SESSION['TourId']} and TfcEvent=".StrSafe_DB($soEvent));
+                                safe_w_SQL("INSERT INTO TeamFinComponent (TfcCoId, TfcSubTeam, TfcTournament, TfcEvent, TfcId, TfcOrder, TfcTimeStamp) 
+                                    SELECT TcCoId, TcSubTeam, TcTournament, TcEvent, TcId, TcOrder, '{$now}'
+                                    FROM TeamComponent 
+                                    inner join (select TfTeam, TfSubTeam from TeamFinals where TfTournament={$_SESSION['TourId']} and TfEvent=".StrSafe_DB($soEvent)." group by TfTeam,TfSubTeam) Tf on TfTeam=TcCoId and TfSubTeam=TcSubTeam
+                                    WHERE TcFinEvent=1 AND TcTournament={$_SESSION['TourId']} AND TcEvent=".StrSafe_DB($soEvent));
 							} else {
 								safe_w_sql("update RoundRobinParticipants 
 									inner join Finals on FinTournament=RrPartTournament and FinEvent=RrPartEvent
@@ -557,7 +565,15 @@ switch($_REQUEST['act']) {
 									    ) sqy on SrcRank=RrPartSourceRank and SrcLevel=RrPartSourceLevel and SrcGroup=RrPartSourceGroup
 									set RrPartParticipant=SrcPart, RrPartSubTeam=SrcSubteam, TfTeam=SrcPart, TfSubTeam=SrcSubTeam
 									where RrPartLevel=0 and RrPartGroup=0 and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent));
-							} else {
+                                // must fill in the TeamFinComponent table too
+                                $now = getToday('now', 'Y-m-d H:i:s');
+                                safe_w_sql("delete from TeamFinComponent where TfcTournament={$_SESSION['TourId']} and TfcEvent=".StrSafe_DB($soEvent));
+                                safe_w_SQL("INSERT INTO TeamFinComponent (TfcCoId, TfcSubTeam, TfcTournament, TfcEvent, TfcId, TfcOrder, TfcTimeStamp) 
+                                    SELECT TcCoId, TcSubTeam, TcTournament, TcEvent, TcId, TcOrder, '{$now}'
+                                    FROM TeamComponent 
+                                    inner join (select TfTeam, TfSubTeam from TeamFinals where TfTournament={$_SESSION['TourId']} and TfEvent=".StrSafe_DB($soEvent)." group by TfTeam,TfSubTeam) Tf on TfTeam=TcCoId and TfSubTeam=TcSubTeam
+                                    WHERE TcFinEvent=1 AND TcTournament={$_SESSION['TourId']} AND TcEvent=".StrSafe_DB($soEvent));
+                            } else {
 								safe_w_sql("update RoundRobinParticipants 
 									inner join Finals on FinTournament=RrPartTournament and FinEvent=RrPartEvent
                                     inner join Grids on GrMatchno=FinMatchNo and GrPosition=RrPartDestItem

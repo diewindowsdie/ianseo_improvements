@@ -1,0 +1,14 @@
+<?php
+$lang['01_Short']='Қаң';
+$lang['02_Short']='Ақп';
+$lang['03_Short']='Нау';
+$lang['04_Short']='Сәу';
+$lang['05_Short']='Мам';
+$lang['06_Short']='Мау';
+$lang['07_Short']='Шіл';
+$lang['08_Short']='Там';
+$lang['09_Short']='Қыр';
+$lang['10_Short']='Қаз';
+$lang['11_Short']='Қар';
+$lang['12_Short']='Жел';
+?>

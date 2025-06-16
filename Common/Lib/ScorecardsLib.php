@@ -33,6 +33,7 @@ require_once('Common/Fun_Sessions.inc.php');
  * @return ScorePDF
  */
 function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array(), $SaveDir='', $File='') {
+    global $CFG;
 	$Files=array();
 	if($Session=='ONLINE') {
 		$FromTgt=1;
@@ -62,6 +63,18 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 
 	$pdf = new ScorePDF(true);
 	//error_reporting(E_ALL);
+    if(!$FillWithArrows and getModuleParameter('ScorecardsAI', 'Active', '') and file_exists($CFG->DOCUMENT_PATH.'Modules/ScorecardsAI/Lib.php')) {
+        $pdf->Aruco=1;
+        $pdf->ArucoSize=getModuleParameter('ScorecardsAI', 'Size', 10);
+        $pdf->ArucoType=970;
+        require_once($CFG->DOCUMENT_PATH.'Modules/ScorecardsAI/Lib.php');
+        $pdf->ArucoMarker=new ArucoMarkers();
+    } else {
+        $pdf->Aruco=0;
+        $pdf->ArucoSize=0;
+        $pdf->ArucoType=0;
+        $pdf->ArucoMarker=null;
+    }
     if(!empty($Options["QRCode"])) {
         $pdf->QRCode=$Options["QRCode"];
         $pdf->BottomImage=false;
@@ -127,33 +140,38 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 		}
 	}
 
-	$defScoreW = ($pdf->GetPageWidth()-$pdf->getSideMargin()*3)/2;
-	$defScoreH = ($pdf->GetPageHeight() - $pdf->getSideMargin()*3 - ($pdf->NoTensOnlyX ? 7 : 0))/2;
+	$defScoreW = ($pdf->GetPageWidth()-$pdf->getSideMargin()*3-($pdf->ArucoSize? $pdf->ArucoSize-8 :0))/2;
+	$defScoreH = ($pdf->GetPageHeight() - $pdf->getSideMargin()*3 - ($pdf->NoTensOnlyX ? 7 : 0) - ($pdf->ArucoSize?$pdf->ArucoSize-8:0))/2;
 
-	$defScoreX = $pdf->getSideMargin();
-	$defScoreX2 = $defScoreX + $pdf->getSideMargin() + $defScoreW;
+	$defScoreX = $pdf->getSideMargin()+($pdf->ArucoSize?$pdf->ArucoSize-3:0);
+	$defScoreX2 = $defScoreX + ($pdf->ArucoSize ? 5 :$pdf->getSideMargin()) + $defScoreW;
 	$defScoreY = $pdf->getSideMargin();
-	$defScoreY2 = $defScoreY + $pdf->getSideMargin() + $defScoreH;
+	$defScoreY2 = $defScoreY + ($pdf->ArucoSize ? 5 :$pdf->getSideMargin()) + $defScoreH;
 
 	if(!$Options["TourField3D"]) {
 		// target archery
         $ScoreGutter=0;
 		if($Data->Ath4Target<=2) {
 			$defScoreX = $pdf->getSideMargin()*3;
-			$defScoreH = ($pdf->GetPageWidth()-$pdf->getSideMargin()*2 - ($pdf->NoTensOnlyX ? 7 : 0));
+			$defScoreH = ($pdf->GetPageWidth()-$pdf->getSideMargin()*2 - ($pdf->NoTensOnlyX ? 7 : 0)- ($pdf->ArucoSize?$pdf->ArucoSize-3:0));
 			$defScoreW = ($pdf->GetPageHeight()-$defScoreX*3)/2;
 		} elseif($Data->Ath4Target==3 or $Data->Ath4Target==5 or $Data->Ath4Target==6) {
-			$defScoreH = ($pdf->GetPageWidth()-$pdf->getSideMargin()*2);
-			$defScoreW = ($pdf->GetPageHeight()-$pdf->getSideMargin()*4)/3;
+            if($pdf->ArucoSize) {
+                $ScoreGutter=$pdf->getSideMargin()/2;
+            } else {
+                $ScoreGutter=$pdf->getSideMargin();
+            }
+			$defScoreH = ($pdf->GetPageWidth()-$pdf->getSideMargin()*2-($pdf->ArucoSize?$pdf->ArucoSize-3:0));
+			$defScoreW = ($pdf->GetPageHeight()-$pdf->getSideMargin()*4-($pdf->ArucoSize?$pdf->ArucoSize-13:0))/3;
 		} elseif($ScoreDraw=='HorScoreAllDist' or $ScoreDraw=='HorScore') {
             $ScoreGutter=$pdf->getSideMargin()/2;
-            $defScoreH = ($pdf->GetPageWidth()-$pdf->getSideMargin()-34);
-            $defScoreW = ($pdf->GetPageHeight()-$pdf->getSideMargin()*2-$ScoreGutter*3)/4;
+            $defScoreH = ($pdf->GetPageWidth()-$pdf->getSideMargin()-34-($pdf->ArucoSize?$pdf->ArucoSize-8:0));
+            $defScoreW = ($pdf->GetPageHeight()-$pdf->getSideMargin()*2-$ScoreGutter*3-($pdf->ArucoSize?$pdf->ArucoSize-3:0))/4;
             $defScoreY+=3;
 		} elseif($ScoreDraw=='VertScoreAllDist') {
             $ScoreGutter=$pdf->getSideMargin();
-            $defScoreH = ($pdf->GetPageHeight()-$pdf->getSideMargin()-83);
-            $defScoreW = ($pdf->GetPageWidth()-$pdf->getSideMargin()*3)/2;
+            $defScoreH = ($pdf->GetPageHeight()-$pdf->getSideMargin()-83-($pdf->ArucoSize?:0));
+            $defScoreW = ($pdf->GetPageWidth()-$pdf->getSideMargin()*3-($pdf->ArucoSize?:0))/2;
         }
 
 		if(($pdf->QRCode or $pdf->ScoreQrPersonal) and $ScoreDraw!='Draw') {
@@ -194,8 +212,8 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
         // If the competition is of redding style then scorecard is landscape, 3 distance on 1 page, 3rd on another
         if($_SESSION['TourLocSubRule']=='NFAA3D-ReddingWestern') {
             $pdf->IsRedding=true;
-            $defScoreW = ($pdf->GetPageHeight()-$pdf->getSideMargin()*3)/2;
-            $defScoreH = ($pdf->GetPageWidth()-$pdf->getSideMargin()*2);
+            $defScoreW = ($pdf->GetPageHeight()-$pdf->getSideMargin()*3-($pdf->ArucoSize?:0))/2;
+            $defScoreH = ($pdf->GetPageWidth()-$pdf->getSideMargin()*2-($pdf->ArucoSize?:0));
             $defScoreX2=$defScoreW+$pdf->getSideMargin()+5;
             if($PersonalScore) {
                 $defScoreW = ($pdf->GetPageHeight()-$pdf->getSideMargin()*4)/3;
@@ -467,6 +485,32 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 	                $FileName = $_SESSION["TourCode"] . '_' . $Card['Session'] . '_' . $Card['tNo'].'.pdf';
 				}
 				$pdf->AddPage();
+                $ArucoLeft=6;
+                $ArucoBottom=$pdf->getPageHeight()-$pdf->ArucoSize-6;
+                $ArucoRight=$pdf->getPageWidth()-$pdf->getSideMargin()-$pdf->ArucoSize;
+                $Aru=[];
+                if($pdf->Aruco) {
+                    switch(count($DistArray)) {
+                        case 1:
+                            $pdf->Aruco=0;
+                            break;
+                        case 2:
+                            $pdf->ArucoType=$pdf->ArucoMarker::Q2H;
+                            break;
+                        case 3:
+                        case 5:
+                        case 6:
+                            $pdf->ArucoType=$pdf->ArucoMarker::Q3H;
+                            break;
+                        case 4:
+                        case 7:
+                        case 8:
+                            $pdf->ArucoType=$pdf->ArucoMarker::Q4X;
+                            break;
+                    }
+                }
+
+                $score=1;
 				foreach($DistArray as $k => $CurDist) {
 					if ($CurDist and (!$Card["NumEnds" . $CurDist] or $Card["D" . $CurDist] == '-')) {
 						continue;
@@ -503,10 +547,33 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 					} else {
 						// target archery
 						if(($Data->Ath4Target==5 and $k==3) or ($Data->Ath4Target==6 and $k==3) or ($Data->Ath4Target>6 and $k==4)) {
-							$pdf->AddPage();
+							$pdf->PrintAruco($Aru);
+                            $pdf->AddPage();
+                            $Aru['A']='';
+                            $score=1;
 						}
-						$pdf->DrawScoreNew($Origins[$k][0], $Origins[$k][1], $defScoreW, $defScoreH, $CurDist, $Card);
-
+						$tmp=$pdf->DrawScoreNew($Origins[$k][0], $Origins[$k][1], $defScoreW, $defScoreH, $CurDist, $Card);
+                        if(empty($Aru['A'])) {
+                            // empty aruco, so we need to set all the codes
+                            $Aru['T']=['X'=>$ArucoLeft,'Y'=>$tmp['Y'], 'N'=>$pdf->ArucoType];
+                            $Aru['E']=['X'=>$tmp['X'],'Y'=>$ArucoBottom, 'N'=>$tmp['E']];
+                            $Aru['O']=['X'=>$tmp['X'],'Y'=>$ArucoBottom,'N'=>$tmp['O']];
+                            $Aru['W']=['X'=>$ArucoRight-5*$pdf->ArucoSize,'Y'=>$ArucoBottom,'N'=>$tmp['W']];
+                            $Aru['H']=['X'=>$tmp['X']-3*$pdf->ArucoSize,'Y'=>$ArucoBottom,'N'=>$tmp['H']];
+                            $Aru['A']=['X'=>$ArucoRight,'Y'=>$ArucoBottom,'N'=>$tmp['A']];
+                        }
+                        switch($score) {
+                            case 2: // score "B"
+                                $Aru['O']=['X'=>$tmp['X'],'Y'=>$ArucoBottom,'N'=>$tmp['O']];
+                                $Aru['W']=['X'=>$ArucoRight-5*$pdf->ArucoSize,'Y'=>$ArucoBottom,'N'=>$tmp['W']];
+                                $Aru['H']=['X'=>$tmp['X']-3*$pdf->ArucoSize,'Y'=>$ArucoBottom,'N'=>$tmp['H']];
+                                break;
+                            case 3: // score "C"
+                                break;
+                            case 4: // score "D"
+                                break;
+                        }
+                        $score++;
 						if($pdf->QRCode) {
 						    $qrOrigin = $Origins[$k][0];
 						    if($Data->Ath4Target==4) {
@@ -535,7 +602,8 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 						}
 					}
 				}
-			}
+                $pdf->PrintAruco($Aru);
+            }
 		}
         if($SaveDir) {
             if($FileName) {
@@ -656,6 +724,7 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
                             }
                         } else {
                             // regular scorecards
+                            $Aru=[];
                             if($ScoreDraw=='HorScoreAllDist') {
                                 $pdf->AddPage('L');
                                 $pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
@@ -665,51 +734,83 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 
                             } else {
                                 $pdf->AddPage((($Data->Ath4Target <= 3 OR $Data->Ath4Target == 5 OR $Data->Ath4Target == 6) or $ScoreDraw=='HorScore') ? 'L' : 'P');
+                                $ArucoLeft=6;
+                                $ArucoBottom=$pdf->getPageHeight()-16;
+                                $ArucoRight=$pdf->getPageWidth()-$pdf->getSideMargin()-$pdf->ArucoSize;
                                 switch($Data->Ath4Target) {
                                     case 1:
                                         if(empty($Cards[0]['Ath'])) {
                                             continue 2;
                                         }
-                                        $pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
+                                        $tmp=$pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
                                         break;
                                     case 2:
-                                        $pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
-                                        $pdf->DrawScoreNew(2*$defScoreX+$defScoreW, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[1] ?? $Data->DefaultScore+array('tNo'=>'B')));
+                                        $pdf->ArucoType = $pdf->ArucoMarker ? $pdf->ArucoMarker::Q2H : 0;
+                                        $tmp=$pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
+                                        $Aru['T']=['X'=>$ArucoLeft,'Y'=>$tmp['Y'], 'N'=>$pdf->ArucoType];
+                                        $Aru['E']=['X'=>$tmp['X'],'Y'=>$ArucoBottom, 'N'=>$tmp['E']];
+                                        $tmp=$pdf->DrawScoreNew(2*$defScoreX+$defScoreW, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[1] ?? $Data->DefaultScore+array('tNo'=>'B')));
+                                        $Aru['O']=['X'=>$tmp['X'],'Y'=>$ArucoBottom,'N'=>$tmp['O']];
+                                        $Aru['W']=['X'=>$ArucoRight-5*$pdf->ArucoSize,'Y'=>$ArucoBottom,'N'=>$tmp['W']];
+                                        $Aru['H']=['X'=>$tmp['X']-3*$pdf->ArucoSize,'Y'=>$ArucoBottom,'N'=>$tmp['H']];
+                                        $Aru['A']=['X'=>$ArucoRight,'Y'=>$ArucoBottom,'N'=>$tmp['A']];
                                         break;
                                     case 3:
-                                        $pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
-                                        $pdf->DrawScoreNew(2*$defScoreX+$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist, ($Cards[1] ?? $Data->DefaultScore+array('tNo'=>'B')));
-                                        $pdf->DrawScoreNew(3*$defScoreX+2*$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist,(($Cards[2] ?? $Data->DefaultScore+array('tNo'=>'C'))));
+                                        $tmp=$pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
+                                        $Aru['T']=['X'=>$ArucoLeft,'Y'=>$tmp['Y'], 'N'=>$pdf->ArucoType];
+                                        $Aru['E']=['X'=>$tmp['X'],'Y'=>$ArucoBottom, 'N'=>$tmp['E']];
+                                        $tmp=$pdf->DrawScoreNew($defScoreX+$defScoreW+$ScoreGutter, $defScoreY, $defScoreW, $defScoreH,$CurDist, ($Cards[1] ?? $Data->DefaultScore+array('tNo'=>'B')));
+                                        $Aru['O']=['X'=>$tmp['X'],'Y'=>$ArucoBottom,'N'=>$tmp['O']];
+                                        $tmp=$pdf->DrawScoreNew($defScoreX+2*($defScoreW+$ScoreGutter), $defScoreY, $defScoreW, $defScoreH,$CurDist,(($Cards[2] ?? $Data->DefaultScore+array('tNo'=>'C'))));
+                                        $Aru['W']=['X'=>$tmp['X'],'Y'=>$ArucoBottom,'N'=>$tmp['W']];
+                                        $Aru['H']=['X'=>$ArucoRight-3*$pdf->ArucoSize,'Y'=>$ArucoBottom,'N'=>$tmp['H']];
+                                        $Aru['A']=['X'=>$ArucoRight,'Y'=>$ArucoBottom,'N'=>$tmp['A']];
                                         break;
                                     case 4:
                                         if($ScoreDraw=='HorScore') {
-                                            $pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
-                                            $pdf->DrawScoreNew($defScoreX+$ScoreGutter+$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist, ($Cards[1] ?? $Data->DefaultScore+array('tNo'=>'B')));
-                                            $pdf->DrawScoreNew($defScoreX+2*($defScoreW+$ScoreGutter), $defScoreY, $defScoreW, $defScoreH,$CurDist,(($Cards[2] ?? $Data->DefaultScore+array('tNo'=>'C'))));
-                                            $pdf->DrawScoreNew($defScoreX+3*($defScoreW+$ScoreGutter), $defScoreY, $defScoreW, $defScoreH,$CurDist,(($Cards[3] ?? $Data->DefaultScore+array('tNo'=>'D'))));
+                                            $pdf->ArucoType = $pdf->ArucoMarker ? $pdf->ArucoMarker::Q4H : 0;
+                                            $tmp=$pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
+                                            $Aru['T']=['X'=>$ArucoLeft,'Y'=>$tmp['Y'], 'N'=>$pdf->ArucoType];
+                                            $Aru['E']=['X'=>$tmp['X'],'Y'=>$ArucoBottom, 'N'=>$tmp['E']];
+                                            $tmp=$pdf->DrawScoreNew($defScoreX+$ScoreGutter+$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist, ($Cards[1] ?? $Data->DefaultScore+array('tNo'=>'B')));
+                                            $Aru['O']=['X'=>$tmp['X'],'Y'=>$ArucoBottom,'N'=>$tmp['O']];
+                                            $tmp=$pdf->DrawScoreNew($defScoreX+2*($defScoreW+$ScoreGutter), $defScoreY, $defScoreW, $defScoreH,$CurDist,(($Cards[2] ?? $Data->DefaultScore+array('tNo'=>'C'))));
+                                            $Aru['W']=['X'=>$tmp['X'],'Y'=>$ArucoBottom,'N'=>$tmp['W']];
+                                            $tmp=$pdf->DrawScoreNew($defScoreX+3*($defScoreW+$ScoreGutter), $defScoreY, $defScoreW, $defScoreH,$CurDist,(($Cards[3] ?? $Data->DefaultScore+array('tNo'=>'D'))));
+                                            $Aru['H']=['X'=>$tmp['X'],'Y'=>$ArucoBottom,'N'=>$tmp['H']];
+
+                                            $Aru['A']=['X'=>$ArucoRight,'Y'=>$ArucoBottom,'N'=>$tmp['A']];
                                         } else {
-                                            $pdf->DrawScoreNew( $defScoreX,  $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
-                                            $pdf->DrawScoreNew($defScoreX2,  $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[1] ?? $Data->DefaultScore+array('tNo'=>'B')));
-                                            $pdf->DrawScoreNew( $defScoreX, $defScoreY2, $defScoreW, $defScoreH, $CurDist, ($Cards[2] ?? $Data->DefaultScore+array('tNo'=>'C')));
-                                            $pdf->DrawScoreNew($defScoreX2, $defScoreY2, $defScoreW, $defScoreH, $CurDist, ($Cards[3] ?? $Data->DefaultScore+array('tNo'=>'D')));
+                                            $pdf->ArucoType = $pdf->ArucoMarker ? $pdf->ArucoMarker::Q4X : 0;
+                                            $tmp=$pdf->DrawScoreNew( $defScoreX,  $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
+                                            $Aru['T']=['X'=>$ArucoLeft,'Y'=>$tmp['Y'], 'N'=>$pdf->ArucoType];
+                                            $tmp=$pdf->DrawScoreNew($defScoreX2,  $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[1] ?? $Data->DefaultScore+array('tNo'=>'B')));
+                                            $Aru['O']=['X'=>$tmp['X'],'Y'=>$ArucoBottom, 'N'=>$tmp['O']];
+                                            $tmp=$pdf->DrawScoreNew( $defScoreX, $defScoreY2, $defScoreW, $defScoreH, $CurDist, ($Cards[2] ?? $Data->DefaultScore+array('tNo'=>'C')));
+                                            $Aru['E']=['X'=>$tmp['X'],'Y'=>$ArucoBottom,'N'=>$tmp['E']];
+                                            $tmp=$pdf->DrawScoreNew($defScoreX2, $defScoreY2, $defScoreW, $defScoreH, $CurDist, ($Cards[3] ?? $Data->DefaultScore+array('tNo'=>'D')));
+                                            $Aru['W']=['X'=>$ArucoLeft,'Y'=>$tmp['Y'],'N'=>$tmp['W']];
+
+                                            $Aru['H']=['X'=>$ArucoRight-2*$pdf->ArucoSize,'Y'=>$ArucoBottom,'N'=>$tmp['H']];
+                                            $Aru['A']=['X'=>$ArucoRight,'Y'=>$ArucoBottom,'N'=>$tmp['A']];
                                         }
                                         break;
                                     case 5:
-                                        $pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
-                                        $pdf->DrawScoreNew(2*$defScoreX+$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist, ($Cards[1] ?? $Data->DefaultScore+array('tNo'=>'B')));
-                                        $pdf->DrawScoreNew(3*$defScoreX+2*$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist,(($Cards[2] ?? $Data->DefaultScore+array('tNo'=>'C'))));
+                                        $tmp=$pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
+                                        $tmp=$pdf->DrawScoreNew(2*$defScoreX+$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist, ($Cards[1] ?? $Data->DefaultScore+array('tNo'=>'B')));
+                                        $tmp=$pdf->DrawScoreNew(3*$defScoreX+2*$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist,(($Cards[2] ?? $Data->DefaultScore+array('tNo'=>'C'))));
                                         $pdf->AddPage('L');
-                                        $pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[3] ?? $Data->DefaultScore+array('tNo'=>'D')));
-                                        $pdf->DrawScoreNew(2*$defScoreX+$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist, ($Cards[4] ?? $Data->DefaultScore+array('tNo'=>'E')));
+                                        $tmp=$pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[3] ?? $Data->DefaultScore+array('tNo'=>'D')));
+                                        $tmp=$pdf->DrawScoreNew(2*$defScoreX+$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist, ($Cards[4] ?? $Data->DefaultScore+array('tNo'=>'E')));
                                         break;
                                     case 6:
-                                        $pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
-                                        $pdf->DrawScoreNew(2*$defScoreX+$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist, ($Cards[1] ?? $Data->DefaultScore+array('tNo'=>'B')));
-                                        $pdf->DrawScoreNew(3*$defScoreX+2*$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist,(($Cards[2] ?? $Data->DefaultScore+array('tNo'=>'C'))));
+                                        $tmp=$pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[0] ?? $Data->DefaultScore+array('tNo'=>'A')));
+                                        $tmp=$pdf->DrawScoreNew(2*$defScoreX+$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist, ($Cards[1] ?? $Data->DefaultScore+array('tNo'=>'B')));
+                                        $tmp=$pdf->DrawScoreNew(3*$defScoreX+2*$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist,(($Cards[2] ?? $Data->DefaultScore+array('tNo'=>'C'))));
                                         $pdf->AddPage('L');
-                                        $pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[3] ?? $Data->DefaultScore+array('tNo'=>'D')));
-                                        $pdf->DrawScoreNew(2*$defScoreX+$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist, ($Cards[4] ?? $Data->DefaultScore+array('tNo'=>'E')));
-                                        $pdf->DrawScoreNew(3*$defScoreX+2*$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist,(($Cards[5] ?? $Data->DefaultScore+array('tNo'=>'F'))));
+                                        $tmp=$pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist, ($Cards[3] ?? $Data->DefaultScore+array('tNo'=>'D')));
+                                        $tmp=$pdf->DrawScoreNew(2*$defScoreX+$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist, ($Cards[4] ?? $Data->DefaultScore+array('tNo'=>'E')));
+                                        $tmp=$pdf->DrawScoreNew(3*$defScoreX+2*$defScoreW, $defScoreY, $defScoreW, $defScoreH,$CurDist,(($Cards[5] ?? $Data->DefaultScore+array('tNo'=>'F'))));
                                         break;
                                     default:
                                         for($n=0;$n<count($Cards);$n++) {
@@ -718,21 +819,30 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
                                                     if($n) {
                                                         $pdf->AddPage(($Data->Ath4Target <= 3 or $ScoreDraw=='HorScore') ? 'L' : 'P');
                                                     }
-                                                    $pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist,($Cards[$n] ?? $Data->DefaultScore+array('tNo'=>chr(65+$n))));
+                                                    $tmp=$pdf->DrawScoreNew($defScoreX, $defScoreY, $defScoreW, $defScoreH, $CurDist,($Cards[$n] ?? $Data->DefaultScore+array('tNo'=>chr(65+$n))));
                                                     break;
                                                 case 1:
-                                                    $pdf->DrawScoreNew($defScoreX2, $defScoreY, $defScoreW, $defScoreH, $CurDist,($Cards[$n] ?? $Data->DefaultScore+array('tNo'=>chr(65+$n))));
+                                                    $tmp=$pdf->DrawScoreNew($defScoreX2, $defScoreY, $defScoreW, $defScoreH, $CurDist,($Cards[$n] ?? $Data->DefaultScore+array('tNo'=>chr(65+$n))));
                                                     break;
                                                 case 2:
-                                                    $pdf->DrawScoreNew($defScoreX, $defScoreY2, $defScoreW, $defScoreH, $CurDist,($Cards[$n] ?? $Data->DefaultScore+array('tNo'=>chr(65+$n))));
+                                                    $tmp=$pdf->DrawScoreNew($defScoreX, $defScoreY2, $defScoreW, $defScoreH, $CurDist,($Cards[$n] ?? $Data->DefaultScore+array('tNo'=>chr(65+$n))));
                                                     break;
                                                 case 3:
-                                                    $pdf->DrawScoreNew($defScoreX2, $defScoreY2, $defScoreW, $defScoreH, $CurDist,($Cards[$n] ?? $Data->DefaultScore+array('tNo'=>chr(65+$n))));
+                                                    $tmp=$pdf->DrawScoreNew($defScoreX2, $defScoreY2, $defScoreW, $defScoreH, $CurDist,($Cards[$n] ?? $Data->DefaultScore+array('tNo'=>chr(65+$n))));
                                                     break;
                                             }
                                         }
                                         break;
                                 }
+                                $pdf->PrintAruco($Aru);
+//                                if($Aru and $pdf->Aruco) {
+//                                    // print type
+//                                    foreach($Aru as $k=>$v) {
+//                                        $pdf->ImageSVG('@'.$pdf->ArucoMarker->CreateArucoMarker($v['N']), $v['X'],$v['Y'], $pdf->ArucoSize, $pdf->ArucoSize);
+//                                        $pdf->setXY($v['X'],$v['Y']+$pdf->ArucoSize);
+//                                        $pdf->Cell($pdf->ArucoSize, 0, $k.' '.$v['N'], 0, 0, 'C');
+//                                    }
+//                                }
                             }
                             if($pdf->QRCode or $pdf->ScoreQrPersonal) {
                                 $TmpTarget = substr($Cards[0]['tNo'],0,-1);

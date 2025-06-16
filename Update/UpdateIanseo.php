@@ -70,7 +70,7 @@ if(ProgramRelease!='HEAD') {
     $DATA->status .= get_text('Done', 'Install') . '</div>';
     writeStatusFile($UpdateFile, $DATA);
 
-// sending request to ianseo
+    // sending request to ianseo
     $DATA->status .= '<div>' . get_text('Sending', 'Install') . ':... ';
     writeStatusFile($UpdateFile, $DATA);
     $Old = $tmp->serialize();
@@ -109,8 +109,8 @@ if(ProgramRelease!='HEAD') {
     $DATA->status .= get_text('Done', 'Install') . '</div>';
     writeStatusFile($UpdateFile, $DATA);
 
-// header information as well as meta data
-// about the stream
+    // header information as well as meta data
+    // about the stream
     $size = 0;
     $Headers = stream_get_meta_data($stream);
     foreach ($Headers['wrapper_data'] as $header) {
@@ -121,7 +121,7 @@ if(ProgramRelease!='HEAD') {
 
     $size = number_format($size / 1024);
 
-// retrieving data from ianseo
+    // retrieving data from ianseo
     $DATA->status .= '<div>' . get_text('Retrieving', 'Install', $size) . ':... ';
     writeStatusFile($UpdateFile, $DATA);
     $tmp = stream_get_contents($stream);
@@ -149,7 +149,7 @@ if(ProgramRelease!='HEAD') {
 
     $STATUS = $DATA->status;
 
-// updating the distro, New Files and dirs
+    // updating the distro, New Files and dirs
     $DATA->status .= '<div>' . get_text('Updating', 'Install') . ':... ';
     writeStatusFile($UpdateFile, $DATA);
 
@@ -169,7 +169,7 @@ if(ProgramRelease!='HEAD') {
     $DATA->status .= '<br/>' . get_text('Done', 'Install') . '</div>';
     writeStatusFile($UpdateFile, $DATA);
 
-// deleting spurious files...
+    // deleting spurious files...
     $DATA->status .= '<div>' . get_text('Deleting', 'Install') . ':... ';
     writeStatusFile($UpdateFile, $DATA);
 
@@ -186,52 +186,8 @@ if(ProgramRelease!='HEAD') {
     }
     $DATA->status .= '<br>' . get_text('Done', 'Install') . '</div>';
     writeStatusFile($UpdateFile, $DATA);
-
-// updating the languages
-    $DATA->status .= '<div>' . get_text('UpdatingLanguages', 'Install') . ':... ';
-    foreach (glob($CFG->INCLUDE_PATH . '/Common/Languages/*') as $file) {
-        if (!is_dir($file)) continue;
-        // gets the content of the language pack from ianseo!
-        if ($package = @file_get_contents("https://translations.ianseo.net/getpackage.php?lang=" . strtoupper(basename($file)))) {
-            if ($files = @unserialize(gzinflate($package))) {
-                $DATA->status .= ' ' . basename($file);
-                writeStatusFile($UpdateFile, $DATA);
-
-                $Lang = strtolower(basename($file));
-                $LangCommon = $CFG->DOCUMENT_PATH . 'Common/Languages/';
-                $LangDir = $LangCommon . $Lang . '/';
-                if (!file_exists($LangDir)) {
-                    mkdir($LangDir, 0777);
-                    chmod($LangDir, 0777);
-                }
-
-                // salva il credit aggiornato
-                save_lang_files($LangCommon . "credits.php", $files['credits']);
-
-                // salva le immaginine
-                save_lang_files($LangDir . $Lang . '.png', $files['flag-png']);
-                save_lang_files($LangDir . $Lang . '.svg', $files['flag-svg']);
-
-                // salva il testuale
-                save_lang_files($LangDir . $Lang . '.txt', $files['testuale']);
-
-                // salva i moduli
-                if (!empty($files['lang'])) {
-                    foreach ($files['lang'] as $Module => $File) {
-                        save_lang_files($LangDir . $Module . '.php', "<?" . "php\n" . $File . "?>");
-                    }
-                }
-
-                foreach (glob($LangDir . '*.old') as $file) {
-                    unlink($file);
-                }
-
-            }
-        }
-    }
-    $DATA->status .= '<br>' . get_text('Done', 'Install') . '</div>';
-    writeStatusFile($UpdateFile, $DATA);
 }
+
 if(!empty($_REQUEST['user'])) {
     $DATA->status .= '<div><b>' . get_text('UpdatingModulesInfo', 'Install') . '</b></div>';
     writeStatusFile($UpdateFile, $DATA);
@@ -252,12 +208,86 @@ if(!empty($_REQUEST['user'])) {
     @unlink('modules.pgp');
 }
 
-$DATA->status .= '<div><b style="font-size:larger">' . get_text('UpgradeFinished', 'Install') . '</b></div>';
-$DATA->finished = 1;
-writeStatusFile($UpdateFile, $DATA);
 updateChkUp();
 
+if(ProgramRelease!='HEAD') {
+    // updating the languages
+    $DATA->status .= '<div>' . get_text('GettingLanguagePacks', 'Install').'</div>';
+    writeStatusFile($UpdateFile, $DATA);
+
+    $Langs=['en'=>1];
+    $LangCommon = $CFG->DOCUMENT_PATH . 'Common/Languages/';
+    foreach(glob($LangCommon . '*') as $file) {
+        if(!is_dir($file)) {
+            continue;
+        }
+        $Langs[strtolower(basename($file))]="l[]=".basename($file);
+    }
+
+    // gets the content of the language pack from ianseo!
+    if ($package = @file_get_contents("https://translations.ianseo.net/getpackages.php?" . implode('&',$Langs))) {
+        if ($AllFiles = @unserialize(gzinflate($package))) {
+            $DATA->status .= '<div>' . get_text('UpdatingLanguages', 'Install') . ':... ';
+            writeStatusFile($UpdateFile, $DATA);
+            foreach($AllFiles['langs'] as $Lang => $files) {
+
+                $DATA->status .= ' ' . $Lang;
+                writeStatusFile($UpdateFile, $DATA);
+
+                $LangDir = $LangCommon . $Lang . '/';
+                if (!file_exists($LangDir)) {
+                    mkdir($LangDir, 0777);
+                    chmod($LangDir, 0777);
+                }
+
+                // first set to old all files
+                foreach (glob($LangDir . '*.php') as $file) {
+                    rename($file, $file.'.back');
+                }
+
+                // salva le immaginine
+                save_lang_files($LangDir . $Lang . '.png', $files['flag-png']);
+                save_lang_files($LangDir . $Lang . '.svg', $files['flag-svg']);
+
+                // salva il testuale
+                save_lang_files($LangDir . $Lang . '.txt', $files['testuale']);
+
+                // salva i traduttori
+                if($files['translators']??'') {
+                    save_lang_files($LangDir . 'translators.json', $files['translators']);
+                }
+
+                // salva i moduli
+                if (!empty($files['lang'])) {
+                    foreach ($files['lang'] as $Module => $File) {
+                        save_lang_files($LangDir . $Module . '.php', "<?" . "php\n" . $File.'?>');
+                    }
+                }
+
+                foreach (glob($LangDir . '*.old') as $file) {
+                    unlink($file);
+                }
+                foreach (glob($LangDir . '*.back') as $file) {
+                    unlink($file);
+                }
+            }
+
+            // salva il credit aggiornato
+            save_lang_files($LangCommon . "credits.php", $AllFiles['credits']);
+        }
+        $DATA->status .= '</div><div><a href="../Language/index.php"><b style="font-size:larger">' . get_text('UpgradeFinished', 'Install') . '</b></a></div>';
+    }
+}
+
+$DATA->status .= '<div>' . get_text('Done', 'Install') . '</div>';
+writeStatusFile($UpdateFile, $DATA);
+
+$DATA->finished = 1;
+writeStatusFile($UpdateFile, $DATA);
+
 $JSON['msg']='';
+$JSON['error'] = 0;
+
 JsonOut($JSON);
 
 function updateChkUp() {

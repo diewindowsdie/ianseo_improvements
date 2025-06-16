@@ -131,7 +131,6 @@ $lang['System value']='Wartość systemu';
 $lang['UpdatePrepared']='Twój system za chwilę będzie automatycznie zaktualizowany. Pamiętaj aby wykonać kopie zapasowe Zawodów przed rozpoczęciem. Aktualizacja może zając dłuższy czas, zależnie od prędkości łącza internetowego i ilości aktualizowanych modułów.<br/>Pamiętaj, że wszystkie nieoryginalne pliki będą usunięty, oprócz zawartości folderu «Modules/Custom».';
 $lang['Updating']='Aktualizacja lokalnej instalacji Ianseo';
 $lang['UpdatingLanguages']='Aktualizacja zainstalowanych języków';
-$lang['UpgradeFinished']='Proces aktualizacji zakończony';
 $lang['User']='Nazwa użytkownika';
 $lang['Value']='Wartość';
 $lang['WhatIanseoDoes01']='<b>Zgodny z regułami World Archery:</b> Ianseo jest na bieżąco aktualizowany do reguł World Archery. Twórcy także pomogą dostosować program do krajowych regulaminów!';

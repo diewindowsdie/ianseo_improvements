@@ -64,7 +64,7 @@ switch($_REQUEST['act']) {
     case 'getElements':
         $JSON['table']='';
         $NewOrder=0;
-        $SQL="select distinct * from IdCardElements where {$IceFilter} order by IceOrder";
+        $SQL="select * from IdCardElements where {$IceFilter} order by IceOrder";
         $q=safe_r_sql($SQL);
         while($r=safe_fetch($q)) {
             $JSON['table'].= getFieldPos($r);
@@ -508,16 +508,16 @@ function getFieldPos($r, $new=false) {
 					</select>';
                 if(!isset($imInput)) {
                     $imInput = get_text('PhaseFrom', 'BackNumbers') .
-                        '&nbsp;<select onchange="UpdateRowContent(this)" name="FromPhase">';
+                        '&nbsp;<select onchange="UpdateRowContent(this)" name="Options[FromPhase]">';
                     foreach ($tmpPhases as $vPh) {
                         $imInput .= '<option value="' . $vPh . '"' . ($Options['FromPhase'] == $vPh ? ' selected' : '') . '>' . get_text($vPh . '_Phase') . '</option>';
                     }
-                    $imInput .= '</select><br>' . get_text('PhaseTo', 'BackNumbers') . '&nbsp;<select onchange="UpdateRowContent(this)" name="ToPhase">';
+                    $imInput .= '</select><br>' . get_text('PhaseTo', 'BackNumbers') . '&nbsp;<select onchange="UpdateRowContent(this)" name="Options[ToPhase]">';
                     $tmpPhases = array_reverse($tmpPhases);
                     foreach ($tmpPhases as $vPh) {
                         $imInput .= '<option value="' . $vPh . '"' . ($Options['ToPhase'] == $vPh ? ' selected' : '') . '>' . get_text($vPh . '_Phase') . '</option>';
                     }
-                    $imInput .= '</select><br><br>' . get_text('IdLayout', 'BackNumbers') . '&nbsp;<select onchange="UpdateRowContent(this)" name="LayoutOrientation">'.
+                    $imInput .= '</select><br><br>' . get_text('IdLayout', 'BackNumbers') . '&nbsp;<select onchange="UpdateRowContent(this)" name="Options[LayoutOrientation]">'.
                         '<option value="0"' . ($Options['LayoutOrientation'] == "0" ? ' selected' : '') . '>'.get_text('HLayout', 'BackNumbers').'</option>'.
                         '<option value="1"' . ($Options['LayoutOrientation'] == "1" ? ' selected' : '') . '>'.get_text('VLayout', 'BackNumbers').'</option>'.
                         '</select>';
@@ -654,7 +654,11 @@ function getFieldPos($r, $new=false) {
                 $Objects['td'][]=[
                     'span'=>1,
                     'name'=>[get_text('BadgeOptions','Tournament')],
-                    'cell'=>[$txt,$imInput]];
+                    'cell'=>[$txt]];
+                $Objects['td'][]=[
+                    'span'=>1,
+                    'name'=>[get_text('BadgeOptions','Tournament')],
+                    'cell'=>[$imInput]];
             }
             $Objects['td'][]=[
                 'span'=>0,

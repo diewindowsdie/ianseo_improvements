@@ -907,6 +907,7 @@ while ($MyRow=safe_fetch($Rs)) {
                     $pdf->SetCellPaddings(1,0,1,0);
                     //$pdf->setCellHeightRatio(0);
                     // PArte di riconoscimento EVENTO e Paglione
+                    // Based on cardtype it is individual or teams!
                     $TgtQuery = 'SELECT
 						EvCode, EvEventName, EvFinalFirstPhase, GrPhase,
 						GrMatchNo, EnId, Concat(EnFirstName, " ", LEFT(EnName,1), ".") as Athlete,
@@ -930,6 +931,28 @@ while ($MyRow=safe_fetch($Rs)) {
 					LEFT JOIN FinSchedule sg ON EvCode=sg.FSEvent AND EvTeamEvent=sg.FSTeamEvent AND EvTournament=sg.FSTournament AND FLOOR(s2.FSMatchNo/2)-2=sg.FSMatchNo
 					WHERE EvTournament=' . StrSafe_DB($MyRow->EnTournament) . ' AND EvCode='.StrSafe_DB($MyRow->EvCode).' and EvTeamEvent=0 and EnId='.$MyRow->EnId.'
 					ORDER BY EvCode, GrPhase DESC, FinMatchNo ASC';
+                    if($CardType=='T') {
+                        $TgtQuery = 'SELECT
+                            EvCode, EvEventName, EvFinalFirstPhase, GrPhase,
+                            GrMatchNo,
+                            NULLIF(s64.FSLetter,\'\') s64, NULLIF(s32.FSLetter,\'\') s32, NULLIF(s16.FSLetter,\'\') s16, NULLIF(s8.FSLetter,\'\') s8, NULLIF(s4.FSLetter,\'\') s4, NULLIF(s2.FSLetter,\'\') s2, NULLIF(sb.FSLetter,\'\') sBr, NULLIF(sg.FSLetter,\'\') sGo
+                        FROM Events
+                        INNER JOIN Phases on PhId=EvFinalFirstPhase and (PhIndTeam & pow(2,EvTeamEvent))>0
+                        INNER JOIN TeamFinals ON EvCode=TfEvent AND EvTournament=TfTournament
+                        INNER JOIN Grids ON TfMatchNo=GrMatchNo AND GrPhase=greatest(PhId, PhLevel)
+                        INNER JOIN Teams ON TfTeam=TeCoId AND TfEvent=TeEvent AND TfTournament=TeTournament and TfSubTeam=TeSubTeam and TeFinEvent=1
+                        inner join TeamFinComponent on TfcCoId=TeCoId and TfcSubTeam=TeSubTeam and TfcEvent=TeEvent and TfcTournament=TeTournament and TfcId='.$MyRow->EnId.'
+                        LEFT JOIN FinSchedule s64 ON EvCode=s64.FSEvent AND EvTeamEvent=s64.FSTeamEvent AND EvTournament=s64.FSTournament AND IF(GrPhase=64, TfMatchNo,-256)=s64.FSMatchNo
+                        LEFT JOIN FinSchedule s32 ON EvCode=s32.FSEvent AND EvTeamEvent=s32.FSTeamEvent AND EvTournament=s32.FSTournament AND IF(GrPhase=32,TfMatchNo,FLOOR(s64.FSMatchNo/2))=s32.FSMatchNo
+                        LEFT JOIN FinSchedule s16 ON EvCode=s16.FSEvent AND EvTeamEvent=s16.FSTeamEvent AND EvTournament=s16.FSTournament AND IF(GrPhase=16,TfMatchNo,FLOOR(s32.FSMatchNo/2))=s16.FSMatchNo
+                        LEFT JOIN FinSchedule s8 ON EvCode=s8.FSEvent AND EvTeamEvent=s8.FSTeamEvent AND EvTournament=s8.FSTournament AND IF(GrPhase=8,TfMatchNo,FLOOR(s16.FSMatchNo/2))=s8.FSMatchNo
+                        LEFT JOIN FinSchedule s4 ON EvCode=s4.FSEvent AND EvTeamEvent=s4.FSTeamEvent AND EvTournament=s4.FSTournament AND IF(GrPhase=4,TfMatchNo,FLOOR(s8.FSMatchNo/2))=s4.FSMatchNo
+                        LEFT JOIN FinSchedule s2 ON EvCode=s2.FSEvent AND EvTeamEvent=s2.FSTeamEvent AND EvTournament=s2.FSTournament AND IF(GrPhase=2,TfMatchNo,FLOOR(s4.FSMatchNo/2))=s2.FSMatchNo
+                        LEFT JOIN FinSchedule sb ON EvCode=sb.FSEvent AND EvTeamEvent=sb.FSTeamEvent AND EvTournament=sb.FSTournament AND FLOOR(s2.FSMatchNo/2)=sb.FSMatchNo
+                        LEFT JOIN FinSchedule sg ON EvCode=sg.FSEvent AND EvTeamEvent=sg.FSTeamEvent AND EvTournament=sg.FSTournament AND FLOOR(s2.FSMatchNo/2)-2=sg.FSMatchNo
+                        WHERE EvTournament=' . StrSafe_DB($MyRow->EnTournament) . ' AND EvCode='.StrSafe_DB($MyRow->EvCode).' and EvTeamEvent=1
+                        ORDER BY EvCode, GrPhase DESC, TfMatchNo ASC';
+                    }
 
                     $TgtQ=safe_r_sql($TgtQuery);
                     if($TgtR=safe_fetch($TgtQ)) {

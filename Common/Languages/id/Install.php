@@ -266,7 +266,6 @@ $lang['UpdatePrepared']='Instalasi Anda akan diupdate secara otomatis. Harap ing
 $lang['Updating']='Meng-update instalasi lokal Ianseo';
 $lang['UpdatingLanguages']='Meng-update bahasa yang diinstal';
 $lang['UpdatingModulesInfo']='Memperbarui informasi Modul';
-$lang['UpgradeFinished']='Proses upgrade selesai.';
 $lang['User']='NamaPengguna';
 $lang['Value']='Nilai';
 $lang['WhatIanseoDoes01']='<b>Sesuai dengan Aturan World Archery:</b> Ianseo selalu mengikuti aturan World Archery. Pengembang tersedia untuk penyesuaian agar sesuai dengan Aturan Khusus Nasional dan Kompetisi juga!';

@@ -16,9 +16,16 @@ $lang['MonitorRecords']='Voeg records toe aan monitor';
 $lang['NoMoreRecords']='Geen records meer. Verwijder een Game record of maak een nieuwe set';
 $lang['NoRecordTypes']='Geen records geregistreerd voor dit soort wedstrijdtype';
 $lang['Para']='Para/IPC';
+$lang['RecordAreaClaimer']='Record Area eiser';
+$lang['RecordAreaClaimerHelp']='Maak leeg als iemand het record kan opeisen, anders Land/Continent code van de in aanmerking komende schutters. Voorbeeld voor nationaal Frans record: FRA. Voorbeeld voor European Youth Cup: WAE.';
+$lang['RecordAreaCode']='Record Area code';
+$lang['RecordAreaCodeHelp']='2 of meer groepen letters: Land/Continent/Game, type record, GR als het een Game Record is. Voorbeeld voor Arizona Cup: AzCup-GR. Voorbeeld voor nationaal Italiaans record: ITA-NR. Voorbeeld voor European Youth Cup: WAE-YC-GR';
+$lang['RecordAreaLevel']='Nieuw Area niveau';
+$lang['RecordAreaName']='Nieuwe Area naam';
 $lang['RecordAreaNew']='Nieuw Area record';
 $lang['RecordNewAreaError']='Ontbrekende gegevens: code, naam en niveau moeten worden gedefinieerd';
 $lang['SelectRecordCategory']='Selecteer een record categorie';
 $lang['TourRecords']='Opeisbare records voor deze wedstrijd';
 $lang['UpdateFromWA']='Bijwerken van door WA bijgehouden records';
+$lang['WA-Rec-Division']='World Archery Record divisie';
 ?>

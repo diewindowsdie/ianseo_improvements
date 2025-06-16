@@ -267,7 +267,6 @@ $lang['UpdatePrepared']='La seva instal·lació està a punt de ser actualitzada
 $lang['Updating']='Actualització de la instal·lació local de Ianseo';
 $lang['UpdatingLanguages']='Actualització d\'idiomes instal·lats';
 $lang['UpdatingModulesInfo']='Actualitzant Informació Mòduls';
-$lang['UpgradeFinished']='L\'actualització ha finalitzat.';
 $lang['User']='Nom d\'usuari';
 $lang['Value']='Valor (matrius indexades clau1::valor1|clau2::valor2)';
 $lang['WhatIanseoDoes01']='<b>Reglaments de la World Archery </ b> Ianseo està sempre actualitzat amb les normes de la World Archery. Els programadors estan disponibles per adaptar-se als reglaments particulars o formats específics de competicions tambè!';

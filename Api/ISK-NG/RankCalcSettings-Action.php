@@ -7,7 +7,7 @@ require_once('Qualification/Fun_Qualification.local.inc.php');
 
 $JSON=array('error'=>true, 'tempTable'=>array("M"=>0, "Q"=>0));
 
-if(!CheckTourSession() or hasFullACL(AclISKServer, 'iskManagement', AclReadWrite)) {
+if(!CheckTourSession() or !hasFullACL(AclISKServer, 'iskManagement', AclReadWrite)) {
 	JsonOut($JSON);
 }
 

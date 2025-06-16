@@ -232,6 +232,7 @@ $lang['MenuLM_Archers on Targets']='Numero Arcieri per Piazzola';
 $lang['MenuLM_Arr4Set']='Frecce per set';
 $lang['MenuLM_Arrow by Arrow (Advanced user)']='Freccia per Freccia (Utenti Avanzati)';
 $lang['MenuLM_Arrow by Arrow (Scorecards)']='Freccia a Freccia (Vista Score)';
+$lang['MenuLM_Aruco']='Autocodice Score';
 $lang['MenuLM_Athlete Status Management']='Gestione Stato Arcieri';
 $lang['MenuLM_Athletes Participation to Ind/Team Event']='Partecipazione Individuale - Squadre';
 $lang['MenuLM_Athletes Setup']='Setup degli Atleti';

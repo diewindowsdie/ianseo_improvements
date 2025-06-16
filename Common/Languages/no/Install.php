@@ -197,7 +197,6 @@ $lang['UpdateInProgress']='En oppdatering pågår allerede, vennligst vent...';
 $lang['UpdatePrepared']='Din installasjon er i ferd med å bli automatisk oppdatert. Husk å ta en sikkerhetskopi av alle stevnene før oppdatering. Oppdateringen kan ta lang tid, avhengig av tilkoblingen og hva som må oppgraderes.<br/>Husk at alle filer som ikke er originalfiler vil bli slettet, bortsett fra innholdet i mappen «Modules/Custom».';
 $lang['Updating']='Oppdatere lokal installasjon av Ianseo';
 $lang['UpdatingLanguages']='Oppdaterer språkfiler';
-$lang['UpgradeFinished']='Oppdatering utført.';
 $lang['User']='Brukernavn';
 $lang['Value']='Verdi (indeksert matriseelementer: key1::value1|key2::value2)';
 $lang['WhatIanseoDoes01']='<b>World Archery regelverk:</b> Ianseo er alltid oppdatert i henhold til World Archery sine regler. Vi er tilgjengelig til å tilpasse programmet til å passe nasjonale stevner eller spesifikke regler også!';

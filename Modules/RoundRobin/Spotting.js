@@ -572,7 +572,7 @@ function selectArrow(obj, noselect) {
             $('#SvgEndR_'+end).show();
         }
     }
-    if(obj.value!='' && document.getElementById('svgLastArrow')) {
+    if(obj.value && obj.value!='' && document.getElementById('svgLastArrow')) {
     	let sighter=document.getElementById('svgLastArrow').getBBox();
     	let arrow=document.getElementById('Svg'+obj.id).getBBox();
 

@@ -250,7 +250,7 @@ function checkFullACL($feature, $subFeature, $level, $redirect=true, $TourId=0) 
                 $Sql = "SELECT `AclTeFeatures`, `AclTePattern`, ('{$ip}' LIKE REPLACE(`AclTePattern`,'*','%')) as isMatch FROM `AclTemplates` WHERE `AclTeTournament`={$TourId} ORDER BY '{$ip}' LIKE REPLACE(`AclTePattern`,'*','%')";
                 $q = safe_r_SQL($Sql);
                 while($r=safe_fetch($q)) {
-                    if(($r->isMatch OR preg_match('/'.$r->AclTePattern.'/',$ip)) and $r->AclTeFeatures) {
+                    if(($r->isMatch OR preg_match('/'.$r->AclTePattern.'/i',$ip)) and $r->AclTeFeatures) {
                         foreach (explode('#', $r->AclTeFeatures) as $ft) {
                             $tmp = explode("|", $ft);
                             safe_w_SQL("INSERT INTO `AclDetails` (`AclDtTournament`, `AclDtIP`, `AclDtFeature`, `AclDtSubFeature`, `AclDtLevel`) 

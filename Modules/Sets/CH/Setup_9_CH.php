@@ -10,7 +10,7 @@ $TourType is the Tour Type (9)
 
 $TourType=9;
 
-$tourDetTypeName		= 'Type_HF 12+12';
+$tourDetTypeName		= 'SetCHField';
 $tourDetNumDist			= '1';
 $tourDetNumDist			= ($SubRule<5 ? '1' : '2' );
 if($SubRule==1 or $SubRule==5) {

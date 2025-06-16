@@ -140,7 +140,6 @@ $lang['System value']='Systemwert';
 $lang['UpdatePrepared']='Diese Installation wird anschliessend automatisch aktualisiert. Bitte erstelle ein Backup aller Turniere bevor dieser Schritt ausgeführt wird. Der Aktualisierungsprozess kann länger andauern, abhängig von der Internetverbindung und der Anzahl zu aktualisierender Elemente.<br/> Bitte beachte dass alle nicht Originaldateien entfernt werden, - abgesehen vom Inhalt des Ordners «Modules/Custom».';
 $lang['Updating']='Aktualisierung der lokalen Installation von Ianseo';
 $lang['UpdatingLanguages']='Installierte Sprachen updaten';
-$lang['UpgradeFinished']='Die Aktualisierung ist beendet.';
 $lang['User']='Benutzername';
 $lang['Value']='Wert (indexed arrays items: key1::value1|key2::value2)';
 $lang['WhatIanseoDoes01']='<b>Konform zu den World Archery Regeln:</b> Ianseo ist immer aktuell mit den World Archery Regeln. Die Entwickler sind ebenfalls für Anpassungen an nationale und Wettkampf-Spezifische Regeln verfügbar.';

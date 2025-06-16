@@ -27,6 +27,7 @@ $lang['IntCONN']='Connessione (DT_LOCAL_XX)';
 $lang['IntEVENT']='Nome dell\'evento';
 $lang['IntFUNC']='Funzione';
 $lang['IntMATCH']='Scontri';
+$lang['IntPOOL']='Gironi';
 $lang['IntQUAL']='Fase di Ranking';
 $lang['IntRECORD']='Suffisso dei Record';
 $lang['IntRES']='Risultati';

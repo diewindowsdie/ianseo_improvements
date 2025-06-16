@@ -249,7 +249,6 @@ $lang['UpdatePrepared']='Su versión instalada va a ser actualizada automáticam
 $lang['Updating']='Actualizando la instalación local de Ianseo.';
 $lang['UpdatingLanguages']='Actualizando idiomas instalados';
 $lang['UpdatingModulesInfo']='Actualizar las informaciones de Modulos';
-$lang['UpgradeFinished']='El proceso de actualización ha terminado.';
 $lang['User']='Nombre de usuario';
 $lang['Value']='Valor(datos matriciales indexados: llave1::valor1|llave2::valor2)';
 $lang['WhatIanseoDoes01']='<b>Observador de las Reglas de World Archery:</b> Ianseo siempre está al día de los Reglamentos publicados por World Archery. ¡Los programadores de Ianseo se encuentran también dispuestos a desarrollar el programa de acuerdo con las Reglas de Competición específicas de cualquier País!';

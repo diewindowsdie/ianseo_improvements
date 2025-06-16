@@ -103,7 +103,6 @@ $lang['System value']='Järjestelmän arvo';
 $lang['UpdatePrepared']='Asennusta ollaan automaattisesti päivittämässä. Muista otta varmuuskopio kaikista kilpailuista ennen aloittamista. Päivitys voi kestää pitkänkin aikaa riippuen yhteyden nopeudesta ja päivitettävien osien määrästä.<br/>Muista, että kaikki ei alkuperäiset tiedostot poistetaan lukuunottamatta «Modules/Custom»-hakemistoa.';
 $lang['Updating']='Ianseo asennuksen päivitys';
 $lang['UpdatingLanguages']='Päivitä asennetut kielet';
-$lang['UpgradeFinished']='Päivitys on valmistunut.';
 $lang['User']='Käyttäjänimi';
 $lang['Value']='Arvo (indeksoidut avain-arvo parit: avain1::arvo1|avain2::arvo2)';
 $lang['Write connection failed']='Yhteyttä kirjoittavaan palvelimeen ei saada: joko et ole antanut ROOT-käyttäjän salasanaa tai kirjautumistiedot ovat väärin!';

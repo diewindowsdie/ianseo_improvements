@@ -10,7 +10,7 @@ $TourType is the Tour Type (8)
 
 $TourType=8;
 
-$tourDetTypeName		= 'Type_Indoor 25+18';
+$tourDetTypeName		= 'SetCHIndoor18+25';
 $tourDetNumDist			= '4';
 $tourDetNumEnds			= '10';
 $tourDetMaxDistScore	= '300';

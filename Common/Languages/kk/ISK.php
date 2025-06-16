@@ -1,0 +1,30 @@
+<?php
+$lang['0_Phase']='Алтын';
+$lang['12_Phase']='1/12';
+$lang['14_Phase']='1/14';
+$lang['16_Phase']='1/16';
+$lang['1_Phase']='Қола';
+$lang['24_Phase']='1/24';
+$lang['2_Phase']='Жартылай Финал';
+$lang['32_Phase']='1/32';
+$lang['48_Phase']='1/48';
+$lang['4_Phase']='Ширек Финал';
+$lang['64_Phase']='1/64';
+$lang['7_Phase']='1/7';
+$lang['8_Phase']='1/8';
+$lang['All']='Барлық';
+$lang['Cancel']='Болдырмау';
+$lang['ChangeLang']='Тілді Өзгерту';
+$lang['ChooseLang']='Пайдаланғыңыз келетін тілді таңдаңыз';
+$lang['Elimination']='Іріктеу';
+$lang['Help']='Көмек';
+$lang['No']='Жоқ';
+$lang['Ok']='ОК';
+$lang['ScoreHelp']='Көмек';
+$lang['Session']='Ауысым';
+$lang['StageE1']='1-ші Іріктеу Кезеңі';
+$lang['StageE2']='2-ші Іріктеу Кезеңі';
+$lang['UpdateLang']='Тілдерді Жаңарту';
+$lang['Winner']='Жеңімпаз';
+$lang['Yes']='Иә';
+?>

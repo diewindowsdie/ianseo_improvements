@@ -108,7 +108,6 @@ $lang['System value']='Systémová hodnota';
 $lang['UpdatePrepared']='Vaše instalace má být automaticky aktualizována. Mějte na paměti, že je třeba vytvořit zálohu všech závodů před zahájením. Proces aktualizace může trvat delší dobu v závislosti na připojení a elementech, které je třeba aktualizovat.<br/>Mějte na paměti, že všechny neoriginální soubory budou odstraněny kromě obsahu složky «Modules/Custom».';
 $lang['Updating']='Aktualizace lokální instalace Ianseo';
 $lang['UpdatingLanguages']='Aktualizace instalovaných jazyků';
-$lang['UpgradeFinished']='Proces aktualizace je ukončen.';
 $lang['User']='Uživatel';
 $lang['Value']='Hodnota (indexované položky pole: key1::value1|key2::value2)';
 $lang['WhatIanseoDoes01']='<b>Shoda s pravidly WA:</b> Ianseo je vždy aktuální s pravidly WA. Vývojáři jsou také připravení na přizpůsobení dle vašich lokálních pravidel!';

@@ -16,7 +16,7 @@ if(!empty($_REQUEST['lev'])) {
 	$File=array();
 
 	// Version
-	$File[]=sprintf("VERSION : \t%s.%s\t", defined('ProgramRelease') ? ProgramRelease : 'unknown', defined('ProgramBuild') ? preg_replace('/\D/', '', ProgramBuild) : 'unknown');
+	$File[]=sprintf("VERSION : \t%s.%s.%s\t", defined('ProgramRelease') ? ProgramRelease : 'unknown', defined('ProgramVersion') ? ProgramVersion : 'unknown', defined('ProgramBuild') ? preg_replace('/\s/', '-', ProgramBuild) : 'unknown');
 
 	// get the judges
 	$Select="SELECT TiCode Judges 
@@ -166,17 +166,16 @@ if(!empty($_REQUEST['lev'])) {
                 break;
         }
 
-        if(empty($EnCodes["{$r->EnCode}-{$r->EnDivision}"])) {
-            $EnCodes["{$r->EnCode}-{$r->EnDivision}"]=0;
+        if(empty($EnCodes["{$r->EnCode}-{$r->EnDivision}-{$r->EnClass}"])) {
+            $EnCodes["{$r->EnCode}-{$r->EnDivision}-{$r->EnClass}"]=0;
         }
-        $EnCodes["{$r->EnCode}-{$r->EnDivision}"]++;
+        $EnCodes["{$r->EnCode}-{$r->EnDivision}-{$r->EnClass}"]++;
 
 		// Remove rank from archers shooting more than one session
-		if ($EnCodes["{$r->EnCode}-{$r->EnDivision}"] > 1) {
+		if ($EnCodes["{$r->EnCode}-{$r->EnDivision}-{$r->EnClass}"] > 1) {
 			$r->QuClRank = null;
 			$r->IndRankFinal = null;
 		}
-
         $Archers[$r->IndEvent][$r->EnId]=array_fill(0, 51, '');
 		$Archers[$r->IndEvent][$r->EnId][0] = $Discipline;
 		$Archers[$r->IndEvent][$r->EnId][1] = $_REQUEST['lev'];
@@ -206,7 +205,7 @@ if(!empty($_REQUEST['lev'])) {
 		$Archers[$r->IndEvent][$r->EnId][47] = $r->IndRankFinal;
 		$Archers[$r->IndEvent][$r->EnId][48] = '1'; // will always be a valid competition... set to 1 if official FFTA Ranking Category
 		$Archers[$r->IndEvent][$r->EnId][49] = $r->EnDivision;
-		$Archers[$r->IndEvent][$r->EnId][50] = $EnCodes["{$r->EnCode}-{$r->EnDivision}"];
+		$Archers[$r->IndEvent][$r->EnId][50] = $EnCodes["{$r->EnCode}-{$r->EnDivision}-{$r->EnClass}"];
 	}
 
 	// get the matches
@@ -221,6 +220,11 @@ if(!empty($_REQUEST['lev'])) {
 		order by fl.FinMatchNo");
 
 	while($r=safe_fetch($q)) {
+		// Test if archer is present in event (for para export case)
+		if (!isset($Archers[$r->FinEvent][$r->FinAthlete])) {
+			continue;
+		}
+
 		if($r->GrPhase) {
 			$r->GrPhase=log($r->GrPhase, 2)+1;
 		}
