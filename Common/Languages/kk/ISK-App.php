@@ -1,0 +1,36 @@
+<?php
+$lang['0_Phase']='Алтын';
+$lang['12_Phase']='1/12';
+$lang['14_Phase']='1/14';
+$lang['16_Phase']='1/16';
+$lang['1_Phase']='Қола';
+$lang['24_Phase']='1/24';
+$lang['2_Phase']='Жартылай финал';
+$lang['32_Phase']='1/32';
+$lang['48_Phase']='1/48';
+$lang['4_Phase']='Ширек финал';
+$lang['64_Phase']='1/64';
+$lang['7_Phase']='1/7';
+$lang['8_Phase']='1/8';
+$lang['AppPageHelp']='Көмек';
+$lang['GenericCancel']='Болдырмау';
+$lang['GenericDelete']='Жою';
+$lang['GenericNext']='Келесі';
+$lang['GenericOk']='ОК';
+$lang['GenericYes']='Иә';
+$lang['HelpIntro2Elim']='Іріктеу';
+$lang['SettingsLanguageCategory']='Тіл';
+$lang['SettingsLanguageCurrent']='Ағымдағы Тіл';
+$lang['SettingsLanguageUpdate']='Тілдерді Жаңарту';
+$lang['SettingsManualAllDistances']='Барлық';
+$lang['SettingsManualRRRound']='Айналым';
+$lang['SettingsStageE1']='1-ші Іріктеу Кезеңі';
+$lang['SettingsStageE2']='2-ші Іріктеу Кезеңі';
+$lang['SettingsWifiCategory']='WiFi';
+$lang['SignatureSuccess']='ОК';
+$lang['UpdateLangAdditional']='Қосымша Тілдер';
+$lang['UpdateLangGetAll']='Ұсынылған тілдер алынуда...';
+$lang['UpdateLangGetSingle']='Тіл жүктелуде...';
+$lang['UpdateLangInstalled']='Орнатылған Тілдер';
+$lang['UpdateLangTitle']='Тілдерді Жаңарту';
+?>

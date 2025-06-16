@@ -18,7 +18,6 @@ $lang['Start Ianseo']='بدء IANSEO';
 $lang['Status']='الحالة';
 $lang['Updating']='تحديث';
 $lang['UpdatingLanguages']='تحديث اللغات';
-$lang['UpgradeFinished']='تم التحديث';
 $lang['User']='اسم المستخدم';
 $lang['Value']='القيمة';
 ?>

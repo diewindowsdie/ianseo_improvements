@@ -10,7 +10,7 @@ $TourType is the Tour Type (3)
 
 $TourType=3;
 
-$tourDetTypeName		= 'Type_70m Round';
+$tourDetTypeName		= 'SetCHOutdoor720';
 $tourDetNumDist			= '2';
 $tourDetNumEnds			= '12';
 $tourDetMaxDistScore	= '360';

@@ -156,6 +156,7 @@ $lang['SettingsQrCodesDevice']='Пристрій';
 $lang['SettingsQrCodesScorecard']='Картка запису результатів';
 $lang['SettingsReset']='Скинути';
 $lang['SettingsSaveConfig']='Зберегти';
+$lang['SettingsScanSendQrOk']='Дані QR-коду, надіслані до Ianseo';
 $lang['SettingsShowAdvanced']='Просунутий';
 $lang['SettingsStageE1']='Елімінаційний Раунд 1';
 $lang['SettingsStageE2']='Елімінаційний Раунд 2';

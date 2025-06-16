@@ -20,6 +20,10 @@ class ScorePDF extends IanseoPdf {
     var $NoTensOnlyX = false;
     var $ScoreQrPersonal = false;
     var $QRCode = [];
+    var $Aruco=0;
+    var $ArucoType=0;
+    var $ArucoSize=0;
+    var $ArucoMarker=null;
 
 	//Constructor
 	function __construct($Portrait=true) {
@@ -151,6 +155,9 @@ class ScorePDF extends IanseoPdf {
 		//PARAMETRI CALCOLATI
 		$TopOffset=30;
 		$BottomImage=0;
+        // Necessary for ARUCO codes
+        $CellW = intval(10*$Width / ($NumArrow+5))/10;
+        $Width=$CellW*($NumArrow+5);
 
 		//HEADER LOGO SX & Dx
 		$TmpLeft = 0;
@@ -182,13 +189,12 @@ class ScorePDF extends IanseoPdf {
 			}
 		}
 
-		$CellW = ($Width / ($NumArrow+5));
 		$ExtraRows=3;
 		if($this->NoTensOnlyX) {
 			$ExtraRows=(2+($Distance ? $Distance : 1)) ;
 		}
 
-		$CellH = min(10,($Height-41-$BottomImage-4*intval($this->GetArcInfo))/($NumEnd + $ExtraRows));
+		$CellH = intval(10*min(10,($Height-41-$BottomImage-4*intval($this->GetArcInfo))/($NumEnd + $ExtraRows)))/10;
 		if(empty($StdFont)) {
 			$StdFont=min(10, $CellH*2);
 			$StdFontSmall=$StdFont*.8;
@@ -288,7 +294,7 @@ class ScorePDF extends IanseoPdf {
 
 		//HEADER DELLO SCORE
 		$ArCellW=($this->PrintTotalCols ? 0.9 : 1)*$CellW;
-		$EndNumCellW=0.8*$CellW;
+		$EndNumCellW=intval(8*$CellW)/10;
 		$TotalCellW=($this->PrintTotalCols ? 1 : 1.4)*$CellW;
 		$XNineW=(($this->NoTensOnlyX or $prnGolds==$prnXNine) ? 1.4 : 0.7)*$CellW;
 
@@ -421,20 +427,23 @@ class ScorePDF extends IanseoPdf {
 		// CODICE A BARRE
 		$BCode=0;
 		if($this->PrintBarcode and !empty($Data['EnCode'])) {
+            $Pad=$this->getCellPaddings();
+            $this->setCellPaddings(0);
 			$this->SetColors(true);
-			$this->SetXY($TopX-2, $TopY+$TopOffset+$CellH*($NumEnd+1)-1);
+			$this->SetXY($TopX, $TopY+$TopOffset+$CellH*($NumEnd+1)-1);
 			$this->SetFont('barcode','',22);
 			$BCode=($NumArrow+($this->PrintTotalCols ? 0.6 : 1.3))*$CellW;
 			if($Data['EnCode'][0]=='_') $Data['EnCode']='UU'.substr($Data['EnCode'], 1);
-			$this->Cell($BCode +3, $CellH, mb_convert_encoding('*' . $Data['EnCode'].'-'.$Data['Div'].'-'.$Data['Cls'] . ($Distance ? '-'.$Distance : ''), "UTF-8","cp1252") . "*",0,0,'C',0);
+			$this->Cell($BCode +1, $CellH, mb_convert_encoding('*' . $Data['EnCode'].'-'.$Data['Div'].'-'.$Data['Cls'] . ($Distance ? '-'.$Distance : ''), "UTF-8","cp1252") . "*",0,0,'C',0);
 // 			$this->write1DBarcode(mb_convert_encoding('*' . $Data['EnCode'].'-'.$Data['Div'].'-'.$Data['Cls'] . (array_key_exists("CurDist",$Data) ? '-'.$Data["CurDist"] : ''), "UTF-8","cp1252") . "*",
 // 					'C39E', $TopX, $TopY+$TopOffset+$CellH*($NumEnd+1)+1, $BCode, $CellH-1);//, (float) $xres, (array) $style, (string) $align);
 
 			$this->SetFont($this->FontStd,'',7);
 			$this->ln();
-			$this->SetXY($TopX-2, $this->GetY()-2);
-			$this->Cell($BCode +3, $CellH, mb_convert_encoding($Data['EnCode'].'-'.$Data['Div'].'-'.$Data['Cls'] . ($Distance ? '-'.$Distance : ''), "UTF-8","cp1252"),0,0,'C',0, '', 1, false, 'T', 'T');
+			$this->SetXY($TopX, $this->GetY()-2);
+			$this->Cell($BCode +1, $CellH, mb_convert_encoding($Data['EnCode'].'-'.$Data['Div'].'-'.$Data['Cls'] . ($Distance ? '-'.$Distance : ''), "UTF-8","cp1252"),0,0,'C',0, '', 1, false, 'T', 'T');
 			$this->SetColors(false);
+            $this->setCellPaddings($Pad['L']);
 		}
 
 
@@ -529,7 +538,8 @@ class ScorePDF extends IanseoPdf {
 			}
 		}
 		//$this->Rect($TopX, $TopY, $Width, $Height);
-	}
+        return ['E'=>900+$NumEnd, 'A'=>950+$NumArrow, 'W'=>intval($CellW*10)*4+1, 'H'=>intval($CellH*10)*4+2, 'O'=>intval($EndNumCellW*10)*4+3, 'X'=>$TopX, 'Y'=>$TopY+$TopOffset+$CellH-$this->ArucoSize];
+    }
 
 //DRAW SCORE - ArrowCollector
 	function DrawCollector($TopX, $TopY, $Width, $Height, $End, $NumArrow, $Archers, $Target='', $Distance='') {
@@ -1903,4 +1913,16 @@ $Data["Dist"] : ' '),0,0,'C',(array_key_exists("Dist",$Data) ?
 			$this->cell(0,$CellH, '', '1',1);
 		}
 	}
+
+    function PrintAruco($Aru) {
+        if($Aru and $this->Aruco) {
+            // print type
+            foreach($Aru as $k=>$v) {
+                $this->ImageSVG('@'.$this->ArucoMarker->CreateArucoMarker($v['N']), $v['X'],$v['Y'], $this->ArucoSize, $this->ArucoSize);
+                $this->setXY($v['X'],$v['Y']+$this->ArucoSize);
+                $this->Cell($this->ArucoSize, 0, $k.' '.$v['N'], 0, 0, 'C');
+            }
+        }
+
+    }
 }

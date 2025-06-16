@@ -20,6 +20,7 @@ CreateStandardClasses($TourId, $SubRule, '', $TourType);
 
 // default Distances
 switch($TourType) {
+
 	case 1:  // FITA - 4 Distances
 		CreateDistanceNew($TourId, $TourType, 'RH',   array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
 		CreateDistanceNew($TourId, $TourType, '_MO',  array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
@@ -97,6 +98,7 @@ switch($TourType) {
 		CreateDistanceNew($TourId, $TourType, '%MI',  array(array('-',0), array('-',0), array('25 m',25), array('20 m',20)));
 		CreateDistanceNew($TourId, $TourType, '%PI',  array(array('-',0), array('-',0), array('20 m',20), array('15 m',15)));
 		break;
+
 	case 2:  // 2 x FITA - 8 Distances
 		CreateDistanceNew($TourId, $TourType, 'RH',   array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30), array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
 		CreateDistanceNew($TourId, $TourType, '_MO',  array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30), array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
@@ -174,6 +176,7 @@ switch($TourType) {
 		CreateDistanceNew($TourId, $TourType, '%MI',  array(array('-',0), array('-',0), array('25 m',25), array('20 m',20), array('-',0), array('-',0), array('25 m',25), array('20 m',20)));
 		CreateDistanceNew($TourId, $TourType, '%PI',  array(array('-',0), array('-',0), array('20 m',20), array('15 m',15), array('-',0), array('-',0), array('20 m',20), array('15 m',15)));
 		break;
+
 	case 3:  // 70m/50m Round - 2 Distances
 		CreateDistanceNew($TourId, $TourType, '%PI',  array(array('15m-1',15), array('15m-2',15)));
 		CreateDistanceNew($TourId, $TourType, '%MI',  array(array('25m-1',25), array('25m-2',25)));
@@ -196,8 +199,8 @@ switch($TourType) {
 		CreateDistanceNew($TourId, $TourType, 'CJE',  array(array('40m-1',40), array('40m-2',40)));
 		CreateDistanceNew($TourId, $TourType, 'GCJE', array(array('40m-1',40), array('40m-2',40)));
 		CreateDistanceNew($TourId, $TourType, 'GRJE', array(array('40m-1',40), array('40m-2',40)));
-		CreateDistanceNew($TourId, $TourType, 'BBJE', array(array('40m-1',40), array('40m-2',40))); // Barebow JE
-		CreateDistanceNew($TourId, $TourType, 'GBJE', array(array('40m-1',40), array('40m-2',40))); // Guest Barebow JE
+		CreateDistanceNew($TourId, $TourType, 'BBJE', array(array('30m-1',30), array('30m-2',30))); //AD-DV 02.11.2024 => 2025 ML
+		CreateDistanceNew($TourId, $TourType, 'GBJE', array(array('30m-1',30), array('30m-2',30))); //AD-DV 02.11.2024 => 2025 ML
 
 		CreateDistanceNew($TourId, $TourType, 'CV_',  array(array('50m-1',50), array('50m-2',50)));
 		CreateDistanceNew($TourId, $TourType, 'C_',   array(array('50m-1',50), array('50m-2',50)));
@@ -236,6 +239,7 @@ switch($TourType) {
 		CreateDistanceNew($TourId, $TourType, 'GRJH', array(array('70m-1',70), array('70m-2',70)));
 		CreateDistanceNew($TourId, $TourType, 'GRJD', array(array('70m-1',70), array('70m-2',70)));
 		break;
+		
 	case 6:  // Indoor 18 m - 2 Distances
 		CreateDistanceNew($TourId, $TourType, '%D', array(array('18m-1',18), array('18m-2',18)));
 		CreateDistanceNew($TourId, $TourType, '%H', array(array('18m-1',18), array('18m-2',18)));
@@ -245,6 +249,7 @@ switch($TourType) {
 		CreateDistanceNew($TourId, $TourType, '%MI', array(array('18m-1',18), array('18m-2',18)));
 		CreateDistanceNew($TourId, $TourType, '%PI', array(array('15m-1',15), array('15m-2',15)));
 		break;
+
 	case 7:  // Indoor 25 m - 2 Distances
 		CreateDistanceNew($TourId, $TourType, '%D', array(array('25m-1',25), array('25m-2',25)));
 		CreateDistanceNew($TourId, $TourType, '%H', array(array('25m-1',25), array('25m-2',25)));
@@ -254,6 +259,7 @@ switch($TourType) {
 		CreateDistanceNew($TourId, $TourType, '%MI', array(array('25m-1',25), array('25m-2',25)));
 		CreateDistanceNew($TourId, $TourType, '%PI', array(array('18m-1',18), array('18m-2',18)));
 		break;
+
 	case 8: // Indoor Combined Round (25m + 18m) - 4 Distances
 		CreateDistanceNew($TourId, $TourType, '%D', array(array('25m-1',25), array('25m-2',25), array('18m-1',18), array('18m-2',18)));
 		CreateDistanceNew($TourId, $TourType, '%H', array(array('25m-1',25), array('25m-2',25), array('18m-1',18), array('18m-2',18)));
@@ -367,40 +373,62 @@ if($TourType==3 or $TourType==6 or $TourType==7 or $TourType==9 or $TourType==11
 // Default Target
 $i=1;
 switch($TourType) {
+
 	case 1:  // FITA - 4 Distances
+
 		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(1-x)',  'REG-^(R|GR)[CJV]{0,1}[HD]{1,1}', '1', 5, 122, 5, 122, 5, 80, 9, 80);
 		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(1-x)',  'REG-^(R)[MW]{1,1}[O]{1,1}', '1', 5, 122, 5, 122, 5, 80, 9, 80);
 		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(5-x)',  'REG-^(C|GC)[CJV]{0,1}[HD]{1,1}', '1', 5, 122, 5, 122, 9, 80, 9, 80);
 		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(5-x)',  'REG-^(C)[MW]{1,1}[O]{1,1}', '1', 5, 122, 5, 122, 9, 80, 9, 80);
 		CreateTargetFace($TourId, $i++, '122cm(1-x) / 122cm(1-x)', 'REG-^((LB)|(BB)|(BH)|GB|GI)(JE){1,1}', '1', 5, 122, 5, 122, 5, 122, 5, 122);
-		CreateTargetFace($TourId, $i++,  '80cm(1-x) / 80cm(1-x)',  'REG-^(BB|GB|LB|BH|GI)[CJV]{0,1}[HD]{1,1}', '1', 5, 80, 5, 80, 5, 80, 5, 80);
-		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(1-x)',  'REG-^(R|C|GR|GC)(JE)$', '1', 5, 122, 5, 122, 5, 80, 5, 80);
-		CreateTargetFace($TourId, $i++,  '80cm(1-x) / 80cm(1-x)',  'REG-(MI|PI)$', '1', 5, 80, 5, 80, 5, 80, 5, 80);
+		CreateTargetFace($TourId, $i++,  '80cm(1-x) / 80cm(1-x)',  'REG-^(BB|GB)[CJV]{0,1}[HD]{1,1}', '1', 5, 80, 5, 80, 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++,  '122cm(1-x) / 122cm(1-x)',  'REG-^(LB|BH|GI)[CJV]{0,1}[HD]{1,1}', '1', 5, 122, 5, 122, 5, 122, 5, 122); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(1-x)',  'REG-^(R|GR)(JE)$', '1', 5, 122, 5, 122, 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(1-x)',  'REG-^(C|GC)(JE)$', '1', 5, 122, 5, 122, 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '80cm(1-x) / 80cm(1-x)',  'REG-^(C|GC)(MI)$', '1', 5, 80, 5, 80, 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '80cm(1-x) / 80cm(1-x)',  'REG-^(R|GR)(MI)$', '1', 5, 80, 5, 80, 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '122cm(1-x) / 122cm(1-x)',  'REG-^(BB|GB|LB|BH|GI)(MI)$', '1', 5, 122, 5, 122, 5, 122, 5, 122); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++,  '80cm(1-x) / 80cm(1-x)',  'REG-(PI)$', '1', 5, 80, 5, 80, 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
 		break;
+
 	case 2:  // 2 x FITA - 8 Distances
+
 		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(1-x)',  'REG-^(R|GR)[CJV]{0,1}[HD]{1,1}', '1', 5, 122, 5, 122, 5, 80, 9, 80, 5, 122, 5, 122, 5, 80, 9, 80);
 		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(1-x)',  'REG-^(R)[MW]{1,1}[O]{1,1}', '1', 5, 122, 5, 122, 5, 80, 9, 80, 5, 122, 5, 122, 5, 80, 9, 80);
 		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(5-x)',  'REG-^(C|GC)[CJV]{0,1}[HD]{1,1}', '1', 5, 122, 5, 122, 9, 80, 9, 80, 5, 122, 5, 122, 9, 80, 9, 80);
 		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(5-x)',  'REG-^(C)[MW]{1,1}[O]{1,1}', '1', 5, 122, 5, 122, 9, 80, 9, 80, 5, 122, 5, 122, 9, 80, 9, 80);
 		CreateTargetFace($TourId, $i++, '122cm(1-x) / 122cm(1-x)', 'REG-^((LB)|(BB)|(BH)|GB|GI)(JE){1,1}', '1', 5, 122, 5, 122, 5, 122, 5, 122, 5, 122, 5, 122, 5, 122, 5, 122);
-		CreateTargetFace($TourId, $i++,  '80cm(1-x) / 80cm(1-x)',  'REG-^(BB|GB|LB|BH|GI)[CJV]{0,1}[HD]{1,1}', '1', 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80);
-		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(1-x)',  'REG-^(R|C|GR|GC)(JE)$', '1', 5, 122, 5, 122, 5, 80, 5, 80, 5, 122, 5, 122, 5, 80, 5, 80);
-		CreateTargetFace($TourId, $i++,  '80cm(1-x) / 80cm(1-x)',  'REG-(MI|PI)$', '1', 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80);
+		CreateTargetFace($TourId, $i++,  '122cm(1-x) / 80cm(1-x)',  'REG-^(BB|GB)[CJV]{0,1}[HD]{1,1}', '1', 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80);//AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++,  '122cm(1-x) / 80cm(1-x)',  'REG-^(LB|BH|GI)[CJV]{0,1}[HD]{1,1}', '1', 5, 122, 5, 122, 5, 122, 5, 122, 5, 122, 5, 122, 5, 122, 5, 122);//AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(1-x)',  'REG-^(R|GR)(JE)$', '1', 5, 122, 5, 122, 5, 80, 5, 80, 5, 122, 5, 122, 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '122cm(1-x) / 80cm(1-x)',  'REG-^(C|GC)(JE)$', '1', 5, 122, 5, 122, 5, 80, 5, 80, 5, 122, 5, 122, 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '80cm(1-x) / 80cm(1-x)',  'REG-^(C|GC)(MI)$', '1', 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '80cm(1-x) / 80cm(1-x)',  'REG-^(R|GR)(MI)$', '1', 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '122cm(1-x) / 122cm(1-x)',  'REG-^(BB|GB|LB|BH|GI)(MI)$', '1', 5, 122, 5, 122, 5, 122, 5, 122, 5, 122, 5, 122, 5, 122, 5, 122); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++,  '80cm(1-x) / 80cm(1-x)',  'REG-(PI)$', '1', 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		
 		break;
+
 	case 3:  // 70m/50m Round - 2 Distances
+
 		CreateTargetFace($TourId, $i++, '122cm (1-x)', 'REG-^(R|GR)[CJV]{0,1}[HD]{1,1}', '1', 5, 122, 5, 122);
 		CreateTargetFace($TourId, $i++, '122cm (1-x)', 'REG-^(R)[MW]{1,1}[O]{1,1}', '1', 5, 122, 5, 122);
 		CreateTargetFace($TourId, $i++, '122cm (1-x)', 'REG-^(BB|GB)[CJV]{0,1}[HD]{1,1}', '1', 5, 122, 5, 122);
 		CreateTargetFace($TourId, $i++, '80cm (5-x)', 'REG-^(C|GC)[CJV]{0,1}[HD]{1,1}', '1', 9, 80, 9, 80);
 		CreateTargetFace($TourId, $i++, '80cm (5-x)', 'REG-^(C)[MW]{1,1}[O]{1,1}', '1', 9, 80, 9, 80);
-		CreateTargetFace($TourId, $i++, '122cm (1-x)', 'REG-(JE){1,1}$', '1', 5, 122, 5, 122);
-		CreateTargetFace($TourId, $i++, '80cm (1-x)', 'REG-^(LB|BH|GI)[CJV]{0,1}[HD]{1,1}', '1', 5, 80, 5, 80);
-		CreateTargetFace($TourId, $i++, '80cm (1-x)', 'REG-(MI|PI)$', '1', 5, 80, 5, 80);
+		CreateTargetFace($TourId, $i++, '122cm (1-x)', 'REG-^(LB|BH|GI)[CJV]{0,1}[HD]{1,1}', '1', 5, 122, 5, 122); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '80cm (1-x)', 'REG-^(C|GC)(JE)$', '1', 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '122cm (1-x)', 'REG-^(R|GR)(JE)$', '1', 5, 122, 5, 122); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '122cm (1-x)', 'REG-^(BB|GB|LB|BH|GI)(JE)$', '1', 5, 122, 5, 122); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '80cm (1-x)', 'REG-^(R|GR|C|GC)(MI)$', '1', 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '122cm (1-x)', 'REG-^(BB|GB|LB|BH|GI)(MI)$', '1', 5, 122, 5, 122); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++, '80cm (1-x)', 'REG-(PI)$', '1', 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
 		break;
+
 	case 6:  // Indoor 18 m - 2 Distances
+
 		CreateTargetFace($TourId, $i++, '40cm (1-big 10)', '%', '1', 1, 40, 1, 40);  // big 10
 		CreateTargetFace($TourId, $i++, 'Trispot Comp 40cm', 'REG-^(C|GC)(D|C|H|V|JD|JH|MO|WO)', '1', 4, 40, 4, 40);  // small 10
-		//CreateTargetFace($TourId, $i++, '60cm (1-big 10)', 'REG-((^R|^BB|^BH|^LB|^GR|^GB|^GI)JE)', '1', 1, 60, 1, 60);  // big 10
 		CreateTargetFace($TourId, $i++, '60cm (1-big 10)', 'REG-((^R|^BB|^GR|^GB)JE)|(^LB|^BH|^GI).*[^I]$', '1', 1, 60, 1, 60);  // big 10 (ML-18.10.2023)
 		CreateTargetFace($TourId, $i++, 'Trispot Comp 60cm', 'REG-(^C|^GC)JE', '1', 4, 60, 4, 60);  // small 10
 		CreateTargetFace($TourId, $i++, '80cm (1-small 10)', 'REG-(^C|^GC).I$', '1', 3, 80, 3, 80);  // small 10
@@ -410,32 +438,37 @@ switch($TourType) {
 		CreateTargetFace($TourId, $i++, 'Trispot Rec 40cm', 'REG-^(BB|GB)[CJV]{0,1}[HD]{1,1}', '',  2, 40, 2, 40);  // big 10
 		CreateTargetFace($TourId, $i++, 'Trispot Rec 60cm', 'REG-(^R|^GR)JE', '', 2, 60, 2, 60);  // big 10
 		break;
+
 	case 7:  // Indoor 25 m - 2 Distances
+
 		CreateTargetFace($TourId, $i++, '60cm (1-big 10)', '%', '1', 1, 60, 1, 60);  // big 10
 		CreateTargetFace($TourId, $i++, 'Trispot Comp 60cm', 'REG-^(C|GC)(D|C|H|V|JD|JH|MO|WO)', '1', 4, 60, 4, 60);  // small 10
 		//CreateTargetFace($TourId, $i++, '80cm (1-big 10)', 'REG-(^(R|BB|LB|BH|GR|GB|GI)(JE|MI)$)', '1', 1, 80, 1, 80);  // big 10
 		CreateTargetFace($TourId, $i++, '80cm (1-big 10)', 'REG-(^(R|BB|LB|BH|GR|GB)(JE|MI)$)|(^(LB|BH|GB).*[^(MI)])$', '1', 1, 80, 1, 80);  // big 10 (ML-18.10.2023)
 		CreateTargetFace($TourId, $i++, '80cm (1-small 10)', 'REG-(^C|^GC)(JE|MI)$', '1', 3, 80, 3, 80);  // small 10
 		CreateTargetFace($TourId, $i++, '122cm (1-small 10)', 'REG-(^C|^GC)PI$', '1', 3, 122, 3, 122);  // small 10
-		CreateTargetFace($TourId, $i++, '80cm (1-big 10)', 'REG-(^R|^BB|^BH|^LB|^GR|^GB|^GI)PI$', '1', 1, 122, 1, 122);  // big 10
+		CreateTargetFace($TourId, $i++, '122cm (1-big 10)', 'REG-(^R|^BB|^BH|^LB|^GR|^GB|^GI)PI$', '1', 1, 122, 1, 122);  // big 10
 		// optional target faces
 		CreateTargetFace($TourId, $i++, 'Trispot Rec 60cm', 'REG-^(GR|R)(D|C|H|V|JD|JH|MO|WO)', '',  2, 60, 2, 60);  // big 10
 		break;
+
 	case 8: // Indoor Combined Round (25m + 18m) - 4 Distances
+
 		CreateTargetFace($TourId, $i++, '60/40cm (1-big 10)', '%', 1, 1, 60, 1, 60, 1, 40, 1, 40);
 		CreateTargetFace($TourId, $i++, 'Trispot Comp 60/40cm', 'REG-^(C|GC)(D|C|H|V|JD|JH|MO|WO)', 1, 4, 60, 4, 60, 4, 40, 4, 40);
 		CreateTargetFace($TourId, $i++, '80/60cm (1-big 10)', 'REG-(^(R|BB|LB|BH|GR|GB|GI)(JE)$)', '1', 1, 80, 1, 80, 1, 60, 1, 60);  // big 10
 		CreateTargetFace($TourId, $i++, '80/60cm (1-big 10)', 'REG-(^(LB|BH|GI)(D|C|H|V|JD|JH|MO|WO|CH|CD|CD|VH)$)', '1', 1, 80, 1, 80, 1, 60, 1, 60);  // big 10 (ML-18.10.2023)
-		CreateTargetFace($TourId, $i++, '80cm (1-big10)', 'REG-(^(R|BB|LB|BH|GR|GB|GI)(MI)$)', '1', 1, 80, 1, 80, 1, 80, 1, 80);
+		CreateTargetFace($TourId, $i++, '80cm (1-big 10)', 'REG-(^(R|BB|LB|BH|GR|GB|GI)(MI)$)', '1', 1, 80, 1, 80, 1, 80, 1, 80);
 		CreateTargetFace($TourId, $i++, '80cm/Trispot Comp 60cm', 'REG-(^C|^GC)(JE)$', '1', 3, 80, 3, 80, 4, 60, 4, 60);  // small 10
 		CreateTargetFace($TourId, $i++, '80cm (1-small 10)', 'REG-(^C|^GC)(MI)$', '1', 3, 80, 3, 80, 3, 80, 3, 80);  // small 10
-		CreateTargetFace($TourId, $i++, '122/80cm (1-big10)', 'REG-(^(R|BB|LB|BH|GR|GB|GI)(PI)$)', '1', 1, 122, 1, 122, 1, 80, 1, 80);
+		CreateTargetFace($TourId, $i++, '122/80cm (1-big 10)', 'REG-(^(R|BB|LB|BH|GR|GB|GI)(PI)$)', '1', 1, 122, 1, 122, 1, 80, 1, 80);
 		CreateTargetFace($TourId, $i++, '122/80cm (1-small 10)', 'REG-(^C|^GC)(PI)$', '1', 3, 122, 3, 122, 3, 80, 3, 80);  // small 10
 		// optional target faces
 		CreateTargetFace($TourId, $i++, 'Trispot Rec 60/40cm', 'REG-^(GR|R)(D|C|H|V|JD|JH|MO|WO)', '',  2, 60, 2, 60, 2, 40, 2, 40);  // big 10
 		CreateTargetFace($TourId, $i++, '60cm/Trispot Rec 40cm', 'REG-^(GB|BB)(D|C|H|V|JD|JH|MO|WO)', '',  1, 60, 1, 60, 2, 40, 2, 40);  // big 10
 
 		break;
+
 	case 9:  // Field Archery
 		CreateTargetFace($TourId, $i++, 'Rot / Rouge', 'REG-^((R)|(C)|(GR)|(GC))[JV]{0,1}[HD]{1,1}', '1', 6, 0, ($tourDetNumDist==2 ? 6 : 0), 0);
 		CreateTargetFace($TourId, $i++, 'Blau / Bleu', 'REG-^((BB)|(BH)|(GB))[JV]{0,1}[HD]{1,1}', '1', 6, 0, ($tourDetNumDist==2 ? 6 : 0), 0);
@@ -446,7 +479,9 @@ switch($TourType) {
 		CreateTargetFace($TourId, $i++, 'Grün / Vert', 'REG-[^CR](JE){1,1}$', '1', 6, 0, ($tourDetNumDist==2 ? 6 : 0), 0);
 		CreateTargetFace($TourId, $i++, 'Grün / Vert', 'REG-(MI|PI)$', '1', 6, 0, ($tourDetNumDist==2 ? 6 : 0), 0);
 		break;
+
 	case 11:  // 3D
+
 	case 13:
 		CreateTargetFace($TourId, $i++, 'Rot / Rouge', 'REG-^((R)|(C)|(GR)|(GC))[CJV]{0,1}[HD]{1,1}', '1', 8, 0, ($tourDetNumDist==2 ? 8 : 0), 0);
 		CreateTargetFace($TourId, $i++, 'Blau / Bleu', 'REG-^((LB)|(BB)|(BH)|(H)|(GB)|GI)[CJV]{0,1}[HD]{1,1}', '1', 8, 0, ($tourDetNumDist==2 ? 8 : 0), 0);
@@ -461,9 +496,12 @@ switch($TourType) {
 		CreateTargetFace($TourId, $i++,  '80cm(5-x)', 'REG-^(C|GC)[CJV]{0,1}[HD]{1,1}', '1', 9, 80, 9, 80);
 		CreateTargetFace($TourId, $i++,  '80cm(5-x)', 'REG-^(C)[MW]{1,1}[O]{1,1}', '1', 9, 80, 9, 80);
 		CreateTargetFace($TourId, $i++, '122cm(1-x)', 'REG-^((LB)|(BB)|(BH)|GB|GI)(JE){1,1}', '1', 5, 122, 5, 122);
-		CreateTargetFace($TourId, $i++,  '80cm(1-x)', 'REG-^(BB|GB|LB|BH|GI)[CJV]{0,1}[HD]{1,1}', '1', 5, 80, 5, 80);
-		CreateTargetFace($TourId, $i++,  '80cm(1-x)', 'REG-^(R|C|GR|GC)(JE)$', '1', 5, 80, 5, 80);
-		CreateTargetFace($TourId, $i++,  '80cm(1-x)', 'REG-(MI|PI)$', '1', 5, 80, 5, 80);
+		CreateTargetFace($TourId, $i++,  '80cm(1-x)', 'REG-^(BB|GB)[CJV]{0,1}[HD]{1,1}', '1', 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++,  '122cm(1-x)', 'REG-^(LB|BH|GI)[CJV]{0,1}[HD]{1,1}', '1', 5, 122, 5, 122); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++,  '80cm(1-x)', 'REG-^(R|C|GR|GC)(JE)$', '1', 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++,  '122cm(1-x)', 'REG-^((LB)|(BB)|(BH)|GB|GI)(MI)$', '1', 5, 122, 5, 122); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++,  '80cm(1-x)', 'REG-^(R|C|GR|GC)(MI)$', '1', 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
+		CreateTargetFace($TourId, $i++,  '80cm(1-x)', 'REG-(PI)$', '1', 5, 80, 5, 80); //AD-DV 02.11.2024 => 2025 ML
 		break;
 }
 

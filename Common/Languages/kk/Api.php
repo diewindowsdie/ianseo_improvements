@@ -1,0 +1,32 @@
+<?php
+$lang['API-ConfirmDeleteRow']='Осы қатарды жойғыңыз келетініне сенімдісіз бе?';
+$lang['API-Targets']='Нысаналар';
+$lang['AutoImport']='Авто импорттау';
+$lang['CmdImport']='Импорт';
+$lang['DataRefresh']='Деректерді Жаңарту';
+$lang['Desc-Let-G']='Бос орын';
+$lang['DistanceNum']='қашықтық $a';
+$lang['ISK-Anomalies']='Аномалиялар';
+$lang['ISK-AppInfo']='Қосымша туралы Ақпарат';
+$lang['ISK-AppList']='APK тізімі';
+$lang['ISK-askSignature']='Қол қоюды Сұраңыз';
+$lang['ISK-DeviceAlive']='Желіде';
+$lang['ISK-DeviceBattery']='Батарея';
+$lang['ISK-DeviceIpAddress']='IP Мекенжайы';
+$lang['ISK-DeviceLastSeen']='Таяуда Кірді';
+$lang['ISK-WiFi']='WiFi Басқару';
+$lang['ISK-WifiSSID']='Wi-Fi ESSID';
+$lang['IskDeviceAssigned']='Құрылғы(лар)';
+$lang['IskTargetTitle']='Нысана $a';
+$lang['Masters']='Шеберлер';
+$lang['PopupStatusDistance']='Қашықтық: $a';
+$lang['PopupStatusEnd']='Серия: $a';
+$lang['PopupStatusEvent']='Іс-шара: $a';
+$lang['PopupStatusSession']='Ауысым: $a';
+$lang['Preparing']='Файл Дайындауда...';
+$lang['RasIpAddress']='IP Мекенжайы';
+$lang['RaspDevice']='Құрылғы';
+$lang['UsePersonalDevices-Granted']='Жеке';
+$lang['WAToolbox-MissingParams']='Жетіспейтін Параметр';
+$lang['XToWin']='Жеңу үшін $a';
+?>

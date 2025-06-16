@@ -165,7 +165,6 @@ $lang['System value']='Sistēmas vērtība';
 $lang['UpdatePrepared']='Jūsu instalācija tūliņ tiks automātiski atjaunota. Pirms sākat, lūdzu atcerieties izveidot "back up" visām sacensībām. Atjaunošanas process var aizņemt daudz laika, kas atkarīgs no pieslēguma un elementiem kas jāatjauno. <br/>Lūdzu atcerieties, ka visi faili kas nav pamatfaili tiks izdzēsti, izņemot mapes «Modules/Custom» saturu.';
 $lang['Updating']='Atjaunināt IANSEO lokālo instalāciju';
 $lang['UpdatingLanguages']='Atjaunināt instalētās valodas';
-$lang['UpgradeFinished']='Atjaunināšanas process ir pabeigts';
 $lang['User']='Lietotāja vārds';
 $lang['Value']='Vērtība';
 $lang['WhatIanseoDoes02']='<b>Palīdzība un atbalsts:</b> ja jums ir nepieciešama palīdzība, sūtiet e-pastu uz $a: jūs saņemsiet atbildi no pa tiešo Ianseo pamatizstrādātājiem!';

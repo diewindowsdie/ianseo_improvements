@@ -19,7 +19,7 @@ $TourType = 44;
 
 
 // Tour details
-$tourDetTypeName = 'Type_CH_Federal';
+$tourDetTypeName = 'SetCHFederal';
 $tourDetNumDist = '2';
 $tourDetNumEnds = '12';
 $tourDetMaxDistScore = '360';

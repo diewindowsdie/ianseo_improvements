@@ -11,7 +11,7 @@ $TourType is the Tour Type (1)
 $TourType=1;
 
 // Tour details
-$tourDetTypeName		= 'Type_FITA';
+$tourDetTypeName		= 'SetCHOutdoor1440';
 $tourDetNumDist			= '4';
 $tourDetNumEnds			= '12';
 $tourDetMaxDistScore	= '360';

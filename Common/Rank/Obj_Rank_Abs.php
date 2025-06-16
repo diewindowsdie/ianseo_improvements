@@ -270,7 +270,7 @@
 
 			$q .= "IndTimestamp, IndRankFinal, 
 					IF(EvGolds!='',EvGolds,ToGolds) AS GoldLabel, IF(EvXNine!='',EvXNine,ToXNine) AS XNineLabel,
-					ToDouble, DiEnds, DiArrows, ToGoldsChars as QualGoldChars, ToXNineChars as QualXNineChars,
+					ToDouble, DiEnds, DiArrows, if(EvGoldsChars='', ToGoldsChars, EvGoldsChars) as QualGoldChars, if(EvXNineChars='', ToXNineChars, EvXNineChars) as QualXNineChars,
 					ifnull(concat(DV2.DvMajVersion, '.', DV2.DvMinVersion) ,concat(DV1.DvMajVersion, '.', DV1.DvMinVersion)) as DocVersion,
 					date_format(ifnull(DV2.DvPrintDateTime, DV1.DvPrintDateTime), '%e %b %Y %H:%i UTC') as DocVersionDate,
 					ifnull(DV2.DvNotes, DV1.DvNotes) as DocNotes, 0 as hasShootOff

@@ -358,9 +358,7 @@
 					. ") f2 on Tournament=OppTournament and Event=OppEvent and MatchNo=OppMatchNo-1
 					LEFT JOIN DocumentVersions DV1 on Tournament=DV1.DvTournament AND DV1.DvFile = 'B-IND' and DV1.DvEvent=''
 					LEFT JOIN DocumentVersions DV2 on Tournament=DV2.DvTournament AND DV2.DvFile = 'B-IND' and DV2.DvEvent=Event 
-                LEFT JOIN  (SELECT OdfTrOdfCode, OdfTrIanseo 
-                    FROM OdfTranslations 
-                    WHERE OdfTrTournament={$this->tournament} and OdfTrInternal='MATCH' and OdfTrType='CODE') OdfUnit ON OdfTrIanseo=concat(if((EvFinalFirstPhase, Phase) in ((48, 64), (48,32), (24, 32), (12, 16)), 1, 0),'_', f1.MatchNo)
+                LEFT join OdfTranslations OdfUnit on OdfUnit.OdfTrTournament={$this->tournament} and OdfUnit.OdfTrInternal=IF(EvElimType=3 AND EvFinalFirstPhase<GrPhase,'POOL','MATCH') and OdfUnit.OdfTrType='CODE' and OdfUnit.OdfTrIanseo=concat(IF(EvElimType=3 AND EvFinalFirstPhase<GrPhase,3,if( (EvFinalFirstPhase, GrPhase) in ((48, 64), (48,32), (24, 32), (12, 16)), 1, 0)),'_', f1.MatchNo)
                 LEFT JOIN (
                     select TiId as JudgeLineId, TiCode as JudgeLineCode, IF(TiCodeLocal='',TiCode,TiCodeLocal) JudgeLineCodeLocal, CoCode as JudgeLineCountry, if(TiGender=0, 'M', 'F') as JudgeLineGender, TiName as JudgeLineFamName, TiGivenName as JudgeLineGivName, concat(ucase(TiName), ' ', TiGivenName) as JudgeLine, coalesce(OdfTrOdfCode, 'LNE_JU') as OdfLineCode
                     from TournamentInvolved

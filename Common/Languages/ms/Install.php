@@ -218,7 +218,6 @@ $lang['UpdateInProgress']='Kemas kini sedang dijalankan, sila tunggu...';
 $lang['UpdatePrepared']='Pemasangan anda akan dikemas kini secara automatik. Sila ingat untuk membuat sandaran semua kejohanan sebelum memulakan. Proses kemas kini mungkin mengambil masa yang lama, bergantung kepada sambungan dan elemen yang perlu ditingkatkan. <br/> Sila ingat bahawa sebarang fail tidak asli akan dialih keluar, selain kandungan folder «Modul / Custom».';
 $lang['Updating']='Mengemas kini pemasangan Ianseo tempatan';
 $lang['UpdatingLanguages']='Mengemas kini bahasa yang dipasang';
-$lang['UpgradeFinished']='Proses menaik taraf telah selesai.';
 $lang['User']='Nama pengguna';
 $lang['Value']='Nilai';
 $lang['WhatIanseoDoes01']='<b>Mematuhi Peraturan Memanah Dunia:</b>Ianseo sentiasa mengemaskini peraturan World Archery yang terkini. Pemaju boleh juga membuat perubahan bagi memenuhi Peraturan Khusus Negara dan Persaingan juga!';

@@ -543,15 +543,15 @@ function get_which_menu($on=false) {
 		include($Module);
 	}
 
+	if(!empty($ret['IANSEO'])) {
+		array_unshift($ret['IANSEO'], get_text('MenuLM_Ianseo'));
+	}
+
     foreach ($ret as $k=>$v) {
         if (count($ret[$k]) == 1) {
             unset($ret[$k]);
         }
     }
-
-	if(!empty($ret['IANSEO'])) {
-		array_unshift($ret['IANSEO'], get_text('MenuLM_Ianseo'));
-	}
 
 
 

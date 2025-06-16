@@ -178,7 +178,6 @@ Imajte na umu da će svi neoriginalni fajlovi biti uklonjeni, osim sadržaja u f
 $lang['Updating']='Ažuriranje lokalne instalacije Ianseo';
 $lang['UpdatingLanguages']='Ažuriranje instaliranih jezika';
 $lang['UpdatingModulesInfo']='Ažuriranje informacija o modulima';
-$lang['UpgradeFinished']='Proces nadogradnje je završen.';
 $lang['User']='Korisničko ime';
 $lang['Value']='Vrijednost';
 $lang['WhatIanseoDoes01']='<b>U skladu sa World Archery pravilima:</b> Ianseo je uvijek u toku sa posljednjim World Archery pravilima. Naši programeri su na raspolaganju za sve modifikacije pravila kako bi se usaglasili sa nacionalnim i specifičnim pravilima pojedinih saveza!';

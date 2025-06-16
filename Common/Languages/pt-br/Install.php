@@ -181,7 +181,6 @@ $lang['UpdatePrepared']='Sua instalação está prestes a ser atualizada. Por fa
 $lang['Updating']='Atualizando instalação local do IANSEO';
 $lang['UpdatingLanguages']='Atualizando idiomas instalados';
 $lang['UpdatingModulesInfo']='Atualizando informação dos Módulos';
-$lang['UpgradeFinished']='O processo de atualização está terminado';
 $lang['User']='Usuário';
 $lang['Value']='Valor';
 $lang['WhatIanseoDoes01']='<b>Em conformidade com as regras da World Archery:</b> Ianseo está sempre atualizado com as regras da World Archery. Os desenvolvedores estão disponíveis para customizações para se adequar a necessidades de competições Nacionais e com Regras Específicas também!';

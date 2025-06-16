@@ -6,7 +6,7 @@ let selectedGroups = {};
 let objShown = '';
 let dlgShown = undefined;
 let toRefresh = 0;
-let toPartialCheck = 0;
+let toPartialCheck = [];
 let toClearPartialList = 0;
 const partialCheck = 2500;
 
@@ -495,10 +495,10 @@ $.fn.removeClassStartingWith = function (filter) {
 };
 
 function checkIsPartialDone() {
-    clearTimeout(toPartialCheck);
-    toPartialCheck = 0;
+
     $('.groupSelector:checked').each(function () {
         let gId = $(this).closest('tr').attr('ref');
+        clearTimeout(toPartialCheck[gId]);
         let keydone = [];
         let ItemList = [];
         $('#deviceTable_' + gId + ' .devLetter[ref]').each(function () {
@@ -516,11 +516,9 @@ function checkIsPartialDone() {
             ItemList.unshift('<div class="Button highlight" onclick="partialImportAll(' + gId + ')">' + msgPartialImportAll + '</div>');
         }
         $('#partGrp_' + gId).html(ItemList.join(''));
-        if(toPartialCheck==0) {
-            toPartialCheck = setTimeout(() => {
-                runPartialDone(gId, $('#Dist_' + gId).val(), $('#End_' + gId).val(), false);
-            }, (Math.random()*partialCheck));
-        }
+        toPartialCheck[gId] = setTimeout(() => {
+            runPartialDone(gId, $('#Dist_' + gId).val(), $('#End_' + gId).val(), false);
+        }, (Math.random()*partialCheck));
     });
 }
 
@@ -529,8 +527,7 @@ function partialImportAll(gId) {
 }
 
 function runPartialDone(gId, d, e, doForce = false) {
-    clearTimeout(toPartialCheck);
-    toPartialCheck = 0;
+    clearTimeout(toPartialCheck[gId]);
     if($('#chkPartImp_'+gId).is(':checked') || doForce) {
         let catList = [];
         $('#partGrp_' + gId + ' .Button[ref]').each(function () {

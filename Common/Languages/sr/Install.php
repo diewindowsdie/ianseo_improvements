@@ -114,7 +114,6 @@ $lang['System value']='Sistemska vrednost';
 $lang['UpdatePrepared']='Vaša instalacija će se sada automatski ažurirati. Ne zaboravite da napravite backup svi takmičenja pre početka ažuriranja. Proces može da traje duže ukoliko imate sporiji pristup internetu i treba ažurirati više elemenata.<br/>Svi fajlovi koji ne pripadaju instalaciji će biti uklonjeni osim sadržaja foldera «Modules/Custom».';
 $lang['Updating']='Ažuriranje lokalne Ianseo instalacije';
 $lang['UpdatingLanguages']='Ažuriranje instaliranih jezika';
-$lang['UpgradeFinished']='Ažuriranje je završeno.';
 $lang['User']='Korisničko ime';
 $lang['Value']='Vrednost';
 $lang['WhatIanseoDoes01']='<b>U skladu sa World Archery pravilima:</b> Ianseo je uvek u toku sa poslednjim World Archery pravilima. Naši prgrameri su na raspolaganju za sve modifikacije pravila kako bi se usaglasili sa nacionalnim i specifičnim pravilima pojedinih saveza!';
