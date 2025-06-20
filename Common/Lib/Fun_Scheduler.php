@@ -4442,18 +4442,20 @@ Class Scheduler {
 		$TimeHeight=6;
 		$TimeWidth=20;
 
+        $orientation = isset($_REQUEST["P"]) ? "P" : "L";
+
 		foreach($FOP as $Day => $Blocks) {
 			if(!$Blocks['min'] and !$Blocks['max']) continue;
 			$TwoColumns=false;
 			if($FirstPage) {
-                $pdf = new ResultPDF(get_text('FopSetup'), false);
+                $pdf = new ResultPDF(get_text('FopSetup'), $orientation === "P");
 				$pdf->Version=$this->FopVersion;
 				$pdf->SetCellPadding(0.1);
 				$pdf->SetFillColor(200);
 				$pdf->SetTextColor(0);
 // 				$pdf->SetAutoPageBreak(false);
 			} else {
-				$pdf->AddPage("L");
+				$pdf->AddPage($orientation);
 			}
 			$FirstPage=false;
 			$FirstDate=true;
@@ -4487,7 +4489,7 @@ Class Scheduler {
 			foreach($Blocks['times'] as $Time => $Block) {
 				if(!($CurrentXOffset%2) or !$SecondColumn) {
 					if(!$pdf->SamePage(11 + $DistHeight + $TgtHeight + $EventHeight + $PhaseHeight + $TgtFaceHeight + $ArcTgtHeight)) {
-						$pdf->AddPage("L");
+						$pdf->AddPage($orientation);
 						$FirstDate=true;
 						$pdf->SetFont('', 'B', 16);
 						$pdf->Cell(0, 0, formatTextDate($Day, true).' ('.get_text('Continue').')', 'B', 1, 'C');
