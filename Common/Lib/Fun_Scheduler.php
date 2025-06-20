@@ -1525,6 +1525,7 @@ Class Scheduler {
                                         $titleCellHeight = $CellHeight;
                                         $fill = 0;
                                         $cellWidth = $descrSize;
+                                        $text = strip_tags($Item->Title).(($Item->SubTitle or $Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')');
                                         if ($Item->UID == "") {
                                             $pdf->SetFont('', 'B');
                                             $pdf->SetFontSize(10);
@@ -1533,8 +1534,9 @@ Class Scheduler {
                                             $titleAlign = 'C';
                                             $titleCellHeight = 8;
                                             $fill = 1;
+                                            $text = strip_tags($Item->Title);
                                         }
-										$pdf->Cell($cellWidth, $titleCellHeight, strip_tags($Item->Title).(($Item->SubTitle or $Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, $titleAlign, $fill);
+										$pdf->Cell($cellWidth, $titleCellHeight, $text, 0, 1, $titleAlign, $fill);
 										$pdf->SetFont('', '');
                                         $pdf->SetFontSize(8);
 										$RepeatTitle=$Item->Title;
