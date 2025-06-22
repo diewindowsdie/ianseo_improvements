@@ -113,6 +113,7 @@ function get_which_menu($on=false) {
         }
         if(subFeatureAcl($acl,AclCompetition,'cSchedule') >= AclReadOnly) {
             $ret['COMP'][] = get_text('MenuLM_Final Field of Play Layout') . '|' . $CFG->ROOT_DIR . 'Final/FopSetup.php|||PrintOut';
+            $ret['COMP'][] = get_text('MenuLM_FinalFOPChoose') . '|' . $CFG->ROOT_DIR . 'Final/FopSetup-Choose.php';
         }
         $ret['COMP'][] = MENU_DIVIDER;
         if (subFeatureAcl($acl,AclRoot) == AclReadWrite) {
