@@ -1211,6 +1211,7 @@ $lang['StatEvents']='Statistics (Awards and Events)';
 $lang['Statistics']='Statistics';
 $lang['StatRecordsBroken']='Broken Records';
 $lang['StatRecordsStanding']='Standing Records';
+$lang['StatSumPositions']='Athletes ordered by sum of places in qualifications and final rounds';
 $lang['Status']='Status';
 $lang['StatusValidUntil']='Status valid until';
 $lang['StdIndMatchLength']='Individual Match Default Length';

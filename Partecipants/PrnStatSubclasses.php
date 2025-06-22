@@ -20,8 +20,6 @@ while ($row = safe_fetch($resultSet)) {
 }
 safe_free_result($resultSet);
 
-error_reporting(E_ALL ^ E_NOTICE);
-
 $Sql = "SELECT EnClass, EnSubClass, ScDescription, count(*) as numArchers 
     FROM Entries 
     INNER JOIN Qualifications on EnId=QuId
