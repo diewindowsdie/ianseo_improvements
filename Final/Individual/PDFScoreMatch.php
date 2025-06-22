@@ -497,15 +497,18 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
         $pdf->setxy($pdf->BarcodeHeaderX, $y+$pdf->ScoreCellHeight+10 + $additionalOffset);
         $pdf->Cell($pdf->BarcodeHeader, 4, mb_convert_encoding($MyRow->MatchNo.'-0-'.$MyRow->Event, "UTF-8","cp1252"),0,1,'R',0);
 
+        //надо сдвинуть текущую позицию обратно, т.к. выше мы ее меняли
         $pdf->setXY($x, $y+5);
         $pdf->setCellPaddings($padding['L'], $padding['T'], $padding['R'], $padding['B']);
         $barcodePrinted = true;
     } else {
         $pdf->setBarcodeHeader(10);
+        $pdf->setXY($pdf->GetX(), $pdf->GetY() + 5);
     }
 
+    //QR-код
     $halfWidth = ($pdf->getPageWidth() - 2 * $pdf->getSideMargin() - $divider) / 2;
-    $QrcodeX= $pdf->getSideMargin() + $halfWidth - 30;
+    $QrcodeX = $pdf->getSideMargin() + $halfWidth - 30;
     if(!empty($_REQUEST['QRCode']) && !$qrPrinted) {
         foreach($_REQUEST['QRCode'] as $k => $Api) {
             require_once('Api/'.$Api.'/DrawQRCode.php');
@@ -513,8 +516,6 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
             $Function($pdf, $QrcodeX, $pdf->GetY() + $pdf->ScoreCellHeight - 5 + 1, $MyRow->Event, $MyRow->MatchNo, $MyRow->Phase, 0, "MI");
             $qrPrinted = true;
         }
-
-        //$pdf->setY($pdf->getY() + 5);
     }
 
     if($MyRow->EvCheckGolds) {
