@@ -1525,6 +1525,7 @@ Class Scheduler {
                                         $titleCellHeight = $CellHeight;
                                         $fill = 0;
                                         $cellWidth = $descrSize;
+                                        $text = strip_tags($Item->Title).(($Item->SubTitle or $Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')');
                                         if ($Item->UID == "") {
                                             $pdf->SetFont('', 'B');
                                             $pdf->SetFontSize(10);
@@ -1533,8 +1534,9 @@ Class Scheduler {
                                             $titleAlign = 'C';
                                             $titleCellHeight = 8;
                                             $fill = 1;
+                                            $text = strip_tags($Item->Title);
                                         }
-										$pdf->Cell($cellWidth, $titleCellHeight, strip_tags($Item->Title).(($Item->SubTitle or $Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, $titleAlign, $fill);
+										$pdf->Cell($cellWidth, $titleCellHeight, $text, 0, 1, $titleAlign, $fill);
 										$pdf->SetFont('', '');
                                         $pdf->SetFontSize(8);
 										$RepeatTitle=$Item->Title;
@@ -4440,18 +4442,20 @@ Class Scheduler {
 		$TimeHeight=6;
 		$TimeWidth=20;
 
+        $orientation = isset($_REQUEST["P"]) ? "P" : "L";
+
 		foreach($FOP as $Day => $Blocks) {
 			if(!$Blocks['min'] and !$Blocks['max']) continue;
 			$TwoColumns=false;
 			if($FirstPage) {
-                $pdf = new ResultPDF(get_text('FopSetup'), false);
+                $pdf = new ResultPDF(get_text('FopSetup'), $orientation === "P");
 				$pdf->Version=$this->FopVersion;
 				$pdf->SetCellPadding(0.1);
 				$pdf->SetFillColor(200);
 				$pdf->SetTextColor(0);
 // 				$pdf->SetAutoPageBreak(false);
 			} else {
-				$pdf->AddPage("L");
+				$pdf->AddPage($orientation);
 			}
 			$FirstPage=false;
 			$FirstDate=true;
@@ -4485,7 +4489,7 @@ Class Scheduler {
 			foreach($Blocks['times'] as $Time => $Block) {
 				if(!($CurrentXOffset%2) or !$SecondColumn) {
 					if(!$pdf->SamePage(11 + $DistHeight + $TgtHeight + $EventHeight + $PhaseHeight + $TgtFaceHeight + $ArcTgtHeight)) {
-						$pdf->AddPage("L");
+						$pdf->AddPage($orientation);
 						$FirstDate=true;
 						$pdf->SetFont('', 'B', 16);
 						$pdf->Cell(0, 0, formatTextDate($Day, true).' ('.get_text('Continue').')', 'B', 1, 'C');

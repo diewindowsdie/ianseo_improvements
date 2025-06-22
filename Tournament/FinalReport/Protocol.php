@@ -10,6 +10,16 @@ function landscapePagesNeccesary() {
     return array_key_exists("country1", $_REQUEST) || array_key_exists("country2", $_REQUEST) || array_key_exists("country3", $_REQUEST);
 }
 
+const ModuleName = "Protocol";
+
+const Header1ParameterName = "StatHeader1";
+const Header2ParameterName = "StatHeader2";
+const Header3ParameterName = "StatHeader3";
+
+const Checked1ParameterName = "CheckedCountry1";
+const Checked2ParameterName = "CheckedCountry2";
+const Checked3ParameterName = "CheckedCountry3";
+
 if (array_key_exists("doPrint", $_REQUEST)) {
     //в этом отчете печатаем все
     $isCompleteResultBook = true;
@@ -136,9 +146,9 @@ if (array_key_exists("doPrint", $_REQUEST)) {
 
     //статистика по "регионам" по полю 1
     if (array_key_exists("country1", $_REQUEST)) {
-        setcookie($_SESSION['TourId'] . "_checkedCountry1", "1", 0, $CFG->ROOT_DIR);
+        setModuleParameter(ModuleName, Checked1ParameterName, "1", $_SESSION['TourId']);
         if ($_REQUEST["StatHeader1"] != "") {
-            setcookie($_SESSION['TourId'] . "_StatHeader1", $_REQUEST["StatHeader1"], 0, $CFG->ROOT_DIR);
+            setModuleParameter(ModuleName, Header1ParameterName, $_REQUEST["StatHeader1"], $_SESSION['TourId']);
         }
         $_REQUEST["countryIndex"] = 1;
         $pdf->Titolo = get_text('Statistics', 'Tournament');
@@ -149,14 +159,14 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         }
         $pdf->AddPage($pageOrientation);
     } else {
-        setcookie($_SESSION['TourId'] . "_checkedCountry1", "0", 0, $CFG->ROOT_DIR);
+        setModuleParameter(ModuleName, Checked1ParameterName, "0", $_SESSION['TourId']);
     }
 
     //статистика по "регионам" по полю 2
     if (array_key_exists("country2", $_REQUEST)) {
-        setcookie($_SESSION['TourId'] . "_checkedCountry2", "1", 0, $CFG->ROOT_DIR);
+        setModuleParameter(ModuleName, Checked2ParameterName, "1", $_SESSION['TourId']);
         if ($_REQUEST["StatHeader2"] != "") {
-            setcookie($_SESSION['TourId'] . "_StatHeader2", $_REQUEST["StatHeader2"], 0, $CFG->ROOT_DIR);
+            setModuleParameter(ModuleName, Header2ParameterName, $_REQUEST["StatHeader2"], $_SESSION['TourId']);
         }
         $_REQUEST["countryIndex"] = 2;
         $pdf->Titolo = get_text('Statistics', 'Tournament');
@@ -167,14 +177,14 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         }
         $pdf->AddPage($pageOrientation);
     } else {
-        setcookie($_SESSION['TourId'] . "_checkedCountry2", "0", 0, $CFG->ROOT_DIR);
+        setModuleParameter(ModuleName, Checked2ParameterName, "0", $_SESSION['TourId']);
     }
 
     //статистика по "регионам" по полю 3
     if (array_key_exists("country3", $_REQUEST)) {
-        setcookie($_SESSION['TourId'] . "_checkedCountry3", "1", 0, $CFG->ROOT_DIR);
+        setModuleParameter(ModuleName, Checked3ParameterName, "1", $_SESSION['TourId']);
         if ($_REQUEST["StatHeader3"] != "") {
-            setcookie($_SESSION['TourId'] . "_StatHeader3", $_REQUEST["StatHeader3"], 0, $CFG->ROOT_DIR);
+            setModuleParameter(ModuleName, Header3ParameterName, $_REQUEST["StatHeader3"], $_SESSION['TourId']);
         }
         $_REQUEST["countryIndex"] = 3;
         $pdf->Titolo = get_text('Statistics', 'Tournament');
@@ -183,7 +193,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         $pageOrientation = 'P';
         $pdf->AddPage($pageOrientation);
     } else {
-        setcookie($_SESSION['TourId'] . "_checkedCountry3", "0", 0, $CFG->ROOT_DIR);
+        setModuleParameter(ModuleName, Checked3ParameterName, "0", $_SESSION['TourId']);
     }
 
     //судьи
@@ -206,7 +216,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country1" id="country1"
-                        <?= !isset($_COOKIE[$_SESSION['TourId'] . "_checkedCountry1"]) || $_COOKIE[$_SESSION['TourId'] . "_checkedCountry1"] == "1" ? ' checked' : ''?> onchange="$('#StatHeader1').prop('disabled', !this.checked)"><label style="padding-left: 5px"
+                        <?= getModuleParameter(ModuleName, Checked1ParameterName, "1", $_SESSION['TourId']) === "1" ? ' checked' : ''?> onchange="$('#StatHeader1').prop('disabled', !this.checked)"><label style="padding-left: 5px"
                                                                                   for="country1">Включить отчет о
                         странах/регионах первого уровня</label></td>
             </tr>
@@ -214,12 +224,12 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                 <td class="Left" style="padding-left: 20px">
                     Заголовок отчета о странах/регионах первого уровня. Например, "Субъекты РФ":<br/>
                     <input style="width: 500px; height: 25px" type="text" name="StatHeader1" id="StatHeader1"
-                           value="<?= $_COOKIE[$_SESSION['TourId'] . "_StatHeader1"] ?? get_text('RegionsAndCountries', 'Tournament'); ?>"/>
+                           value="<?= getModuleParameter(ModuleName, Header1ParameterName, get_text('RegionsAndCountries', 'Tournament'), $_SESSION['TourId']) ?>" <?= getModuleParameter(ModuleName, Checked1ParameterName, "1", $_SESSION['TourId']) !== "1" ? ' disabled' : ''?>/>
                 </td>
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country2" id="country2"
-                        <?= !isset($_COOKIE[$_SESSION['TourId'] . "_checkedCountry2"]) || $_COOKIE[$_SESSION['TourId'] . "_checkedCountry2"] == "1" ? ' checked' : ''?> onchange="$('#StatHeader2').prop('disabled', !this.checked)"><label style="padding-left: 5px"
+                        <?= getModuleParameter(ModuleName, Checked2ParameterName, "1", $_SESSION['TourId']) === "1"  ? ' checked' : ''?> onchange="$('#StatHeader2').prop('disabled', !this.checked)"><label style="padding-left: 5px"
                                                                                   for="country2">Включить отчет о
                         странах/регионах второго уровня</label></td>
             </tr>
@@ -227,12 +237,12 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                 <td class="Left" style="padding-left: 20px">
                     Заголовок отчета о странах/регионах второго уровня. Например, "Спортивные школы":<br/>
                     <input style="width: 500px; height: 25px" type="text" name="StatHeader2" id="StatHeader2"
-                           value="<?= $_COOKIE[$_SESSION['TourId'] . "_StatHeader2"] ?? get_text('RegionsAndCountries', 'Tournament'); ?>"/>
+                           value="<?= getModuleParameter(ModuleName, Header2ParameterName, get_text('RegionsAndCountries', 'Tournament'), $_SESSION['TourId']) ?>" <?= getModuleParameter(ModuleName, Checked2ParameterName, "1", $_SESSION['TourId']) !== "1" ? ' disabled' : ''?>/>
                 </td>
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country3" id="country3"
-                        <?= $_COOKIE[$_SESSION['TourId'] . "_checkedCountry3"] == "1" ? ' checked' : ''?> onchange="$('#StatHeader3').prop('disabled', !this.checked)"><label
+                        <?= getModuleParameter(ModuleName, Checked3ParameterName, "0", $_SESSION['TourId']) === "1"  ? ' checked' : ''?> onchange="$('#StatHeader3').prop('disabled', !this.checked)"><label
                             style="padding-left: 5px" for="country3">Включить отчет о странах/регионах третьего
                         уровня</label></td>
             </tr>
@@ -240,7 +250,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                 <td class="Left" style="padding-left: 20px">
                     Заголовок отчета о странах/регионах третьего уровня. Например, "Спортивные клубы" или "Команды":<br/>
                     <input style="width: 500px; height: 25px" type="text" name="StatHeader3" id="StatHeader3"
-                           value="<?= $_COOKIE[$_SESSION['TourId'] . "_StatHeader3"] ?? get_text('RegionsAndCountries', 'Tournament'); ?>" <?= $_COOKIE[$_SESSION['TourId'] . "_checkedCountry3"] != "1" ? ' disabled' : ''?>/></td>
+                           value="<?= getModuleParameter(ModuleName, Header3ParameterName, get_text('RegionsAndCountries', 'Tournament'), $_SESSION['TourId']) ?>" <?= getModuleParameter(ModuleName, Checked3ParameterName, "0", $_SESSION['TourId']) !== "1" ? ' disabled' : ''?>/></td>
             </tr>
             <tr>
                 <th class="Left" style="padding-left: 50px; padding-top: 10px; padding-bottom: 10px">

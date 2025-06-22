@@ -10,10 +10,11 @@
 	include('Common/Templates/head.php');
 
 	echo '<table class="Tabella">';
-	echo '<tr><th class="Title" colspan="5">' . get_text('PrintList','Tournament')  . '</th></tr>';
+	echo '<tr><th class="Title" colspan="7">' . get_text('PrintList','Tournament')  . '</th></tr>';
 	echo '<tr>';
 	echo '<th class="SubTitle" width="20%">' . get_text('StatClasses','Tournament')  . '</th>';
     echo '<th class="SubTitle" width="20%">' . get_text('StatSubclassesNormatives','Tournament')  . '</th>';
+    echo '<th class="SubTitle" width="20%">' . get_text('StatSumPositions','Tournament')  . '</th>';
 	echo '<th class="SubTitle" width="20%">' . get_text('StatEvents','Tournament')  . '</th>';
 	echo '<th class="SubTitle" width="20%">' . get_text('StatCountries','Tournament')  . '</th>';
 	echo '<th class="SubTitle" width="20%">' . get_text('StatRecordsStanding','Tournament')  . '</th>';
@@ -28,11 +29,17 @@
 	echo get_text('StatClasses','Tournament');
 	echo '</a></td>';
 
-// Divisions and Classes
+// Имеющиеся и выполенные разряды и звания
     echo '<td class="Center"><br><a href="PrnStatSubclasses.php" class="Link" target="PrintOut">';
     echo '<img src="../Common/Images/pdf.gif" alt="' . get_text('StatSubclassesNormatives','Tournament') . '" border="0"><br>';
     echo get_text('StatSubclassesNormatives','Tournament');
     echo '</a></td>';
+
+// Список участников, отсортированный по сумме мест в квалификации и финалах
+echo '<td class="Center"><br><a href="PrnStatSumPositions.php" class="Link" target="PrintOut">';
+echo '<img src="../Common/Images/pdf.gif" alt="' . get_text('StatSumPositions','Tournament') . '" border="0"><br>';
+echo get_text('StatSumPositions','Tournament');
+echo '</a></td>';
 
 // Events
 	echo '<td class="Center"><br><a href="PrnStatEvents.php" class="Link" target="PrintOut">';
@@ -67,15 +74,15 @@
 	echo '</tr>';
 
 //Compleanni
-	echo '<tr class="Divider"><td colspan="5"></td></tr>';
+	echo '<tr class="Divider"><td colspan="7"></td></tr>';
 	echo '<tr>';
 //Completa
-	echo '<th class="SubTitle" colspan="5">' . get_text('Birthdays','Tournament')  . '</th>';
+	echo '<th class="SubTitle" colspan="7">' . get_text('Birthdays','Tournament')  . '</th>';
 	echo '</tr>';
 
 	echo '<tr>';
 	//Completa
-	echo '<td class="Center" colspan="5"><br><a href="PrnBirthday.php" class="Link" target="PrintOut">';
+	echo '<td class="Center" colspan="7"><br><a href="PrnBirthday.php" class="Link" target="PrintOut">';
 	echo '<img src="../Common/Images/pdf.gif" alt="' . get_text('Birthdays','Tournament') . '" border="0"><br>';
 	echo get_text('Birthdays','Tournament');
 	echo '</a></td>';
