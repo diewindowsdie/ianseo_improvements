@@ -10,6 +10,7 @@ $lang['ISK-Anomalies']='Аномалиялар';
 $lang['ISK-AppInfo']='Қосымша туралы Ақпарат';
 $lang['ISK-AppList']='APK тізімі';
 $lang['ISK-askSignature']='Қол қоюды Сұраңыз';
+$lang['ISK-DeleteDevices']='Құрылғыларды Жою';
 $lang['ISK-DeviceAlive']='Желіде';
 $lang['ISK-DeviceBattery']='Батарея';
 $lang['ISK-DeviceIpAddress']='IP Мекенжайы';

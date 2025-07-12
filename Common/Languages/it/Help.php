@@ -31,6 +31,9 @@ $lang['ISK-LockedSessionHelp']='L\'icona {$a} indica se la app può inserire o m
 $lang['ISK-ServerUrlPin']='<b>NON RIVELARE QUESTO NUMERO</b><br>Scegli un PIN (4 Cifre Numeriche) da usare per accedere alla tua competizione.<br>I Dispositivi potranno inviare punteggi alla tua gara solo leggendo il QR-Code che viene stampata da I@NSEO.<br> In caso di inserimento manuale dei dati di gara nella app I@nseo Scorekeeper LITE, Il codice competizione da usare è <b>{$a}</b>';
 $lang['QrCodeLandscape']='Un singolo o doppio "<" disegnerà una freccia che punta a sinistra. Un singolo o doppio ">" disegnerà una freccia che punta a destra. Un singolo o doppio "^" disegnerà una freccia che punta in alto. Una singola o doppia "v" disegnerà una freccia che punta verso il basso.';
 $lang['QrCodePortrait']='Il campo è compatibile con HTML. Se inserisci qualcosa circondato da &lt;qrcode&gt;...&lt;/qrcode&gt;  il contenuto verrà modificato in un QR-Code';
+$lang['RecordGrayLine']='Stesso tipo di record e stessa Div./Clas. già presente con un punteggio più alto.<br> Controllare le regole e le date di assegnazione dei record.';
+$lang['RecordHelp']='Le righe/celle colorate aiutano';
+$lang['RecordPinkCell']='Lo stesso punteggio e la stessa Div./Clas. è un record di livello superiore.<bt>Scrivi in PDF solo il più importante.</bt>';
 $lang['ScoreBarCodeShortcuts']='Leggi il Codice a Barre stampato sullo Score.
 Inserendo # seguito dal nome di un atleta si cerca nel database questo atleta.
 Inserendo @ seguita dal numero di piazzola si cerca nel database questa piazzola. La distanza DEVE essere specificata. La sessione può essere specificata (primo numero) e il numero della piazzola deve essere composto da 3 cifre';

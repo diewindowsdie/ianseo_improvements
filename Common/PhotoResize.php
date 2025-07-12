@@ -14,7 +14,7 @@ function photoresize($file, $direct=false, $String=false) {
 		// $file is actually a string of the image
 		$direct=true;
 		$tmpname=tempnam('/tmp', 'snp');
-		if($im=imagecreatefromstring($file) and imagejpeg($im, $tmpname, 95)) {
+		if($im=@imagecreatefromstring($file) and imagejpeg($im, $tmpname, 95)) {
 			$file=$tmpname;
 		}
 	}

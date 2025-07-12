@@ -91,7 +91,7 @@ if (safe_num_rows($Rs)>0)
 		$height=0;
 		if(!is_null($MyRow->PhPhoto))
 		{
-			if($im = imagecreatefromstring(base64_decode($MyRow->PhPhoto))) {
+			if($im = @imagecreatefromstring(base64_decode($MyRow->PhPhoto))) {
 				$height += ((imagesy($im) * 20 / imagesx($im)));
 				imagedestroy($im);
 

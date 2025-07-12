@@ -25,7 +25,7 @@ switch($Type) {
 		if($ID and $tour) {
 
 			$q=safe_r_sql("select * from TVContents where TVCId=$ID and TVCTournament=$tour");
-			if($r=safe_fetch($q)) $im=imagecreatefromstring($r->TVCContent);
+			if($r=safe_fetch($q)) $im=@imagecreatefromstring($r->TVCContent);
 		}
 		break;
 }

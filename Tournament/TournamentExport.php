@@ -2,7 +2,6 @@
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 	require_once('Common/Fun_FormatText.inc.php');
 
-	$CFG->TRACE_QUERRIES=false;
 	if(isset($_SESSION['TourId']) AND $_SESSION['TourId']>0) $TourId=$_SESSION['TourId'];
 
 	if (isset($_REQUEST['TourCode']))

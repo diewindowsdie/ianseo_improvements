@@ -28,6 +28,8 @@ $lang['NotYetDefined']='-encara no definit-';
 $lang['OfficialBiography']='Biografia oficial';
 $lang['OlympicFont']='Nom de la Font Olímpica';
 $lang['OlympicFont-use']='Utilitzeu la Font olímpica';
+$lang['OneDayAfter']='+1 dia';
+$lang['OneDayBefore']='-1 dia';
 $lang['OtherInfo']='Altres informacions';
 $lang['PlayersInfo']='Informació de l\'arquer';
 $lang['ProbMatches']='Encontres provisionals';
@@ -80,6 +82,8 @@ $lang['RR_Score']='marcador RR';
 $lang['StandingRecords']='Rècords Imbatuts';
 $lang['Teams']='Equips';
 $lang['TypeName']='Escriviu el nom que vostè està buscant';
+$lang['VenueTime']='Hora Seu';
+$lang['ViewerTime']='Hora Espectador';
 $lang['ViewIndividualResults']='Mostra Resultats Individual';
 $lang['ViewTeamResults']='Mostra Resultats Equip';
 ?>

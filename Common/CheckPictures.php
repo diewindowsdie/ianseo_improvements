@@ -129,7 +129,7 @@ function CheckPictures($TourCode='', $open=false, $all=false, $force=false) {
 	while($r=safe_fetch($q)) {
 		$ImName=$CFG->DOCUMENT_PATH.'TV/Photos/TV-'.($r->TVCTournament==-1?'BaseIanseo':$TourCodeSafe).'-'.($r->TVCName=='IdCardFooter' ? $r->TVCName : $r->TVCId).'.jpg';
 		if($force or !file_exists($ImName) or filemtime($ImName) < $r->TVCTimestamp) {
-			if($im=imagecreatefromstring($r->TVCContent)) {
+			if($im=@imagecreatefromstring($r->TVCContent)) {
 				imagejpeg($im, $ImName, 90);
 			}
 		}
@@ -324,7 +324,7 @@ function RedrawPictures($TourCode='', $Force=false) {
 	while($r=safe_fetch($q)) {
 		$ImName=$CFG->DOCUMENT_PATH.'TV/Photos/TV-'.($r->TVCTournament==-1?'BaseIanseo':$TourCodeSafe).'-'.($r->TVCName=='IdCardFooter' ? $r->TVCName : $r->TVCId).'.jpg';
 		if($r->TVCContent and ($Force or !file_exists($ImName) or filemtime($ImName) < $r->TVCTimestamp)) {
-			if($im=imagecreatefromstring($r->TVCContent)) {
+			if($im=@imagecreatefromstring($r->TVCContent)) {
 				imagejpeg($im, $ImName, 90);
 			}
 		}

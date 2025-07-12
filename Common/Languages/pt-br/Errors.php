@@ -2,6 +2,7 @@
 $lang['AllFieldsMandatory']='Todos os campos são obrigatórios';
 $lang['AllMailsRedirect']='Todas as mensagens serão enviadas para';
 $lang['Anomalies']='Anomalias';
+$lang['BackupTournaments']='Por favor, lembre-se de salvar todas as competições antes de atualizar ou reinstalar seu ianseo!';
 $lang['ClassFromToError']='De e Para devem ser valores numéricos';
 $lang['DiameterMandatory']='Diâmetro da face é obrigatório';
 $lang['DirectoryNotWriteable']='A pasta $a não pode ser editada pelo servidor web. Por favor, altere as permissões para que possa ser editado por todos os usuários.';

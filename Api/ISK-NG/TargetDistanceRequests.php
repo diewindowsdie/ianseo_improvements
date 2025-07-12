@@ -12,14 +12,14 @@ checkFullACL(AclISKServer, 'iskUser', AclReadWrite);
 $PAGE_TITLE=get_text('TargetScoring-Printout', 'Api');
 
 if($_REQUEST['Sessions']??'') {
-    require_once('Common/pdf/ScorePDF.inc.php');
+    require_once('Common/pdf/LabelPDF.inc.php');
     require_once('DrawQRCode.php');
 
     $PageWidth=floatval($_REQUEST['PageWidth']);
     $PageHeight=floatval($_REQUEST['PageHeight']);
     $QrCodeBlock=max(25, $PageWidth/min(intval($_REQUEST["NumDistances"]),4));
 
-    $pdf=new IanseoPdf("", 'P');
+    $pdf=new LabelPDF($PageWidth, $PageHeight);
 
     error_reporting(E_ALL);
     $pdf->setFontSize(min(10, $QrCodeBlock/3));

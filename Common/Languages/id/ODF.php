@@ -27,6 +27,7 @@ $lang['IntCONN']='Koneksi (DT_LOCAL_XX)';
 $lang['IntEVENT']='Nama Event';
 $lang['IntFUNC']='Fungsi';
 $lang['IntMATCH']='Pertandingan';
+$lang['IntPOOL']='Pool';
 $lang['IntQUAL']='Babak Pemeringkatan';
 $lang['IntRECORD']='Suffix Rekaman';
 $lang['IntRES']='Hasil';

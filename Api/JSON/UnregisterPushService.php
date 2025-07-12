@@ -27,6 +27,7 @@ if(!empty($TourId) && !empty($ClientId)) {
 				removeJack("FinArrUpdate", "API-JSON",$TourId);
 				removeJack("FinLiveUpdate", "API-JSON",$TourId);
 				removeJack("FinConfirmEnd", "API-JSON",$TourId);
+                removeJack("MatchFinished", "API-JSON",$TourId);
 				removeJack("FinShootingFirst", "API-JSON",$TourId);
 				removeJack("FinRankUpdate", "API-JSON",$TourId);
                 removeJack("QRRankUpdate", "API-JSON",$TourId);

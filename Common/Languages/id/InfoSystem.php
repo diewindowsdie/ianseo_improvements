@@ -28,6 +28,8 @@ $lang['NotYetDefined']='-belum didefinisikan-';
 $lang['OfficialBiography']='Biografi Resmi';
 $lang['OlympicFont']='Nama Huruf Olimpiade';
 $lang['OlympicFont-use']='Menggunakan Huruf Olimpiade';
+$lang['OneDayAfter']='1+ hari';
+$lang['OneDayBefore']='-1 hari';
 $lang['OtherInfo']='Informasi Lainnya';
 $lang['PlayersInfo']='Info Pemain';
 $lang['ProbMatches']='Pertandingan Sementara';
@@ -80,6 +82,8 @@ $lang['RR_Score']='Skor RR';
 $lang['StandingRecords']='Rekor bertahan';
 $lang['Teams']='Tim';
 $lang['TypeName']='Tulis nama yang ingin anda cari';
+$lang['VenueTime']='Waktu setempat';
+$lang['ViewerTime']='Waktu penonton';
 $lang['ViewIndividualResults']='Tampilkan Hasil Individual';
 $lang['ViewTeamResults']='Tampilkan Hasil Beregu';
 ?>

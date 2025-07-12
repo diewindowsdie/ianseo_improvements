@@ -27,6 +27,7 @@ $lang['IntCONN']='Connexió (DT_LOCAL_XX)';
 $lang['IntEVENT']='Nom esdeveniment';
 $lang['IntFUNC']='Funció';
 $lang['IntMATCH']='Encontres';
+$lang['IntPOOL']='Pools - Agrupacions';
 $lang['IntQUAL']='Ronda Classificació';
 $lang['IntRECORD']='Sufix Rècord';
 $lang['IntRES']='Resultats';

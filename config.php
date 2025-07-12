@@ -8,9 +8,6 @@ if(!defined('INSTALL')) define('INSTALL', false);
 // definition of the CONFIG object
 $CFG = new StdClass();
 
-// debug utility, set to false in production
-$CFG->TRACE_QUERRIES = false;
-
 // set the include path to the "root" directory of the IANSEO Installation
 $CFG->INCLUDE_PATH = dirname(__FILE__);
 ini_set("include_path", get_include_path() . PATH_SEPARATOR . $CFG->INCLUDE_PATH );
@@ -115,7 +112,6 @@ if($ERROR_REPORT) {
 }
 
 $_SESSION['debug'] = $ERROR_REPORT;
-$CFG->TRACE_QUERRIES = ($CFG->TRACE_QUERRIES and $_SESSION['debug']);
 
 // Autocheckin
 if(!empty($CFG->ROOT_DIR) and dirname($_SERVER['PHP_SELF'])!=$CFG->ROOT_DIR.'Modules/AutoCheckin' and $Code=GetParameter('AutoCHK-Code') and !empty($_SERVER['REMOTE_ADDR']) && in_array($_SERVER['REMOTE_ADDR'], explode(',', GetParameter('AutoCHK-IP')))) {

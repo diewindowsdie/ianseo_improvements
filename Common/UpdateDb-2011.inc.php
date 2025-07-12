@@ -124,7 +124,7 @@ if($version<'2011-01-30 12:56:00') {
 	$q=safe_r_sql("select * from Flags where FlJPG");
 	while($r=safe_fetch($q)) {
 		$tmpnam=tempnam('/tmp', 'img');
-		$img=imagecreatefromstring(base64_decode($r->FlJPG));
+		$img=@imagecreatefromstring(base64_decode($r->FlJPG));
 		imagejpeg($img, $tmpnam, 95);
 		safe_w_sql("update Flags set FlJPG='".base64_encode(file_get_contents($tmpnam))."' where FlTournament=$r->FlTournament and FlIocCode=$r->FlIocCode and FlCode=$r->FlCode");
 	}

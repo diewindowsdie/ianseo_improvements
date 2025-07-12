@@ -41,6 +41,7 @@ Class Scheduler {
     var $PoolMatchWinnersWA=array();
     var $PoolMatches=array();
     var $PoolMatchesWA=array();
+    var $TimeZoneOffset='00:00';
 
 	function __destruct() {
 		DefineForcePrintouts($this->TourId, true);
@@ -48,14 +49,16 @@ Class Scheduler {
 
 	function __construct($TourId=0) {
 		if($TourId) {
-			$q=safe_r_sql("select ToCode, ToId from Tournament where ToId={intval($TourId)}");
+			$q=safe_r_sql("select ToCode, ToId, ToTimeZone from Tournament where ToId={intval($TourId)}");
 			if($r=safe_fetch($q)) {
 				$this->TourId=$r->ToId;
 				$this->TourCode=$r->ToCode;
+                $this->TimeZoneOffset=$r->ToTimeZone;
 			}
 		} else {
 			$this->TourId=$_SESSION['TourId'];
 			$this->TourCode=$_SESSION['TourCode'];
+            $this->TimeZoneOffset=$_SESSION['TourTimezone'];
 		}
 		if(!$this->TourId) {
 			return false;
@@ -753,7 +756,7 @@ Class Scheduler {
 	 *
 	 * Returns the HTML representation of the Schedule
 	 */
-	function getScheduleHTML($Type='IS', $Title='') {
+	function getScheduleHTML($Type='IS', $Title='', $timeOffset=0) {
 		$TourCode=(empty($_SESSION['code']) ? '' : '&code='.$_SESSION['code']);
 		$ret=array();
 		if($Title) $ret[]='<tr><th colspan="2" class="SchHeadTitle">'.$Title.'</th></tr>';
@@ -788,10 +791,20 @@ Class Scheduler {
 							$ActiveSession=in_array($key, $this->ActiveSessions);
 
 							$timing='';
-
+                            $extraTimeInfo = '';
+                            $Item->StartView = $Item->Start;
+                            if($Type=='IS' and $timeOffset!=0) {
+                                $origDateTime =  new DateTime($Item->Day . ' ' . $Item->Start);
+                                $Item->StartView = ($origDateTime->modify($timeOffset . ' hours'))->format('H:i');
+                                if(($origDateTime->format("d")) != ((new DateTime($Item->Day . ' ' . $Item->Start))->format('d'))) {
+                                    $extraTimeInfo = '&nbsp;<b>('.get_text(($timeOffset > 0 ? 'OneDayAfter' : 'OneDayBefore'),'InfoSystem'). ')</b>&nbsp;';
+                                } else {
+                                    $extraTimeInfo = '';
+                                }
+                            }
 							if($Item->Type=='Z') {
 								// free text
-								$timing=$Item->Start.($Item->Duration ? '-'.addMinutes($Item->Start, $Item->Duration) : '');
+								$timing=$Item->StartView.$extraTimeInfo.($Item->Duration ? '-'.addMinutes($Item->StartView, $Item->Duration) : '');
 
 								if(empty($Item->UID) and $Type=='SET') {
 									$SchUid=md5(uniqid(mt_rand(), true));
@@ -805,11 +818,6 @@ Class Scheduler {
 								if($OldTitle!=$Item->Title and $Item->Title) {
 									if(!$IsTitle) {
 										$tmp='<tr name="'.$key.'"'.(($ActiveSession and !$Item->SubTitle and !$Item->Text) ? ' class="active"' : '').'><td>';
-										if(!$Item->SubTitle and !$Item->Text) {
-											// rimosso il 12-04-2015 per espresso parere di matteo ;)
-// 											$tmp.=$timing . ($Item->Shift && $timing ? ($Type=='IS' ? '<span class="SchDelay">' : '') . '&nbsp;+' . $Item->Shift . ($Type=='IS' ? '</span>' : ''): "");
-// 											$timing='';
-										}
 										$txt=$Item->Title;
 										if($Type=='SET') {
 											$txt='<a href="?Activate='.$key.'">'.strip_tags($txt).'</a>';
@@ -872,7 +880,7 @@ Class Scheduler {
 
 								$timing='';
 								if($OldStart != $Item->Start or $OldEnd != $Item->Duration) {
-									$timing=$Item->Start.($Item->Duration ? '-'.addMinutes($Item->Start, $Item->Duration) : '');
+									$timing=$Item->StartView.$extraTimeInfo.($Item->Duration ? '-'.addMinutes($Item->StartView, $Item->Duration) : '');
 									$OldStart=$Item->Start;
 									$OldEnd=$Item->Duration;
 								}
@@ -4919,9 +4927,11 @@ Class Scheduler {
 }
 
 function AddMinutes($Time, $Minutes) {
-	if($Minutes==0) return $Time;
-	$newtime=(substr($Time, 0, 2)*60)+substr($Time, 3, 2)+$Minutes;
-	return sprintf('%02d:%02d', intval($newtime/60), $newtime%60);
+    $origDateTime =  new DateTime($Time);
+	if($Minutes!=0) {
+        $origDateTime->modify($Minutes . ' minutes');
+    }
+    return $origDateTime->format('H:i');
 }
 
 Class TargetButt {

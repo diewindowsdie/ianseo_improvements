@@ -36,7 +36,7 @@
 		$image=$r->PhPhoto;
 
 	// immagine così com'è nel db
-		if($im=imagecreatefromstring(base64_decode($image))) {
+		if($im=@imagecreatefromstring(base64_decode($image))) {
 			if (!is_null($mode) && !is_null($val) && is_numeric($val) && $val>0)
 			{
 

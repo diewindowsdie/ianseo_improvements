@@ -237,7 +237,11 @@ switch($_REQUEST['act']) {
             'Size'=>12,
             'Just'=>0,
         );
-
+        if($_REQUEST['Type']=='TgtSequence') {
+            $Options['LayoutOrientation']=0;
+            $Options['FromPhase']=-1;
+            $Options['ToPhase']=-1;
+        }
         foreach($Options as $k=>$v) {
             if(isset($_REQUEST['Options'][$k])) {
                 $Options[$k]=$_REQUEST['Options'][$k];

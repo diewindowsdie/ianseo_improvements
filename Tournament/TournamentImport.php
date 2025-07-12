@@ -5,8 +5,6 @@ require_once('Common/Fun_FormatText.inc.php');
 
 define("debug",false);
 
-$CFG->TRACE_QUERRIES=false;
-
 // Controlla se è arrivato un file di gara
 if($_FILES and !empty($_FILES['Gara']['tmp_name'])){
 

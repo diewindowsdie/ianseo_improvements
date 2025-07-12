@@ -37,7 +37,7 @@ switch($TourType) {
         CreateTargetFace($TourId, $i++, 'Svart påle',     'REG-^[B](U18|50|60)[MW]', '1', 6, 0, 6, 0);
         CreateTargetFace($TourId, $i++, 'Svart påle',     'REG-^[B]21', '1', 6, 0, 6, 0);
         CreateTargetFace($TourId, $i++, 'Svart/vit påle', 'REG-^[L][MW]', '1', 6, 0, 6, 0);
-        CreateTargetFace($TourId, $i++, 'Svart/vit påle', 'REG-^[L](U15|U18|50|60)[MW]', '1', 6, 0, 6, 0);
+        CreateTargetFace($TourId, $i++, 'Svart/vit påle', 'REG-^[L](U15|U18|U21|50|60)[MW]', '1', 6, 0, 6, 0);
         CreateTargetFace($TourId, $i++, 'Svart/vit påle', 'REG-^[T](U15|U18|50|60)[MW]', '1', 6, 0, 6, 0);
         CreateTargetFace($TourId, $i++, 'Svart/vit påle', 'REG-^[LT]21', '1', 6, 0, 6, 0);
         CreateTargetFace($TourId, $i++, 'Svart/vit påle', 'REG-^[B]U15[MW]', '1', 6, 0, 6, 0);

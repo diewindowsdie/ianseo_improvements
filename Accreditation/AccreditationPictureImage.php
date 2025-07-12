@@ -44,12 +44,12 @@ if(!empty($_REQUEST["Id"]) && $EnId=intval($_REQUEST["Id"])) {
 	$im=false;
 	if(!empty($_REQUEST["picEncoded"])) {
 		$picEncoded=str_replace(array('data:image/png;base64,',' '),array('','+'),$_REQUEST["picEncoded"]);
-		$im = imagecreatefromstring(base64_decode($picEncoded));
+		$im = @imagecreatefromstring(base64_decode($picEncoded));
 	}
 	if(!empty($_REQUEST["picJpgEncoded"])) {
 		$JSON=array('error' => 1, 'pic' => '');
 		$picEncoded=str_replace(array('data:image/jpeg;base64,',' '),array('','+'),$_REQUEST["picJpgEncoded"]);
-		$im = imagecreatefromstring(base64_decode($picEncoded));
+		$im = @imagecreatefromstring(base64_decode($picEncoded));
 	}
 	if(!empty($_REQUEST["picURL"])) {
 		$im = imagecreatefromjpeg($_REQUEST["picURL"]);

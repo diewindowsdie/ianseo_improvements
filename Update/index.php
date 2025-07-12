@@ -8,6 +8,22 @@ if(!empty($_SESSION['AUTH_ENABLE']) AND empty($_SESSION['AUTH_ROOT'])) {
     CD_redirect($CFG->ROOT_DIR.'noAccess.php');
 }
 
+// check if the 2018 updateDB has been actually performed
+$q=safe_r_SQL("SHOW COLUMNS FROM Finals like 'FinDateTime'");
+if($r=safe_fetch($q) and $r->Type!='datetime(3)') {
+    $q=safe_r_SQL("select version() as SqlVersion");
+    if($r=safe_fetch($q)) {
+        $v=explode('.', $r->SqlVersion);
+        if(!($v[0]<5 and $v[1]<6)) {
+            $q="ALTER TABLE `Finals` change `FinDateTime` FinDateTime DATETIME(3) NOT NULL default '0000-00-00 00:00:00.000'";
+            $r=safe_w_sql($q,false,array(1146, 1060));
+            $q="ALTER TABLE `TeamFinals` change `TfDateTime` TfDateTime DATETIME(3) NOT NULL default '0000-00-00 00:00:00.000'";
+            $r=safe_w_sql($q,false,array(1146, 1060));
+        }
+    }
+}
+
+
 // check if a major update of Mysql is needed!
 $NeedsUpdate='';
 $UpdateMessage=UpdateToInnoDb(false);

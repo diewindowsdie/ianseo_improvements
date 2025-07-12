@@ -88,11 +88,6 @@ $XmlDoc->appendChild($XmlRoot);
 $Header = $XmlDoc->createElement('header', get_text($r->EventDescr, null, null, true));
 $XmlRoot->appendChild($Header);
 
-if($ERROR_REPORT) {
-	$Games = $XmlDoc->createElement('query', $MyQuery);
-	$XmlRoot->appendChild($Games);
-}
-
 $Games = $XmlDoc->createElement('games');
 $XmlRoot->appendChild($Games);
 

@@ -13,7 +13,7 @@ $pdf->Bookmark($PdfData->IndexName, 0);
 
 $ONLINE=isset($PdfData->HTML);
 $First=true;
-foreach($PdfData->Data['Items'] as $LetterGroup => $Rows) {
+foreach(($PdfData->Data['Items']??array()) as $LetterGroup => $Rows) {
 	if(!$First) {
 		$pdf->lastY += 3.5;
 	}
