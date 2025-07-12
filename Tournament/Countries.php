@@ -31,7 +31,7 @@ if(isset($_REQUEST['Export'])) {
 	}
 
 	while($r=safe_fetch($q)) {
-		if(!($img=imagecreatefromstring(base64_decode($r->FlJPG)))) {
+		if(!($img=@imagecreatefromstring(base64_decode($r->FlJPG)))) {
 			continue; // skip and goes to the next picture
 		}
 		$img2=imagecreatetruecolor(90, 60);

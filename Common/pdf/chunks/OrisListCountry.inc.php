@@ -8,7 +8,7 @@ $pdf->setOrisCode($PdfData->Code, $PdfData->Description);
 $pdf->AddPage();
 $pdf->Bookmark($PdfData->IndexName, 0);
 
-foreach($PdfData->Data['Items'] as $Rows) {
+foreach(($PdfData->Data['Items']??array()) as $Rows) {
 	$pdf->lastY += 1;
 	$pdf->SamePage(count($Rows), 3.5, $pdf->lastY);
 	$first=true;

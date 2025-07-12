@@ -3,6 +3,7 @@ $lang['AutoUpdate']='Автоматты жаңарту';
 $lang['ByEvent']='Іс-шара бойынша';
 $lang['ByTarget']='Нысана бойынша';
 $lang['ClassDiv']='Санат';
+$lang['CompleteSchedule']='Толық бағдарламаны қарау';
 $lang['Eliminations']='Іріктеу';
 $lang['Eliminations_1']='1-ші Іріктеу Айналымы';
 $lang['Eliminations_2']='2-ші Іріктеу Айналымы';

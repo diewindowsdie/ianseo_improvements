@@ -70,7 +70,7 @@ class BackNoPDF extends IanseoPdf {
 		// background temp creation
 		if($this->RowBn->ImgSize) {
 			$this->BackGroundFile = tempnam('/tmp', 'bgf');
-			if($img=imagecreatefromstring($this->RowBn->BnBackground)) {
+			if($img=@imagecreatefromstring($this->RowBn->BnBackground)) {
 				if(!imagepng($img, $this->BackGroundFile)) {
 					die('could not create image');
 				}

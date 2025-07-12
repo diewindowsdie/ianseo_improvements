@@ -12,7 +12,7 @@
 		//	print $query;
 	$rs=safe_r_sql($query);
 	while ($myRow=safe_fetch($rs)) {
-		if($im=imagecreatefromstring(base64_decode($myRow->PhPhoto))) {
+		if($im=@imagecreatefromstring(base64_decode($myRow->PhPhoto))) {
 			imagejpeg($im, $dir . $myRow->EnDivision . $myRow->EnClass . "_" . $myRow->EnFirstName . "_" . $myRow->EnName . ".jpg" , 90);
 			echo $myRow->EnDivision . $myRow->EnClass . "_" . $myRow->EnFirstName . "_" . $myRow->EnName . ".jpg<br>";
 			imagejpeg($im, $dir . $myRow->EnCode . ".jpg" , 90);

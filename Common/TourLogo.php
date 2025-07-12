@@ -19,7 +19,7 @@
 		}
 
 
-		$im = imagecreatefromstring($myContent);
+		$im = @imagecreatefromstring($myContent);
 		if ($im !== false) {
 			$width = imagesx($im);
 			$height = imagesy($im);

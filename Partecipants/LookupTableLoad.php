@@ -220,7 +220,6 @@ if(empty($_REQUEST["Download"])
 } else {
 	//ini_set('memory_limit', '512M');
 	set_time_limit(0);
-	$CFG->TRACE_QUERRIES=false;
 
 	require_once('Common/Lib/Fun_DateTime.inc.php');
 	$IocToUpdate=array();
@@ -308,7 +307,7 @@ function DoLookupEntries($u, $file='') {
 	$DataSource = file_get_contents($file ? $file : $u->LupPath);
 
 	if (!$DataSource) {
-    	echo "No Database<br>\n";
+    	echo "No Database<br>";
     	return;
 	}
 
@@ -326,11 +325,11 @@ function DoLookupEntries($u, $file='') {
 		// Extranet
 		if($Archers=json_decode($DataSource)) {
 			safe_w_sql("delete from LookUpEntries where LueIocCode='$u->LupIocCode'");
-			;
+
 			echo ($ord++).') '.get_text('MsgLookup3','Tournament').'<br/>';
 			@flush();
 			@ob_flush();
-
+            safe_w_BeginTransaction();
 			foreach($Archers as $r) {
 				$Data="LueCode=".StrSafe_DB(isset($r->WaId) ? $r->WaId : $r->Id)."
 					, LueIocCode=".StrSafe_DB(isset($u->LupIocCode) ? $u->LupIocCode : $u->Type)."
@@ -351,11 +350,12 @@ function DoLookupEntries($u, $file='') {
 				safe_w_sql($Sql);
 				if(($NumRows++ % 100) == 0)
 					echo "- ";
-				if(($NumRows % 2000) == 0)
+				if(($NumRows % 5000) == 0)
 					echo "<br>";
 				@flush();
 				@ob_flush();
 			}
+            safe_w_Commit();
 			safe_w_sql("update LookUpPaths set LupLastUpdate='".date('Y-m-d H:i:s')."' where LupIocCode='$u->LupIocCode'");
 		}
 	} else {
@@ -403,22 +403,18 @@ function DoLookupEntries($u, $file='') {
 		if (!preg_match('/CLUBS/',$buffer)) die('Bad file format!');
 
 		safe_w_sql("delete from LookUpEntries where LueIocCode='$ioc'");
-
+        safe_w_BeginTransaction();
 		echo ($ord++).') '.get_text('MsgLookup3','Tournament').'<br/>';
 		@flush();
 		@ob_flush();
 
 		$clubs=array();
 	// la riga è: code nome nomebreve
-		while (($buffer=fgets($fp))!==false)
-		{
+		while (($buffer=fgets($fp))!==false) {
 			$buffer=substr($buffer,0,-1);	// per togliere il newline finale
-
 			if ($buffer=='ENTRIES')
 				break;
-
 			$row=explode("\t",$buffer);
-
 			$clubs[$row[0]]=array($row[1],$row[2]);
 		}
 
@@ -435,7 +431,7 @@ function DoLookupEntries($u, $file='') {
 
 		// fino all'indice 10 ho dati che non riguardano la classe e dall'11 ho le terne delle classi
 
-			$Sql="REPLACE into LookUpEntries set "
+			$Sql="INSERT IGNORE into LookUpEntries set "
 				. "LueCode=".StrSafe_DB($row[0])
 				. ", LueIocCode=".StrSafe_DB($ioc)
 				. ", LueFamilyName=". StrSafe_DB($row[2])
@@ -456,17 +452,13 @@ function DoLookupEntries($u, $file='') {
 				. ", LueDefault=%3\$s"
 				;
 
-			for ($i=11;$i<count($row);$i+=3)
-			{
-//				print $row[$i] . ' - ' . $row[$i+1] . ' - ' .$row[$i+2].'<br>';
-//				$q=sprintf($Sql, StrSafe_DB($row[$i]), StrSafe_DB($row[$i+1]), StrSafe_DB($row[$i+2]));
-//				print $q.'<br><br>';
+			for ($i=11;$i<count($row);$i+=3) {
 				safe_w_sql(sprintf($Sql, StrSafe_DB($row[$i]), StrSafe_DB($row[$i+1]), StrSafe_DB($row[$i+2])));
 			}
 
 			if(($NumRows++ % 100) == 0)
 				echo "- ";
-			if(($NumRows % 2000) == 0)
+			if(($NumRows % 5000) == 0)
 				echo "<br>";
 			@flush();
 			@ob_flush();
@@ -474,7 +466,7 @@ function DoLookupEntries($u, $file='') {
 
 		fclose($fp);
 		@unlink($file);
-
+        safe_w_Commit();
 		safe_w_sql("insert into LookUpPaths set LupIocCode='$ioc', LupLastUpdate='$date' on duplicate key update LupLastUpdate='$date'");
 	}
 
@@ -607,7 +599,7 @@ function DoLookupFlags($u, $OnlyMissing=false) {
 			}
 			if($imgtmp) {
 				$tmpnam=tempnam('/tmp', 'img');
-				if($img=imagecreatefromstring($imgtmp)) {
+				if($img=@imagecreatefromstring($imgtmp)) {
                     imagejpeg($img, $tmpnam, 95);
 				    $imJPG=file_get_contents($tmpnam);
 				}

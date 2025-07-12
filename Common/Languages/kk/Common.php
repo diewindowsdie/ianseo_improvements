@@ -51,6 +51,7 @@ $lang['DayOfWeek_3']='Сәр';
 $lang['DayOfWeek_4']='Бей';
 $lang['DayOfWeek_5']='Жұм';
 $lang['DayOfWeek_6']='Сен';
+$lang['DeleteSession']='Ауысымды Жою';
 $lang['DivisionClass']='Санат';
 $lang['Elimination']='Іріктеу';
 $lang['Eliminations']='Ір. Кезеңі';

@@ -246,7 +246,7 @@ if (safe_num_rows($Rs)>0)
 
 		if(strlen($rowInfo->ToImgL) > 0)
 		{
-			$im = imagecreatefromstring($rowInfo->ToImgL);
+			$im = @imagecreatefromstring($rowInfo->ToImgL);
 			if ($im !== false)
 			{
 				$pdf->Image('@'.$rowInfo->ToImgL, $myPosX+1, $myPosY+115, 0, 20);
@@ -256,7 +256,7 @@ if (safe_num_rows($Rs)>0)
 
 		if(strlen($rowInfo->ToImgR) > 0)
 		{
-			$im = imagecreatefromstring($rowInfo->ToImgR);
+			$im = @imagecreatefromstring($rowInfo->ToImgR);
 			if ($im !== false)
 			{
 				$pdf->Image('@'.$rowInfo->ToImgR,$myPosX+72, $myPosY+115,0,20);

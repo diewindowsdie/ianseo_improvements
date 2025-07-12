@@ -51,6 +51,7 @@ $lang['BadgeName']='Nama Lencana';
 $lang['BadgePage-1']='Print satu Halaman';
 $lang['BadgePage-2']='Print Halaman Depan-Belakang';
 $lang['BadgePages']='Opsi Print';
+$lang['BadgePreview']='Pratinjau';
 $lang['BadgeSetup']='Setup Lencana';
 $lang['BadgeTest']='Test Lencana';
 $lang['Barcode']='Barcode';

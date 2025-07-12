@@ -129,7 +129,7 @@ if(!IsBlocked(BIT_BLOCK_MEDIA)) {
                 while($r=safe_fetch($q)) {
                     $ImName=$CFG->DOCUMENT_PATH.'TV/Photos/TV-'.$_SESSION['TourCodeSafe'].'-'.($r->TVCName=='IdCardFooter' ? $r->TVCName : $r->TVCId).'.jpg';
                     if(!file_exists($ImName) or filemtime($ImName) < $r->TVCTimestamp) {
-                        if($im=imagecreatefromstring($r->TVCContent)) {
+                        if($im=@imagecreatefromstring($r->TVCContent)) {
                             imagejpeg($im, $ImName, 90);
                         }
                     }

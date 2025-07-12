@@ -67,13 +67,6 @@ Inserimento nuove funzioni di Chris per la gestione degli errori di DB
 Definizione delle variabili e delle costanti utilizzate
 
 ******************************/
-$safe_SQL=array(
-	'w_connect'=>0,
-	'r_connect'=>0,
-	'w_querries'=>array(),
-	'r_querries'=>array(),
-	);
-
 $WRIT_CON='';
 $READ_CON='';
 $GLOBALS['tempo']=getmicrotime();
@@ -409,23 +402,22 @@ function OutputError($errore) {
 	- InfoTournament()
 	Ritorna le info del torneo attivo prelevandole dalla sessione
 */
-function InfoTournament()
-{
+function InfoTournament(){
 	global $CFG, $INFO, $listACL;
 // E' selezionato un torneo
 	print '<table class="Tabella">';
-	print '<tr style="height:34px">';
+	print '<tr style="height:35px">';
 	print '<td>';
 	if (CheckTourSession()) {
-		print get_text('SelTour') . ': ' . $_SESSION['TourName'] . ' (' . $_SESSION['TourWhere'] . ' ' . get_text('From','Tournament') . ' ' . $_SESSION['TourWhenFrom'] . ' ' . get_text('To','Tournament') . ' ' . $_SESSION['TourWhenTo'] . ') - ' . $_SESSION['TourCode'] ;
-	}
-	else	// Non � selezionato nessun torneo
-	{
+		print get_text('SelTour') . ': ' . $_SESSION['TourName'] .
+            ' (' . $_SESSION['TourWhere'] . ' ' . get_text('From','Tournament') . ' ' . $_SESSION['TourWhenFrom'] . ' ' . get_text('To','Tournament') . ' ' . $_SESSION['TourWhenTo'] . ') - ' .
+            $_SESSION['TourCode'] . (empty($GLOBALS['ERROR_REPORT']) ? '' : ' - Id: '. $_SESSION['TourId']);
+	} else {
 		print get_text('NoTour','Tournament');
 	}
 	print '</td>';
 	if($file=CheckHelp()) {
-		print '<td width="5%" class="Center">';
+		print '<td class="Center w-5">';
 		print '<a href="javascript:OpenPopup(\''.$CFG->ROOT_DIR.'Help.php?help='.$file.'\',\'Esegui\',800,500);">';
 		print '<img onMouseOver="resizeImg(this, 150, \''.$CFG->ROOT_DIR.'Common/Images/help-30.png\')" onMouseOut="resizeImg(this)" border="0" src="'.$CFG->ROOT_DIR.'Common/Images/help.png" alt="Help" title="Help">';
 		print '</a>';

@@ -2,8 +2,6 @@
 	require_once(dirname(dirname(__FILE__)) . '/config.php');
 	require_once('Common/Fun_FormatText.inc.php');
 
-	$CFG->TRACE_QUERRIES=false;
-
 	$TourId=$_SESSION['TourId'];
 	$BackNo=0;
 	if(!empty($_GET['BackNo'])) $Backno=intval($_GET['BackNo']);

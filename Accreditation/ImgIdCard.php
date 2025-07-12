@@ -40,7 +40,7 @@ imagefilledrectangle($img, 0, 0, $RowBn->Settings["Width"]*$Ratio-1, $RowBn->Set
 //Immagine di Sfondo
 if(strlen( $RowBn->Background) > 0 and $CardPage==1) {
 	// inserisci immagine di sfondo
-	if($sf=imagecreatefromstring($RowBn->Background)) {
+	if($sf=@imagecreatefromstring($RowBn->Background)) {
 		imagecopyresampled ($img , $sf , $RowBn->Settings["IdBgX"]*$Ratio , $RowBn->Settings["IdBgY"]*$Ratio , 0 , 0 , $RowBn->Settings["IdBgW"]*$Ratio , $RowBn->Settings["IdBgH"]*$Ratio , imagesx($sf) , imagesy($sf) );
 	}
 } else {

@@ -134,7 +134,7 @@ function getPdfHeader($ForOnline=true) {
 	$q=safe_r_sql($query);
 	while($r=safe_fetch($q)) {
 		if(!empty($RET->Flags[$r->FlCode])) continue;
-		if($im=imagecreatefromstring(base64_decode($r->FlJPG))) {
+		if($im=@imagecreatefromstring(base64_decode($r->FlJPG))) {
 			// MUST be at most 20 in height
 			$imgx=ceil(20*imagesx($im)/imagesy($im));
 

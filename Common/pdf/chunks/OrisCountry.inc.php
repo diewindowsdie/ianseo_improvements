@@ -32,7 +32,7 @@ $lstDoB = array();
 
 $AddPage=false;
 
-foreach($PdfData->Data['Items'] as $Rows) {
+foreach(($PdfData->Data['Items']??array()) as $Rows) {
 	if($AddPage and $SinglePage) {
 		$pdf->addpage();
 	}

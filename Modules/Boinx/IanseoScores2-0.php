@@ -85,14 +85,6 @@ $Header = $XmlDoc->createElement('header');
 $Header->appendChild($XmlDoc->createCDATASection(get_text($r->EvEventName, null, null, true)));
 $XmlRoot->appendChild($Header);
 
-//if($ERROR_REPORT) {
-//	$Games = $XmlDoc->createElement('query', $SQL);
-//	$XmlRoot->appendChild($Games);
-//}
-
-//$Games = $XmlDoc->createElement('games');
-//$XmlRoot->appendChild($Games);
-
 $Game = $XmlDoc->createElement('game');
 $Games->appendChild($Game);
 $XmlRoot->appendChild($Game);

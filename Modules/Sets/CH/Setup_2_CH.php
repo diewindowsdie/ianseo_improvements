@@ -10,7 +10,7 @@ $TourType is the Tour Type (2)
 
 $TourType=2;
 
-$tourDetTypeName		= 'SetCHOutdoor2880';
+$tourDetTypeName		= 'Type_2xFITA';
 $tourDetNumDist			= '8';
 $tourDetNumEnds			= '12';
 $tourDetMaxDistScore	= '360';

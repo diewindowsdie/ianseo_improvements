@@ -1,5 +1,4 @@
 <?php
-apache_setenv('no-gzip', '1');
 
 if(php_uname('s')!='Windows NT') {
 	die('<h1>THIS ONLY WORKS IN WINDOWS!</h1>');
