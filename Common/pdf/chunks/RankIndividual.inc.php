@@ -43,21 +43,28 @@ foreach ($PdfData->rankData['sections'] as $section) {
 $spaceAvailable = 190 - 8 - 12 - 12 * $maxElimRounds - 15 * $maxNumPhases;
 $athleteNameLength = floor($spaceAvailable * $maxAthleteNameLength / ($maxAthleteNameLength + $maxRegionNameLength));
 
+$officialsSize = TournamentOfficials::getOfficialsBlockHeight();
+$IRMLegendSize = $legendStatusProvider->getLegendBlockHeight();
+$headerSize = 7.5 + //division and class
+    5; //table header
+$dataRowSize = 4;
+
 foreach($PdfData->rankData['sections'] as $section) {
     $currentSectionIndex++;
+    $dataSize = 4 * count($section['items']) + $spaceBetweenSections;
     if ($currentSectionIndex == count($PdfData->rankData['sections'])) {
-        //last group:
-        //check if header message, group header, group, officials information and legend fits on the same page
-        $headerSize = 7.5 + //division and class
-            5; //table header
-        $dataSize = 4 * count($section['items']) + $spaceBetweenSections;
-        $officialsSize = TournamentOfficials::getOfficialsBlockHeight();
-        $IRMLegendSize = $legendStatusProvider->getLegendBlockHeight();
-
+        //предотвращаем отрыв подписей и легенды IRM статусов от последней группы
         if (!$pdf->SamePage($headerSize + $dataSize + $officialsSize + $IRMLegendSize)) {
             $pdf->AddPage();
             $NeedTitle=true;
         }
+    }
+
+    $rowsNeedToFit = min(3, count($section['items']));
+    if (!$pdf->SamePage($headerSize + $dataRowSize * $rowsNeedToFit)) {
+        //не помещается хотя бы три строки - начинаем группу с нового листа
+        $pdf->AddPage();
+        $NeedTitle=false;
     }
 
 	$ElimCols=0;
