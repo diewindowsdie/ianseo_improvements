@@ -306,7 +306,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L', $Athletes=array()) {
 	$pdf->Cell(20, $AthHeight,(get_text('Team')) . ': ', 'LT', 0, 'L', 0);
 	$pdf->SetFont($pdf->FontStd,'B',10);
     if($MyRow->{$Prefix.'CountryName'}) {
-        $pdf->Cell($ScoreWidth-20-2*$GoldW-($pdf->PrintFlags?18:0), $RankHeight, (($MyRow->{$Prefix.'CountryName'}??'') . (strlen($MyRow->{$Prefix.'CountryCode'}??'')>0 ?  ' (' . $MyRow->{$Prefix.'CountryCode'}  . ')' : '')), 'T', 1, 'L', 0);
+        $pdf->Cell($ScoreWidth-20-2*$GoldW-($pdf->PrintFlags?18:0), $RankHeight, ($MyRow->{$Prefix.'CountryName'}??''), 'T', 1, 'L', 0);
     } elseif($MyRow->{$Prefix.'EnId'} and is_array($MyRow->{$Prefix.'EnId'})) {
         $OrgX=$pdf->getX();
         foreach($MyRow->{$Prefix.'EnId'} as $k=>$Athlete) {
