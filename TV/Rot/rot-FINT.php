@@ -198,7 +198,11 @@ function rotFint($TVsettings, $RULE) {
 		$Return['BlockCss']='display:flex; flex-direction:row; justify-content:center; align-items:center; box-sizing:border-box; overflow:hidden; white-space: nowrap; font-size:2em; margin:auto; box-sizing:border-box;';
 	} elseif(!empty($section['meta'])) {
 		// Grid view
-		$ret[] = '<div class="Title">' . $section['meta']['eventName'] . '</div>';
+
+        $ret[] = '<div class="Title" >
+				<div class="TitleImg" style="float:left;"><img src="'.$CFG->ROOT_DIR.'TV/Photos/'.$IsCode.'-ToLeft.jpg"></div>
+				<div class="TitleImg" style="float:right;"><img src="'.$CFG->ROOT_DIR.'TV/Photos/'.$IsCode.'-ToRight.jpg"></div>
+				' . $section['meta']['eventName'] . '</div>' ;
 		$ret[]='<div id="content" data-direction="up">';
 		$NumColBase = 3 + $ViewTeams;
 			$RowIndex=0;
