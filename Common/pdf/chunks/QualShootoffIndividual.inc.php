@@ -11,10 +11,10 @@ $pdf->CoinTossShort=$PdfData->CoinTossShort;
 if(count($rankData['sections']))
 {
 	$DistSize = 11;
-	$AddSize=($pdf->getPageWidth()-210)/2;
 	$pdf->setDocUpdate($rankData['meta']['lastUpdate']);
 	foreach($rankData['sections'] as $section)
 	{
+        $AddSize = 0;
 		//Calcolo Le Misure per i Campi
 		if($section['meta']['numDist']>=4 && !$rankData['meta']['double'])
 			$DistSize = ($pdf->getPageWidth()-166)/$section['meta']['numDist'];
@@ -107,8 +107,7 @@ if(count($rankData['sections']))
 				$pdf->Cell(5, $CellHeight, ($item['class']!=$item['ageclass'] ?  ' ' . ( $item['ageclass']) : ''), 'TBR', 0, 'C', 0);
 				//Nazione
 				$pdf->SetFont($pdf->FontStd,'',7);
-				$pdf->Cell(8, $CellHeight,  $item['countryCode'], 'TBL', 0, 'L', 0);
-				$pdf->Cell(43, $CellHeight,  $item['countryName'], 'TBR', 0, 'L', 0);
+				$pdf->Cell(51, $CellHeight,  $item['countryName'], 'TBR', 0, 'L', 0);
 
 				// Arr1, 2 and 3
 				$pdf->Cell(8, $CellHeight, '', 1, 0, 'C', 0);

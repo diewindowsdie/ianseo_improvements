@@ -69,8 +69,7 @@ if(count($rankData['sections'])) {
 				$pdf->SetFont($pdf->FontStd,'',7);
 				$pdf->Cell(12, $CellHeight,  '', 1, 0, 'R', 0);
 				//Nazione
-				$pdf->Cell(8, $CellHeight,  $item['countryCode'], 'TBL', 0, 'L', 0);
-				$pdf->Cell(43, $CellHeight,  $item['countryName'], 'TBR', 0, 'L', 0);
+				$pdf->Cell(51, $CellHeight,  $item['countryName'], 'TBR', 0, 'L', 0);
 
 				// Arr1, 2 and 3
                 if(empty($section['meta']['maxPersons'])) {

@@ -755,8 +755,7 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(9, 4,  $item['rank'], $border.'LR', 0, 'R', 0);
 
 		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-		$this->Cell(8, 4,  $item['countryCode'],$border.'L', 0, 'C', 0);
-		$this->Cell(42, 4,  $item['countryName'] . (intval($item['subteam'])<=1 ? '' : ' (' . $item['subteam'] .')'), $border.'R', 0, 'L', 0);
+		$this->Cell(50, 4,  $item['countryName'] . (intval($item['subteam'])<=1 ? '' : ' (' . $item['subteam'] .')'), $border.'R', 0, 'L', 0);
 
 		$tmpNames="";
 		foreach ($item['athletes'] as $a) {
