@@ -149,6 +149,23 @@ switch($_REQUEST['act']) {
                     $JSON['reloadItem'] = 1;
                 }
                 break;
+            case 'ImageSvg':
+                if(!isset($_FILES['ImageSvg'])) {
+                    jsonout($JSON);
+                }
+                unset($img);
+                $file=$_FILES['ImageSvg'];
+                $CardFile="{$CardType}-{$CardNumber}-{$CardPage}-".intval($_REQUEST['order']);
+                $img = file_get_contents($file['tmp_name']);
+                if (!empty($img)) {
+                    $tmpfile = $CFG->DOCUMENT_PATH . 'TV/Photos/' . $_SESSION['TourCodeSafe'] . '-' . $_REQUEST['type'] . '-' . $CardFile . '.svg';
+                    file_put_contents($tmpfile, $img);
+                    $Content= gzdeflate($img);
+                    safe_w_sql("update IdCardElements set IceContent=".StrSafe_DB($Content)." where $IceFilter");
+                    $JSON['error'] = 0;
+                    $JSON['reloadItem'] = 1;
+                }
+                break;
             case 'Order':
                 // changes the order...
                 $OldOrder=intval($_REQUEST['order']);
@@ -236,6 +253,7 @@ switch($_REQUEST['act']) {
             'BackCat'=>'',
             'Size'=>12,
             'Just'=>0,
+            'ExtraAddOns'=>'',
         );
         if($_REQUEST['Type']=='TgtSequence') {
             $Options['LayoutOrientation']=0;
@@ -310,12 +328,12 @@ switch($_REQUEST['act']) {
             $Order=$MaxOrder;
             $MaxOrder++;
         }
-        if($_REQUEST['Type']=='ExtraAddOnsImage') {
-            // we have extraoptions here!
-            if(!empty($_REQUEST['MoreOptions'])) {
-                $Options['ExtraAddOns']=$_REQUEST['MoreOptions'];
-            }
-        }
+//        if($_REQUEST['Type']=='ExtraAddOnsImage') {
+//            // we have extraoptions here!
+//            if(isset($_REQUEST['ExtraAddOns'])) {
+//                $Options['ExtraAddOns']=$_REQUEST['ExtraAddOns'];
+//            }
+//        }
         $Sql="insert into IdCardElements set 
             IceTournament={$_SESSION['TourId']},
             IceOrder=$Order,

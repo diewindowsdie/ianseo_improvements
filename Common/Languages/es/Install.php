@@ -55,7 +55,6 @@ $lang['FieldPegRed']='Piqueta Roja';
 $lang['FieldPegWhite']='Piqueta Blanca';
 $lang['FieldPegYellow']='Piqueta Amarilla';
 $lang['File permission error']='Tienes que verificar los permisos en el directorio de instalación de IANSEO:debe ser posible para el usuario actual ejecutar el servidor o el archivo general.';
-$lang['FreeOnlineResults']='<b>Publicación gratuíta en línea:</b> con una conexión a Internet básica puede mostrar al mundo lo que sucede durante su competición. Es gratis, ¿porque esperar? Una vez que la competición ha sido creada, solicite un código a través del correspondiente menú «{$a}».';
 $lang['Host']='Host';
 $lang['Install-0']='ERROR CRITICO';
 $lang['Install-0 Title']='Acuerdo sobre la Licencia GPL3';

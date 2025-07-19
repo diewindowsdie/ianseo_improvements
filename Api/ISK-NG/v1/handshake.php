@@ -15,7 +15,8 @@ $res = array(
 	"devCode" => '',
 	"error" => 1,				// 0 - no error, 1 - not allowed, 2 - unknown device
 	"socketid" => '',	// Value returned for Live comps, Lite/Pro have no value
-	"key" => ""	// Value returned for Pro/Live comps, Lite has no value
+	"key" => "",	// Value returned for Pro/Live comps, Lite has no value
+    "ianseoVersion" => "20250605"
 );
 
 if(($req->iskType==ISK_NG_LITE_CODE or $req->iskType==ISK_NG_PRO_CODE) and !$req->tournament) {

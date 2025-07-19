@@ -1919,8 +1919,8 @@ $Data["Dist"] : ' '),0,0,'C',(array_key_exists("Dist",$Data) ?
             // print type
             foreach($Aru as $k=>$v) {
                 $this->ImageSVG('@'.$this->ArucoMarker->CreateArucoMarker($v['N']), $v['X'],$v['Y'], $this->ArucoSize, $this->ArucoSize);
-                $this->setXY($v['X'],$v['Y']+$this->ArucoSize);
-                $this->Cell($this->ArucoSize, 0, $k.' '.$v['N'], 0, 0, 'C');
+//                $this->setXY($v['X'],$v['Y']+$this->ArucoSize);
+//                $this->Cell($this->ArucoSize, 0, $k.' '.$v['N'], 0, 0, 'C');
             }
         }
 

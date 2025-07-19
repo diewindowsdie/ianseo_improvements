@@ -321,6 +321,9 @@ function UpdateRowContent(obj) {
                 reloadImage('#IdCardImage');
             }
             if(data.reloadItem) {
+                if(obj.type=='file') {
+                    obj.value='';
+                }
                 row.find('img').each(function() {
                     reloadImage(this);
                 })

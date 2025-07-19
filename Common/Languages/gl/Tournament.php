@@ -957,7 +957,6 @@ $lang['ReportCopy2']='Copia para o país';
 $lang['ReportCopy3']='Copia para a federación';
 $lang['RePrint']='Imprimir de novo';
 $lang['RequestAuthCode']='Escolle un contrasinal para a publicación';
-$lang['RequestDisclaimer']='Enviar o correo non implica que a solicitude sexa aceptada. Solicita o código polo menos unha semana antes da competición: ten en conta o fuso horario e cuestións reais que nos poidan afectar. O servizo préstase "tal cal" e pode suspenderse en calquera momento sen aviso. Se unha competición non ten resultados (ex: cualificacións) ao rematar, pode ser eliminada sen aviso.';
 $lang['RequestedDescription']='Estes campos DEBEN estar presentes no ficheiro. O separador de campos é unha tabulación, o separador de rexistros é un salto de liña.';
 $lang['RequestEmail']='Correo do responsable de resultados';
 $lang['RequestHeader']='Envíame os códigos para este torneo (lembra escoller un contrasinal):';

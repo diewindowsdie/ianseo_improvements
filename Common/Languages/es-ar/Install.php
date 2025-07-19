@@ -41,7 +41,6 @@ $lang['FieldPegBlue']='Estaca Azul';
 $lang['FieldPegRed']='Estaca Roja';
 $lang['FieldPegWhite']='Estaca Blanca';
 $lang['FieldPegYellow']='Estaca Amarilla';
-$lang['FreeOnlineResults']='<b>Publique los resultados gratis:</b> con una conexión a Internet, puede mostrar al mundo lo que sucede durante su competencia. Es gratuito. Una vez creada la competencia, solicite el código a través del menú <<{$a}>>.';
 $lang['Host']='Host';
 $lang['Install-0']='ERROR CRITICO';
 $lang['Install-0 Title']='Acuerdo de Licencia GPL3';

@@ -365,22 +365,34 @@ function CreateDistanceInformation($TourId, $Distances, $Targets=0, $Athletes=4,
 		insertSession($TourId, $Session, 'Q', $SesName, '', $Targets, $Athletes, 1, 0);
 	}
 	foreach($Distances as $Dist => $Infos) {
-		$tmp = array();
-		switch(count($Infos)) {
-			case 4:
-				$tmp[] = "DiScoringOffset={$Infos[3]}";
-			case 3:
-				$tmp[] = "DiScoringEnds={$Infos[2]}";
-			case 2:
-				$tmp[] = "DiArrows={$Infos[1]}";
-			case 1:
-				$tmp[] = "DiEnds={$Infos[0]}";
-		}
-		if(count($tmp)) {
-			$Sql = "INSERT INTO DistanceInformation set DiTournament=$TourId, DiType='Q', DiSession=$Session, DiDistance=$Dist+1,".
-				implode(", ", $tmp) .
-				" ON DUPLICATE KEY UPDATE ".
-				implode(", ", $tmp);
+		$tmp = [];
+        if($Infos['DiEnds']??'') {
+            foreach($Infos as $k=>$v) {
+                if(is_numeric($v)) {
+                    $tmp[] = "$k={$v}";
+                } else {
+                    $tmp[] = "$k=".StrSafe_DB($v);
+                }
+            }
+        } else {
+            switch(count($Infos)) {
+                case 4:
+                    $tmp[] = "DiScoringOffset={$Infos[3]}";
+                case 3:
+                    $tmp[] = "DiScoringEnds={$Infos[2]}";
+                case 2:
+                    $tmp[] = "DiArrows={$Infos[1]}";
+                case 1:
+                    $tmp[] = "DiEnds={$Infos[0]}";
+            }
+        }
+		if($tmp) {
+            $tmp[] = "DiTournament={$TourId}";
+            $tmp[] = "DiType='Q'";
+            $tmp[] = "DiSession={$Session}";
+            $tmp[] = "DiDistance=".($Dist+1);
+            $set=implode(", ", $tmp);
+			$Sql = "INSERT INTO DistanceInformation set $set ON DUPLICATE KEY UPDATE $set";
 			safe_w_sql($Sql);
 		}
 	}

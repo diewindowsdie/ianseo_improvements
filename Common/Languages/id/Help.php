@@ -35,6 +35,9 @@ Perangkat dapat memproses skor di kompetisi Anda hanya dengan membaca QR-Code ya
 Dalam hal input manual di aplikasi Ianseo Scorekeeper LITE, kode Kompetisi yang digunakan adalah <b>{$a}</b>';
 $lang['QrCodeLandscape']='satu atau dua kali "<" akan menggambar panah ke kiri satu atau dua kali ">" akan menggambar panah ke kanan satu atau dua kali "^" akan menggambar panah ke atas satu atau dua kali "v" akan menggambar panah ke bawah';
 $lang['QrCodePortrait']='bidang ini mampu membaca HTML. Jika Anda menyisipkan sesuatu yang ditandai oleh &lt;qrcode&gt;...&lt;/qrcode&gt; maka konten akan diubah menjadi QRCode';
+$lang['RecordGrayLine']='Tipe rekor yang sama dan kategori yang sama sudah ada dengan skor yang lebih tinggi.<br> Periksa aturan dan tanggal untuk pencatatan rekor.';
+$lang['RecordHelp']='Bantuan baris / sel berwarna';
+$lang['RecordPinkCell']='Skor dan kategori yang sama merupakan rekor tingkat yang lebih tinggi.<bt>Tulis dalam PDF hanya yang paling penting.</bt>';
 $lang['ScoreBarCodeShortcuts']='Baca Barcode yang tercetak di kartu skor.<br/>
 Memasukkan # secara manual diikuti dengan nama atlet mencari database untuk menemukan atlet tersebut<br/>
 Memasukkan @ diikuti dengan nomor target akan mencari target tersebut. Jarak HARUS diatur. Sesi harus ditentukan (digit pertama) dan target diisi 0 hingga 3 digit.';

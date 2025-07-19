@@ -644,7 +644,6 @@ $lang['Reload']='Učitaj ponovo';
 $lang['RememberPwd']='Zapamti lozinke';
 $lang['RemoveStars']='Ukloni sve *';
 $lang['RePrint']='Štampaj ponovo';
-$lang['RequestDisclaimer']='Slanje e-maila ne znači da će zahtjev biti prihvaćen. Molimo da zatražite kod najmanje nedjelju dana prije takmičenja: imajte u vidu vremenske zone i stvarne probleme koji mogu uticati na nas. Usluga se pruža "kako jeste" i može biti suspendovana u bilo kom trenutku bez prethodne najave. Ako takmičenje nema rezultate (npr. Kvalifikacije) nakon završetka takmičenja, može biti obrisano bez upozorenja.';
 $lang['RequestedDescription']='Ova polja MORAJU biti prisutna u datoteci. Separator polja je Tab, separator zapisa je novi red.';
 $lang['RequestHeader']='Molim vas da mi pošaljete kodove za ovaj turnir (ne zaboravite da izaberete lozinku):';
 $lang['ResetBadges']='Poništi status štampe';

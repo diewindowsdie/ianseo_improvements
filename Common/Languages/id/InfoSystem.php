@@ -72,6 +72,7 @@ $lang['Record-WAAF-CR-avg']='Rekor Afrika Rata2';
 $lang['Record-WAAM-CC-GR']='Rekor Kejuaraan Pan Am';
 $lang['Record-WAAM-CC-GR-avg']='Rekor Kejuaraan Pan Am (Rata-rata)';
 $lang['Record-WAAM-CR-avg']='Rekor Amerika Rata2';
+$lang['Record-WAAS-CC-GR-avg']='Rekor Kejuaraan Asia (Rata2)';
 $lang['Record-WAAS-CR-avg']='Rekor Asia Rata2';
 $lang['Record-WAE-CR-avg']='Rekor Eropa Rata2';
 $lang['Record-WAO-CR-avg']='Rekor Oceania Rata2';
