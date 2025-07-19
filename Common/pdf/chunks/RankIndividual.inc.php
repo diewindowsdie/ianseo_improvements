@@ -45,20 +45,13 @@ $athleteNameLength = floor($spaceAvailable * $maxAthleteNameLength / ($maxAthlet
 
 $officialsSize = TournamentOfficials::getOfficialsBlockHeight();
 $IRMLegendSize = $legendStatusProvider->getLegendBlockHeight();
+$additionalSpaceForOfficialsAndIRMStatusLegend = 5 + 5;
 $headerSize = 7.5 + //division and class
     5; //table header
 $dataRowSize = 4;
 
 foreach($PdfData->rankData['sections'] as $section) {
     $currentSectionIndex++;
-    $dataSize = 4 * count($section['items']) + $spaceBetweenSections;
-    if ($currentSectionIndex == count($PdfData->rankData['sections'])) {
-        //предотвращаем отрыв подписей и легенды IRM статусов от последней группы
-        if (!$pdf->SamePage($headerSize + $dataSize + $officialsSize + $IRMLegendSize)) {
-            $pdf->AddPage();
-            $NeedTitle=true;
-        }
-    }
 
     $rowsNeedToFit = min(3, count($section['items']));
     if (!$pdf->SamePage($headerSize + $dataRowSize * $rowsNeedToFit)) {
@@ -80,7 +73,19 @@ foreach($PdfData->rankData['sections'] as $section) {
 		$FirstPage=false;
 
 		$NeedTitle=true;
+        $dataIndex = 0;
 		foreach($section['items'] as $item) {
+            $dataIndex++;
+            //что-то делаем только для последней секции
+            if ($currentSectionIndex == count($PdfData->rankData['sections'])) {
+                //если осталось три строки, или же в группе меньше трех строк
+                if ($dataIndex + 2 >= count($section['items'])) {
+                    if (!$pdf->SamePage($dataRowSize * 3 + $officialsSize + $IRMLegendSize + $additionalSpaceForOfficialsAndIRMStatusLegend)) {
+                        $pdf->AddPage(); //надо переносить не всю группу, а гарантировать что последние три строки будут на новом листе, если не лезет целиком
+                        $NeedTitle=true;
+                    }
+                }
+            }
 
 			if(!$pdf->SamePage(5)) $NeedTitle=true;
 
