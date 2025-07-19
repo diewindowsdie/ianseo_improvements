@@ -23,7 +23,6 @@ $lang['Failed']='NEUSPJEŠNO!';
 $lang['Failing install']='Molimo ažurirajte PHP instalacije prije ponovnog pokretanja IANSEO.';
 $lang['File permission error']='Morate provjeriti dozvole na direktorij IANSEO instalacije:
 treba biti omogućeno pisanje od strane korisnika koji izvodi poslužitelj ili world-writable.';
-$lang['FreeOnlineResults']='<b>Besplatni online pubblishing:</b> s osnovnom internetskom vezom možete pokazati svijetu ono što se događa za vrijeme natjecanja. To je besplatno, pa zašto čekati? Nakon kreiranja natjecanja, potraži kod putem točki izbornika «{$a}».';
 $lang['Host']='Domaćin (Host)';
 $lang['Install-0']='kritična pogreška';
 $lang['Install-1 Title']='PHP checking';

@@ -54,7 +54,6 @@ $lang['FieldPegRed']='Rød pinne';
 $lang['FieldPegWhite']='Hvit pinne';
 $lang['FieldPegYellow']='Gul pinne';
 $lang['File permission error']='Du må sjekke rettighetene på IANSEO installasjonsmappen: det bør være skrivbar for brukeren som kjører serveren eller global skrivbare.';
-$lang['FreeOnlineResults']='<b>Gratis online publisering:</b> med en standard Internett-tilkobling kan du vise verden hva som skjer under konkurransen. Det er gratis, så hvorfor vente? Når konkurransen er opprettet, kan du be om en kode via menypunktet «{$a}».';
 $lang['Host']='Vert';
 $lang['Install-0']='KRITISK FEIL';
 $lang['Install-0 Title']='GPL3 Lisensavtale';

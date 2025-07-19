@@ -230,7 +230,6 @@ $lang['MenuLM_Archers on Targets']='Antal per skive';
 $lang['MenuLM_Arr4Set']='Pile per sæt';
 $lang['MenuLM_Arrow by Arrow (Advanced user)']='Pil for pil';
 $lang['MenuLM_Arrow by Arrow (Scorecards)']='Pil for pil (skydeseddel)';
-$lang['MenuLM_Aruco']='Skydesedler Autocode';
 $lang['MenuLM_Athlete Status Management']='Håndter status for skytter';
 $lang['MenuLM_Athletes Participation to Ind/Team Event']='Skytter der deltager i ind./hold finaler';
 $lang['MenuLM_Athletes Setup']='Skytte opsætning';

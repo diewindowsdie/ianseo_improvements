@@ -253,7 +253,10 @@ while ($MyRow=safe_fetch($Rs)) {
                     break;
                 case 'ExtraAddOnsImage':
                     $listAddOns = getModuleParameter("ExtraAddOns","AddOnsList", array());
-                    if(($MyRow->ExtraAddOns & pow(2,$Element->Options['ExtraAddOns']))!=0 AND array_key_exists($Element->Options['ExtraAddOns'], $listAddOns) AND !empty($listAddOns[$Element->Options['ExtraAddOns']])) {
+                    if(array_key_exists('ExtraAddOns', $Element->Options) AND ($MyRow->ExtraAddOns & pow(2,$Element->Options['ExtraAddOns']))!=0
+                        AND array_key_exists($Element->Options['ExtraAddOns'], $listAddOns)
+                        AND !empty($listAddOns[$Element->Options['ExtraAddOns']]))
+                    {
                         if (file_exists($im = $CFG->DOCUMENT_PATH . 'TV/Photos/' . $CurrentCode . '-ExtraAddOnsImage-' . $FileExtra . '-' . $Element->IceOrder . '.jpg')) {
                             $pdf->Image($im, $ElX, $ElY, floatval($Element->Options['W']), floatval($Element->Options['H']));
                         }

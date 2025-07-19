@@ -38,7 +38,6 @@ $lang['FieldPegRed']='Rode post';
 $lang['FieldPegWhite']='Witte post';
 $lang['FieldPegYellow']='Gele post';
 $lang['File permission error']='U moet de toegang controleren van de Ianseo installatie map. De gebruiker moet er kunnen schrijven.';
-$lang['FreeOnlineResults']='<b>Zonder extra kosten publiceren op internet:</b>met een eenvoudige internetverbinding kan je de hele wereld laten zien wat er gebeurt tijdens de wedstrijd. Het is gratis, dus waarom wachten? Als de wedstrijd eenmaal is gemaakt, vraag een code via het menu onderdeel <<{$a}>>.';
 $lang['Host']='Host';
 $lang['Install-0']='ERNSTIGE FOUT';
 $lang['Install-0 Title']='GPL3 licentie overeenkomst';

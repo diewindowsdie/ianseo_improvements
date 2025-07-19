@@ -55,7 +55,6 @@ $lang['FieldPegRed']='Picchetto Rosso';
 $lang['FieldPegWhite']='Picchetto Bianco';
 $lang['FieldPegYellow']='Picchetto Giallo';
 $lang['File permission error']='Controllare i permessi della cartella di installazione di I@NSEO. Deve essere scrivibile dall\'utente che esegue il webserver oppure da tutti gli utenti.';
-$lang['FreeOnlineResults']='<b>Pubblicazione online gratuita:</b> basta una connessione di base e puoi far vedere a tutto il pianeta cosa sta succedendo nella tua gara. E\' gratuito quindi perché aspettare? Dopo aver creato la tua gara, richiedi il codice per pubblicarla online scegliendo la voce di menù «{$a}».';
 $lang['GettingLanguagePacks']='Recupero dei pacchetti di lingue... Questa operazione può richiedere del tempo...';
 $lang['Host']='Host';
 $lang['Install-0']='ERRORE CRITICO';

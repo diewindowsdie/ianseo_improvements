@@ -323,7 +323,7 @@ function pdfForm(obj) {
 
 function activate_confirm(form) {
     form.target='Badges';
-    document.getElementById('confirm_button').style.display='inline';
+    $('#confirm_button').css('display', 'inline');
 }
 
 function hide_custom() {
@@ -343,7 +343,7 @@ function show_custom() {
 }
 
 function hide_confirm() {
-    document.getElementById('confirm_button').style.display='none';
+    $('#confirm_button').css('display', 'none');
 }
 
 function hide_reset() {

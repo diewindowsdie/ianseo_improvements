@@ -55,7 +55,6 @@ $lang['FieldPegRed']='Rød pind';
 $lang['FieldPegWhite']='Hvid pind';
 $lang['FieldPegYellow']='Gul pind';
 $lang['File permission error']='Du skal checke alle tilladelser af IANSEO installations mapper: den skal ikke være skrivebeskyttet af brugeren.';
-$lang['FreeOnlineResults']='<b>Gratis online udgivelse</b>. Via nettet kan du vise verdenen hvad der sker under konkurrencen. Det er gratis, så hvorfor vente? Når turneringen først er oprettet, så bed om en turneringskode under menu punktet «{$a}».';
 $lang['Host']='Host';
 $lang['Install-0']='KRITISK FEJL';
 $lang['Install-0 Title']='GPL3 License Agreement';

@@ -230,7 +230,6 @@ $lang['MenuLM_Archers on Targets']='Arquers per diana';
 $lang['MenuLM_Arr4Set']='Fletxes per set';
 $lang['MenuLM_Arrow by Arrow (Advanced user)']='Fletxa a Fletxa (Usuaris Avançats)';
 $lang['MenuLM_Arrow by Arrow (Scorecards)']='Fletxa a Fletxa (Veure puntuacions)';
-$lang['MenuLM_Aruco']='Codi automàtic fulls puntuació';
 $lang['MenuLM_Athlete Status Management']='Estat de gestió d\'arquers';
 $lang['MenuLM_Athletes Participation to Ind/Team Event']='Arquers participants en esdeveniments Ind./Equip';
 $lang['MenuLM_Athletes Setup']='Configuració dels arquers';

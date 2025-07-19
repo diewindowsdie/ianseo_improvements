@@ -764,7 +764,6 @@ $lang['ReportCopy2']='Kopi til klubbene';
 $lang['ReportCopy3']='Kopi til forbundet';
 $lang['RePrint']='Skriv ut igjen';
 $lang['RequestAuthCode']='Velg et passord for dette stevnet';
-$lang['RequestDisclaimer']='Forespørselen innebærer ikke at anmodningen vil bli akseptert. Tjenesten leveres "som den er" og kan bli fjernet når som helst uten forvarsel. Dersom en konkurranse ikke har noen resultater (f.eks kvalifisering) etter utløpet av konkurransen kan den bli slettet uten advarsel.';
 $lang['RequestedDescription']='Disse feltene MÅ være til stede i filen. Felt separator er en Tab, post separator er et linjeskift.';
 $lang['RequestEmail']='E-postadresse til resultatansvarlig';
 $lang['RequestHeader']='Vennligst send meg kodene for dette stevnet (husk å velge et passord):';

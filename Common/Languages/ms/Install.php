@@ -40,7 +40,6 @@ $lang['FieldPegRed']='Peg Merah';
 $lang['FieldPegWhite']='Peg Putih';
 $lang['FieldPegYellow']='Peg Kuning';
 $lang['File permission error']='Anda perlu menyemak kebenaran pada direktori pemasangan IANSEO: ia harus ditulis oleh pengguna yang menjalankan pelayan atau boleh tulis di dunia.';
-$lang['FreeOnlineResults']='<b> Penerbitan dalam talian percuma: </b> dengan sambungan Internet asas anda dapat menunjukkan kepada dunia apa yang sedang berlaku semasa pertandingan. Ia percuma, jadi mengapa tunggu? Setelah pertandingan dibuat, minta kod melalui item menu «{$ a}».';
 $lang['Host']='Hos';
 $lang['Install-0']='KESALAHAN KRITIKAL';
 $lang['Install-0 Title']='Perjanjian Lesen GPL3';

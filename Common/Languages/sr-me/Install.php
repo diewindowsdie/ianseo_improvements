@@ -54,7 +54,6 @@ $lang['FieldPegRed']='Crveni kočić';
 $lang['FieldPegWhite']='Bijeli kočić';
 $lang['FieldPegYellow']='Žuti kočić';
 $lang['File permission error']='Morate provjeriti dozvole na direktorijumu instalacije IANSEO-a: direktorijum mora biti upisiv za korisnika koji pokreće server ili svima.';
-$lang['FreeOnlineResults']='<b>Besplatno online objavljivanje:</b> Sa osnovnom internet konekcijom možete pokazati svijetu šta se dešava tokom takmičenja. To je besplatno, pa zašto čekati? Kada se takmičenje kreira, zatražite kod putem stavke iz menija «{$a}».';
 $lang['Host']='Host';
 $lang['Install-0']='KRITIČNA GREŠKA';
 $lang['Install-0 Title']='GPL3 licencni ugovor';

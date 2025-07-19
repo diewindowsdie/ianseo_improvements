@@ -28,7 +28,6 @@ $lang['Failing install']='Please update your PHP installation before running IAN
 $lang['Field24Normal']='Fält 24 mål';
 $lang['Field24PayPlay']='Fält 24 mål, Pay & Play';
 $lang['File permission error']='You have to check permissions on the IANSEO installation directory: it should be writable by the user running the server or world-writable.';
-$lang['FreeOnlineResults']='<b>Gratis publicering på Internet:</b> med en vanlig internet-uppkoppling kan du visa hela världen din tävling. Så fort du ställt in en ny tävling går du in och ansöker om en publiceringskod. Ansökan hittar du i «{$a}».';
 $lang['GettingLanguagePacks']='Hämtar språkfiler... Detta kan ta en stund...';
 $lang['Host']='Värd';
 $lang['Install-0']='CRITICAL ERROR';

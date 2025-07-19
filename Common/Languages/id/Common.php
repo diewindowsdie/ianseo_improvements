@@ -231,7 +231,6 @@ $lang['MenuLM_Archers on Targets']='Pemanah pada Target';
 $lang['MenuLM_Arr4Set']='Anak Panah per Set';
 $lang['MenuLM_Arrow by Arrow (Advanced user)']='Anak Panah per Anak Panah (pengguna mahir)';
 $lang['MenuLM_Arrow by Arrow (Scorecards)']='Anak Panah per Anak Panah (Tampilan Kartu Skor)';
-$lang['MenuLM_Aruco']='Kode Otomatis Scorecard';
 $lang['MenuLM_Athlete Status Management']='Managemen Status Atlet';
 $lang['MenuLM_Athletes Participation to Ind/Team Event']='Partisipasi Atlet pada event Ind/Beregu';
 $lang['MenuLM_Athletes Setup']='Setelah Atlet';

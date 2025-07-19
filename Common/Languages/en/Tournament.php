@@ -799,6 +799,7 @@ $lang['NoFilters']='No filters';
 $lang['NoLocations']='No Locations';
 $lang['NoMoreAth4Session']='You cannot add other archers in the selected session!';
 $lang['NoMorePhases']='No More Phases';
+$lang['NoOnlineCompetition']='This competition is not scheduled to have online presence. Why not asking for a code? It is free and bandwidth request is very low! Ask for a code through the menu item «{$a}». Please ask for the code as soon as you can, possibly one week before the competition itself, to give us the time to validate it!';
 $lang['NoPay']='Free';
 $lang['NoPictureAvailable']='No Picture Available';
 $lang['NoRowSelected']='No rows selected';
@@ -824,6 +825,7 @@ $lang['NumTieAtPosition']='{$a[0]} tied in position {$a[1]}';
 $lang['Officials']='Officials';
 $lang['OldStyleElimination']='3D/Field old style eliminations';
 $lang['OnePlace']='1 Place';
+$lang['OnlineCompetitionAvailable']='This competition is available online: $a';
 $lang['OnlineId']='On-line ID';
 $lang['OnlyAccredited']='only if accredited';
 $lang['OnlyMissing']='Only Missing';
@@ -1009,7 +1011,6 @@ $lang['ReportCopy3']='Copy for the federation';
 $lang['RePrint']='Print Again';
 $lang['RequestAuthCode']='Choose a password for publication';
 $lang['RequestDisclaimer']='Sending the email does not imply the request will be accepted.
-Please ask for a code at least one week before the competition: consider time zone and real life issues that can affect us.
 The service is delivered "as is" and can be suspended at any time without warning.
 If a competition has no results (eg Qualifications) after the end of the competition it may be deleted without warning.';
 $lang['RequestedDescription']='These fields MUST be present in the file. Field separator is a Tab, record separator is a newline.';
@@ -1063,7 +1064,7 @@ $lang['ScorecardLabelEnd']='End';
 $lang['ScorecardLabelSet']='Set';
 $lang['ScorecardsAutocodeActive']='Activate';
 $lang['ScorecardsAutocodeDimension']='Dimention (mm)';
-$lang['ScorecardsAutocodeTitle']='Scorecards Autocode';
+$lang['ScorecardsAutocodeTitle']='Scorecards AI Reading';
 $lang['ScorecardsAutocodeType']='Dictionary';
 $lang['ScorecardsElim']='Elimination Scorecards';
 $lang['ScorecardsInd']='Individual Matches Scorecards';

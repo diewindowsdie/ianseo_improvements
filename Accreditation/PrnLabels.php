@@ -59,7 +59,7 @@ if(CheckTourSession())
 		$printBarcode=false;
 	}
 
-	$MyQuery = "SELECT EnId, EnName AS Name, upper(EnFirstName) AS FirstName, SUBSTRING(AtTargetNo,1,1) AS Session, SUBSTRING(AtTargetNo,2," . (TargetNoPadding+1) . ") AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, if(AEId IS NULL, 0, 1) as OpDone ";
+	$MyQuery = "SELECT EnId, EnCode, EnName AS Name, upper(EnFirstName) AS FirstName, SUBSTRING(AtTargetNo,1,1) AS Session, SUBSTRING(AtTargetNo,2," . (TargetNoPadding+1) . ") AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, if(AEId IS NULL, 0, 1) as OpDone ";
 	$MyQuery.= "FROM AvailableTarget at ";
 	$MyQuery.= "INNER JOIN Qualifications AS q ON at.AtTargetNo=q.QuTargetNo ";
 	$MyQuery.= "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament=at.AtTournament AND EnAthlete=1 ";
@@ -106,23 +106,10 @@ if(CheckTourSession())
 			if($printBarcode)
 			{
 				$pdf->SetFont('barcode','',28);
-				if($MyRow->EnId[0]=='_') $MyRow->EnId='UU'.substr($MyRow->EnId, 1);
-				$pdf->Cell($lblW-2*($lblMarginH),10, mb_convert_encoding('*$' . $MyRow->EnId,"UTF-8","cp1252") . "*",0,0,'C',0);
+				if($MyRow->EnCode[0]=='_') $MyRow->EnCode='UU'.substr($MyRow->EnCode, 1);
+				$pdf->Cell($lblW-2*($lblMarginH),10, mb_convert_encoding('*' . $MyRow->EnCode,"UTF-8","cp1252") . "*",0,0,'C',0);
 			}
 
-/*
-			//Status
-			if($MyRow->Status>1)
-				$pdf->Rect((($Etichetta % 3) * $lblW)+4,(intval($Etichetta / 3) * $lblH)+4,($lblW-8),($lblH-10*$lblSp),"FD");
-
-			//Barcode
-			$pdf->SetXY((($Etichetta % 3) * $lblW)+5,(intval($Etichetta / 3) * $lblH)+12*$lblSp);
-			$pdf->SetFont('barcode','',28);
-			$pdf->Cell($lblW-10,10, mb_convert_encoding('*$' . $MyRow->EnId,"UTF-8","cp1252") . "*",0,0,'C',0);
-
-			//$pdf->Rect((($Etichetta % 3) * 70)+0,(intval($Etichetta / 3) * 37)+0,70,37);
-
-*/
 			$Etichetta = ++$Etichetta % $Label4Page;
 		}
 		safe_free_result($Rs);
