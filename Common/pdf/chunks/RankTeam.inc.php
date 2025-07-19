@@ -22,6 +22,7 @@ $additionalSpaceForOfficialsAndIRMStatusLegend = 5 + 5;
 
 foreach($PdfData->rankData['sections'] as $section) {
     $currentSectionIndex++;
+    $needContinue = false;
 
     //чтобы не было эксепшнов - проверим что в секции есть элементы
     //дефолтное значение - в командах не бывает меньше двух человек
@@ -53,18 +54,30 @@ foreach($PdfData->rankData['sections'] as $section) {
                     if (!$pdf->SamePage($dataRowSize * 2 + $officialsSize + $IRMLegendSize + $additionalSpaceForOfficialsAndIRMStatusLegend)) {
                         $pdf->AddPage();
                         $NeedTitle = true;
+                        $needContinue = true;
                     }
                 }
             }
 			$NumComponenti = max(1, count($item['athletes']));
-			if(!$pdf->SamePage(4*$NumComponenti )) $NeedTitle=true;
+			if(!$pdf->SamePage(4*$NumComponenti )) {
+                $NeedTitle=true;
+                $needContinue = true;
+            }
 
 			//Valuto Se è necessario il titolo
 			if($NeedTitle) {
 				// Titolo della tabella
 			   	$pdf->SetFont($pdf->FontStd,'B',10);
 				$pdf->Cell(190, 7.5,  $section['meta']['descr'], 1, 1, 'C', 1);
-				// Header vero e proprio
+
+                if($needContinue)
+                {
+                    $pdf->SetXY(170,$pdf->GetY()-7.5);
+                    $pdf->SetFont($pdf->FontStd,'',6);
+                    $pdf->Cell(0, 7.5, $pdf->Continue, 0, 1, 'R', 0);
+                }
+
+                // Header vero e proprio
 			   	$pdf->SetFont($pdf->FontStd,'B',7);
 				$pdf->Cell(10, 5, $section['meta']['fields']['rank'], 1, 0, 'C', 1);
 				$pdf->Cell(55+(15*(7-$NumPhases)), 5, $section['meta']['fields']['countryName'], 1, 0, 'C', 1);
