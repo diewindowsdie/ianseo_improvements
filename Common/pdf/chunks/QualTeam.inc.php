@@ -17,11 +17,17 @@ if (!isset($hideTempHeader)) {
 $pdf->SetFont($pdf->FontStd,'B',$pdf->FontSizeTitle + 2);
 $pdf->Cell(190, 10, get_text("Q-Session", "Tournament"), 0, 1, 'C', 0, '', 1, false, 'T', 'T');
 
+$officialsSize = TournamentOfficials::getOfficialsBlockHeight();
+$legendSize = $legendStatusProvider->getLegendBlockHeight();
+$currentSectionIndex = 0;
+$spaceBetweenSections = 5;
+
 if(count($rankData['sections'])) {
 	$pdf->setDocUpdate($rankData['meta']['lastUpdate']);
 
 	foreach($rankData['sections'] as $section) {
 		$meta=$section['meta'];
+        $currentSectionIndex++;
 
 		if(!$pdf->SamePage(4*count($section['items'][0]['athletes'])+(!empty($meta['printHeader']) ? 30 : 16)+($section['meta']['sesArrows'] ? 8:0)))
 			$pdf->AddPage();
@@ -29,8 +35,24 @@ if(count($rankData['sections'])) {
 		$pdf->writeGroupHeaderPrnTeamAbs($meta, false, $hideTempHeader);
 
 		$endQualified = false;
+        $dataIndex = 0;
 		foreach($section['items'] as $item) {
-			if(!$pdf->SamePage(4*count($item['athletes']))) {
+            $dataIndex++;
+
+            //хотим, чтобы как минимум две строки были на той же странице, что и легенда и подписи ГСК
+            if ($dataIndex + 1 === count($section['items'])) {
+                $spaceNeeded = 2 * (4 * count($item['athletes'])) + $officialsSize + $legendSize +
+                    $spaceBetweenSections + //отступ до подписей
+                    + 5; //отступ до легенды
+                //если две последние строки + легенда + подписи не лезут - разрываем страницу
+                //проверяем только последнюю группу
+                if (!$pdf->SamePage($spaceNeeded) && $currentSectionIndex === count($rankData['sections'])) {
+                    $pdf->AddPage();
+                    $pdf->writeGroupHeaderPrnTeamAbs($meta, true, $hideTempHeader);
+                }
+            }
+
+            if(!$pdf->SamePage(4*count($item['athletes']))) {
 				$pdf->AddPage();
 				$pdf->writeGroupHeaderPrnTeamAbs($meta,true, $hideTempHeader);
 			}

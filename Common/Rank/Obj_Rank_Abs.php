@@ -422,7 +422,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 							'session' => get_text('Session'),
 							'target' => get_text('Target'),
 							'athlete' => get_text('Athlete'),
-                            'birthdate' => get_text('ArcherDoB', 'Service'),
+                            'birthdate' => get_text('DOB', 'Tournament'),
 							'familyname' => get_text('FamilyName', 'Tournament'),
 							'givenname' => get_text('Name', 'Tournament'),
 							'gender' => get_text('Sex', 'Tournament'),

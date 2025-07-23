@@ -38,9 +38,6 @@ if($DataSource) {
 	$DataSource = str_replace(";","\t",$DataSource);
 	$tmpRequest = explode("\n", trim($DataSource));
 
-	$OldTrace=$CFG->TRACE_QUERRIES;
-	$CFG->TRACE_QUERRIES=false;
-
 	// start fetching in an array the entry codes, will be used later
     $OldEntries=array();
     $HasEntries=false;
@@ -1141,8 +1138,6 @@ if($DataSource) {
 	//	safe_w_sql("delete from Qualifications where QuId in (select EnId from Entries where EnAthlete!='1' and EnTournament={$_SESSION['TourId']})");
 
 	MakeIndAbs();
-
-	$CFG->TRACE_QUERRIES=$OldTrace;
 }
 
 $PAGE_TITLE=get_text('ListLoad','Tournament');

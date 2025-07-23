@@ -57,7 +57,7 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 
     $CellHeight=$Cella+($Componenti*$CellaNomi);
 
-	$pdf->SetXY($InitMargin,10+($PaginaUtile-(2*$section['meta']['firstPhase']*$CellHeight))/$section['meta']['firstPhase']/2);
+	$pdf->SetXY($InitMargin,25+($PaginaUtile-(2*$section['meta']['firstPhase']*$CellHeight))/$section['meta']['firstPhase']/2);
 	$pdf->SetFont($pdf->FontStd,'B',12);
 	$pdf->Cell($LarghezzaPagina, $Cella , $section['meta']['eventName'],0,0,'R');
 	if ($section['meta']['printHead']) {
@@ -82,7 +82,7 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 		$CellVSp = ($PaginaUtile-(2*max(1,$Phase)*$CellHeight))/max(1,$Phase);
 
 		// Offset della prima cella
-		$pdf->SetY(10+($CellVSp/2));
+		$pdf->SetY(25+($CellVSp/2));
 
 		// print Phase
 		foreach($Items['items'] as $Match) {

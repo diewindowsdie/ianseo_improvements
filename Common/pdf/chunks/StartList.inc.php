@@ -11,7 +11,7 @@ $TargetFace=(isset($_REQUEST['tf']) && ($_REQUEST['tf']==1 || $_REQUEST["tf"]=='
 $key='';
 
 $pdf->SetFont($pdf->FontStd,'B',12);
-$pdf->Cell(190, 10, get_text('DrawProtocol', 'Service'), 0, 1, 'C', 0);
+$pdf->Cell(190, 10, get_text('DrawResults', 'Tournament'), 0, 1, 'C', 0);
 
 foreach($PdfData->Data['Items'] as $MyRows) {
 	foreach($MyRows as $MyRow) {

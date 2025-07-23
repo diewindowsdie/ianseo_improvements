@@ -10,7 +10,7 @@ $legendStatusProvider = new StatusLegendProvider($pdf);
 
 $FirstPage=true;
 $pdf->SetFont($pdf->FontStd,'B',12);
-$pdf->Cell(190, 10, get_text('FinalStanding', 'Tournament'), 0, 1, 'C', 0, '', 1, false, 'T', 'T');
+$pdf->Cell(190, 10, get_text('FinalRankings', 'Tournament'), 0, 1, 'C', 0, '', 1, false, 'T', 'T');
 
 $currentSectionIndex = 0;
 $spaceBetweenSections = 5;
@@ -43,21 +43,22 @@ foreach ($PdfData->rankData['sections'] as $section) {
 $spaceAvailable = 190 - 8 - 12 - 12 * $maxElimRounds - 15 * $maxNumPhases;
 $athleteNameLength = floor($spaceAvailable * $maxAthleteNameLength / ($maxAthleteNameLength + $maxRegionNameLength));
 
-foreach($PdfData->rankData['sections'] as $section) {
-    $currentSectionIndex++;
-    if ($currentSectionIndex == count($PdfData->rankData['sections'])) {
-        //last group:
-        //check if header message, group header, group, officials information and legend fits on the same page
-        $headerSize = 7.5 + //division and class
-            5; //table header
-        $dataSize = 4 * count($section['items']) + $spaceBetweenSections;
-        $officialsSize = TournamentOfficials::getOfficialsBlockHeight();
-        $IRMLegendSize = $legendStatusProvider->getLegendBlockHeight();
+$officialsSize = TournamentOfficials::getOfficialsBlockHeight();
+$IRMLegendSize = $legendStatusProvider->getLegendBlockHeight();
+$additionalSpaceForOfficialsAndIRMStatusLegend = 5 + 5;
+$headerSize = 7.5 + //division and class
+    5; //table header
+$dataRowSize = 4;
 
-        if (!$pdf->SamePage($headerSize + $dataSize + $officialsSize + $IRMLegendSize)) {
-            $pdf->AddPage();
-            $NeedTitle=true;
-        }
+foreach($PdfData->rankData['sections'] as $section) {
+    $needContinue = false;
+    $currentSectionIndex++;
+
+    $rowsNeedToFit = min(3, count($section['items']));
+    if (!$pdf->SamePage($headerSize + $dataRowSize * $rowsNeedToFit)) {
+        //не помещается хотя бы три строки - начинаем группу с нового листа
+        $pdf->AddPage();
+        $NeedTitle=false;
     }
 
 	$ElimCols=0;
@@ -73,9 +74,25 @@ foreach($PdfData->rankData['sections'] as $section) {
 		$FirstPage=false;
 
 		$NeedTitle=true;
+        $dataIndex = 0;
 		foreach($section['items'] as $item) {
+            $dataIndex++;
+            //что-то делаем только для последней секции
+            if ($currentSectionIndex == count($PdfData->rankData['sections'])) {
+                //если осталось три строки, или же в группе меньше трех строк
+                if ($dataIndex + 2 >= count($section['items'])) {
+                    if (!$pdf->SamePage($dataRowSize * 3 + $officialsSize + $IRMLegendSize + $additionalSpaceForOfficialsAndIRMStatusLegend)) {
+                        $pdf->AddPage(); //надо переносить не всю группу, а гарантировать что последние три строки будут на новом листе, если не лезет целиком
+                        $NeedTitle=true;
+                        $needContinue = true;
+                    }
+                }
+            }
 
-			if(!$pdf->SamePage(5)) $NeedTitle=true;
+			if(!$pdf->SamePage(5)) {
+                $NeedTitle=true;
+                $needContinue = true;
+            }
 
 			//Valuto Se è necessario il titolo
 			if($NeedTitle) {
@@ -83,7 +100,15 @@ foreach($PdfData->rankData['sections'] as $section) {
 				// Titolo della tabella
 			   	$pdf->SetFont($pdf->FontStd,'B',10);
 				$pdf->Cell(190, 7.5, $section['meta']['descr'], 1, 1, 'C', 1);
-				// Header vero e proprio
+
+                if($needContinue)
+                {
+                    $pdf->SetXY(170,$pdf->GetY()-7.5);
+                    $pdf->SetFont($pdf->FontStd,'',6);
+                    $pdf->Cell(0, 7.5, $pdf->Continue, 0, 1, 'R', 0);
+                }
+
+                // Header vero e proprio
 			   	$pdf->SetFont($pdf->FontStd,'B',7);
 				$pdf->Cell(8, 5, $section['meta']['fields']['rank'], 1, 0, 'C', 1);
 				$pdf->Cell($athleteNameLength, 5, $section['meta']['fields']['athlete'], 1, 0, 'C', 1);
@@ -108,6 +133,7 @@ foreach($PdfData->rankData['sections'] as $section) {
 				}
 				$pdf->Cell(0, 5,'',0,1,'C',0);
 				$NeedTitle=false;
+                $needContinue = false;
 			}
 
             $isIRMStatus = !is_numeric($item['rank']);

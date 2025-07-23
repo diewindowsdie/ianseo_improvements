@@ -553,7 +553,7 @@ function get_photo_ianseo($r, $h=0, $side=false, $Extra='', $force=false, $direc
 	return '<img src="'.$CFG->ROOT_DIR.$img.'" '.($h?' height="'.$h.'"':''). ($side ? ' align="left"' : '') . ' '.$Extra.'/>';
 }
 
-function getFullCountryName($countryName, $countryName2=null, $countryName3=null) {
+    function getFullCountryName($countryName, $countryName2=null, $countryName3=null) {
     return $countryName .
         ($countryName2 != '' ? ', ' : '') . $countryName2 .
         ($countryName3 != '' ? ', ' : '') . $countryName3;

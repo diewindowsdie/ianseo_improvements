@@ -10,27 +10,30 @@ $legendStatusProvider = new StatusLegendProvider($pdf);
 $FirstPage=true;
 
 $pdf->SetFont($pdf->FontStd,'B',12);
-$pdf->Cell(190, 10, get_text('FinalStanding', 'Tournament'), 0, 1, 'C', 0);
+$pdf->Cell(190, 10, get_text('FinalRankings', 'Tournament'), 0, 1, 'C', 0);
 
 $currentSectionIndex = 0;
 $spaceBetweenSections = 5;
+$officialsSize = TournamentOfficials::getOfficialsBlockHeight();
+$IRMLegendSize = $legendStatusProvider->getLegendBlockHeight();
+$headerSize = 7.5 + //division and class
+    5; //table header
+$additionalSpaceForOfficialsAndIRMStatusLegend = 5 + 5;
 
 foreach($PdfData->rankData['sections'] as $section) {
     $currentSectionIndex++;
-    if ($currentSectionIndex == count($PdfData->rankData['sections'])) {
-        //last group:
-        //check if header message, group header, group, officials information and legend fits on the same page
-        $headerSize = 7.5 + //division and class
-            5; //table header
+    $needContinue = false;
 
-        $rowHeight = 4 * (count($section["items"]) > 0 ? max(1, count(array_values($section["items"])[0]['athletes'])) : 1);
-        $dataSize = $rowHeight * count($section['items']) + $spaceBetweenSections;
-        $officialsSize = TournamentOfficials::getOfficialsBlockHeight();
-        $IRMLegendSize = $legendStatusProvider->getLegendBlockHeight();
-
-        if (!$pdf->SamePage($headerSize + $dataSize + $officialsSize + $IRMLegendSize)) {
+    //чтобы не было эксепшнов - проверим что в секции есть элементы
+    //дефолтное значение - в командах не бывает меньше двух человек
+    $dataRowSize = 4 * 2 + 0.2;
+    if (array_values($section['items'])[0]) {
+        $dataRowSize = 4 * max(1, count(array_values($section['items'])[0]['athletes'])) + 0.2; //количество спортсменов в первой "строке" секции
+        $rowsNeedToFit = min(2, count($section['items']));
+        if (!$pdf->SamePage($headerSize + $dataRowSize * $rowsNeedToFit)) {
+            //Если на текущую не помещается хотя бы три строки - начинаем группу с нового листа
             $pdf->AddPage();
-            $NeedTitle=true;
+            $NeedTitle=false;
         }
     }
 
@@ -38,19 +41,43 @@ foreach($PdfData->rankData['sections'] as $section) {
 	$NeedTitle=true;
 
 	// Se Esistono righe caricate....
+    $dataIndex = 0;
 	if(count($section['items'])) {
 		$FirstPage=false;
 
 		foreach($section['items'] as $item) {
+            $dataIndex++;
+            //если это последняя секция
+            if ($currentSectionIndex == count($PdfData->rankData['sections'])) {
+                //если осталось две строки, или же в группе меньше двух строк
+                if ($dataIndex + 1 >= count($section['items'])) {
+                    if (!$pdf->SamePage($dataRowSize * 2 + $officialsSize + $IRMLegendSize + $additionalSpaceForOfficialsAndIRMStatusLegend)) {
+                        $pdf->AddPage();
+                        $NeedTitle = true;
+                        $needContinue = true;
+                    }
+                }
+            }
 			$NumComponenti = max(1, count($item['athletes']));
-			if(!$pdf->SamePage(4*$NumComponenti )) $NeedTitle=true;
+			if(!$pdf->SamePage(4*$NumComponenti )) {
+                $NeedTitle=true;
+                $needContinue = true;
+            }
 
 			//Valuto Se è necessario il titolo
 			if($NeedTitle) {
 				// Titolo della tabella
 			   	$pdf->SetFont($pdf->FontStd,'B',10);
 				$pdf->Cell(190, 7.5,  $section['meta']['descr'], 1, 1, 'C', 1);
-				// Header vero e proprio
+
+                if($needContinue)
+                {
+                    $pdf->SetXY(170,$pdf->GetY()-7.5);
+                    $pdf->SetFont($pdf->FontStd,'',6);
+                    $pdf->Cell(0, 7.5, $pdf->Continue, 0, 1, 'R', 0);
+                }
+
+                // Header vero e proprio
 			   	$pdf->SetFont($pdf->FontStd,'B',7);
 				$pdf->Cell(10, 5, $section['meta']['fields']['rank'], 1, 0, 'C', 1);
 				$pdf->Cell(55+(15*(7-$NumPhases)), 5, $section['meta']['fields']['countryName'], 1, 0, 'C', 1);

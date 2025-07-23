@@ -342,7 +342,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 									'gender' => get_text('Sex', 'Tournament'),
 									'div' => get_text('Division'),
 									'class' => get_text('Cl'),
-                                    'birthdate' => get_text('ArcherDoB', 'Service'),
+                                    'birthdate' => get_text('DOB', 'Tournament'),
 									'ageclass' => get_text('AgeCl'),
 									'subclass' => get_text('SubCl','Tournament'),
 									'quscore' => get_text('TotaleScore')
