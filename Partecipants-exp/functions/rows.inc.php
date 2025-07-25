@@ -86,7 +86,7 @@
 			if (safe_num_rows($rs)>0)
 			{
 				while ($row=safe_fetch($rs))
-					$subClasses[$row->ScId]=$row->ScId;
+					$subClasses[$row->ScId]=$row->ScDescription;
 			}
 		}
 		else
