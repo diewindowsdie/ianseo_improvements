@@ -871,6 +871,7 @@ if($DataSource) {
 					, EnDOB=".StrSafe_DB($DoB2Save)."
 					, EnOdfShortname=".StrSafe_DB($TvName)."
 					, EnClassified=".intval($Para2Save)."
+					, EnTimestamp='".date('Y-m-d H:i:s')."'
 					";
 
 			if($TeamUpdate) {

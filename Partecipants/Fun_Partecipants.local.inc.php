@@ -263,12 +263,13 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 	if (!$AllTargets)
 	{
 		$Select
-			= "SELECT e.*,IF(EnDob!='0000-00-00',EnDob,'0000-00-00') AS Dob,c.CoCode,c.CoName,c2.CoCode AS CoCode2,c2.CoName AS CoName2,  c3.CoCode AS CoCode3,c3.CoName AS CoName3,"
+			= "SELECT e.*,sc.ScDescription,IF(EnDob!='0000-00-00',EnDob,'0000-00-00') AS Dob,c.CoCode,c.CoName,c2.CoCode AS CoCode2,c2.CoName AS CoName2,  c3.CoCode AS CoCode3,c3.CoName AS CoName3,"
 			. "q.QuSession AS `Session`,SUBSTRING(q.QuTargetNo,2) AS TargetNo,ToWhenFrom,TfName, "
 			. "eextra.EdEmail, zextra.EdExtra locBib, cextra.EdExtra EnCaption "
 			. "FROM Entries AS e LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament "
 			. "LEFT JOIN Countries AS c2 ON e.EnCountry2=c2.CoId AND e.EnTournament=c2.CoTournament "
 			. "LEFT JOIN Countries AS c3 ON e.EnCountry3=c3.CoId AND e.EnTournament=c3.CoTournament "
+            . "LEFT JOIN SubClass AS sc ON e.EnSubClass=sc.ScId AND e.EnTournament=sc.ScTournament "
 			. "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId "
 			. "LEFT JOIN ExtraData eextra ON eextra.EdType='E' and eextra.EdId=EnId "
 			. "LEFT JOIN ExtraData zextra ON zextra.EdType='Z' and zextra.EdId=EnId "
@@ -286,7 +287,7 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 				. "EnCountry,EnSubTeam,EnCountry2,EnCountry3,EnCtrlCode,Dob,"
 				. "EnCode,EnName,EnFirstName,EnMiddleName,EnBadgePrinted,EnAthlete,"
 				. "EnSex,EnWChair,EnSitting,EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,EnTeamMixEvent,"
-				. "EnDoubleSpace,EnPays,EnStatus,EnTargetFace,EnTimestamp,EnOdfShortname,TfName, "
+				. "EnDoubleSpace,EnPays,EnStatus,EnTargetFace,EnTimestamp,EnOdfShortname,ScDescription,TfName, "
 				. "CoCode,CoName,CoCode2,CoName2,CoCode3,CoName3,"
 				. "SUBSTRING(AtTargetNo,1,1) AS `Session`,SUBSTRING(AtTargetNo,2) AS TargetNo,ToWhenFrom, EdEmail, EdExtra locBib, EnCaption "
 			. "FROM "
@@ -296,11 +297,12 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 						. "EnCountry,EnSubTeam,EnCountry2,EnCountry3,EnCtrlCode,IF(EnDob!='0000-00-00',EnDob,'0000-00-00') AS Dob,"
 						. "EnCode,EnName,EnFirstName,EnMiddleName,EnBadgePrinted,EnAthlete,"
 						. "EnSex,EnWChair,EnSitting,EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,EnTeamMixEvent,"
-						. "EnDoubleSpace,EnPays,EnStatus,EnTargetFace,EnTimestamp,EnOdfShortname,TfName, "
+						. "EnDoubleSpace,EnPays,EnStatus,EnTargetFace,EnTimestamp,EnOdfShortname,sc.ScDescription,TfName, "
 						. "c.CoCode AS CoCode,c.CoName AS CoName,c2.CoCode AS CoCode2,c2.CoName AS CoName2,c3.CoCode AS CoCode3,c3.CoName AS CoName3, q.QuSession AS `Session`,SUBSTRING(q.QuTargetNo,2) AS TargetNo,q.QuTargetNo AS QuTargetNo,ToWhenFrom "
 					. "FROM Entries AS e LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament "
 						. "LEFT JOIN Countries AS c2 ON e.EnCountry2=c2.CoId AND e.EnTournament=c2.CoTournament "
 						. "LEFT JOIN Countries AS c3 ON e.EnCountry3=c3.CoId AND e.EnTournament=c3.CoTournament "
+                        . "LEFT JOIN SubClass AS sc ON e.EnSubClass=sc.ScId AND e.EnTournament=sc.ScTournament "
 						. "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId "
 						. "LEFT JOIN ExtraData eextra ON eextra.EdType='E' and eextra.EdId=EnId "
 						. "LEFT JOIN ExtraData zextra ON zextra.EdType='Z' and zextra.EdId=EnId "
@@ -320,7 +322,7 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 				. "EnCountry,EnSubTeam,EnCountry2,EnCountry3,EnCtrlCode,IF(EnDob!='0000-00-00',EnDob,'0000-00-00') AS Dob,"
 				. "EnCode,EnName,EnFirstName,EnMiddleName,EnBadgePrinted,EnAthlete,"
 				. "EnSex,EnWChair,EnSitting,EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,EnTeamMixEvent,"
-				. "EnDoubleSpace,EnPays,EnStatus,EnTargetFace,EnTimestamp,EnOdfShortname,TfName, "
+				. "EnDoubleSpace,EnPays,EnStatus,EnTargetFace,EnTimestamp,EnOdfShortname,sc.ScDescription,TfName, "
 				. "c.CoCode AS CoCode,c.CoName AS CoName,c2.CoCode AS CoCode2,c2.CoName AS CoName2,c3.CoCode AS CoCode3,c3.CoName AS CoName3,"
 				. "q.QuSession AS `Session`,SUBSTRING(q.QuTargetNo,2) AS TargetNo,ToWhenFrom,eextra.EdEmail, zextra.EdExtra locBib, cextra.EdExtra EnCaption "
 
@@ -329,6 +331,7 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 				. "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId "
 				. "LEFT JOIN Countries AS c2 ON EnCountry2=c2.CoId AND EnTournament=c2.CoTournament "
 				. "LEFT JOIN Countries AS c3 ON EnCountry3=c3.CoId AND EnTournament=c3.CoTournament "
+                . "LEFT JOIN SubClass AS sc ON EnSubClass=sc.ScId AND EnTournament=sc.ScTournament "
 				. "LEFT JOIN ExtraData eextra ON eextra.EdType='E' and eextra.EdId=EnId "
 				. "LEFT JOIN ExtraData zextra ON zextra.EdType='Z' and zextra.EdId=EnId "
 				. "LEFT JOIN ExtraData cextra ON cextra.EdType='C' and cextra.EdId=EnId "
@@ -392,6 +395,7 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 				'class' => $MyRow->EnClass,
 				'ageclass' => $MyRow->EnAgeClass,
 				'subclass' => $MyRow->EnSubClass,
+                'subclass_description' => $MyRow->ScDescription,
 				'targetface' => $MyRow->EnTargetFace,
 				'targetface_name' => $MyRow->TfName,
 				'indcl'=>$MyRow->EnIndClEvent,

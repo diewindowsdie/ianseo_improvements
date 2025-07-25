@@ -272,7 +272,7 @@ echo '<td width="20%" class="Center">
 			<div>'.get_text('SortBy').'&nbsp;&nbsp;&nbsp;
 			<select name="MainOrder">
 				<option value="0">'.get_text('CountryCode').'</option>
-				<option value="1">'.get_text('Nation').'</option>
+				<option value="1" selected="selected">'.get_text('Nation').'</option>
 			</select></div>
 			<div>'.get_text('Country').'&nbsp;2&nbsp;&nbsp;&nbsp;<input name="includeRegion2" type="checkbox"></div>
 			<div>'.get_text('Country').'&nbsp;3&nbsp;&nbsp;&nbsp;<input name="includeRegion3" type="checkbox"></div>
