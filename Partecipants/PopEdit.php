@@ -555,7 +555,7 @@
 	$comboSubCl=ComboFromRs(
 		safe_r_sql("
 			SELECT
-				ScId
+				ScId, ScDescription
 			FROM
 				SubClass
 			WHERE
@@ -564,7 +564,7 @@
 				ScViewOrder ASC
 		"),
 		'ScId',
-		'ScId',
+		'ScDescription',
 		0,
 		null,
 		array('','--'),
@@ -575,7 +575,7 @@
 	$comboFindSubCl=ComboFromRs(
 		safe_r_sql("
 			SELECT
-				ScId
+				ScId, ScDescription
 			FROM
 				SubClass
 			WHERE
@@ -584,7 +584,7 @@
 				ScViewOrder ASC
 		"),
 		'ScId',
-		'ScId',
+		'ScDescription',
 		0,
 		(!empty($_REQUEST['findSubCl']) ? $_REQUEST['findSubCl'] : ''),
 		array('','--'),

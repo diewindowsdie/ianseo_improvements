@@ -27,8 +27,13 @@ var RowNodes = {
 // var activeField='';
 // var activeWhat='';
 
+function resetSubclassCell(Cell, what, oldValue, select) {
+    var selectedOption = $(select).find(":selected");
+    $(Cell).html(selectedOption.text());
+    $(Cell).on('click', function(){ insertInput(this, what, selectedOption.val()); });
+}
 
-function insertInput(cell, what){
+function insertInput(cell, what, oldValue = $(cell).html()){
 	var url='';
 
 	// if(rowId) resetCell();
@@ -37,9 +42,11 @@ function insertInput(cell, what){
 	var tmp=rowId.split('_');
 	var enId=tmp[2];
 
+    var resetCallback = resetCell;
 	switch(what) {
         case 'subclass':
             url='Get-Subclasses.php';
+            resetCallback = resetSubclassCell;
             break;
         case 'division':
             url='Get-Divisions.php';
@@ -55,7 +62,7 @@ function insertInput(cell, what){
 	}
 
 	if(url>'') { // only combos have to get the correct data!
-		createComboField(cell, what, url);
+		createComboField(cell, what, url, oldValue, resetCallback);
 	} else {
 		createTextField(cell, what);
 	}
@@ -67,12 +74,11 @@ function createTextField(cell, what) {
     $(cell).off('click');
     $(cell).attr('onclick', null);
 
-    $(cell).html('<input type="text" onblur="updateField(this)" value="'+$(cell).attr('oldvalue')+'">');
+    $(cell).html('<input type="text" onblur="updateField(this, resetCell)" value="'+$(cell).attr('oldvalue')+'">');
     $(cell).find('input')[0].focus();
 }
 
-function createComboField(cell, what, url) {
-    var oldValue=$(cell).html();
+function createComboField(cell, what, url, oldValue, resetCallback) {
     $(cell).attr('oldvalue', oldValue);
     $(cell).attr('what', what);
     $(cell).off('click');
@@ -128,7 +134,7 @@ function createComboField(cell, what, url) {
                 }
             }
 
-            $(activeField).on('blur', function() { updateField(this); });
+            $(activeField).on('blur', function() { updateField(this, resetCallback); });
 
             $(cell).empty();
             $(cell).append(activeField);
@@ -137,13 +143,13 @@ function createComboField(cell, what, url) {
     });
 }
 
-function updateField(obj) {
+function updateField(obj, resetCallback) {
     var Cell=$(obj).closest('td');
     var oldValue=Cell.attr('oldvalue');
     var what=Cell.attr('what');
 
 	if($(obj).val() == oldValue) {
-		resetCell(Cell, what, oldValue);
+        resetCallback(Cell, what, oldValue, obj);
 		return;
 	}
 
@@ -186,7 +192,7 @@ function updateField(obj) {
 
         if(Error==1) obj.style.backgroundColor='yellow';
         else obj.style.backgroundColor='';
-        resetCell(Cell, what, Value);
+        resetCallback(Cell, what, Value, obj);
     });
 }
 
@@ -195,7 +201,7 @@ function setError(Cell) {
 	resetCell();
 }
 
-function resetCell(Cell, what, Value) {
+function resetCell(Cell, what, Value, obj) {
     $(Cell).html(Value);
     $(Cell).on('click', function(){ insertInput(this, what);});
     switch(what) {

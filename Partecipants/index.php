@@ -348,7 +348,7 @@ if (count($Rows)>0) {
 		echo '<td onclick="insertInput(this,\'division\')">'.$r['division'].'</td>';
 		echo '<td onclick="insertInput(this,\'ageclass\')">'.$r['ageclass'].'</td>';
 		echo '<td onclick="insertInput(this,\'class\')">'.$r['class'].'</td>';
-		echo '<td onclick="insertInput(this,\'subclass\')">'.$r['subclass'].'</td>';
+		echo '<td onclick="insertInput(this,\'subclass\',\'' . $r["subclass"] . '\')">'.$r['subclass_description'].'</td>';
 		echo '<td>'.get_text($r['targetface_name'], 'Tournament', '', true).'</td>';
 		echo '<td class="Center">'.($r['id']!==null?'<img src="'.$CFG->ROOT_DIR.'Common/Images/drop.png" onclick="deleteRow('.$r['id'] . ',\''.$OrderCrit.'\',\''.$OrderDir.'\');"/>':'').'</td>';
 		echo '</tr>';
