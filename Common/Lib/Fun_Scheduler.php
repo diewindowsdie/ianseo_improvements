@@ -4631,18 +4631,21 @@ Class Scheduler {
 							$pdf->Rect($colX, $Y, $TgtWidth, $ArcTgtHeight, "DF");
 							$pdf->SetFillColor(127);
                             $targetsPerFace = $Range->ArcTarget != 3 ? $Range->ArcTarget : 2;
+                            if (str_contains($Range->Target, '122')) {
+                                $targetsPerFace = 1;
+                            }
                             $larCell=$TgtWidth/($targetsPerFace + 1) - 0.05 * $targetsPerFace;
                             $dividerWidth = ($TgtWidth - $larCell * $targetsPerFace) / ($targetsPerFace + 1);
-							if($Range->ArcTarget & 4) {
+							if($targetsPerFace == 4) {
 								$pdf->Rect($colX + 1*$dividerWidth + 0*$larCell, $Y + 0.5, $larCell, 1, "DF");
 								$pdf->Rect($colX + 2*$dividerWidth + 1*$larCell, $Y + 0.5, $larCell, 1, "DF");
 								$pdf->Rect($colX + 3*$dividerWidth + 2*$larCell, $Y + 0.5, $larCell, 1, "DF");
 								$pdf->Rect($colX + 4*$dividerWidth + 3*$larCell, $Y + 0.5, $larCell, 1, "DF");
 							} else {
-								if($Range->ArcTarget & 1) {
+								if($targetsPerFace == 1) {
 									$pdf->Rect($colX + 1*$dividerWidth + 0*$larCell, $Y + 0.5, $larCell, 1, "DF");
 								}
-								if($Range->ArcTarget & 2) {
+								if($targetsPerFace == 2)  {
 									$pdf->Rect($colX + 1*$dividerWidth + 0*$larCell, $Y + 0.5, $larCell, 1, "DF");
 									$pdf->Rect($colX + 2*$dividerWidth + 1*$larCell, $Y + 0.5, $larCell, 1, "DF");
 								}
