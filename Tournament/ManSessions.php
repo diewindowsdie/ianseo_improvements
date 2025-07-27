@@ -221,7 +221,7 @@ $sessions=array();
 
 foreach ($sessionsTypes as $k=> $v) {
     $sessions[$v]=array();
-1    $q="
+    $q="
         SELECT *,
         date_format(SesDtStart, '". get_text('DateFmtDB') . ' ' . get_text('TimeFmt') . "') as SesDtStartFormatted,
         date_format(SesDtEnd, '". get_text('DateFmtDB') . ' ' . get_text('TimeFmt') . "') as SesDtEndFormatted

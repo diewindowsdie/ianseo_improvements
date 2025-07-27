@@ -598,7 +598,6 @@ Class Scheduler {
 				inner join Tournament on ToId=SesTournament
 				where SesTournament=$this->TourId
 					and SesName!=''
-				    and SesType='F'
 					and SesDtStart>0
 					".($this->SingleDay ? " and date(SesDtStart)='$this->SingleDay'" : '')."
 					".($this->FromDay ? " and date(SesDtStart)>='$this->FromDay'" : '')."
