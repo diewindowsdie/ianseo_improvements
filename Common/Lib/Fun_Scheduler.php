@@ -1462,6 +1462,7 @@ Class Scheduler {
 
 
 		foreach($this->GetSchedule() as $Date => $Times) {
+            ksort($Times);
 			if(!$Start) {
 				if($this->DayByDay or in_array($Date, $this->PageBreaks) or !$pdf->SamePage(5, $CellHeight, '', false)) {
 					$pdf->AddPage();
@@ -1470,7 +1471,30 @@ Class Scheduler {
 				}
 			}
 			$Start=false;
-
+            //проверим, что на текущую страницу лезет хотя бы два элемента, у которых есть время начала или общая продолжительность
+            $totalSpaceRequired =
+                $CellHeight + //день
+                0.1 + //отступ до сессии
+                $CellHeight + 3; //в худшем сценарии - заголовок сессии на сером фоне
+            $itemsCount = 0;
+            foreach($Times as $Time => $Sessions) {
+                foreach ($Sessions as $Session => $Distances) {
+                    foreach($Distances as $Distance => $Items) {
+                        foreach ($Items as $k => $Item) {
+                            if ($itemsCount >= 3) {
+                                break;
+                            }
+                            if ($Item->Title && ($Item->Start || $Item->Duration)) {
+                                $totalSpaceRequired += $CellHeight;
+                                $itemsCount++;
+                            }
+                        }
+                    }
+                    if(!$pdf->SamePage($totalSpaceRequired)) {
+                        $pdf->AddPage();
+                    }
+                }
+            }
 
 			// DAY
 			$pdf->SetFont($pdf->FontStd,'B',8*$FontAdjust);
@@ -1487,7 +1511,6 @@ Class Scheduler {
 			$FirstTitle=true;
 
 			$OldComment='';
-			ksort($Times);
 			foreach($Times as $Time => $Sessions) {
 				$Singles=array();
 				foreach($Sessions as $Session => $Distances) {
