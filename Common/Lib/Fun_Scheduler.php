@@ -1462,6 +1462,7 @@ Class Scheduler {
 
 
 		foreach($this->GetSchedule() as $Date => $Times) {
+            ksort($Times);
 			if(!$Start) {
 				if($this->DayByDay or in_array($Date, $this->PageBreaks) or !$pdf->SamePage(5, $CellHeight, '', false)) {
 					$pdf->AddPage();
@@ -1470,7 +1471,30 @@ Class Scheduler {
 				}
 			}
 			$Start=false;
-
+            //проверим, что на текущую страницу лезет хотя бы два элемента, у которых есть время начала или общая продолжительность
+            $totalSpaceRequired =
+                $CellHeight + //день
+                0.1 + //отступ до сессии
+                $CellHeight + 3; //в худшем сценарии - заголовок сессии на сером фоне
+            $itemsCount = 0;
+            foreach($Times as $Time => $Sessions) {
+                foreach ($Sessions as $Session => $Distances) {
+                    foreach($Distances as $Distance => $Items) {
+                        foreach ($Items as $k => $Item) {
+                            if ($itemsCount >= 3) {
+                                break;
+                            }
+                            if ($Item->Title && ($Item->Start || $Item->Duration)) {
+                                $totalSpaceRequired += $CellHeight;
+                                $itemsCount++;
+                            }
+                        }
+                    }
+                    if(!$pdf->SamePage($totalSpaceRequired)) {
+                        $pdf->AddPage();
+                    }
+                }
+            }
 
 			// DAY
 			$pdf->SetFont($pdf->FontStd,'B',8*$FontAdjust);
@@ -1487,7 +1511,6 @@ Class Scheduler {
 			$FirstTitle=true;
 
 			$OldComment='';
-			ksort($Times);
 			foreach($Times as $Time => $Sessions) {
 				$Singles=array();
 				foreach($Sessions as $Session => $Distances) {
@@ -4608,18 +4631,21 @@ Class Scheduler {
 							$pdf->Rect($colX, $Y, $TgtWidth, $ArcTgtHeight, "DF");
 							$pdf->SetFillColor(127);
                             $targetsPerFace = $Range->ArcTarget != 3 ? $Range->ArcTarget : 2;
+                            if (str_contains($Range->Target, '122')) {
+                                $targetsPerFace = 1;
+                            }
                             $larCell=$TgtWidth/($targetsPerFace + 1) - 0.05 * $targetsPerFace;
                             $dividerWidth = ($TgtWidth - $larCell * $targetsPerFace) / ($targetsPerFace + 1);
-							if($Range->ArcTarget & 4) {
+							if($targetsPerFace == 4) {
 								$pdf->Rect($colX + 1*$dividerWidth + 0*$larCell, $Y + 0.5, $larCell, 1, "DF");
 								$pdf->Rect($colX + 2*$dividerWidth + 1*$larCell, $Y + 0.5, $larCell, 1, "DF");
 								$pdf->Rect($colX + 3*$dividerWidth + 2*$larCell, $Y + 0.5, $larCell, 1, "DF");
 								$pdf->Rect($colX + 4*$dividerWidth + 3*$larCell, $Y + 0.5, $larCell, 1, "DF");
 							} else {
-								if($Range->ArcTarget & 1) {
+								if($targetsPerFace == 1) {
 									$pdf->Rect($colX + 1*$dividerWidth + 0*$larCell, $Y + 0.5, $larCell, 1, "DF");
 								}
-								if($Range->ArcTarget & 2) {
+								if($targetsPerFace == 2)  {
 									$pdf->Rect($colX + 1*$dividerWidth + 0*$larCell, $Y + 0.5, $larCell, 1, "DF");
 									$pdf->Rect($colX + 2*$dividerWidth + 1*$larCell, $Y + 0.5, $larCell, 1, "DF");
 								}

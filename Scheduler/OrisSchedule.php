@@ -31,6 +31,7 @@ $Sql = "SELECT CONCAT(FsEvent, '|', FsTeamEvent, '|', FsMatchNo) as SesKey,
 	left join Session on SesTournament=FsTournament and (CONCAT(FsScheduledDate, ' ', FsScheduledTime) >= SesDtStart AND CONCAT(FsScheduledDate, ' ', FsScheduledTime) < SesDtEnd)
 	WHERE FsTournament=".$_SESSION['TourId'] ." AND (FsMatchNo%2=0)".(empty($_REQUEST['OnlyMedals']) ? '' : ($_REQUEST['OnlyMedals']==1 ? ' and FsMatchno in (0,2) ' : ' and FsMatchno = 0 ' )).($Date ? " AND FsScheduledDate='$Date'" : '')." and FSScheduledDate>0
 	ORDER BY FsScheduledDate, FsScheduledTime, FsOdfMatchName";
+
 $q=safe_r_SQL($Sql);
 $SessionMatches = array();
 while($r=safe_fetch($q)) {
@@ -123,6 +124,7 @@ foreach($SessionMatches as $vSes => $items) {
                 $sesInDay++;
                 $sesCnt++;
                 $pdf->Line(IanseoPdf::sideMargin, $y1 = $pdf->GetY(), IanseoPdf::sideMargin + 30, $y1);
+
             } else {
                 $evInSession++;
             }
@@ -175,8 +177,8 @@ foreach($SessionMatches as $vSes => $items) {
             }
             $lastSes = $vSes;
         }
-        $pdf->Line($pdf->GetX(), $pdf->GetY(), $pdf->GetX()+30, $pdf->GetY());
 	}
+    $pdf->Line($pdf->GetX(), $pdf->GetY(), $pdf->GetX()+30, $pdf->GetY());
 }
 
 $pdf->Output();
