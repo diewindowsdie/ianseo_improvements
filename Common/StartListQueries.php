@@ -671,15 +671,15 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 	$Emails=isset($_REQUEST['Emails']);
 
 	$TmpWhere="";
-	if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z]*$/i",str_replace(" ","",$_REQUEST["CountryName"])))
+	if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z_]*$/i",str_replace(" ","",$_REQUEST["CountryName"])))
 	{
 		foreach(explode(",",$_REQUEST["CountryName"]) as $Value)
 		{
 			$Tmp=NULL;
-			if(preg_match("/^([A-Z0-9]*)-([A-Z0-9]*)$/i",str_replace(" ","",$Value),$Tmp))
-				$TmpWhere .= "(CoCode >= " . StrSafe_DB(stripslashes($Tmp[1]) ) . " AND CoCode <= " . StrSafe_DB(stripslashes($Tmp[2].chr(255))) . ") OR ";
+			if(preg_match("/^([A-Z0-9_]*)-([A-Z0-9_]*)$/i",str_replace(" ","",$Value),$Tmp))
+				$TmpWhere .= "(CoCode >= " . StrSafe_DB(stripslashes($Tmp[1]) ) . " AND CoCode <= " . StrSafe_DB(stripslashes($Tmp[2])) . ") OR ";
 			else
-				$TmpWhere .= "CoCode LIKE " . StrSafe_DB(stripslashes(trim($Value)) . "%") . " OR ";
+				$TmpWhere .= "CoCode LIKE " .  StrSafe_DB("%" . stripslashes(trim($Value)) . "%") . " OR ";
 		}
 		$TmpWhere = substr($TmpWhere,0,-3);
 	}
