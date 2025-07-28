@@ -128,7 +128,7 @@ function getStatEntriesByCountriesQuery($ORIS=false, $Athletes=false, $countryIn
 			LEFT JOIN DocumentVersions on EnTournament=DvTournament AND DvFile = 'EN'
 			WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . "
 			GROUP BY CoCode
-			ORDER BY CoCode ";
+			ORDER BY NationName ";
 	}
 	return $Sql;
 }
