@@ -775,7 +775,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
 			. ", GROUP_CONCAT(RankRanking) as Ranking"
 			. ", IF(EnCountry2=0,0,1) as secTeam "
-			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, EnDob ";
+			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as EnDob ";
 		$MyQuery .= "FROM Entries AS e ";
 		$MyQuery .= "inner JOIN Tournament ON ToId=EnTournament ";
 		$MyQuery .= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
@@ -845,7 +845,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
 			. ", GROUP_CONCAT(RankRanking) as Ranking"
 			. ", 2 as secTeam "
-			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, EnDob ";
+			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as EnDob ";
 		$MyQuery .= "FROM Entries AS e ";
 		$MyQuery .= "inner JOIN Tournament ON ToId=EnTournament ";
 		$MyQuery .= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
@@ -917,7 +917,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
 			. ", GROUP_CONCAT(RankRanking) as Ranking"
 			. ", 3 as secTeam "
-			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, EnDob ";
+			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as EnDob ";
 		$MyQuery .= "FROM Entries AS e ";
 		$MyQuery .= "inner JOIN Tournament ON ToId=EnTournament ";
 		$MyQuery .= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
