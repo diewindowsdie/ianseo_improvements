@@ -129,8 +129,8 @@
 		 *  Tiro fuori le qualifiche, le posizioni finali e le eliminatorie (se ci sono)
 		 */
 			$q="SELECT EnId,EnCode, EnSex, EnNameOrder, upper(EnIocCode) EnIocCode, EnName AS Name, EnFirstName AS FirstName, upper(EnFirstName) AS FirstNameUpper, co.CoId, co.CoCode, co.CoName, if(co.CoNameComplete>'', co.CoNameComplete, co.CoName) as CoNameComplete,
-                    if(co2.CoNameComplete > '', co2.CoNameComplete, co2.CoName) as Co2NameComplete,
-                    if(co3.CoNameComplete > '', co3.CoNameComplete, co3.CoName) as Co3NameComplete,
+                    co2.CoNameComplete as Co2NameComplete,
+                    co3.CoNameComplete as Co3NameComplete,
 					EvCode,concat(divs.DivDescription, ' ', cl.ClDescription) as EvEventName,EvProgr,EvElimType, ifnull(EdExtra, EnCode) as LocalBib, EnDob, coalesce(StopPhase, 0) as StopPhase,
 					EvFinalPrintHead as PrintHeader, co.CoMaCode, co.CoCaCode,
 					EvFinalFirstPhase,	EvNumQualified, EvFirstQualified, EvElim1, 	EvElim2,EvMatchMode, EvMedals, EvCodeParent, 

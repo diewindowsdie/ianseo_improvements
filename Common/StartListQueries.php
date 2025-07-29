@@ -128,7 +128,7 @@ function getStatEntriesByCountriesQuery($ORIS=false, $Athletes=false, $countryIn
 			LEFT JOIN DocumentVersions on EnTournament=DvTournament AND DvFile = 'EN'
 			WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . "
 			GROUP BY CoCode
-			ORDER BY CoCode ";
+			ORDER BY NationName ";
 	}
 	return $Sql;
 }
@@ -671,15 +671,15 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 	$Emails=isset($_REQUEST['Emails']);
 
 	$TmpWhere="";
-	if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z]*$/i",str_replace(" ","",$_REQUEST["CountryName"])))
+	if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z_]*$/i",str_replace(" ","",$_REQUEST["CountryName"])))
 	{
 		foreach(explode(",",$_REQUEST["CountryName"]) as $Value)
 		{
 			$Tmp=NULL;
-			if(preg_match("/^([A-Z0-9]*)-([A-Z0-9]*)$/i",str_replace(" ","",$Value),$Tmp))
-				$TmpWhere .= "(CoCode >= " . StrSafe_DB(stripslashes($Tmp[1]) ) . " AND CoCode <= " . StrSafe_DB(stripslashes($Tmp[2].chr(255))) . ") OR ";
+			if(preg_match("/^([A-Z0-9_]*)-([A-Z0-9_]*)$/i",str_replace(" ","",$Value),$Tmp))
+				$TmpWhere .= "(CoCode >= " . StrSafe_DB(stripslashes($Tmp[1]) ) . " AND CoCode <= " . StrSafe_DB(stripslashes($Tmp[2])) . ") OR ";
 			else
-				$TmpWhere .= "CoCode LIKE " . StrSafe_DB(stripslashes(trim($Value)) . "%") . " OR ";
+				$TmpWhere .= "CoCode LIKE " .  StrSafe_DB("%" . stripslashes(trim($Value)) . "%") . " OR ";
 		}
 		$TmpWhere = substr($TmpWhere,0,-3);
 	}
@@ -775,7 +775,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
 			. ", GROUP_CONCAT(RankRanking) as Ranking"
 			. ", IF(EnCountry2=0,0,1) as secTeam "
-			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, EnDob ";
+			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as EnDob ";
 		$MyQuery .= "FROM Entries AS e ";
 		$MyQuery .= "inner JOIN Tournament ON ToId=EnTournament ";
 		$MyQuery .= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
@@ -845,7 +845,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
 			. ", GROUP_CONCAT(RankRanking) as Ranking"
 			. ", 2 as secTeam "
-			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, EnDob ";
+			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as EnDob ";
 		$MyQuery .= "FROM Entries AS e ";
 		$MyQuery .= "inner JOIN Tournament ON ToId=EnTournament ";
 		$MyQuery .= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
@@ -917,7 +917,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
 			. ", GROUP_CONCAT(RankRanking) as Ranking"
 			. ", 3 as secTeam "
-			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, EnDob ";
+			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as EnDob ";
 		$MyQuery .= "FROM Entries AS e ";
 		$MyQuery .= "inner JOIN Tournament ON ToId=EnTournament ";
 		$MyQuery .= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
