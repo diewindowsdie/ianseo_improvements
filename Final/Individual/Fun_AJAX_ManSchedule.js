@@ -80,7 +80,6 @@ function WriteSchedule_Response()
 	if (Error==0)
 	{
 		SetStyle(Which,'');
-		document.getElementById(Which).value=XMLRoot.getElementsByTagName('value').item(0).firstChild.data;
 
 	}
 	else
