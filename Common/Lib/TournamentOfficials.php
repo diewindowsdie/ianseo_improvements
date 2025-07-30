@@ -37,6 +37,7 @@ class TournamentOfficials
             return;
         }
 
+        $pdf->SetY($pdf->GetY() + 5);
         $pdf->SetXY(self::$horizontalMargin,$pdf->GetY());
         if(!$pdf->SamePage(self::$judgeRoleCellHeight + self::$judgeSignatureCellHeight + self::$judgeNameCellHeight)) {
             $pdf->AddPage();

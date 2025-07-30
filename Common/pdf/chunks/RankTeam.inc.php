@@ -179,6 +179,7 @@ foreach($PdfData->rankData['sections'] as $section) {
     }
 }
 
-TournamentOfficials::printOfficials($pdf);
+//один раз отодвинем назад, потому что отступ логика подписей добавляет сама
+$pdf->SetY($pdf->GetY() - $spaceBetweenSections);
 $legendStatusProvider->printLegend();
 ?>

@@ -158,6 +158,11 @@ if (isset($_REQUEST['Command'])) {
                     $Rs=safe_w_sql($Insert);
                     $RowId = safe_w_last_id();
                     set_qual_session_flags();
+                    if ($_REQUEST["d_HideNormatives"]) {
+                        setModuleParameter("Tournament", "HideNormatives", true, $_SESSION['TourId']);
+                    } else {
+                        delModuleParameter("Tournament", "HideNormatives", $_SESSION['TourId']);
+                    }
                     $_SESSION['ISORIS']=!empty($_REQUEST['d_ORIS']);
                     // need those in the class creation engine!
                     $_SESSION['TourRealWhenFrom']=sprintf("%04d-%02d-%02d", intval($_REQUEST['xx_ToWhenFromYear']), intval($_REQUEST['xx_ToWhenFromMonth']), intval($_REQUEST['xx_ToWhenFromDay']));
@@ -738,7 +743,7 @@ if(file_exists($CFG->DOCUMENT_PATH.'Api/index.php')) {
             </tr>';
 
 ?><tr>
-<th class="TitleLeft w-15"><?php print get_text('AddSubclasses','Tournament');?></th>
+<th class="TitleLeft w-15" rowspan="2"><?php print get_text('AddSubclasses','Tournament');?></th>
 <td>
 <input type="checkbox" id="createSubClasses" name="createSubClasses" value="1" onchange="subclassesCheckboxChanged()"/>
     <label for="createSubClasses">Создать коды и названия разрядов</label>
@@ -747,6 +752,19 @@ if(file_exists($CFG->DOCUMENT_PATH.'Api/index.php')) {
         <option id="LetterCodes" value="LetterCodes">Буквенные идентификаторы (NO, 3J, 2J, 1J, 3, 2, 1, C, M, MM, Z)</option>
     </select>
 </td></tr>
+        <tr>
+            <td>
+                <input type="checkbox" id="hideNormatives" name="d_HideNormatives" value="1" <?php
+                if (!$MyRow) {
+                    print array_key_exists('d_HideNormatives',$_REQUEST) ? ("checked=\"checked\"") : '';
+                } else {
+                    if (getModuleParameter("Tournament", "HideNormatives", false, $MyRow->ToId)) {
+                        print "checked=\"checked\"";
+                    }
+                } ?>/>
+                <label for="hideNormatives">Скрыть имеющиеся и выполненные разряды в протоколе</label>
+            </td>
+        </tr>
 
 <?php
 

@@ -80,6 +80,5 @@ foreach($PdfData->rankData['events'] as $Event => $section) {
 	}
 }
 
-$pdf->SetY($pdf->GetY()+5);
 TournamentOfficials::printOfficials($pdf);
 ?>
