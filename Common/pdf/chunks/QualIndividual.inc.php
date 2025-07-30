@@ -45,7 +45,7 @@ if(count($rankData['sections'])) {
         //Verifico se l'header e qualche riga ci stanno nella stessa pagina altrimenti salto alla prosisma
         if(!$pdf->SamePage(15+(strlen($section['meta']['printHeader']) ? 8:0)+($section['meta']['sesArrows'] ? 8:0)))
             $pdf->AddPage();
-		$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], false, $hideTempHeader);
+		$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], false, $hideTempHeader, $rankData["meta"]["hideNormatives"]);
 		$EndQualified = ($section['meta']['qualifiedNo']==0);
         $StartQualified = ($section['meta']['firstQualified']==1);
         $dataIndex = 0;
@@ -60,7 +60,7 @@ if(count($rankData['sections'])) {
                 //проверяем только последнюю группу
                 if (!$pdf->SamePage($spaceNeeded) && $currentSectionIndex == count($rankData['sections'])) {
                     $pdf->AddPage();
-                    $pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, $hideTempHeader);
+                    $pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, $hideTempHeader, $rankData["meta"]["hideNormatives"]);
                 }
             }
 		    if(!$StartQualified AND ($section['meta']['finished'] ? $item['rank']: $item['rankBeforeSO']+$item['ct'])>=$section['meta']['firstQualified']) {
@@ -68,7 +68,7 @@ if(count($rankData['sections'])) {
 		        $pdf->Cell(190, 1,  '', 1, 1, 'C', 1);
                 if (!$pdf->SamePage(4* ($rankData['meta']['double'] ? 2 : 1))) {
                     $pdf->AddPage();
-                    $pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, $hideTempHeader);
+                    $pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, $hideTempHeader, $rankData["meta"]["hideNormatives"]);
                 }
                 $StartQualified = true;
             }
@@ -77,21 +77,23 @@ if(count($rankData['sections'])) {
 				$pdf->Cell(190, 1,  '', 1, 1, 'C', 1);
 				if (!$pdf->SamePage(4* ($rankData['meta']['double'] ? 2 : 1))) {
 					$pdf->AddPage();
-					$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, $hideTempHeader);
+					$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, $hideTempHeader, $rankData["meta"]["hideNormatives"]);
 				}
 				$EndQualified = true;
 			}
 
 			if (!$pdf->SamePage(4* ($rankData['meta']['double'] ? 2 : 1))) {
 				$pdf->AddPage();
-				$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, $hideTempHeader);
+				$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, $hideTempHeader, $rankData["meta"]["hideNormatives"]);
 			}
-			$pdf->writeDataRowPrnIndividualAbs($item, $DistSize, $AddSize, $section['meta']['running'],$section['meta']['numDist'], $rankData['meta']['double'], ($PdfData->family=='Snapshot' ? $section['meta']['snapDistance']: 0));
+			$pdf->writeDataRowPrnIndividualAbs($item, $DistSize, $AddSize, $section['meta']['running'],$section['meta']['numDist'], $rankData['meta']['double'], ($PdfData->family=='Snapshot' ? $section['meta']['snapDistance']: 0), "TB", $rankData["meta"]["hideNormatives"]);
 
 		}
 		$pdf->SetY($pdf->GetY()+$spaceBetweenSections);
 	}
 
+    //один раз отодвинем назад, потому что отступ логика подписей добавляет сама
+    $pdf->SetY($pdf->GetY()-$spaceBetweenSections);
     TournamentOfficials::printOfficials($pdf);
 
     $legendStatusProvider->printLegend();

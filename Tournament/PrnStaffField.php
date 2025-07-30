@@ -89,7 +89,7 @@ while ($judge = safe_fetch($resultSet)) {
     $index++;
 }
 
-$pdf->SetY($pdf->GetY() + $marginBeforeSignatures);
+$pdf->SetY($pdf->GetY() + $marginBeforeSignatures - 5);
 TournamentOfficials::printOfficials($pdf);
 
 if (!isset($isCompleteResultBook)) {

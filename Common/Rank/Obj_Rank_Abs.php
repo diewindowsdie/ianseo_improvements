@@ -354,6 +354,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 			$this->data['meta']['numDist']=-1;
 			$this->data['meta']['double']=-1;
 			$this->data['meta']['lastUpdate']='0000-00-00 00:00:00';
+            $this->data["meta"]["hideNormatives"] = getModuleParameter("Tournament", "HideNormatives", false, $this->tournament);
 			$this->data['sections']=array();
 
 			if (safe_num_rows($r)>0) {

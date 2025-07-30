@@ -164,7 +164,7 @@ if (isset($PdfData->Data['Items']) && $numberOfCountries>0) {
         $pdf->Cell($ClSize - 0.5, $rowHeight, $GrandTotal, 1, 1, 'R', 1);
     }
 
-    $pdf->SetY($pdf->GetY()+8);
+    $pdf->SetY($pdf->GetY()+3);
     TournamentOfficials::printOfficials($pdf);
 }
 

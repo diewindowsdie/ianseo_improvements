@@ -32,7 +32,7 @@ if(count($rankData['sections'])) {
 		if(!$pdf->SamePage(4*count($section['items'][0]['athletes'])+(!empty($meta['printHeader']) ? 30 : 16)+($section['meta']['sesArrows'] ? 8:0)))
 			$pdf->AddPage();
 
-		$pdf->writeGroupHeaderPrnTeamAbs($meta, false, $hideTempHeader);
+		$pdf->writeGroupHeaderPrnTeamAbs($meta, false, $hideTempHeader, $rankData["meta"]["hideNormatives"]);
 
 		$endQualified = false;
         $dataIndex = 0;
@@ -48,16 +48,16 @@ if(count($rankData['sections'])) {
                 //проверяем только последнюю группу
                 if (!$pdf->SamePage($spaceNeeded) && $currentSectionIndex === count($rankData['sections'])) {
                     $pdf->AddPage();
-                    $pdf->writeGroupHeaderPrnTeamAbs($meta, true, $hideTempHeader);
+                    $pdf->writeGroupHeaderPrnTeamAbs($meta, true, $hideTempHeader, $rankData["meta"]["hideNormatives"]);
                 }
             }
 
             if(!$pdf->SamePage(4*count($item['athletes']))) {
 				$pdf->AddPage();
-				$pdf->writeGroupHeaderPrnTeamAbs($meta,true, $hideTempHeader);
+				$pdf->writeGroupHeaderPrnTeamAbs($meta,true, $hideTempHeader, $rankData["meta"]["hideNormatives"]);
 			}
 
-			$pdf->writeDataRowPrnTeamAbs($item, ($endQualified===false && $item['rank']>$meta['qualifiedNo']), $meta['running']);
+			$pdf->writeDataRowPrnTeamAbs($item, ($endQualified===false && $item['rank']>$meta['qualifiedNo']), $meta['running'], $rankData["meta"]["hideNormatives"]);
 
 			if($item['rank']>$meta['qualifiedNo'])
 				$endQualified = true;
@@ -65,6 +65,8 @@ if(count($rankData['sections'])) {
 		$pdf->SetY($pdf->GetY()+5);
 	}
 
+    //один раз отодвинем назад, потому что отступ логика подписей добавляет сама
+    $pdf->SetY($pdf->GetY()-5);
     TournamentOfficials::printOfficials($pdf);
 
     $legendStatusProvider->printLegend();
