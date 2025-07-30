@@ -42,7 +42,7 @@ if(count($rankData['sections']))
 					if($newGroup)
 					{
 						$pdf->SetY($pdf->GetY()+2);
-						$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], false);
+						$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], false, false, $rankData["meta"]["hideNormatives"]);
 						$newGroup = false;
 					}
 					else
@@ -53,15 +53,15 @@ if(count($rankData['sections']))
 					if (!$pdf->SamePage(4* $oldScore[3]))
 					{
 						$pdf->AddPage();
-						$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true);
+						$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, false, $rankData["meta"]["hideNormatives"]);
 					}
 				}
 
-				$pdf->writeDataRowPrnIndividualAbs($item, $DistSize, $AddSize, $section['meta']['running'],$section['meta']['numDist'], $rankData['meta']['double'], ($PdfData->family=='Snapshot' ? $section['meta']['snapDistance']: 0), ($oldScore[3]==$item['ct'] ? 'T':($oldScore[3]==1 ? 'B':'')));
+				$pdf->writeDataRowPrnIndividualAbs($item, $DistSize, $AddSize, $section['meta']['running'],$section['meta']['numDist'], $rankData['meta']['double'], ($PdfData->family=='Snapshot' ? $section['meta']['snapDistance']: 0), ($oldScore[3]==$item['ct'] ? 'T':($oldScore[3]==1 ? 'B':'')), $rankData["meta"]["hideNormatives"]);
 				if (!$pdf->SamePage(4*(--$oldScore[3])))
 				{
 					$pdf->AddPage();
-					$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true);
+					$pdf->writeGroupHeaderPrnIndividualAbs($section['meta'], $DistSize, $AddSize, $section['meta']['running'], $section['meta']['numDist'], $rankData['meta']['double'], true, false, $rankData["meta"]["hideNormatives"]);
 				}
 				$oldScore = array($item['score'], $item['gold'], $item['xnine'], $oldScore[3]);
 			}
