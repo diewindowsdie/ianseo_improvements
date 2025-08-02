@@ -1,5 +1,7 @@
 <?php
 
+$isContinue = false;
+$realPreviousTeam = null;
 $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 	foreach($PdfData->Data['Items'] as $Country => $Rows) {
 		if($SinglePage and !$FirstTime) {
@@ -18,6 +20,7 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 				$FirstTime=true;
 			}
 			if ($FirstTime OR !$pdf->SamePage(4)) {
+                $isContinue = $realPreviousTeam == $MyRow->NationCode;
 				$pdf->SetDefaultColor();
 			   	$pdf->SetFont($pdf->FontStd,'B',7);
 				$pdf->Cell($nationCell, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
@@ -47,13 +50,22 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 				$FirstTime=false;
 			}
 			if($OldTeam != $MyRow->NationCode) {
+                if ($realPreviousTeam != $MyRow->NationCode) {
+                    $isContinue = false;
+                }
 			   	$pdf->SetFont($pdf->FontStd,'B',1);
 				$pdf->Cell(0, 1,  '', 0, 1, 'C', 0);
 				$pdf->SetFont($pdf->FontStd,'B',8);
 				$pdf->Cell($TgtCell*1.5, 6, "", 'LTB', 0, 'L', 0);
 				$pdf->Cell(0, 6,  $MyRow->NationComplete ? $MyRow->NationComplete : $MyRow->Nation, 'RTB', 1, 'L', 0);
+                if ($isContinue) {
+                    $pdf->SetXY(170,$pdf->GetY()-6);
+                    $pdf->SetFont($pdf->FontStd,'',6);
+                    $pdf->Cell(0, 6, $pdf->Continue, 0, 1, 'R', 0);
+                }
                 //$pdf->Cell($NatAtlCell, 4,  $MyRow->Nation, '1', 0, 'L', 0);
 				$OldTeam = $MyRow->NationCode;
+                $realPreviousTeam = $MyRow->NationCode;
 			}
             $pdf->Cell($nationCell, 4, '', 0, 0, 'C', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',7);
