@@ -1,5 +1,7 @@
 <?php
 
+$isContinue = false;
+$realPreviousTeam = null;
 $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 	foreach($PdfData->Data['Items'] as $Country => $Rows) {
 		if($SinglePage and !$FirstTime) {
@@ -18,14 +20,15 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 				$FirstTime=true;
 			}
 			if ($FirstTime OR !$pdf->SamePage(4)) {
+                $isContinue = $realPreviousTeam == $MyRow->NationCode;
 				$pdf->SetDefaultColor();
 			   	$pdf->SetFont($pdf->FontStd,'B',7);
 				$pdf->Cell($nationCell, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
 				$pdf->Cell($SesCell, 4, $PdfData->Data['Fields']['Session'], 1, 0, 'C', 1);
 				$pdf->Cell($TgtCell, 4, $PdfData->Data['Fields']['TargetNo'], 1, 0, 'C', 1);
-				$pdf->Cell($athleteCell, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
+				$pdf->Cell($athleteCell + ($PdfData->HideNormatives ? $TgtCell : 0), 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
                 $pdf->Cell($birthdayCell, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'L', 1);
-				if(!$PdfData->HideCols and !$TargetFace) {
+				if(!$PdfData->HideCols and !$TargetFace and !$PdfData->HideNormatives) {
 					$pdf->Cell($TgtCell, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
 				}
 				$pdf->Cell($divAndClassCell + ($PdfData->HideCols==true ? $divAndClassCell:0), 4, $PdfData->Data['Fields']['DivDescription'], 1, 0, 'C', 1);
@@ -47,21 +50,36 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 				$FirstTime=false;
 			}
 			if($OldTeam != $MyRow->NationCode) {
+                if ($realPreviousTeam != $MyRow->NationCode) {
+                    $isContinue = false;
+                }
+                //переносим на новую страницу регион, если вместе с заголовком не лезет две строки (и в регионе больше двух строк)
+                //высота заголовка 6, высота одной строки со спортсменом 4
+                if (!$pdf->SamePage(6 + 4 * min(2, count($Rows)))) {
+                    $pdf->AddPage();
+                    $OldTeam='';
+                }
 			   	$pdf->SetFont($pdf->FontStd,'B',1);
 				$pdf->Cell(0, 1,  '', 0, 1, 'C', 0);
 				$pdf->SetFont($pdf->FontStd,'B',8);
 				$pdf->Cell($TgtCell*1.5, 6, "", 'LTB', 0, 'L', 0);
 				$pdf->Cell(0, 6,  $MyRow->NationComplete ? $MyRow->NationComplete : $MyRow->Nation, 'RTB', 1, 'L', 0);
+                if ($isContinue) {
+                    $pdf->SetXY(170,$pdf->GetY()-6);
+                    $pdf->SetFont($pdf->FontStd,'',6);
+                    $pdf->Cell(0, 6, $pdf->Continue, 0, 1, 'R', 0);
+                }
                 //$pdf->Cell($NatAtlCell, 4,  $MyRow->Nation, '1', 0, 'L', 0);
 				$OldTeam = $MyRow->NationCode;
+                $realPreviousTeam = $MyRow->NationCode;
 			}
             $pdf->Cell($nationCell, 4, '', 0, 0, 'C', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',7);
 			$pdf->Cell($SesCell, 4,  ($MyRow->Session && $MyRow->IsAthlete ? $MyRow->Session : ''), 1, 0, 'R', 0);
 			$pdf->Cell($TgtCell, 4,  ($MyRow->IsAthlete && $MyRow->TargetNo ? (!empty($PdfData->BisTarget) && (intval(substr($MyRow->TargetNo,1)) > $PdfData->NumEnd) ? str_pad((substr($MyRow->TargetNo,0,-1)-$PdfData->NumEnd),3,"0",STR_PAD_LEFT) . substr($MyRow->TargetNo,-1,1) . ' bis'  : $MyRow->TargetNo) : ''), 1, 0, 'R', 0);
-			$pdf->Cell($athleteCell, 4,  $MyRow->Athlete . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
+			$pdf->Cell($athleteCell + ($PdfData->HideNormatives ? $TgtCell : 0), 4,  $MyRow->Athlete . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
             $pdf->Cell($birthdayCell, 4,  $MyRow->EnDob, 1, 0, 'L', 0);
-			if(!$PdfData->HideCols AND !$TargetFace) {
+			if(!$PdfData->HideCols AND !$TargetFace and !$PdfData->HideNormatives) {
 				$pdf->Cell($TgtCell, 4,  ($MyRow->SubClassDescription), 1, 0, 'C', 0);
 			}
 			$pdf->Cell($divAndClassCell + ($PdfData->HideCols==true ? $divAndClassCell:0), 4,  ($PdfData->HideCols==true ? $MyRow->DivDescription : $MyRow->DivDescription), 1, 0, 'C', 0);

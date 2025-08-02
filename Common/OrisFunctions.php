@@ -940,6 +940,7 @@ function getStartListByCountries($ORIS=false, $Athletes=false, $orderByName=fals
 	$Data->HeaderWidth=array(10,45,45,15,20,15,45);
 	$Data->Phase='';
 	$Data->Data=array();
+    $Data->HideNormatives = getModuleParameter("Tournament", "HideNormatives", false, $_SESSION['TourId']);
 
 	$Data->Data['Fields'] = array(
 		"Bib" => get_text('Code','Tournament'),
@@ -1354,6 +1355,7 @@ function getStartListCategory($ORIS=false, $orderByTeam=0, $Events=array()) {
 	$Data->DocVersionDate='';
 	$Data->DocVersionNotes='';
 	$Data->LastUpdate='';
+    $Data->HideNormatives = getModuleParameter("Tournament", "HideNormatives", false, $_SESSION['TourId']);
 
 	$Data->Data['Fields'] = array(
 			'SesName' => get_text('Session'),

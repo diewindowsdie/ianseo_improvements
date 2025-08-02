@@ -196,9 +196,12 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         setModuleParameter(ModuleName, Checked3ParameterName, "0", $_SESSION['TourId']);
     }
 
-    //судьи
-    $pdf->Titolo = get_text('StaffOnField', 'Tournament');
-    include '../../Tournament/PrnStaffField.php';
+    error_reporting(E_ALL);
+    if (!getModuleParameter("Tournament", "HideNormatives", false, $_SESSION['TourId'])) {
+        //судьи
+        $pdf->Titolo = get_text('StaffOnField', 'Tournament');
+        include '../../Tournament/PrnStaffField.php';
+    }
 
     $pdf->Output();
 } else {
