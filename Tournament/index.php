@@ -762,7 +762,7 @@ if(file_exists($CFG->DOCUMENT_PATH.'Api/index.php')) {
                         print "checked=\"checked\"";
                     }
                 } ?>/>
-                <label for="hideNormatives">Скрыть имеющиеся и выполненные разряды в протоколе</label>
+                <label for="hideNormatives">Скрыть имеющиеся и выполненные разряды и список судей в финальном протоколе</label>
             </td>
         </tr>
 
