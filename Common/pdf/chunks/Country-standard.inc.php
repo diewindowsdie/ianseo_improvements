@@ -53,6 +53,12 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
                 if ($realPreviousTeam != $MyRow->NationCode) {
                     $isContinue = false;
                 }
+                //переносим на новую страницу регион, если вместе с заголовком не лезет две строки (и в регионе больше двух строк)
+                //высота заголовка 6, высота одной строки со спортсменом 4
+                if (!$pdf->SamePage(6 + 4 * min(2, count($Rows)))) {
+                    $pdf->AddPage();
+                    $OldTeam='';
+                }
 			   	$pdf->SetFont($pdf->FontStd,'B',1);
 				$pdf->Cell(0, 1,  '', 0, 1, 'C', 0);
 				$pdf->SetFont($pdf->FontStd,'B',8);
