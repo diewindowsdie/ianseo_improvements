@@ -1355,6 +1355,7 @@ function getStartListCategory($ORIS=false, $orderByTeam=0, $Events=array()) {
 	$Data->DocVersionDate='';
 	$Data->DocVersionNotes='';
 	$Data->LastUpdate='';
+    $Data->HideNormatives = getModuleParameter("Tournament", "HideNormatives", false, $_SESSION['TourId']);
 
 	$Data->Data['Fields'] = array(
 			'SesName' => get_text('Session'),

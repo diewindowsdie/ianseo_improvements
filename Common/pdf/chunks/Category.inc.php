@@ -22,10 +22,12 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 
 		$pdf->SetFont($pdf->FontStd,'B',7);
 		$pdf->Cell(8, 4, '№', 1, 0, 'C', 1);
-		$pdf->Cell($TargetFace ? 42 : 49, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
+		$pdf->Cell(($TargetFace ? 42 : 49) + ($PdfData->HideNormatives ? 8 : 0), 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
 		$pdf->Cell($TargetFace ? 56 : 68, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
         $pdf->Cell(15, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'C', 1);
-        $pdf->Cell(8, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
+        if (!$PdfData->HideNormatives) {
+            $pdf->Cell(8, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
+        }
 		$pdf->Cell(7, 4,  $PdfData->Data['Fields']['Session'], 1, 0, 'C', 1);
 		$pdf->Cell(11, 4, $PdfData->Data['Fields']['TargetNo'], 1, 0, 'C', 1);
 
@@ -63,10 +65,12 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 
 				$pdf->SetFont($pdf->FontStd,'B',7);
 				$pdf->Cell(8, 4, '№', 1, 0, 'C', 1);
-                $pdf->Cell($TargetFace ? 42 : 49, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
+                $pdf->Cell(($TargetFace ? 42 : 49) + ($PdfData->HideNormatives ? 8 : 0), 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
                 $pdf->Cell($TargetFace ? 56 : 68, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
                 $pdf->Cell(15, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'C', 1);
-                $pdf->Cell(8, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
+                if (!$PdfData->HideNormatives) {
+                    $pdf->Cell(8, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
+                }
 				$pdf->Cell(7, 4,  $PdfData->Data['Fields']['Session'], 1, 0, 'C', 1);
 				$pdf->Cell(11, 4, $PdfData->Data['Fields']['TargetNo'], 1, 0, 'C', 1);
 
@@ -90,12 +94,14 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 		   	$pdf->SetFont($pdf->FontStd,'',7);
 			$pdf->Cell(8, 4 * $secondaryTeam, $athleteIndex, 1, 0, 'R', 0);
 		   	$pdf->SetFont($pdf->FontStd,'B',7);
-			$pdf->Cell($TargetFace ? 42 : 49, 4 * $secondaryTeam,  $MyRow->Athlete, 1, 0, 'L', 0);
+			$pdf->Cell(($TargetFace ? 42 : 49) + ($PdfData->HideNormatives ? 8 : 0), 4 * $secondaryTeam,  $MyRow->Athlete, 1, 0, 'L', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',7);
 			$pdf->Cell($TargetFace ? 56 : 68, 4,  getFullCountryName($MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3), 'RTB', 0, 'L', 0);
             $pdf->SetFont($pdf->FontStd,'',7);
             $pdf->Cell(15, 4 * $secondaryTeam,  $MyRow->DOB, 1, 0, 'C', 0);
-            $pdf->Cell(8, 4 * $secondaryTeam,  ($MyRow->SubClassDescription), 1, 0, 'C', 0);
+            if (!$PdfData->HideNormatives) {
+                $pdf->Cell(8, 4 * $secondaryTeam, ($MyRow->SubClassDescription), 1, 0, 'C', 0);
+            }
 			$pdf->Cell(7, 4 * $secondaryTeam,  $MyRow->IsAthlete ? $MyRow->Session : '', 1, 0, 'R', 0);
 			$TgtNo=ltrim(($PdfData->BisTarget && (intval(substr($MyRow->TargetNo,1)) > $PdfData->NumEnd) ? str_pad((substr($MyRow->TargetNo,0,-1)-$PdfData->NumEnd),3,"0",STR_PAD_LEFT) . substr($MyRow->TargetNo,-1,1) . ' bis'  : $MyRow->TargetNo), 'O');
 			$pdf->Cell(11, 4 * $secondaryTeam,  $MyRow->IsAthlete ? $TgtNo : '', 1, 0, 'R', 0);
