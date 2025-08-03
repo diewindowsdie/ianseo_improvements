@@ -14,13 +14,14 @@ $LongCell=$pdf->getPageWidth()/4;
 $SesCell=7; // session
 $TgtCell=10; // target  subclass, status
 $PalCell=14; // 1-5 squares
-$divAndClassCell=20;
+$divAndClassCell=15;
 $birthdayCell = 15;
 
 $W=$SesCell+$PalCell+($TgtCell*3) + $divAndClassCell*2;
 $t=($pdf->getPageWidth()-$W-20)/2;
-$nationCell = $t - 25;
-$athleteCell = $t + 10;
+$nationCell = 11.5;
+$athleteCell = $t - 6;
+$regionCell = 34;
 
 if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0) {
 	if(isset($_REQUEST['Email'])) {
