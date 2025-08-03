@@ -9,11 +9,13 @@ $hideNormatives = getModuleParameter("Tournament", "HideNormatives", false, $_SE
 
 $pdf = new ResultPDF((get_text('StartlistAlpha','Tournament')));
 
-$MyQuery = "SELECT EnCode as Bib, EnName AS Name, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoNameComplete AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, ";
-$MyQuery.= "s.ScDescription as SubclassDescription, ";
-$MyQuery.= "ISNULL(CoId) as invalidCountry, ISNULL(DivId) as invalidDivision, (ISNULL(c1.ClId) OR  LOCATE(c2.ClId, c1.ClValidClass)=0) as invalidAgeClass, (ISNULL(c2.ClId) OR  LOCATE(c2.ClId, c1.ClValidClass)=0) as invalidClass ";
+$MyQuery = "SELECT EnCode as Bib, EnName AS Name, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, c.CoCode AS NationCode, c.CoNameComplete AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, ";
+$MyQuery.= "s.ScDescription as SubclassDescription, co2.CoNameComplete as Nation2, co3.CoNameComplete as Nation3, date_format(if(EnDOB='0000-00-00', null, EnDOB), '".get_text('DateFmtDB')."') as DOB, ";
+$MyQuery.= "ISNULL(c.CoId) as invalidCountry, ISNULL(DivId) as invalidDivision, (ISNULL(c1.ClId) OR  LOCATE(c2.ClId, c1.ClValidClass)=0) as invalidAgeClass, (ISNULL(c2.ClId) OR  LOCATE(c2.ClId, c1.ClValidClass)=0) as invalidClass, (ISNULL(EnDOB) or EnDOB = '0000-00-00') as invalidDOB ";
 $MyQuery.= "FROM Entries AS e ";
 $MyQuery.= "LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament ";
+$MyQuery.= "LEFT JOIN Countries AS co2 ON e.EnCountry2=co2.CoId AND e.EnTournament=co2.CoTournament ";
+$MyQuery.= "LEFT JOIN Countries AS co3 ON e.EnCountry3=co3.CoId AND e.EnTournament=co3.CoTournament ";
 $MyQuery.= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
 $MyQuery.= "LEFT JOIN SubClass s ON e.EnTournament=s.ScTournament AND e.EnSubclass=s.ScId ";
 $MyQuery.= "LEFT JOIN Divisions ON e.EnTournament=DivTournament AND e.EnDivision=DivId ";
@@ -22,11 +24,12 @@ $MyQuery.= "LEFT JOIN Classes as c2 ON e.EnTournament=c2.ClTournament AND e.EnCl
 
 
 $MyQuery.= "WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " ";
-$MyQuery.= "AND (EnStatus!=0 OR (EnIndClEvent=0 AND EnTeamClEvent=0 AND EnIndFEvent=0 AND EnIndFEvent=0) OR EnCountry=0 OR DivId is null OR c1.ClId is null OR c2.ClId is null OR LOCATE(c2.ClId, c1.ClValidClass)=0) ";
+$MyQuery.= "AND (EnStatus!=0 OR (EnIndClEvent=0 AND EnTeamClEvent=0 AND EnIndFEvent=0 AND EnIndFEvent=0) OR EnCountry=0 OR DivId is null OR c1.ClId is null OR c2.ClId is null OR LOCATE(c2.ClId, c1.ClValidClass)=0) or EnDOB is null ";
 if(isset($_REQUEST["Session"]) && is_numeric($_REQUEST["Session"]))
 	$MyQuery .= "AND QuSession = " . StrSafe_DB($_REQUEST["Session"]) . " ";
 $MyQuery.= "ORDER BY Nation, Name, FirstName, EnMiddleName, TargetNo ";
 
+//print_r($MyQuery);
 $Rs=safe_r_sql($MyQuery);
 if($Rs) {
 	$ShowStatusLegend = false;
@@ -46,8 +49,9 @@ if($Rs) {
 				$pdf->Cell(30, 6,  (get_text('Continue')), 0, 1, 'R', 0);
 			}
 		   	$pdf->SetFont($pdf->FontStd,'B',7);
-			$pdf->Cell(51 + ($hideNormatives ? 8 : 0), 4,  (get_text('Athlete')), 1, 0, 'L', 1);
-			$pdf->Cell(54, 4,  (get_text('Country')), 1, 0, 'L', 1);
+			$pdf->Cell(45 + ($hideNormatives ? 8 : 0), 4,  (get_text('Athlete')), 1, 0, 'L', 1);
+			$pdf->Cell(48, 4,  (get_text('Country')), 1, 0, 'L', 1);
+            $pdf->Cell(12, 4,  (get_text('DOB', "Tournament")), 1, 0, 'C', 1);
 			$pdf->Cell(7, 4,  (get_text('SessionShort','Tournament')), 1, 0, 'C', 1);
 			$pdf->Cell(11, 4,  (get_text('Target')), 1, 0, 'C', 1);
 			$pdf->Cell(11, 4,  (get_text('AgeCl')), 1, 0, 'C', 1);
@@ -66,9 +70,10 @@ if($Rs) {
 		}
 	   	$pdf->SetFont($pdf->FontStd,'',7);
 	   	$pdf->SetFont($pdf->FontStd,'B',7);
-		$pdf->Cell(51 + ($hideNormatives ? 8 : 0), 4,  $MyRow->FirstName . ' ' . $MyRow->Name . ($MyRow->EnMiddleName ? ' ' . $MyRow->EnMiddleName : ''), 1, 0, 'L', 0);
+		$pdf->Cell(45 + ($hideNormatives ? 8 : 0), 4,  $MyRow->FirstName . ' ' . $MyRow->Name . ($MyRow->EnMiddleName ? ' ' . $MyRow->EnMiddleName : ''), 1, 0, 'L', 0);
 	   	$pdf->SetFont($pdf->FontStd,'',7);
-		$pdf->Cell(54, 4,  $MyRow->Nation, 'RTB', 0, 'L', ($MyRow->invalidCountry));
+		$pdf->Cell(48, 4,  getFullCountryName($MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3), 'RTB', 0, 'L', ($MyRow->invalidCountry));
+        $pdf->Cell(12, 4,  ($MyRow->DOB), 1, 0, 'R', ($MyRow->invalidDOB));
 		$pdf->Cell(7, 4,  ($MyRow->Session), 1, 0, 'R', 0);
 		$pdf->Cell(11, 4,  ($MyRow->TargetNo), 1, 0, 'R', 0);
 		$pdf->Cell(11, 4,  ($MyRow->AgeClass), 1, 0, 'C', ($MyRow->invalidAgeClass));
