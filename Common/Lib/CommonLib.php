@@ -554,9 +554,11 @@ function get_photo_ianseo($r, $h=0, $side=false, $Extra='', $force=false, $direc
 }
 
 function getFullCountryName($countryName, $countryName2=null, $countryName3=null) {
-    return $countryName .
-        ($countryName2 != '' ? ', ' : '') . $countryName2 .
-        ($countryName3 != '' ? ', ' : '') . $countryName3;
+    $result = $countryName;
+    $result .= (($countryName2 != '' && $result != '') ? ', ' : '') . $countryName2;
+    $result .= (($countryName3 != '' && $result != '') ? ', ' : '') . $countryName3;
+
+    return $result;
 }
 
 function get_flag_ianseo($r0, $r2=null, $r3=null, $h=0, $align='', $direct='') {

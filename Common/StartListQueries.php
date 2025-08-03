@@ -677,9 +677,9 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		{
 			$Tmp=NULL;
 			if(preg_match("/^([A-Z0-9_]*)-([A-Z0-9_]*)$/i",str_replace(" ","",$Value),$Tmp))
-				$TmpWhere .= "(CoCode >= " . StrSafe_DB(stripslashes($Tmp[1]) ) . " AND CoCode <= " . StrSafe_DB(stripslashes($Tmp[2])) . ") OR ";
+				$TmpWhere .= "(c.CoCode >= " . StrSafe_DB(stripslashes($Tmp[1]) ) . " AND c.CoCode <= " . StrSafe_DB(stripslashes($Tmp[2])) . ") OR ";
 			else
-				$TmpWhere .= "CoCode LIKE " .  StrSafe_DB("%" . stripslashes(trim($Value)) . "%") . " OR ";
+				$TmpWhere .= "c.CoCode LIKE " .  StrSafe_DB("%" . stripslashes(trim($Value)) . "%") . " OR ";
 		}
 		$TmpWhere = substr($TmpWhere,0,-3);
 	}
@@ -751,9 +751,11 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", QuSession AS Session"
 			. ", SesName"
 			. ", SUBSTRING(QuTargetNo,2) AS TargetNo"
-			. ", upper(CoCode) AS NationCode"
-			. ", upper(CoName) AS Nation"
-			. ", CoNameComplete AS NationComplete"
+			. ", upper(c.CoCode) AS NationCode"
+			. ", upper(c.CoName) AS Nation"
+			. ", c.CoNameComplete AS NationComplete"
+			. ", co2.CoNameComplete AS NationComplete2"
+			. ", co3.CoNameComplete AS NationComplete3"
 			. ", EnSubTeam"
 			. ", EnSex"
 			. ", EnClass AS ClassCode"
@@ -784,6 +786,8 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		$MyQuery .= "LEFT JOIN ExtraData as edmail ON edmail.EdId=EnId and edmail.EdType='E' ";
 		$MyQuery .= "LEFT JOIN ExtraData as edbib ON edbib.EdId=EnId and edbib.EdType='Z' ";
 		$MyQuery .= "LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament ";
+		$MyQuery .= "LEFT JOIN Countries AS co2 ON e.EnCountry2=co2.CoId AND e.EnTournament=co2.CoTournament ";
+		$MyQuery .= "LEFT JOIN Countries AS co3 ON e.EnCountry3=co3.CoId AND e.EnTournament=co3.CoTournament ";
 		$MyQuery .= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
 		$MyQuery .= "LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament ";
 		$MyQuery .= "LEFT JOIN Classes ON TRIM(EnClass)=TRIM(ClId) AND EnTournament=ClTournament ";
@@ -821,9 +825,11 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", QuSession AS Session"
 			. ", SesName"
 			. ", SUBSTRING(QuTargetNo,2) AS TargetNo"
-			. ", upper(CoCode) AS NationCode"
-			. ", upper(CoName) AS Nation"
-			. ", CoNameComplete AS NationComplete"
+			. ", upper(c.CoCode) AS NationCode"
+			. ", upper(c.CoName) AS Nation"
+			. ", c.CoNameComplete AS NationComplete"
+			. ", '' AS NationComplete2"
+			. ", '' AS NationComplete3"
 			. ", EnSubTeam"
 			. ", EnSex"
 			. ", EnClass AS ClassCode"
@@ -893,9 +899,11 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", QuSession AS Session"
 			. ", SesName"
 			. ", SUBSTRING(QuTargetNo,2) AS TargetNo"
-			. ", upper(CoCode) AS NationCode"
-			. ", upper(CoName) AS Nation"
-			. ", CoNameComplete AS NationComplete"
+			. ", upper(c.CoCode) AS NationCode"
+			. ", upper(c.CoName) AS Nation"
+			. ", c.CoNameComplete AS NationComplete"
+			. ", '' AS NationComplete2"
+			. ", '' AS NationComplete3"
 			. ", EnSubTeam"
 			. ", EnSex"
 			. ", EnClass AS ClassCode"
