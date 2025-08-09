@@ -30,7 +30,7 @@ if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z]*$/i",str_replace(
 $NoPhoto=(!empty($_REQUEST['NoPhoto']));
 
 
-$MyQuery = "SELECT EnCode as Bib, length(PhPhoto)>1 as HasPhoto, EnName AS Name, upper(EnFirstName) AS FirstName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, if(AEId IS NULL, 0, 1) as OpDone, IF(NoMember=NoOpDone,1,0) as TeamComplete, EnPays, APPrice ";
+$MyQuery = "SELECT EnCode as Bib, length(PhPhoto)>1 as HasPhoto, EnName AS Name, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, if(AEId IS NULL, 0, 1) as OpDone, IF(NoMember=NoOpDone,1,0) as TeamComplete, EnPays, APPrice, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB ";
 $MyQuery.= "FROM Entries AS e ";
 $MyQuery.= "LEFT JOIN Photos ON e.EnId=PhEnId ";
 $MyQuery.= "LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament ";
@@ -56,11 +56,11 @@ while($MyRow=safe_fetch($Rs)) {
     $pdf->SetDefaultColor();
     if ($FirstTime || !$pdf->SamePage(4)) {
         $pdf->SetFont($pdf->FontStd,'B',7);
-        $pdf->Cell(44+($payDetails ? 0:15), 4,  (get_text('Country')), 1, 0, 'L', 1);
+        $pdf->Cell(42+($payDetails ? 0:15), 4,  (get_text('Country')), 1, 0, 'L', 1);
         $pdf->Cell(7, 4,  (get_text('SessionShort','Tournament')), 1, 0, 'C', 1);
         $pdf->Cell(11, 4,  (get_text('Target')), 1, 0, 'C', 1);
-        $pdf->Cell(10, 4,  (get_text('Code','Tournament')), 1, 0, 'C', 1);
         $pdf->Cell(41, 4,  (get_text('Athlete')), 1, 0, 'L', 1);
+        $pdf->Cell(12, 4,  (get_text('DOB','Tournament')), 1, 0, 'C', 1);
         $pdf->Cell(10, 4,  (get_text('AgeCl')), 1, 0, 'C', 1);
         $pdf->Cell(8, 4,  (get_text('SubCl','Tournament')), 1, 0, 'C', 1);
         $pdf->Cell(10, 4,  (get_text('Division')), 1, 0, 'C', 1);
@@ -84,11 +84,10 @@ while($MyRow=safe_fetch($Rs)) {
         $pdf->SetFont($pdf->FontStd,'',1);
         $pdf->Cell(190, 1,  '', 0, 1, 'C', 0);
         $pdf->SetFont($pdf->FontStd,'B',7);
-        $pdf->Cell(8, 4,  $MyRow->NationCode, 'LTB', 0, 'C', $MyRow->TeamComplete);
-        $pdf->Cell(36+($payDetails ? 0:15), 4,  $MyRow->Nation, 'RTB', 0, 'L', $MyRow->TeamComplete);
+        $pdf->Cell(42+($payDetails ? 0:15), 4,  $MyRow->Nation, 1, 0, 'L', $MyRow->TeamComplete);
         $OldTeam = $MyRow->NationCode;
     } else {
-        $pdf->Cell(44+($payDetails ? 0:15), 4,  '', 0, 0, 'C', 0);
+        $pdf->Cell(42+($payDetails ? 0:15), 4,  '', 0, 0, 'C', 0);
     }
 
 //Disegno il quadrato pieno per gli accreditati
@@ -105,8 +104,8 @@ while($MyRow=safe_fetch($Rs)) {
         $pdf->SetDefaultColor();
     $pdf->Cell( 4, 4, $MyRow->Session, 'RTB', 0, 'R', $MyRow->OpDone);
     $pdf->Cell(11, 4, $MyRow->TargetNo, 1, 0, 'R', $MyRow->OpDone);
-    $pdf->Cell(10, 4, $MyRow->Bib, 1, 0, 'R', $MyRow->OpDone);
-    $pdf->Cell(41, 4, $MyRow->FirstName . ' ' . $MyRow->Name, 1, 0, 'L', $MyRow->OpDone);
+    $pdf->Cell(41, 4, $MyRow->FirstName . ' ' . $MyRow->Name . ($MyRow->EnMiddleName ? ' ' . $MyRow->EnMiddleName : ''), 1, 0, 'L', $MyRow->OpDone);
+    $pdf->Cell(12, 4, $MyRow->DoB, 1, 0, 'R', $MyRow->OpDone);
     $pdf->Cell(10, 4, $MyRow->AgeClass, 1, 0, 'C', $MyRow->OpDone);
     $pdf->Cell( 8, 4, $MyRow->SubClass, 1, 0, 'C', $MyRow->OpDone);
     $pdf->Cell(10, 4, $MyRow->DivCode, 1, 0, 'C', $MyRow->OpDone);
