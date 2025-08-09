@@ -9,8 +9,10 @@ require_once('Common/pdf/PdfChunkLoader.php');
 // the defines have been moved in OrisFunctions
 $PdfData = getStartList();
 
-if(!isset($isCompleteResultBook))
-	$pdf = new ResultPDF($PdfData->Description);
+if(!isset($isCompleteResultBook)) {
+    $pdf = new ResultPDF($PdfData->Description);
+    $pdf->HideNormatives = $PdfData->HideNormatives;
+}
 
 require_once(PdfChunkLoader('StartList.inc.php'));
 

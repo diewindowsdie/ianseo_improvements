@@ -165,6 +165,7 @@ function getStartList($ORIS='', $Event='', $Elim=false, $Filled=false, $isPool=f
 
 	$Data->Phase='Qualification Round';
 	$Data->OdfCodes=array();
+    $Data->HideNormatives = getModuleParameter("Tournament", "HideNormatives", false, $_SESSION['TourId']);
 	$Data->IndexName='Start List by Target';
 	$Data->HeaderWidth=array(15,50,15,45,15,55);
 	$Data->HeaderWidthPool=array(15,50,15,35,20,15,45);
