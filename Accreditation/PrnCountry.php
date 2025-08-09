@@ -35,10 +35,11 @@ if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z]*$/i",str_replace(
 $NoPhoto=(!empty($_REQUEST['NoPhoto']));
 
 
-$MyQuery = "SELECT EnCode as Bib, length(PhPhoto)>1 as HasPhoto, EnName AS Name, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, if(AEId IS NULL, 0, 1) as OpDone, IF(NoMember=NoOpDone,1,0) as TeamComplete, EnPays, APPrice, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB ";
+$MyQuery = "SELECT EnCode as Bib, length(PhPhoto)>1 as HasPhoto, EnName AS Name, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, if(AEId IS NULL, 0, 1) as OpDone, IF(NoMember=NoOpDone,1,0) as TeamComplete, EnPays, APPrice, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, sc.ScDescription as SubclassDescripton ";
 $MyQuery.= "FROM Entries AS e ";
 $MyQuery.= "LEFT JOIN Photos ON e.EnId=PhEnId ";
 $MyQuery.= "LEFT JOIN Countries AS c ON e." . $countryField . "=c.CoId AND e.EnTournament=c.CoTournament ";
+$MyQuery.= "LEFT JOIN SubClass AS sc ON e.EnSubClass=sc.ScId and e.EnTournament=sc.ScTournament ";
 $MyQuery.= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
 $MyQuery.= "LEFT JOIN AccEntries AS ae ON e.EnId=ae.AEId AND e.EnTournament=ae.AETournament AND ae.AEOperation=(SELECT AOTId FROM AccOperationType WHERE AOTDescr=" . StrSafe_DB($OpDetails) . ") ";
 $MyQuery.= "LEFT JOIN AccPrice AS ap ON CONCAT(EnDivision,EnClass) LIKE ap.APDivClass AND e.EnTournament=ap.APTournament ";
@@ -112,7 +113,7 @@ while($MyRow=safe_fetch($Rs)) {
     $pdf->Cell(41, 4, $MyRow->FirstName . ' ' . $MyRow->Name . ($MyRow->EnMiddleName ? ' ' . $MyRow->EnMiddleName : ''), 1, 0, 'L', $MyRow->OpDone);
     $pdf->Cell(12, 4, $MyRow->DoB, 1, 0, 'R', $MyRow->OpDone);
     $pdf->Cell(10, 4, $MyRow->AgeClass, 1, 0, 'C', $MyRow->OpDone);
-    $pdf->Cell( 8, 4, $MyRow->SubClass, 1, 0, 'C', $MyRow->OpDone);
+    $pdf->Cell( 8, 4, $MyRow->SubclassDescripton, 1, 0, 'C', $MyRow->OpDone);
     $pdf->Cell(10, 4, $MyRow->DivCode, 1, 0, 'C', $MyRow->OpDone);
     $pdf->Cell(10, 4, $MyRow->ClassCode, 1, 0, 'C', $MyRow->OpDone);
 //Disegna i Pallini per la partecipazione
