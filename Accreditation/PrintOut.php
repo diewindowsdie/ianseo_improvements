@@ -147,6 +147,8 @@
 	echo $SelectOperation;
 	echo '<br />' . get_text('Session') . '&nbsp;&nbsp;&nbsp;'. $ComboSessions;
 	echo '<br />&nbsp;<br />';
+    echo 'Поле региона:&nbsp;&nbsp;&nbsp;<select name="countryIndex"><option value="1" selected="selected">Регион 1</option><option value="2">Регион 2</option><option value="3">Регион 3</option></select>';
+    echo '<br />&nbsp;<br />';
 	echo get_text('Country') . '&nbsp;&nbsp;&nbsp;<input name="CountryName" type="text" size="20" maxlength="30">';
 	echo '<br />&nbsp;<br />';
 	echo get_text('NoPhoto') . '&nbsp;&nbsp;&nbsp;<input name="NoPhoto" type="checkbox" size="20" maxlength="30">';

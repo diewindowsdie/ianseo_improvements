@@ -12,6 +12,11 @@ if(isset($_REQUEST["OperationType"])) {
     $payDetails = ($_REQUEST["OperationType"] == 'Payments');
 }
 
+$countryField = "EnCountry";
+if (isset($_REQUEST["countryIndex"])) {
+    $countryField = "EnCountry" . ($_REQUEST["countryIndex"] == "1" ? '' : $_REQUEST["countryIndex"]);
+}
+
 if(!isset($isCompleteResultBook))
 	$pdf = new ResultPDF(get_text($OpDetails,'Tournament'));
 
@@ -33,7 +38,7 @@ $NoPhoto=(!empty($_REQUEST['NoPhoto']));
 $MyQuery = "SELECT EnCode as Bib, length(PhPhoto)>1 as HasPhoto, EnName AS Name, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, if(AEId IS NULL, 0, 1) as OpDone, IF(NoMember=NoOpDone,1,0) as TeamComplete, EnPays, APPrice, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB ";
 $MyQuery.= "FROM Entries AS e ";
 $MyQuery.= "LEFT JOIN Photos ON e.EnId=PhEnId ";
-$MyQuery.= "LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament ";
+$MyQuery.= "LEFT JOIN Countries AS c ON e." . $countryField . "=c.CoId AND e.EnTournament=c.CoTournament ";
 $MyQuery.= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
 $MyQuery.= "LEFT JOIN AccEntries AS ae ON e.EnId=ae.AEId AND e.EnTournament=ae.AETournament AND ae.AEOperation=(SELECT AOTId FROM AccOperationType WHERE AOTDescr=" . StrSafe_DB($OpDetails) . ") ";
 $MyQuery.= "LEFT JOIN AccPrice AS ap ON CONCAT(EnDivision,EnClass) LIKE ap.APDivClass AND e.EnTournament=ap.APTournament ";
