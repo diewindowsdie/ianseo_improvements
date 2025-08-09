@@ -61,11 +61,13 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 		    $pdf->SetFont($pdf->FontStd,'B',7);
             //headers under the session name
 			$pdf->Cell(11, 4, $PdfData->Data['Fields']['TargetNo'], 1, 0, 'C', 1);
-			$pdf->Cell($TargetFace ? 38 : 44, 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
+			$pdf->Cell(($TargetFace ? 38 : 44) + ($PdfData->HideNormatives ? 9 : 0), 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
 			$pdf->Cell($TargetFace ? 48 : 60, 4, $PdfData->Data['Fields']['NationCode'], 1, 0, 'L', 1);
 			if(!$pdf->HideCols) {
 				$pdf->Cell(12, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'C', 1);
-				$pdf->Cell(9, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
+                if (!$PdfData->HideNormatives) {
+                    $pdf->Cell(9, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
+                }
 			}
 			$pdf->Cell(18 + ($pdf->HideCols ? ($TargetFace ? 12 : 23) : 0), 4, $PdfData->Data['Fields']['DivCode'], 1, 0, 'C', 1);
 			$pdf->Cell(12 + ($pdf->HideCols ? ($TargetFace ? 12 : 22) : 0), 4, $PdfData->Data['Fields']['ClassCode'], 1, 0, 'C', 1);
