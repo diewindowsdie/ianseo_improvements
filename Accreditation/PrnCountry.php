@@ -52,7 +52,7 @@ if(isset($_REQUEST["Session"]) && is_numeric($_REQUEST["Session"]))
 if($TmpWhere != "")
 	$MyQuery .= "AND (" . $TmpWhere . ")";
 if($NoPhoto) $MyQuery .= "AND (length(PhPhoto)='' or PhPhoto is null) ";
-$MyQuery.= "ORDER BY CoCode, Name, CoName, FirstName, TargetNo ";
+$MyQuery.= "ORDER BY CoName, FirstName, Name, EnMiddleName, TargetNo ";
 
 $Rs=safe_r_sql($MyQuery);
 $ShowStatusLegend = false;
