@@ -17,8 +17,8 @@ $spaceBetweenSections = 5;
 
 $maxNumPhases = 0;
 $maxElimRounds = 0;
-$maxAthleteNameLength = 0;
-$maxRegionNameLength = 0;
+$averageAthleteNameLength = 0;
+$averageRegionNameLength = 0;
 
 $athleteNameColumnLength = 0;
 
@@ -35,13 +35,15 @@ foreach ($PdfData->rankData['sections'] as $section) {
     $maxElimRounds = max($maxElimRounds, $ElimCols);
     //пробежимся по всем спортсменам и регионам и найдем самые длинные строки
     foreach($section['items'] as $item) {
-        $maxAthleteNameLength = max($maxAthleteNameLength, strlen($item['athlete']));
-        $maxRegionNameLength = max($maxRegionNameLength, strlen(getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3'])));
+        $averageAthleteNameLength += strlen($item['athlete']);
+        $averageRegionNameLength += strlen(getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']));
     }
+    $averageAthleteNameLength = $averageAthleteNameLength / count($section['items']);
+    $averageRegionNameLength = $averageRegionNameLength / count($section['items']);
 }
 
 $spaceAvailable = 190 - 8 - 12 - 12 * $maxElimRounds - 15 * $maxNumPhases;
-$athleteNameLength = floor($spaceAvailable * $maxAthleteNameLength / ($maxAthleteNameLength + $maxRegionNameLength));
+$athleteNameLength = floor($spaceAvailable * $averageAthleteNameLength / ($averageAthleteNameLength + $averageRegionNameLength));
 
 $officialsSize = TournamentOfficials::getOfficialsBlockHeight();
 $IRMLegendSize = $legendStatusProvider->getLegendBlockHeight();
