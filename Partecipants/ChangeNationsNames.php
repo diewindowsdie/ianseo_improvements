@@ -147,7 +147,7 @@
 		<?php while ($row=safe_fetch($rs)) { ?>
 			<tr>
 				<td class="Right Bold"><input type="text" id="d_c_CoCode_<?php print $row->CoId;?>" size="10" maxlength="10" value="<?php print $row->CoCode;?>" onblur="UpdateField('d_c_CoCode_<?php print $row->CoId;?>');" /></td>
-                <td><input type="text" id="d_c_CoName_<?php print $row->CoId;?>" size="30" maxlength="30" value='<?php print $row->CoName;?>' onchange="UpdateField('d_c_CoName_<?php print $row->CoId;?>');" /></td>
+                <td><input type="text" id="d_c_CoName_<?php print $row->CoId;?>" size="50" maxlength="80" value='<?php print $row->CoName;?>' onchange="UpdateField('d_c_CoName_<?php print $row->CoId;?>');" /></td>
                 <td><input type="text" id="d_c_CoNameComplete_<?php print $row->CoId;?>" size="50" maxlength="80" value='<?php print $row->CoNameComplete;?>'  onchange="UpdateField('d_c_CoNameComplete_<?php print $row->CoId;?>');" /></td>
 				<td><input type="text" id="d_c_CoParent1_<?php print $row->CoId;?>" size="5" maxlength="5" value="<?php print $row->p1Code;?>"  onblur="UpdateField('d_c_CoParent1_<?php print $row->CoId;?>');" />&nbsp;<?php print $row->p1Name;?></td>
 				<td><input type="text" id="d_c_CoParent2_<?php print $row->CoId;?>" size="5" maxlength="5" value="<?php print $row->p2Code;?>"  onblur="UpdateField('d_c_CoParent2_<?php print $row->CoId;?>');" />&nbsp;<?php print $row->p2Name;?></td>

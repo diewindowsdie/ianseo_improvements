@@ -891,7 +891,7 @@
 		</tr>
 		<tr>
 			<th class="TitleLeft"><?php print get_text('NationShort','Tournament');?></th>
-			<td><input type="text" maxlength="30" size="50" name="d_c_CoName_" id="d_c_CoName_" value=""/></td>
+			<td><input type="text" maxlength="80" size="50" name="d_c_CoName_" id="d_c_CoName_" value=""/></td>
 			<th class="TitleLeft"><?php echo $combos['mixteamfin']['descr']; ?></th>
 			<td><?php echo $combos['mixteamfin']['combo']; ?></td>
 		</tr>
@@ -909,7 +909,7 @@
 		</tr>
 		<tr>
 			<th class="TitleLeft"><?php print get_text('NationShort','Tournament') . ' (2)';?></th>
-			<td><input type="text" maxlength="30" size="50" name="d_c_CoName2_" id="d_c_CoName2_" value=""/></td>
+			<td><input type="text" maxlength="80" size="50" name="d_c_CoName2_" id="d_c_CoName2_" value=""/></td>
 			<th class="TitleLeft"><?php echo $combos['double']['descr']; ?></th>
 			<td><?php echo $combos['double']['combo']; ?></td>
 		</tr>
@@ -920,7 +920,7 @@
 		</tr>
 		<tr>
 			<th class="TitleLeft"><?php print get_text('NationShort','Tournament') . ' (3)';?></th>
-			<td><input type="text" maxlength="30" size="50" name="d_c_CoName3_" id="d_c_CoName3_" value=""/></td>
+			<td><input type="text" maxlength="80" size="50" name="d_c_CoName3_" id="d_c_CoName3_" value=""/></td>
 			<th class="TitleLeft"><?php echo get_text('Email','Tournament'); ?></th>
 			<td><input type="email" name="d_ed_EdEmail_" id="d_ed_EdEmail_" value=""/></td>
 		</tr>
