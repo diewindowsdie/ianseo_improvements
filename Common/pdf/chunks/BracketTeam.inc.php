@@ -90,18 +90,26 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 			$OrgY=$pdf->GetY();
 
 			// Target Numbers
-			if($ShowTargetNo && ($Match['target'] or $Match['oppTarget']) and !($Match['score'] or $Match['setScore']) and !($Match['oppScore'] or $Match['oppSetScore']) and !$Match['tie'] and !$Match['oppTie']) {
+			if($ShowTargetNo && ($Match['target'] or $Match['oppTarget']) and !($Match['score'] or $Match['setScore']) and !($Match['oppScore'] or $Match['oppSetScore']) and in_array($Match['tie'], [0, 2]) and in_array($Match['oppTie'], [0, 2])) {
 			   	$pdf->SetFont($pdf->FontStd,'I',7);
 				if($FirstPhase) {
 					$pdf->SetX($LineXstart-7);
-					$pdf->Cell(7, $CellHeight, "T# " . $Match['target'], 0, 0, 'R', 0);
+                    if ($Match["countryName"]) {
+                        $pdf->Cell(7, $CellHeight, get_text('TargetWithoutN') . ' ' . ltrim($Match['target'], '0'), 0, 0, 'R', 0);
+                    }
 					$pdf->SetXY($LineXstart-7, $OrgY+$CellHeight);
-					$pdf->Cell(7, $Cella+($Componenti*$CellaNomi), "T# " . $Match['oppTarget'], 0, 0, 'R', 0);
+                    if ($Match["oppCountryName"]) {
+                        $pdf->Cell(7, $Cella + ($Componenti * $CellaNomi), get_text('TargetWithoutN') . ' ' . ltrim($Match['oppTarget'], '0'), 0, 0, 'R', 0);
+                    }
 				} else {
 					$pdf->SetXY($LineXstart, $OrgY-3);
-					$pdf->Cell($MisName+$AddSize+$MisScore, 2.5, "T# " . $Match['target']. ($ShowSchedule ? ' ' . $Match['scheduledDate']  . " @ "  . $Match['scheduledTime'] : ''), 0, 0, 'L', 0);
+                    if ($Match["countryName"]) {
+                        $pdf->Cell($MisName + $AddSize + $MisScore, 2.5, get_text('TargetWithoutN') . ' ' . ltrim($Match['target'], '0') . ($ShowSchedule ? ' ' . $Match['scheduledDate'] . " @ " . $Match['scheduledTime'] : ''), 0, 0, 'L', 0);
+                    }
 					$pdf->SetXY($LineXstart, $OrgY+ 2*$Cella);
-					$pdf->Cell($MisName+$AddSize+$MisScore, 2.5, "T# " . $Match['oppTarget'], 0, 0, 'L', 0);
+                    if ($Match["oppCountryName"]) {
+                        $pdf->Cell($MisName + $AddSize + $MisScore, 2.5, get_text('TargetWithoutN') . ' ' . ltrim($Match['oppTarget'], '0'), 0, 0, 'L', 0);
+                    }
 				}
 				$pdf->SetXY($LineXstart, $OrgY);
 			}
