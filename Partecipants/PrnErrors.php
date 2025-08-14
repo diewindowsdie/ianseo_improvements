@@ -70,7 +70,7 @@ if($Rs) {
 		}
 	   	$pdf->SetFont($pdf->FontStd,'',7);
 	   	$pdf->SetFont($pdf->FontStd,'B',7);
-		$pdf->Cell(45 + ($internationalProtocol ? 8 : 0), 4,  $MyRow->FirstName . ' ' . $MyRow->Name . ($MyRow->EnMiddleName ? ' ' . $MyRow->EnMiddleName : ''), 1, 0, 'L', 0);
+        $pdf->Cell(45 + ($internationalProtocol ? 8 : 0), 4,  getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->EnMiddleName), 1, 0, 'L', 0);
 	   	$pdf->SetFont($pdf->FontStd,'',7);
 		$pdf->Cell(48, 4,  getFullCountryName($MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3), 'RTB', 0, 'L', ($MyRow->invalidCountry));
         $pdf->Cell(12, 4,  ($MyRow->DOB), 1, 0, 'R', ($MyRow->invalidDOB));

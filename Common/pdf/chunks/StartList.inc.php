@@ -114,7 +114,7 @@ foreach($PdfData->Data['Items'] as $MyRows) {
         //build data for one target and athlete and add it to $Components['players'] array
         $temprow=array();
 		$temprow[]=substr($MyRow->TargetNo,-1,1);
-		$temprow[]= ($MyRow->Athlete ?? '');
+		$temprow[]= getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->MiddleName);
 		$temprow[]= ($MyRow->NationCode ?? '');
         $temprow[]= getFullCountryName($MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3);
 		$temprow[]= ($MyRow->DOB ?? '');

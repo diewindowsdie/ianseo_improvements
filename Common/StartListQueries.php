@@ -353,7 +353,7 @@ function getStartListQuery($ORIS=false, $Event='', $Elim=false, $Filled=false, $
 
 		$MyQuery = "SELECT distinct SesName, 
 				EvCode, EvOdfCode, DivDescription, ClDescription, 
-				Bib, Athlete, SUBSTRING(AtTargetNo,1,1) AS Session, SUBSTRING(AtTargetNo,2) AS TargetNo, NationCode, Nation, RealEventCode, RealEventName,
+				Bib, Athlete, FirstName, Name, MiddleName, SUBSTRING(AtTargetNo,1,1) AS Session, SUBSTRING(AtTargetNo,2) AS TargetNo, NationCode, Nation, RealEventCode, RealEventName,
 				EventCode, EventName, DOB, SesAth4Target, ClassCode, DivCode, AgeClass, SubClass, SubClassDescription, Status, 
 				`IC`, `TC`, `IF`, `TF`, `TM`, NationCode2, Nation2, NationCode3, Nation3, EnSubTeam, TfName, Wheelchair,
 				concat(DvMajVersion, '.', DvMinVersion) as DocVersion, date_format(DvPrintDateTime, '%e %b %Y %H:%i UTC') as DocVersionDate,
@@ -368,6 +368,9 @@ function getStartListQuery($ORIS=false, $Event='', $Elim=false, $Filled=false, $
 					EvCode as RealEventCode, EvEventName as RealEventName,
 					" . ($ORIS ? " IFNULL(EvCode,CONCAT(TRIM(EnDivision),TRIM(EnClass))) as EventCode," : " '' as EventCode,") . " 
 					trim(concat(upper(EnFirstName), ' ', EnName, ' ', EnMiddleName)) Athlete,
+					upper(EnFirstName) as FirstName,
+					EnName as Name,
+					EnMiddleName as MiddleName,
 					EnCode as Bib,
 					QuTargetNo,
 					upper(c.CoCode) AS NationCode,
@@ -748,6 +751,9 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		$MyQuery .= "(SELECT"
 			. " EnCode as Bib"
 			. ", trim(concat(upper(EnFirstName), ' ', EnName, ' ', coalesce(EnMiddleName, ''))) AS Athlete"
+            . ", trim(upper(EnFirstName)) as FirstName"
+            . ", trim(EnName) as Name"
+            . ", trim(EnMiddleName) as MiddleName"
 			. ", QuSession AS Session"
 			. ", SesName"
 			. ", SUBSTRING(QuTargetNo,2) AS TargetNo"
@@ -822,6 +828,9 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		$MyQuery .= "(SELECT"
 			. " EnCode as Bib"
 			. ", trim(concat(upper(EnFirstName), ' ', EnName, ' ', coalesce(EnMiddleName, ''))) AS Athlete"
+            . ", trim(upper(EnFirstName)) as FirstName"
+            . ", trim(EnName) as Name"
+            . ", trim(EnMiddleName) as MiddleName"
 			. ", QuSession AS Session"
 			. ", SesName"
 			. ", SUBSTRING(QuTargetNo,2) AS TargetNo"
@@ -896,6 +905,9 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		$MyQuery .= "(SELECT"
 			. " EnCode as Bib"
 			. ", trim(concat(upper(EnFirstName), ' ', EnName, ' ', coalesce(EnMiddleName, ''))) AS Athlete"
+            . ", trim(upper(EnFirstName)) as FirstName"
+            . ", trim(EnName) as Name"
+            . ", trim(EnMiddleName) as MiddleName"
 			. ", QuSession AS Session"
 			. ", SesName"
 			. ", SUBSTRING(QuTargetNo,2) AS TargetNo"
@@ -1246,6 +1258,9 @@ function getStartListCategoryQuery($ORIS=false, $orderByTeam=0, $Events=array())
 			SesName, 
 			EnCode as Bib, 
 			trim(concat(upper(EnFirstName $Collation), ' ', EnName $Collation, ' ', EnMiddleName $Collation)) AS Athlete, 
+			upper(EnFirstName) as FirstName,
+			EnName as Name,
+			EnMiddleName as MiddleName,
 			QuSession AS Session, 
 			SUBSTRING(QuTargetNo,2) AS TargetNo, 
 			case EvTeamCreationMode

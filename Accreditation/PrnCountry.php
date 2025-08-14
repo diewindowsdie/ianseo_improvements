@@ -110,7 +110,7 @@ while($MyRow=safe_fetch($Rs)) {
         $pdf->SetDefaultColor();
     $pdf->Cell( 4, 4, $MyRow->Session, 'RTB', 0, 'R', $MyRow->OpDone);
     $pdf->Cell(11, 4, $MyRow->TargetNo, 1, 0, 'R', $MyRow->OpDone);
-    $pdf->Cell(41, 4, $MyRow->FirstName . ' ' . $MyRow->Name . ($MyRow->EnMiddleName ? ' ' . $MyRow->EnMiddleName : ''), 1, 0, 'L', $MyRow->OpDone);
+    $pdf->Cell(41, 4, getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->EnMiddleName), 1, 0, 'L', $MyRow->OpDone);
     $pdf->Cell(12, 4, $MyRow->DoB, 1, 0, 'R', $MyRow->OpDone);
     $pdf->Cell(10, 4, $MyRow->AgeClass, 1, 0, 'C', $MyRow->OpDone);
     $pdf->Cell( 8, 4, $MyRow->SubclassDescripton, 1, 0, 'C', $MyRow->OpDone);

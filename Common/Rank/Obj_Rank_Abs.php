@@ -532,7 +532,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 						'session' => $myRow->Session,
 						'sessionName' => $myRow->SesName,
 						'target' => $myRow->TargetNo,
-						'athlete' => $myRow->FirstNameUpper . ' ' . $myRow->Name . ($myRow->EnMiddleName ? " " . $myRow->EnMiddleName : ""),
+						'athlete' => getFullAthleteName($myRow->FirstNameUpper, $myRow->Name, $myRow->EnMiddleName),
 						'familyname' => $myRow->FirstName,
 						'familynameUpper' => $myRow->FirstNameUpper,
 						'givenname' => $myRow->Name,

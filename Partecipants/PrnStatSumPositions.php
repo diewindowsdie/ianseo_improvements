@@ -80,7 +80,7 @@ while ($row = safe_fetch($resultSet)) {
     $pdf->SetFont($pdf->FontStd, 'B', 8);
     $pdf->Cell(10, 5, $finalRank, 1, 0, 'C', 0);
     $pdf->SetFont($pdf->FontStd, '', 8);
-    $pdf->Cell(55, 5, mb_strtoupper($row->EnFirstName) . ' ' . $row->EnName . ($row->EnMiddleName ? ' ' . $row->EnMiddleName : ''), 1, 0, 'L', 0);
+    $pdf->Cell(55, 5, getFullAthleteName(mb_strtoupper($row->EnFirstName), $row->EnName, $row->EnMiddleName), 1, 0, 'L', 0);
     $pdf->Cell(59, 5, getFullCountryName($row->CoName1, $row->CoName2, $row->CoName3), 1, 0, 'L', 0);
     $pdf->Cell(14, 5, $row->BirthDate, 1, 0, 'C', 0);
     $pdf->Cell(12, 5, $row->RankSum, 1, 0, 'C', 0);

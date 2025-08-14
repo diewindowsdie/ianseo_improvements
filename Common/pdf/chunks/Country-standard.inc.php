@@ -76,7 +76,8 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 			}
             $pdf->Cell($nationCell, 4, '', 0, 0, 'C', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',7);
-			$pdf->Cell($athleteCell + ($PdfData->InternationalProtocol ? $TgtCell : 0), 4,  $MyRow->Athlete . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
+//			$pdf->Cell($athleteCell + ($PdfData->InternationalProtocol ? $TgtCell : 0), 4,  $MyRow->Athlete . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
+            $pdf->Cell($athleteCell + ($PdfData->InternationalProtocol ? $TgtCell : 0), 4, getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->MiddleName) . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
             $pdf->Cell($regionCell, 4, getFullCountryName(null, $MyRow->NationComplete2, $MyRow->NationComplete3), 1, 0, 'L', 0);
             $pdf->Cell($birthdayCell, 4,  $MyRow->EnDob, 1, 0, 'L', 0);
 			if(!$PdfData->HideCols AND !$TargetFace and !$PdfData->InternationalProtocol) {

@@ -476,7 +476,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 							'countryCode' => $row->EnCoCode,
 							'session' => $row->Session,
 							'target' => $row->TargetNo,
-							'athlete'=>trim($row->EnFirstNameUpper . ' ' . $row->EnName . ' ' . $row->EnMiddleName),
+							'athlete'=>getFullAthleteName($row->EnFirstNameUpper, $row->EnName, $row->EnMiddleName),
 							'familyname' => $row->EnFirstName,
 							'familynameUpper' => $row->EnFirstNameUpper,
 							'givenname' => $row->EnName,
