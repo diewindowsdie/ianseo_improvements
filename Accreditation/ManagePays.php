@@ -58,11 +58,7 @@
 		$CurRow = 0;
 		while ($MyRow=safe_fetch($Rs))
 		{
-			$ComboPay
-				= '<select name="d_e_EnPays_' . $MyRow->EnId .  '" id="d_e_EnPays_' . $MyRow->EnId .  '" onChange="UpdateField(\'d_e_EnPays_' . $MyRow->EnId . '\');">'
-				. '<option value="1"' . ($MyRow->EnPays==1 ? ' selected' : '') . '>' . get_text('Yes') . '</option>'
-				. '<option value="0"' . ($MyRow->EnPays==0 ? ' selected' : '') . '>' . get_text('No') . '</option>'
-				. '</select>';
+            $payingCheckbox = '<input type="checkbox" name="d_e_EnPays_' . $MyRow->EnId .  '" id="d_e_EnPays_' . $MyRow->EnId .  '" onChange="UpdateCheckboxField(\'d_e_EnPays_' . $MyRow->EnId . '\');"' . ($MyRow->EnPays == 1 ? " checked=\"checked\"" : "") . '/>';
 ?>
 <tr <?php print 'id="Row_' . $MyRow->EnId . '" ' . ($CurRow++ % 2 ? ' class="OtherColor"' : '');?>>
 <td><?php print ($MyRow->EnCode!='' ? $MyRow->EnCode : '&nbsp;'); ?></td>
@@ -72,7 +68,7 @@
 <td><?php print ($MyRow->CoName!='' ? $MyRow->CoName : '&nbsp;'); ?></td>
 <td class="Center"><?php print ($MyRow->EnDivision!='' ? $MyRow->EnDivision : '&nbsp;')?></td>
 <td class="Center"><?php print ($MyRow->EnClass!='' ? $MyRow->EnClass : '&nbsp;')?></td>
-<td class="Center" title="<?php print get_text('Pay','Tournament'); ?>"><?php print $ComboPay; ?></td>
+<td class="Center" title="<?php print get_text('Pay','Tournament'); ?>"><?php print $payingCheckbox; ?></td>
 </tr>
 <?php
 		}

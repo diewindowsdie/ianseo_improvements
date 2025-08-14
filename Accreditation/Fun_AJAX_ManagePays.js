@@ -38,6 +38,36 @@ function UpdateField(Field)
 	}
 }
 
+function UpdateCheckboxField(Field)
+{
+    if (XMLHttp)
+    {
+        if (Field)
+        {
+            var FieldName = encodeURIComponent(Field);
+            var FieldValue= encodeURIComponent(document.getElementById(Field).checked ? 1 : 0);
+            CacheField.push(FieldName + "=" + FieldValue);
+        }
+
+        try
+        {
+            if ((XMLHttp.readyState==XHS_COMPLETE || XMLHttp.readyState==XHS_UNINIT) && CacheField.length>0)
+            {
+                var FromCache = CacheField.shift();
+                XMLHttp.open("POST","UpdatePay.php",true);
+                //	document.getElementById('idOutput').innerHTML="UpdateField.php?" + FieldName + "=" + FieldValue;
+                XMLHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+                XMLHttp.onreadystatechange=UpdateField_StateChange;
+                XMLHttp.send(FromCache);
+            }
+        }
+        catch (e)
+        {
+            //document.getElementById('idStatus').innerHTML='Errore: ' + e.toString();
+        }
+    }
+}
+
 function UpdateField_StateChange()
 {
 	// se lo stato � Complete vado avanti
