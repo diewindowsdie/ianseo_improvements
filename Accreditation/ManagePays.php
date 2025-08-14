@@ -20,7 +20,7 @@
 <tr class="Divider"><td colspan="7"></td></tr>
 <?php
 	$Select
-		= "SELECT EnId,EnCode,EnFirstName,EnName,EnTournament,EnSex,EnDivision,EnClass,CoCode,CoName,EnPays "
+		= "SELECT EnId,EnCode,EnFirstName,EnName,EnMiddleName,EnTournament,EnSex,EnDivision,EnClass,CoCode,CoName,EnPays,DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB "
 		. "FROM Entries LEFT JOIN Countries ON EnCountry=CoId AND EnTournament=CoTournament "
 		. "WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 ";
 
@@ -36,6 +36,8 @@
 		$OrderBy = "EnDivision " . $_REQUEST['ordDiv'] . " ";
 	elseif (isset($_REQUEST['ordCl']) && ($_REQUEST['ordCl']=='ASC' || $_REQUEST['ordCl']=='DESC'))
 		$OrderBy = "EnClass " . $_REQUEST['ordCl'] . " ";
+    elseif (isset($_REQUEST['ordDoB']) && ($_REQUEST['ordDoB']=='ASC' || $_REQUEST['ordDoB']=='DESC'))
+        $OrderBy = "date(EnDob) " . $_REQUEST['ordDoB'] . " ";
 
 	$Select.="ORDER BY " . $OrderBy;
 
@@ -46,7 +48,7 @@
 		print '<tr>';
 		print '<td class="Title" width="6%"><a class="Link" href="' . $_SERVER['PHP_SELF'] . '?ordCode=' . (isset($_REQUEST['ordCode']) ? ( $_REQUEST['ordCode']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Code','Tournament') . '</a></td>'
 			. '<td class="Title" width="20%"><a class="Link" href="' . $_SERVER['PHP_SELF'] . '?ordName=' . (isset($_REQUEST['ordName']) ? ( $_REQUEST['ordName']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Archer') . '</a></td>'
-			. '<td class="Title" width="4%"><a class="Link" href="' . $_SERVER['PHP_SELF'] . '?ordCountry=' . (isset($_REQUEST['ordCountry']) ? ($_REQUEST['ordCountry']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Country') . '</a></td>'
+            . '<td class="Title" width="4%"><a class="Link" href="' . $_SERVER['PHP_SELF'] . '?ordDoB=' . (isset($_REQUEST['ordDoB']) ? ( $_REQUEST['ordDoB']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('DOB', 'Tournament') . '</a></td>'
 			. '<td class="Title" width="18%"><a class="Link" href="' . $_SERVER['PHP_SELF'] . '?ordCountry=' . (isset($_REQUEST['ordCountry']) ? ($_REQUEST['ordCountry']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('NationShort','Tournament') . '</a></td>'
 			. '<td class="Title" width="4%"><a class="Link" href="' . $_SERVER['PHP_SELF'] . '?ordDiv=' . (isset($_REQUEST['ordDiv']) ? ($_REQUEST['ordDiv']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Div') . '</a></td>'
 			. '<td class="Title" width="4%"><a class="Link" href="' . $_SERVER['PHP_SELF'] . '?ordCl=' . (isset($_REQUEST['ordCl']) ? ($_REQUEST['ordCl']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Cl') . '</a></td>'
@@ -64,8 +66,9 @@
 ?>
 <tr <?php print 'id="Row_' . $MyRow->EnId . '" ' . ($CurRow++ % 2 ? ' class="OtherColor"' : '');?>>
 <td><?php print ($MyRow->EnCode!='' ? $MyRow->EnCode : '&nbsp;'); ?></td>
-<td><?php print ($MyRow->EnFirstName . $MyRow->EnName !='' ? $MyRow->EnFirstName . ' ' . $MyRow->EnName : '&nbsp;'); ?></td>
-<td><?php print ($MyRow->CoCode!='' ? $MyRow->CoCode : '&nbsp;'); ?></td>
+<td><?php print getFullAthleteName($MyRow->EnFirstName, $MyRow->EnName, $MyRow->EnMiddleName
+    ); ?></td>
+<td><?php print ($MyRow->DoB!='' ? $MyRow->DoB : '&nbsp;'); ?></td>
 <td><?php print ($MyRow->CoName!='' ? $MyRow->CoName : '&nbsp;'); ?></td>
 <td class="Center"><?php print ($MyRow->EnDivision!='' ? $MyRow->EnDivision : '&nbsp;')?></td>
 <td class="Center"><?php print ($MyRow->EnClass!='' ? $MyRow->EnClass : '&nbsp;')?></td>
