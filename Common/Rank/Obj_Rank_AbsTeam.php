@@ -297,7 +297,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 
 			$this->data['meta']['title']=get_text('ResultSqAbs','Tournament');
 			$this->data['meta']['lastUpdate']='0000-00-00 00:00:00';
-            $this->data["meta"]["hideNormatives"] = getModuleParameter("Tournament", "HideNormatives", false, $this->tournament);
+            $this->data["meta"]["InternationalProtocol"] = getModuleParameter("Tournament", "InternationalProtocol", false, $this->tournament);
             $this->data['sections']=array();
 
 			$myEv='';

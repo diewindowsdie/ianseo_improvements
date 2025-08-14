@@ -354,11 +354,11 @@ class ResultPDF extends IanseoPdf {
 					$this->Cell(4, $this->RealCellHeight,  $row[0], 1, 0, 'R', 0);
 				}
 				$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-				$this->Cell(($TargetFace ? 38 : 44) + ($this->HideNormatives ? 9 : 0), $this->RealCellHeight,  $row[1]??'', 1, 0, 'L', 0);
+				$this->Cell(($TargetFace ? 38 : 44) + ($this->InternationalProtocol ? 9 : 0), $this->RealCellHeight,  $row[1]??'', 1, 0, 'L', 0);
 				$this->Cell($TargetFace ? 48 : 60, $this->RealCellHeight,  $row[3]??'' . ($row[10]==null ? "" : " (" . $row[10] . " " . $row[11]. ")") . ($row[13]==null ? "" : " (" . $row[13]." ". $row[14].")"), 'RTB', 0, 'L', 0);
 				if(!$this->HideCols) {
 					$this->Cell(12, $this->RealCellHeight,  $row[4], 1, 0, 'C', 0);
-                    if (!$this->HideNormatives) {
+                    if (!$this->InternationalProtocol) {
                         $this->Cell( 9, $this->RealCellHeight,  $row[5], 1, 0, 'C', 0);
                     }
 				}
@@ -386,20 +386,20 @@ class ResultPDF extends IanseoPdf {
 		}
 	}
 
-	function writeDataRowPrnIndividualAbs($item, $distSize, $addSize, $running, $distances, $double, $snapDistance, $border='TB', $hideNormatives = false) {
+	function writeDataRowPrnIndividualAbs($item, $distSize, $addSize, $running, $distances, $double, $snapDistance, $border='TB', $internationalProtocol = false) {
 		$hasIRMStatus = !is_numeric($item['score']);
 		$this->SetFont($this->FontStd,'B',$this->FontSizeLines);
 		$this->Cell(8, 4 * ($double ? 2 : 1),  ($hasIRMStatus ? $item['score'] : $item['rank']), $border.'LR', 0, 'R', 0);
 		//Atleta
 		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-		$this->Cell(35 + $addSize + ($hideNormatives ? 8 : 0), 4 * ($double ? 2 : 1),  $item['athlete'], $border. 'R', 0, 'L', 0);
+		$this->Cell(35 + $addSize + ($internationalProtocol ? 8 : 0), 4 * ($double ? 2 : 1),  $item['athlete'], $border. 'R', 0, 'L', 0);
 		$this->Cell(12, 4 * ($double ? 2 : 1), ($item['birthdate']), $border.'L', 0, 'C', 0);
-        if (!$hideNormatives) {
+        if (!$internationalProtocol) {
             $this->Cell(8, 4 * ($double ? 2 : 1), ($item['subclassName']), $border.'L', 0, 'C', 0);
         }
 		//Nazione
 		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-		$this->Cell(41 + $addSize + ($hideNormatives ? 8 : 0), 4 * ($double ? 2 : 1), getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']), $border.'L', 0, 'L', 0);
+		$this->Cell(41 + $addSize + ($internationalProtocol ? 8 : 0), 4 * ($double ? 2 : 1), getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']), $border.'L', 0, 'L', 0);
 		$this->SetFont($this->FontFix,'',$this->FontSizeHead);
 		if (!$hasIRMStatus) {
 			if(!$double) {
@@ -533,9 +533,9 @@ class ResultPDF extends IanseoPdf {
 						$tmpNote .= ' ' . $item['record'];
 					}
 				}
-				$this->Cell(10, 4 * ($double ? 2 : 1),  $tmpNote, $border.$LrBorder, ($hideNormatives ? 1 : 0), $align, 0);
+				$this->Cell(10, 4 * ($double ? 2 : 1),  $tmpNote, $border.$LrBorder, ($internationalProtocol ? 1 : 0), $align, 0);
 			}
-            if (!$hideNormatives) {
+            if (!$internationalProtocol) {
                 $this->SetFont($this->FontFix, 'B', 7);
                 $this->Cell(0, 4 * ($double ? 2 : 1), $item['normative'], $border . $LrBorder, 1, 'C', 0);
             }
@@ -544,7 +544,7 @@ class ResultPDF extends IanseoPdf {
 		}
 	}
 
-	function writeGroupHeaderPrnIndividualAbs($section, $distSize, $addSize, $running, $distances, $double, $follows=false, $hideTempHeader=false, $hideNormatives = false)
+	function writeGroupHeaderPrnIndividualAbs($section, $distSize, $addSize, $running, $distances, $double, $follows=false, $hideTempHeader=false, $internationalProtocol = false)
 	{
 		$tmpHeader="";
 		$this->SetFont($this->FontStd,'B',$this->FontSizeTitle);
@@ -581,13 +581,13 @@ class ResultPDF extends IanseoPdf {
 	   	$this->SetFont($this->FontStd,'B',$this->FontSizeHead);
 		$this->Cell(8, 4 * ($double ? 2 : 1),  $section['fields']['rank'], 1, 0, 'C', 1);
 
-		$this->Cell(35 + $addSize + ($hideNormatives ? 8 : 0), 4 * ($double ? 2 : 1),  $section['fields']['athlete'], 1, 0, 'L', 1);
+		$this->Cell(35 + $addSize + ($internationalProtocol ? 8 : 0), 4 * ($double ? 2 : 1),  $section['fields']['athlete'], 1, 0, 'L', 1);
 		$this->Cell(12, 4 * ($double ? 2 : 1),  $section['fields']['birthdate'], 1, 0, 'C', 1);
-        if (!$hideNormatives) {
+        if (!$internationalProtocol) {
             $this->Cell(8, 4 * ($double ? 2 : 1), $section['fields']['subclass'], 1, 0, 'C', 1);
         }
 
-		$this->Cell(41 + $addSize + ($hideNormatives ? 8 : 0), 4 * ($double ? 2 : 1),  $section['fields']['countryName'], 1, 0, 'L', 1);
+		$this->Cell(41 + $addSize + ($internationalProtocol ? 8 : 0), 4 * ($double ? 2 : 1),  $section['fields']['countryName'], 1, 0, 'L', 1);
 		if(!$double)
 		{
 			for($i=1; $i<=$distances;$i++)
@@ -616,16 +616,16 @@ class ResultPDF extends IanseoPdf {
 			$this->Cell(12, 4 * ($double ? 2 : 1),  $section['fields']['score'], 1, 0, 'C', 1);
 			$this->Cell(0, 4 * ($double ? 2 : 1),  '', 1, 0, 'C', 1);
 		} else {
-			$this->Cell(10, 4 * ($double ? 2 : 1),  '', 1, $hideNormatives ? 1 : 0, 'C', 1);
+			$this->Cell(10, 4 * ($double ? 2 : 1),  '', 1, $internationalProtocol ? 1 : 0, 'C', 1);
 		}
-        if (!$hideNormatives) {
+        if (!$internationalProtocol) {
             $this->Cell(0, 4 * ($double ? 2 : 1), $section['fields']['normative'], 1, 1, 'C', 1);
         }
 		$this->SetFont($this->FontStd,'',1);
 		$this->Cell(0, 0.5,  '', 1, 1, 'C', 0);
 	}
 
-	function writeGroupHeaderPrnTeamAbs($section,$follows=false, $hideTempHeader=false, $hideNormatives = false) {
+	function writeGroupHeaderPrnTeamAbs($section, $follows=false, $hideTempHeader=false, $internationalProtocol = false) {
 		$tmpHeader="";
 		$this->SetFont($this->FontStd,'B',$this->FontSizeTitle);
 		if (!empty($section['sesArrows'])) {
@@ -660,9 +660,9 @@ class ResultPDF extends IanseoPdf {
 		$this->SetFont($this->FontStd,'B',$this->FontSizeHead);
 		$this->Cell(9, 4,  $section['fields']['rank'], 1, 0, 'C', 1);
 		$this->Cell(63 - ($section['running'] ? 5 : 0), 4, $section['fields']['countryName'], 1, 0, 'L', 1);
-		$this->Cell(51 - ($section['running'] ? 5 : 0) + ($hideNormatives ? 8 : 0), 4, $section['fields']['athletes']['name'], 1, 0, 'L', 1);
+		$this->Cell(51 - ($section['running'] ? 5 : 0) + ($internationalProtocol ? 8 : 0), 4, $section['fields']['athletes']['name'], 1, 0, 'L', 1);
 		$this->Cell(12, 4, $section['fields']['athletes']['fields']['birthdate'], 1, 0, 'C', 1);
-        if (!$hideNormatives) {
+        if (!$internationalProtocol) {
             $this->Cell(8, 4,  $section['fields']['athletes']['fields']['subclass'], 1, 0, 'C', 1);
         }
 		if($section['running'])
@@ -702,7 +702,7 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(190, 0.5,  '', 1, 1, 'C', 0);
 	}
 
-	function writeDataRowPrnTeamAbs($item, $endQualified, $running, $hideNormatives = false) {
+	function writeDataRowPrnTeamAbs($item, $endQualified, $running, $internationalProtocol = false) {
 		if($endQualified) {
 			$this->SetFont($this->FontStd,'',1);
 			$this->Cell(190, 1,  '', 1, 1, 'C', 1);
@@ -747,9 +747,9 @@ class ResultPDF extends IanseoPdf {
 
 		foreach ($item['athletes'] as $a) {
 			$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-			$this->Cell(51 - ($running ? 5 : 0) + ($hideNormatives ? 8 : 0), 4,  $a['athlete'], 1, 0, 'L', 0);
+			$this->Cell(51 - ($running ? 5 : 0) + ($internationalProtocol ? 8 : 0), 4,  $a['athlete'], 1, 0, 'L', 0);
 			$this->Cell(12, 4,  $a['birthdate'], 1, 0, 'C', 0);
-            if (!$hideNormatives) {
+            if (!$internationalProtocol) {
                 $this->Cell(8, 4,  $a['subclassName'], 1, ($running ? 1 : 0), 'C', 0);
             }
 			$this->SetFont($this->FontFix,'',$this->FontSizeHead);

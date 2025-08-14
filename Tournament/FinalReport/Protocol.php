@@ -20,7 +20,7 @@ const Checked1ParameterName = "CheckedCountry1";
 const Checked2ParameterName = "CheckedCountry2";
 const Checked3ParameterName = "CheckedCountry3";
 
-$isInternationalProtocol = getModuleParameter("Tournament", "HideNormatives", false, $_SESSION['TourId']);
+$isInternationalProtocol = getModuleParameter("Tournament", "InternationalProtocol", false, $_SESSION['TourId']);
 
 if (array_key_exists("doPrint", $_REQUEST)) {
     //в этом отчете печатаем все
