@@ -40,17 +40,16 @@ foreach($PdfData->CountryList as $CountryCode => $item) {
 	$pdf->SetFont($pdf->FontStd,'B',8);
 	$pdf->Cell(8, 5, $MyRank, 1, 0, 'R', 0);
 	$pdf->SetFont($pdf->FontStd,'',8);
-	if(file_exists($CFG->DOCUMENT_PATH . 'Common/Images/Flags/F_' . $CountryCode . '.png')) {
+    $flagExists = file_exists($CFG->DOCUMENT_PATH . 'Common/Images/Flags/F_' . $CountryCode . '.png');
+	if ($flagExists) {
 		$pdf->Cell(10, 5,  '', 1, 0, 'C', 0);
 		$TmpX = $pdf->GetX()-10;
 		$TmpY = $pdf->GetY();
 		$pdf->Image($CFG->DOCUMENT_PATH . 'Common/Images/Flags/F_' . $CountryCode . '.png', $TmpX+3, $TmpY+1 , 4,0);
 		$pdf->SetXY($TmpX+10,$TmpY);
-	} else {
-		$pdf->Cell(10, 5,  $CountryCode, "TBL", 0, 'C', 0);
 	}
 
-	$pdf->Cell(46, 5,  $item->Name, "TBR", 0, 'L', 0);
+	$pdf->Cell(46 + ($flagExists ? 0 : 10), 5,  $item->Name, "TBR", 0, 'L', 0);
 	$pdf->SetFont($pdf->FontStd,'',7);
 	$pdf->Cell(14, 5, $item->I[1], 1, 0, 'C', 0);
 	$pdf->Cell(14, 5, $item->I[2], 1, 0, 'C', 0);
