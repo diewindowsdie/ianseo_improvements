@@ -12,18 +12,23 @@ class TournamentOfficials
 
     static function printOfficials($pdf)
     {
+        $tournament = $_SESSION['TourId'];
+
+        if (getModuleParameter("Tournament", "InternationalProtocol", false, $tournament)) {
+            return;
+        }
+
         $spacerCellWidth = self::$spacerCellWidthPortrait;
         if ($pdf->getPageWidth() > $pdf->getPageHeight()) {
             $spacerCellWidth = self::$spacerCellWidthLandscape;
         }
         $cellWidth = ($pdf->getPageWidth() - 2 * $spacerCellWidth - 2 * self::$horizontalMargin) / 3;
-        $tournament = $_SESSION['TourId'];
 
         $sql = 'select TiName as Surname, TiGivenName as FirstName, TiLastName as Patronymic, TiAccreditation as Credential, CoNameComplete as Region, ItDescription as JudgeRoleCode from TournamentInvolved
                 left join Countries on CoId = TiCountry
                 left join InvolvedType on ItId = TiType
                 where TiIsSigningProtocols = 1 and TiTournament = ' . $tournament .
-                ' ORDER BY TiIsSigningProtocols desc, ItId IS NOT NULL, ItJudge=0, ItJudge, ItDoS=0, ItDoS, ItJury=0, ItJury, ItOc, TiName, TiGivenName';
+            ' ORDER BY TiIsSigningProtocols desc, ItId IS NOT NULL, ItJudge=0, ItJudge, ItDoS=0, ItDoS, ItJury=0, ItJury, ItOc, TiName, TiGivenName';
         $resultSet = safe_r_sql($sql);
         $judges = array();
         $i = 0;
@@ -38,13 +43,13 @@ class TournamentOfficials
         }
 
         $pdf->SetY($pdf->GetY() + 5);
-        $pdf->SetXY(self::$horizontalMargin,$pdf->GetY());
-        if(!$pdf->SamePage(self::$judgeRoleCellHeight + self::$judgeSignatureCellHeight + self::$judgeNameCellHeight)) {
+        $pdf->SetXY(self::$horizontalMargin, $pdf->GetY());
+        if (!$pdf->SamePage(self::$judgeRoleCellHeight + self::$judgeSignatureCellHeight + self::$judgeNameCellHeight)) {
             $pdf->AddPage();
         }
 
         //если судей с галочкой "подписывает протокол" хватает, выводим поля для подписей первых трех
-        $pdf->SetFont($pdf->FontStd,'B',$pdf->FontSizeLines);
+        $pdf->SetFont($pdf->FontStd, 'B', $pdf->FontSizeLines);
         $pdf->Cell($cellWidth, self::$judgeRoleCellHeight, get_text($judges[0]->JudgeRoleCode, 'Tournament'), 1, 0, 'C', 1);
         $pdf->Cell($spacerCellWidth, self::$judgeRoleCellHeight, '', 0, 0, 'R', 0);
         $pdf->Cell($cellWidth, self::$judgeRoleCellHeight, get_text($judges[1]->JudgeRoleCode, 'Tournament'), 1, 0, 'C', 1);
@@ -57,7 +62,7 @@ class TournamentOfficials
         $pdf->Cell($spacerCellWidth, self::$judgeSignatureCellHeight, '', 0, 0, 'R', 0);
         $pdf->Cell($cellWidth, self::$judgeSignatureCellHeight, '', 'LR', 1, 'C', 0);
 
-        $pdf->SetFont($pdf->FontStd,'',$pdf->FontSizeLines);
+        $pdf->SetFont($pdf->FontStd, '', $pdf->FontSizeLines);
         $pdf->Cell($cellWidth, self::$judgeNameCellHeight,
             $judges[0]->Surname .
             ' ' .
@@ -95,7 +100,12 @@ class TournamentOfficials
             1, 1, 'C', 1);
     }
 
-    static function getOfficialsBlockHeight() {
+    static function getOfficialsBlockHeight()
+    {
+        if (getModuleParameter("Tournament", "InternationalProtocol", false, $_SESSION['TourId'])) {
+            return 0;
+        }
+
         return self::$judgeRoleCellHeight + self::$judgeSignatureCellHeight + self::$judgeNameCellHeight;
     }
 }

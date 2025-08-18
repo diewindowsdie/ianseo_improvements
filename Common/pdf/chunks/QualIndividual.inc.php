@@ -12,9 +12,15 @@ $pdf->TotalShort=$PdfData->TotalShort;
 $pdf->ShotOffShort=$PdfData->ShotOffShort;
 $pdf->CoinTossShort=$PdfData->CoinTossShort;
 
+$officialsSize = TournamentOfficials::getOfficialsBlockHeight();
 $spaceBetweenSections = 5;
+$offsetBeforeOfficials = 5;
+if ($officialsSize == 0) {
+    $offsetBeforeOfficials = 0;
+}
 
 $legendStatusProvider = new StatusLegendProvider($pdf, true);
+$legendSize = $legendStatusProvider->getLegendBlockHeight();
 
 if (!isset($hideTempHeader)) {
     $hideTempHeader = false;
@@ -39,8 +45,6 @@ if(count($rankData['sections'])) {
 		else
 			$AddSize = (44-($section['meta']['numDist']*11))/2;
 
-        $officialsSize = TournamentOfficials::getOfficialsBlockHeight();
-        $legendSize = $legendStatusProvider->getLegendBlockHeight();
 
         //Verifico se l'header e qualche riga ci stanno nella stessa pagina altrimenti salto alla prosisma
         if(!$pdf->SamePage(15+(strlen($section['meta']['printHeader']) ? 8:0)+($section['meta']['sesArrows'] ? 8:0)))
@@ -53,9 +57,9 @@ if(count($rankData['sections'])) {
             $dataIndex++;
             //хотим, чтобы как минимум три строки были на той же странице, что и легенда и подписи ГСК
             if ($dataIndex + 2 === count($section['items'])) {
-                $spaceNeeded = 4 * 3 + $officialsSize + $legendSize +
-                    $spaceBetweenSections + //отступ до подписей
-                    + 5; //отступ до легенды
+                $spaceNeeded = 4 * (count($section['items']) - $dataIndex + 1) + $officialsSize + $legendSize +
+                    $offsetBeforeOfficials + //отступ до подписей
+                    + $spaceBetweenSections; //отступ до легенды
                 //если три последние строки + легенда + подписи не лезут - разрываем страницу
                 //проверяем только последнюю группу
                 if (!$pdf->SamePage($spaceNeeded) && $currentSectionIndex == count($rankData['sections'])) {
