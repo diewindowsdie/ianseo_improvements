@@ -72,6 +72,7 @@ $lang['Record-WAAF-CR-avg']='Moyenne du Record d\'Afrique';
 $lang['Record-WAAM-CC-GR']='Record Pan-Américain';
 $lang['Record-WAAM-CC-GR-avg']='Moyenne du Record des Jeux Pan Américains';
 $lang['Record-WAAM-CR-avg']='Moyenne du Record des Amériques';
+$lang['Record-WAAS-CC-GR-avg']='Record des Championnats d\'Asie (moy.)';
 $lang['Record-WAAS-CR-avg']='Moyenne du Record d\'Asie';
 $lang['Record-WAE-CR-avg']='Moyenne du Record d\'Europe';
 $lang['Record-WAO-CR-avg']='Moyenne du Record d\'Océanie';

@@ -1,6 +1,7 @@
 <?php
 $lang['AutoUpdate']='Automatisch bijwerken';
 $lang['BarRecord']='Toon gemiddelde Balk';
+$lang['BrokenRecords']='Verbeterde records';
 $lang['ByClub']='Op land/club';
 $lang['ByEvent']='Op evenement';
 $lang['ByName']='Op naam';
@@ -27,6 +28,8 @@ $lang['NotYetDefined']='Nog niet ontwikkeld';
 $lang['OfficialBiography']='Officieele Biografie';
 $lang['OlympicFont']='Naam Olypisch font';
 $lang['OlympicFont-use']='Gebruik het olympisch font';
+$lang['OneDayAfter']='+1 dag';
+$lang['OneDayBefore']='-1 dag';
 $lang['OtherInfo']='Andere informatie';
 $lang['PlayersInfo']='Deelnemers informatie';
 $lang['ProbMatches']='Voorlopige wedstrijden';
@@ -62,13 +65,17 @@ $lang['Record-GR-WAAM-CG']='PanAmerican Games record';
 $lang['Record-GR-WAAM-CG-avg']='PanAmerican Games record Avg';
 $lang['Record-GR-WAE-CG']='Europese Spelen record';
 $lang['Record-GR-WAE-CG-avg']='Europese Spelen record Avg';
+$lang['Record-OR-avg']='Olympisch record gemiddeld';
 $lang['Record-OR-WA']='Olympisch record';
 $lang['Record-OR-WA-avg']='Olympisch record gemiddelde';
+$lang['Record-WAAF-CR-avg']='Afrikaans record gemiddels';
 $lang['Record-WR-WA']='Wereld record';
 $lang['Record-WR-WA-avg']='Wereld record gemiddelde';
 $lang['RR_Score']='RR score';
 $lang['Teams']='Teams';
 $lang['TypeName']='Geef de gezochte naam op';
+$lang['VenueTime']='Tijd op het speelveld';
+$lang['ViewerTime']='Tijd gebruiker';
 $lang['ViewIndividualResults']='Overzicht individuele resultaten';
 $lang['ViewTeamResults']='Overzicht Team resultaten';
 ?>

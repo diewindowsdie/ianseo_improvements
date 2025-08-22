@@ -73,6 +73,11 @@ class IanseoPdf extends TCPDF {
 	var $ToPaths=array('ToLeft' => '', 'ToRight' => '', 'ToBottom' => '');
     var $LocalRule='',  $LocalType=0, $LocalSubRule='';
 
+    var $PoolMatches=array();
+    var $PoolMatchesWA=array();
+    var $PoolWinners=array();
+    var $PoolWinnersWA=array();
+
 
 	function __construct($DocTitolo, $Portrait=true, $Headers='', $StaffVisibility=true) {
 		global $CFG;
@@ -90,6 +95,10 @@ class IanseoPdf extends TCPDF {
 			CD_redirect($CFG->ROOT_DIR);
 		}
         $this->ShowStaff = $StaffVisibility;
+        $this->PoolMatches=getPoolMatchesShort();
+        $this->PoolMatchesWA=getPoolMatchesShortWA();
+        $this->PoolWinners=getPoolMatchesWinners();
+        $this->PoolWinnersWA=getPoolMatchesWinnersWA();
 
 		foreach($tmp as $k => $v) $this->{$k}=$v;
 		if(!defined('ProgramVersion')) define('ProgramVersion', $tmp->ProgramVersion);

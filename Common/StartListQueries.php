@@ -1187,89 +1187,88 @@ function getStartListCategoryQuery($ORIS=false, $orderByTeam=0, $Events=array())
 	$TmpWhere="";
 	if(isset($_REQUEST["ArcherCategories"]) && preg_match("/^[,0-9A-Z]*$/i",str_replace(" ","",$_REQUEST["ArcherCategories"]))) {
 		foreach(explode(",",$_REQUEST["ArcherCategories"]) as $Value) {
-			$TmpWhere .= "CONCAT(EnDivision,EnClass) LIKE " . StrSafe_DB(stripslashes(trim($Value)) . "%") . " OR ";
+			$TmpWhere .= "CONCAT(`EnDivision`,`EnClass`) LIKE " . StrSafe_DB(stripslashes(trim($Value)) . "%") . " OR ";
 		}
 		$TmpWhere = substr($TmpWhere,0,-3);
 	}
 	if($Events) {
-		$TmpWhere=" EvCode in (".implode(',', StrSafe_DB($Events)).") ";
+		$TmpWhere=" `EvCode` in (".implode(',', StrSafe_DB($Events)).") ";
 	}
 
 //	$Collation = ($_SESSION['TourCollation'] ? "COLLATE utf8_{$_SESSION['TourCollation']}_ci" : '');
 	$Collation = '';
 
 	$MyQuery = "SELECT distinct
-			" . ($ORIS ? ' EvCode as EventCode ' :" IFNULL(EvCode,CONCAT(TRIM(EnDivision),TRIM(EnClass))) as EventCode") . ", 
-			SesName, 
-			EnCode as Bib, 
-			concat(upper(EnFirstName $Collation), ' ', EnName $Collation) AS Athlete, 
-			QuSession AS Session, 
-			SUBSTRING(QuTargetNo,2) AS TargetNo, 
-			case EvTeamCreationMode
-				when 0 then upper(c.CoCode) 
-				when 1 then upper(c2.CoCode) 
-				when 2 then upper(c3.CoCode) 
+			" . ($ORIS ? ' `EvCode` as `EventCode` ' :" IFNULL(`EvCode`,CONCAT(TRIM(`EnDivision`),TRIM(`EnClass`))) as `EventCode`") . ", 
+			`SesName`, 
+			`EnCode` as `Bib`, 
+			concat(upper(`EnFirstName` $Collation), ' ', `EnName` $Collation) AS `Athlete`, 
+			`QuSession` AS `Session`, 
+			SUBSTRING(`QuTargetNo`,2) AS `TargetNo`, 
+			case `EvTeamCreationMode`
+				when 0 then upper(c.`CoCode`) 
+				when 1 then upper(c2.`CoCode`) 
+				when 2 then upper(c3.`CoCode`) 
 				else upper(c.CoCode) 
-			end as NationCode,
-			case EvTeamCreationMode
-				when 0 then upper(c.CoName) 
-				when 1 then upper(c2.CoName) 
-				when 2 then upper(c3.CoName) 
-				else upper(c.CoName) 
-			end as Nation,
-			upper(c2.CoCode) AS NationCode2, 
-			upper(c2.CoName) AS Nation2, 
-			upper(c3.CoCode) AS NationCode3, 
-			upper(c3.CoName) AS Nation3, 
-			DivDescription, 
-			ClDescription, 
-			EnSubTeam, 
-			EnClass AS ClassCode, 
-			EnDivision AS DivCode, 
-			DivAthlete and ClAthlete as IsAthlete, 
-			EnAgeClass as AgeClass, 
-			EnSubClass as SubClass, 
-			EnStatus as Status, 
-			EnIndClEvent AS `IC`, 
-			EnTeamClEvent AS `TC`, 
-			EnIndFEvent AS `IF`, 
-			EnTeamFEvent as `TF`, 
-			EnTeamMixEvent as `TM`, 
-			EvCode, 
-			DATE_FORMAT(EnDob,'%d %b %Y') as DOB, 
-			IFNULL(GROUP_CONCAT(EvEventName order by EvProgr SEPARATOR ', '),CONCAT('|',DivDescription, '| |', ClDescription)) as EventName , 
-			TfName, 
-			cNumber, EnTimestamp,
+			end as `NationCode`,
+			case `EvTeamCreationMode`
+				when 0 then upper(c.`CoName`) 
+				when 1 then upper(c2.`CoName`) 
+				when 2 then upper(c3.`CoName`) 
+				else upper(c.`CoName`) 
+			end as `Nation`,
+			upper(c2.`CoCode`) AS `NationCode2`, 
+			upper(c2.`CoName`) AS `Nation2`, 
+			upper(c3.`CoCode`) AS `NationCode3`, 
+			upper(c3.`CoName`) AS `Nation3`, 
+			`DivDescription`, 
+			`ClDescription`, 
+			`EnSubTeam`, 
+			`EnClass` AS `ClassCode`, 
+			`EnDivision` AS `DivCode`, 
+			`DivAthlete` and `ClAthlete` as `IsAthlete`, 
+			`EnAgeClass` as `AgeClass`, 
+			`EnSubClass` as `SubClass`, 
+			`EnStatus` as `Status`, 
+			`EnIndClEvent` AS `IC`, 
+			`EnTeamClEvent` AS `TC`, 
+			`EnIndFEvent` AS `IF`, 
+			`EnTeamFEvent` as `TF`, 
+			`EnTeamMixEvent` as `TM`, 
+			`EvCode`, 
+			DATE_FORMAT(`EnDob`,'%d %b %Y') as `DOB`, 
+			IFNULL(GROUP_CONCAT(`EvEventName` order by `EvProgr` SEPARATOR ', '),CONCAT('|',`DivDescription`, '| |', `ClDescription`)) as `EventName` , 
+			`TfName`, 
+			`cNumber`, `EnTimestamp`,
 			ifnull(GROUP_CONCAT(RankRanking order by EvProgr SEPARATOR ', '), '') as Ranking
-		FROM Entries AS e
-		INNER JOIN Tournament on EnTournament=ToId
-		INNER JOIN Qualifications AS q ON e.EnId=q.QuId 
-		LEFT JOIN Individuals on IndId=EnId AND EnTournament=IndTournament 
-		LEFT JOIN Events AS ec ON EvTeamEvent=0 AND EvTournament=EnTournament AND IndEvent=EvCode and EvCodeParent=''
-		LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament 
-		LEFT JOIN Classes ON TRIM(EnClass)=TRIM(ClId) AND EnTournament=ClTournament 
-		LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament 
-		LEFT JOIN Countries AS c2 ON e.EnCountry2=c2.CoId AND e.EnTournament=c2.CoTournament 
-		LEFT JOIN Countries AS c3 ON e.EnCountry3=c3.CoId AND e.EnTournament=c3.CoTournament
+		FROM `Entries` AS e
+		INNER JOIN `Tournament` on `EnTournament`=`ToId`
+		INNER JOIN `Qualifications` AS q ON e.`EnId`=q.`QuId` 
+		LEFT JOIN `Individuals` on `IndId`=`EnId` AND `EnTournament`=`IndTournament` 
+		LEFT JOIN `Events` AS ec ON `EvTeamEvent`=0 AND `EvTournament`=`EnTournament` AND `IndEvent`=`EvCode` and `EvCodeParent`=''
+		LEFT JOIN `Divisions` ON TRIM(`EnDivision`)=TRIM(`DivId`) AND `EnTournament`=`DivTournament` 
+		LEFT JOIN `Classes` ON TRIM(`EnClass`)=TRIM(`ClId`) AND `EnTournament`=`ClTournament` 
+		LEFT JOIN `Countries` AS c ON e.`EnCountry`=c.`CoId` AND e.`EnTournament`=c.`CoTournament` 
+		LEFT JOIN `Countries` AS c2 ON e.`EnCountry2`=c2.`CoId` AND e.`EnTournament`=c2.`CoTournament` 
+		LEFT JOIN `Countries` AS c3 ON e.`EnCountry3`=c3.`CoId` AND e.`EnTournament`=c3.`CoTournament`
 		LEFT JOIN ( 
-			SELECT EnCountry AS cCode, COUNT(EnId) AS cNumber, IndEvent as cEvent FROM `Entries` inner join Individuals on EnId=IndId and IndTournament={$_SESSION['TourId']} 
-			WHERE EnTournament={$_SESSION['TourId']} GROUP BY EnCountry, IndEvent 
-			) as sqy ON e.EnCountry=sqy.cCode and IndEvent=cEvent 
-		LEFT JOIN Session on EnTournament=SesTournament and SesType='Q' and SesOrder=QuSession 
-		LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId
-		LEFT JOIN Rankings on EnTournament=RankTournament and RankEvent=IF(EvWaCategory!='',EvWaCategory,EvCode) and RankTeam=0 and EnCode=RankCode and ToIocCode='FITA' and EnIocCode in ('', 'FITA') and RankIocCode='FITA' 
-		WHERE ".($ORIS ? 'EvCode is not null and ' : '')." EnAthlete=1 and EnTournament = " . StrSafe_DB($_SESSION['TourId']) ;
-	if(isset($_REQUEST["Session"]) and is_numeric($_REQUEST["Session"])) $MyQuery .= " AND QuSession = " . StrSafe_DB($_REQUEST["Session"]) ;
+			SELECT `EnCountry` AS `cCode`, COUNT(`EnId`) AS `cNumber`, `IndEvent` as `cEvent` FROM `Entries` inner join `Individuals` on `EnId`=`IndId` and `IndTournament`={$_SESSION['TourId']} 
+			WHERE `EnTournament`={$_SESSION['TourId']} GROUP BY `EnCountry`, `IndEvent` 
+			) as sqy ON e.`EnCountry`=sqy.`cCode` and `IndEvent`=`cEvent` 
+		LEFT JOIN `Session` on `EnTournament`=`SesTournament` and `SesType`='Q' and `SesOrder`=`QuSession` 
+		LEFT JOIN `TargetFaces` ON `EnTournament`=`TfTournament` AND `EnTargetFace`=`TfId`
+		LEFT JOIN `Rankings` on `EnTournament`=`RankTournament` and `RankEvent`=IF(`EvWaCategory`!='',`EvWaCategory`,`EvCode`) and `RankTeam`=0 and `EnCode`=`RankCode` and `ToIocCode`='FITA' and `EnIocCode` in ('', 'FITA') and `RankIocCode`='FITA' 
+		WHERE ".($ORIS ? '`EvCode` is not null and ' : '')." `EnAthlete`=1 and `EnTournament` = " . StrSafe_DB($_SESSION['TourId']) ;
+	if(isset($_REQUEST["Session"]) and is_numeric($_REQUEST["Session"])) $MyQuery .= " AND `QuSession` = " . StrSafe_DB($_REQUEST["Session"]) ;
 	if($TmpWhere) $MyQuery .= " AND (" . $TmpWhere . ")";
-	$MyQuery.= " GROUP BY EventCode, SesName, Bib, Athlete, Session, TargetNo, NationCode, Nation, NationCode2, Nation2, NationCode3, Nation3,
-		DivDescription, ClDescription, EnSubTeam, ClassCode, DivCode, IsAthlete, AgeClass, SubClass, Status, `IC`, `TC`, `IF`, `TF`, `TM`,
-			DOB, TfName ";
+	$MyQuery.= " GROUP BY `EventCode`, `SesName`, `Bib`, `Athlete`, `Session`, `TargetNo`, `NationCode`, `Nation`, `NationCode2`, `Nation2`, `NationCode3`, `Nation3`,
+		`DivDescription`, `ClDescription`, `EnSubTeam`, `ClassCode`, `DivCode`, `IsAthlete`, `AgeClass`, `SubClass`, `Status`, `IC`, `TC`, `IF`, `TF`, `TM`,
+			`DOB`, `TfName` ";
 	if(empty($_REQUEST['byTarget'])) {
-		$MyQuery.= " ORDER BY ".($ORIS ? 'EvProgr, NationCode' : 'EventCode').", " . ($orderByTeam ? ($orderByTeam==1 ? " NationCode, ":"Nation, "):"") . " Athlete, TargetNo ";
+		$MyQuery.= " ORDER BY ".($ORIS ? '`EvProgr`, `NationCode`' : '`EventCode`').", " . ($orderByTeam ? ($orderByTeam==1 ? " `NationCode`, ":"`Nation`, "):"") . " `Athlete`, `TargetNo` ";
 	} else {
-		$MyQuery.= " ORDER BY EvProgr, TargetNo ";
+		$MyQuery.= " ORDER BY `EvProgr`, `TargetNo` ";
 	}
 
 	return $MyQuery;
 }
-?>

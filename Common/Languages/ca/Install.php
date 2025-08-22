@@ -55,6 +55,9 @@ $lang['FieldPegRed']='Piqueta Vermella';
 $lang['FieldPegWhite']='Piqueta Blanca';
 $lang['FieldPegYellow']='Piqueta Groga';
 $lang['File permission error']='Comproveu els permisos de la carpeta d\'instal·lació IANSEO. Ha de ser escriptura només per l\'usuari que executa el servidor web o per a tots els usuaris.';
+$lang['FreeOnlineResults']='<b>Publicació en línia gratuïta:</b> amb una connexió bàsica a Internet, pots mostrar al món què està passant durant la competició. És gratuït, així que, per què esperar?
+Un cop creada la competició, demana un codi a través de l’element del menú «{$a}».
+Si us plau, sol·licita el codi tan aviat com puguis, preferiblement una setmana abans de la competició, per tal que tinguem temps de validar-lo!';
 $lang['GettingLanguagePacks']='S\'estan recuperant els paquets d\'idioma... Aquest procés pot trigar una mica....';
 $lang['Host']='Host';
 $lang['Install-0']='ERROR CRÍTIC';

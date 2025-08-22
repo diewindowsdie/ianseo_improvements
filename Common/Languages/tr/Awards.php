@@ -1,4 +1,12 @@
 <?php
+$lang['Aw-Anthem']='Milli Marş Satırı';
+$lang['Aw-Applause']='Alkış/Tebrik Metni';
+$lang['Aw-Intro']='Giriş metni';
+$lang['Aw-Med1']='1. sıra ödül adı';
+$lang['Aw-Med2']='2. sıra ödül adı';
+$lang['Aw-Med3']='3. sıra ödül adı';
+$lang['Aw-Med4']='4. sıra ödül adı';
+$lang['Aw-representing']='"Temsilen" satırı';
 $lang['CM0']='Makaralı Yay Erkek';
 $lang['CM1']='Makaralı Yay Erkek Takım';
 $lang['CustomAward']='Özel Ödül';

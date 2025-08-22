@@ -290,7 +290,6 @@ $lang['DATABASE NOT REACHABLE']='DATABASE niet te benaderen';
 $lang['Date']='Datum';
 $lang['DateTimeSignature']='Datum en tijd';
 $lang['Days']='Dagen';
-$lang['DaySchedule']='Schema voor 1 dag (YYYY-mm-dd of d0, d1 enz.)';
 $lang['Default']='Standaard';
 $lang['DefaultCO']='Standaard CO';
 $lang['DefaultHM']='Standaard HM';

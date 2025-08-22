@@ -54,8 +54,10 @@ while($MyRow=safe_fetch($RsCl)) {
 	$JSON['age'][]=$MyRow->ClId;
 }
 
-if(!in_array($Clas, $JSON['age'])) {
+if($JSON['age'] and !in_array($Clas, $JSON['age'])) {
 	$Clas=$JSON['age'][0];
+} else {
+    $Clas='';
 }
 
 // get the VALID classes based on the division and class selected

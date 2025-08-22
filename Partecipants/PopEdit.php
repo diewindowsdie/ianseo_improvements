@@ -91,6 +91,7 @@
 
 		// sesso e dob
 			$EnDob='0000-00-00';
+            $Now=date('Y-m-d H:i:s');
 			$ctrlCode=ConvertDateLoc($_REQUEST['d_e_EnCtrlCode_']);
 			if ($ctrlCode!==false)
 			{
@@ -196,10 +197,10 @@
 			$SelectEnId="select EnId from Entries where EnTournament=§TOCODETOID§ and EnCode='{$EnCode}' and EnIocCode='{$EnIocCode}' and EnDivision='{$EnDivision}' limit 1";
 
 			$Insert = "INSERT INTO Entries set
-					". ($id ? " EnId='{$id}', " : "") ."
+					". ($id ? " EnId='{$id}', EnTimestamp=EnTimestamp, " : " EnTimestamp='{$Now}', ") ."
 					$Sql
 				ON DUPLICATE KEY UPDATE
-					$Sql"
+					EnTimestamp='{$Now}', $Sql"
 			;
 			$Rs=safe_w_sql(str_replace(array('§TOCODETOID§', '-Country-','-Country2-','-Country3-'), array(StrSafe_DB($_SESSION['TourId']), StrSafe_DB($EnCountries['']), StrSafe_DB($EnCountries['2']), StrSafe_DB($EnCountries['3'])), $Insert));
 
@@ -214,16 +215,16 @@
 						$EnCoCodes[''] ? "(select CoId from Countries where CoCode='{$EnCoCodes['']}' and CoTournament=§TOCODETOID§)" : 0,
 						$EnCoCodes['2'] ? "(select CoId from Countries where CoCode='{$EnCoCodes['2']}' and CoTournament=§TOCODETOID§)" : 0,
 						$EnCoCodes['3'] ? "(select CoId from Countries where CoCode='{$EnCoCodes['3']}' and CoTournament=§TOCODETOID§)" : 0,
-						), "INSERT INTO Entries set EnIocCode='{$EnIocCode}', EnWChair='$EnWChair', EnDoubleSpace='$EnDouble', $Sql"), $_SESSION['TourCode']);
+						), "INSERT INTO Entries set EnTimestamp='{$Now}', EnIocCode='{$EnIocCode}', EnWChair='$EnWChair', EnDoubleSpace='$EnDouble', $Sql"), $_SESSION['TourCode']);
 				LogAccBoothQuerry("insert into Qualifications set QuSession='0', QuId=($SelectEnId)", $_SESSION['TourCode']);
 			} else {
 				if(safe_w_affected_rows()) {
-					safe_w_sql("update Entries set EnBadgePrinted=0 where EnId=$id");
+					safe_w_sql("update Entries set EnTimestamp='{$Now}', EnBadgePrinted=0 where EnId=$id");
 					LogAccBoothQuerry(str_replace(array('-Country-','-Country2-','-Country3-'), array(
 							$EnCoCodes[''] ? "(select CoId from Countries where CoCode='{$EnCoCodes['']}' and CoTournament=§TOCODETOID§)" : 0,
 							$EnCoCodes['2'] ? "(select CoId from Countries where CoCode='{$EnCoCodes['2']}' and CoTournament=§TOCODETOID§)" : 0,
 							$EnCoCodes['3'] ? "(select CoId from Countries where CoCode='{$EnCoCodes['3']}' and CoTournament=§TOCODETOID§)" : 0,
-							), "update Entries set EnTimestamp=EnTimestamp, EnBadgePrinted=0, EnWChair='$EnWChair', EnDoubleSpace='$EnDouble', $Sql
+							), "update Entries set EnTimestamp={$Now}, EnBadgePrinted=0, EnWChair='$EnWChair', EnDoubleSpace='$EnDouble', $Sql
 								where EnTournament=§TOCODETOID§ and EnCode='{$EnCode}' and EnIocCode='{$EnIocCode}' and EnDivision='{$EnDivision}'"), $_SESSION['TourCode']);
 				}
 			}
@@ -252,8 +253,8 @@
 				LogAccBoothQuerry("insert into ExtraData set EdId=($SelectEnId), EdType='E', EdEmail=".StrSafe_DB($_REQUEST['d_ed_EdEmail_'])." on duplicate key update EdEmail=".StrSafe_DB($_REQUEST['d_ed_EdEmail_']));
 				if($up) {
 				    // updates the entry timestamp as well
-                    safe_w_SQL("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId={$id}");
-                    LogAccBoothQuerry("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId=($SelectEnId)");
+                    safe_w_SQL("update Entries set EnTimestamp='{$Now}' where EnId={$id}");
+                    LogAccBoothQuerry("update Entries set EnTimestamp='{$Now}' where EnId=($SelectEnId)");
                 }
 			}
 
@@ -281,8 +282,8 @@
 			$Rs=safe_w_sql($Update."QuId=" . StrSafe_DB($id));
 			if(safe_w_affected_rows()) {
 				LogAccBoothQuerry($Update." QuId=($SelectEnId)");
-				safe_w_sql("Update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId={$id}");
-				LogAccBoothQuerry("Update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId=($SelectEnId)");
+				safe_w_sql("Update Entries set EnTimestamp='{$Now}' where EnId={$id}");
+				LogAccBoothQuerry("Update Entries set EnTimestamp='{$Now}' where EnId=($SelectEnId)");
 				safe_w_sql("update Qualifications SET QuBacknoPrinted=0, QuTimestamp=QuTimestamp where QuId={$id}");
 				LogAccBoothQuerry("update Qualifications SET QuBacknoPrinted=0, QuTimestamp=QuTimestamp where QuId=($SelectEnId)");
 			}

@@ -141,18 +141,15 @@ if($cbTeamFinal) {
 }
 
 if($cbIndFinal) {
-	if(empty($BracketsInd)) {
-		$PdfData = getBracketsIndividual('',
-			true,
-			isset($_REQUEST["ShowTargetNo"]),
-			isset($_REQUEST["ShowSchedule"]),
-			true,
-			true);
+    $PdfData = getBracketsIndividual('',
+        true,
+        isset($_REQUEST["ShowTargetNo"]),
+        isset($_REQUEST["ShowSchedule"]),
+        true,
+        true,
+        null, false, false);
 
-        $LastUpdate = max($LastUpdate, $PdfData->LastUpdate ?? $LastUpdate);
-	} else {
-		$PdfData = clone $BracketsInd;
-	}
+    $LastUpdate = max($LastUpdate, $PdfData->LastUpdate ?? $LastUpdate);
 
 	//$pdf->setOrisCode('', '', true);
 	$pdf->SetAutoPageBreak(true,(OrisPDF::bottomMargin+$pdf->extraBottomMargin));

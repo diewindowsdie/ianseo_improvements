@@ -339,7 +339,6 @@ $lang['RunningTotal']='累計';
 $lang['SchAddRank']='予選ラウンド順位を含む';
 $lang['Schedule']='スケジュール';
 $lang['ScheduledMatches']='マッチスケジュール';
-$lang['ScheduleFromDay']='指定日以降のスケジュール';
 $lang['ScheduleNotes']='備考';
 $lang['ScheduleToday']='本日のスケジュール';
 $lang['ScheduleUnfinished']='終了したセッションを除く';

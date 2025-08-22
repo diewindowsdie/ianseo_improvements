@@ -558,6 +558,7 @@ $lang['TargetDeleted']='Target Assignment has been deleted';
 $lang['TargetFinalInd']='Individual finals target assignment';
 $lang['TargetFinalTeam']='Team finals target assignment';
 $lang['TargetMoved']='Target Assignment moved successfully';
+$lang['TargetSize']='Target Size';
 $lang['TargetType']='Target Type';
 $lang['TB']='S.O.';
 $lang['Team']='Team';

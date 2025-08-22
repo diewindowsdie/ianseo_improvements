@@ -48,7 +48,6 @@ $lang['PouleRank']='رتبه';
 $lang['ResultIndSubClass']='نتایج جابجایها';
 $lang['Schedule']='برنامه زمان بندی';
 $lang['ScheduledMatches']='برنامه زمان بندی بازیها';
-$lang['ScheduleFromDay']=':برنامه زمان بندی از روز';
 $lang['ScheduleNotes']='توضیحات برنامه زمان بندی';
 $lang['ScheduleToday']='برنامه زمان بندی امروز';
 $lang['ScoreLogos']='اضافه کردن تصاویر مسابقه';

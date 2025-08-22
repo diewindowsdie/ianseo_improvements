@@ -168,7 +168,7 @@ function safe_server_version($BackEnd='W') {
 		$a=mysqli_get_server_version($WRIT_CON);
 	} else {
 		// the read server
-		if(!$READ_CON) $WRIT_CON=safe_r_con();
+		if(!$READ_CON) $READ_CON=safe_r_con();
 		$a=mysqli_get_server_version($READ_CON);
 	}
 	Return $a;

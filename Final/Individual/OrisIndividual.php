@@ -11,7 +11,7 @@ if(isset($_REQUEST["IncBrackets"]) AND $_REQUEST["IncBrackets"]==1 AND ($_REQUES
 	// scorecard!
 	require_once('Common/OrisFunctions.php');
 	require_once('Common/pdf/PdfChunkLoader.php');
-	$PdfData = getBracketsIndividual($_REQUEST['Event']??'', true, false, false, true, false);
+	$PdfData = getBracketsIndividual($_REQUEST['Event']??'', true, false, false, true, false, null, false, false);
 
 	//$pdf->setOrisCode('', '', true);
 	$pdf = new OrisPDF('C73D', $PdfData->Description);

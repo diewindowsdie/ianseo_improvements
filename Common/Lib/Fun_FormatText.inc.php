@@ -83,7 +83,7 @@
 			foreach(mb_split('-', $v) as $v2) {
 				$r[]=mb_substr($v2,0,1,'UTF-8').'.';
 			}
-			$ret .= implode('-', $r);
+			$ret .= implode('', $r);
 		}
 		return $ret;
 	}

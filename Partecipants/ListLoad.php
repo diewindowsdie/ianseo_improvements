@@ -1004,7 +1004,7 @@ if($DataSource) {
 			if(!$TeamUpdate) {
 				$EntrySQL.=", EnCountry=-Country-, EnCountry2=-Country2-, EnCountry3=-Country3- ";
 			}
-			$Insert = "INSERT INTO Entries set $EntrySQL";
+			$Insert = "INSERT INTO Entries set EnTimestamp='".date('Y-m-d H:i:s')."', $EntrySQL";
 
 			LogAccBoothQuerry(str_replace(
 				array('-Country-','-Country2-','-Country3-'),

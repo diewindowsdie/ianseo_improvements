@@ -656,7 +656,6 @@ $lang['RunningTotal']='Acumulado Total';
 $lang['Schedule']='Programa';
 $lang['ScheduledMatches']='Encuentros Programados';
 $lang['ScheduledSessions']='Turnos Programados';
-$lang['ScheduleFromDay']='Programa desde día:';
 $lang['ScheduleNotes']='Notas sobre la programación';
 $lang['ScheduleToday']='Programa de Hoy';
 $lang['ScheduleUnfinished']='Excluir turnos finalizados';

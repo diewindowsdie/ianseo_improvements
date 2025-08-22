@@ -30,6 +30,8 @@ $lang['ISK-LockedSessionHelp']='Les icônes {$a} indiquent si l\'application aut
 $lang['ISK-ServerUrlPin']='<b>Ne pas partager ce code</b><br>Utiliser un code Pin à 4 chiffres pour sécuriser votre compétition.<br>Les tablettes peuvent se connecter à la compétition via le QR-Code.<br> En cas de saisie manuelle dans l\'application, utiliser ce code <b>{$a}</b>';
 $lang['QrCodeLandscape']='Un simple ou double "<" fera une flèche vers la gauche, un simple ou double ">" fera une flèche vers la droite, n simple ou double "^" fera une flèche vers le haut et un simple ou double "v" fera une flèche vers la bas';
 $lang['QrCodePortrait']='Le champ est compatible HTML. Si vous insérez quelque chose entouré de &lt;qrcode&gt;...&lt;/qrcode&gt;, le contenu sera transformé en un QRCode.';
+$lang['RecordGrayLine']='Un record pour cette catégorie est déjà présent avec un score plus élevé.<br>Vérifiez les règles et les dates d\'attribution des records.';
+$lang['RecordPinkCell']='Un record pour la même catégorie est déjà présent.<bt>N\'écrivez dans le PDF que le plus important.</bt>';
 $lang['ScoreBarCodeShortcuts']='Lire le code-barre de la feuille de marque.<br/> Insertion Manuelle d\'un # suivi par le nom de l\'Athlète recherche dans la base de données pour le trouver<br/> Insérer un @ suivit d\'un N° de cible recherche cette cible. La distance doit être indiquée; la session doit être spécifiée (un chiffre) et la cible 000 (3 chiffres)';
 $lang['ScoreboardFreetext-Texts']='Insérez {{date}} pour insérer la date au format anglais (par exemple : 4 janvier 2024).
 <br>
@@ -90,4 +92,5 @@ $lang['TV-RotList']='<div>Voici la liste des pages de présentation disponibles 
 <div>Pour créer un nouveau contenu, entrez un nom pour celui-ci et appuyez sur le bouton.</div>';
 $lang['UserName']='Identifant unique dans le systeme. Minimum de 6 caractères';
 $lang['UserPassword']='Laisser vide pour garder le mot de passe actuel';
+$lang['ZeroBased']='Mumérotation à partir de zéro';
 ?>

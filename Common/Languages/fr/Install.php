@@ -60,6 +60,7 @@ $lang['FieldPegRed']='Piquet Rouge';
 $lang['FieldPegWhite']='Piquet Blanc';
 $lang['FieldPegYellow']='Piquet Jaune';
 $lang['File permission error']='Vous devez vérifier les autorisations d\'accès au répertoire d\'installation IANSEO : il doit être accessible en écriture pour l\'utilisateur exécutant le serveur (ou pour tous les utilisateurs)';
+$lang['FreeOnlineResults']='<b>Publication en ligne gratuite :</b>Avec une simple connexion à internet, vous pouvez montrez au monde ce qu\'il se passe pendant la compétition. C\'est gratuit alors pourquoi attendre ? Une fois la compétition créée, demandez un code via le menu «{$a}». Merci d\'anticiper la demande de création de votre compétition, cela nous permets de la valider à temps. Merci pour votre patience et votre compréhension..';
 $lang['Host']='Serveur hôte';
 $lang['Install-0']='ERREUR CRITIQUE!';
 $lang['Install-0 Title']='Sous licence GPL3';
@@ -234,7 +235,7 @@ $lang['UpdatingModulesInfo']='Mises à jour des informations';
 $lang['UpgradeFinished']='Le processus de mise à jour est terminé. Vous pouvez mettre à jour les langues à tout moment à partir de la page de sélection des langues';
 $lang['User']='Nom utilisateur';
 $lang['Value']='Valeur (éléments de tableaux indexés: Clé1::Valeur1 | clé2::valeur2)';
-$lang['WhatIanseoDoes01']='<b>Règles conformes World Archery:</b> Ianseo est continuellement à jour avec les règles de la World Archery. Les développeurs sont également disponibles pour adapter ianseo aux règles Nationnales et/ou spécifiques.';
+$lang['WhatIanseoDoes01']='<b>Règles conformes aux règlements de la World Archery:</b> Ianseo est continuellement mis à jour avec les règles de la World Archery. Les développeurs sont également disponibles pour adapter ianseo aux règles Nationales et/ou spécifiques.';
 $lang['WhatIanseoDoes02']='<b>Aide et support:</b> Si vous avez besoin d\'aide, envoyez un courriel à $a: Vous recevrez directement une réponse de la part des développeurs de Ianseo!';
 $lang['WhatIanseoDoes03']='<b>Formations et cours sur site :</b> Ianseo est disponible pour gérer des cours spécifiques sur site. Deux niveaux : sans et avec l’application Ianseo Scorekeeper NG. Le premier vise à connaître tous les aspects de ianseo, depuis la préparation du concours et l’horaire jusqu’à la publication en ligne et la distribution locale des résultats.
 Le second vise à acquérir toutes les connaissances spécifiques pour lancer un concours "flèche par flèche".';

@@ -264,9 +264,11 @@ if(empty($_REQUEST['btnDelOnline'])) {
     // Brackets, Individual
     if(!empty($_REQUEST['BracketsInd'])) {
         $RET->IB=new StdClass();
+        $RET->IBScorecard=new StdClass();
         foreach($_REQUEST['BracketsInd'] as $Event) {
             $EventCode = getChildrenEvents(substr($Event,2));
             $RET->IB->{$Event}=getBracketsIndividual($EventCode, $ORIS, true, true, true, $ShowRecords);
+            $RET->IBScorecard->{$Event}=getBracketsIndividual($EventCode, $ORIS, true, true, true, $ShowRecords, null, false, false);
         }
     }
 

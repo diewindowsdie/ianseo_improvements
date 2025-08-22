@@ -25,6 +25,7 @@ $lang['EntriesNoCountry']='Entries without Country/Club';
 $lang['ErrCodeExists']='Code already exists!';
 $lang['ErrCommitteeError']='Invalid Committee code or description';
 $lang['ErrConnection']='No connection to server $a';
+$lang['ErrDateGeneric']='Date missing or invalid';
 $lang['ErrEmptyFields']='Empty Fields';
 $lang['ErrGenericError']='Generic Error';
 $lang['ErrInvalidCode']='Invalid Code';

@@ -1325,7 +1325,7 @@ function getStartListAlphabetical($ORIS='', $Athlete=false) {
 function getStartListCategory($ORIS=false, $orderByTeam=0, $Events=array()) {
 	$Data=new StdClass();
 
-	$Data->Code='C32C';
+	$Data->Code='C31C';
 	$Data->Order='3';
 	$Data->Description='Entries by Event';
 	$Data->Header=array("NOC", "Country", "#Back No.", "#W. Rank    ", " Date of Birth", "Name");
@@ -1359,9 +1359,9 @@ function getStartListCategory($ORIS=false, $orderByTeam=0, $Events=array()) {
 
 	$Data->BisTarget = false;
 	$Data->NumEnd = 0;
-	$RsTour=safe_r_sql("SELECT (ToCategory&12!=0) as BisTarget, ToNumEnds AS TtNumEnds, (select max(RankRanking) as IsRanked from Rankings where RankTournament={$_SESSION['TourId']}) as IsRanked
-		FROM Tournament
-		WHERE ToId=" . StrSafe_DB($_SESSION['TourId']));
+	$RsTour=safe_r_sql("SELECT (`ToCategory`&12!=0) as `BisTarget`, `ToNumEnds` AS `TtNumEnds`, (select max(`RankRanking`) as `IsRanked` from `Rankings` where `RankTournament`={$_SESSION['TourId']}) as `IsRanked`
+		FROM `Tournament`
+		WHERE `ToId`=" . StrSafe_DB($_SESSION['TourId']));
 	if ($r=safe_fetch($RsTour)) {
 		$Data->BisTarget = $r->BisTarget;
 		$Data->NumEnd = $r->TtNumEnds;
@@ -1740,7 +1740,7 @@ function getQualificationTeam($EventRequested='', $ORIS=false, $ShowRecords=fals
 	return $Data;
 }
 
-function getBracketsIndividual($EventRequested='', $ORIS=false, $ShowTargetNo=true, $ShowSchedule=true, $ShowSetArrows=true, $ShowRecords=false, $MatchNo=null, $extended=false) {
+function getBracketsIndividual($EventRequested='', $ORIS=false, $ShowTargetNo=true, $ShowSchedule=true, $ShowSetArrows=true, $ShowRecords=false, $MatchNo=null, $extended=false, $excludeElim=true) {
 	$Data=new StdClass();
 
 	$Data->Code='C75A';
@@ -1764,7 +1764,9 @@ function getBracketsIndividual($EventRequested='', $ORIS=false, $ShowTargetNo=tr
 	}
 
 	$options=array();
-    $options['noElim']=true;
+    if($excludeElim) {
+        $options['noElim'] = true;
+    }
 	if(!is_null($MatchNo)) {
 		$options['matchno']=intval($MatchNo);
 	}

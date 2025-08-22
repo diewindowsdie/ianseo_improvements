@@ -490,7 +490,6 @@ $lang['RunningTotal']='Laufendes Gesamtergebnis';
 $lang['ScanAthleteFirst']='Scanne zuerst den Athleten';
 $lang['Schedule']='Zeitplan';
 $lang['ScheduledMatches']='Festgelegte Matches';
-$lang['ScheduleFromDay']='Zeitplan seit Tag:';
 $lang['ScheduleNotes']='Zeitplan Notizen';
 $lang['ScheduleToday']='Zeitplan heute';
 $lang['SchIncFinalists']='Integriere Namen der Finalisten';
