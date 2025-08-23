@@ -557,7 +557,7 @@
 					}
 					$this->data['sections'][$myRow->Event]['phases'][$myRow->Phase]['meta']['FinElimChooser'] = $myRow->FinElimChooser;
 					$this->data['sections'][$myRow->Event]['meta']['phaseNames'][$myRow->Phase]=$this->data['sections'][$myRow->Event]['phases'][$myRow->Phase]['meta']['phaseName'];
-				}
+                }
 
 				$athlete=($myRow->Athlete ?? '');
 				if(!trim($athlete)) {

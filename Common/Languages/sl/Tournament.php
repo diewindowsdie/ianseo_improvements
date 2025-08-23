@@ -206,7 +206,6 @@ $lang['DATABASE NOT REACHABLE']='NEUSPEŠNA POVEZAVA S STREŽNIKOM';
 $lang['Date']='Datum';
 $lang['DateTimeSignature']='Datum in ura';
 $lang['Days']='Dnevi';
-$lang['DaySchedule']='Urnik za en dan (LLLL-mm-dd ali d0, d1 itd)';
 $lang['Default']='Samodejno';
 $lang['DefaultLocRule']='FITA';
 $lang['DeletePreviousArchers']='Odstrani vnose, ki so že na seznamu';

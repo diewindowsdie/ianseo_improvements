@@ -95,6 +95,11 @@ if($version<'2025-05-20 09:47:02') {
     db_save_version('2025-05-20 09:47:00');
 }
 
+if($version<'2025-07-30 11:05:00') {
+    safe_w_sql("ALTER TABLE `Session` ADD `SesEvents` TEXT NOT NULL AFTER `SesLocation`",false, array(1054, 1060));
+    db_save_version('2025-07-30 11:05:00');
+}
+
 /*
 
 // TEMPLATE

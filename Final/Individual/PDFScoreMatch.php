@@ -1,7 +1,7 @@
 <?php
 	require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 	require_once('Common/Fun_FormatText.inc.php');
-	require_once('Common/pdf/ResultPDF.inc.php');
+	require_once('Common/pdf/ScorePDF.inc.php');
 	require_once('Common/Fun_FormatText.inc.php');
 	require_once('Common/Lib/ArrTargets.inc.php');
 	require_once('Common/Fun_Phases.inc.php');
@@ -20,9 +20,10 @@
             'PrintJudgeNotes'=>false,
         ];
     }
-	$pdf = new ResultPDF((get_text('IndFinal')),false, '', true, $Options);
+	$pdf = new ScorePDF(false);
 	$pdf->setBarcodeHeader(empty($_REQUEST['Barcode']) ? '10' : '70');
-
+    $pdf->setPrintHeader(true);
+    $pdf->setPrintFooter(true);
 	$pdf->ScoreCellHeight=9;
 
 	//error_reporting(E_ALL);
@@ -30,8 +31,19 @@
     $barcodePrinted = false;
     $qrPrinted = false;
 	$FillWithArrows=false;
+    $pdf->Aruco=0;
+    $pdf->ArucoSize=0;
+    $pdf->ArucoType=0;
+    $pdf->ArucoMarker=null;
 	if((isset($_REQUEST["ScoreFilled"]) && $_REQUEST["ScoreFilled"]==1))
 		$FillWithArrows=true;
+    else if(getModuleParameter('ScorecardsAI', 'Active', '') and module_exists('ScorecardsAI')) {
+        $pdf->Aruco = 1;
+        $pdf->ArucoSize = getModuleParameter('ScorecardsAI', 'Size', 10);
+        require_once($CFG->DOCUMENT_PATH . 'Modules/ScorecardsAI/Lib.php');
+        $pdf->ArucoMarker = new ArucoMarkers();
+        $pdf->ArucoType = $pdf->ArucoMarker::H2H;
+    }
 
 	$pdf->PrintFlags=(!empty($_REQUEST["ScoreFlags"]));
 
@@ -119,17 +131,12 @@
 	$Rs=safe_r_sql($MyQuery);
 // Se il Recordset è valido e contiene almeno una riga
 	if (safe_num_rows($Rs)>0) {
-//		$defGoldW  = ($pdf->GetPageWidth()-3*$pdf->getSideMargin())/2*(1/15);
-//		$defTotalW = ($pdf->GetPageWidth()-3*$pdf->getSideMargin())/2*(3/15);
-//		$defArrowTotW = ($pdf->GetPageWidth()-3*$pdf->getSideMargin())/2*(6/15);
-        $ScoreWidth=($pdf->GetPageWidth()-3*$pdf->getSideMargin())/2;
-
-		$WhereStartX=array($pdf->getSideMargin(),$pdf->GetPageWidth()/2+$pdf->getSideMargin()/2);
+        $ScoreWidth=(($pdf->GetPageWidth()-$pdf->getSideMargin()*3)/2)-($pdf->ArucoSize? $pdf->ArucoSize-8 :0);
+		$WhereStartX=array($pdf->getSideMargin()+($pdf->ArucoSize?$pdf->ArucoSize-3:0),($pdf->GetPageWidth()-$pdf->getSideMargin()-$ScoreWidth));
 		$WhereStartY=array(50,50);
 		$WhereX=NULL;
 		$WhereY=NULL;
 		$AtlheteName=NULL;
-		$FollowingRows=false;
 
 //DrawScore
 		while($MyRow=safe_fetch($Rs)) {
@@ -172,29 +179,45 @@
                 }
             }
             if(!empty($_REQUEST["Blank"]) and !empty($_REQUEST['Rows'])) {
-                $pdf->ScoreCellHeight = min(9, intval(($pdf->getPageHeight() - 120 - 4.5) / (4 + intval($_REQUEST['Rows']??5))));
+                $pdf->ScoreCellHeight = min(9, intval(($pdf->getPageHeight() - 120 - $pdf->ArucoSize - 4.5) / (4 + intval($_REQUEST['Rows']??5))));
             } else {
-                $pdf->ScoreCellHeight = min(9, intval(($pdf->getPageHeight() - 120 - 4.5 * (is_array($MyRow->EnId) ? count($MyRow->EnId) : 1)) / (4 + ($MyRow->FinElimChooser ?? 0 ? $MyRow->EvElimEnds ?? 5 : $MyRow->EvFinEnds ?? 5))));
+                $pdf->ScoreCellHeight = min(9, intval(($pdf->getPageHeight() - 120 - $pdf->ArucoSize - 4.5 * (is_array($MyRow->EnId) ? count($MyRow->EnId) : 1)) / (4 + ($MyRow->FinElimChooser ?? 0 ? $MyRow->EvElimEnds ?? 5 : $MyRow->EvFinEnds ?? 5))));
             }
+            $ArucoLeft=6;
+            $ArucoRight=($pdf->GetPageWidth()-$pdf->getSideMargin())-$pdf->ArucoSize;
+            $Aru=[];
 
 			// disegna lo score di sinistra
-			DrawScore($pdf, $MyRow, 'L');
+            $tmp = DrawScore($pdf, $MyRow, 'L');
+            $Aru['T']=['X'=>$ArucoLeft,'Y'=>$tmp['Y'], 'N'=>$pdf->ArucoType];
+            $Aru['E']=['X'=>$tmp['X'],'Y'=>$pdf->getY()+3, 'N'=>$tmp['E']];
+            $Aru['O']=['X'=>$tmp['X'],'Y'=>$pdf->getY()+3,'N'=>$tmp['O']];
+            $Aru['W']=['X'=>$ArucoRight-5*$pdf->ArucoSize,'Y'=>$pdf->getY()+3,'N'=>$tmp['W']];
+            $Aru['H']=['X'=>$tmp['X']-3*$pdf->ArucoSize,'Y'=>$pdf->getY()+3,'N'=>$tmp['H']];
+            $Aru['A']=['X'=>$ArucoRight,'Y'=>$pdf->getY()+3,'N'=>$tmp['A']];
 
 			// Disegna lo score di destra
-			DrawScore($pdf, $MyRow, 'R');
-
-       //     $pdf->setY($pdf->getY() - 5);
+			$tmp = DrawScore($pdf, $MyRow, 'R');
+            $Aru['O']=['X'=>$tmp['X'],'Y'=>$pdf->getY()+3,'N'=>$tmp['O']];
+            $Aru['W']=['X'=>$ArucoRight-5*$pdf->ArucoSize,'Y'=>$pdf->getY()+3,'N'=>$tmp['W']];
+            $Aru['H']=['X'=>$tmp['X']-3*$pdf->ArucoSize,'Y'=>$pdf->getY()+3,'N'=>$tmp['H']];
 
 			//Judge Signatures, Timestamp & Annotations
 			if($pdf->PrintJudgeNotes) {
                 $pdf->SetLeftMargin($WhereStartX[0]);
                 $pdf->Ln(5);
 
-                $pdf->Cell($pdf->GetPageWidth() - (2 * $pdf->getSideMargin()) - 90, 8, (get_text('TargetJudgeSignature', 'Tournament')), 'B', 0, 'L', 0);
+                $pdf->Cell((($pdf->GetPageWidth()-$pdf->getSideMargin()*2))-($pdf->ArucoSize ? $pdf->ArucoSize-3 : 0)-90, 8, (get_text('TargetJudgeSignature', 'Tournament')), 'B', 0, 'L', 0);
                 $pdf->Cell(90, 8, (get_text('TimeStampSignature', 'Tournament')), 1, 1, 'L', 0);
                 $pdf->Ln(6);
-                $pdf->Cell(0, 4, (get_text('JudgeNotes')), 'B', 1, 'L', 0);
+                $pdf->Cell((($pdf->GetPageWidth()-$pdf->getSideMargin()*2))-($pdf->ArucoSize ? $pdf->ArucoSize-3 : 0), 4, (get_text('JudgeNotes')), 'B', 1, 'L', 0);
+                $Aru['E']['Y']=$pdf->getY()+2;
+                $Aru['O']['Y']=$pdf->getY()+2;
+                $Aru['W']['Y']=$pdf->getY()+2;
+                $Aru['H']['Y']=$pdf->getY()+2;
+                $Aru['A']['Y']=$pdf->getY()+2;
             }
+            $pdf->PrintAruco($Aru);
         }
 //END OF DrawScore
 		safe_free_result($Rs);
@@ -203,7 +226,7 @@
 $pdf->Output();
 
 function DrawScore(&$pdf, $MyRow, $Side='L') {
-	global $CFG, $ScoreWidth, $defTotalW, $defGoldW, $defArrowTotW, $FollowingRows, $TrgOutdoor, $WhereStartX, $WhereStartY, $FillWithArrows;
+	global $CFG, $ScoreWidth, $defTotalW, $defGoldW, $defArrowTotW, $TrgOutdoor, $WhereStartX, $WhereStartY, $FillWithArrows;
 	if(isset($_REQUEST['Blank'])) {
 		$tmp=new stdClass();
 		$tmp->ends=empty($_REQUEST['Rows'])?5:intval($_REQUEST['Rows']);
@@ -214,9 +237,9 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
 	}
 	$NumRow=$tmp->ends;
 	$NumCol=$tmp->arrows;
-	$ArrowW = $defArrowTotW/$NumCol;
+	$ArrowW = round($defArrowTotW/$NumCol,1);
 	$TotalW=$defTotalW;
-	$GoldW=$defGoldW;
+	$GoldW = round($defGoldW,1);
 
 	$Prefix='Opp';
 	$Opponent='';
@@ -227,12 +250,10 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
 
 //		echo $MyRow->EvMatchArrowsNo . "." . $MyRow->GrPhase ."." . ($MyRow->EvMatchArrowsNo & ($MyRow->GrPhase>0 ? $MyRow->GrPhase*2:1)) . "/" . $NumRow . "--<br>";
 	if($Side=='L') {
-		if($FollowingRows) $pdf->AddPage();
+		$pdf->AddPage();
 		$Prefix='';
 		$Opponent='Opp';
 	}
-
-	$FollowingRows=true;
 	$WhichScore=($Side=='R');
 	$WhereX=$WhereStartX;
 	$WhereY=$WhereStartY;
@@ -354,6 +375,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
     }
     $pdf->ln();
 	$WhereY[$WhichScore]=$pdf->GetY();
+    $TmpY = $WhereY[$WhichScore];
 //Righe
 	$ScoreTotal = 0;
 	$GoldsTotal = 0;
@@ -554,6 +576,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
    	$pdf->SetFont($pdf->FontStd,'i',8);
 	$pdf->Cell($ScoreWidth,4,(get_text('ArcherSignature','Tournament')),'B',1,'L',0);
 
+    return ['E'=>900+$NumRow, 'A'=>950+$NumCol, 'W'=>intval($ArrowW*10)*4+1, 'H'=>intval($pdf->ScoreCellHeight*10)*4+2, 'O'=>intval($GoldW*10)*4+3, 'X'=>$WhereX[$WhichScore], 'Y'=>$TmpY-$pdf->ArucoSize];
 }
 
 function get_winner($MatchNo, $Event) {

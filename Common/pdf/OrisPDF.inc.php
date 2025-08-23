@@ -450,7 +450,13 @@ class OrisPDF extends IanseoPdf {
 		$Offset=35+($Bottom ? $this::topMargin+($this->getPageHeight()-50-$this->extraBottomMargin-$this::bottomMargin-$this::topMargin)/2 : 0);
 		$this->SetY($Offset, true);
 		$this->SetFont('','B',14);
-		$this->Cell(0,0, $Phase['matchName'], '', '1','C');
+        $PhaseName=$Phase['matchName'];
+        if($Section['elimType']==3 and isset($this->PoolMatches[$Data['matchNo']])) {
+            $PhaseName=$this->PoolMatches[$Data['matchNo']];
+        } elseif($Section['elimType']==4 and isset($this->PoolMatchesWA[$Data['matchNo']])) {
+            $PhaseName=$this->PoolMatchesWA[$Data['matchNo']];
+        }
+		$this->Cell(0,0, $PhaseName, '', '1','C');
 		$this->SetFont('','',12);
 		$this->Cell(0,0, (is_null($Data['scheduledKey']) ? '' : date('D j M Y', strtotime($Data['scheduledKey'])).' ').$Meta['fields']['scheduledTime'].': '.$Data['scheduledTime'], '', '1','C');
         if($Data['odfMatchName']!=0) {

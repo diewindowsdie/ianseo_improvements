@@ -63,7 +63,7 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 
 	$pdf = new ScorePDF(true);
 	//error_reporting(E_ALL);
-    if(!$FillWithArrows and getModuleParameter('ScorecardsAI', 'Active', '') and file_exists($CFG->DOCUMENT_PATH.'Modules/ScorecardsAI/Lib.php')) {
+    if(!$FillWithArrows and getModuleParameter('ScorecardsAI', 'Active', '') and module_exists('ScorecardsAI')) {
         $pdf->Aruco=1;
         $pdf->ArucoSize=getModuleParameter('ScorecardsAI', 'Size', 10);
         $pdf->ArucoType=970;

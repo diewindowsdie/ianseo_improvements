@@ -72,7 +72,6 @@ $lang['DailySchedule']='每日日程';
 $lang['DATABASE NOT REACHABLE']='不可获得的在线数据库';
 $lang['Date']='日期';
 $lang['Days']='天数';
-$lang['DaySchedule']='某天日程（年-月-日或者第0天，第1天等等）';
 $lang['Default']='默认';
 $lang['DefaultCO']='默认CO';
 $lang['DefaultHM']='默认HM';

@@ -505,7 +505,6 @@ $lang['RunningEvents']='Podešavanje pokrenutih serija';
 $lang['RunningTotal']='Pokretanja Ukupno';
 $lang['Schedule']='Raspored';
 $lang['ScheduledMatches']='Raspored utakmica';
-$lang['ScheduleFromDay']='Raspored od dana:';
 $lang['ScheduleNotes']='Napomene rasporeda';
 $lang['ScheduleToday']='današnji raspored';
 $lang['SchIncFinalists']='uključujući imena finalista';

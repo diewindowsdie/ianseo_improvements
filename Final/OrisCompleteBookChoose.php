@@ -54,7 +54,7 @@ if($_POST) {
 
     // Medallists
     if(!empty($_POST['MEDLST'])) {
-        $pdf->SetAutoPageBreak(true,OrisPDF::bottomMargin);
+        $pdf->SetAutoPageBreak(true,OrisPDF::bottomMargin+$pdf->extraBottomMargin);
         include 'OrisMedalList.php';
     }
 
@@ -90,7 +90,7 @@ if($_POST) {
 		$EventRequested=array();
 		foreach($_POST['BracketsInd'] as $Event) $EventRequested[]=substr($Event,2);
 		include 'Final/Individual/OrisBracket.php';
-		$pdf->SetAutoPageBreak(true,OrisPDF::bottomMargin);
+		$pdf->SetAutoPageBreak(true,OrisPDF::bottomMargin+$pdf->extraBottomMargin);
 	}
 
 	// Elimination, Individual
@@ -125,7 +125,7 @@ if($_POST) {
 		$EventRequested=array();
 		foreach($_POST['BracketsTeam'] as $Event) $EventRequested[]=substr($Event,2);
 		include 'Final/Team/OrisBracket.php';
-		$pdf->SetAutoPageBreak(true,OrisPDF::bottomMargin);
+		$pdf->SetAutoPageBreak(true,OrisPDF::bottomMargin+$pdf->extraBottomMargin);
 	}
 
 	// Qualification, Team
@@ -138,7 +138,7 @@ if($_POST) {
     if(!empty($_POST['FinalInd'])) {
         $EventRequested=array();
         foreach($_POST['FinalInd'] as $Event) $EventRequested[]=substr($Event,2);
-        $PdfData = getBracketsIndividual($EventRequested, true, false, false, true, false);
+        $PdfData = getBracketsIndividual($EventRequested, true, false, false, true, false, null, false, false);
         include(PdfChunkLoader('OrisScoreIndividual.inc.php'));
     }
 

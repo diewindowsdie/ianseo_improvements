@@ -126,6 +126,7 @@ $lang['NocCaps-ClubCamel']='KULÜP KODU Kulüp Adı';
 $lang['NocCaps-ClubCaps']='KULÜP KODU KULÜP ADI';
 $lang['Offest2nd']='İkinci sırt numarasının offset ayarı (gerekirse)';
 $lang['OneLine']='Tek Çizgi';
+$lang['OnlyAthletes']='Sadece Sporcular';
 $lang['PaperDimention']='Kağıt Boyutu';
 $lang['Picture']='Sporcu Fotoğrafı';
 $lang['Portrait']='Dikey';

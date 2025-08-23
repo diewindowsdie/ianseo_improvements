@@ -72,6 +72,7 @@ $lang['Record-WAAF-CR-avg']='Mitjana de Rècord Africà';
 $lang['Record-WAAM-CC-GR']='Rècord Panamericà del Campionat';
 $lang['Record-WAAM-CC-GR-avg']='Rècord Panamericà del Campionat (Mitja)';
 $lang['Record-WAAM-CR-avg']='Mitjana de Rècord Americà';
+$lang['Record-WAAS-CC-GR-avg']='Rècord Asiàtic del Campionat (Mitja)';
 $lang['Record-WAAS-CR-avg']='Mitjana de Rècord Asiàtic';
 $lang['Record-WAE-CR-avg']='Mitjana de Rècord Europeu';
 $lang['Record-WAO-CR-avg']='Mitjana de Rècord Oceànic';

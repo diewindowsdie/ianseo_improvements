@@ -90,8 +90,9 @@ switch ($msgType) {
 		break;
 	case 'SS':
         if($side==0) {
-            break;
+            $json_array["Info"] = "Start Shooting - Simultanous - End " . (is_numeric($end) ? $end : "S.O.") ;
             $json_array["Error"]=0;
+            SendStartShooting($side,$end,$TourId);
         } else if($end != 0 OR $end == 'T'){
 			$json_array["Info"] = "Start Shooting - " . ($side==1 ? "Left":"Right") . " - End " . (is_numeric($end) ? $end : "S.O.") ;
 			$json_array["Error"]=0;

@@ -229,6 +229,7 @@ $lang['Update']='Atualizar';
 $lang['UpdateLang']='Atualizar traduções';
 $lang['Url']='URL:';
 $lang['VerifyCorrect']='Por favor, verifique se estes são os valores corretos antes de continuar.';
+$lang['VerNotCompatible']='Esta versão do aplicativo é __currver__ e não é compatível com o software Ianseo, que suporta versões de __minver__ a __maxver__. Instale a versão correta ou atualize o Ianseo.';
 $lang['VerNotVerified']='Não foi possível verificar a versão do app com o software do Ianseo. Por favor, cheque sua instalação e tente novamente.';
 $lang['VerNotVerifiedErr']='Não foi possível verificar a versão do aplicativo com o Ianseo. Por favor, cheque a informação do servidor e tente novamente.';
 $lang['Version']='Versão';

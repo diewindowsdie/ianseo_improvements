@@ -97,7 +97,7 @@ if($_SESSION['TourLocRule']=='LANC') {
     echo '<input name="ScoreDraw" type="radio" value="HorScoreAllDist" onClick="manageDistances(true);">&nbsp;' . get_text('HorScoreAllDist', 'Tournament') . '<br>';
 }
 //echo '<input name="ScoreDraw" type="radio" value="VertScoreAllDist" onClick="manageDistances(true);">&nbsp;' . get_text('VertScoreAllDist','Tournament') . '<br>';
-echo '<input name="TourField3D" type="checkbox" value="'.($RowTour->IsTeam3D==0 ? '': ($RowTour->IsTeam3D==4 ? 'FIELD'  : '3D')).'" onclick="$(\'#ScoreCollectorDiv\').toggleClass(\'d-none\', this.checked)" '.($RowTour->IsTeam3D==0?'':' checked="checked"').'>&nbsp;'.get_text('FieldScorecard', 'Tournament').'<br/>';
+echo '<input name="TourField3D" type="checkbox" value="'.($RowTour->IsTeam3D==0 ? 'FIELD': ($RowTour->IsTeam3D==4 ? 'FIELD'  : '3D')).'" onclick="$(\'#ScoreCollectorDiv\').toggleClass(\'d-none\', this.checked)" '.($RowTour->IsTeam3D==0?'':' checked="checked"').'>&nbsp;'.get_text('FieldScorecard', 'Tournament').'<br/>';
 echo '<div id="ScoreCollectorDiv" class="'.($RowTour->IsTeam3D==0 ? '' : 'd-none').'">';
 echo '<input name="ScoreCollector" id="ScoreCollector" type="checkbox" value="Collector">&nbsp;' . get_text('ScoreCollector', 'Tournament') ;
 echo '<input name="ScoreCollectorArrows" id="ScoreCollector6" type="radio" value="6" checked="checked">6 - ';

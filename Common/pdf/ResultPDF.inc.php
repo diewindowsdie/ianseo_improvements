@@ -12,10 +12,6 @@ class ResultPDF extends IanseoPdf {
 	var $FontSizeHeadSmall=6;
 	var $FontSizeLines=8;
 	var $RealCellHeight=4;
-	var $PoolMatches=array();
-	var $PoolMatchesWA=array();
-	var $PoolWinners=array();
-	var $PoolWinnersWA=array();
 	var $ScoreCellHeight=4, $PrintFlags = false, $FillWithArrows = false;
 	var $PrintWeight=false;
 	var $PrintAgeClass=true;
@@ -24,11 +20,6 @@ class ResultPDF extends IanseoPdf {
 	//Constructor
 	function __construct($DocTitolo, $Portrait=true, $Headers='', $StaffVisibility=true, $Options=[]) {
 		parent::__construct($DocTitolo, $Portrait, $Headers, $StaffVisibility);
-
-		$this->PoolMatches=getPoolMatchesShort();
-		$this->PoolMatchesWA=getPoolMatchesShortWA();
-		$this->PoolWinners=getPoolMatchesWinners();
-		$this->PoolWinnersWA=getPoolMatchesWinnersWA();
 		foreach($Options as $k=>$v) {
 			$this->{$k}=$v;
 		}

@@ -59,6 +59,7 @@ $lang['OdfReceiverOn']='Receptor actiu';
 $lang['OdfReceiverSetup']='Configuració Receptor ODF';
 $lang['OdfSportCodeVersion']='Versió Diccionari Dades Esportives';
 $lang['OdfUploadFileText']='Seleccioneu un fitxer XML per penjar ...';
+$lang['ParticExtraData']='Propietats addicionals DT_PARTIC';
 $lang['Production']='Producció';
 $lang['Receiver']='Receptor';
 $lang['ReceiverLanguage']='Idioma del Receptor (3 dígits)';

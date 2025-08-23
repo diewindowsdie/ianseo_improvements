@@ -97,6 +97,7 @@ $IncludeJquery=true;
 			<img src="../Common/Images/pdf.gif" alt="<?php print get_text('StartlistCountry','Tournament');?>" border="0">
 			<br/><?php print get_text('StartlistCountry','Tournament');?></a>
 			<br/><a href="PrnCountry.php?SinglePage=1&includeRegion2=on&includeRegion3=on" class="Link" target="PrintOut"><?php print get_text('StartlistEachCountry','Tournament');?></a>
+            <br/><a href="PrnCountryDetails.php" class="Link" target="PrintOut"><?php print get_text('StartlistCountryPictures','Tournament');?></a>
 			<br/><a href="PrnCountry.php?tf=1&includeRegion2=on&includeRegion3=on" class="Link" target="PrintOut">+ <?php print get_text('TargetType');?></a>
 		</td>
 		<?php foreach ($sessions as $s) { ?>

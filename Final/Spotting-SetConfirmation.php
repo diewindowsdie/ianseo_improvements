@@ -62,6 +62,7 @@ foreach($_REQUEST['confirm'] as $Matchno => $Start) {
 		}
 
 		$Winner=($r1->Winner+$r2->Winner);
+        $Alternate=($r1->MatchStarter+$r2->MatchStarter);
 		if(!$Winner) {
 			$JSON['starter']='first['.$Team.']['.$Event.']['.$m[0].']['.$r1->CurrentEnd.']';
 			$JSON['tabindex']=$TabIndexOffset + ($r1->CurrentEnd-1)*$Params->arrows*2 + 1;
@@ -69,8 +70,12 @@ foreach($_REQUEST['confirm'] as $Matchno => $Start) {
 				// we are in the SO so we must add the number of arrows shot
 				$JSON['tabindex']+=$r1->ShootOffShot*2+$Params->arrows*2;
 			}
-			safe_w_sql("update {$Table}Finals set {$TabPrefix}ShootFirst=({$TabPrefix}ShootFirst | ".pow(2, $r1->CurrentEnd).") where {$TabPrefix}Tournament={$_SESSION['TourId']} and {$TabPrefix}Event='$Event' and {$TabPrefix}MatchNo={$m[0]}");
-			safe_w_sql("update {$Table}Finals set {$TabPrefix}ShootFirst=({$TabPrefix}ShootFirst & ~".pow(2, $r1->CurrentEnd).") where {$TabPrefix}Tournament={$_SESSION['TourId']} and {$TabPrefix}Event='$Event' and {$TabPrefix}MatchNo={$m[1]}");
+            if($Alternate) {
+                safe_w_sql("update {$Table}Finals set {$TabPrefix}ShootFirst=({$TabPrefix}ShootFirst | " . pow(2, $r1->CurrentEnd) . ") where {$TabPrefix}Tournament={$_SESSION['TourId']} and {$TabPrefix}Event='$Event' and {$TabPrefix}MatchNo={$m[0]}");
+                safe_w_sql("update {$Table}Finals set {$TabPrefix}ShootFirst=({$TabPrefix}ShootFirst & ~" . pow(2, $r1->CurrentEnd) . ") where {$TabPrefix}Tournament={$_SESSION['TourId']} and {$TabPrefix}Event='$Event' and {$TabPrefix}MatchNo={$m[1]}");
+            } else {
+                $JSON['starter']='';
+            }
 		} else {
 			if($r1->Winner) {
 				$JSON['winner']=($r1->MatchNo%2 ? 'R' : 'L');
