@@ -354,7 +354,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 			$this->data['meta']['numDist']=-1;
 			$this->data['meta']['double']=-1;
 			$this->data['meta']['lastUpdate']='0000-00-00 00:00:00';
-            $this->data["meta"]["hideNormatives"] = getModuleParameter("Tournament", "HideNormatives", false, $this->tournament);
+            $this->data["meta"]["InternationalProtocol"] = getModuleParameter("Tournament", "InternationalProtocol", false, $this->tournament);
 			$this->data['sections']=array();
 
 			if (safe_num_rows($r)>0) {
@@ -532,7 +532,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 						'session' => $myRow->Session,
 						'sessionName' => $myRow->SesName,
 						'target' => $myRow->TargetNo,
-						'athlete' => $myRow->FirstNameUpper . ' ' . $myRow->Name . ($myRow->EnMiddleName ? " " . $myRow->EnMiddleName : ""),
+						'athlete' => getFullAthleteName($myRow->FirstNameUpper, $myRow->Name, $myRow->EnMiddleName),
 						'familyname' => $myRow->FirstName,
 						'familynameUpper' => $myRow->FirstNameUpper,
 						'givenname' => $myRow->Name,

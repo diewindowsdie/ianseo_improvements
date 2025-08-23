@@ -11,7 +11,7 @@ $PdfData = getStartList();
 
 if(!isset($isCompleteResultBook)) {
     $pdf = new ResultPDF($PdfData->Description);
-    $pdf->HideNormatives = $PdfData->HideNormatives;
+    $pdf->InternationalProtocol = $PdfData->InternationalProtocol;
 }
 
 require_once(PdfChunkLoader('StartList.inc.php'));

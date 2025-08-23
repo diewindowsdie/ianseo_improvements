@@ -5,7 +5,7 @@ require_once('Common/pdf/ResultPDF.inc.php');
 
 define("HideCols", GetParameter("IntEvent"));
 
-$hideNormatives = getModuleParameter("Tournament", "HideNormatives", false, $_SESSION['TourId']);
+$internationalProtocol = getModuleParameter("Tournament", "InternationalProtocol", false, $_SESSION['TourId']);
 
 $pdf = new ResultPDF((get_text('StartlistAlpha','Tournament')));
 
@@ -49,13 +49,13 @@ if($Rs) {
 				$pdf->Cell(30, 6,  (get_text('Continue')), 0, 1, 'R', 0);
 			}
 		   	$pdf->SetFont($pdf->FontStd,'B',7);
-			$pdf->Cell(45 + ($hideNormatives ? 8 : 0), 4,  (get_text('Athlete')), 1, 0, 'L', 1);
+			$pdf->Cell(45 + ($internationalProtocol ? 8 : 0), 4,  (get_text('Athlete')), 1, 0, 'L', 1);
 			$pdf->Cell(48, 4,  (get_text('Country')), 1, 0, 'L', 1);
             $pdf->Cell(12, 4,  (get_text('DOB', "Tournament")), 1, 0, 'C', 1);
 			$pdf->Cell(7, 4,  (get_text('SessionShort','Tournament')), 1, 0, 'C', 1);
 			$pdf->Cell(11, 4,  (get_text('Target')), 1, 0, 'C', 1);
 			$pdf->Cell(11, 4,  (get_text('AgeCl')), 1, 0, 'C', 1);
-            if (!$hideNormatives) {
+            if (!$internationalProtocol) {
 			    $pdf->Cell(8, 4,  (get_text('SubCl','Tournament')), 1, 0, 'C', 1);
             }
 			$pdf->Cell(12, 4,  (get_text('Division')), 1, 0, 'C', 1);
@@ -70,14 +70,14 @@ if($Rs) {
 		}
 	   	$pdf->SetFont($pdf->FontStd,'',7);
 	   	$pdf->SetFont($pdf->FontStd,'B',7);
-		$pdf->Cell(45 + ($hideNormatives ? 8 : 0), 4,  $MyRow->FirstName . ' ' . $MyRow->Name . ($MyRow->EnMiddleName ? ' ' . $MyRow->EnMiddleName : ''), 1, 0, 'L', 0);
+        $pdf->Cell(45 + ($internationalProtocol ? 8 : 0), 4,  getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->EnMiddleName), 1, 0, 'L', 0);
 	   	$pdf->SetFont($pdf->FontStd,'',7);
 		$pdf->Cell(48, 4,  getFullCountryName($MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3), 'RTB', 0, 'L', ($MyRow->invalidCountry));
         $pdf->Cell(12, 4,  ($MyRow->DOB), 1, 0, 'R', ($MyRow->invalidDOB));
 		$pdf->Cell(7, 4,  ($MyRow->Session), 1, 0, 'R', 0);
 		$pdf->Cell(11, 4,  ($MyRow->TargetNo), 1, 0, 'R', 0);
 		$pdf->Cell(11, 4,  ($MyRow->AgeClass), 1, 0, 'C', ($MyRow->invalidAgeClass));
-        if (!$hideNormatives) {
+        if (!$internationalProtocol) {
             $pdf->Cell(8, 4, ($MyRow->SubclassDescription), 1, 0, 'C', 0);
         }
 		$pdf->Cell(12, 4,  ($MyRow->DivCode), 1, 0, 'C', ($MyRow->invalidDivision));

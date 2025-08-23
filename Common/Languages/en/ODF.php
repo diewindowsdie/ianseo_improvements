@@ -60,6 +60,7 @@ $lang['OdfReceiverOn']='Receiver Active';
 $lang['OdfReceiverSetup']='ODF Receiver Setup';
 $lang['OdfSportCodeVersion']='Sport Data Dictionary Version';
 $lang['OdfUploadFileText']='Please select an XML file to upload...';
+$lang['ParticExtraData']='DT_PARTIC extra properties';
 $lang['Production']='Production';
 $lang['Receiver']='Receiver';
 $lang['ReceiverLanguage']='Receiver Language (3 digits)';

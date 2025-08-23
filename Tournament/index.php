@@ -158,10 +158,10 @@ if (isset($_REQUEST['Command'])) {
                     $Rs=safe_w_sql($Insert);
                     $RowId = safe_w_last_id();
                     set_qual_session_flags();
-                    if ($_REQUEST["d_HideNormatives"]) {
-                        setModuleParameter("Tournament", "HideNormatives", true, $_SESSION['TourId']);
+                    if ($_REQUEST["d_InternationalProtocol"]) {
+                        setModuleParameter("Tournament", "InternationalProtocol", true, $_SESSION['TourId']);
                     } else {
-                        delModuleParameter("Tournament", "HideNormatives", $_SESSION['TourId']);
+                        delModuleParameter("Tournament", "InternationalProtocol", $_SESSION['TourId']);
                     }
                     $_SESSION['ISORIS']=!empty($_REQUEST['d_ORIS']);
                     // need those in the class creation engine!
@@ -754,15 +754,15 @@ if(file_exists($CFG->DOCUMENT_PATH.'Api/index.php')) {
 </td></tr>
         <tr>
             <td>
-                <input type="checkbox" id="hideNormatives" name="d_HideNormatives" value="1" <?php
+                <input type="checkbox" id="internationalProtocol" name="d_InternationalProtocol" value="1" <?php
                 if (!$MyRow) {
-                    print array_key_exists('d_HideNormatives',$_REQUEST) ? ("checked=\"checked\"") : '';
+                    print array_key_exists('d_InternationalProtocol',$_REQUEST) ? ("checked=\"checked\"") : '';
                 } else {
-                    if (getModuleParameter("Tournament", "HideNormatives", false, $MyRow->ToId)) {
+                    if (getModuleParameter("Tournament", "InternationalProtocol", false, $MyRow->ToId)) {
                         print "checked=\"checked\"";
                     }
                 } ?>/>
-                <label for="hideNormatives">Скрыть имеющиеся и выполненные разряды и список судей в финальном протоколе</label>
+                <label for="internationalProtocol">Протокол международного формата (скрыть подписи ГСК, список судей, отчества спортсменов)</label>
             </td>
         </tr>
 

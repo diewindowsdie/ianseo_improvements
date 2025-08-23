@@ -561,6 +561,11 @@ function getFullCountryName($countryName, $countryName2=null, $countryName3=null
     return $result;
 }
 
+function getFullAthleteName($surname, $firstName, $middleName) {
+    $internationalProtocol = getModuleParameter("Tournament", "InternationalProtocol", false, $_SESSION['TourId']);
+    return trim($surname) . ' ' . trim($firstName) . ($middleName && !$internationalProtocol ? ' ' . trim($middleName) : '');
+}
+
 function get_flag_ianseo($r0, $r2=null, $r3=null, $h=0, $align='', $direct='') {
 	global $TourCode, $CFG;
 	if($direct) {

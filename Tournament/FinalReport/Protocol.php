@@ -20,6 +20,8 @@ const Checked1ParameterName = "CheckedCountry1";
 const Checked2ParameterName = "CheckedCountry2";
 const Checked3ParameterName = "CheckedCountry3";
 
+$isInternationalProtocol = getModuleParameter("Tournament", "InternationalProtocol", false, $_SESSION['TourId']);
+
 if (array_key_exists("doPrint", $_REQUEST)) {
     //в этом отчете печатаем все
     $isCompleteResultBook = true;
@@ -37,7 +39,8 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         "IndividualBrackets" => count(getBracketsIndividual('', false, 0, 0, 1)->rankData['sections']),
         "IndividualRankings" => count(getRankingIndividual()->rankData['sections']),
         "TeamBrackets" => count(getBracketsTeams('', false, 0, 0, 1)->rankData['sections']),
-        "TeamRankings" => count(getRankingTeams()->rankData['sections'])
+        "TeamRankings" => count(getRankingTeams()->rankData['sections']),
+        "Judges" => !$isInternationalProtocol,
     ];
 
     //медалисты в личке и командах
@@ -54,10 +57,10 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         )) && landscapePagesNeccesary()) {
         $pageOrientation = 'L';
     }
-    $pdf->AddPage($pageOrientation);
 
     //личная квалификация
     if ($pagesPresent["IndividualQualification"]) {
+        $pdf->AddPage($pageOrientation);
         $pdf->Titolo = get_text('ResultIndAbs', 'Tournament');
         $hideTempHeader = true;
         include '../../Qualification/PrnIndividualAbs.php';
@@ -71,11 +74,11 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             )) && landscapePagesNeccesary()) {
             $pageOrientation = 'L';
         }
-        $pdf->AddPage($pageOrientation);
     }
 
     //командная квалификация
     if ($pagesPresent["TeamQualification"]) {
+        $pdf->AddPage($pageOrientation);
         $pdf->Titolo = get_text('ResultSqAbs', 'Tournament');
         $hideTempHeader = true;
         include '../../Qualification/PrnTeamAbs.php';
@@ -88,11 +91,11 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             )) && landscapePagesNeccesary()) {
             $pageOrientation = 'L';
         }
-        $pdf->AddPage($pageOrientation);
     }
 
     //личные сетки
     if ($pagesPresent["IndividualBrackets"]) {
+        $pdf->AddPage($pageOrientation);
         $pdf->Titolo = get_text('VersionBracketsInd', 'Tournament');
         include '../../Final/Individual/PrnBracket.php';
         //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
@@ -103,11 +106,11 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             )) && landscapePagesNeccesary()) {
             $pageOrientation = 'L';
         }
-        $pdf->AddPage($pageOrientation);
     }
 
     //личные лесенки
     if ($pagesPresent["IndividualRankings"]) {
+        $pdf->AddPage($pageOrientation);
         $pdf->Titolo = get_text('RankingInd');
         include '../../Final/Individual/PrnRanking.php';
         //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
@@ -117,11 +120,12 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             )) && landscapePagesNeccesary()) {
             $pageOrientation = 'L';
         }
-        $pdf->AddPage($pageOrientation);
     }
 
     //командные сетки
     if ($pagesPresent["TeamBrackets"]) {
+        $pdf->AddPage($pageOrientation);
+        //unset($_REQUEST["ShowSetArrows"]);
         $pdf->Titolo = get_text('VersionBracketsTeam', 'Tournament');
         include '../../Final/Team/PrnBracket.php';
         //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
@@ -130,22 +134,22 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             )) && landscapePagesNeccesary()) {
             $pageOrientation = 'L';
         }
-        $pdf->AddPage($pageOrientation);
     }
 
     //командные лесенки
     if ($pagesPresent["TeamRankings"]) {
+        $pdf->AddPage($pageOrientation);
         $pdf->Titolo = get_text('RankingSq');
         include '../../Final/Team/PrnRanking.php';
         //если есть хотя бы один отчет со статистикой по "регионам" - ставим альбомную ориентацию
         if (landscapePagesNeccesary()) {
             $pageOrientation = 'L';
         }
-        $pdf->AddPage($pageOrientation);
     }
 
     //статистика по "регионам" по полю 1
     if (array_key_exists("country1", $_REQUEST)) {
+        $pdf->AddPage($pageOrientation);
         setModuleParameter(ModuleName, Checked1ParameterName, "1", $_SESSION['TourId']);
         if ($_REQUEST["StatHeader1"] != "") {
             setModuleParameter(ModuleName, Header1ParameterName, $_REQUEST["StatHeader1"], $_SESSION['TourId']);
@@ -157,13 +161,13 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         if (!array_key_exists("country2", $_REQUEST) && !array_key_exists("country3", $_REQUEST)) {
             $pageOrientation = 'P';
         }
-        $pdf->AddPage($pageOrientation);
     } else {
         setModuleParameter(ModuleName, Checked1ParameterName, "0", $_SESSION['TourId']);
     }
 
     //статистика по "регионам" по полю 2
     if (array_key_exists("country2", $_REQUEST)) {
+        $pdf->AddPage($pageOrientation);
         setModuleParameter(ModuleName, Checked2ParameterName, "1", $_SESSION['TourId']);
         if ($_REQUEST["StatHeader2"] != "") {
             setModuleParameter(ModuleName, Header2ParameterName, $_REQUEST["StatHeader2"], $_SESSION['TourId']);
@@ -175,13 +179,13 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         if (!array_key_exists("country3", $_REQUEST)) {
             $pageOrientation = 'P';
         }
-        $pdf->AddPage($pageOrientation);
     } else {
         setModuleParameter(ModuleName, Checked2ParameterName, "0", $_SESSION['TourId']);
     }
 
     //статистика по "регионам" по полю 3
     if (array_key_exists("country3", $_REQUEST)) {
+        $pdf->AddPage($pageOrientation);
         setModuleParameter(ModuleName, Checked3ParameterName, "1", $_SESSION['TourId']);
         if ($_REQUEST["StatHeader3"] != "") {
             setModuleParameter(ModuleName, Header3ParameterName, $_REQUEST["StatHeader3"], $_SESSION['TourId']);
@@ -191,14 +195,13 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         include '../../Partecipants/PrnStatCountry.php';
         //других отчетов со статистикой уже точно больше не будет
         $pageOrientation = 'P';
-        $pdf->AddPage($pageOrientation);
     } else {
         setModuleParameter(ModuleName, Checked3ParameterName, "0", $_SESSION['TourId']);
     }
 
-    error_reporting(E_ALL);
-    if (!getModuleParameter("Tournament", "HideNormatives", false, $_SESSION['TourId'])) {
-        //судьи
+    //судьи
+    if ($pagesPresent["Judges"]) {
+        $pdf->AddPage($pageOrientation);
         $pdf->Titolo = get_text('StaffOnField', 'Tournament');
         include '../../Tournament/PrnStaffField.php';
     }

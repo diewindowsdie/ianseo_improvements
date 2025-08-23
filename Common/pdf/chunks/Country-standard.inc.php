@@ -24,10 +24,10 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 				$pdf->SetDefaultColor();
 			   	$pdf->SetFont($pdf->FontStd,'B',7);
 				$pdf->Cell($nationCell, 4, '', 'LTB', 0, 'L', 1);
-				$pdf->Cell($athleteCell + ($PdfData->HideNormatives ? $TgtCell : 0), 4, $PdfData->Data['Fields']['Athlete'], 'RTB', 0, 'L', 1);
+				$pdf->Cell($athleteCell + ($PdfData->InternationalProtocol ? $TgtCell : 0), 4, $PdfData->Data['Fields']['Athlete'], 'RTB', 0, 'L', 1);
                 $pdf->Cell($regionCell, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
                 $pdf->Cell($birthdayCell, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'L', 1);
-				if(!$PdfData->HideCols and !$TargetFace and !$PdfData->HideNormatives) {
+				if(!$PdfData->HideCols and !$TargetFace and !$PdfData->InternationalProtocol) {
 					$pdf->Cell($TgtCell, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
 				}
 				$pdf->Cell($divAndClassCell + ($PdfData->HideCols==true ? $divAndClassCell:0), 4, $PdfData->Data['Fields']['DivDescription'], 1, 0, 'C', 1);
@@ -76,10 +76,11 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 			}
             $pdf->Cell($nationCell, 4, '', 0, 0, 'C', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',7);
-			$pdf->Cell($athleteCell + ($PdfData->HideNormatives ? $TgtCell : 0), 4,  $MyRow->Athlete . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
+//			$pdf->Cell($athleteCell + ($PdfData->InternationalProtocol ? $TgtCell : 0), 4,  $MyRow->Athlete . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
+            $pdf->Cell($athleteCell + ($PdfData->InternationalProtocol ? $TgtCell : 0), 4, getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->MiddleName) . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
             $pdf->Cell($regionCell, 4, getFullCountryName(null, $MyRow->NationComplete2, $MyRow->NationComplete3), 1, 0, 'L', 0);
             $pdf->Cell($birthdayCell, 4,  $MyRow->EnDob, 1, 0, 'L', 0);
-			if(!$PdfData->HideCols AND !$TargetFace and !$PdfData->HideNormatives) {
+			if(!$PdfData->HideCols AND !$TargetFace and !$PdfData->InternationalProtocol) {
 				$pdf->Cell($TgtCell, 4,  ($MyRow->SubClassDescription), 1, 0, 'C', 0);
 			}
 			$pdf->Cell($divAndClassCell + ($PdfData->HideCols==true ? $divAndClassCell:0), 4,  ($PdfData->HideCols==true ? $MyRow->DivDescription : $MyRow->DivDescription), 1, 0, 'C', 0);

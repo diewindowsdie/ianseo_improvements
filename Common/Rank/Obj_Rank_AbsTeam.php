@@ -297,7 +297,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 
 			$this->data['meta']['title']=get_text('ResultSqAbs','Tournament');
 			$this->data['meta']['lastUpdate']='0000-00-00 00:00:00';
-            $this->data["meta"]["hideNormatives"] = getModuleParameter("Tournament", "HideNormatives", false, $this->tournament);
+            $this->data["meta"]["InternationalProtocol"] = getModuleParameter("Tournament", "InternationalProtocol", false, $this->tournament);
             $this->data['sections']=array();
 
 			$myEv='';
@@ -476,7 +476,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 							'countryCode' => $row->EnCoCode,
 							'session' => $row->Session,
 							'target' => $row->TargetNo,
-							'athlete'=>trim($row->EnFirstNameUpper . ' ' . $row->EnName . ' ' . $row->EnMiddleName),
+							'athlete'=>getFullAthleteName($row->EnFirstNameUpper, $row->EnName, $row->EnMiddleName),
 							'familyname' => $row->EnFirstName,
 							'familynameUpper' => $row->EnFirstNameUpper,
 							'givenname' => $row->EnName,

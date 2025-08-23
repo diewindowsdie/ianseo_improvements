@@ -19,6 +19,8 @@ class ScorePDF extends IanseoPdf {
 	var $BottomImage=true;
     var $NoTensOnlyX = false;
     var $ScoreQrPersonal = false;
+    var $PrintJudgeNotes = true;
+    var $ScoreCellHeight = 0;
     var $QRCode = [];
     var $Aruco=0;
     var $ArucoType=0;
@@ -41,13 +43,8 @@ class ScorePDF extends IanseoPdf {
         $this->PrintLineNo = true;
 		$this->SetSubject('Scorecard');
 		$this->SetColors();
-	}
+        $this->startPageGroup();
 
-	function Footer() {
-		$this->SetDefaultColor();
-		$this->SetFont($this->FontStd,'B',7);
-		$this->SetXY(IanseoPdf::sideMargin,$this->h - 16);
-		$this->multicell(0, 0, get_text('ScoreSingleWarning', 'Tournament'), 1, 'C', '', 1);
 	}
 
 	function SetColors($Datum=false, $Light=false) {
@@ -96,7 +93,7 @@ class ScorePDF extends IanseoPdf {
 
 	function NoTensOnlyX() {
 		$this->NoTensOnlyX = true;
-		$this->setPrintFooter(true);
+		//$this->setPrintFooter(true);
 	}
 
 // NEW DRAW SCORE

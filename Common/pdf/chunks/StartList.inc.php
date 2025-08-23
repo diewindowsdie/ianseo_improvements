@@ -61,11 +61,11 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 		    $pdf->SetFont($pdf->FontStd,'B',7);
             //headers under the session name
 			$pdf->Cell(11, 4, $PdfData->Data['Fields']['TargetNo'], 1, 0, 'C', 1);
-			$pdf->Cell(($TargetFace ? 38 : 44) + ($PdfData->HideNormatives ? 9 : 0), 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
+			$pdf->Cell(($TargetFace ? 38 : 44) + ($PdfData->InternationalProtocol ? 9 : 0), 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
 			$pdf->Cell($TargetFace ? 48 : 60, 4, $PdfData->Data['Fields']['NationCode'], 1, 0, 'L', 1);
 			if(!$pdf->HideCols) {
 				$pdf->Cell(12, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'C', 1);
-                if (!$PdfData->HideNormatives) {
+                if (!$PdfData->InternationalProtocol) {
                     $pdf->Cell(9, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
                 }
 			}
@@ -114,7 +114,7 @@ foreach($PdfData->Data['Items'] as $MyRows) {
         //build data for one target and athlete and add it to $Components['players'] array
         $temprow=array();
 		$temprow[]=substr($MyRow->TargetNo,-1,1);
-		$temprow[]= ($MyRow->Athlete ?? '');
+		$temprow[]= getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->MiddleName);
 		$temprow[]= ($MyRow->NationCode ?? '');
         $temprow[]= getFullCountryName($MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3);
 		$temprow[]= ($MyRow->DOB ?? '');
