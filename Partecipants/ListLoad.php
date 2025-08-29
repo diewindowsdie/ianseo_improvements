@@ -605,7 +605,6 @@ if($DataSource) {
 				continue;
 			}
 
-            //todo начиная отсюда
 			if(count($tmpString)>=15 && strlen($tmpString[14])>10) {
 				$ImportResult['Refused'][]= '<tr class="error"><td>Country Code ['.$tmpString[13].'] too long (max 10 characters)<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
 				continue;
@@ -871,7 +870,6 @@ if($DataSource) {
 					, EnDOB=".StrSafe_DB($DoB2Save)."
 					, EnOdfShortname=".StrSafe_DB($TvName)."
 					, EnClassified=".intval($Para2Save)."
-					, EnTimestamp='".date('Y-m-d H:i:s')."'
 					";
 
 			if($TeamUpdate) {
