@@ -169,7 +169,6 @@ function devicesRenderer(data) {
             if (!data.isUpdate) {
                 curDevices.clear();
             }
-            const oldSelectedGroup = selectedGroups;
             let drawBlock = true;
             $(data.Devices).each(function () {
                 let block = this;
@@ -189,7 +188,7 @@ function devicesRenderer(data) {
                     somethingChanged = true;
                     let letters = '';
                     $.each(block.letters, function () {
-                        letters += '<div class="devLetter let_' + this.l + (this.e == 0 ? ' letBlack' : '') + '"'+(this.k ? 'ref="'+this.k+'"' : '')+'>' + this.l + '</div>';
+                        letters += '<div class="devLetter let_' + this.l + (this.e == 0 ? ' letBlack' : '') + '"'+(this.k ? ' ref="'+this.k+'"' : '')+'>' + this.l + '</div>';
                     });
                     let tmpConnection = '';
                     let tmpdevicesList = [];
@@ -197,7 +196,7 @@ function devicesRenderer(data) {
                         tmpConnection += '<i class="fa fa-mobile-screen fa-lg" devCode="'+kDev+'" dev="' + vDev + '"></i>';
                         tmpdevicesList.push(vDev);
                     });
-                    let tmpDiv = $('<div class="resTarget" ref="' + block.key + '" dev="' + tmpdevicesList + '" autoimport="'+block.autoimport+'">' +
+                    let tmpDiv = $('<div class="resTarget" ref="device_' + block.key + '" dev="' + tmpdevicesList + '" autoimport="'+block.autoimport+'">' +
                         '<div class="devHeader" ondblclick="deviceDetails(this)" target="' + block.target + '">' + block.target +
                             //'<div class="targetInfoImg" onClick="deviceDetails(parentNode)"><div class="deviceInfoImg">'+tmpConnection+'</div><i class="fa fa-circle-info fa-lg"></i></div>'+
                         '</div>' +
@@ -209,8 +208,8 @@ function devicesRenderer(data) {
                         '<div class="notice"></div>' +
                         '</div>' +
                         '</div>');
-                    if ($('#deviceList_' + block.group+ ' [ref="'+block.key+'"]').length != 0) {
-                        $('#deviceList_' + block.group+ ' [ref="'+block.key+'"]').replaceWith(tmpDiv);
+                    if ($('#deviceList_' + block.group+ ' [ref="device_'+block.key+'"]').length != 0) {
+                        $('#deviceList_' + block.group+ ' [ref="device_'+block.key+'"]').replaceWith(tmpDiv);
                     } else {
                         $('#deviceList_' + block.group).append(tmpDiv);
                     }
@@ -222,7 +221,7 @@ function devicesRenderer(data) {
             oldDevices.forEach((delItem) => {
                 if (!data.isUpdate || updDevGroups.indexOf(delItem.group) != -1) {
                     somethingChanged = true;
-                    $('#deviceList_' + delItem.group+ ' [ref="'+delItem.key+'"]').remove();
+                    $('#deviceList_' + delItem.group+ ' [ref="device_'+delItem.key+'"]').remove();
                 }
             });
         }
@@ -273,17 +272,17 @@ function devicesRenderer(data) {
                                 return prev;
                             }, otherEnd);
                         }
-                        $('#deviceList_'+target.group+' > [ref="' + target.key + '"] .let_' + pVal.l).removeClassStartingWith('Let-').addClass('Let-' + color);
+                        $('#deviceList_'+target.group+' > [ref="device_' + target.key + '"] .let_' + pVal.l).removeClassStartingWith('Let-').addClass('Let-' + color);
                     }
                 });
                 //Check if scoring in other Distances
                 if(target.otherdistances !== undefined && target.otherdistances !=='') {
                     otherEnd.push('<b>d:'+target.otherdistances+'</b>');
                 }
-                $('#deviceList_'+target.group+' > .resTarget[ref="'+target.key+'"] > .devHeader').removeClassStartingWith('Let-').addClass('Let-'+tColor);
-                $('#deviceList_'+target.group+' > .resTarget[ref="'+target.key+'"] > .devFooter .notice').html((otherEnd.length ? otherEnd.join(', ') : '&nbsp;'));
-                $('#deviceList_'+target.group+' > .resTarget[ref="'+target.key+'"] > .devFooter .Button:not(.ButtonClose)').toggleClass('disabled', !canImport);
-                $('#deviceList_'+target.group+' > .resTarget[ref="'+target.key+'"]').removeClassStartingWith('Let-').addClass('Let-'+bgColor).toggleClass('Let-F', target.over);
+                $('#deviceList_'+target.group+' > .resTarget[ref="device_'+target.key+'"] > .devHeader').removeClassStartingWith('Let-').addClass('Let-'+tColor);
+                $('#deviceList_'+target.group+' > .resTarget[ref="device_'+target.key+'"] > .devFooter .notice').html((otherEnd.length ? otherEnd.join(', ') : '&nbsp;'));
+                $('#deviceList_'+target.group+' > .resTarget[ref="device_'+target.key+'"] > .devFooter .Button:not(.ButtonClose)').toggleClass('disabled', !canImport);
+                $('#deviceList_'+target.group+' > .resTarget[ref="device_'+target.key+'"]').removeClassStartingWith('Let-').addClass('Let-'+bgColor).toggleClass('Let-F', target.over);
                 //update counters
                 $('#txtCounter_'+target.group).attr('cntS', cntS);
                 $('#txtCounter_'+target.group).attr('cntT', cntT);
