@@ -10,6 +10,18 @@ const reqAppVersion = '1.4.9';
 define('NG_DEBUG_LOG', ($CFG->DEBUG??false) and is_dir(__DIR__.'/log') and is_writable(__DIR__.'/log'));
 define('NG_DEBUG_LOGFILE', __DIR__.'/log/messages-'.date('Y-m-d').'.log');
 
+function getSocketIp() {
+    return getModuleParameter('ISK-NG', "IanseoSocketIP", getModuleParameter("ISK-NG", 'SocketIP', gethostbyname($_SERVER['HTTP_HOST'])));
+}
+
+function getSocketPort() {
+    return getModuleParameter('ISK-NG', "IanseoSocketPort", getModuleParameter("ISK-NG", 'SocketPort', '12346'));
+}
+
+function getSocketConnectionProtocol() {
+    return getModuleParameter("ISK-NG", "UseSSLasIanseoSocketProtocol", false) ? "wss" : "ws";
+}
+
 function getQrConfig($DEVICE, $cachedData=false, $Lightmode=false, $Force=false) {
 	if(!$cachedData) {
 		// rebuild and stores the specific configuration for this device

@@ -16,8 +16,9 @@ $JS_SCRIPT=array(
     phpVars2js(array(
         'isLive' => ($_SESSION["UseApi"] === ISK_NG_LIVE_CODE and module_exists('ISK-NG_Live')),
         'tourCode' => $_SESSION["TourCode"],
-        'SocketIP'=>getModuleParameter('ISK-NG', 'SocketIP', gethostbyname($_SERVER['HTTP_HOST'])),
-        'SocketPort'=>getModuleParameter('ISK-NG', 'SocketPort', '12346')
+        'SocketIP'=>getSocketIp(),
+        'SocketPort'=>getSocketPort(),
+        "SocketProtocol"=>getSocketConnectionProtocol(),
     )),
     '<script type="text/javascript" src="./socket.js"></script>',
     '<script type="text/javascript" src="./DevicesInfo.js"></script>',

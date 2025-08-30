@@ -25,7 +25,7 @@ function initSocket() {
         return;
     }
     try {
-        socket = new WebSocket("ws://"+SocketIP+':'+SocketPort+"/ngSocket");
+        socket = new WebSocket(SocketProtocol+"://"+SocketIP+':'+SocketPort+"/ngSocket");
         socket.onopen = (msg) => {
             $('#ctrConnStatus').html(socketStatus[socket.readyState]).addClass('socketOUTDATED').removeClass('socketOFF socketON');
             $('#ctrMastersNo').html('');

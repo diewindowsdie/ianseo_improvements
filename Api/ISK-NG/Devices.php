@@ -70,8 +70,9 @@ $JS_SCRIPT=array(
         'usePersonal' => ($UsePersonalDevices ? true : false),
         'tourCode' => $_SESSION["TourCode"],
         'reqAppVersion' => reqAppVersion,
-        'SocketIP'=>getModuleParameter('ISK-NG', 'SocketIP', gethostbyname($_SERVER['HTTP_HOST'])),
-        'SocketPort'=>getModuleParameter('ISK-NG', 'SocketPort', '12346'),
+        'SocketIP'=>getSocketIp(),
+        'SocketPort'=>getSocketPort(),
+        "SocketProtocol"=>getSocketConnectionProtocol(),
         'scheduleOpts' => array_values($scheduleOpts),
         'scheduleIndex' => array_keys($scheduleOpts),
         'msgRemove'=>get_text('ISK-Remove', 'Api'),
@@ -136,7 +137,7 @@ echo '<thead id="hGroups"><tr><th colspan="'.(15+($UsePersonalDevices?1:0)).'">'
     '<th class="w-10" colspan="2">' . get_text('API-Group', 'Api') . '</th>'.
     (($_SESSION["UseApi"] === ISK_NG_LIVE_CODE) ? '<th class="w-5">' . get_text('Target') . '</th>' : '') .
     '<th class="w-10" colspan="'.((($_SESSION["UseApi"] === ISK_NG_LIVE_CODE) ? 2:3)+($UsePersonalDevices?1:0)).'">' . get_text('ISK-DeviceEnabled', 'Api') . '</th>'.
-    '<th class="w-5">' . get_text('ISK-DeviceBattery', 'Api') . '</th>'.
+    '<th class="w-5">' . get_text('ISK-MinDeviceBattery', 'Api') . '</th>'.
     '<th class="w-auto Left" colspan="4">' . get_text('ISK-Sequence', 'Api') . '</th>'.
     '<th colspan="3">' . get_text('Distance', 'Tournament') . '</th>'.
     '<th class="Left" colspan="2"></th>'.
