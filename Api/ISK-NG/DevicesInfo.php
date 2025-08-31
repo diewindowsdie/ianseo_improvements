@@ -19,6 +19,7 @@ $JS_SCRIPT=array(
         'SocketIP'=>getSocketIp(),
         'SocketPort'=>getSocketPort(),
         "SocketProtocol"=>getSocketConnectionProtocol(),
+        "DetailsButtonText"=>get_text('DetailsButton', "Api"),
     )),
     '<script type="text/javascript" src="./socket.js"></script>',
     '<script type="text/javascript" src="./DevicesInfo.js"></script>',
@@ -27,7 +28,7 @@ $JS_SCRIPT=array(
 
 include('Common/Templates/head.php');
 echo '<table class="Tabella mb-3">';
-echo '<tr><th class="Title" colspan="5">' . get_text('ISK-Configuration') . '</th></tr>';
+echo '<tr><th class="Title" colspan="5">' . get_text('ISK-DeviceInfo') . '</th></tr>';
 
 $grpOptions = array();
 $Sql = "SELECT DISTINCT IskDvGroup FROM IskDevices WHERE IskDvTournament=" . $_SESSION["TourId"] . " ORDER BY IskDvGroup";

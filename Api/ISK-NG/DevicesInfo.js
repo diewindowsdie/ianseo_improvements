@@ -28,7 +28,7 @@ function getInfo() {
 function receivedInfo(msg) {
     let tmpDetails = objToStr({settings: msg.data.settings, wifi: msg.data.wifi, battery: msg.data.battery});
     let tmpData = '<div class="infoButtonContainer">' +
-        '<div class="Button" onClick="$(this).parent().next().toggle()">Details</div>'+
+        '<div class="Button" onClick="$(this).parent().next().toggle()">' + DetailsButtonText + '</div>'+
         '<div>' +
             '<div>charge: <b>'+Math.round(msg.data.battery.charge*100)+'&nbsp;%'+(msg.data.battery.charging ? ' <i class="fa fa-bolt fa-lg"></i>':'')+'</b></div>' +
             (msg.data.wifi.SSID != undefined ? '<div>wifi: <b>' + msg.data.wifi.SSID + '</b></div>' : '')+
@@ -39,7 +39,7 @@ function receivedInfo(msg) {
 
     tmpDetails = objToStr(msg.data.archers);
     tmpData = '<div class="infoButtonContainer">' +
-        '<div class="Button" onclick="$(this).parent().next().toggle()">Details</div>' +
+        '<div class="Button" onclick="$(this).parent().next().toggle()">' + DetailsButtonText + '</div>' +
     '<div>'; // container with the essential data
     switch(msg.data.archers.action) {
         case 'reset':

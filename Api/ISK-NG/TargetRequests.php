@@ -101,7 +101,7 @@ if($_REQUEST['Groups']??'') {
         $DrawY=$YGutter+(2*$YGutter+$QrCodeBlock+$CellHeight)*$Y;
         DrawScoreQrPersonal($pdf, $QrCode['t'], $DrawX, $DrawY, $QrCode['g'], $QrCodeBlock, 0);
         $pdf->setXY($DrawX, $DrawY+$QrCodeBlock);
-        $pdf->Cell($QrCodeBlock, $CellHeight, get_text('Group#', 'Tournament', $QrCode['g']).' - '.get_text('IskTargetTitle', 'Api', $QrCode['t']), 0,0,'C', '', '', 1);
+        $pdf->Cell($QrCodeBlock, $CellHeight, get_text('Group#', 'Tournament', chr(65+$QrCode['g'])).' - '.get_text('IskTargetTitle', 'Api', $QrCode['t']), 0,0,'C', '', '', 1);
         $X++;
         if($X==$XCount) {
             $X=0;

@@ -182,6 +182,7 @@ $lang['InitFinalGrids']='Initialize Brackets';
 $lang['InitPools']='Initialize Pools';
 $lang['InvalidAction']='Invalid Action';
 $lang['ISK-Configuration']='Device management';
+$lang['ISK-DeviceInfo']='Device information';
 $lang['ISK-GetQRData']='Get QRCode Data';
 $lang['ISK-Results']='Results';
 $lang['ISKMenuHeader']='ISK';
