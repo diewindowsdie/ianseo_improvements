@@ -51,7 +51,7 @@ foreach($PdfData->Data['Items'] as $MyRows) {
                 $txt = $PdfData->Data['Fields']['Session'] . ' ' . $CurSession;
             }
 
-            //session header <===
+            //session header
 			$pdf->Cell(190, 6,  $txt, 1, 1, 'C', 1);
 			if($TmpSegue) {
 				$pdf->SetXY(170,$pdf->GetY()-6);
@@ -84,7 +84,6 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 				$pdf->Cell(10, 4, $PdfData->Data['Fields']['Status'], 1, 0, 'C', 1);
 			}
 			$pdf->Cell(1, 4,  '', 0, 1, 'C', 0);
-            //тут кончился заголовок
 			$OldTeam='';
 			$FirstTime=false;
 		}
