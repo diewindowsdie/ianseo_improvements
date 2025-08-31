@@ -58,6 +58,7 @@
 					break;
 				case 'first_name':
 				case 'name':
+                case 'middle_name':
 					$value=AdjustCaseTitle($value);
 					$resetPrintBadge=true;
 					break;

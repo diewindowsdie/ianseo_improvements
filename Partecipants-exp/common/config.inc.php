@@ -8,6 +8,7 @@
 		'target_no'=> 'QuTargetNo',
 		'first_name'=> 'EnFirstName',
 		'name'=> 'EnName',
+        'middle_name'=> 'EnMiddleName',
 		'sex'=>'EnSex',
 		'ctrl_code'=>'EnCtrlCode',
 		'country_id'=>'EnCountry',

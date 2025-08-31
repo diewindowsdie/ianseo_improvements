@@ -69,7 +69,7 @@
 			$GroupType=GROUP_TYPE_NOGROUP;
 			break;
 		case 'ordName':
-			$OrderBy = "EnFirstName {$Collation} {$OrderDir},EnName {$Collation} {$OrderDir} ";
+			$OrderBy = "EnFirstName {$Collation} {$OrderDir}, EnName {$Collation} {$OrderDir}, EnMiddleName {$Collation} {$OrderDir}";
 			$GroupType=GROUP_TYPE_LETTER;
 			break;
 		case 'ordEmail':
@@ -199,6 +199,7 @@
 			. '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?AllTargets=' . $AllTargets. '&ord=ordLocCode&dir=' .  $OrderCol['ordLocCode'] . '">' . get_text('LocalCode','Tournament') . '</a></td>'
 			. '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?AllTargets=' . $AllTargets. '&ord=ordName&dir=' .  $OrderCol['ordName'] . '">' . get_text('FamilyName','Tournament') . '</a></td>'
 			. '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?AllTargets=' . $AllTargets. '&ord=ordName&dir=' .  $OrderCol['ordName'] . '">' . get_text('Name','Tournament') . '</a></td>'
+            . '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?AllTargets=' . $AllTargets. '&ord=ordName&dir=' .  $OrderCol['ordName'] . '">' . get_text('MiddleName','Tournament') . '</a></td>'
 			//. '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?AllTargets=' . $AllTargets. '&ord=ordName&dir=' .  $OrderCol['ordName'] . '">' . get_text('TVNameShort','Tournament') . '</a></td>'
 			. '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?AllTargets=' . $AllTargets. '&ord=ordEmail&dir=' .  $OrderCol['ordEmail'] . '">' . get_text('Email','Tournament') . '</a></td>'
 			. '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?AllTargets=' . $AllTargets. '&ord=ordCaption&dir=' .  $OrderCol['ordCaption'] . '">' . get_text('AccrCaption','Tournament') . '</a></td>'
@@ -334,6 +335,7 @@ if (count($Rows)>0) {
 		echo '<td onclick="insertInput(this,\'localCode\')">'.$r['locCode'].'</td>';
 		echo '<td onclick="insertInput(this,\'firstname\')">'.$r['firstname'].'</td>';
 		echo '<td onclick="insertInput(this,\'name\')">'.$r['name'].'</td>';
+        echo '<td onclick="insertInput(this,\'middlename\')">'.$r['middlename'].'</td>';
 		//echo '<td onclick="insertInput(this,\'tvname\')">'.$r['tvname'].'</td>';
 		echo '<td onclick="insertInput(this,\'email\')">'.$r['email'].'</td>';
 		echo '<td onclick="insertInput(this,\'caption\')">'.$r['caption'].'</td>';

@@ -60,6 +60,11 @@ if($field) {
 			$resetPrintBadge=true;
 			$Recalc=true;
 			break;
+        case 'middlename':
+            $FIELD='EnMiddleName';
+            $resetPrintBadge=true;
+            $value=AdjustCaseTitle($value);
+            break;
 		case 'firstname':
 			$FIELD='EnFirstname';
 			$resetPrintBadge=true;

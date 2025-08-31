@@ -214,6 +214,7 @@ partecipantsApp.Partecipants=function(el)
 				{name: 'code', mapping: 'code'},
 				{name: 'first_name',mapping:'first_name'},
 				{name: 'name',mapping:'name'},
+                {name: 'middle_name',mapping:'middle_name'},
 				//{name: 'ctrl_code',mapping:'ctrl_code'},
 				{name: 'ctrl_code',mapping:'dob'},
 				{name: 'sex',mapping:'sex'},
@@ -717,7 +718,9 @@ partecipantsApp.Partecipants=function(el)
 			
 		var textFilterName=new Ext.form.TextField({id: 'grid-filter-editor-colName',cls: 'filter-name',enableKeyEvents: true});
 			//textFilterName.addListener('keyup',function(field,eventObject){makeFilter(field.getValue(),cm.findColumnIndex('name'));},this,{buffer: 300});
-			
+
+        var textFilterMiddleName=new Ext.form.TextField({id: 'grid-filter-editor-colMiddleName',cls: 'filter-middle_name',enableKeyEvents: true});
+
 		var textFilterCtrlCode=new Ext.form.TextField({id: 'grid-filter-editor-colCtrlCode',cls: 'filter-ctrl_code',enableKeyEvents: true});
 			//textFilterCtrlCode.addListener('keyup',function(field,eventObject){makeFilter(field.getValue(),cm.findColumnIndex('ctrl_code'));},this,{buffer: 300});
 			
@@ -1059,6 +1062,21 @@ partecipantsApp.Partecipants=function(el)
 						),
 						renderer: standardRenderer
 					},
+                    {
+                        header:StrMiddleName,
+                        id:'colMiddleName',
+                        //width: 120,
+                        dataIndex:'middle_name',
+                        sortable: true,
+                        editor: new Ext.form.TextField
+                        (
+                            {
+                                allowBlank:true,
+                                enableKeyEvents:true
+                            }
+                        ),
+                        renderer: standardRenderer
+                    },
 					{
 						header:StrDOB, 
 						id:'colCtrlCode',
@@ -2029,7 +2047,8 @@ partecipantsApp.Partecipants=function(el)
 					
 			case 'first_name':
 			case 'name':
-			case 'division':	
+            case 'middle_name':
+			case 'division':
 			case 'sub_class':
 			case 'sub_team':
 				params=
@@ -3559,6 +3578,7 @@ partecipantsApp.Partecipants=function(el)
 							code: '',
 							first_name: '',
 							name: '',
+                            middle_name: '',
 							ctrl_code: '',
 							country_code: '',
 							country_name: '',

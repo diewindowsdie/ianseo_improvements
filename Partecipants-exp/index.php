@@ -12,6 +12,7 @@
 		'StrCode' => get_text('Code', 'Tournament'),
 		'StrFamilyName' => get_text('FamilyName', 'Tournament'),
 		'StrName' => get_text('Name', 'Tournament'),
+        'StrMiddleName' => get_text('MiddleName', 'Tournament'),
 		//'StrCtrlCodeShort' => get_text('CtrlCodeShort', 'Tournament'),
 		'StrDOB' => get_text('DOB', 'Tournament'),
 		'StrGender' => get_text('Sex', 'Tournament'),
