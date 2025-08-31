@@ -256,7 +256,7 @@ if($isRW) {
 
             switch ($Sequences[$group]['type']) {
                 case 'Q':
-                    $Target = intval($key);
+                    $Target = intval(explode("_", $key)[1]);
                     $SQL = "select QuTargetNo
 					from Entries
 				    inner join Qualifications on QuId=EnId and QuSession={$Sequences[$group]['session']} and QuTarget={$Target}
@@ -353,7 +353,7 @@ if($isRW) {
             switch ($Sequences[$group]['type']) {
                 case 'Q':
                     // fetches the imported and temporary table arrows of that end for the key
-                    $Target = intval($key);
+                    $Target = intval(explode("_", $key)[1]);
                     $SQL = "select EnId, EnName, ucase(EnFirstName) as EnFirstName, QuTarget, QuLetter, QuTargetNo, QuD{$dist}Arrowstring as QuArrows, DiArrows, coalesce(IskDtArrowstring, '') as IskArrows, QuScore, QuIrmType
 					from Entries
 				    inner join Qualifications on QuId=EnId and QuSession={$Sequences[$group]['session']} and QuTarget={$Target}
