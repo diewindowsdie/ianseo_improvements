@@ -194,6 +194,7 @@ $lang['CmdDetailsBill']='Детали счёта';
 $lang['CmdExec']='Выполнить';
 $lang['CmdExport']='Экспорт';
 $lang['CmdForgetPwd']='Забыли пароль';
+$lang['CmdImport']='Импорт';
 $lang['CmdGo']='Пуск';
 $lang['CmdOpenBill']='Открыть счёт';
 $lang['CmdPrintBill']='Печать счёта';
@@ -687,7 +688,7 @@ $lang['ScoreData']='Только данные спортсмена(ов) (для
 $lang['ScoreFinalMatch']='Финальный матч';
 $lang['ScoreFlags']='Добавить флаг региона/клуба';
 $lang['ScoreLogos']='Добавить лого турнира';
-$lang['ScorePrintMode']='Печать протокола- детали';
+$lang['ScorePrintMode']='Печать протокола - детали';
 $lang['ScoreSingleWarning']='ПОДСЧЕТ "Х" ДОЛЖЕН БЫТЬ ЗАПОЛНЕН ДЛЯ КАЖДОЙ ДИСТАНЦИИ.
 Карточки должны быть сданы не позже 30 минут после окончания стрельбы.';
 $lang['ScoreTargetNo']='Бланк полностью (с №, индексом) но без л. данных спортсмена';

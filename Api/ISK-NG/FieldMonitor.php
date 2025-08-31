@@ -21,8 +21,9 @@ $JS_SCRIPT=array(
     phpVars2js(array(
         'isLive' => ($_SESSION["UseApi"] === ISK_NG_LIVE_CODE and module_exists('ISK-NG_Live')),
         'tourCode' => $_SESSION["TourCode"],
-        'SocketIP'=>getModuleParameter('ISK-NG', 'SocketIP', gethostbyname($_SERVER['HTTP_HOST'])),
-        'SocketPort'=>getModuleParameter('ISK-NG', 'SocketPort', '12346'),
+        'SocketIP'=>getSocketIp(),
+        'SocketPort'=>getSocketPort(),
+        "SocketProtocol"=>getSocketConnectionProtocol(),
     )),
     ($_SESSION["UseApi"] == ISK_NG_LIVE_CODE ? '<script type="text/javascript" src="./socket.js"></script>' : '<script></script>'),
     '<script type="text/javascript" src="./FieldMonitor.js"></script>',
@@ -37,7 +38,11 @@ echo '<tr><th class="Title" colspan="3">' . $PAGE_TITLE . '</th></tr>';
 if($_SESSION["UseApi"] === ISK_NG_LIVE_CODE) {
     echo '<tr>' .
         '<th class="w-15">' . get_text('ISK-ConnectionStatus', 'Api') . '</th>' .
+        '<th>' . get_text('Masters', 'Api') . '</th>' .
+        '</tr>';
+    echo '<tr>' .
         '<td id="ctrConnStatus" class="socketOFF" ondblclick="changeMasterSocket()">DISCONNECTED</td>' .
+        '<td class="txtFixW"><span id="ctrMastersNo" class="TargetAssigned"></span><span id="ctrMasters"></span></td>' .
         '</tr>';
 }
 echo '</table>';

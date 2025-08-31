@@ -232,6 +232,10 @@ if (isset($_REQUEST['Command'])) {
                                                 $Value='ng-lite';
                                                 delModuleParameter('ISK-NG', 'LicenseNumber');
                                             }
+                                        } else if ($Value=='ng-live') {
+                                            if (!isset($_REQUEST['Module']['ISK-NG']["UseSSLasIanseoSocketProtocol"])) {
+                                                delModuleParameter('ISK-NG', 'UseSSLasIanseoSocketProtocol');
+                                            }
                                         }
                                         $apiType=array('ng-lite'=>11, 'ng-pro'=>12, 'ng-live'=>13);
                                         $UseAPI = $apiType[$Value];
@@ -273,7 +277,7 @@ if (isset($_REQUEST['Command'])) {
                                     resetModuleParameters('ISK-NG', ['Mode','ServerUrl', 'ServerUrlPin', 'LicenseNumber', 'Grouping', 'UsePersonalDevices']);
                                     break;
                                 case 13:
-                                    resetModuleParameters('ISK-NG', ['Mode','SocketIP', 'SocketPort', 'Grouping', 'UsePersonalDevices']);
+                                    resetModuleParameters('ISK-NG', ['Mode','SocketIP', 'SocketPort', "IanseoSocketIP", "UseSSLasIanseoSocketProtocol", "IanseoSocketPort", 'Grouping', 'UsePersonalDevices']);
                                     break;
                             }
                         }
