@@ -1,6 +1,10 @@
 <?php
 
 function module_exists($name) {
+    if ($name === "ISK-NG_Live") {
+        return true;
+    }
+
 	global $CFG;
 	return file_exists($CFG->INCLUDE_PATH.'/Modules/'.$name);
 }
