@@ -5,6 +5,7 @@ class TournamentOfficials
     private static $judgeRoleCellHeight = 5;
     private static $judgeSignatureCellHeight = 12;
     private static $judgeNameCellHeight = 5;
+    private static $offsetBeforeOfficials = 5;
 
     private static $spacerCellWidthPortrait = 5;
     private static $spacerCellWidthLandscape = 15;
@@ -42,7 +43,7 @@ class TournamentOfficials
             return;
         }
 
-        $pdf->SetY($pdf->GetY() + 5);
+        $pdf->SetY($pdf->GetY() + self::$offsetBeforeOfficials);
         $pdf->SetXY(self::$horizontalMargin, $pdf->GetY());
         if (!$pdf->SamePage(self::$judgeRoleCellHeight + self::$judgeSignatureCellHeight + self::$judgeNameCellHeight)) {
             $pdf->AddPage();
@@ -106,7 +107,7 @@ class TournamentOfficials
             return 0;
         }
 
-        return self::$judgeRoleCellHeight + self::$judgeSignatureCellHeight + self::$judgeNameCellHeight;
+        return self::$offsetBeforeOfficials + self::$judgeRoleCellHeight + self::$judgeSignatureCellHeight + self::$judgeNameCellHeight;
     }
 }
 
