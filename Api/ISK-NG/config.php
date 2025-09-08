@@ -11,11 +11,21 @@ define('NG_DEBUG_LOG', ($CFG->DEBUG??false) and is_dir(__DIR__.'/log') and is_wr
 define('NG_DEBUG_LOGFILE', __DIR__.'/log/messages-'.date('Y-m-d').'.log');
 
 function getSocketIp() {
-    return getModuleParameter('ISK-NG', "IanseoSocketIP", getModuleParameter("ISK-NG", 'SocketIP', gethostbyname($_SERVER['HTTP_HOST'])));
+    $ianseoSocketIp = getModuleParameter('ISK-NG', "IanseoSocketIP");
+    if ($ianseoSocketIp) {
+        return $ianseoSocketIp;
+    }
+
+    return  getModuleParameter("ISK-NG", 'SocketIP', gethostbyname($_SERVER['HTTP_HOST']));
 }
 
 function getSocketPort() {
-    return getModuleParameter('ISK-NG', "IanseoSocketPort", getModuleParameter("ISK-NG", 'SocketPort', '12346'));
+    $ianseoSocketPort = getModuleParameter('ISK-NG', "IanseoSocketPort");
+    if ($ianseoSocketPort) {
+        return $ianseoSocketPort;
+    }
+
+    return getModuleParameter("ISK-NG", 'SocketPort', '12346');
 }
 
 function getSocketConnectionProtocol() {
