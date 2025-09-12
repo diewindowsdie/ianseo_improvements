@@ -215,7 +215,7 @@ if(isset($_REQUEST['Action']) && preg_match("/^(tSendMessage|tPersonal|tSendQrSe
             break;
         case 'tGroupTarget':
             if(preg_match("/^[0-9]+$/",$_REQUEST["newGrp"],$tmpGrp) AND $tmpGrp[0]<=26 AND preg_match("/^[0-9]+$/",$_REQUEST["newTgt"],$tmpTgt) AND $tmpTgt[0]<=999) {
-				$SQL[] = "IskDvGroup={$tmpGrp[0]}, IskDvTarget={$tmpTgt[0]}, IskDvSetup=''";
+				$SQL[] = "IskDvGroup={$tmpGrp[0]}, IskDvTarget={$tmpTgt[0]}, IskDvSetup='', IskDvNote = " . StrSafe_DB($_REQUEST["newNote"]);
             }
             break;
         case 'tGroup':
@@ -295,6 +295,7 @@ if (safe_num_rows($q)>0) {
 		$isUsed=($setup=json_decode($r->IskDvSetup) and $setup->action=='reconfigure' and $r->IskDvTournament==$_SESSION['TourId'] and $setup->toCode==$_SESSION['TourCode'] and $r->IskDvProActive);
         $Json['Devices'][]=array(
             'tDevice' => $r->IskDvDevice ,
+            'tNote' => $r->IskDvNote,
             'tGId' => intval($r->IskDvGroup) ,
             'tTourId' => ($r->IskDvTournament==$_SESSION['TourId']),
             'tCode' => $r->IskDvCode ,

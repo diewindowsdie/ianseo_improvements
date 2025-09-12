@@ -82,12 +82,12 @@ function devicesRenderer(data) {
                         seqSelector,
                         $('<div class="mt-3" id="AssignedSequence_' + gElement.gId + '" curValue="'+AssignedSequenceId+'">'+AssignedSequence+'</div>')]));
                     tmpRow.append('<td colspan="3"><div class="hidden" id="grpSeqDist_' + gElement.gId + '"></div></td>');
-                    tmpRow.append('<td colspan="2" class="Center">' +
+                    tmpRow.append('<td colspan="3" class="Center">' +
                         '<input class="iskButton" type="button" value="' + msgCmdSend + '" onClick="saveSequence(\'' + gElement.gId + '\', true);">' +
                         '<input class="iskButton" type="button" value="' + msgCmdCancel + '" onClick="saveSequence(\'' + gElement.gId + '\', false);">' +
                         '</td>');
                 } else {
-                    tmpRow.append('<td colspan="13">&nbsp;</td>');
+                    tmpRow.append('<td colspan="14">&nbsp;</td>');
                 }
                 if ($('#grpRow_' + gElement.gId).length) {
                     $('#grpRow_' + gElement.gId).replaceWith(tmpRow);
@@ -158,6 +158,8 @@ function devicesRenderer(data) {
                 //Device IDs
                 tmpRow.append('<td class="txtFixW Right" id="devCode_' + this.tDevice + '">' + this.tCode + '</td>');
                 tmpRow.append('<td class="txtFixW" id="devId_' + this.tDevice + '">' + this.tDevice + '</td>');
+                //device note
+                tmpRow.append('<td class="txtFixW" id="devNote_' + this.tDevice + '">' + this.tNote + '</td>');
                 //Button
                 tmpRow.append('<td class="Center"><input class="iskButton" type="button" value="' + msgRemove + '" onclick="removeDevice(\'' + this.tDevice + '\')"></td>');
                 if ($('#devRow_' + this.tDevice).length) {
@@ -212,6 +214,7 @@ function manageTargetGroup(devId) {
     if (tmpDev = curDevices.get(devId)) {
         $('#PopDevice').html(tmpDev.tDevice);
         $('#PopDevice').attr('devId', tmpDev.tDevice);
+        $('#NewNote').val(tmpDev.tNote);
         $('#PopGroup').html((curGroups.get(tmpDev.tGId)).gName);
         $('#PopTarget').html(tmpDev.tTgt);
         $('#NewGroup').val(tmpDev.tGId);
@@ -232,7 +235,7 @@ function manageTargetGroup(devId) {
 
 function setGroupTarget() {
     if(tmpDev = curDevices.get($('#PopDevice').attr('devId'))) {
-        $.get('Devices-action.php?Action=tGroupTarget&newGrp='+$('#NewGroup').val()+'&newTgt='+$('#NewTarget').val()+'&deviceId='+tmpDev.tDevice, (data) => {
+        $.get('Devices-action.php?Action=tGroupTarget&newGrp='+$('#NewGroup').val()+'&newTgt='+$('#NewTarget').val()+'&newNote='+$('#NewNote').val()+'&deviceId='+tmpDev.tDevice, (data) => {
             if(!data.error) {
                 closePopup();
                 devicesRenderer(data);
