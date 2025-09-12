@@ -273,14 +273,14 @@
 <form name="frm" method="post" action="">
 	<table class="Tabella" id="idAthList">
 		<tbody>
-			<tr><th class="Title" colspan="20"><?php echo get_text('TourPartecipants','Tournament') ?></th></tr>
-			<tr class="Divider"><td colspan="20"></td></tr>
-			<tr><td colspan="20"><input onclick="chkAllTargets('<?php print $OrderCrit;?>','<?php print $OrderDir;?>');" type="checkbox" id="AllTargets" value="1" <?php print ($AllTargets==1 ? ' checked="checked"' : '');?>/><?php print get_text('AllTargets','Tournament');?></td></tr>
-			<tr class="Divider"><td colspan="20"></td></tr>
+			<tr><th class="Title" colspan="21"><?php echo get_text('TourPartecipants','Tournament') ?></th></tr>
+			<tr class="Divider"><td colspan="21"></td></tr>
+			<tr><td colspan="21"><input onclick="chkAllTargets('<?php print $OrderCrit;?>','<?php print $OrderDir;?>');" type="checkbox" id="AllTargets" value="1" <?php print ($AllTargets==1 ? ' checked="checked"' : '');?>/><?php print get_text('AllTargets','Tournament');?></td></tr>
+			<tr class="Divider"><td colspan="21"></td></tr>
 			<tr>
-				<td colspan="20"><a class="Link" href="#" onclick="add(); return false;">:<?php print get_text('CmdAdd','Tournament');?>:</a></td>
+				<td colspan="21"><a class="Link" href="#" onclick="add(); return false;">:<?php print get_text('CmdAdd','Tournament');?>:</a></td>
 			</tr>
-			<tr class="Divider"><td colspan="20"></td></tr>
+			<tr class="Divider"><td colspan="21"></td></tr>
 <?php
 print $MyHeader;
 
