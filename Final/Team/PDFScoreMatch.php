@@ -621,7 +621,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L', $Athletes=array()) {
     }
 
     if($_REQUEST['ScoreQrPersonal']??'') {
-        DrawScoreQrPersonal($pdf, intval($MyRow->Target), $QrcodeX, 5);
+        DrawScoreQrPersonal($pdf, intval($MyRow->Target), $QrcodeX, $pdf->GetY() + $pdf->ScoreCellHeight - 5 + 1);
     }
 
     if($MyRow->EvCheckGolds) {

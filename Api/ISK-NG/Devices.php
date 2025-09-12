@@ -87,7 +87,7 @@ $JS_SCRIPT=array(
         'TitleDelAllTablets'=>(get_text('MsgDelAllTablets', 'Api')),
         'TitleDelTablet'=>(get_text('MsgDelTablet', 'Api')),
         'txtDeviceId'=>get_text('ISK-DeviceId', 'Api'),
-        'txtTgt'=>get_text('Target'),
+        'txtTgt'=>get_text('Target', "ISK"),
         'txtDevConnected'=>get_text('DevConnected', 'Api'),
         'txtDevDisconnected'=>get_text('DevDisconnected', 'Api'),
         'txtOnlyToday'=>get_text('ScheduleToday', 'Tournament'),
@@ -133,14 +133,14 @@ echo '</table>';
 
 
 echo '<table class="Tabella">';
-echo '<thead id="hGroups"><tr><th colspan="'.(15+($UsePersonalDevices?1:0)).'">' . get_text('Controller', 'Api') . '</th></tr><tr>'.
+echo '<thead id="hGroups"><tr><th colspan="'.(16+($UsePersonalDevices?1:0)).'">' . get_text('Controller', 'Api') . '</th></tr><tr>'.
     '<th class="w-10" colspan="2">' . get_text('API-Group', 'Api') . '</th>'.
-    (($_SESSION["UseApi"] === ISK_NG_LIVE_CODE) ? '<th class="w-5">' . get_text('Target') . '</th>' : '') .
+    (($_SESSION["UseApi"] === ISK_NG_LIVE_CODE) ? '<th class="w-5">' . get_text('Target', "ISK") . '</th>' : '') .
     '<th class="w-10" colspan="'.((($_SESSION["UseApi"] === ISK_NG_LIVE_CODE) ? 2:3)+($UsePersonalDevices?1:0)).'">' . get_text('ISK-DeviceEnabled', 'Api') . '</th>'.
     '<th class="w-5">' . get_text('ISK-MinDeviceBattery', 'Api') . '</th>'.
     '<th class="w-auto Left" colspan="4">' . get_text('ISK-Sequence', 'Api') . '</th>'.
     '<th colspan="3">' . get_text('Distance', 'Tournament') . '</th>'.
-    '<th class="Left" colspan="2"></th>'.
+    '<th class="Left" colspan="3"></th>'.
     '</tr></thead>';
 echo '<tbody id="bGroups"></tbody>';
 
@@ -157,7 +157,7 @@ echo '<tr class="divider"><td colspan="17"></td></tr>';
 echo '<thead id="hDevices"><tr>'.
     '<th class="" onclick="selectDevices()"></th>'.
     '<th class="w-5">' . get_text('API-Group', 'Api') . '</th>'.
-    '<th class="w-5">' . get_text('Target') . '</th>'.
+    '<th class="w-5">' . get_text('Target', 'ISK') . '</th>'.
     '<th class="w-5">' . get_text('Tournament', 'Tournament') . '</th>'.
     ($UsePersonalDevices ? '<th class="w-5">' . get_text('UsePersonalDevices-Granted', 'Api') . '</th>' : '').
     '<th class="w-5">' . get_text('ISK-DeviceEnabled', 'Api') . '</th>'.
@@ -168,6 +168,7 @@ echo '<thead id="hDevices"><tr>'.
     '<th  class="w-15">' . get_text(($_SESSION["UseApi"] == ISK_NG_PRO_CODE ? 'ISK-DeviceLastSeen':'ISK-DeviceStatus'), 'Api') . '</th>'.
     '<th colspan="2" class="w-10">' . get_text('ISK-AppInfo', 'Api') . '</th>'.
     '<th colspan="2" class="w-15">' . get_text('ISK-DeviceId', 'Api') . '</th>'.
+    '<th class="w-15">' . get_text('ISK-DeviceNote', 'Api') . '</th>'.
     '<th class="w-5">&nbsp;</th>'.
     '</tr></thead>';
 echo '<tbody id="bDevices"></tbody>';
@@ -177,8 +178,9 @@ echo '<div id="PopUp" class="PopUp"><div class="PopUpContent">'.
         '<div class="PopUpHeader">'.get_text('ManageGroupTarget', 'Api').'</div>'.
         '<table class="Tabella">'.
             '<tr><td class="Right w-40">'.get_text('ISK-DeviceId', 'Api').'</td><td id="PopDevice" class="w-60"></td></tr>'.
+            '<tr><td class="Right w-40 Bold">'.get_text('ISK-DeviceNote', 'Api').'</td><td><input class="w-60" type="text" id="NewNote"/></td></tr>'.
             '<tr><td class="Right">'.get_text('API-Group', 'Api').'</td><td id="PopGroup"></td></tr>'.
-            '<tr><td class="Right">'.get_text('Target').'</td><td id="PopTarget"></td></tr>'.
+            '<tr><td class="Right">'.get_text('Target', 'ISK').'</td><td id="PopTarget"></td></tr>'.
             '<tr><td class="Right Bold">'.get_text('NewGroup', 'Api').'</td><td><select id="NewGroup">'.$tmpOptionsGrp.'</select></td></tr>'.
             '<tr><td class="Right Bold">'.get_text('NewTarget', 'Api').'</td><td><input type="number" id="NewTarget" min="1" max="999"></td></tr>'.
         '</table>'.

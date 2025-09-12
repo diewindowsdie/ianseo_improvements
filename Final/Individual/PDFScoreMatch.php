@@ -540,6 +540,10 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
         }
     }
 
+    if($_REQUEST['ScoreQrPersonal']??'') {
+        DrawScoreQrPersonal($pdf, intval($MyRow->Target), $QrcodeX, $pdf->GetY() + $pdf->ScoreCellHeight - 5 + 1);
+    }
+
     if($MyRow->EvCheckGolds) {
         $pdf->Cell($GoldW,$pdf->ScoreCellHeight,$FillWithArrows ? ($GoldsTotal??'') : '', 1, 0,'C',0);
     }

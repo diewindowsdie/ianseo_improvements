@@ -8,7 +8,7 @@ define("CellH",8);
 
 CheckTourSession(true);
 
-$PrintNames=isset($_REQUEST['teamcomponents']);
+$PrintNames=isset($_REQUEST['TeamComponents']);
 
 $pdf=new ResultPDF(get_text('FinalScheduleDetailed', 'Tournament'));
 
@@ -16,30 +16,18 @@ $pdf->SetFont($pdf->FontStd,'B',11);
 $pdf->Cell($pdf->getPageWidth() - 2 * IanseoPdf::sideMargin, 8, get_text('FinalScheduleDetailed', 'Tournament'),0,1,'C');
 $pdf->SetFont($pdf->FontStd, '', 8);
 
-$Date='';
-if(!empty($_REQUEST['FromDay Day'])) {
-    if(strtolower(substr($_REQUEST['FromDayDay'], 0, 1))=='d') {
-        $Date=date('Y-m-d', strtotime(sprintf('%+d days', substr($_REQUEST['FromDayDay'], 1) -1), $_SESSION['ToWhenFromUTS']));
-    } else {
-        $Date=CleanDate($_REQUEST['FromDayDay']);
-    }
-}
-
 $Filters=['(FsMatchNo%2=0)', 'FSScheduledDate>0'];
 if(!empty($_REQUEST['loc'])) {
     $Filters[]="SesLocation like '".StrSafe_DB($_REQUEST['loc'], true)."%'";
 }
 
 if(!empty($_REQUEST['ses'])) {
-    $Filters[]="SesOrder = ".intval($_REQUEST['ses']);
-}
-
-if(!empty($_REQUEST['OnlyMedals'])) {
-    $Filters[]=($_REQUEST['OnlyMedals']==1 ? 'FsMatchno in (0,2)' : 'FsMatchno = 0');
-}
-
-if($Date) {
-    $Filters[]="FsScheduledDate='$Date'";
+    if(!is_array($_REQUEST['ses'])) {
+        $_REQUEST['ses'] = array(intval($_REQUEST['ses']));
+    } else {
+        array_walk($_REQUEST['ses'], 'intval');
+    }
+    $Filters[]="SesOrder IN (".implode(',', $_REQUEST['ses']).")";
 }
 
 $Sql = "SELECT CONCAT(FsEvent, '|', FsTeamEvent, '|', FsMatchNo) as SesKey,

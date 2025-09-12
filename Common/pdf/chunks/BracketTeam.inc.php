@@ -12,12 +12,15 @@ $pdf->setDocUpdate($PdfData->LastUpdate ?? '');
 //error_reporting(E_ALL);
 
 //Costanti
-$PaginaUtile=$pdf->GetPageHeight()-47;
+//доступное место на странице по вертикали, 48 - некое магическое число
+$PaginaUtile=$pdf->GetPageHeight()-48;
 $InitMargin=10;
 $LarghezzaPagina=$pdf->GetPageWidth()-2*$InitMargin;
 
-$Cella=4.5;
-$CellaNomi=3;
+//высота ячеек с заголовками
+$Cella=3.9;
+//высота "ячейки" под одного спортсмена
+$CellaNomi=2.85;
 
 $MisPos=5; //5
 $MisName=30; //20
@@ -80,7 +83,7 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 		$CellL += ($MisName+$MisScore+$MisTie) + $CellHSp;
 		// Spaziatura Verticale per la fase in corso
 		$CellVSp = ($PaginaUtile-(2*max(1,$Phase)*$CellHeight))/max(1,$Phase);
-
+//
 		// Offset della prima cella
 		$pdf->SetY(25+($CellVSp/2));
 

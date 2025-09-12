@@ -8,6 +8,7 @@ class StatusLegendProvider
     private static $codeCellWidth = 10;
     private static $legendCellWidth = 85;
     private static $rowHeight = 4;
+    private static $offsetBeforeLegend = 5;
 
     private $pdf;
     private bool $printShootOffLegend;
@@ -27,7 +28,7 @@ class StatusLegendProvider
      */
     public function printLegend()
     {
-        $this->pdf->SetXY(10, $this->pdf->GetY() + 5);
+        $this->pdf->SetXY(10, $this->pdf->GetY() + self::$offsetBeforeLegend);
         $this->pdf->SetFont($this->pdf->FontStd, 'B', $this->pdf->FontSizeLines);
         $this->pdf->Cell(190, self::$rowHeight, $this->pdf->LegendSO, 1, 1, 'C', 1);
 
@@ -66,6 +67,6 @@ class StatusLegendProvider
      */
     function getLegendBlockHeight(): int
     {
-        return $this->printShootOffLegend ? self::$rowHeight * 4 : self::$rowHeight * 3;
+        return self::$offsetBeforeLegend + self::$rowHeight * ($this->printShootOffLegend ? 4 : 3);
     }
 }

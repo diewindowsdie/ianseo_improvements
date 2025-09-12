@@ -257,10 +257,6 @@
 	{
 	           $date_parts1=explode('-', $beginDate);
 	           $date_parts2=explode('-', $endDate);
-	          /* print'<pre>';
-	           print_r($date_parts1);
-	           print_r($date_parts2);
-	           print '</pre>';*/
 	           $start_date=gregoriantojd($date_parts1[1], $date_parts1[2], $date_parts1[0]);
 	           $end_date=gregoriantojd($date_parts2[1], $date_parts2[2], $date_parts2[0]);
 	           return round(($end_date - $start_date)/365,0);

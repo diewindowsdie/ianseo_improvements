@@ -47,20 +47,20 @@ if(!empty($_REQUEST['api'])) {
         $ISKUsePersonalDevices=getModuleParameter('ISK-NG', 'UsePersonalDevices', '');
         $ISKUseSSLasIanseoSocketProtocol=getModuleParameter('ISK-NG', 'UseSSLasIanseoSocketProtocol', false);
 		$ConfigHtml =
-			'<th class="TitleLeft w-25">'.get_text('ISK-SocketIP','Api').'</th>'.
+			'<th class="TitleLeft w-35">'.get_text('ISK-SocketIP','Api').'</th>'.
 			'<td class="w-75">'.
 			'<input type="text" class="w-100" name="Module[ISK-NG][SocketIP]" value="'.$ISKSocketIPForDevices.'">'.
 			'</td>'.
 			'</tr>'.
 			'<tr>' .
-			'<th class="TitleLeft w-25">'.get_text('ISK-SocketPort','Api').'</th>'.
+			'<th class="TitleLeft w-35">'.get_text('ISK-SocketPort','Api').'</th>'.
 			'<td class="w-75">'.
 			'<input type="text" class="w-100" name="Module[ISK-NG][SocketPort]" value="'.$ISKSocketPortForDevices.'">'.
 			'</td>'.
 			'</tr>'.
             '<tr>'.
             '<tr>'.
-            '<th class="TitleLeft w-25">'.get_text('ISK-SocketIPMaster','Api').'</th>'.
+            '<th class="TitleLeft w-35">'.get_text('ISK-SocketIPMaster','Api').'</th>'.
             '<td class="w-75">'.
             '<input type="text" class="w-100" name="Module[ISK-NG][IanseoSocketIP]" value="'.$ISKSocketIPForIanseo.'">'.
             get_text('ISK-SocketIPMaster-Help','Api').
@@ -68,21 +68,21 @@ if(!empty($_REQUEST['api'])) {
             '</tr>'.
             '<tr>' .
             '<tr>'.
-            '<th class="TitleLeft w-25">'.get_text('ISK-UseSSLForSocketConnection','Api').'</th>'.
+            '<th class="TitleLeft w-35">'.get_text('ISK-UseSSLForSocketConnection','Api').'</th>'.
             '<td class="w-75">'.
             '<input type="checkbox" class="mr-2" name="Module[ISK-NG][UseSSLasIanseoSocketProtocol]"' . ($ISKUseSSLasIanseoSocketProtocol ? ' checked="checked"' : '') .'>'.
             get_text('ISK-UseSSLForSocketConnection-Help','Api').
             '</td>'.
             '</tr>'.
             '<tr>' .
-            '<th class="TitleLeft w-25">'.get_text('ISK-SocketPortMaster','Api').'</th>'.
+            '<th class="TitleLeft w-35">'.get_text('ISK-SocketPortMaster','Api').'</th>'.
             '<td class="w-75">'.
             '<input type="text" class="w-100" name="Module[ISK-NG][IanseoSocketPort]" value="'.$ISKSocketPortFoIanseo.'">'.
             get_text('ISK-SocketPortMaster-Help','Api').
             '</td>'.
             '</tr>'.
             '<tr>'.
-            '<th class="TitleLeft w-25">'.get_text('ISK-UsePersonalDevices','Api').'</th>'.
+            '<th class="TitleLeft w-35">'.get_text('ISK-UsePersonalDevices','Api').'</th>'.
             '<td class="w-75">'.
             '<select class="mr-2" name="Module[ISK-NG][UsePersonalDevices]">
                 <option value="0">'.get_text('No').'</option>

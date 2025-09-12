@@ -58,6 +58,7 @@ $lang['ISK-DeviceEnabled']='Enabled';
 $lang['ISK-DeviceId']='Device ID';
 $lang['ISK-DeviceIpAddress']='IP Address';
 $lang['ISK-DeviceLastSeen']='Last Seen';
+$lang['ISK-DeviceNote']='Note';
 $lang['ISK-DeviceStatus']='Device Status';
 $lang['ISK-DeviceStatusWanted']='Force new Status';
 $lang['ISK-DeviceUsed']='In use';
