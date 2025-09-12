@@ -1,6 +1,5 @@
 </div>
 <div class="modal"></div>
-
 <?php
 	if(!empty($POST_TAIL)) echo $POST_TAIL;
 ?>

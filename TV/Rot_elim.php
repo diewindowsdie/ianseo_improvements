@@ -29,13 +29,6 @@ $rank=Obj_RankFactory::create($family,$options);
 $rank->read();
 $rankData=$rank->getData();
 
-/*
-echo "<pre>";
-print_r($options);
-print_r($rankData);
-echo "</pre>";
-exit;
-*/
 if(count($rankData['sections'])==0) return '';
 
 $Columns=(isset($TVsettings->TVPColumns) && !empty($TVsettings->TVPColumns) ? explode('|',$TVsettings->TVPColumns) : array());

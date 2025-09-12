@@ -313,8 +313,6 @@ function MakeIndAbs($Dists=null)
         }
 	}
 
-	//print_r($Dists);exit;
-
 	$affected=array();
 
 	$x=MakeIndividuals($affected);
@@ -936,9 +934,6 @@ function FindTeamEventsWithNull($ToId=0) {
 
 		}
 	}
-//print '<pre>';
-//print_r($events);
-//print '</pre>';
 	return $events;
 }
 
@@ -1517,10 +1512,6 @@ function WriteTeamAbs($CurTeam,$CurSubTeam,$CurComponent,$EventCode,$Scores,$Gol
 		$rank=Obj_RankFactory::create('DivClass',$options);
 		$rank->read();
 		$rankData=$rank->getData();
-
-//		print '<pre>';
-//		print_r($rankData);
-//		print '</pre>';exit;
 
 		$MyHeader = array
 		(

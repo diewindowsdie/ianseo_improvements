@@ -1023,7 +1023,6 @@ $lang['ShowDisable']='Mostrar deportistas adaptados';
 $lang['ShowEmail']='Mostrar e-mail';
 $lang['ShowIanseoMenu']='Mostrar el Menú de Ianseo';
 $lang['ShowLocalCode']='Mostrar peto local';
-$lang['ShowMissing']='Mostrar las Hojas de Puntuación faltantes';
 $lang['ShowPdfFlags']='Mostrar Banderas en PDF';
 $lang['ShowPicture']='Mostrar Fotos';
 $lang['showRecords']='Muestra los Récords';

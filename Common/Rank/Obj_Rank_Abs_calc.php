@@ -311,12 +311,7 @@
 			$affected=0;
 
 			foreach ($items as $item) {
-				/*print '<pre>';
-				print_r($item);
-				print '</pre>';*/
-
 				$paramsOk=true;
-
 				$canUp=false;
 
 		/*

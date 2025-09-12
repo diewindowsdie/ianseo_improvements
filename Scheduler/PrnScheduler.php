@@ -41,7 +41,9 @@ if(isset($_REQUEST['Today'])) {
 		} else {
 			$Date=CleanDate($_REQUEST['FromDayDay']);
 		}
-		if($Date) $Schedule->SingleDay=$Date;
+		if($Date) {
+            $Schedule->SingleDay=$Date;
+        }
 	}
 }
 

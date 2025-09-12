@@ -29,10 +29,14 @@ Class Scheduler {
 	var $Groups=array();
 	var $ActiveSessions=array();
 	var $Schedule=array();
+	var $SesLocations=array();
 	var $FopLocations=array();
+	var $FopSingleLocations=false;
+	var $FopIncludeUnscheduledDistances=false;
 	var $SplitLocations=false;
 	var $DaysToPrint=array();
 	var $LocationsToPrint=array();
+	var $LocationPrintOrder=0;
 	var $PageBreaks=array();
 	var $RunningEvents=array();
 	var $HasArchers=false;
@@ -42,6 +46,7 @@ Class Scheduler {
     var $PoolMatches=array();
     var $PoolMatchesWA=array();
     var $TimeZoneOffset='00:00';
+    var $NoLocations=false;
 
 	function __destruct() {
 		DefineForcePrintouts($this->TourId, true);
@@ -114,7 +119,15 @@ Class Scheduler {
 			$this->LastUpdate=max($this->LastUpdate, $r->LastDate);
 		}
 
-		$this->FopLocations=Get_Tournament_Option('FopLocations', array());
+        // FOP locations by target
+		$this->FopLocations=Get_Tournament_Option('FopLocations', array(), $this->TourId);
+        if($PrintOrder=getModuleParameter('SesLocations', 'PrintOrder', [], $this->TourId)) {
+            $this->LocationPrintOrder='CASE';
+            foreach ($PrintOrder as $k=>$v) {
+                $this->LocationPrintOrder.=" when SesLocation=".StrSafe_DB($k)." then $v";
+            }
+            $this->LocationPrintOrder.=" ELSE 0 END";
+        }
 
 		$this->PoolMatchWinners=getPoolMatchesWinners();
 		$this->PoolMatchWinnersWA=getPoolMatchesWinnersWA();
@@ -140,13 +153,46 @@ Class Scheduler {
 	}
 
 	function push($r, $Warmup=false, $HasWarmup=false) {
-		static $Shift=0, $Day='';
-		static $PushKey='';
+		static $Shift=0, $Day='', $PushKey='', $StaticSesDistance=[];
 
-		$tmpKey="$r->Day|$r->Start|$r->Events|$r->Session|$r->OrderPhase";
+        $DistanceCheck=$r->Distance;
+        if($r->Type=='I' or $r->Type=='T') {
+            $DistanceCheck=1;
+        }
+
+        // if distance is 1 AND timing is set, this "seeds" the following distances in case they do not have timing
+        if($r->Type=='Q' and $this->FopIncludeUnscheduledDistances) {
+            if($r->Day!='0000-00-00') {
+                if($r->Distance < $r->grPos) {
+                    $counter='a';
+                    foreach(range($r->Distance+1, $r->grPos) as $i) {
+                        $StaticSesDistance[$r->Session][$i]=[
+                            'day'=>$r->Day,
+                            'start'=>$r->Start,//.'|'.($counter++),
+                            'duration'=>$r->Duration,//.'|'.($counter++),
+                        ];
+                    }
+                }
+            } elseif(!empty($StaticSesDistance[$r->Session][$r->Distance])) {
+                $r->Day=$StaticSesDistance[$r->Session][$r->Distance]['day'];
+                $r->Start=$StaticSesDistance[$r->Session][$r->Distance]['start'];
+                $r->Duration=$StaticSesDistance[$r->Session][$r->Distance]['duration'];
+            }
+
+            if($r->Day=='0000-00-00') {
+                $r->Day='Session '.$r->Session;
+            }
+            if(!$r->Start) {
+                $r->Start='Distance '.$r->Distance;
+            }
+        }
+
+        $tmpKey="$r->Day|$r->Start|$r->Events|$r->Session|$r->OrderPhase".($this->FopIncludeUnscheduledDistances?"|$r->Distance":'');
 		if($PushKey==$tmpKey and !$Warmup) return;
 
-		if($tmpKey and !$Warmup) $PushKey=$tmpKey;
+		if($tmpKey and !$Warmup) {
+            $PushKey=$tmpKey;
+        }
 		$tmp=new StdClass();
 
 		// reset shift if day is different
@@ -193,8 +239,10 @@ Class Scheduler {
 				$tmp->SubTitle=$r->SesName ? $r->SesName : get_text('Session'). ' ' . $r->Session;
 				if($r->Options and $Warmup) {
 					$tmp->Text=$r->Options;
+				} elseif($this->FopIncludeUnscheduledDistances) {
+					$tmp->Text='Dist. '.$r->Distance;
 				} else {
-					$tmp->Text=$r->SesName ? $r->SesName : get_text('Session'). ' ' . $r->Session;
+                    $tmp->Text=$r->SesName ? $r->SesName : get_text('Session'). ' ' . $r->Session;
 				}
 				$tmp->Target=$r->BestTarget;
 				break;
@@ -254,7 +302,7 @@ Class Scheduler {
 				}
 				if($tmp->Text[0]==',') $tmp->Text=substr($tmp->Text,2);
 				// check if there is a location
-				if($r->BestTarget and empty($_REQUEST['NoLocations']) and !empty($this->FopLocations) and $r->Locations) {
+				if($r->BestTarget and !$this->NoLocations and !empty($this->FopLocations) and $r->Locations) {
 					$tmp->Events.= " ($r->Locations)";
 				}
 				break;
@@ -271,30 +319,31 @@ Class Scheduler {
 		}
 
 		$Session=($r->EvFirstRank>1 and $r->Session==0) ? 1 : $r->Session;
-		if(empty($this->Schedule[$tmp->Day][$r->SesGrouping][$tmp->Start][$Session][$r->Distance])) {
-			$this->Schedule[$tmp->Day][$r->SesGrouping][$tmp->Start][$Session][$r->Distance]=array();
+		if(empty($this->Schedule[$tmp->Day][$r->SesGrouping][$tmp->Start][$Session][$DistanceCheck])) {
+			$this->Schedule[$tmp->Day][$r->SesGrouping][$tmp->Start][$Session][$DistanceCheck]=array();
 		}
-		if(!in_array($tmp, $this->Schedule[$tmp->Day][$r->SesGrouping][$tmp->Start][$Session][$r->Distance])) {
-			$this->Schedule[$tmp->Day][$r->SesGrouping][$tmp->Start][$Session][$r->Distance][] = $tmp;
+		if(!in_array($tmp, $this->Schedule[$tmp->Day][$r->SesGrouping][$tmp->Start][$Session][$DistanceCheck])) {
+			$this->Schedule[$tmp->Day][$r->SesGrouping][$tmp->Start][$Session][$DistanceCheck][] = $tmp;
 		}
-		$this->Groups[$tmp->Type][$Session][$r->Distance][$tmp->Day][$tmp->Start][]=$tmp;
+		$this->Groups[$tmp->Type][$Session][$DistanceCheck][$tmp->Day][$tmp->Start][]=$tmp;
 		if($tmp->Type=='RA' and $Warmup and $r->WarmStart and $r->grPos) {
 			$tmp2=clone $tmp;
 			$tmp2->Start=$r->grPos;
 			$tmp2->Duration=0;
-			$this->Schedule[$tmp2->Day][$r->SesGrouping][$tmp2->Start][$Session][$r->Distance][] = $tmp2;
-			$this->Groups[$tmp2->Type][$Session][$r->Distance][$tmp2->Day][$tmp2->Start][]=$tmp2;
+			$this->Schedule[$tmp2->Day][$r->SesGrouping][$tmp2->Start][$Session][$DistanceCheck][] = $tmp2;
+			$this->Groups[$tmp2->Type][$Session][$DistanceCheck][$tmp2->Day][$tmp2->Start][]=$tmp2;
 		}
 	}
 
 	function GetSchedule() {
-		$LocField="'' as Locations,";
-		if(empty($_REQUEST['NoLocations']) and $this->FopLocations) {
+		$LocField="''";
+        $this->NoLocations=!empty($_REQUEST['NoLocations']);
+		if(!$this->NoLocations and $this->FopLocations) {
 			$LocField="";
 			foreach($this->FopLocations as $loc) {
 				$LocField.=" when %1\$s between {$loc->Tg1} and {$loc->Tg2} then '{$loc->Loc}' ";
 			}
-			$LocField="case {$LocField} end as Locations,";
+			$LocField="case {$LocField} end";
 		}
 
 		$LocGrouping='';
@@ -302,6 +351,7 @@ Class Scheduler {
 			$LocGrouping='Locations, ';
 		}
 
+        // FOP locations by Targets
 		$tmpExtra=array();
 		$tmpButts=array();
 		if($this->LocationsToPrint) {
@@ -312,6 +362,7 @@ Class Scheduler {
 			}
 			$tmpExtra[]='('.implode(' or ', $tmp).')';
 			$this->TargetsInvolved=implode(' or ', $tmpButts);
+            $this->FopSingleLocations=(count($this->LocationsToPrint)==1 and $this->LocationsToPrint[0]->Loc!='');
 		}
 
 		if($this->DaysToPrint) {
@@ -319,8 +370,21 @@ Class Scheduler {
 			foreach($this->DaysToPrint as $k) {
 				$tmp[]="Day='$k'";
 			}
+            if($this->FopIncludeUnscheduledDistances) {
+                $tmp[]="(Day='0000-00-00' and Type='Q')";
+            }
 			$tmpExtra[]='('.implode(' or ', $tmp).')';
 		}
+
+        // FOP locations by Session
+        if($this->SesLocations) {
+            $tmp=[];
+            foreach($this->SesLocations as $loc) {
+                $tmp[]=StrSafe_DB($loc);
+            }
+            $tmpExtra[]=' SesGrouping in ('.implode(',', $tmp).') ';
+        }
+
 		$ExtraWheres=implode(' and ', $tmpExtra);
 
 		$SQL=array();
@@ -329,6 +393,7 @@ Class Scheduler {
 		if(!$this->SesType or strstr($this->SesType, 'Z')) {
 			$SQL[]="select distinct
                     coalesce(SesLocation, '') as SesGrouping,
+                    {$this->LocationPrintOrder} as PrintingOrder,
                     SchUID as UID,
 					'' EvShootOff,
 					'1' EvFirstRank,
@@ -389,11 +454,12 @@ Class Scheduler {
 				}
 				$SQL[]="select distinct
                         SesLocation as SesGrouping,
+                        {$this->LocationPrintOrder} as PrintingOrder,
     					concat_ws('-', DiDistance, DiSession, DiType) as UID,
 						'' EvShootOff,
 						'1' EvFirstRank,
 						'' EvElimType,
-						'' grPos,
+						TourDistances grPos,
 						DiTargets as `BestTarget`,
 						DiType Type,
 						DiDay Day,
@@ -424,6 +490,9 @@ Class Scheduler {
 					from DistanceInformation
 					inner join Session on SesTournament=DiTournament and SesOrder=DiSession and SesType=DiType and SesType='Q'
 					inner join TournamentDistances on TdTournament=DiTournament
+					inner join (
+					    select count(*) as TourDistances, DiSession as TourDistSession from DistanceInformation where DiTournament=$this->TourId and DiType='Q' group by DiSession
+                        ) TourDistances on TourDistSession=DiSession
                     inner join Tournament on ToId=DiTournament
 					left join (select EnTournament, concat(EnDivision,EnClass) as Category, QuSession
 						from Entries
@@ -432,7 +501,7 @@ Class Scheduler {
 						group by EnDivision, EnClass, QuSession) Entries on EnTournament=SesTournament and QuSession=SesOrder and Category like TdClasses
 					
 					where DiTournament=$this->TourId
-						and DiDay>0 and (DiStart>0 or DiWarmStart>0)
+						".($this->FopIncludeUnscheduledDistances?'':"and DiDay>0 and (DiStart>0 or DiWarmStart>0)")."
 						" .($this->SingleDay ? " and DiDay='$this->SingleDay'" : '') ."
 						" .($this->FromDay ? " and DiDay>='$this->FromDay'" : '') ."
 						" .(strlen($this->SesFilter) ? " and DiSession='$this->SesFilter'" : '') ."  
@@ -445,11 +514,12 @@ Class Scheduler {
 
 				$SQL[]="select distinct
                         SesLocation as SesGrouping,
+                        {$this->LocationPrintOrder} as PrintingOrder,
     					concat_ws('-', DiDistance, DiSession, DiType) as UID,
 						'' EvShootOff,
 						'1' EvFirstRank,
 						'' EvElimType,
-						'' grPos,
+						TourDistances grPos,
 						DiTargets as `BestTarget`,
 						DiType Type,
 						DiDay Day,
@@ -473,9 +543,12 @@ Class Scheduler {
 					from DistanceInformation
                     inner join Tournament on ToId=DiTournament
 					INNER join Session on SesTournament=DiTournament and SesOrder=DiSession and SesType=DiType and SesType='Q'
+					inner join (
+					    select count(*) as TourDistances, DiSession as TourDistSession from DistanceInformation where DiTournament=$this->TourId and DiType='Q' group by DiSession
+                        ) TourDistances on TourDistSession=DiSession
 					$DistanceNames
 					where DiTournament=$this->TourId
-						and DiDay>0 and (DiStart>0 or DiWarmStart>0)
+						".($this->FopIncludeUnscheduledDistances?'':"and DiDay>0 and (DiStart>0 or DiWarmStart>0)")."
 						".($this->SingleDay ? " and DiDay='$this->SingleDay'" : '')."
 						".($this->FromDay ? " and DiDay>='$this->FromDay'" : '')."
 						".(strlen($this->SesFilter) ? " and DiSession='$this->SesFilter'" : '')."
@@ -489,6 +562,7 @@ Class Scheduler {
 		if(!$this->SesType or strstr($this->SesType, 'E')) {
 			$SQL[]="select distinct
                     SesLocation as SesGrouping,
+                    {$this->LocationPrintOrder} as PrintingOrder,
                     concat_ws('-', DiDistance, DiSession, DiType) as UID,
 					'' EvShootOff,
 					'1' EvFirstRank,
@@ -519,7 +593,7 @@ Class Scheduler {
 				inner join (select distinct ElSession, ElTournament, ElElimPhase, group_concat(distinct ElEventCode order by ElEventCode separator ', ') Events from Eliminations where ElTournament=$this->TourId group by ElTournament, ElSession, ElElimPhase) Phase on ElSession=SesOrder and ElTournament=SesTournament
 				inner join DistanceInformation on SesTournament=DiTournament and SesOrder=DiSession and ElElimPhase=DiDistance and DiType='E'
 				where DiTournament=$this->TourId
-					and DiDay>0 and (DiStart>0 or DiWarmStart>0)
+                    ".($this->FopIncludeUnscheduledDistances?'':"and DiDay>0 and (DiStart>0 or DiWarmStart>0)")."
 					".($this->SingleDay ? " and DiDay='$this->SingleDay'" : '')."
 					".($this->FromDay ? " and DiDay>='$this->FromDay'" : '')."
 				order by DiDay, DiStart, DiWarmStart, DiSession, DiDistance";
@@ -529,6 +603,7 @@ Class Scheduler {
 		if(!$this->SesType or strstr($this->SesType, 'F')) {
 			$SQL[]="select distinct
                 coalesce(SesLocation,'') as SesGrouping,
+                {$this->LocationPrintOrder} as PrintingOrder,
                 group_concat(distinct FwEvent order by FwEvent separator '-') as UID,
 				'' EvShootOff,
 				'1' EvFirstRank,
@@ -568,7 +643,8 @@ Class Scheduler {
 		if(!$this->SesType or strstr($this->SesType, 'F')) {
 			// get all the named sessions
 			$SQL[]="select distinct
-                    coalesce(SesLocation,'') as SesGrouping,
+                    SesLocation as SesGrouping,
+                    {$this->LocationPrintOrder} as PrintingOrder,
 	                '' as UID,
 					'' EvShootOff,
 					'1' EvFirstRank,
@@ -606,6 +682,7 @@ Class Scheduler {
 
 			$SQL[]="select distinct
                 coalesce(SesLocation,'') as SesGrouping,
+                {$this->LocationPrintOrder} as PrintingOrder,
                 concat_ws('-', FsTeamEvent, group_concat(distinct FsEvent order by EvProgr separator '-'), sum(FsMatchNo)) as UID,
 				EvShootOff,
 				EvWinnerFinalRank as EvFirstRank,
@@ -615,7 +692,7 @@ Class Scheduler {
 				if(FsTeamEvent=0, 'I', 'T') Type,
 				FsScheduledDate Day,
 				GrPhase Session,
-				if(EvWinnerFinalRank>1, 1, EvFinalFirstPhase) Distance,
+				if(EvWinnerFinalRank>1, 1, EvFinalFirstPhase) as Distance,
 				EvDistance as RealDistance,
 				EvMedals as Medal,
 				if(FsScheduledTime=0, '', date_format(FsScheduledTime, '%H:%i')) Start,
@@ -626,7 +703,7 @@ Class Scheduler {
 				'' SesName,
 				if(count(*)<=2 and EvCodeParent='', group_concat(distinct EvEventName order by EvProgr separator ', '), group_concat(distinct FsEvent order by EvProgr separator ', ')) Events,
 				group_concat(distinct FsEvent order by EvProgr separator '\',\'') Event,
-				".sprintf($LocField, 'FsTarget*1')."
+				".sprintf($LocField, 'FsTarget*1')." as Locations,
 				'' as RowLocation,
 				cast(if(EvWinnerFinalRank>1, EvWinnerFinalRank*100 + GrPhase, 1+(1/(1+GrPhase))) as decimal(15,4)) as OrderPhase,
 				FsShift SchDelay,
@@ -658,6 +735,7 @@ Class Scheduler {
 			}
 			$SQL[]="select distinct
                 '' as SesGrouping,
+                0 as PrintingOrder,
                 concat_ws('-',group_concat(distinct RrMatchEvent order by EvProgr separator '-'), (RrMatchLevel*1000000)+(RrMatchGroup*10000)+(RrMatchRound*100), sum(RrMatchMatchNo)) as UID,
 				EvShootOff,
 				EvWinnerFinalRank as EvFirstRank,
@@ -678,7 +756,7 @@ Class Scheduler {
 				'' SesName,
 				if(count(*)<=2 and EvCodeParent='', group_concat(distinct EvEventName order by EvProgr separator ', '), group_concat(distinct RrMatchEvent order by EvProgr separator ', ')) Events,
 				group_concat(distinct RrMatchEvent order by EvProgr separator '\',\'') Event,
-				$LocationFields
+				$LocationFields as Locations,
 				'' as RowLocation,
 				(RrMatchLevel*1000000)+(RrMatchGroup*10000)+(RrMatchRound*100) as OrderPhase,
 				'' SchDelay,
@@ -707,6 +785,7 @@ Class Scheduler {
 			}
 			$SQL[]="select distinct
                 '' as SesGrouping,
+                0 as PrintingOrder,
                 concat_ws('-', RarTeam, RarEvent, RarPhase, RarPool, RarGroup) as UID,
 				EvShootOff,
 				EvWinnerFinalRank as EvFirstRank,
@@ -727,7 +806,7 @@ Class Scheduler {
 				'' SesName,
 				group_concat(distinct EvEventName order by EvProgr separator ', ') as Events,
 				group_concat(distinct RarEvent order by EvProgr separator '\',\'') Event,
-				$LocationFields
+				$LocationFields as Locations,
 				'' as RowLocation,
 				(RarPhase*1000000)+(RarPool*10000)+(RarGroup*100) as OrderPhase,
 				RarShift as SchDelay,
@@ -745,16 +824,17 @@ Class Scheduler {
 		$sql='select * from (('.implode(') UNION (', $SQL).')) 
 			as Schedule 
 			'.($ExtraWheres ? ' where '.$ExtraWheres : '').'
-			order by Day, SesGrouping, if(Start>0, if(WarmStart>0, least(Start, WarmStart), Start), WarmStart), Type!=\'Z\', OrderPhase+0 asc, Distance, `BestTarget`=0';
+			order by '.($this->FopIncludeUnscheduledDistances?'Day="0000-00-00", ':'').'Day, '.($this->FopSingleLocations?'':'PrintingOrder, SesGrouping, ').'if(Start>0, if(WarmStart>0, least(Start, WarmStart), Start), WarmStart), Type!=\'Z\', OrderPhase+0 asc, Distance, `BestTarget`=0';
 
 		$q=safe_r_SQL($sql);
 		$debug=array();
 
 		while($r=safe_fetch($q)) {
+            $r->SesGrouping=($this->FopSingleLocations?'':$r->SesGrouping);
 			if($r->WarmStart or ($r->Type=='RA' and $r->grPos)) {
 				$this->push($r, true);
 			}
-			if($r->Start) {
+			if($r->Start or $r->Type=='Q') {
 				$this->push($r, false, $r->WarmStart or ($r->Type=='RA' and $r->grPos));
 			}
 				//$debug[]=$r;
@@ -779,7 +859,7 @@ Class Scheduler {
             $OldDate='';
             foreach($SesGroups as $SesGroup => $Times) {
                 if($OldDate!=$Date) {
-                    $ret[]='<tr><th colspan="2" class="SchDay">'.formatTextDate($Date, true).'</th></tr>';
+                    $ret[]='<tr><th colspan="2" ref="'.$Date.'" class="SchDay">'.formatTextDate($Date, true).'</th></tr>';
                 }
                 if($SesGroup and $OldSesGroup!=$SesGroup) {
                     $ret[]='<tr><th colspan="2" class="SchGroup">'.$SesGroup.'</th></tr>';
@@ -804,7 +884,7 @@ Class Scheduler {
                                 $key=$Item->Day
                                     .'|'.$Time
                                     .'|'.$Session
-                                    .'|'.$Distance
+                                    .'|'.(in_array($Item->Type, ['I','T']) ? $Item->Distance : $Distance)
                                     .'|'.round((float) $Item->Order, 4);
                                 if($Item->Comments) {
                                     $SingleKey="{$Item->Duration}-{$Item->Title}-{$Item->SubTitle}-{$Item->Comments}";
@@ -844,10 +924,10 @@ Class Scheduler {
                                             $tmp='<tr name="'.$key.'"'.(($ActiveSession and !$Item->SubTitle and !$Item->Text) ? ' class="active"' : '').'><td>';
                                             $txt=$Item->Title;
                                             if($Type=='SET') {
-                                                $txt='<a href="?Activate='.$key.'">'.strip_tags($txt).'</a>';
+                                                $txt='<div onclick="activateSchedule(this)" ref="'.$key.'">'.strip_tags($txt).'</div>';
                                             }
 
-                                            $tmp.='</td><td class="SchTitle">'.$txt.(($Item->SubTitle or $Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')').'</td></tr>';
+                                            $tmp.='</td><td class="SchTitle">'.$txt.(($Item->SubTitle or $Item->Text or !$Item->RowLocation or $this->NoLocations) ? '' : ' ('.$Item->RowLocation.')').'</td></tr>';
                                             $ret[]=$tmp;
                                         }
                                         $OldTitle=$Item->Title;
@@ -862,18 +942,18 @@ Class Scheduler {
                                         }
                                         $txt=$Item->SubTitle;
                                         if($Type=='SET') {
-                                            $txt='<a href="?Activate='.$key.'">'.strip_tags($txt).'</a>';
+                                            $txt='<div onclick="activateSchedule(this)" ref="'.$key.'">'.strip_tags($txt).'</div>';
                                         }
-                                        $tmp.='</td><td class="SchSubTitle">'.$txt.(($Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')').'</td></tr>';
+                                        $tmp.='</td><td class="SchSubTitle">'.$txt.(($Item->Text or !$Item->RowLocation or $this->NoLocations) ? '' : ' ('.$Item->RowLocation.')').'</td></tr>';
                                         $ret[]=$tmp;
                                         $OldSubTitle=$Item->SubTitle;
                                         $IsTitle=false;
                                     }
                                     if($Item->Text) {
-                                        $txt=$Item->Text.($Item->RowLocation ? ' ('.$Item->RowLocation.')' : '');
+                                        $txt=$Item->Text.((!$Item->RowLocation or $this->NoLocations) ? '' : ' ('.$Item->RowLocation.')');
                                         $OldText=$txt;
                                         if($Type=='SET') {
-                                            $txt='<a href="?Activate='.$key.'">'.strip_tags($txt).'</a>';
+                                            $txt='<div onclick="activateSchedule(this)" ref="'.$key.'">'.strip_tags($txt).'</div>';
                                         }
                                         $tmp='<tr name="'.$key.'"'.($ActiveSession ? ' class="active"' : '').'><td>';
                                         $tmp.=$timing . ($Item->Shift && $timing ? ($Type=='IS' ? '<span class="SchDelay">' : '') . '&nbsp;+' . $Item->Shift . ($Type=='IS' ? '</span>' : ''): "");
@@ -889,7 +969,7 @@ Class Scheduler {
                                     if($OldTitle!=$Item->Title) {
                                         // Title
                                         if(!$IsTitle) {
-                                            $ret[]='<tr><td></td><td class="SchTitle">'.$Item->Title.(($Item->SubTitle or $Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')').'</td></tr>';
+                                            $ret[]='<tr><td></td><td class="SchTitle">'.$Item->Title.(($Item->SubTitle or $Item->Text or !$Item->RowLocation or $this->NoLocations) ? '' : ' ('.$Item->RowLocation.')').'</td></tr>';
                                         }
                                         $OldTitle=$Item->Title;
                                         $OldSubTitle='';
@@ -897,7 +977,7 @@ Class Scheduler {
                                     }
                                     if($OldSubTitle!=$Item->SubTitle and $Item->Type!='RA') {
                                         // SubTitle
-                                        $ret[]='<tr><td></td><td class="SchSubTitle">'.$Item->SubTitle.(($Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')').'</td></tr>';
+                                        $ret[]='<tr><td></td><td class="SchSubTitle">'.$Item->SubTitle.(($Item->Text or !$Item->RowLocation or $this->NoLocations) ? '' : ' ('.$Item->RowLocation.')').'</td></tr>';
                                         $OldSubTitle=$Item->SubTitle;
                                         $IsTitle=false;
                                     }
@@ -920,7 +1000,7 @@ Class Scheduler {
                                                 if($Item->Comments) {
                                                     $txt=$Item->Comments;
                                                     if($Type=='SET') {
-                                                        $txt='<a href="?Activate='.urlencode($key).'">'.strip_tags($txt).'</a>';
+                                                        $txt='<div onclick="activateSchedule(this)" ref="'.$key.'">'.strip_tags($txt).'</div>';
                                                     }
                                                     $ret[]='<tr name="'.$key.'"'.($ActiveSession ? ' class="active"' : '').'><td>'
                                                         . $timing . ($Item->Shift && $timing ? ($Type=='IS' ? '<span class="SchDelay">' : '') . '&nbsp;+' . $Item->Shift . ($Type=='IS' ? '</span>' : ''): "")
@@ -957,12 +1037,12 @@ Class Scheduler {
                                                         }
                                                     }
 
-                                                    if($Item->RowLocation) {
+                                                    if($Item->RowLocation and !$this->NoLocations) {
                                                         $txt.=' ('.$Item->RowLocation.')';
                                                     }
                                                     $OldText=$txt;
                                                     if($Type=='SET') {
-                                                        $txt='<a href="?Activate='.urlencode($key).'">'.strip_tags($txt).'</a>';
+                                                        $txt='<div onclick="activateSchedule(this)" ref="'.$key.'">'.strip_tags($txt).'</div>';
                                                     }
                                                     $ret[]='<tr name="'.$key.'"'.($ActiveSession ? ' class="active"' : '').'><td>'
                                                         . $timing . ($Item->Shift && $timing ? ($Type=='IS' ? '<span class="SchDelay">' : '') . '&nbsp;+' . $Item->Shift . ($Type=='IS' ? '</span>' : ''): "")
@@ -1065,7 +1145,7 @@ Class Scheduler {
                                                     }
                                                 }
                                                 if($Type=='SET') {
-                                                    $lnk='<a href="?Activate='.urlencode($key).'">'.strip_tags(str_replace('<br>', ' / ', $lnk), '<div>').'</a>';
+                                                    $lnk='<div onclick="activateSchedule(this)" ref="'.$key.'">'.strip_tags(str_replace('<br>', ' / ', $lnk), '<div>').'</div>';
                                                 } elseif($Type=='IS') {
                                                     $lnk='<a href="'.$this->ROOT_DIR.'Finals/session.php?Session='.urlencode(($Item->Type=='T' ? 1 : 0)."$Item->Day $Item->Start:00").$TourCode.'">'.$lnk.'</a>';
                                                 }
@@ -1092,7 +1172,7 @@ Class Scheduler {
                                                     }
                                                 }
                                                 if($Type=='SET') {
-                                                    $lnk='<a href="?Activate='.urlencode($key).'">'.strip_tags(str_replace('<br>', ' / ', $lnk), '<div>').' / '.$NameLink.'</a>';
+                                                    $lnk='<div onclick="activateSchedule(this)" ref="'.$key.'">'.strip_tags(str_replace('<br>', ' / ', $lnk), '<div>').' / '.$NameLink.'</div>';
                                                 } elseif($Type=='IS') {
                                                     if($NameLink) {
                                                         $NameLink=" ($NameLink)";
@@ -1111,7 +1191,7 @@ Class Scheduler {
                                                 }
                                                 $Class='';
                                                 if($Type=='SET') {
-                                                    $lnk='<a href="?Activate='.urlencode($key).'">'.strip_tags(str_replace('<br>', ' / ', $lnk), '<div>').'</a>';
+                                                    $lnk='<div onclick="activateSchedule(this)" ref="'.$key.'">'.strip_tags(str_replace('<br>', ' / ', $lnk), '<div>').'</div>';
                                                 }
                                                 $ret[]='<tr name="'.$key.'" class="'.$Class.($ActiveSession ? ' active' : '').'"><td>'
                                                     . $timing . ($Item->Shift && $timing ? ($Type=='IS' ? '<span class="SchDelay">' : '') . '&nbsp;+' . $Item->Shift . ($Type=='IS' ? '</span>' : ''): "")
@@ -1149,7 +1229,7 @@ Class Scheduler {
                                         $OldText=$lnk;
 
                                         if($Type=='SET') {
-                                            $lnk='<a href="?Activate='.urlencode($key).'">'.strip_tags($lnk).'</a>';
+                                            $lnk='<div onclick="activateSchedule(this)" ref="'.$key.'">'.strip_tags($lnk).'</div>';
                                         }
                                         $ret[]='<tr name="'.$key.'"'.($ActiveSession ? ' class="active"' : '').'><td>'
                                             . $timing . ($Item->Shift && $timing ? ($Type=='IS' ? '<span class="SchDelay">' : '') . '&nbsp;+' . $Item->Shift . ($Type=='IS' ? '</span>' : ''): "")
@@ -1563,7 +1643,7 @@ Class Scheduler {
                                             if(!$FirstTitle) $pdf->ln(2);
                                             $pdf->SetX($StartX+$TimeColumns);
                                             $pdf->SetFont('', 'B');
-                                            $pdf->Cell($descrSize, $CellHeight, strip_tags($Item->Title).(($Item->SubTitle or $Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
+                                            $pdf->Cell($descrSize, $CellHeight, strip_tags($Item->Title).(($Item->SubTitle or $Item->Text or !$Item->RowLocation or $this->NoLocations) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
                                             $pdf->SetFont('', '');
                                             $RepeatTitle=$Item->Title;
                                         }
@@ -1593,7 +1673,7 @@ Class Scheduler {
                                         }
                                         $pdf->SetX($StartX+$TimeColumns);
                                         $pdf->SetFont('', 'BI');
-                                        $pdf->Cell($descrSize, $CellHeight, strip_tags($Item->SubTitle).(($Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
+                                        $pdf->Cell($descrSize, $CellHeight, strip_tags($Item->SubTitle).(($Item->Text or !$Item->RowLocation or $this->NoLocations) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
                                         $pdf->SetFont('', '');
                                         $OldSubTitle=$Item->SubTitle;
                                         $IsTitle=false;
@@ -1616,7 +1696,7 @@ Class Scheduler {
                                             $pdf->setColor('text', 0);
                                         }
                                         $pdf->SetX($StartX+$TimeColumns);
-                                        $pdf->Cell($descrSize, $CellHeight, strip_tags($Item->Text).($Item->RowLocation ? ' ('.$Item->RowLocation.')' : ''), 0, 1, 'L', 0);
+                                        $pdf->Cell($descrSize, $CellHeight, strip_tags($Item->Text).((!$Item->RowLocation or $this->NoLocations) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
                                         $timing='';
                                         $IsTitle=false;
                                     }
@@ -1631,7 +1711,7 @@ Class Scheduler {
                                             if(!$FirstTitle) $pdf->ln(2);
                                             $pdf->SetX($StartX+$TimeColumns);
                                             $pdf->SetFont('', 'B');
-                                            $pdf->Cell($descrSize, $CellHeight, $Item->Title.(($Item->SubTitle or $Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
+                                            $pdf->Cell($descrSize, $CellHeight, $Item->Title.(($Item->SubTitle or $Item->Text or !$Item->RowLocation or $this->NoLocations) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
                                             $pdf->SetFont('', '');
                                             $RepeatTitle=$Item->Title;
                                         }
@@ -1647,7 +1727,7 @@ Class Scheduler {
                                         // SubTitle
                                         $pdf->SetX($StartX+$TimeColumns);
                                         $pdf->SetFont('', 'BI');
-                                        $pdf->Cell($descrSize, $CellHeight, $Item->SubTitle.(($Item->Text or !$Item->RowLocation) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
+                                        $pdf->Cell($descrSize, $CellHeight, $Item->SubTitle.(($Item->Text or !$Item->RowLocation or $this->NoLocations) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
                                         $pdf->SetFont('', '');
                                         $OldSubTitle=$Item->SubTitle;
                                         $IsTitle=false;
@@ -1726,7 +1806,7 @@ Class Scheduler {
                                                     $pdf->setColor('text', 0);
                                                 }
                                                 $pdf->SetX($StartX+$TimeColumns);
-                                                $pdf->Cell($descrSize, $CellHeight, $txt.($Item->RowLocation ? ' ('.$Item->RowLocation.')' : ''), 0, 1, 'L', 0);
+                                                $pdf->Cell($descrSize, $CellHeight, $txt.((!$Item->RowLocation or $this->NoLocations) ? '' : ' ('.$Item->RowLocation.')'), 0, 1, 'L', 0);
                                                 $IsTitle=false;
                                                 break;
                                             case 'I':
@@ -3157,8 +3237,8 @@ Class Scheduler {
                                                 $this->Ods->addRow($row);
                                                 $IsTitle=false;
 
-                                                if($Item->Type=='Q' and empty($Done[$Date][$Time][$Item->Type])) {
-                                                    $Done[$Date][$Time][$Item->Type]=true;
+                                                if($Item->Type=='Q' and empty($Done[$Date][$Time][$Item->Type][$Item->Distance])) {
+                                                    $Done[$Date][$Time][$Item->Type][$Item->Distance]=true;
                                                     if($Item->Target) {
                                                         // USES THIS ONE!!!
                                                         $rows=array();
@@ -3336,8 +3416,8 @@ Class Scheduler {
                                                     }
                                                 }
 
-                                                if(empty($Done[$Date][$Time][$Item->Type])) {
-                                                    $Done[$Date][$Time][$Item->Type]=true;
+                                                if(empty($Done[$Date][$Time][$Item->Type][$Item->Distance])) {
+                                                    $Done[$Date][$Time][$Item->Type][$Item->Distance]=true;
                                                     $MaxTgt=0;
                                                     $rows=array();
 
@@ -3480,8 +3560,8 @@ Class Scheduler {
                                         $this->Ods->addRow($row);
                                         $IsTitle=false;
 
-                                        if(empty($Done[$Date][$Time][$Item->Type])) {
-                                            $Done[$Date][$Time][$Item->Type]=true;
+                                        if(empty($Done[$Date][$Time][$Item->Type][$Item->Distance])) {
+                                            $Done[$Date][$Time][$Item->Type][$Item->Distance]=true;
                                             $MaxTgt=0;
                                             $rows=array();
                                             switch($Item->Type) {
@@ -3644,20 +3724,20 @@ Class Scheduler {
                                 if($Item->Type=='Z') {
                                     // if no FOP item skip
                                     if(!$Item->Target) continue;
-                                    if(empty($FOP[$SesGroup][$Date]['times'][$Time])) {
-                                        $FOP[$SesGroup][$Date]['times'][$Time]=array('time'=>'', 'text'=>array(), 'targets'=>array(), 'min'=>0, 'max'=>0);
+                                    if(empty($FOP[$SesGroup][$Date]['times'][$Time][$Distance])) {
+                                        $FOP[$SesGroup][$Date]['times'][$Time][$Distance]=array('time'=>'', 'text'=>array(), 'targets'=>array(), 'min'=>0, 'max'=>0);
                                     }
                                     // attach global info
-                                    if(empty($FOP[$SesGroup][$Date]['times'][$Time]['time'])) {
-                                        $FOP[$SesGroup][$Date]['times'][$Time]['time']=$Item->Start;
+                                    if(empty($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['time'])) {
+                                        $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['time']=$Item->Start;
                                         if($Item->Duration) {
-                                            $FOP[$SesGroup][$Date]['times'][$Time]['time'] .= '-'.addMinutes($Item->Start, $Item->Duration);
+                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['time'] .= '-'.addMinutes($Item->Start, $Item->Duration);
                                         }
                                     }
                                     $tmp=array_merge(explode(' - ', $Item->Title), explode(' - ', $Item->SubTitle), explode(' - ', $Item->Text));
                                     foreach($tmp as $txt) {
-                                        if($txt and !in_array($txt, $FOP[$SesGroup][$Date]['times'][$Time]['text'])) {
-                                            $FOP[$SesGroup][$Date]['times'][$Time]['text'][]=strip_tags($txt);
+                                        if($txt and !in_array($txt, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'])) {
+                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'][]=strip_tags($txt);
                                         }
                                     }
 
@@ -3695,39 +3775,39 @@ Class Scheduler {
                                         }
 
                                         foreach($Ranges as $tmp) {
-                                            if(!$FOP[$SesGroup][$Date]['times'][$Time]['min']) {
-                                                $FOP[$SesGroup][$Date]['times'][$Time]['min']=$tmp[0];
+                                            if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) {
+                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$tmp[0];
                                             }
                                             if(!$FOP[$SesGroup][$Date]['min']) {
                                                 $FOP[$SesGroup][$Date]['min']=$tmp[0];
                                             }
-                                            $FOP[$SesGroup][$Date]['times'][$Time]['min']=min($FOP[$SesGroup][$Date]['times'][$Time]['min'], $tmp[0]);
+                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $tmp[0]);
                                             $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $tmp[0]);
                                             if(count($tmp)>1) {
                                                 $bl->Range=array($tmp[0], $tmp[1]);
-                                                $FOP[$SesGroup][$Date]['times'][$Time]['max']=max($FOP[$SesGroup][$Date]['times'][$Time]['max'], $tmp[1]);
+                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tmp[1]);
                                                 $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tmp[1]);
                                             } else {
                                                 $bl->Range=array($tmp[0],$tmp[0]);
-                                                $FOP[$SesGroup][$Date]['times'][$Time]['max']=max($FOP[$SesGroup][$Date]['times'][$Time]['max'], $tmp[0]);
+                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tmp[0]);
                                                 $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tmp[0]);
                                             }
 
-                                            if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                            if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                             }
                                         }
                                     }
                                 } else {
                                     // No free text, so targets are (should be) assigned
-                                    if(empty($FOP[$SesGroup][$Date]['times'][$Time])) {
-                                        $FOP[$SesGroup][$Date]['times'][$Time]=array('time'=>'', 'text'=>array(), 'targets'=>array(), 'min'=>0, 'max'=>0);
+                                    if(empty($FOP[$SesGroup][$Date]['times'][$Time][$Distance])) {
+                                        $FOP[$SesGroup][$Date]['times'][$Time][$Distance]=array('time'=>'', 'text'=>array(), 'targets'=>array(), 'min'=>0, 'max'=>0);
                                     }
 
-                                    if(empty($FOP[$SesGroup][$Date]['times'][$Time]['time'])) {
-                                        $FOP[$SesGroup][$Date]['times'][$Time]['time']=$Item->Start;
+                                    if(empty($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['time'])) {
+                                        $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['time']=$Item->Start;
                                         if($Item->Duration) {
-                                            $FOP[$SesGroup][$Date]['times'][$Time]['time'] .= '-'.addMinutes($Item->Start, $Item->Duration);
+                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['time'] .= '-'.addMinutes($Item->Start, $Item->Duration);
                                         }
                                     }
                                     $OldComment='';
@@ -3738,17 +3818,17 @@ Class Scheduler {
                                             case 'E':
                                                 $tmp=preg_replace('/\([^)]+\)/sim', '', $Item->Title.' - '.$Item->SubTitle.' - '.$Item->Text);
                                                 foreach(preg_split('/( - )|(, )/', $tmp) as $txt) {
-                                                    if($txt and !in_array($txt, $FOP[$SesGroup][$Date]['times'][$Time]['text'])) {
-                                                        $FOP[$SesGroup][$Date]['times'][$Time]['text'][]=strip_tags($txt);
+                                                    if($txt and !in_array($txt, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'])) {
+                                                        $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'][]=strip_tags($txt);
                                                     }
                                                 }
 
-    // 											if($Item->Comments and !in_array($Item->Comments, $FOP[$SesGroup][$Date]['times'][$Time]['text'])) {
-    // 												$FOP[$SesGroup][$Date]['times'][$Time]['text'][]=strip_tags($Item->Comments);
+    // 											if($Item->Comments and !in_array($Item->Comments, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'])) {
+    // 												$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'][]=strip_tags($Item->Comments);
     // 											}
 
-                                                if($Item->Type=='Q' and empty($Done[$Date][$Time][$Item->Type])) {
-    // 												$Done[$Date][$Time][$Item->Type]=true;
+                                                if($Item->Type=='Q' and empty($Done[$Date][$Time][$Item->Type][$Item->Distance])) {
+    // 												$Done[$Date][$Time][$Item->Type][$Item->Distance]=true;
                                                     if($Item->Target) {
                                                         // USES THIS ONE!!!
                                                         foreach(explode(',', $Item->Target) as $Block) {
@@ -3787,38 +3867,38 @@ Class Scheduler {
                                                             }
 
                                                             foreach($Ranges as $tmp) {
-                                                                if(!$FOP[$SesGroup][$Date]['times'][$Time]['min']) {
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time]['min']=$tmp[0];
+                                                                if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) {
+                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$tmp[0];
                                                                 }
                                                                 if(!$FOP[$SesGroup][$Date]['min']) {
                                                                     $FOP[$SesGroup][$Date]['min']=$tmp[0];
                                                                 }
-                                                                $FOP[$SesGroup][$Date]['times'][$Time]['min']=min($FOP[$SesGroup][$Date]['times'][$Time]['min'], $tmp[0]);
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $tmp[0]);
                                                                 $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $tmp[0]);
                                                                 if(count($tmp)>1) {
                                                                     $bl->Range=array($tmp[0], $tmp[1]);
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time]['max']=max($FOP[$SesGroup][$Date]['times'][$Time]['max'], $tmp[1]);
+                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tmp[1]);
                                                                     $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tmp[1]);
                                                                 } else {
                                                                     $bl->Range=array($tmp[0],$tmp[0]);
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time]['max']=max($FOP[$SesGroup][$Date]['times'][$Time]['max'], $tmp[0]);
+                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tmp[0]);
                                                                     $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tmp[0]);
                                                                 }
 
-                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                                 }
                                                             }
                                                         }
-                                                    } else {
+                                                    } elseif(is_numeric($Date[0])) {
                                                         // Get which session and distance is shot at this time...
-                                                        $Sql="select * from DistanceInformation where DiTournament={$this->TourId} and DiDay='$Date' and DiStart='$Time'";
+                                                        $Sql="select * from DistanceInformation where DiTournament={$this->TourId} and DiType='{$Item->Type}' and DiDistance=$Distance and ((DiDay='$Date' and DiStart='$Time') or (DiDay=0 and DiSession=$Session))";
                                                         $t=safe_r_sql($Sql);
                                                         while($u=safe_fetch($t)) {
                                                             $Sql="select distinct SesAth4Target, cast(substr(QuTargetNo,2) as unsigned) TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart from
                                                                 Entries
                                                                 inner join Qualifications on EnId=QuId
-                                                                inner join DistanceInformation on QuSession=DiSession and DiTournament={$this->TourId} and DiDistance={$u->DiDistance} and DiDay='$Date' and DiStart='$Time'
+                                                                inner join DistanceInformation on QuSession=DiSession and DiTournament={$this->TourId} and DiDistance={$u->DiDistance} and ((DiDay='$Date' and DiStart='$Time') or (DiDay=0 and DiSession=$Session))
                                                                 inner join Session on SesOrder=QuSession and SesType='{$Item->Type}' and SesTournament={$this->TourId}
                                                                 left join TournamentDistances on concat(trim(EnDivision),trim(EnClass)) like TdClasses and EnTournament=TdTournament
                                                                 left join (select TfId, TarDescr, TfW{$u->DiDistance} as TarDim, TfTournament from TargetFaces inner join Targets on TfT{$u->DiDistance}=TarId) tf on TfTournament=EnTournament and TfId=EnTargetFace
@@ -3831,8 +3911,8 @@ Class Scheduler {
                                                             while($w=safe_fetch($v)) {
                                                                 if(empty($bl) or $k!="{$w->TarDescr} {$w->TarDim} {$w->Distance}") {
                                                                     if($k) {
-                                                                        if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                            $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                                        if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                                         }
                                                                     }
 
@@ -3850,15 +3930,15 @@ Class Scheduler {
                                                                     }
                                                                     $bl->Colour=$ColorAssignment["{$w->TarDescr} {$w->TarDim}"];
 
-                                                                    if(!$FOP[$SesGroup][$Date]['times'][$Time]['min']) $FOP[$SesGroup][$Date]['times'][$Time]['min']=$w->TargetNo;
+                                                                    if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$w->TargetNo;
                                                                     if(!$FOP[$SesGroup][$Date]['min']) $FOP[$SesGroup][$Date]['min']=$w->TargetNo;
                                                                 } elseif($w->TargetNo == $bl->Range[1]+1) {
                                                                     // sequence is OK
                                                                     $bl->Range[1]=$w->TargetNo;
                                                                 } else {
                                                                     // starts another block because there is a "hole" in the target sequence
-                                                                    if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                        $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                                    if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                        $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                                     }
                                                                     $bl=new TargetButt();
                                                                     $bl->Target=get_text($w->TarDescr)." $w->TarDim cm";
@@ -3870,16 +3950,89 @@ Class Scheduler {
                                                                     $bl->Range=array($w->TargetNo, $w->TargetNo);
                                                                     $bl->Colour=$ColorAssignment["{$w->TarDescr} {$w->TarDim}"];
                                                                 }
-                                                                $FOP[$SesGroup][$Date]['times'][$Time]['min']=min($FOP[$SesGroup][$Date]['times'][$Time]['min'], $w->TargetNo);
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $w->TargetNo);
                                                                 $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $w->TargetNo);
-                                                                $FOP[$SesGroup][$Date]['times'][$Time]['max']=max($FOP[$SesGroup][$Date]['times'][$Time]['max'], $w->TargetNo);
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $w->TargetNo);
                                                                 $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $w->TargetNo);
 
                                                                 $k="{$w->TarDescr} {$w->TarDim} {$w->Distance}";
                                                             }
                                                             if($k) {
-                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        // Get which distances are shot at this session and type...
+                                                        $Sql="select * from DistanceInformation where DiTournament={$this->TourId} and DiSession='$Session' and DiType='{$Item->Type}' and DiDistance=$Distance";
+                                                        $t=safe_r_sql($Sql);
+                                                        while($u=safe_fetch($t)) {
+                                                            $Sql="select distinct SesAth4Target, cast(substr(QuTargetNo,2) as unsigned) TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart
+                                                                from Entries
+                                                                inner join Qualifications on EnId=QuId
+                                                                inner join DistanceInformation on QuSession=DiSession and DiTournament={$this->TourId} and DiDistance={$u->DiDistance} and DiDay='".(is_numeric($Date[0])?$Date:'0000-00-00')."' and DiStart='".(is_numeric($Time[0])?$Time:'00:00:00')."'
+                                                                inner join Session on SesOrder=QuSession and SesType='{$Item->Type}' and SesTournament={$this->TourId}
+                                                                left join TournamentDistances on concat(trim(EnDivision),trim(EnClass)) like TdClasses and EnTournament=TdTournament
+                                                                left join (select TfId, TarDescr, TfW{$u->DiDistance} as TarDim, TfTournament from TargetFaces inner join Targets on TfT{$u->DiDistance}=TarId) tf on TfTournament=EnTournament and TfId=EnTargetFace
+                                                                where EnTournament={$this->TourId}
+                                                                ".($this->TargetsInvolved ? ' HAVING '.sprintf($this->TargetsInvolved, 'TargetNo') : '')."
+                                                                order by TargetNo, Distance desc, TargetNo, TarDescr, TarDim";
+                                                            $v=safe_r_sql($Sql);
+                                                            $k="";
+                                                            $first=true;
+                                                            while($w=safe_fetch($v)) {
+                                                                if(empty($bl) or $k!="{$w->TarDescr} {$w->TarDim} {$w->Distance}") {
+                                                                    if($k) {
+                                                                        if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
+                                                                        }
+                                                                    }
+
+                                                                    $bl=new TargetButt();
+                                                                    $bl->Target=get_text($w->TarDescr)." $w->TarDim cm";
+                                                                    $bl->Distance=$w->Distance;
+                                                                    $DistanceMin=min($DistanceMin, $w->Distance);
+                                                                    $DistanceMax=max($DistanceMax, $w->Distance);
+                                                                    $bl->Event=get_text($Item->Type.'-Session', 'Tournament');
+                                                                    $bl->ArcTarget=$w->SesAth4Target;
+                                                                    $bl->Range=array($w->TargetNo, $w->TargetNo);
+                                                                    if(empty($ColorAssignment["{$w->TarDescr} {$w->TarDim}"])) {
+                                                                        $ColorAssignment["{$w->TarDescr} {$w->TarDim}"]=$ColorArray[$ColorIndex];
+                                                                        $ColorIndex++;
+                                                                    }
+                                                                    $bl->Colour=$ColorAssignment["{$w->TarDescr} {$w->TarDim}"];
+
+                                                                    if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$w->TargetNo;
+                                                                    if(!$FOP[$SesGroup][$Date]['min']) $FOP[$SesGroup][$Date]['min']=$w->TargetNo;
+                                                                } elseif($w->TargetNo == $bl->Range[1]+1) {
+                                                                    // sequence is OK
+                                                                    $bl->Range[1]=$w->TargetNo;
+                                                                } else {
+                                                                    // starts another block because there is a "hole" in the target sequence
+                                                                    if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                        $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
+                                                                    }
+                                                                    $bl=new TargetButt();
+                                                                    $bl->Target=get_text($w->TarDescr)." $w->TarDim cm";
+                                                                    $bl->Distance=$w->Distance;
+                                                                    $DistanceMin=min($DistanceMin, $w->Distance);
+                                                                    $DistanceMax=max($DistanceMax, $w->Distance);
+                                                                    $bl->Event=get_text($Item->Type.'-Session', 'Tournament');
+                                                                    $bl->ArcTarget=$w->SesAth4Target;
+                                                                    $bl->Range=array($w->TargetNo, $w->TargetNo);
+                                                                    $bl->Colour=$ColorAssignment["{$w->TarDescr} {$w->TarDim}"];
+                                                                }
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $w->TargetNo);
+                                                                $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $w->TargetNo);
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $w->TargetNo);
+                                                                $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $w->TargetNo);
+
+                                                                $k="{$w->TarDescr} {$w->TarDim} {$w->Distance}";
+                                                            }
+                                                            if($k) {
+                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                                 }
                                                             }
                                                         }
@@ -3889,17 +4042,17 @@ Class Scheduler {
                                             case 'I':
                                             case 'T':
                                             case 'R':
-                                                if($Item->Title and !in_array($Item->Title, $FOP[$SesGroup][$Date]['times'][$Time]['text'])) {
-                                                    $FOP[$SesGroup][$Date]['times'][$Time]['text'][]=strip_tags($Item->Title);
+                                                if($Item->Title and !in_array($Item->Title, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'])) {
+                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'][]=strip_tags($Item->Title);
                                                 }
-    // 											if($Item->Comments and !in_array($Item->Comments, $FOP[$SesGroup][$Date]['times'][$Time]['text'])) {
-    // 												$FOP[$SesGroup][$Date]['times'][$Time]['text'][]=strip_tags($Item->Comments);
+    // 											if($Item->Comments and !in_array($Item->Comments, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'])) {
+    // 												$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'][]=strip_tags($Item->Comments);
     // 											}
 
-    // 											$FOP[$SesGroup][$Date]['times'][$Time]['text'][array_search($Item->Text, $FOP[$SesGroup][$Date]['times'][$Time]['text'])].=': '.$Item->Events;
+    // 											$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'][array_search($Item->Text, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'])].=': '.$Item->Events;
 
-                                                if(true or empty($Done[$Date][$Time][$Item->Type])) {
-                                                    $Done[$Date][$Time][$Item->Type]=true;
+                                                if(true or empty($Done[$Date][$Time][$Item->Type][$Item->Distance])) {
+                                                    $Done[$Date][$Time][$Item->Type][$Item->Distance]=true;
                                                     $rows=array();
 
                                                     // get the warmup targets first (will be overwritten by the real matches)...
@@ -4024,8 +4177,8 @@ Class Scheduler {
                                                     $t = safe_r_sql($MyQuery);
                                                     while($u=safe_fetch($t)) {
                                                         $EndsArrows=get_text('EventDetailsShort', 'Tournament', array($u->ends, $u->arrows));
-                                                        if(!in_array($EndsArrows, $FOP[$SesGroup][$Date]['times'][$Time]['text'])) {
-                                                            $FOP[$SesGroup][$Date]['times'][$Time]['text'][]=$EndsArrows;
+                                                        if(!in_array($EndsArrows, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'])) {
+                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'][]=$EndsArrows;
                                                         }
                                                         if(empty($ColorAssignment["{$u->EvDistance}-{$u->FSEvent}"])) {
                                                             if(!isset($ColorArray[$ColorIndex])) {
@@ -4070,8 +4223,8 @@ Class Scheduler {
                                                         foreach($tgts as $tgt => $def) {
                                                             if(empty($bl) or $k!="{$def['d']}-{$def['e']}-{$def['w']}-{$def['ph']}") {
                                                                 if($k) {
-                                                                    if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                        $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                                    if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                        $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                                     }
                                                                 }
 
@@ -4095,15 +4248,15 @@ Class Scheduler {
                                                                 }
                                                                 if(!empty($def['ph'])) $bl->Phase=$def['ph'];
 
-                                                                if(!$FOP[$SesGroup][$Date]['times'][$Time]['min']) $FOP[$SesGroup][$Date]['times'][$Time]['min']=$tgt;
+                                                                if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$tgt;
                                                                 if(!$FOP[$SesGroup][$Date]['min']) $FOP[$SesGroup][$Date]['min']=$tgt;
                                                             } elseif($tgt == $bl->Range[1]+1) {
                                                                 // sequence is OK
                                                                 $bl->Range[1]=$tgt;
                                                             } else {
                                                                 // starts another block because there is a "hole" in the target sequence
-                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                                 }
                                                                 $bl=new TargetButt();
                                                                 $bl->Target=$def['f'];
@@ -4125,16 +4278,16 @@ Class Scheduler {
                                                                 }
                                                                 if(!empty($def['ph'])) $bl->Phase=$def['ph'];
                                                             }
-                                                            $FOP[$SesGroup][$Date]['times'][$Time]['min']=min($FOP[$SesGroup][$Date]['times'][$Time]['min'], $tgt);
+                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $tgt);
                                                             $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $tgt);
-                                                            $FOP[$SesGroup][$Date]['times'][$Time]['max']=max($FOP[$SesGroup][$Date]['times'][$Time]['max'], $tgt);
+                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tgt);
                                                             $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tgt);
 
                                                             $k="{$def['d']}-{$def['e']}-{$def['w']}-{$def['ph']}";
                                                         }
                                                         if($k) {
-                                                            if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                            if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                             }
                                                         }
                                                     }
@@ -4147,8 +4300,8 @@ Class Scheduler {
                                     } else {
                                         if($Item->Comments) {
                                             $lnk=$Item->Comments;
-                                            if(!in_array($Item->Comments, $FOP[$SesGroup][$Date]['times'][$Time]['text'])) {
-                                                $FOP[$SesGroup][$Date]['times'][$Time]['text'][]=strip_tags($Item->Comments);
+                                            if(!in_array($Item->Comments, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'])) {
+                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'][]=strip_tags($Item->Comments);
                                             }
                                         } else {
                                             switch($Item->Type) {
@@ -4159,15 +4312,15 @@ Class Scheduler {
                                                 default:
                                                     $lnk=' '.get_text('WarmUp', 'Tournament');
                                             }
-                                            if(!in_array($lnk, $FOP[$SesGroup][$Date]['times'][$Time]['text'])) {
-                                                $FOP[$SesGroup][$Date]['times'][$Time]['text'][]=strip_tags($lnk);
+                                            if(!in_array($lnk, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'])) {
+                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'][]=strip_tags($lnk);
                                             }
                                         }
 
                                         $IsTitle=false;
 
-                                        if(empty($Done[$Date][$Time][$Item->Type])) {
-    // 										$Done[$Date][$Time][$Item->Type]=true;
+                                        if(empty($Done[$Date][$Time][$Item->Type][$Item->Distance])) {
+    // 										$Done[$Date][$Time][$Item->Type][$Item->Distance]=true;
                                             $MaxTgt=0;
                                             $rows=array();
                                             switch($Item->Type) {
@@ -4206,22 +4359,22 @@ Class Scheduler {
                                                             }
 
                                                             foreach($Ranges as $tmp) {
-                                                                if(!$FOP[$SesGroup][$Date]['times'][$Time]['min']) $FOP[$SesGroup][$Date]['times'][$Time]['min']=$tmp[0];
+                                                                if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$tmp[0];
                                                                 if(!$FOP[$SesGroup][$Date]['min']) $FOP[$SesGroup][$Date]['min']=$tmp[0];
-                                                                $FOP[$SesGroup][$Date]['times'][$Time]['min']=min($FOP[$SesGroup][$Date]['times'][$Time]['min'], $tmp[0]);
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $tmp[0]);
                                                                 $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $tmp[0]);
                                                                 if(count($tmp)>1) {
                                                                     $bl->Range=array($tmp[0], $tmp[1]);
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time]['max']=max($FOP[$SesGroup][$Date]['times'][$Time]['max'], $tmp[1]);
+                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tmp[1]);
                                                                     $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tmp[1]);
                                                                 } else {
                                                                     $bl->Range=array($tmp[0],$tmp[0]);
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time]['max']=max($FOP[$SesGroup][$Date]['times'][$Time]['max'], $tmp[0]);
+                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tmp[0]);
                                                                     $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tmp[0]);
                                                                 }
 
-                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                                 }
                                                             }
 
@@ -4245,8 +4398,8 @@ Class Scheduler {
                                                             while($w=safe_fetch($v)) {
                                                                 if(empty($bl) or $k!="{$w->TarDescr} {$w->TarDim} {$w->Distance}") {
                                                                     if($k) {
-                                                                        if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                            $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                                        if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                                         }
                                                                     }
 
@@ -4260,15 +4413,15 @@ Class Scheduler {
                                                                     $bl->ArcTarget=$w->SesAth4Target;
                                                                     $bl->Range=array($w->TargetNo, $w->TargetNo);
 
-                                                                    if(!$FOP[$SesGroup][$Date]['times'][$Time]['min']) $FOP[$SesGroup][$Date]['times'][$Time]['min']=$w->TargetNo;
+                                                                    if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$w->TargetNo;
                                                                     if(!$FOP[$SesGroup][$Date]['min']) $FOP[$SesGroup][$Date]['min']=$w->TargetNo;
                                                                 } elseif($w->TargetNo == $bl->Range[1]+1) {
                                                                     // sequence is OK
                                                                     $bl->Range[1]=$w->TargetNo;
                                                                 } else {
                                                                     // starts another block because there is a "hole" in the target sequence
-                                                                    if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                        $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                                    if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                        $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                                     }
                                                                     $bl=new TargetButt();
                                                                     $bl->Target=get_text($w->TarDescr)." $w->TarDim cm";
@@ -4280,16 +4433,16 @@ Class Scheduler {
                                                                     $bl->ArcTarget=$w->SesAth4Target;
                                                                     $bl->Range=array($w->TargetNo, $w->TargetNo);
                                                                 }
-                                                                $FOP[$SesGroup][$Date]['times'][$Time]['min']=min($FOP[$SesGroup][$Date]['times'][$Time]['min'], $w->TargetNo);
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $w->TargetNo);
                                                                 $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $w->TargetNo);
-                                                                $FOP[$SesGroup][$Date]['times'][$Time]['max']=max($FOP[$SesGroup][$Date]['times'][$Time]['max'], $w->TargetNo);
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $w->TargetNo);
                                                                 $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $w->TargetNo);
 
                                                                 $k="{$w->TarDescr} {$w->TarDim} {$w->Distance}";
                                                             }
                                                             if($k) {
-                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                                 }
                                                             }
                                                         }
@@ -4381,8 +4534,8 @@ Class Scheduler {
                                                         foreach($tgts as $tgt => $def) {
                                                             if(empty($bl) or $k!="{$def['d']}-{$def['e']}") {
                                                                 if($k) {
-                                                                    if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                        $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                                    if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                        $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                                     }
                                                                 }
 
@@ -4398,15 +4551,15 @@ Class Scheduler {
                                                                 if(!empty($def['ph'])) $bl->Phase=$def['ph'];
                                                                 if(!empty($def['l'])) $bl->Line=$def['l'];
 
-                                                                if(!$FOP[$SesGroup][$Date]['times'][$Time]['min']) $FOP[$SesGroup][$Date]['times'][$Time]['min']=$tgt;
+                                                                if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$tgt;
                                                                 if(!$FOP[$SesGroup][$Date]['min']) $FOP[$SesGroup][$Date]['min']=$tgt;
                                                             } elseif($tgt == $bl->Range[1]+1) {
                                                                 // sequence is OK
                                                                 $bl->Range[1]=$tgt;
                                                             } else {
                                                                 // starts another block because there is a "hole" in the target sequence
-                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                                 }
                                                                 $bl=new TargetButt();
                                                                 $bl->Target=$def['f'];
@@ -4420,16 +4573,16 @@ Class Scheduler {
                                                                 if(!empty($def['ph'])) $bl->Phase=$def['ph'];
                                                                 if(!empty($def['l'])) $bl->Line=$def['l'];
                                                             }
-                                                            $FOP[$SesGroup][$Date]['times'][$Time]['min']=min($FOP[$SesGroup][$Date]['times'][$Time]['min'], $tgt);
+                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $tgt);
                                                             $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $tgt);
-                                                            $FOP[$SesGroup][$Date]['times'][$Time]['max']=max($FOP[$SesGroup][$Date]['times'][$Time]['max'], $tgt);
+                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tgt);
                                                             $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tgt);
 
                                                             $k="{$def['d']}-{$def['e']}";
                                                         }
                                                         if($k) {
-                                                            if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time]['targets'])) {
-                                                                $FOP[$SesGroup][$Date]['times'][$Time]['targets'][]=$bl;
+                                                            if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                             }
                                                         }
                                                     }
@@ -4480,12 +4633,21 @@ Class Scheduler {
                 $FirstPage=false;
                 $FirstDate=true;
 
+                if($this->FopSingleLocations and $this->LocationsToPrint[0]->Loc) {
+                    // add the location!
+                    $pdf->SetFont('', 'B', 14);
+                    $pdf->setFillColor(200);
+                    $pdf->Cell(0, 0, $this->LocationsToPrint[0]->Loc, '', 1, 'C', 1);
+                }
                 // Title of the page is ALWAYS the date and the version
-                $pdf->SetFont('', 'B', 25);
-                $pdf->Cell(0, 0, formatTextDate($Day, true) . ($GroupSession?" - $GroupSession":''), 'B', 1, 'C');
-                $pdf->dy(-5, true);
-                $pdf->SetFontSize(7);
-                $pdf->Cell(0, 0, $this->FopVersionText, '', 0, 'R');
+                if($Day[0]!='S') {
+                    $Title=formatTextDate($Day, true) . ($GroupSession?" - $GroupSession":'');
+                    $pdf->SetFont('', 'B', 25);
+                    $pdf->Cell(0, 0, $Title, 'B', 1, 'C');
+                    $pdf->dy(-5, true);
+                    $pdf->SetFontSize(7);
+                    $pdf->Cell(0, 0, $this->FopVersionText, '', 0, 'R');
+                }
                 $pdf->SetFont('', '', 8);
 
                 // calculates the width of the targets
@@ -4506,190 +4668,199 @@ Class Scheduler {
 
                 $LastBlock=end($Blocks['times']);
 
-                foreach($Blocks['times'] as $Time => $Block) {
-                    if(!($CurrentXOffset%2) or !$SecondColumn) {
-                        if(!$pdf->SamePage(11 + $DistHeight + $TgtHeight + $EventHeight + $PhaseHeight + $TgtFaceHeight + $ArcTgtHeight)) {
-                            $pdf->AddPage();
-                            $FirstDate=true;
-                            $pdf->SetFont('', 'B', 16);
-                            $pdf->Cell(0, 0, formatTextDate($Day, true).' ('.get_text('Continue').')', 'B', 1, 'C');
-                            $pdf->dy(-4, true);
-                            $pdf->SetFontSize(7);
-                            $pdf->Cell(0, 0, $this->FopVersionText, '', 0, 'R');
-                            $pdf->SetFont('', '', 8);
-                            $pdf->ln(7);
-                            $MaxY=0;
+                foreach($Blocks['times'] as $Time => $Distances) {
+                    $oldBlockTime='';
+                    foreach($Distances as $SubDist => $Block) {
+                        if(!($CurrentXOffset%2) or !$SecondColumn) {
+                            if(!$pdf->SamePage(11 + $DistHeight + $TgtHeight + $EventHeight + $PhaseHeight + $TgtFaceHeight + $ArcTgtHeight)) {
+                                $pdf->AddPage();
+                                $FirstDate=true;
+                                if($this->FopSingleLocations) {
+                                    $pdf->SetFont('', 'B', 12);
+                                    $pdf->setFillColor(200);
+                                    $pdf->Cell(0, 0, $this->FopLocations[0]->Loc, '', 1, 'C', 1);
+                                }
+                                $pdf->SetFont('', 'B', 16);
+                                $pdf->Cell(0, 0, $Title.' ('.get_text('Continue').')', 'B', 1, 'C');
+                                $pdf->dy(-4, true);
+                                $pdf->SetFontSize(7);
+                                $pdf->Cell(0, 0, $this->FopVersionText, '', 0, 'R');
+                                $pdf->SetFont('', '', 8);
+                                $pdf->ln(7);
+                                $MaxY=0;
+                            }
                         }
-                    }
-                    if(!$FirstDate and ($Block!=$LastBlock or !$SecondColumn)) {
-                        $pdf->setY($MaxY, false);
-                        $pdf->SetLineStyle(array('width'=>0.5, 'color' => array(128)));
-                        $tmp=$pdf->getMargins();
-                        $pdf->Line($tmp['left'], $pdf->getY(), $tmp['left'] + $pdf->getPageWidth() - $SecondColumn - 20, $pdf->getY());
-                        $pdf->SetLineStyle(array('width'=>.1, 'color' => array(0)));
-                        $pdf->ln(2);
-                    }
-                    $FirstDate=false;
+                        if(!$FirstDate and ($Block!=$LastBlock or !$SecondColumn)) {
+                            $pdf->setY($MaxY, false);
+                            $pdf->SetLineStyle(array('width'=>0.5, 'color' => array(128)));
+                            $tmp=$pdf->getMargins();
+                            $pdf->Line($tmp['left'], $pdf->getY(), $tmp['left'] + $pdf->getPageWidth() - $SecondColumn - 20, $pdf->getY());
+                            $pdf->SetLineStyle(array('width'=>.1, 'color' => array(0)));
+                            $pdf->ln(2);
+                        }
+                        $FirstDate=false;
 
-                    $Y=$pdf->gety();
-                    if($CurrentXOffset%2 and $SecondColumn) {
-                        $pdf->SetLeftMargin($SecondColumn);
-                        $pdf->sety($StartY, true);
                         $Y=$pdf->gety();
-                    } else {
-                        $pdf->SetLeftMargin(10);
-                        $pdf->setx(10);
-                    }
+                        if($CurrentXOffset%2 and $SecondColumn) {
+                            $pdf->SetLeftMargin($SecondColumn);
+                            $pdf->sety($StartY, true);
+                            $Y=$pdf->gety();
+                        } else {
+                            $pdf->SetLeftMargin(10);
+                            $pdf->setx(10);
+                        }
 
-                    $CurrentXOffset++;
-                    $StartY=$Y;
+                        $CurrentXOffset++;
+                        $StartY=$Y;
 
-                    $pdf->SetFont('', 'B', 10);
-                    $pdf->Cell($TimeWidth, 0, $Block['time'], 0, 1);
-                    $pdf->SetFont('', '', 7);
-                    foreach($Block['text'] as $txt) {
-                        $txt=mb_substr($txt, 0, 30, 'UTF-8');
-                        $pdf->Cell($TimeWidth, 3, $txt, '', 1);
-                    }
-                    $pdf->setY($Y);
-                    $MaxOffset=0;
-                    $pdf->SetFont('', '', 8);
+                        $pdf->SetFont('', 'B', 10);
+                        $pdf->Cell($TimeWidth, 0, $oldBlockTime==$Block['time']?'':$Block['time'], 0, 1);
+                        $pdf->SetFont('', '', 7);
+                        foreach($Block['text'] as $txt) {
+                            $txt=mb_substr($txt, 0, 30, 'UTF-8');
+                            $pdf->Cell($TimeWidth, 3, $txt, '', 1);
+                        }
+                        $pdf->setY($Y);
+                        $MaxOffset=0;
+                        $pdf->SetFont('', '', 8);
+                        $oldBlockTime=$Block['time'];
 
-                    $TargetFacesBlocks=array();
-                    $CurFace='£$';
+                        $TargetFacesBlocks=array();
+                        $CurFace='£$';
 
-                    $ArcPerTarget=array();
-                    $CurArcNum=-10;
+                        $ArcPerTarget=array();
+                        $CurArcNum=-10;
 
 
-    // 				if((count($Block['targets'])==1 and $Block['targets'][0]->Range[1]-$Block['targets'][0]->Range[0]<3)) {
-    // 					$TgtWidth=2*$TgtWidthOrg;
-    // 					$Max=$Block['targets'][0]->Range[1];
-    // 					$Min=$Block['targets'][0]->Range[0];
-    // 				} else {
+                        // 				if((count($Block['targets'])==1 and $Block['targets'][0]->Range[1]-$Block['targets'][0]->Range[0]<3)) {
+                        // 					$TgtWidth=2*$TgtWidthOrg;
+                        // 					$Max=$Block['targets'][0]->Range[1];
+                        // 					$Min=$Block['targets'][0]->Range[0];
+                        // 				} else {
                         $TgtWidth=$TgtWidthOrg;
                         $Max=$Blocks['max'];
                         $Min=$Blocks['min'];
-    // 				}
+                        // 				}
 
-                    $tmp=$pdf->getMargins();
-                    $pdf->setX($tmp['left']+1+$TimeWidth);
-                    $this->PrintTargetLinePdf($pdf, $TgtWidth, $TgtHeight, $Min, $Max);
-                    $pdf->ln();
-                    $OrgY=$pdf->GetY();
+                        $tmp=$pdf->getMargins();
+                        $pdf->setX($tmp['left']+1+$TimeWidth);
+                        $this->PrintTargetLinePdf($pdf, $TgtWidth, $TgtHeight, $Min, $Max);
+                        $pdf->ln();
+                        $OrgY=$pdf->GetY();
 
-                    $larCell=$TgtWidth/5;
+                        $larCell=$TgtWidth/5;
 
-                    foreach($Block['targets'] as $Range) {
-                        $Y=$OrgY;
-                        $pdf->SetFillColor($Range->Colour[0], $Range->Colour[1], $Range->Colour[2]);
-                        $RangeWidth=(1+$Range->Range[1]-$Range->Range[0])*$TgtWidth;
-                        $RangeStart=$tmp['left']+1 + $TimeWidth + $TgtWidth*($Range->Range[0]-$Blocks['min']);
-                        //$Offset=min(8, max(0, 14-(intval($Range->Distance)/5)));
-                        $Offset=min(8, max(0, ((intval($DistanceMax)-intval($DistanceMin))/5) - (intval($Range->Distance)/5)));
-                        $MaxOffset=max($MaxOffset, $Offset);
+                        foreach($Block['targets'] as $Range) {
+                            $Y=$OrgY;
+                            $pdf->SetFillColor($Range->Colour[0], $Range->Colour[1], $Range->Colour[2]);
+                            $RangeWidth=(1+$Range->Range[1]-$Range->Range[0])*$TgtWidth;
+                            $RangeStart=$tmp['left']+1 + $TimeWidth + $TgtWidth*($Range->Range[0]-$Blocks['min']);
+                            //$Offset=min(8, max(0, 14-(intval($Range->Distance)/5)));
+                            $Offset=min(8, max(0, ((intval($DistanceMax)-intval($DistanceMin))/5) - (intval($Range->Distance)/5)));
+                            $MaxOffset=max($MaxOffset, $Offset);
 
-                        if(!empty($Range->Line)) {
-                            $Y+=$DistHeight + $Offset + $EventHeight + ($Range->Phase ? $PhaseHeight : 0) + $ArcTgtHeight + 3.5;
-                        }
+                            if(!empty($Range->Line)) {
+                                $Y+=$DistHeight + $Offset + $EventHeight + ($Range->Phase ? $PhaseHeight : 0) + $ArcTgtHeight + 3.5;
+                            }
 
-                        // prints the distance block
-                        $pdf->setXY($RangeStart, $Y);
-                        $pdf->Cell($RangeWidth, $DistHeight + $Offset, $Range->Distance, '1', 0, 'C');
-                        $Y+=$DistHeight + $Offset;
+                            // prints the distance block
+                            $pdf->setXY($RangeStart, $Y);
+                            $pdf->Cell($RangeWidth, $DistHeight + $Offset, $Range->Distance, '1', 0, 'C');
+                            $Y+=$DistHeight + $Offset;
 
-                        // Events on each block
-                        $pdf->SetFont('', 'B');
-                        $pdf->setXY($RangeStart, $Y);
-                        $pdf->Cell($RangeWidth, $EventHeight, $Range->Event, 'LTR', 0, 'C', 1);
-                        $pdf->SetFont('', '');
-                        $Y+=$EventHeight;
-                        $pdf->setY($Y);
-
-                        // Phase on each block
-                        if($Range->Phase) {
+                            // Events on each block
                             $pdf->SetFont('', 'B');
                             $pdf->setXY($RangeStart, $Y);
-                            $pdf->Cell($RangeWidth, $PhaseHeight, $Range->Phase, 'LBR', 0, 'C', 1);
+                            $pdf->Cell($RangeWidth, $EventHeight, $Range->Event, 'LTR', 0, 'C', 1);
                             $pdf->SetFont('', '');
-                            $Y+=$PhaseHeight;
-                        }
+                            $Y+=$EventHeight;
+                            $pdf->setY($Y);
 
-                        if($Range->ArcTarget and $Range->ArcTarget<=4) {
-                            foreach(range($Range->Range[0], $Range->Range[1]) as $tgt) {
-                                $colX=$tmp['left']+1 + $TimeWidth + $TgtWidth*($tgt-$Blocks['min']) ;
-                                $pdf->SetFillColor(255);
-                                $pdf->Rect($colX, $Y, $TgtWidth, $ArcTgtHeight, "DF");
-                                $pdf->SetFillColor(127);
-                                if($Range->ArcTarget & 4) {
-                                    $pdf->Rect($colX + 1*$larCell - 0.5, $Y + 0.5, $larCell, 1, "DF");
-                                    $pdf->Rect($colX + 2*$larCell - 0.5, $Y + 0.5, $larCell, 1, "DF");
-                                    $pdf->Rect($colX + 3*$larCell - 0.5, $Y + 0.5, $larCell, 1, "DF");
-                                    $pdf->Rect($colX + 4*$larCell - 0.5, $Y + 0.5, $larCell, 1, "DF");
-                                } else {
-                                    if($Range->ArcTarget & 1) {
-                                        $pdf->Rect($colX + 2*$larCell, $Y + 0.5, $larCell, 1, "DF");
-                                    }
-                                    if($Range->ArcTarget & 2) {
-                                        $pdf->Rect($colX + 1*$larCell, $Y + 0.5, $larCell, 1, "DF");
-                                        $pdf->Rect($colX + 3*$larCell, $Y + 0.5, $larCell, 1, "DF");
+                            // Phase on each block
+                            if($Range->Phase) {
+                                $pdf->SetFont('', 'B');
+                                $pdf->setXY($RangeStart, $Y);
+                                $pdf->Cell($RangeWidth, $PhaseHeight, $Range->Phase, 'LBR', 0, 'C', 1);
+                                $pdf->SetFont('', '');
+                                $Y+=$PhaseHeight;
+                            }
+
+                            if($Range->ArcTarget and $Range->ArcTarget<=4) {
+                                foreach(range($Range->Range[0], $Range->Range[1]) as $tgt) {
+                                    $colX=$tmp['left']+1 + $TimeWidth + $TgtWidth*($tgt-$Blocks['min']) ;
+                                    $pdf->SetFillColor(255);
+                                    $pdf->Rect($colX, $Y, $TgtWidth, $ArcTgtHeight, "DF");
+                                    $pdf->SetFillColor(127);
+                                    if($Range->ArcTarget & 4) {
+                                        $pdf->Rect($colX + 1*$larCell - 0.5, $Y + 0.5, $larCell, 1, "DF");
+                                        $pdf->Rect($colX + 2*$larCell - 0.5, $Y + 0.5, $larCell, 1, "DF");
+                                        $pdf->Rect($colX + 3*$larCell - 0.5, $Y + 0.5, $larCell, 1, "DF");
+                                        $pdf->Rect($colX + 4*$larCell - 0.5, $Y + 0.5, $larCell, 1, "DF");
+                                    } else {
+                                        if($Range->ArcTarget & 1) {
+                                            $pdf->Rect($colX + 2*$larCell, $Y + 0.5, $larCell, 1, "DF");
+                                        }
+                                        if($Range->ArcTarget & 2) {
+                                            $pdf->Rect($colX + 1*$larCell, $Y + 0.5, $larCell, 1, "DF");
+                                            $pdf->Rect($colX + 3*$larCell, $Y + 0.5, $larCell, 1, "DF");
+                                        }
                                     }
                                 }
+                                $Y+=$ArcTgtHeight;
+                                $GetArcPerTarget=false;
+                            } else {
+                                $GetArcPerTarget=true;
                             }
-                            $Y+=$ArcTgtHeight;
-                            $GetArcPerTarget=false;
-                        } else {
-                            $GetArcPerTarget=true;
-                        }
 
-                        // Target faces used in the block
-                        if($CurFace!=$Range->Target) {
-                            $CurFace=$Range->Target;
-                            $TargetFacesBlocks[$CurFace][]=array($Range->Range[0], $Range->Range[1], $Y);
-                            $TargetIndex=count($TargetFacesBlocks[$CurFace])-1;
-                            $CurArcNum=-10;
-                        }
-                        if($Range->Range[0]<$TargetFacesBlocks[$CurFace][$TargetIndex][0]) $TargetFacesBlocks[$CurFace][$TargetIndex][0]=$Range->Range[0];
-                        if($Range->Range[1]>$TargetFacesBlocks[$CurFace][$TargetIndex][1]) $TargetFacesBlocks[$CurFace][$TargetIndex][1]=$Range->Range[1];
-                        $TargetFacesBlocks[$CurFace][$TargetIndex][2]=max($Y, $TargetFacesBlocks[$CurFace][$TargetIndex][2]);
-                        if($GetArcPerTarget) {
-                            if($CurArcNum!=$Range->ArcTarget) {
-                                $CurArcNum=$Range->ArcTarget;
-                                $ArcPerTarget[$CurArcNum][]=array($Range->Range[0], $Range->Range[1], $Y);
-                                $ArcPerTargetIndex=count($ArcPerTarget[$CurArcNum])-1;
+                            // Target faces used in the block
+                            if($CurFace!=$Range->Target) {
+                                $CurFace=$Range->Target;
+                                $TargetFacesBlocks[$CurFace][]=array($Range->Range[0], $Range->Range[1], $Y);
+                                $TargetIndex=count($TargetFacesBlocks[$CurFace])-1;
+                                $CurArcNum=-10;
                             }
-                            if($Range->Range[0]<$ArcPerTarget[$CurArcNum][$ArcPerTargetIndex][0]) $ArcPerTarget[$CurArcNum][$ArcPerTargetIndex][0]=$Range->Range[0];
-                            if($Range->Range[1]>$ArcPerTarget[$CurArcNum][$ArcPerTargetIndex][1]) $ArcPerTarget[$CurArcNum][$ArcPerTargetIndex][1]=$Range->Range[1];
+                            if($Range->Range[0]<$TargetFacesBlocks[$CurFace][$TargetIndex][0]) $TargetFacesBlocks[$CurFace][$TargetIndex][0]=$Range->Range[0];
+                            if($Range->Range[1]>$TargetFacesBlocks[$CurFace][$TargetIndex][1]) $TargetFacesBlocks[$CurFace][$TargetIndex][1]=$Range->Range[1];
+                            $TargetFacesBlocks[$CurFace][$TargetIndex][2]=max($Y, $TargetFacesBlocks[$CurFace][$TargetIndex][2]);
+                            if($GetArcPerTarget) {
+                                if($CurArcNum!=$Range->ArcTarget) {
+                                    $CurArcNum=$Range->ArcTarget;
+                                    $ArcPerTarget[$CurArcNum][]=array($Range->Range[0], $Range->Range[1], $Y);
+                                    $ArcPerTargetIndex=count($ArcPerTarget[$CurArcNum])-1;
+                                }
+                                if($Range->Range[0]<$ArcPerTarget[$CurArcNum][$ArcPerTargetIndex][0]) $ArcPerTarget[$CurArcNum][$ArcPerTargetIndex][0]=$Range->Range[0];
+                                if($Range->Range[1]>$ArcPerTarget[$CurArcNum][$ArcPerTargetIndex][1]) $ArcPerTarget[$CurArcNum][$ArcPerTargetIndex][1]=$Range->Range[1];
+                            }
                         }
-                    }
-                    $pdf->SetFontSize(7);
-                    $Gap=$pdf->getY();
-                    if(empty($Block['targets'])) $Gap=$pdf->gety()+10;
-                    foreach($TargetFacesBlocks as $Targetface => $Ranges) {
-                        if(!$Targetface) continue;
-                        foreach($Ranges as $Range) {
-                            $RangeWidth=(1+$Range[1]-$Range[0])*$TgtWidth;
-                            $RangeStart=$tmp['left'] + 1 + $TimeWidth + $TgtWidth*($Range[0]-$Blocks['min']);
-                            $pdf->setXY($RangeStart, $Range[2]);
-                            $pdf->Cell($RangeWidth, $TgtFaceHeight, $Targetface, 'LR', 1, 'C');
-                            $Gap=max($Gap, $pdf->gety());
+                        $pdf->SetFontSize(7);
+                        $Gap=$pdf->getY();
+                        if(empty($Block['targets'])) $Gap=$pdf->gety()+10;
+                        foreach($TargetFacesBlocks as $Targetface => $Ranges) {
+                            if(!$Targetface) continue;
+                            foreach($Ranges as $Range) {
+                                $RangeWidth=(1+$Range[1]-$Range[0])*$TgtWidth;
+                                $RangeStart=$tmp['left'] + 1 + $TimeWidth + $TgtWidth*($Range[0]-$Blocks['min']);
+                                $pdf->setXY($RangeStart, $Range[2]);
+                                $pdf->Cell($RangeWidth, $TgtFaceHeight, $Targetface, 'LR', 1, 'C');
+                                $Gap=max($Gap, $pdf->gety());
+                            }
                         }
-                    }
-                    foreach($ArcPerTarget as $Targetface => $Ranges) {
-                        if(!$Targetface) continue;
-                        foreach($Ranges as $Range) {
-                            $RangeWidth=(1+$Range[1]-$Range[0])*$TgtWidth;
-                            $RangeStart=$tmp['left'] + 1 + $TimeWidth + $TgtWidth*($Range[0]-$Blocks['min']);
-                            $pdf->setXY($RangeStart, $Range[2] + $TgtFaceHeight);
-                            $pdf->Cell($RangeWidth, $ArcTgtHeight, $Targetface.' Arc/Tgt', 'LR', 1, 'C');
-                            $Gap=max($Gap, $pdf->gety());
+                        foreach($ArcPerTarget as $Targetface => $Ranges) {
+                            if(!$Targetface) continue;
+                            foreach($Ranges as $Range) {
+                                $RangeWidth=(1+$Range[1]-$Range[0])*$TgtWidth;
+                                $RangeStart=$tmp['left'] + 1 + $TimeWidth + $TgtWidth*($Range[0]-$Blocks['min']);
+                                $pdf->setXY($RangeStart, $Range[2] + $TgtFaceHeight);
+                                $pdf->Cell($RangeWidth, $ArcTgtHeight, $Targetface.' Arc/Tgt', 'LR', 1, 'C');
+                                $Gap=max($Gap, $pdf->gety());
+                            }
                         }
-                    }
-                    $pdf->SetFontSize(8);
-                    $pdf->SetY($Gap+3, true);
-                    $MaxY=max($MaxY, $pdf->getY());
-    // 				$pdf->ln();
+                        $pdf->SetFontSize(8);
+                        $pdf->SetY($Gap+3, true);
+                        $MaxY=max($MaxY, $pdf->getY());
+                        // 				$pdf->ln();
 
+                    }
                 }
             }
         }
@@ -4706,7 +4877,7 @@ Class Scheduler {
 
 	function PrintTargetLinePdf(&$pdf, $TgtWidth, $TgtHeight, $Min, $Max) {
 		$pdf->SetFont('', '', 6);
-		if($this->FopLocations) {
+		if($this->FopLocations and !$this->FopSingleLocations) {
 			$OldX=$pdf->getx();
 			$OldY=$pdf->gety();
 			foreach($this->FopLocations as $field) {

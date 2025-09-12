@@ -1,8 +1,8 @@
 $(function() {
-    getEventDetail();
+    getEventDetail(true);
 });
 
-function getEventDetail() {
+function getEventDetail(reload) {
     history.pushState(null, '', '?Team='+$('#EvTeam').val()+'&Event='+$('#EvCode').val());
     let form={
         Team:$('#EvTeam').val(),
@@ -16,7 +16,7 @@ function getEventDetail() {
         if(data.error==0) {
             let checkABCD=false;
             // Events
-            if(data.reloadEvents) {
+            if(reload && data.events) {
                 $('#EvCode').empty();
                 $.each(data.events, function() {
                     $('#EvCode').append('<option value="'+this.EvCode+'">'+this.EvCode+'-'+this.EvEventName+'</option>');

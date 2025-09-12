@@ -25,6 +25,7 @@ $lang['EntriesNoCountry']='Partecipanti senza Società/Nazione';
 $lang['ErrCodeExists']='Il codice scelto esiste già!';
 $lang['ErrCommitteeError']='Il codice del comitato o la descrizione non sono validi';
 $lang['ErrConnection']='Nessuna connessione al server $a';
+$lang['ErrDateGeneric']='Data mancante o non valida';
 $lang['ErrEmptyFields']='Campi Vuoti';
 $lang['ErrGenericError']='Errore Generico';
 $lang['ErrInvalidCode']='Codice non valido';

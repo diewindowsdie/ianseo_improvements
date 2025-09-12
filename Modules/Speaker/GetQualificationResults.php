@@ -73,7 +73,6 @@ if($viewI && (!empty($optionsI['events']) || empty($optionsT['events']))) {
 	$rank->read();
 	$rankDataI=$rank->getData();
 	$lastUpdate=strtotime($rankDataI['meta']['lastUpdate']);
-	//print '<pre>';print_r($rankDataI);print '</pre>';exit;
 } else
 	$viewI=false;
 
@@ -81,7 +80,6 @@ if($viewT && (!empty($optionsT['events']) || empty($optionsI['events']))) {
 	$rank=Obj_RankFactory::create($family.'Team',$optionsT);
 	$rank->read();
 	$rankDataT=$rank->getData();
-	//print '<pre>';print_r($rankDataT);print '</pre>';exit;
 	if($rankDataT['meta']['lastUpdate']!='0000-00-00 00:00:00')
 	{
 		if($lastUpdate!=0)

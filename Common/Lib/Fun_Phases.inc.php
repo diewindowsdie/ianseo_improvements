@@ -345,7 +345,6 @@ function get_already_scheduled_events($CurPhase, $CurEvent, $TeamEvent=0) {
 function PrecNextPhaseForButton()
 {
 	$phases=getStandardPhases();
-	//print_r($phases);
 	$indexCur=array_search($_REQUEST['d_Phase'],$phases);
 	$indexP=$indexCur;
 	$indexN=$indexCur;
@@ -422,9 +421,6 @@ function elimFinFromMatchArrowsNo($firstPhase,$matchArrowsNo)
 	{
 		$fin=false;
 	}
-//	print '<pre>';
-//	print_r(array($elim,$fin));
-//	print '</pre>';
 	return array($elim,$fin);
 }
 

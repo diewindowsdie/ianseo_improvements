@@ -217,10 +217,6 @@ function UpdateTournament($Gara) {
 			$events[$g['EvCode']]=$g['EvFinalTargetType'];
 		}
 
-		/*print '<pre>';
-		print_r($events);*/
-
-
 	/*
 	 * Regole di trasformazione.
 	 * la chiave è il tipo di target e ogni array contiene la serie di regole per
@@ -416,12 +412,6 @@ function UpdateTournament($Gara) {
 			 */
 				$target=$events[$row[$infos['eventField']]];
 
-				/*print $target.'<br>';
-				print_r($rules[$target]);*/
-				/*print '<pre>';
-				print_r($row);
-				print '</pre>';*/
-
 			/*
 			 * adesso ad ogni campo definito in $infos['fields'] applico le regole
 			 */
@@ -441,10 +431,6 @@ function UpdateTournament($Gara) {
 
 	if($Gara['Tournament']['ToDbVersion']<'2010-09-15 09:35:00')
 	{
-	/*print 'prima<br>';
-		print '<pre>';
-		print_r($Gara['Events']);
-		print '</pre>';*/
 
 	/*
 	 * Tabella dei valori.
@@ -488,11 +474,6 @@ function UpdateTournament($Gara) {
 			}
 		}
 
-	/*print 'dopo<br>';
-		print '<pre>';
-		print_r($Gara['Events']);
-		print '</pre>';
-		exit;*/
 	}
 
 	if($Gara['Tournament']['ToDbVersion']<'2010-09-24 15:00:00') {
@@ -537,10 +518,6 @@ function UpdateTournament($Gara) {
 				'SesFollow'=>0
 			);
 		}
-
-		/*print '<pre>';
-		print_r($Gara['Session']);
-		print '</pre>';exit;*/
 
 	/*
 	 * ATTENZIONE!!!
@@ -926,12 +903,6 @@ function UpdateTournament($Gara) {
 				$g['ElTournament']=$Gara['Tournament']['ToId'];
 			}
 		}
-		/*print '<pre>';
-		print_r($events);
-		print_r($qualifications);
-		print_r($eliminations);
-		print_r($Gara['Eliminations']);
-		print '</pre>';		exit;*/
 	/*
 	 *  Adesso metto a posto la rank.
 	 *  Prima le righe di Eliminations con l'evento che ha EvElim1=0

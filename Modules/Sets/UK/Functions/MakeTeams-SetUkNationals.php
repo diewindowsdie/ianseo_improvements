@@ -9,19 +9,39 @@ $divisions = array('R','C');
 if(!is_null($Category))
 {
 	$Category = substr($Category,0,1);
-	switch($Category)
+    //Check for WA18m Round, If present include the barebows and recurves together.
+    if($_SESSION['TourType']==6) {
+    switch($Category)
 	{
-		case 'B':
-		case 'R':
-			$divisions = array('R');
-			$Category= 'R';
-			break;
-		case 'C':
-			$divisions = array('C');
-			break;
-		default:
-			$divisions = array();
-	}
+
+        case 'B':
+        case 'R':
+            $divisions = array('R');
+            $Category = 'R';
+            break;
+        case 'C':
+            $divisions = array('C');
+            break;
+        default:
+            $divisions = array();
+    }
+    }
+    {
+        switch($Category)
+        {
+            case 'R':
+                $divisions = array('R');
+                $Category = 'R';
+                break;
+            case 'C':
+                $divisions = array('C');
+                break;
+            default:
+                $divisions = array();
+        }
+    }
+
+
 }
 
 

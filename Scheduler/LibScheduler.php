@@ -427,6 +427,7 @@ function DistanceInfoData($r='', $delete=false, $TextScheduler=false) {
 		if(isset($r->newTimName)) $return['newTimName']=$r->newTimName;
 		if(isset($r->newDurName)) $return['newDurName']=$r->newDurName;
 		if(isset($r->newOptName)) $return['newOptName']=$r->newOptName;
+		if(isset($r->newId)) $return['newId']=$r->newId;
 
 		if($delete) $return['del']=1;
 
@@ -672,7 +673,9 @@ function ChangeFinSchedWarmTime($Request, $Team='0', $Warmup=false) {
 							AND FwMatchTime='$OldTime'
 							AND FwTime='$Value'";
 					$q=safe_r_sql($SQL);
-					return DistanceInfoData(safe_fetch($q), $Value=='');
+                    $r=safe_fetch($q);
+                    $r->newId=($Team?'T':'I')."|$Phase|$OldDate|$OldTime|".substr($Value, 0, 5);
+					return DistanceInfoData($r, $Value=='');
 				}
 			}
 		}
@@ -754,7 +757,9 @@ function ChangeFinSchedWarmDuration($Request, $Team='0') {
 							AND FwMatchTime='$OldTime'
 							AND FwTime='$WarmTime:00'";
 					$q=safe_r_sql($SQL);
-					return DistanceInfoData(safe_fetch($q));
+                    $r=safe_fetch($q);
+                    $r->newId=($Team?'T':'I')."|$Phase|$OldDate|$OldTime|$WarmTime";
+                    return DistanceInfoData($r);
 				}
 			}
 		}
@@ -840,7 +845,9 @@ function ChangeFinComment($Request, $Team='0') {
 							AND FwMatchTime='$OldTime'
 							AND FwTime='$WarmTime:00'";
 					$q=safe_r_sql($SQL);
-					return DistanceInfoData(safe_fetch($q));
+                    $r=safe_fetch($q);
+                $r->newId=($Team?'T':'I')."|$Phase|$OldDate|$OldTime|$WarmTime";
+                    return DistanceInfoData($r);
 				}
 			}
 		}
@@ -866,28 +873,28 @@ function getScheduleTexts() {
 		where SchTournament={$_SESSION['TourId']} and SchDay>0
 		order by SchDay, SchStart, SchOrder, SchDuration");
 	$ret.='<tr>
-			<th class="Title" colspan="10">'.get_text('Z-Session', 'Tournament').'</th>
+			<th class="Title" colspan="9">'.get_text('Z-Session', 'Tournament').'</th>
 		</tr>
 		<tr>
-			<th class="Title w-5"><img src="'.$CFG->ROOT_DIR.'Common/Images/Tip.png" title="'.get_Text('TipDate', 'Tournament').'" align="right">'.get_text('Date', 'Tournament').'</th>
-			<th class="Title w-5">'.get_text('Time', 'Tournament').'</th>
-			<th class="Title w-5">'.get_text('Order', 'Tournament').'</th>
-			<th class="Title w-5">'.get_text('Length', 'Tournament').'</th>
-			<th class="Title w-5">'.get_text('Delayed', 'Tournament').'</th>
-			<th class="Title">'.get_text('Title', 'Tournament').'</th>
-			<th class="Title">'.get_text('SubTitle', 'Tournament').'</th>
-			<th class="Title">'.get_text('Text', 'Tournament').'</th>
-			<th class="Title w-5"></th>
+			<th class="w-5"><img src="'.$CFG->ROOT_DIR.'Common/Images/Tip.png" title="'.get_Text('TipDate', 'Tournament').'" align="right">'.get_text('Date', 'Tournament').'</th>
+			<th class="w-5">'.get_text('Time', 'Tournament').'</th>
+			<th class="w-5">'.get_text('Order', 'Tournament').'</th>
+			<th class="w-5">'.get_text('Length', 'Tournament').'</th>
+			<th class="w-5">'.get_text('Delayed', 'Tournament').'</th>
+			<th>'.get_text('Title', 'Tournament').'</th>
+			<th>'.get_text('SubTitle', 'Tournament').'</th>
+			<th>'.get_text('Text', 'Tournament').'</th>
+			<th class="w-5"></th>
 		</tr>';
 	$ret.= '<tr>
-			<td><input size="10" type="date" name="Fld[Day]"></td>
-			<td><input size="5" type="time" name="Fld[Start]"></td>
-			<td><input size="3" max="999" min="0" type="number" name="Fld[Order]"></td>
-			<td><input size="3" max="999" min="0" type="number" name="Fld[Duration]"></td>
-			<td><input size="5" max="999" min="0" type="number" name="Fld[Shift]"></td>
-			<td><input class="w-100" type="text" name="Fld[Title]"></td>
-			<td><input class="w-100" type="text" name="Fld[SubTitle]"></td>
-			<td><input class="w-100" type="text" name="Fld[Text]"></td>
+			<td><input size="10" type="date" name="Day"></td>
+			<td><input size="5" type="time" name="Start"></td>
+			<td><input size="3" max="999" min="0" type="number" name="Order"></td>
+			<td><input size="3" max="999" min="0" type="number" name="Duration"></td>
+			<td><input size="5" max="999" min="0" type="number" name="Shift"></td>
+			<td><input class="w-100" type="text" name="Title"></td>
+			<td><input class="w-100" type="text" name="SubTitle"></td>
+			<td><input class="w-100" type="text" name="Text"></td>
 			<td class="Center"><i class="fa fa-2x fa-save text-success" onclick="DiInsert(this)" title="'.get_text('CmdAdd', 'Tournament').'"></i></td>
 		</tr>';
 	while($r=safe_fetch($q)) {
@@ -904,7 +911,7 @@ function getScheduleTexts() {
 					<input type="hidden" class="advTarget" name="Fld[Z][Targets]['.$r->SchDay.']['.$r->SchStart.']['.$r->SchOrder.']" value="'.htmlentities($r->SchTargets).'" onchange="DiUpdate(this)">
 					<input type="hidden" class="advLocation" name="Fld[Z][Location]['.$r->SchDay.']['.$r->SchStart.']['.$r->SchOrder.']" value="'.htmlentities($r->SchLocation).'" onchange="DiUpdate(this)">
 				</td>
-				<td class="Center NoWrap"><i class="fa fa-2x fa-comment-dots text-info mr-2" onclick="editAdvanced(this)"></i><i class="fa fa-2x fa-trash-alt text-danger" id="Fld['.$r->SchDay.']['.$r->SchStart.']['.$r->SchOrder.']" onclick="DiDelete(this)" title="'.get_text('CmdDelete', 'Tournament').'"></i></td>
+				<td class="Center NoWrap"><i class="fa fa-2x fa-comment-dots text-info mr-2" onclick="editAdvanced(this)"></i><i class="fa fa-2x fa-trash-alt text-danger" ref="Fld" id="'.$r->SchDay.'|'.$r->SchStart.'|'.$r->SchOrder.'" onclick="DiDelete(this)" title="'.get_text('CmdDelete', 'Tournament').'"></i></td>
 			</tr>';
 	}
 	return $ret;

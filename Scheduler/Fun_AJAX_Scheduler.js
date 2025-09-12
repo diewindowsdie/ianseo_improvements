@@ -1,3 +1,51 @@
+$(function() {
+    let Status=localStorage.getItem('ScheduleStatus');
+    if(Status==null) {
+        Status={
+            detach:0,
+            view:0,
+            edit:0,
+            print:1,
+            exports:0,
+            printComplete:1,
+            printC58:0,
+            printFOP:0
+        };
+        localStorage.setItem('ScheduleStatus', JSON.stringify(Status));
+    } else {
+        Status=JSON.parse(Status);
+    }
+
+    DoDetachSchedule(Status);
+    if(Status.detach==0){
+        DoToggleSchedule(Status);
+    }
+    DoToggleViewSchedule(Status);
+    DoTogglePrintSchedule(Status);
+    DoTogglePrintScheduleDetails(Status, 'printComplete');
+    DoTogglePrintScheduleDetails(Status, 'export');
+    DoTogglePrintScheduleDetails(Status, 'printC58');
+    DoTogglePrintScheduleDetails(Status, 'printFOP');
+    FindScheduleDays();
+})
+
+function FindScheduleDays() {
+    let options = [];
+    let optionFop = [];
+    $('th.SchDay[ref]').each((i, item) => {
+        options.push('<a onclick="gotoDate(\''+$(item).attr('ref')+'\')">'+$(item).attr('ref')+'</a>');
+        optionFop.push('<li><input type="checkbox" fopDays="'+i+'" class="mr-2" value="'+$(item).attr('ref')+'">'+$(item).attr('ref')+'</li>');
+    });
+    $('#dayLinks').html(options.join(''));
+    $('#opt_printFOP').html(optionFop.join('')+$('#opt_printFOP').html());
+
+
+}
+
+function gotoDate(dt) {
+    $('#viewSchedule .SchDay[ref="' + dt + '"]')[0].scrollIntoView();
+}
+
 function DiUpdate(obj) {
 //		if(obj.value=='') return;
 	if((obj.type=='date' || obj.type=='time')) {
@@ -47,6 +95,7 @@ function DiUpdate(obj) {
 						} else {
 							this.style.color='blue';
 						}
+                        $(this).closest('div').find('i').attr('id', data.newId);
 					}
 				});
 				obj.style.color='green';
@@ -110,201 +159,312 @@ function editAdvanced(obj) {
 }
 
 function DiDelete(obj) {
-	if(!confirm('Sure')) {
-		return;
-	}
-	var field=encodeURIComponent(obj.id)+'=del';
+    if(obj.id=='newOption') {
+        var classToDelete=$(obj).closest('div').attr('class');
+        $(obj).closest('tr').find('.'+classToDelete).remove();
+        return;
+    }
+    $.confirm({
+        title:'',
+        content:msgAreYouSure,
+        backgroundDismiss:true,
+        boxWidth: '33%',
+        useBootstrap: false,
+        type:'red',
+        escapeKey: true,
+        buttons:{
+            cancel:{
+                text:btnCancel
+            },
+            ok:{
+                text:btnOk,
+                action:function() {
+                    var form={
+                        id:$(obj).attr('ref'),
+                        val:obj.id,
+                    }
+                    $.getJSON("AjaxDelete.php",form, function(data) {
+                        if(data.error==0) {
+                            if(form.id=='Fld') {
+                                $(obj).closest('tr').remove();
+                            } else {
+                                var classToDelete=$(obj).closest('div').attr('class');
+                                $(obj).closest('tr').find('.'+classToDelete).remove();
+                            }
+                            if(data.sch) {
+                                $('#TrueScheduler').html(data.sch);
+                            }
+                            if(data.txt) {
+                                $('#ScheduleTexts').html(data.txt);
+                            }
+                        } else {
+                            showAlert(data.msg);
+                        }
+                    })
+                }
+            }
+        },
+    })
 
-	var XMLHttp=CreateXMLHttpRequestObject();
-	if (XMLHttp) {
-		try {
-			if ((XMLHttp.readyState==XHS_COMPLETE || XMLHttp.readyState==XHS_UNINIT)) {
-				XMLHttp.open("GET","AjaxDelete.php?"+field,true);
-				XMLHttp.onreadystatechange=function() {
-					if (XMLHttp.readyState!=XHS_COMPLETE) return;
-					if (XMLHttp.status!=200) return;
-					try {
-						var XMLResp=XMLHttp.responseXML;
-						// intercetto gli errori di IE e Opera
-						if (!XMLResp || !XMLResp.documentElement) throw(XMLResp.responseText);
-
-						// Intercetto gli errori di Firefox
-						var XMLRoot;
-						if ((XMLRoot = XMLResp.documentElement.nodeName)=="parsererror") throw("ParseError");
-
-						XMLRoot = XMLResp.documentElement;
-
-						var Error = XMLRoot.getElementsByTagName('error').item(0).firstChild.data;
-
-						if (Error==0) {
-							var Row=obj.parentElement.parentElement;
-							Row.parentElement.deleteRow(Row.rowIndex);
-							var Scheduler=XMLRoot.getElementsByTagName('sch');
-							if(Scheduler) {
-								document.getElementById('TrueScheduler').innerHTML=Scheduler.item(0).firstChild.data;
-							}
-							var Texts=XMLRoot.getElementsByTagName('txt');
-							if(Texts) {
-								document.getElementById('ScheduleTexts').innerHTML=Texts.item(0).firstChild.data;
-							}
-						} else {
-							obj.style.bgcolor='red';
-							// SetStyle(Which,'error');
-						}
-
-					} catch(e) {
-					}
-
-				};
-				XMLHttp.send();
-			}
-		} catch (e) {
-		}
-	}
+    return;
 }
 
 function DiInsert(obj) {
-	var field='';
-	var Fields=obj.parentElement.parentElement.getElementsByTagName('input');
-	for(var n=0; n<Fields.length; n++) {
-		var input=Fields.item(n);
-		if(input.name.substr(0, 4)=='Fld[') {
-			field+='&'+encodeURIComponent(input.name)+'='+encodeURIComponent(input.value);
-		}
-	}
-
-	var XMLHttp=CreateXMLHttpRequestObject();
-	if (XMLHttp) {
-		try {
-			if ((XMLHttp.readyState==XHS_COMPLETE || XMLHttp.readyState==XHS_UNINIT)) {
-				XMLHttp.open("GET","AjaxInsert.php?"+field.substr(1),true);
-				XMLHttp.onreadystatechange=function() {
-					if (XMLHttp.readyState!=XHS_COMPLETE) return;
-					if (XMLHttp.status!=200) return;
-					try {
-						var XMLResp=XMLHttp.responseXML;
-						// intercetto gli errori di IE e Opera
-						if (!XMLResp || !XMLResp.documentElement) throw(XMLResp.responseText);
-
-						// Intercetto gli errori di Firefox
-						var XMLRoot;
-						if ((XMLRoot = XMLResp.documentElement.nodeName)=="parsererror") throw("ParseError");
-
-						XMLRoot = XMLResp.documentElement;
-
-						var Error = XMLRoot.getElementsByTagName('error').item(0).firstChild.data;
-
-						if (Error==0) {
-							var Texts=XMLRoot.getElementsByTagName('txt');
-							if(Texts) {
-								document.getElementById('ScheduleTexts').innerHTML=Texts.item(0).firstChild.data;
-							}
-							var Scheduler=XMLRoot.getElementsByTagName('sch');
-							if(Scheduler) {
-								document.getElementById('TrueScheduler').innerHTML=Scheduler.item(0).firstChild.data;
-							}
-						} else {
-							obj.style.bgcolor='red';
-							// SetStyle(Which,'error');
-						}
-
-					} catch(e) {
-					}
-
-				};
-				XMLHttp.send();
-			}
-		} catch (e) {
-		}
-	}
+    var form={};
+    $(obj).closest('tr').find('input').each(function() {
+        form[this.name]=this.value;
+    });
+    $.getJSON("AjaxInsert.php", form, function(data) {
+        if(data.error==0) {
+            if(data.sch) {
+                $('#TrueScheduler').html(data.sch);
+            }
+            if(data.txt) {
+                $('#ScheduleTexts').html(data.txt);
+            }
+        } else {
+            showAlert(data.msg);
+        }
+    })
+    return;
 }
 
 function DiAddSubRow(obj) {
-	var row=obj.parentNode.parentNode;
-	var cella=row.cells[6];
+	var row=$(obj).closest('tr');
+	var cella=row.find('.WTime input');
 	// if no warmup already scheduled stops here
-	if(cella.lastElementChild.value=='') return;
+	if(cella.last().val()=='') {
+        return;
+    }
+    var CellClass='item-'+cella.length;
+    row.find('.WTime').append('<div class="'+CellClass+'"><input size="5"  type="text" name="'+cella.first().attr('name').replace(/\[[^\]]+\]$/, '[]')+'" value="" onchange="DiUpdate(this)"></div>');
 
-	cella.innerHTML+='<br/><input size="5"  type="text" name="'+cella.firstElementChild.name.replace(/\[[^\]]+\]$/, '[]')+'" value="" onchange="DiUpdate(this)">';
-	var cella=row.cells[7];
-	cella.innerHTML+='<br/><input size="3" max="999" min="0" type="number" name="'+cella.firstElementChild.name.replace(/\[[^\]]+\]$/, '[]')+'" value="" onchange="DiUpdate(this)">';
-	var cella=row.cells[8];
-	cella.innerHTML+='<br/><input size="50"  type="text" name="'+cella.firstElementChild.name.replace(/\[[^\]]+\]$/, '[]')+'" value="" onchange="DiUpdate(this)">';
+    // change cell
+    cella=row.find('.WDuration input');
+    row.find('.WDuration').append('<div class="'+CellClass+'">' +
+        '<input max="999" min="0" type="number" name="'+cella.first().attr('name').replace(/\[[^\]]+\]$/, '[]')+'" value="" onchange="DiUpdate(this)">' +
+        '</div>');
+
+    // change cell
+    cella=row.find('.WOptions input');
+    row.find('.WOptions').append('<div class="'+CellClass+'">' +
+        '<input type="text" name="'+cella.first().attr('name').replace(/\[[^\]]+\]$/, '[]')+'" value="" onchange="DiUpdate(this)">' +
+        '<i class="fa fa-2x fa-trash-alt text-danger ml-1" ref="WarmDelete" id="newOption" onclick="DiDelete(this)"></i>' +
+        '</div>');
 }
 
-function DiDelSubRow(obj, warmTime) {
-	var field='WarmDelete='+encodeURIComponent(warmTime);
+function DoDetachSchedule(Status) {
+    if(Status.detach==1) {
+        $('#TrueScheduler').addClass('detached');
+        $('#cmdDetachSchedule').removeClass('fa-square-arrow-up-right').addClass('fa-square-xmark');
+        $('#cmdToggleSchedule').removeClass('fa-caret-down').addClass('fa-caret-right');
+        $('#mainSchedulerTable').removeClass('w-100').addClass('w-75');
+        $('#viewSchedule').show();
+        const Today = new Date();
+        const SchedulerView = $('#viewSchedule .SchDay[ref="' + Today.toISOString().substring(0, 10) + '"]');
+        if(SchedulerView.length!=0){
+            SchedulerView[0].scrollIntoView();
+        }
+    } else {
+        $('#TrueScheduler').removeClass('detached');
+        $('#cmdDetachSchedule').removeClass('fa-square-xmark').addClass('fa-square-arrow-up-right');
+        $('#mainSchedulerTable').removeClass('w-75').addClass('w-100');
+        if(Status.view!=1){
+            $('#viewSchedule').hide();
+        } else {
+            $('#cmdToggleSchedule').removeClass('fa-caret-right').addClass('fa-caret-down');
+        }
+    }
+}
+function detachSchedule() {
+    var Status=JSON.parse(localStorage.getItem('ScheduleStatus'));
+    Status.detach=1-Status.detach;
+    //Status.view=1-Status.detach;
+    localStorage.setItem('ScheduleStatus', JSON.stringify(Status));
+    DoDetachSchedule(Status);
+}
 
-	var XMLHttp=CreateXMLHttpRequestObject();
-	if (XMLHttp) {
-		try {
-			if ((XMLHttp.readyState==XHS_COMPLETE || XMLHttp.readyState==XHS_UNINIT)) {
-				XMLHttp.open("GET","AjaxDelete.php?"+field,true);
-				XMLHttp.onreadystatechange=function() {
-					if (XMLHttp.readyState!=XHS_COMPLETE) return;
-					if (XMLHttp.status!=200) return;
-					try {
-						var XMLResp=XMLHttp.responseXML;
-						// intercetto gli errori di IE e Opera
-						if (!XMLResp || !XMLResp.documentElement) throw(XMLResp.responseText);
+function DoToggleSchedule(Status) {
+    if(Status.detach==1 || Status.view==0) {
+        $('#cmdToggleSchedule').removeClass('fa-caret-down').addClass('fa-caret-right');
+        $('#viewSchedule').hide();
+    } else {
+        $('#TrueScheduler').removeClass('detached');
+        $('#cmdToggleSchedule').removeClass('fa-caret-right').addClass('fa-caret-down');
+        $('#viewSchedule').show();
+    }
+    $('#mainSchedulerTable').removeClass('w-75').addClass('w-100');
+}
 
-						// Intercetto gli errori di Firefox
-						var XMLRoot;
-						if ((XMLRoot = XMLResp.documentElement.nodeName)=="parsererror") throw("ParseError");
+function toggleSchedule() {
+    let Status=JSON.parse(localStorage.getItem('ScheduleStatus'));
+    Status.view=1-Status.view;
+    if(Status.view==1) {
+        Status.detach=0;
+    }
+    localStorage.setItem('ScheduleStatus', JSON.stringify(Status));
+    $('#cmdDetachSchedule').removeClass('fa-square-xmark').addClass('fa-square-arrow-up-right');
+    DoToggleSchedule(Status);
+}
 
-						XMLRoot = XMLResp.documentElement;
+function DoToggleViewSchedule(Status) {
+    if(Status.edit==1) {
+        $('#cmdToggleViewSchedule').removeClass('fa-caret-right').addClass('fa-caret-down');
+        $('#viewEditSchedule').show();
+    } else {
+        $('#cmdToggleViewSchedule').removeClass('fa-caret-down').addClass('fa-caret-right');
+        $('#viewEditSchedule').hide();
+    }
+}
 
-						var Error = XMLRoot.getElementsByTagName('error').item(0).firstChild.data;
+function toggleViewSchedule() {
+    let Status=JSON.parse(localStorage.getItem('ScheduleStatus'));
+    Status.edit=1-Status.edit;
+    localStorage.setItem('ScheduleStatus', JSON.stringify(Status));
+    DoToggleViewSchedule(Status);
+}
 
-						var row=obj.parentNode.parentNode;
-						var cella6=row.cells[6];
-						var cella7=row.cells[7];
-						var cella8=row.cells[8];
+function DoTogglePrintSchedule(Status) {
+    if(Status.print==1) {
+        $('#cmdTogglePrintSchedule').removeClass('fa-caret-right').addClass('fa-caret-down');
+        $('#viewPrintSchedule').show();
+    } else {
+        $('#cmdTogglePrintSchedule').removeClass('fa-caret-down').addClass('fa-caret-right');
+        $('#viewPrintSchedule').hide();
+    }
+}
 
-						if (Error==0) {
-							SearchIndex=0;
-							for(var i=0; i<obj.parentNode.childElementCount; i++) {
-								if(obj.parentNode.childNodes.item(i)==obj) SearchIndex=i;
-							}
+function togglePrintSchedule() {
+    let Status=JSON.parse(localStorage.getItem('ScheduleStatus'));
+    Status.print=1-Status.print;
+    localStorage.setItem('ScheduleStatus', JSON.stringify(Status));
+    DoTogglePrintSchedule(Status);
+}
 
-							if(SearchIndex>1) {
-								SearchIndex--;
-								cella6.removeChild(cella6.childNodes.item(SearchIndex));
-								cella6.removeChild(cella6.childNodes.item(SearchIndex));
-								cella7.removeChild(cella7.childNodes.item(SearchIndex));
-								cella7.removeChild(cella7.childNodes.item(SearchIndex));
-								cella8.removeChild(cella8.childNodes.item(SearchIndex));
-								cella8.removeChild(cella8.childNodes.item(SearchIndex));
-								obj.parentNode.removeChild(obj.parentNode.childNodes.item(SearchIndex));
-								obj.parentNode.removeChild(obj.parentNode.childNodes.item(SearchIndex));
-							} else {
-								cella6.style.backgroundColor='red';
-								cella7.style.backgroundColor='red';
-								cella8.style.backgroundColor='red';
-							}
+function togglePrintScheduleDetails(what) {
+    let Status=JSON.parse(localStorage.getItem('ScheduleStatus'));
+    Status[what]=1-Status[what];
+    localStorage.setItem('ScheduleStatus', JSON.stringify(Status));
+    DoTogglePrintScheduleDetails(Status, what);
+}
 
-							var Texts=XMLRoot.getElementsByTagName('txt');
-							if(Texts.length>0) {
-								document.getElementById('ScheduleTexts').innerHTML=Texts.item(0).firstChild.data;
-							}
-							var Scheduler=XMLRoot.getElementsByTagName('sch');
-							if(Scheduler.length>0) {
-								document.getElementById('TrueScheduler').innerHTML=Scheduler.item(0).firstChild.data;
-							}
-						} else {
-							cella6.style.backgroundColor='red';
-							cella7.style.backgroundColor='red';
-							cella8.style.backgroundColor='red';
-							// SetStyle(Which,'error');
-						}
+function DoTogglePrintScheduleDetails(Status, what) {
+    if(Status[what]==1) {
+        $('#cmd_'+what).removeClass('fa-caret-right').addClass('fa-caret-down');
+        $('#opt_'+what).show();
+    } else {
+        $('#cmd_'+what).removeClass('fa-caret-down').addClass('fa-caret-right');
+        $('#opt_'+what).hide();
+    }
+}
 
-					} catch(e) {
-					}
+function printSchedule(checkOpt=0) {
+    let options= [];
+    options.push('PageBreaks='+$('#PageBreaks').val());
+    if($('#Finalists').is(':checked')) {
+        options.push('Finalists=1');
+    }
+    if($('#Ranking').is(':checked')) {
+        options.push('Ranking=1');
+    }
+    if($('#Daily').is(':checked')) {
+        options.push('Daily=1');
+    }
+    if($('#NoLocations').is(':checked')) {
+        options.push('NoLocations=1');
+    }
+    if($('#Today').is(':checked')) {
+        options.push('Today=1');
+        options.push('FromDayDay='+$('#singleDaySchedule').val());
+    }
+    if($('#FromDay').is(':checked')) {
+        options.push('FromDay=1');
+        options.push('FromDayDay='+$('#fromDaySchedule').val());
+    }
+    window.open('./PrnScheduler.php?'+options.join('&'),'SchedulePDF');
+}
 
-				};
-				XMLHttp.send();
-			}
-		} catch (e) {
-		}
-	}
+function chkOptions(obj) {
+    if($(obj).is(':checked') && obj.id=='Today') {
+        $('#FromDay').prop('checked',false);
+    }
+    if($(obj).is(':checked') && obj.id=='FromDay') {
+        $('#Today').prop('checked',false);
+    }
+
+}
+
+function printC58() {
+    let options= [];
+    if($('#TeamComponents').is(':checked')) {
+        options.push('TeamComponents=1');
+    }
+    $("[sesValue]").each((i, item) => {
+        if($(item).is(':checked')) {
+            options.push('ses[]='+$(item).attr('sesValue'));
+        }
+    });
+    $("[locValue]").each((i, item) => {
+        if($(item).is(':checked')) {
+            options.push('loc='+$(item).attr('locValue'));
+        }
+    });
+    window.open('./OrisSchedule.php?'+options.join('&'),'SchedulePDF');
+}
+
+function printFOP() {
+    var options= {
+        fop:1,
+    };
+    if($('#fopIncludUnscheduled:checked').length==1) {
+        options.includeUnscheduled=1;
+    }
+    $("[fopDays]:checked").each((i, item) => {
+        if(!options.Days) {
+            options.Days={};
+        }
+        options.Days[$(item).attr('fopDays')]=$(item).val();
+    });
+    $('[name="fopLoc"]:checked').each((i, item) => {
+        switch($(item).attr('ref')) {
+            case 'tgt':
+                if(!options.Locations) {
+                    options.Locations={};
+                }
+                options.Locations[item.value]=1;
+                break;
+            case 'loc':
+                if(!options.SesLocations) {
+                    options.SesLocations=[];
+                }
+                options.SesLocations.push(item.value);
+                break;
+        }
+    });
+    console.log(options);
+    window.open('./index.php?'+$.param(options),'fopPDF');
+}
+
+function exportODS() {
+    location.href='?ods=1';
+}
+function exportICS() {
+    location.href='?ics=1';
+}
+
+function activateSchedule(obj) {
+    var form={
+        Activate:$(obj).attr('ref'),
+    }
+    $.getJSON('AjaxActivate.php', form, function (data) {
+        $(obj).closest('tr').toggleClass('active', data.active);
+    })
+}
+
+function calculateMatchNo() {
+    $.getJSON('CalculateMatchNo.php', (data) => {
+        if(data.error==0){
+            $('#btnSetMatchNo').prop('disabled', true);
+        }
+    });
 }

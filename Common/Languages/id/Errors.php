@@ -25,6 +25,7 @@ $lang['EntriesNoCountry']='Inputan tanpa Negara/Club';
 $lang['ErrCodeExists']='Kode sudah ada!';
 $lang['ErrCommitteeError']='Kode Komite atau deskripsi tidak valid atau';
 $lang['ErrConnection']='Tidak ada koneksi ke server $a';
+$lang['ErrDateGeneric']='Tanggal hilang atau tidak valid';
 $lang['ErrEmptyFields']='Isian Kosong';
 $lang['ErrGenericError']='Kesalahan Umum';
 $lang['ErrInvalidCode']='Kode Tidak Valid';

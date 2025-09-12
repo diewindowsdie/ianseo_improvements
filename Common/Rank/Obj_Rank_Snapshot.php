@@ -503,7 +503,6 @@
 						$section["meta"]["arrowsShot"][$myRow->Session] = $myRow->ArrowNo;
 
 					// e lo aggiungo alla sezione
-					//print_r($item);
 
 					if(!$cutRank || $myRank<=$cutRank)
 					{

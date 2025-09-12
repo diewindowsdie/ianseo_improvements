@@ -1090,7 +1090,6 @@ $lang['ShowDisable']='Vis kørestol';
 $lang['ShowEmail']='Vis e-mail';
 $lang['ShowIanseoMenu']='Vis Ianseo menu';
 $lang['ShowLocalCode']='Vis lokal ID kode';
-$lang['ShowMissing']='Vis manglende skydesedler';
 $lang['ShowPdfFlags']='Vis flag i PDF';
 $lang['ShowPicture']='Vis billeder';
 $lang['showRecords']='Vis rekorder';

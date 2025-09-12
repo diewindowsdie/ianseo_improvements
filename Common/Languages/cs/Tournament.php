@@ -466,7 +466,6 @@ $lang['ShortUnisex']='U';
 $lang['ShotOff']='Rozstřel';
 $lang['ShotOffShort']='SO';
 $lang['ShowIanseoMenu']='Ukaž Ianseo menu';
-$lang['ShowMissing']='Ukázat chybějící bodovačky';
 $lang['ShowSetEnds']='Vložit set sady';
 $lang['Sign/guide-board']='Podpis';
 $lang['SignedTotal']='Podepsaný součet';

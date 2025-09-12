@@ -3,8 +3,6 @@
 	CheckTourSession(true);
     checkFullACL(AclAccreditation, 'acStandard', AclReadWrite, false);
 
-	print_r($_COOKIE);
-
 	$JS_SCRIPT=array(
 		'<script type="text/javascript" src="Fun_AJAX_GetImage.js"></script>',
 		'<script type="text/javascript" src="../Fun_JS.js"></script>',

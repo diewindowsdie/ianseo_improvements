@@ -30,15 +30,6 @@
 	$MyTargetSize = 0;
 	$MyTargetSize = ($MyTargetComplete ? 100 : 200);
 
-/*
-	if (debug)
-	{
-		print_r($_REQUEST);
-		print "<br>";
-		print GetTargetType($_REQUEST['Event']) . '<br>';
-		print ($MyTargetComplete ? 'Completo' : 'Non completo') . '<br>';
-	}
-*/
 /***********************
  MatchNo dell'incontro
 ************************/
@@ -679,9 +670,6 @@ Conteggio i punti di Set
 				for ($i=0;$i<$nEND;++$i)
 				{
 					$Tmp = "";
-					/*print '<pre>';
-					print_r($PosArrSx);
-					print '</pre>';*/
 					for($j=0; $j<$nARR; $j++)
 					{
 						if(@array_key_exists (($i*$nARR+$j), $PosArrSx))
@@ -726,9 +714,6 @@ Conteggio i punti di Set
 				for ($i=0;$i<$nEND;++$i)
 				{
 					$Tmp = "";
-					/*print '<pre>';
-					print_r($PosArrSx);
-					print '</pre>';*/
 					for($j=0; $j<$nARR; $j++)
 					{
 						if(@array_key_exists (($i*$nARR+$j), $PosArrDx))
@@ -787,9 +772,6 @@ Conteggio i punti di Set
 <td class="Center">
 <?php
 	$Tmp = "";
-	/*print '<pre>';
-	print_r($PosArrSx);
-	print '</pre>';*/
 	if (isset($_REQUEST['Volee']) && $_REQUEST['Volee']!='T')
 	{
 		$i=$_REQUEST['Volee']-1;
@@ -821,9 +803,6 @@ Conteggio i punti di Set
 <td class="Center">
 <?php
 	$Tmp = "";
-	/*print '<pre>';
-	print_r($PosArrSx);
-	print '</pre>';*/
 	if (isset($_REQUEST['Volee']) && $_REQUEST['Volee']!='T')
 	{
 		$i=$_REQUEST['Volee']-1;

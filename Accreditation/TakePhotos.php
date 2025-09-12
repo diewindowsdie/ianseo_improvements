@@ -28,10 +28,6 @@
 	    }
 	}
 
-	/*print'<pre>';
-	print_r($bibs);
-	print '</pre>';exit;*/
-
 	if ($handle = opendir($dir))
 	{
 	    while ($file = readdir($handle))
@@ -43,12 +39,6 @@
 	    }
 	    closedir($handle);
 	}
-
-	//debug_svela($photonames);
-
-	/*print'<pre>';
-	print_r($files);
-	print '</pre>';exit;*/
 
 	include('Common/Templates/head.php');
 	include('Common/PhotoResize.php');

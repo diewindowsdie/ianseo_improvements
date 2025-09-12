@@ -1089,7 +1089,6 @@ $lang['ShowDisable']='Amosar cadeira de rodas';
 $lang['ShowEmail']='Amosar correo electrónico';
 $lang['ShowIanseoMenu']='Amosar menú Ianseo';
 $lang['ShowLocalCode']='Amosar dorsal local';
-$lang['ShowMissing']='Amosar tarxetas de puntuación pendentes';
 $lang['ShowPdfFlags']='Amosar bandeiras no PDF';
 $lang['ShowPicture']='Amosar fotos';
 $lang['showRecords']='Amosar récords';

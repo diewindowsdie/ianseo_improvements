@@ -175,10 +175,6 @@
 
 		$affected=array();
 		MakeIndividuals($affected);
-
-	/*	print '<pre>';
-		print_r($athletes);
-		print '</pre>';*/
 	}
 
 /****** End Controller ******/

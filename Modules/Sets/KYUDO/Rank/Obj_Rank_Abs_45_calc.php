@@ -145,10 +145,6 @@ class Obj_Rank_Abs_45_calc extends Obj_Rank_Abs_45 {
 
         foreach ($items as $item)
         {
-            /*print '<pre>';
-            print_r($item);
-            print '</pre>';*/
-
             $paramsOk=true;
 
             $canUp=false;

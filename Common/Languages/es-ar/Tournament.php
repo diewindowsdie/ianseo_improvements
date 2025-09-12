@@ -724,7 +724,6 @@ $lang['ShowCountry3']='Mostrar P/F/C 3';
 $lang['ShowEmail']='Mostrar Correo electrónico';
 $lang['ShowIanseoMenu']='Mostrar Menú Ianseo';
 $lang['ShowLocalCode']='Mostrar Matrícula Local';
-$lang['ShowMissing']='Mostrar Hojas de Puntuación Faltantes';
 $lang['ShowPicture']='Mostrar Fotos';
 $lang['showRecords']='Mostrar Records';
 $lang['ShowSetEnds']='Incluir Rondas de Set';

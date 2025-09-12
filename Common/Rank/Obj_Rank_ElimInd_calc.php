@@ -152,12 +152,10 @@
 						{
 							safe_data_seek($r,$myGroupStartPos + $myRow->QualifiedNo -1);
 							$tmpMyRow = safe_fetch($r);
-							//print_r($tmpMyRow);
 							if($curGroup == $tmpMyRow->ElEventCode.$tmpMyRow->ElElimPhase)
 							{
 								$myEndScore = $tmpMyRow->ElScore;
 								$tmpMyRow = safe_fetch($r);
-								//print_r($tmpMyRow);
 								//Controllo se c'è parimerito per entrare
 								if ($myEndScore != $tmpMyRow->ElScore || $curGroup != $tmpMyRow->ElEventCode.$tmpMyRow->ElElimPhase)
 								{
@@ -226,9 +224,6 @@
 							)
 						));
 					}
-					/*print '<pre>';
-					print_r($x);
-					print '</pre>';*/
 					if ($x===false)
 						return false;
 				}
@@ -276,12 +271,7 @@
 
 			foreach ($items as $item)
 			{
-				/*print '<pre>';
-				print_r($item);
-				print '</pre>';*/
-
 				$paramsOk=true;
-
 				$canUp=false;
 
 		/*

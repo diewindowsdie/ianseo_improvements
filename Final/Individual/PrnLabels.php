@@ -134,7 +134,6 @@ if(CheckTourSession()) {
 				array_unshift($pos, $n);
 				$n=$n*2;
 			}
-//print_r($pos);exit;
 			foreach($pos as $n) {
 				if($MyRow->{'l'.$n}) {
 					$tgts[]=$MyRow->{'l'.$n};

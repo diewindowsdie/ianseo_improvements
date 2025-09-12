@@ -28,8 +28,15 @@ echo '<form name="FrmParam" method="GET" action="'.$CFG->ROOT_DIR.'Scheduler/" t
 echo '<tr>';
 echo '<th>'.get_text('Days', 'Tournament').'</th>';
 echo '<td colspan="3">';
-foreach(range(0,  intval(($_SESSION['ToWhenToUTS']-$_SESSION['ToWhenFromUTS'])/86400)) as $n) {
-	echo '<input type="checkbox" name="Days['.$n.']" '.(empty($_REQUEST['Day']) || isset($_REQUEST['Day'][$n]) ? 'checked="checked"' : '').'>'.date('Y-m-d', $_SESSION['ToWhenFromUTS']+ $n*86400).'<br/>';
+$Dates=[];
+$q=safe_r_sql("select distinct date_format(SesDtStart, '%Y-%m-%d') as SesDate from Session where SesTournament={$_SESSION['TourId']} and SesDtStart>0
+    union
+    select distinct FSScheduledDate as SesDate from FinSchedule where FSTournament={$_SESSION['TourId']} and FSScheduledDate>0
+    union
+    select distinct SchDay as SesDate from Scheduler where SchTournament={$_SESSION['TourId']} and SchDay>0
+    order by SesDate");
+while($r=safe_fetch($q)) {
+    echo '<input type="checkbox" name="Days['.$r->SesDate.']" value="'.$r->SesDate.'" '.(empty($_REQUEST['Day']) || isset($_REQUEST['Day'][$r->SesDate]) ? 'checked="checked"' : '').'>'.$r->SesDate.'<br/>';
 }
 echo '</td>';
 echo '</tr>';

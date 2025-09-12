@@ -330,13 +330,6 @@
 				$p3s[$k]=$row['p3'];
 			}
 
-//			print '<pre>';
-//			print_r($ranks);
-//			print_r($p1s);
-//			print_r($p2s);
-//			print_r($p3s);
-//			print '</pre>';
-
 			array_multisort(
 				$ranks,SORT_ASC,
 				$p1s,SORT_DESC,
@@ -344,10 +337,6 @@
 				$p3s,SORT_DESC,
 				$rows
 			);
-
-//			print '<pre>';
-//			print_r($rows);
-//			print '</pre>';
 
 		// algoritmo rank/pos
 			$rank=1;
@@ -450,9 +439,6 @@
 
 			foreach ($items as $item)
 			{
-				/*print '<pre>';
-				print_r($item);
-				print '</pre>';*/
 
 				$paramsOk=true;
 

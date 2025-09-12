@@ -558,6 +558,7 @@ $lang['TargetDeleted']='Assegnazione Piazzole Cancellata';
 $lang['TargetFinalInd']='Gestione Bersagli delle Finali Individuali';
 $lang['TargetFinalTeam']='Gestione Bersagli delle Finali a Squadra';
 $lang['TargetMoved']='Spostamento Piazzole eseguito con successo';
+$lang['TargetSize']='Diametro Bersaglio';
 $lang['TargetType']='Tipologia Bersaglio';
 $lang['TB']='S.O.';
 $lang['Team']='Squadra';

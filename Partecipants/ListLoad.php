@@ -531,6 +531,13 @@ if($DataSource) {
 
                 $ImportResult['Inserted'][]='<tr><td>Inserted/updated</td><td>'.$tmpString[1].'</td><td>'.($Preferred ? 'Preferred' : '').'</td></tr>';
                 $ImportResult['Imported']++;
+            } elseif($tmpString[0]== "##MATCHNO-ARROWS##") {
+
+                if(count($tmpString)<5) {
+                    $ImportResult['Refused'][]='<tr class="error"><td>Row ' . $Line  . ' incorrect, wrong number of fields<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
+                    continue;
+                }
+
             } elseif($tmpString[0]== "##QUAL-ARROWS##") {
                 if(count($tmpString)<4) {
                     $ImportResult['Refused'][]='<tr class="error"><td>Row ' . $Line  . ' incorrect, wrong number of fields<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";

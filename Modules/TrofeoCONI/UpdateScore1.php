@@ -61,9 +61,6 @@
 		{
 			$tiebreak='';
 			$tiepoints = explode('|',$value);
-			/*print '<pre>';
-			print_r($tiepoints);
-			print '</pre>';*/
 			if (count($tiepoints)==TieBreakArrows_Team) {
 				$tiebreak=str_pad($tiebreak,TieBreakArrows_Team,GetLetterFromPrint('M'),STR_PAD_RIGHT);
 				for ($i=0;$i<TieBreakArrows_Team;++$i) {

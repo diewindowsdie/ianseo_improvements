@@ -236,3 +236,36 @@ function getArrowEnds($Session=1, $Dist=0, $TourId=0) {
 
 	return $ret;
 }
+
+function orderSesLocations($SesLocations) {
+    usort($SesLocations, function($a,$b) {
+        if($a['order']>$b['order']) {
+            return 1;
+        }
+        if($a['order']<$b['order']) {
+            return -1;
+        }
+        if($a['location']>$b['location']) {
+            return 1;
+        }
+        if($a['location']<$b['location']) {
+            return -1;
+        }
+        return 0;
+    });
+    return array_values($SesLocations);
+}
+
+function getSesLocations() {
+    $SesLocations=[];
+    foreach(getModuleParameter('SesLocations', 'PrintOrder', []) as $k=>$v) {
+        $SesLocations[$k]=['location'=>$k,'order'=>$v];
+    }
+    $q=safe_r_SQL("select distinct `SesLocation` from `Session` where SesLocation!='' and SesTournament={$_SESSION['TourId']} order by `SesLocation`");
+    while($r=safe_fetch($q)) {
+        if(empty($SesLocations[$r->SesLocation])) {
+            $SesLocations[$r->SesLocation]=['location'=>$r->SesLocation,'order'=>0];
+        }
+    }
+    return $SesLocations;
+}

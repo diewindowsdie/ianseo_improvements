@@ -77,17 +77,11 @@
 				if (array_search(0,$HTTs)!==false)
 					array_shift($Dests);
 
-				/*print '<pre>';
-				print_r($Dests);
-				print '</pre>';
-				exit;*/
-
 			// paddo tutti i target
 				$Targets=array();
 
 				for ($i=0;$i<count($Dests);++$i)
 					$Targets[$i]= StrSafe_DB((is_numeric($_REQUEST['x_Session']) ? $_REQUEST['x_Session'] : ''). str_pad($Dests[$i],TargetNoPadding,'0',STR_PAD_LEFT));
-				//print_r($Targets);exit();
 			// score
 				$Select="";
 
@@ -271,13 +265,6 @@
 				}
 				$Frames = array_merge($Frames, PrepareTxFrame(intval($TargetNo),$Data));
 
-				/*print '<pre>';
-				print_r($Frames);
-				print '</pre>';exit;*/
-
-/*foreach($Frames as $value)
-	echo OutText($value);
-//exit();*/
 				if(count($Frames)>0)
 				{
 					$ResponseFromHHT=false;
@@ -291,12 +278,8 @@
 							if ($v!=-1)
 								$HTTOK[]=$v;
 						}
-
-						//print_r($HTTOK);
 					}
 				}
-//exit();
-
 			}
 		}
 	}

@@ -52,10 +52,6 @@
 	$rank->read();
 	$rankData=$rank->getData();
 
-//	print '<pre>';
-//	print_r($rankData);
-//	print '</pre>';
-
 	if(count($rankData['sections']))
 	{
 		foreach($rankData['sections'] as $section)

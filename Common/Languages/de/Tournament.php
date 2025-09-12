@@ -546,7 +546,6 @@ $lang['ShortUnisex']='U';
 $lang['ShotOff']='Stechen';
 $lang['ShotOffShort']='ST';
 $lang['ShowIanseoMenu']='Zeige das Ianseo Menu';
-$lang['ShowMissing']='Zeige fehlende Scorekarten';
 $lang['ShowSetEnds']='Passen der Sets einbinden';
 $lang['Sign/guide-board']='Zeichen';
 $lang['SignedTotal']='Signiertes Total';

@@ -1,7 +1,31 @@
 $(function() {
     updateStatus();
+    getSesLocations();
 })
 
+function getSesLocations() {
+    $.getJSON('ManSessions-actions.php', {act:'getSesLocations'}, function(data) {
+        if(data.error==0) {
+            buildSesLocation(data);
+        }
+    });
+}
+
+function buildSesLocation(data) {
+    var loc='';
+    $.each(data.locations, function() {
+        loc+='<tr><td>'+this.location+'</td><td><input type="number" ref="'+this.location+'" value="'+this.order+'" onchange="updateSesLocation(this)"></td></tr>';
+    })
+    $('#SesLocations').toggleClass('d-none', loc=='');
+    $('#SesLocations tbody').html(loc);
+}
+function updateSesLocation(obj) {
+    $.getJSON('ManSessions-actions.php', {act:'updateSesLocations', ref:$(obj).attr('ref'), val:obj.value}, function(data) {
+        if(data.error==0) {
+            buildSesLocation(data);
+        }
+    });
+}
 function editRow(id) {
     $('#oldKey').val(id);
     $('#d_SesOrder').val($('#order-' + id).val());

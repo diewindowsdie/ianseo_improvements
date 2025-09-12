@@ -43,8 +43,23 @@ switch($_REQUEST['act']) {
 	case 'getDetails':
 		// if no events, dies
 		if(!$Event) {
-			JsonOut($JSON);
+            $JSON['events']=[];
+            $q=safe_r_sql("select EvCodeParent, EvCode, EvEventName, EvElim1, EvFinalFirstPhase, EvNumQualified, coalesce(RrLevGroupArchers,EvNumQualified) as RrLevGroupArchers 
+				from Events 
+				left join RoundRobinLevel on RrLevTournament=EvTournament and RrLevTeam=EvTeamEvent and RrLevEvent=EvCode and RrLevLevel=$Level
+				where EvElimType=5 and EvTeamEvent=$Team and EvTournament={$_SESSION['TourId']} order by EvProgr");
+            while($r=safe_fetch($q)) {
+                $JSON['events'][]=$r;
+                if(!$Event) {
+                    $EVENT=$r;
+                    $Event=$r->EvCode;
+                    $TotLevels = $r->EvElim1;
+                }
+            }
 		}
+        if(!$Event) {
+            JsonOut($JSON);
+        }
 
 		$JSON['levels']=[];
 		$lvls=array();

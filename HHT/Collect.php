@@ -132,10 +132,6 @@
 					sort($Dests);	// per essere sicuro che se c'è lo zero allora sarà all'inizio
 					if (array_search(0,$HTTs)!==false)
 						array_shift($Dests);
-			/*print '<pre>';
-				print_r($Dests);
-				print '</pre>';
-				exit;*/
 					$Frames=array();
 					if($Command=='OK')
 						$Frames=PrepareTxFrame($Dests,"");
@@ -150,7 +146,6 @@
 						$Results=SendHTT(HhtParam($_REQUEST['x_Hht']),$Frames,true);
 						if(!is_null($Results))
 							$ResponseFromHHT=true;
-						//print '<pre>';print_r($Results);print'</pre>';exit();
 						if (count($Results)!=0)
 						{
 							foreach($Results as $v)
@@ -347,11 +342,7 @@ HdEvent = FSEvent WHERE FSTournament = '296' AND HdTeamEvent =1 AND HdHhtId = '1
 				$FromDB[] = intval($myRow->ChiTarget) . $myRow->ChiLetter;
 				$Status[intval($myRow->ChiTarget) . $myRow->ChiLetter]='Red';
 			}
-			//safe_free_result($Rs);
 		}
-	/*print '<pre>';
-	print_r($FromDB);
-	print '</pre>';exit;*/
 	}
 
 	$JS_SCRIPT=array(

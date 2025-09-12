@@ -738,7 +738,6 @@ $lang['ShortUnisex']='U';
 $lang['ShotOff']='Baraż';
 $lang['ShotOffShort']='SO';
 $lang['ShowIanseoMenu']='Pokaż menu Ianseo';
-$lang['ShowMissing']='Pokaż brakujące metryczki';
 $lang['showRecords']='Pokaż rekordy';
 $lang['ShowSetEnds']='Uwzględnij punkty setowe';
 $lang['Sign/guide-board']='Znak';

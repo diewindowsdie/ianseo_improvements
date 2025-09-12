@@ -127,9 +127,6 @@
 
 			if (!$error)
 			{
-				/*print '<pre>';
-				print_r($IdAffected);
-				print '</pre>';exit;*/
 				if (count($IdAffected)>0)
 				{
 
