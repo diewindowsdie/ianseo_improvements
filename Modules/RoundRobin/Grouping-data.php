@@ -211,10 +211,12 @@ switch($_REQUEST['act']) {
 		}
 
 		// adds the Final brackets in the levels!
-		$JSON['levels'][]=[
-			'val' => 'B',
-			'text' => get_text('Brackets'),
-		];
+        if($EVENT and $EVENT->EvFinalFirstPhase) {
+            $JSON['levels'][]=[
+                'val' => 'B',
+                'text' => get_text('Brackets'),
+            ];
+        }
 
 		// gets all the named sessions already made for round robins
 		$JSON['sessions']=[];

@@ -267,9 +267,6 @@ require_once('Common/Fun_Phases.inc.php');
 			}
 
 			$r[]=implode(',',$c);
-//			print '<pre>';
-//			print_r($r);
-//			print '</pre>';
 		}
 
 		return implode('-',$r);
@@ -502,10 +499,6 @@ require_once('Common/Fun_Phases.inc.php');
 
 	// Carico le fasi in un array
 		$myPhases=getPhaseArray();
-		/*print '<pre>';
-		print_r($myPhases);
-		print '</pre>';
-		exit;*/
 	// Genero la query che mi ritorna tutti gli eventi individuali
 		$MyQuery = "SELECT EvCode, EvFinalFirstPhase, EvEventName, EvFinalPrintHead,EvMatchMode,EvMatchArrowsNo  ";
 		$MyQuery.= "FROM Events ";
@@ -520,8 +513,6 @@ require_once('Common/Fun_Phases.inc.php');
 			$RsEvCounter=0;
 			while ($MyRowEv=safe_fetch($RsEv))
 			{
-				//$target=$GLOBALS{GetTargetType($MyRowEv->EvCode,0)};
-				//print_r($target);
 
 				$PhaseFields=array();
 				reset($myPhases);
@@ -547,19 +538,6 @@ require_once('Common/Fun_Phases.inc.php');
 							"X_Matchno" => $Value . "Matchno",
 							"X_PhaseNo" => namePhase($MyRowEv->EvFinalFirstPhase,$Key)
 							);
-						//print_r($PhaseFields);
-						/*if($Key!=0)
-						{
-							$MyQuery .= "SUM(IF(GrPhase=" . $Key . ",IF(FinScore=0 && FinTie=2,(QuScore*10),FinScore),0)) as `" . $Key  . "_Phase`, SUM(IF(GrPhase=" . $Key . ",FinTie,0)) as `" . $Value . "Tie`, SUM(IF(GrPhase=" . $Key . ",LENGTH(FinArrowstring),0)) as `" . $Value . "Live`, SUM(IF(GrPhase=" . $Key . ",FinMatchNo,0)) as `" . $Value . "Matchno`, ";
-							$Tmp = ", `" . $Key . "_Phase` DESC " . $Tmp;
-							$NumPhases++;
-						}
-						else
-						{
-							$MyQuery .= "SUM(IF((GrPhase=0 OR GrPhase=1),FinScore,0)) as `" . $Key . "_Phase`, SUM(IF((GrPhase=0 OR GrPhase=1),FinTie,0)) as `" . $Value . "Tie`, SUM(IF((GrPhase=0 OR GrPhase=1),LENGTH(FinArrowstring),0)) as `" . $Value . "Live`, SUM(IF((GrPhase=0 OR GrPhase=1),FinMatchNo,0)) as `" . $Value . "Matchno`, ";
-							$Tmp = ", `" . $Key . "_Phase` DESC, `" . $Value . "Tie` DESC " . $Tmp;
-							$NumPhases++;
-						}*/
 
 						if($Key!=0)
 						{
@@ -633,13 +611,7 @@ require_once('Common/Fun_Phases.inc.php');
 									$ActualTie=($MyRow->LastPhase<2 ? $MyRow->{$Val['X_Tie']} : -1);
 									$TmpScores[]=($MyRow->{$Val["X_Phase"]}==($MyRow->QuScore*10) ? 'bye' : $MyRow->{$Val["X_Phase"]}) . '|';
 
-									/*print '<pre>';
-									print_r($Val);
-									print '</pre>';*/
 									list($tmpPhase,)=explode('_',$Val['X_Phase']);
-
-									//$x=DecodeArrowstring($MyRowEv->EvMatchMode,$MyRowEv->EvMatchArrowsNo,0,0,$tmpPhase,$MyRow->{$Val["X_Arrowstring"]},$target);
-									//$x=DecodeArrowstring($MyRowEv->EvMatchMode,$MyRowEv->EvMatchArrowsNo,0,0,$tmpPhase,$MyRow->{$Val["X_Arrowstring"]});
 
 									$numRows=0;
 									$numCols=0;
@@ -664,9 +636,6 @@ require_once('Common/Fun_Phases.inc.php');
 							{
 								foreach($PhaseFields as $i => $Val)
 								{
-									/*print '<pre>';
-									print_r($Val);
-									print '</pre>';*/
 									$TmpScores[]=($MyRow->{$Val["X_Phase"]}==($MyRow->QuScore*10) ? 'bye' : $MyRow->{$Val["X_Phase"]}) . '|' . ($MyRowEv->EvMatchMode==1 ?  str_replace('|',',',$MyRow->{$Val["X_SetPoints"]}): '');
 
 									list($tmpPhase,)=explode('_',$Val['X_Phase']);
@@ -1572,10 +1541,6 @@ require_once('Common/Fun_Phases.inc.php');
 						$cols[8]=$x2;
 
 						$StrData.=implode(';',$cols) . ';' . implode(';',$tmpMatr) . "\n";
-						/*print '<pre>';
-						print_r($cols);
-						print_r($tmpMatr);
-						print '</pre>';*/
 						$cols=array();
 						$tmpMatr=array();
 						$score1=0;
@@ -1644,10 +1609,6 @@ require_once('Common/Fun_Phases.inc.php');
 			$cols[7]=$gold2;
 			$cols[8]=$x2;
 			$StrData.=implode(';',$cols) . ';' . implode(';',$tmpMatr) ."\n";
-			/*print '<pre>';
-			print_r($cols);
-			print_r($tmpMatr);
-			print '</pre>';*/
 		}
 
 	/*

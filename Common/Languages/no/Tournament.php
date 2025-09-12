@@ -870,7 +870,6 @@ $lang['ShowDisable']='Vis sittende';
 $lang['ShowEmail']='Vis e-post';
 $lang['ShowIanseoMenu']='Vis Ianseo menyen';
 $lang['ShowLocalCode']='Vis lokalt skytternr';
-$lang['ShowMissing']='Vis manglende scorekort';
 $lang['ShowPicture']='Vis bilder';
 $lang['showRecords']='Vis rekorder';
 $lang['ShowSetEnds']='Inkluder sett-runder';

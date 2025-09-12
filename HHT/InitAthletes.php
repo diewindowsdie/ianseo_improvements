@@ -55,7 +55,6 @@
 							$Disable[] = intval($myRow->ChiTarget) . $myRow->ChiLetter;
 						safe_free_result($Rs);
 					}
-//					print_r($Disable);exit();
 				}
 
 			// preparo i destinatari
@@ -65,11 +64,6 @@
 			// la if mi elimina la check "tutti"
 				if (array_search(0,$HTTs)!==false)
 					array_shift($Dests);
-
-				/*print '<pre>';
-				print_r($Dests);
-				print '</pre>';
-				exit;*/
 
 			// paddo tutti i target
 				$Targets=array();
@@ -239,15 +233,7 @@
 
 			// ultimo ciclo
 				$Frames = array_merge($Frames, PrepareTxFrame(intval($TargetNo),$Data));
-				//print 'finito<br>';
 
-				/*print '<pre>';
-				print_r($Frames);
-				print '</pre>';exit;*/
-
-/*foreach($Frames as $value)
-	echo OutText($value);
-//exit();*/
 				if(count($Frames)>0)
 				{
 					$ResponseFromHHT=false;
@@ -261,12 +247,8 @@
 							if ($v!=-1)
 								$HTTOK[]=$v;
 						}
-
-						//print_r($HTTOK);
 					}
 				}
-//exit();
-
 			}
 		}
 	}

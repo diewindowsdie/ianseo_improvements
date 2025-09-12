@@ -176,7 +176,6 @@ exit();*/
 					$Results=SendHTT(HhtParam($_REQUEST['x_Hht']),$Frames);
 					if(!is_null($Results))
 						$ResponseFromHHT=true;
-					//print '<pre>';print_r($Results);print'</pre>';exit();
 					if (count($Results)!=0)
 					{
 						foreach($Results as $v)

@@ -775,7 +775,6 @@ $lang['ShowDisable']=' ';
 $lang['ShowEmail']=' ';
 $lang['ShowIanseoMenu']='  ';
 $lang['ShowLocalCode']=' ';
-$lang['ShowMissing']='  ';
 $lang['ShowPicture']=' ';
 $lang['showRecords']=' ';
 $lang['ShowSecondary']='  ';

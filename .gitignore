@@ -10,3 +10,5 @@
 .idea/*
 **/.DS_Store
 /TV/Photos/*.jpg
+/TV/Photos/*.svg
+/TV/Photos/*.png

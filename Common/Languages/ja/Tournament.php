@@ -382,7 +382,6 @@ $lang['ShotOff']='シュートオフ';
 $lang['ShotOffShort']='SO';
 $lang['ShowIanseoMenu']='Ianseoメニューを表示';
 $lang['ShowLocalCode']='ﾛｰｶﾙ番号を表示';
-$lang['ShowMissing']='未確認のスコアカードを表示';
 $lang['ShowSetEnds']='セットエンドを含める';
 $lang['ShowSubClass']='サブクラスを表示';
 $lang['SingleArrow']='素点編集';

@@ -228,7 +228,7 @@ tr.active td {background-color:var(--bg-yellow);}
 .bold {font-weight:bold; }
 .small {font-size: smaller!important; }
 
-table.Tabella2 {margin:auto; background-color:var(--row-background); border: 2px; border-color:var(--table-background); border-collapse:separate; border-spacing:1px; }
+table.Tabella2 {margin-left:auto;margin-right:auto; background-color:var(--row-background); border: 2px; border-color:var(--table-background); border-collapse:separate; border-spacing:1px; }
 table.Tabella2 td { padding:1px;}
 table.Tabella2 th { background-color:var(--bg-cell-header); text-align:center; padding:1px; font-weight:bold; color: var(--header-dark)}
 table.Tabella2 th.Title { background-color:var(--header-dark); text-align:center; color: var(--row-main-text); font-size:120%}
@@ -434,7 +434,7 @@ body.loading .modal {
 .w-45 {width: 45% !important}
 .w-50 {width: 50% !important}
 .w-55 {width: 55% !important}
-.w-60 {width: 60%!important}
+.w-60 {width: 60% !important}
 .w-65 {width: 65% !important}
 .w-70 {width: 70% !important}
 .w-75 {width: 75% !important}
@@ -502,3 +502,4 @@ div.Center  {text-align: center; margin-left: auto; margin-right: auto}
 	animation: spin 2s linear infinite;
 }
 .text-right {text-align: right;}
+.hidden {display: none;}

@@ -3,6 +3,7 @@
 /**
 * MakeTeams per la generazione delle suqadre nelle Regole UK
 */
+require_once ('Common/Lib/Fun_Modules.php');
 
 
 // Elimino le squadre della qualifica
@@ -67,8 +68,13 @@ foreach($divisions as $div)
 
 		$CurTeam = 0;					//Codice team attuale
 		$CurSubTeam = 0;				//Codice Subteam attuale -- Sempre "0"
-		$CurComponent = array();		//Componenti della Squadra
-		$TeamCount = array(0,1,1,2);
+		$CurComponent = array();
+        $TeamCount = array(
+            GetModuleParameter('SetUK', 'TeamMode'),
+            GetModuleParameter('SetUK', 'MenComponent'),
+            GetModuleParameter('SetUK', 'WomenComponent'),
+            GetModuleParameter('SetUK', 'MixedComponent')
+        );
 		$Scores = array();
 		$Golds = array();
 		$XNines = array();
@@ -86,7 +92,12 @@ foreach($divisions as $div)
 				}
 				$CurTeam = $MyRow->Country;
 				$CurComponent = array();
-				$TeamCount = array(0,1,1,2);
+                $TeamCount = array(
+                    GetModuleParameter('SetUK', 'TeamMode'),
+                    GetModuleParameter('SetUK', 'MenComponent'),
+                    GetModuleParameter('SetUK', 'WomenComponent'),
+                    GetModuleParameter('SetUK', 'MixedComponent')
+                );
 				$Scores = array();
 				$Golds = array();
 				$XNines = array();

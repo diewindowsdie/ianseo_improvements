@@ -79,10 +79,6 @@
 				$Ties[$kk]=substr_replace($Ties[$kk],$v,$index,1);
 			}
 		}
-	//	exit;
-		/*print '<pre>';
-		print_r($IdAffected);
-		print '</pre>';exit;*/
 
 		if (count($Ties)>0)
 		{

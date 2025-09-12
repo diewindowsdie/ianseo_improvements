@@ -847,7 +847,6 @@ $lang['ShowCountry3']='Mostrar País/Clube 3';
 $lang['ShowDisable']='Mostrar cadeira de rodas';
 $lang['ShowEmail']='Mostrar e-mail';
 $lang['ShowIanseoMenu']='Exibir menu do IANSEO';
-$lang['ShowMissing']='Mostrar Planilhas Faltantes';
 $lang['ShowPicture']='Mostrar Fotos';
 $lang['showRecords']='Mostrar Recordes';
 $lang['ShowSetEnds']='Incluir séries dos Sets';

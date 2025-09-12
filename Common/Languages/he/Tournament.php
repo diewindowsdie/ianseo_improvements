@@ -830,7 +830,6 @@ $lang['ShowDisable']='הצג כסא גלגלים';
 $lang['ShowEmail']='הצג דואר אלקטרוני';
 $lang['ShowIanseoMenu']='הצג סרגל תפריט';
 $lang['ShowLocalCode']='הצג מספר ספורטאי מקומי';
-$lang['ShowMissing']='הצג לוחות תוצאות חסרים';
 $lang['ShowPdfFlags']='הצג דגלים ב-PDF';
 $lang['ShowPicture']='הצג תמונות';
 $lang['showRecords']='הצג רשומות';

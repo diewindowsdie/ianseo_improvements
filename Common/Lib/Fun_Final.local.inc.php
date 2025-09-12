@@ -241,9 +241,6 @@ require_once('Final/Fun_ChangePhase.inc.php');
 		$rankData=$rank->getData();
 
 
-		/*echo "<pre>";
-		print_r($rankData);
-		echo "</pre>";exit;*/
 		$StrData = "";
 
 		if(count($rankData['sections']))
@@ -808,17 +805,18 @@ function setLiveSession($TeamEvent, $event, $match, $TourId=0, $Toggle=true) {
             $MatchFilter=" ";
         }
 
-        $sql="select Sch.*, cast(if(EvWinnerFinalRank>1, EvWinnerFinalRank*100 + GrPhase, 1+(1/(1+GrPhase))) as decimal(15,4)) as OrderBy, {$prefix}Live Live 
+        $sql="select distinct Sch.*, cast(if(EvWinnerFinalRank>1, EvWinnerFinalRank*100 + GrPhase, 1+(1/(1+GrPhase))) as decimal(15,4)) as OrderBy, {$prefix}Live Live 
         from " . ($TeamEvent ? 'Team' : '') . "Finals Fin
 		left join (select * from FinSchedule
 			inner join Events on FsEvent=EvCode and FsTeamEvent=EvTeamEvent and FsTournament=EvTournament
 			inner join Grids on FsMatchNo=GrMatchNo
+            left join Session on SesTournament=FsTournament and concat_ws(' ', FsScheduledDate, FsScheduledTime) between SesDtStart and SesDtEnd and SesType in ('F') and (SesEvents='' or find_in_set(concat(EvTeamEvent,EvCode), SesEvents))
 			where FsTournament=$TourId and FsEvent='$event' and FsTeamEvent=".($TeamEvent ? 1 : 0)." and FsMatchNo = $match and FSScheduledDate>0
 			) Sch on true
 		WHERE $Where";
         $q=safe_r_sql($sql);
         if($r=safe_fetch($q)) {
-            unsetLiveSession($TourId);
+            $OldKey=unsetLiveSession($TourId);
 
             $date=date('Y-m-d H:i:s');
             if(!$r->Live) {
@@ -845,15 +843,26 @@ function setLiveSession($TeamEvent, $event, $match, $TourId=0, $Toggle=true) {
 
             // Set/unset active session in scheduler
             if($r->FSScheduledDate) {
-                $ActiveSessions=array();
+                $ActiveSessions=Get_Tournament_Option('ActiveSession', [], $TourId);
+                if($OldKey) {
+                    $tmp=$OldKey->StartDate
+                        .'|'.substr($OldKey->StartTime,0,5)
+                        .'|'.$OldKey->Phase
+                        .'|'.$OldKey->FirstPhase
+                        .'|'.round($OldKey->OrderBy, 4);
+                    while(($idx=array_search($tmp, $ActiveSessions)) !== false) {
+                        unset($ActiveSessions[$idx]);
+                    }
+                }
                 if(!$r->Live or !$Toggle) {
                     // works reverse as it is the previous state!
+                    // remove the old key if in the same session
                     $key=$r->FSScheduledDate
                         .'|'.substr($r->FSScheduledTime,0,5)
                         .'|'.$r->GrPhase
                         .'|'.$r->EvFinalFirstPhase
                         .'|'.round($r->OrderBy, 4);
-                    $ActiveSessions=array($key);
+                    $ActiveSessions[]=$key;
                 }
                 Set_Tournament_Option('ActiveSession', $ActiveSessions, false, $TourId);
             }
@@ -892,6 +901,7 @@ function unsetLiveSession($TourId, $TeamEvent=-1, $event='', $match=-1) {
             }
         }
     } else {
+        $ret=getMatchLive($TourId);
         safe_w_sql("UPDATE Finals SET FinLive='0',
             FinDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . "
             WHERE FinTournament=$TourId
@@ -904,5 +914,6 @@ function unsetLiveSession($TourId, $TeamEvent=-1, $event='', $match=-1) {
             RrMatchDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . "
             WHERE RrMatchTournament=$TourId
             AND RrMatchLive!='0'");
+        return $ret;
     }
 }

@@ -1,37 +1,40 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-checkFullACL(AclCompetition, 'cSchedule', AclReadWrite,false);
-CheckTourSession(true);
+$JSON=[
+    'error'=>1,
+    'msg'=>get_text('ErrGenericError', 'Errors'),
+];
+
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cSchedule', AclReadWrite)) {
+    JsonOut($JSON);
+}
 
 require_once('./LibScheduler.php');
 
-if(!empty($_REQUEST['Fld'])) {
-	$Field=key($_REQUEST['Fld']);
-
-	foreach($_REQUEST['Fld'] as $Date => $Times) {
-		foreach($Times as $Time => $Orders) {
-			foreach($Orders as $Order => $Arg) {
-				if($Arg!='del') out();
-				safe_w_sql("delete from Scheduler where SchTournament={$_SESSION['TourId']} and SchDay='$Date' and SchStart='$Time' and SchOrder='$Order'");
-			}
-		}
-
-		$ret=DistanceInfoData(true);
-		out($ret);
-	}
+if(empty($_REQUEST['id']) or empty($_REQUEST['val'])) {
+    JsonOut($JSON);
+}
+switch($_REQUEST['id']) {
+    case 'Fld':
+        // SchDay.'|'.$r->SchStart.'|'.$r->SchOrder
+        list($Date, $Time, $Order)=explode('|', $_REQUEST['val']);
+        safe_w_sql("delete from Scheduler where SchTournament={$_SESSION['TourId']} and SchDay=".StrSafe_DB($Date)." and SchStart=".StrSafe_DB($Time)." and SchOrder=".StrSafe_DB($Order));
+        if(safe_w_affected_rows()) {
+            $JSON=DistanceInfoData(true);
+        }
+        break;
+    case 'WarmDelete':
+        list($TeamEvent, $Phase, $Day, $MatchTime, $Time)=explode('|', $_REQUEST['val']);
+        safe_w_sql("delete from FinWarmup
+            where FwTournament={$_SESSION['TourId']}
+                and FwTeamEvent='".($TeamEvent=='T' ? 1 : 0)."'
+                and FwDay=".StrSafe_DB($Day)."
+                and FwMatchTime=".StrSafe_DB($MatchTime)."
+                and FwTime=".StrSafe_DB($Time.':00')."");
+        if(safe_w_affected_rows()) {
+            $JSON=DistanceInfoData(true);
+        }
+        break;
 }
 
-if(!empty($_REQUEST['WarmDelete'])) {
-	list($TeamEvent, $Phase, $Day, $MatchTime, $Time)=explode('|', $_REQUEST['WarmDelete']);
-	safe_w_sql("delete from FinWarmup
-		where FwTournament={$_SESSION['TourId']}
-			and FwTeamEvent='".($TeamEvent=='T' ? 1 : 0)."'
-			and FwDay='$Day'
-			and FwMatchTime='$MatchTime'
-			and FwTime='$Time:00'");
-
-	$ret=DistanceInfoData(true);
-	out($ret);
-}
-
-out();
+JsonOut($JSON);

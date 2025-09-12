@@ -254,7 +254,6 @@ $lang['ShortMale']='E';
 $lang['ShortUnisex']='U';
 $lang['ShotOff']='Beraberlik Atışı';
 $lang['ShotOffShort']='BA';
-$lang['ShowMissing']='Eksik Skor Kartlarını Göster';
 $lang['StaffOnField']='Yarışma Görevlileri';
 $lang['StartList']='Başlangıç Listesi';
 $lang['StartlistAlfabetical']='Alfabetik sıralı katılımcı listesi';

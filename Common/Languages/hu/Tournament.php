@@ -773,7 +773,6 @@ $lang['ShowDisable']='Mutasd a erekesszéket';
 $lang['ShowEmail']='Mutasd az email címet';
 $lang['ShowIanseoMenu']='IANSEO Menü megjelenítése';
 $lang['ShowLocalCode']='Mutasd a helyi hátszámot';
-$lang['ShowMissing']='Hiányzó beírólapok listája';
 $lang['showRecords']='Mutasd a csúcsokat';
 $lang['ShowSetEnds']='A sorozat eredményekkel együtt';
 $lang['ShowSubClass']='Mutasd a kiegészítő korosztályokat';

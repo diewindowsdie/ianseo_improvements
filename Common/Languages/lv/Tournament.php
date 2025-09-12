@@ -684,7 +684,6 @@ $lang['ShowDisable']='Rādīt Ratiņkrēsls';
 $lang['ShowEmail']='Parādīt e-pastu';
 $lang['ShowIanseoMenu']='Rādīt Ianseo Menu';
 $lang['ShowLocalCode']='Radīt lokālo ID';
-$lang['ShowMissing']='Rādīt trūkstošos protokolus';
 $lang['ShowPicture']='Rādīt foto';
 $lang['showRecords']='Rādīt rekordus';
 $lang['Sign/guide-board']='Zīme';

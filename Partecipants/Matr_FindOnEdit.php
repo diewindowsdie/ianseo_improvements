@@ -77,7 +77,6 @@
 			// ora creao il dob nel formato localizzato
 			if ($Dob2Save!='') {
 				$tmp=explode('-',$Dob2Save);
-				//print_r($tmp);
 				$mkDob=mktime(0,0,0,$tmp[1],$tmp[2],$tmp[0]);
 				$Dob2Save=date(get_text('DateFmt'),$mkDob);
 			}

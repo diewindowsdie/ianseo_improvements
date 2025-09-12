@@ -226,10 +226,6 @@ class Obj_Scheduler
 				$this->data['days'][$day]['items'][]=$row;
 			}
 		}
-
-//		print '<pre>';
-//		print_r($this->data);
-//		print '</pre>';exit;
 	}
 
 /**
@@ -506,9 +502,6 @@ class Obj_Scheduler
 				// cerco dove infilare la riga
 					$day=substr($row['dateStart'],0,10);
 					$found=false;
-//					print '<pre>';
-//					print_r($this->data);
-//					print '</pre>';
 					if (array_key_exists($day,$this->data['days']))
 					{
 						foreach ($this->data['days'][$day]['items'] as &$v)

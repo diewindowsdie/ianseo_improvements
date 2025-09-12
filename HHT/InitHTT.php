@@ -158,26 +158,14 @@
 							break;
 					}
 
-					/*print '<pre>';
-					print_r($Dests);
-					print($Data);
-					print '</pre>';exit;*/
-
 				// preparo i pacchetti
 					$Frames=PrepareTxFrame($Dests,$Data);
 				// Risposte
-/*foreach($Frames as $value)
-	echo OutText($value);
-//exit();*/
 					$ResponseFromHHT=false;
 					$Updated=SendHTT(HhtParam($_REQUEST['x_Hht']),$Frames,false,3);
-//print_r($Updated);
 				// se non era un broadcast verifico chi ha risposto ok
 					if ($Dests!=0)
 					{
-						/*print '<pre>';
-						print_r($Updated);
-						print '</pre>';*/
 						if(!is_null($Updated))
 							$ResponseFromHHT=true;
 						if (count($Updated)!=0)

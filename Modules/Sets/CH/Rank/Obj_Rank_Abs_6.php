@@ -508,7 +508,6 @@
 
 
 				// e lo aggiungo alla sezione
-					//print_r($item);
 					$section['items'][]=$item;
 
 					if ($myRow->IndTimestamp>$this->data['meta']['lastUpdate'])

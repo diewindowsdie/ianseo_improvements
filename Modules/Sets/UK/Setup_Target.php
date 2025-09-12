@@ -231,8 +231,28 @@ switch($TourType) {
 		}
 		break;
 	case 5:
-		CreateDistanceNew($TourId, $TourType, '%', array(array('60 m',60), array('50 m',50), array('40 m',40)));
-		break;
+		if($SubRule !== ""){
+			CreateDistanceNew($TourId, $TourType, '_M', array(array('70m', 70), array('60m', 60), array('50m', 50)));
+			CreateDistanceNew($TourId, $TourType, '_W', array(array('70m', 70), array('60m', 60), array('50m', 50)));
+			CreateDistanceNew($TourId, $TourType, '_50M', array(array('60m', 70), array('50m', 60), array('40m', 50)));
+			CreateDistanceNew($TourId, $TourType, '_50W', array(array('60m', 60), array('50m', 50), array('40m', 40)));
+			CreateDistanceNew($TourId, $TourType, '_U21M', array(array('70m', 90), array('60m', 70), array('50m', 50)));
+			CreateDistanceNew($TourId, $TourType, '_U21W', array(array('70m', 70), array('60m', 60), array('50m', 50)));
+			CreateDistanceNew($TourId, $TourType, '_U18M', array(array('60m', 70), array('50m', 60), array('40m', 50)));
+			CreateDistanceNew($TourId, $TourType, '_U18W', array(array('60m', 60), array('50m', 50), array('40m', 40)));
+			CreateDistanceNew($TourId, $TourType, '_U16M', array(array('50m', 60), array('40m', 50), array('30m', 40)));
+			CreateDistanceNew($TourId, $TourType, '_U16W', array(array('50m', 50), array('40m', 40), array('30m', 30)));
+			CreateDistanceNew($TourId, $TourType, '_U15%', array(array('50m', 50), array('40m', 40), array('30m', 30)));
+			CreateDistanceNew($TourId, $TourType, '_U14%', array(array('40m', 40), array('30m', 30), array('20m', 20)));
+			CreateDistanceNew($TourId, $TourType, '_U12%', array(array('30m', 30), array('20m', 20), array('10m', 15)));
+			break;
+		}
+		else{
+			CreateDistanceNew($TourId, $TourType, '_M', array(array('60m', 60), array('50m', 50), array('40m', 40)));
+			CreateDistanceNew($TourId, $TourType, '_W', array(array('60m', 60), array('50m', 50), array('40m', 40)));
+			break;
+		}
+
 	case 6:
 		CreateDistanceNew($TourId, $TourType, '%', array(array('18m-1',18), array('18m-2',18)));
 		break;

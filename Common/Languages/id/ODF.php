@@ -59,6 +59,7 @@ $lang['OdfReceiverOn']='Penerima Aktif';
 $lang['OdfReceiverSetup']='Setup Penerima ODF';
 $lang['OdfSportCodeVersion']='Versi Kamus Data Olahraga';
 $lang['OdfUploadFileText']='Harap memilih sebuah berkas XML untuk diunggah...';
+$lang['ParticExtraData']='Properti tambahan DT_PARTIC';
 $lang['Production']='Produksi';
 $lang['Receiver']='Penerima';
 $lang['ReceiverLanguage']='Bahasa Penerima (3 digit)';

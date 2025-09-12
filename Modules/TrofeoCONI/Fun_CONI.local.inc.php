@@ -681,11 +681,6 @@ function savePointsCampItaSoc($event,$round,$phase,$matchNo1,$matchNo2,$target)
 		}
 	}
 
-	/*print '<pre>';
-	print_r($points[$matchNo1]);
-	print_r($points[$matchNo2]);
-	print '</pre>';exit;*/
-
 	$p1=0;
 	$p2=0;
 	$p1=array_sum($points[$matchNo1]);
@@ -1020,11 +1015,6 @@ function savePointsCampItaSocFin($event,$phase,$matchNo1,$matchNo2,$target)
 			$subArrs[$matchNo2]='';
 		}
 	}
-
-	/*print '<pre>';
-	print_r($points[$matchNo1]);
-	print_r($points[$matchNo2]);
-	print '</pre>';exit;*/
 
 	$p1=array_sum($points[$matchNo1]);
 	$p2=array_sum($points[$matchNo2]);

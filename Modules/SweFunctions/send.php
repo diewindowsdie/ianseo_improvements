@@ -29,7 +29,6 @@ if ($data['option']['ind_final'] == 1) {
     $have_data_to_send = true;
 }
 unset($data['option']);
-//print_r($data);
 
 if ($have_data_to_send) {
     echo sendInformation($url, json_encode($data));

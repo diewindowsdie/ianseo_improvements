@@ -207,9 +207,6 @@ function GetHigerArrowValue($EventCode,$TeamEvent=0,$curValue='',$TourId=-1)
 	// trasformo in array $G e $X per cercarli meglio
 		$G = preg_split('//', $G, -1, PREG_SPLIT_NO_EMPTY);
 		$X = preg_split('//', $X, -1, PREG_SPLIT_NO_EMPTY);
-//print_r($G).'<br>';
-//print_r($X).'<br>';
-//exit;
 		for ($i=0;$i<strlen($MyStr);++$i)
 		{
 		/*
@@ -462,9 +459,6 @@ function CalculateDropWeight($QuId, $X='M') {
 		//print 'R->' . $R . '<br>';
 		foreach ($Target as $Key => $Value)
 		{
-			/*print '<pre>';
-			print_r($Value);
-			print '</pre>';*/
 			if ($R==$Value['R'])
 			{
 				return $Key;
@@ -1031,7 +1025,6 @@ function GetTargetColors($TourId, $TrgName='') {
 			}
 		}
 
-		//print_r($ret);
 		return $ret;
 	}
 

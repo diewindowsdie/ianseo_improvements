@@ -15,7 +15,7 @@
 global $CFG;
 
 define ("ProgramName","Ianseo");	// Nome del programma
-define ("ProgramVersion","2025-05-29"); // "Truly wonderful the mind of a child is! Welcome Giorgio a.k.a. Gaba 2.0"
+define ("ProgramVersion","2025-09-03"); // "Congratulations to Greg Easton, 10th President of World Archery - Change is the essential process of all existence. (Spock)"
 
 define ("TargetNoPadding",3);		// Padding del targetno
 

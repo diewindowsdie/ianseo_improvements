@@ -1,3 +1,14 @@
+$(function() {
+    var TzOffset=$('#ToTimeZone');
+    if(TzOffset.val()=='') {
+        var MinOffset=(new Date()).getTimezoneOffset();
+        var AbsOffset=Math.abs(MinOffset);
+
+        var offset=[parseInt(AbsOffset/60).toString().padStart(2, '0'), (AbsOffset%60).toString().padStart(2, '0')];
+        TzOffset.val(MinOffset>=0?'-':'+' + offset.join(':'));
+    }
+});
+
 function ChangeTourType(who) {
 	var combo=document.getElementById('d_ToType');
 	var subrule=document.getElementById('d_SubRule');

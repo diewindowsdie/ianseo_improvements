@@ -543,17 +543,9 @@ if (!$MyRow) {
 
 <tr>
 <th class="TitleLeft w-15"><?php print get_text('TourTimeZone','Tournament');?></th>
-<td>
-<input type="text" <?php print ($Arr_Values2Check_Index['d_ToTimeZone']['Error'] ? ' class="error"' : '');?> name="d_ToTimeZone" rows="2" cols="40" value="
-<?php
-	if ($Arr_Values2Check_Index['d_ToTimeZone']['Error'] or !$MyRow) {
-		$Offset=(empty($_COOKIE['offset']) ? '0' : $_COOKIE['offset']);
-		print (array_key_exists('d_ToTimeZone',$_REQUEST) ? $_REQUEST['d_ToTimeZone'] : ($Offset[0]=='-' ? '-' : '+').date('H:i', abs($Offset*60)));
-	} else {
-		print $MyRow->ToTimeZone;
-	}
-?>"> (±hh:mm)
-</td>
+    <td><?php
+        echo '<input type="text"'.($Arr_Values2Check_Index['d_ToTimeZone']['Error'] ? ' class="error"' : '').' name="d_ToTimeZone" id="ToTimeZone" rows="2" cols="40" value="'.($MyRow->ToTimeZone??'').'"> (±hh:mm)';
+        ?></td>
 </tr>
 
 <tr>

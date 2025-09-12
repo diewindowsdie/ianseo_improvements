@@ -262,8 +262,6 @@ foreach($MODULES as $Module) {
 	}
 }
 
-//print_r($BACKS);
-
 function get_vars($file) {
 	$ret=array();
 	include($file);

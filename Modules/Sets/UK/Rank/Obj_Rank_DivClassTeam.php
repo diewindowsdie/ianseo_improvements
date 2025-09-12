@@ -119,7 +119,7 @@
 					$filter.=" AND DivId LIKE " . StrSafe_DB($this->opts['divs']) ;
 				}
 			}
-			if (!empty($this->opts['cls']))
+		/*	if (!empty($this->opts['cls']))
 			{
 				if(is_array($this->opts['cls']))
 				{
@@ -135,7 +135,7 @@
 				{
 					$filter.=" AND ClId LIKE " . StrSafe_DB($this->opts['cls']) ;
 				}
-			}
+			}*/
 
 			if (!empty($this->opts['events']))
 			{

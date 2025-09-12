@@ -398,7 +398,6 @@
 					$item=$item+$distFields;
 
 				// e lo aggiungo alla sezione
-					//print_r($item);
 					$section['items'][]=$item;
 
 					if ($myRow->QuTimestamp>$this->data['meta']['lastUpdate']) {
@@ -413,10 +412,6 @@
 			// ultimo giro
 				$this->data['sections'][$curEvent]=$section;
 			}
-			//print '</pre>';
-			/*print '<pre>';
-			print_r($this->data);
-			print '</pre>';*/
 		}
 
 	/**

@@ -1,11 +1,19 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
-checkFullACL(AclCompetition, 'cSchedule', AclReadWrite,false);
-CheckTourSession(true);
+$JSON=[
+    'error'=>1,
+    'msg'=>get_text('ErrGenericError', 'Errors'),
+];
+
+if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cSchedule', AclReadWrite)) {
+    JsonOut($JSON);
+}
 
 require_once('./LibScheduler.php');
 
-if(empty($_REQUEST['Fld'])) jsonout(array('error'=>1));
+if(empty($_REQUEST['Fld'])) {
+    JsonOut($JSON);
+}
 
 $Field=key($_REQUEST['Fld']);
 
@@ -21,7 +29,7 @@ switch($Field) {
 }
 
 // always outputs error...
-jsonout(array('error'=>1));
+JsonOut($JSON);
 
 function DoRASchedule($Item) {
 	$ret=['error'=>1];

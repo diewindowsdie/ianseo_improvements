@@ -1,0 +1,80 @@
+body {
+    display: flex;
+    height:100vh;
+    flex-flow: column;
+}
+
+#Content {
+    padding:0;
+    flex:1 0 auto;
+}
+#bcodeMissingContainer {
+    height:100%;
+    flex:1 0 auto;
+    position:relative;
+    display:flex;
+    flex-flow:column;
+}
+#bcodeMissingTable {
+    height:100%;
+    top:0;bottom:0;
+    overflow:hidden;
+}
+#bcodeMissing {
+    overflow-x:hidden;
+    overflow-y:auto;
+}
+.bcodeContainer {
+    display: flex;
+    height: 100%;
+}
+.bcodeOp {
+    width: 70vw;
+    float: left;
+}
+
+.selected td {background-color:#d0d0d0; font-weight:bold}
+.TabellaScore {font-size:1.2em; width: 100%}
+.Score {padding: 0.2em 0.4em !important; text-align: right;}
+.ScoreBig {font-size:1.5em; font-weight: bold;}
+.Command {font-size: 1em; text-align: center;}
+.ArrError {font-size: 1.5em; color: white; background-color: #f00 !important; font-weight: bold;}
+.MissingHeader {font-size: 1.5em; font-weight: bold; text-align: center;}
+
+tr.newTgt>td {
+    padding-top: 0.5em;
+}
+
+.fixedHead {
+    background: var(--header-dark);
+    color: var(--row-main-text);
+    margin-bottom: 0.5em;
+    font-size: 1.5em;
+    padding:0.25em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.matchWinner {border: 0.4em solid green;}
+.matchTie {border: 1em solid red;}
+.matchHighlight {
+    width: 100%;
+    text-align:center;
+    font-weight:bold;
+    font-size: 1.3em;
+    /*padding: 0.5em;*/
+    white-space:nowrap;
+    display:flex;
+    align-items:center;
+}
+.matchHighlight div {
+    color: var(--header-dark);
+    background-color: var(--bg-cell-header);
+    flex:1 0 30%;
+    padding: 0.4em;}
+.matchHighlight div.Score {
+    flex:1 0 70%;
+    background-color:white;
+    text-align:center;
+    font-size: 1.5em;
+    color: black;}

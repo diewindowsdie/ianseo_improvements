@@ -16,10 +16,45 @@
 .SchText {margin-left:0;font-weight:bold; font-style:italic;}
 #TrueScheduler tr td:FIRST-CHILD {padding-right:0.5em;white-space:nowrap; font-weight:normal; font-style:normal;}
 #TrueScheduler td {vertical-align:top;}
+.prnWrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
 
 .SchTitle {font-weight:bold; margin-top:0.25em;}
 .SchSubTitle {font-weight:bold; font-style: italic;}
 .SchItem {padding-left:7.5em; }
 .SchWarmup {font-style: italic;}
-
+#dayLinks {background-color: #606060; color: white; padding: 0.5em}
+#dayLinks a {text-decoration: none; color: white; font-weight: bold; margin-right: 2em;}
 .active td {background-color:#bbffbb; border-top:1px solid green; border-bottom:1px solid green;}
+
+.detached {
+    position: fixed;
+    top:0.5em;
+    right:1em;
+    width: 25vw;
+    padding:0.5em;
+    background-color: white;
+    overflow-y: scroll;
+    height: calc(100vh - 1em);
+    border: 3px solid darkgray;
+    border-radius: 0.5em;
+}
+
+.WOptions div {
+    display: flex;
+    margin-bottom: 0.25em;
+}
+.WTime div,
+.WDuration div {
+    margin-bottom: 0.25em;
+}
+
+.WOptions div input {
+    flex: 1 0 auto;
+}
+
+.WOptions div i {
+    font-size: 1.5em;
+}

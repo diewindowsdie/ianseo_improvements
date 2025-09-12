@@ -562,7 +562,6 @@ $lang['ShortUnisex']='U';
 $lang['ShotOff']='Shoot Off';
 $lang['ShotOffShort']='SO';
 $lang['ShowIanseoMenu']='Pokaži Ianseo Izbornik';
-$lang['ShowMissing']='Prikaži tablica sa rezultatima koje nedostaju';
 $lang['ShowSetEnds']='Uključite kraj Seta';
 $lang['Sign/guide-board']='Znak';
 $lang['SignedTotal']='Potpisano ukupno';

@@ -178,7 +178,6 @@ if(count($PoolEvents)) {
         }
     }
     print '</table>';
-    //print_r();
 }
 
 if(count($in)) {

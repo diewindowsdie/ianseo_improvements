@@ -44,10 +44,6 @@ foreach ($Arr_Templates as $Value)
     }
 }
 
-/*print '<pre>';
-print_r($Arr_Files2Send);
-print '</pre>';exit;*/
-
 $StrCurlError = '';
 $PostResult = '';
 

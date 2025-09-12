@@ -51,5 +51,15 @@ $Scheduler->SplitLocations=true;
 $Scheduler->DaysToPrint=$DaysToPrint;
 $Scheduler->LocationsToPrint=$LocationsToPrint;
 
+// check there are any schedule setup for qualification
+$q=safe_r_sql("select dItems+sItems as Items, ForceDistances
+    from (select count(*) as dItems from DistanceInformation where DiTournament={$_SESSION['TourId']} and DiDay!=0) dTable
+    left join (select count(*) as sItems from Scheduler where SchTournament={$_SESSION['TourId']}) sTable on true
+    left join (select ToType in (1,2,4,8) as ForceDistances from Tournament where ToId={$_SESSION['TourId']}) tTable on true");
+$r=safe_fetch($q);
+if($r->Items==0 or $r->ForceDistances) {
+    $Scheduler->FopIncludeUnscheduledDistances=true;
+}
+
 $Scheduler->FOP();
 

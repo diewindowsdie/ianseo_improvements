@@ -231,7 +231,6 @@ foreach ($sessionsTypes as $k=> $v) {
         while ($myRow=safe_fetch($r)) {
             $sessions[$v][]=$myRow;
             $schedules=array();
-            //print_r($schedules);
             $sessions[$v][count($sessions[$v])-1]->schedules=$schedules;
         }
     }
@@ -404,6 +403,13 @@ foreach ($sessions as $k=>$v) {
 }
 echo '</table>';
 echo '</form>';
+echo '<table id="SesLocations" class="Tabella2 d-none mt-3">
+    <thead>
+        <tr><th class="Title" colspan="2">'.get_text('SesPrintingOrder', 'Tournament').'</th></tr>
+        <tr><th>'.get_text('Location', 'Tournament').'</th><th>'.get_text('Order', 'Tournament').'</th></tr>
+    </thead>
+    <tbody></tbody>
+    </table>';
 echo '</div>';
 
 include('Common/Templates/tail.php');

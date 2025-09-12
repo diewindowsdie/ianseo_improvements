@@ -916,7 +916,6 @@ $lang['ShortUnisex']='U';
 $lang['ShotOff']='Tir de Barrage';
 $lang['ShotOffShort']='TB';
 $lang['ShowIanseoMenu']='Montrer le menu Ianseo';
-$lang['ShowMissing']='Montrer les feuilles de marque manquantes';
 $lang['showRecords']='Montrer les enregistrements';
 $lang['ShowSetEnds']='Inclure les définitions de volées';
 $lang['Sign/guide-board']='Ecriteau';

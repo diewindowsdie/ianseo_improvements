@@ -25,6 +25,7 @@ $lang['EntriesNoCountry']='Inscripcions sense Associació';
 $lang['ErrCodeExists']='Codi ja existent!';
 $lang['ErrCommitteeError']='Codi o descripció comitè no vàlid';
 $lang['ErrConnection']='No hi ha connexió amb el servidor $a';
+$lang['ErrDateGeneric']='Data incorrecta o no indicada';
 $lang['ErrEmptyFields']='Camps buits';
 $lang['ErrGenericError']='Error genèric';
 $lang['ErrInvalidCode']='Codi no vàlid';
