@@ -87,7 +87,7 @@ function devicesRenderer(data) {
                         '<input class="iskButton" type="button" value="' + msgCmdCancel + '" onClick="saveSequence(\'' + gElement.gId + '\', false);">' +
                         '</td>');
                 } else {
-                    tmpRow.append('<td colspan="14">&nbsp;</td>');
+                    tmpRow.append('<td colspan="' + 14 + (usePersonal ? 1 : 0) + '">&nbsp;</td>');
                 }
                 if ($('#grpRow_' + gElement.gId).length) {
                     $('#grpRow_' + gElement.gId).replaceWith(tmpRow);
