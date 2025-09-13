@@ -214,8 +214,14 @@ if(isset($_REQUEST['Action']) && preg_match("/^(tSendMessage|tPersonal|tSendQrSe
             }
             break;
         case 'tGroupTarget':
-            if(preg_match("/^[0-9]+$/",$_REQUEST["newGrp"],$tmpGrp) AND $tmpGrp[0]<=26 AND preg_match("/^[0-9]+$/",$_REQUEST["newTgt"],$tmpTgt) AND $tmpTgt[0]<=999) {
-				$SQL[] = "IskDvGroup={$tmpGrp[0]}, IskDvTarget={$tmpTgt[0]}, IskDvSetup='', IskDvNote = " . StrSafe_DB($_REQUEST["newNote"]);//
+            if(preg_match("/^[0-9]+$/",$_REQUEST["newGrp"],$tmpGrp) AND $tmpGrp[0]<=26 AND preg_match("/^[0-9]*$/",$_REQUEST["newTgt"],$tmpTgt) AND $tmpTgt[0]<=999) {
+                if (!$tmpTgt[0]) {
+                    $tmpTgt[0] = 'null';
+                }
+				$SQL[] = "IskDvGroup={$tmpGrp[0]}, IskDvTarget={$tmpTgt[0]}, IskDvSetup=''";
+            }
+            if ($_REQUEST["newNote"]) {
+                $SQL[] = "IskDvNote = " . StrSafe_DB($_REQUEST["newNote"]);
             }
             break;
         case 'tGroup':
