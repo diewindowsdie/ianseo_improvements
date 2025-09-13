@@ -27,9 +27,12 @@ if(isset($_REQUEST["ArcherName"]) && preg_match("/^[-,0-9A-Z]*$/i",str_replace("
 	$TmpWhere = substr($TmpWhere,0,-3);
 }
 
-$MyQuery = "SELECT EnCode as Bib, EnName AS Name, left(EnFirstName,1) AS Initial, upper(EnFirstName) AS FirstName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, IF(AEId IS NULL, 0, 1) as OpDone, EnPays, APPrice  ";
+$MyQuery = "SELECT EnCode as Bib, EnName AS Name, left(EnFirstName,1) AS Initial, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, c.CoCode AS NationCode, c.CoNameComplete AS Nation, c2.CoNameComplete as Nation2, c3.CoNameComplete as Nation3, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, sc.ScDescription as SubclassDescription, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, IF(AEId IS NULL, 0, 1) as OpDone, EnPays, APPrice  ";
 $MyQuery.= "FROM Entries AS e ";
 $MyQuery.= "LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament ";
+$MyQuery.= "LEFT JOIN Countries AS c2 ON e.EnCountry2=c2.CoId AND e.EnTournament=c2.CoTournament ";
+$MyQuery.= "LEFT JOIN Countries AS c3 ON e.EnCountry3=c3.CoId AND e.EnTournament=c3.CoTournament ";
+$MyQuery.= "LEFT JOIN SubClass AS sc ON e.EnSubClass=sc.ScId AND e.EnTournament=sc.ScTournament ";
 $MyQuery.= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
 $MyQuery.= "LEFT JOIN AccEntries AS ae ON e.EnId=ae.AEId AND e.EnTournament=ae.AETournament AND ae.AEOperation=(SELECT AOTId FROM AccOperationType WHERE AOTDescr=" . StrSafe_DB($OpDetails) . ") ";
 $MyQuery.= "LEFT JOIN AccPrice AS ap ON CONCAT(EnDivision,EnClass) LIKE ap.APDivClass AND e.EnTournament=ap.APTournament ";
@@ -62,12 +65,10 @@ while($MyRow=safe_fetch($Rs)) {
             $pdf->Cell(30, 6,  (get_text('Continue')), 0, 1, 'R', 0);
         }
         $pdf->SetFont($pdf->FontStd,'B',7);
-        $pdf->Cell(13, 4,  (get_text('Code','Tournament')), 1, 0, 'C', 1);
-        $pdf->Cell(40, 4,  (get_text('Athlete')), 1, 0, 'L', 1);
-        $pdf->Cell(43+($payDetails ? 0:15), 4,  (get_text('Country')), 1, 0, 'L', 1);
+        $pdf->Cell(60, 4,  (get_text('Athlete')), 1, 0, 'L', 1);
+        $pdf->Cell(46+($payDetails ? 0:15), 4,  (get_text('Country')), 1, 0, 'L', 1);
         $pdf->Cell(7, 4,  (get_text('SessionShort','Tournament')), 1, 0, 'C', 1);
         $pdf->Cell(10, 4,  (get_text('Target')), 1, 0, 'C', 1);
-        $pdf->Cell(10, 4,  (get_text('AgeCl')), 1, 0, 'C', 1);
         $pdf->Cell(8, 4,  (get_text('SubCl','Tournament')), 1, 0, 'C', 1);
         $pdf->Cell(10, 4,  (get_text('Division')), 1, 0, 'C', 1);
         $pdf->Cell(10, 4,  (get_text('Cl')), 1, 0, 'C', 1);
@@ -87,7 +88,6 @@ while($MyRow=safe_fetch($Rs)) {
         $pdf->SetFillColor(0xCC,0xCC,0xCC);
     else
         $pdf->SetDefaultColor();
-    $pdf->Cell(3, 4,  '', 'LTB', 0, 'R', $MyRow->OpDone);
 //Inizio dei dati "scritti"
     if($MyRow->OpDone!=0) {
         $pdf->SetAccreditedColor();
@@ -95,16 +95,13 @@ while($MyRow=safe_fetch($Rs)) {
         $pdf->SetDefaultColor();
     }
     $pdf->SetFont($pdf->FontStd,'',7);
-    $pdf->Cell(10, 4,  ($MyRow->Bib), 'RTB', 0, 'R', $MyRow->OpDone);
     $pdf->SetFont($pdf->FontStd,'B',7);
-    $pdf->Cell(40, 4,  $MyRow->FirstName . ' ' . $MyRow->Name, 1, 0, 'L', $MyRow->OpDone);
+    $pdf->Cell(60, 4, getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->EnMiddleName), 1, 0, 'L', $MyRow->OpDone);
     $pdf->SetFont($pdf->FontStd,'',7);
-    $pdf->Cell(8, 4, $MyRow->NationCode, 'LTB', 0, 'C', $MyRow->OpDone);
-    $pdf->Cell(35+($payDetails ? 0:15), 4, $MyRow->Nation, 'RTB', 0, 'L', $MyRow->OpDone);
+    $pdf->Cell(46+($payDetails ? 0:15), 4, getFullCountryName($MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3), 'RTB', 0, 'L', $MyRow->OpDone);
     $pdf->Cell(7, 4,  ($MyRow->Session), 1, 0, 'R', $MyRow->OpDone);
     $pdf->Cell(10, 4,  ($MyRow->TargetNo), 1, 0, 'R', $MyRow->OpDone);
-    $pdf->Cell(10, 4,  ($MyRow->AgeClass), 1, 0, 'C', $MyRow->OpDone);
-    $pdf->Cell(8, 4,  ($MyRow->SubClass), 1, 0, 'C', $MyRow->OpDone);
+    $pdf->Cell(8, 4,  ($MyRow->SubclassDescription), 1, 0, 'C', $MyRow->OpDone);
     $pdf->Cell(10, 4,  ($MyRow->DivCode), 1, 0, 'C', $MyRow->OpDone);
     $pdf->Cell(10, 4,  ($MyRow->ClassCode), 1, 0, 'C', $MyRow->OpDone);
     //Disegna i Pallini per la partecipazione
