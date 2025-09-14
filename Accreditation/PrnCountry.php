@@ -65,9 +65,8 @@ while($MyRow=safe_fetch($Rs)) {
         $pdf->Cell(42+($payDetails ? 0:15), 4,  (get_text('Country')), 1, 0, 'L', 1);
         $pdf->Cell(7, 4,  (get_text('SessionShort','Tournament')), 1, 0, 'C', 1);
         $pdf->Cell(11, 4,  (get_text('Target')), 1, 0, 'C', 1);
-        $pdf->Cell(41, 4,  (get_text('Athlete')), 1, 0, 'L', 1);
+        $pdf->Cell(51, 4,  (get_text('Athlete')), 1, 0, 'L', 1);
         $pdf->Cell(12, 4,  (get_text('DOB','Tournament')), 1, 0, 'C', 1);
-        $pdf->Cell(10, 4,  (get_text('AgeCl')), 1, 0, 'C', 1);
         $pdf->Cell(8, 4,  (get_text('SubCl','Tournament')), 1, 0, 'C', 1);
         $pdf->Cell(10, 4,  (get_text('Division')), 1, 0, 'C', 1);
         $pdf->Cell(10, 4,  (get_text('Cl')), 1, 0, 'C', 1);
@@ -110,9 +109,8 @@ while($MyRow=safe_fetch($Rs)) {
         $pdf->SetDefaultColor();
     $pdf->Cell( 4, 4, $MyRow->Session, 'RTB', 0, 'R', $MyRow->OpDone);
     $pdf->Cell(11, 4, $MyRow->TargetNo, 1, 0, 'R', $MyRow->OpDone);
-    $pdf->Cell(41, 4, getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->EnMiddleName), 1, 0, 'L', $MyRow->OpDone);
+    $pdf->Cell(51, 4, getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->EnMiddleName), 1, 0, 'L', $MyRow->OpDone);
     $pdf->Cell(12, 4, $MyRow->DoB, 1, 0, 'R', $MyRow->OpDone);
-    $pdf->Cell(10, 4, $MyRow->AgeClass, 1, 0, 'C', $MyRow->OpDone);
     $pdf->Cell( 8, 4, $MyRow->SubclassDescripton, 1, 0, 'C', $MyRow->OpDone);
     $pdf->Cell(10, 4, $MyRow->DivCode, 1, 0, 'C', $MyRow->OpDone);
     $pdf->Cell(10, 4, $MyRow->ClassCode, 1, 0, 'C', $MyRow->OpDone);

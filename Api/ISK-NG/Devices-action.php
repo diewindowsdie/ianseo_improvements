@@ -214,8 +214,14 @@ if(isset($_REQUEST['Action']) && preg_match("/^(tSendMessage|tPersonal|tSendQrSe
             }
             break;
         case 'tGroupTarget':
-            if(preg_match("/^[0-9]+$/",$_REQUEST["newGrp"],$tmpGrp) AND $tmpGrp[0]<=26 AND preg_match("/^[0-9]+$/",$_REQUEST["newTgt"],$tmpTgt) AND $tmpTgt[0]<=999) {
-				$SQL[] = "IskDvGroup={$tmpGrp[0]}, IskDvTarget={$tmpTgt[0]}, IskDvSetup='', IskDvNote = " . StrSafe_DB($_REQUEST["newNote"]);
+            if(preg_match("/^[0-9]+$/",$_REQUEST["newGrp"],$tmpGrp) AND $tmpGrp[0]<=26 AND preg_match("/^[0-9]*$/",$_REQUEST["newTgt"],$tmpTgt) AND $tmpTgt[0]<=999) {
+                if (!$tmpTgt[0]) {
+                    $tmpTgt[0] = 'null';
+                }
+				$SQL[] = "IskDvGroup={$tmpGrp[0]}, IskDvTarget={$tmpTgt[0]}, IskDvSetup=''";
+            }
+            if ($_REQUEST["newNote"]) {
+                $SQL[] = "IskDvNote = " . StrSafe_DB($_REQUEST["newNote"]);
             }
             break;
         case 'tGroup':
@@ -262,7 +268,7 @@ if(isset($_REQUEST['Action']) && preg_match("/^(tSendMessage|tPersonal|tSendQrSe
     }
 }
 
-$SQL = "SELECT IskDevices.*, if(IskDvLastSeen=0, 0, TIMESTAMPDIFF(second,CONVERT_TZ(IskDvLastSeen,'+00:00','{$_SESSION['TourTimezone']}'),now())) as Seconds, 	
+$SQL = "SELECT IskDevices.*, coalesce(IskDvNote, '') as IskDvNote, if(IskDvLastSeen=0, 0, TIMESTAMPDIFF(second,CONVERT_TZ(IskDvLastSeen,'+00:00','{$_SESSION['TourTimezone']}'),now())) as Seconds, 	
 	least(3, round(TIMESTAMPDIFF(second,CONVERT_TZ(IskDvLastSeen,'+00:00','{$_SESSION['TourTimezone']}'),now())/65)) as Difference
 	FROM IskDevices
 	ORDER BY IskDvGroup, IskDvTournament={$_SESSION['TourId']} desc, IskDvTarget+0, IskDvProActive desc, IskDvAppVersion desc, IskDvProConnected desc, IskDvTargetReq, IskDvCode";
@@ -295,7 +301,7 @@ if (safe_num_rows($q)>0) {
 		$isUsed=($setup=json_decode($r->IskDvSetup) and $setup->action=='reconfigure' and $r->IskDvTournament==$_SESSION['TourId'] and $setup->toCode==$_SESSION['TourCode'] and $r->IskDvProActive);
         $Json['Devices'][]=array(
             'tDevice' => $r->IskDvDevice ,
-            'tNote' => $r->IskDvNote,
+            'tNote' => $r->IskDvNote, //
             'tGId' => intval($r->IskDvGroup) ,
             'tTourId' => ($r->IskDvTournament==$_SESSION['TourId']),
             'tCode' => $r->IskDvCode ,

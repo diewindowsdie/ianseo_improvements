@@ -39,6 +39,11 @@ foreach($PdfData->rankData['events'] as $Event => $section) {
   		$pdf->AddPage();
 		$pdf->SetFont($pdf->FontStd,'B',10);
 		$pdf->Cell(190, 6, $PdfData->Description, 1, 1, 'C', 1);
+
+        $pdf->SetXY(170,$pdf->GetY()-6);
+        $pdf->SetFont($pdf->FontStd,'',6);
+        $pdf->Cell(0, 6, $pdf->Continue, 0, 1, 'R', 0);
+
 		$pdf->SetFont($pdf->FontStd,'B',7);
 		$pdf->Cell(40, 6, $PdfData->EvName, 1, 0, 'L', 1);
 		$pdf->Cell(15, 6, $PdfData->TourWhen, 1, 0, 'C', 1);
