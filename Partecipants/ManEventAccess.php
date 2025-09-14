@@ -49,8 +49,8 @@
 
 	include('Common/Templates/head.php');
     echo '<table class="Tabella">'.
-        '<tr><th class="Title" colspan="13">' . get_text('EventAccess','Tournament') . '</th></tr>'.
-        '<tr class="Divider"><td colspan="13"></td></tr>' .
+        '<tr><th class="Title" colspan="12">' . get_text('EventAccess','Tournament') . '</th></tr>'.
+        '<tr class="Divider"><td colspan="12"></td></tr>' .
         '<tr><td colspan="13" class="Bold">' .
             '<form>'.
                 '<div style="display:flex;justify-content: space-around;flex-wrap: wrap">' .
@@ -64,9 +64,11 @@
             '</form>'.
         '</td></tr>'.
         '<tr class="Divider"><td colspan="13"></td></tr>';
-	$Select = "SELECT EnId, EnCode, EnFirstName, EnName, EnTournament, EnSex, EnDivision, EnClass, CoCode, CoName, EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent, EnTeamMixEvent, EnWChair, EnDoubleSpace 
+	$Select = "SELECT EnId, EnCode, EnFirstName, EnName, EnMiddleName, EnTournament, EnSex, EnDivision, EnClass, c.CoCode, c.CoNameComplete, c2.CoNameComplete as CoNameComplete2, c3.CoNameComplete as CoNameComplete3, EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent, EnTeamMixEvent, EnWChair, EnDoubleSpace 
 		FROM Entries 
-		LEFT JOIN Countries ON EnCountry=CoId AND EnTournament=CoTournament
+		LEFT JOIN Countries c ON EnCountry=c.CoId AND EnTournament=c.CoTournament
+		LEFT JOIN Countries c2 ON EnCountry2=c2.CoId AND EnTournament=c2.CoTournament
+		LEFT JOIN Countries c3 ON EnCountry3=c3.CoId AND EnTournament=c3.CoTournament
 		left join EventClass on EcTournament=EnTournament and EcDivision=EnDivision and EcClass=EnClass and EcTeamEvent=0
 		WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 ";
 	if(!empty($_REQUEST['Div'])) {
@@ -76,13 +78,13 @@
 	    $Select.=" and EnClass like " .StrSafe_DB($_REQUEST['Class']);
     }
 	if(!empty($_REQUEST['Country'])) {
-        $Select.= " and " . assembleWhereCondition(array('CoCode','CoName'),array($_REQUEST['Country']));
+        $Select.= " and " . assembleWhereCondition(array('c.CoCode', 'c2.CoCode', 'c3.CoCode', 'c.CoNameComplete','c2.CoNameComplete','c3.CoNameComplete'),array($_REQUEST['Country']));
     }
 	if(!empty($_REQUEST['Event'])) {
 	    $Select.=" and EcCode like " .StrSafe_DB($_REQUEST['Event']);
     }
 	if(!empty($_REQUEST['Name'])) {
-        $Select.= " and " . assembleWhereCondition(array('EnFirstName','EnName'),array($_REQUEST['Name']));
+        $Select.= " and " . assembleWhereCondition(array('EnFirstName','EnName', 'EnMiddleName'),array($_REQUEST['Name']));
     }
 
     $Select.=" group by EnId ";
@@ -148,7 +150,6 @@
 		echo '<tr>' .
                 '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . go_get('Order',$Order=='ordCode' ? 'ordCodeDesc' : 'ordCode') . '">' . get_text('Code','Tournament') . '</a></td>' .
                 '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . go_get('Order',$Order=='ordName' ? 'ordNameDesc' : 'ordName') . '">' . get_text('Archer') . '</a></td>' .
-                '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . go_get('Order',$Order=='ordCountry' ? 'ordCountryDesc' : 'ordCountry') . '">' . get_text('Country') . '</a></td>' .
                 '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . go_get('Order',$Order=='ordCountry' ? 'ordCountryDesc' : 'ordCountry') . '">' . get_text('NationShort','Tournament') . '</a></td>' .
                 '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . go_get('Order',$Order=='ordDiv' ? 'ordDivDesc' : 'ordDiv') . '">' . get_text('Div') . '</a></td>'.
                 '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . go_get('Order',$Order=='ordCl' ? 'ordClDesc' : 'ordCl') . '">' . get_text('Cl') . '</a></td>' .
@@ -161,7 +162,7 @@
                 '<td class="Title"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . go_get('Order',$Order=='ordXb' ? 'ordXbDesc' : 'ordXb') . '">' . get_text('DoubleSpace', 'Tournament') . '</a></td>' .
             '</tr>';
         echo '<tr>'.
-                '<th colspan="6">&nbsp;</th>'.
+                '<th colspan="5">&nbsp;</th>'.
                 '<th class="Center"><input type="checkbox" id="d_e_EnIndClEvent"><a onclick="UpdateAllFields(\'d_e_EnIndClEvent\')">'.get_text('ToAll').'</a></th>'.
                 '<th class="Center"><input type="checkbox" id="d_e_EnIndFEvent"><a onclick="UpdateAllFields(\'d_e_EnIndFEvent\')">'.get_text('ToAll').'</a></th>'.
                 '<th class="Center"><input type="checkbox" id="d_e_EnTeamClEvent"><a onclick="UpdateAllFields(\'d_e_EnTeamClEvent\')">'.get_text('ToAll').'</a></th>'.
@@ -184,9 +185,8 @@
 
             echo '<tr id="Row_' . $MyRow->EnId . '" class="data ' . ($CurRow++ % 2 ? ' OtherColor' : '') . '">'.
                     '<td>' . $MyRow->EnCode . '</td>'.
-                    '<td>' . $MyRow->EnFirstName . ' ' . $MyRow->EnName . '</td>'.
-                    '<td>' . $MyRow->CoCode . '</td>' .
-                    '<td>' . $MyRow->CoName . '</td>' .
+                    '<td>' . getFullAthleteName($MyRow->EnFirstName, $MyRow->EnName, $MyRow->EnMiddleName) . '</td>'.
+                    '<td>' . getFullCountryName($MyRow->CoNameComplete, $MyRow->CoNameComplete2, $MyRow->CoNameComplete3) . '</td>' .
                     '<td class="Center">' . $MyRow->EnDivision . '</td>' .
                     '<td class="Center">' . $MyRow->EnClass . '</td>' .
                     '<td class="Center ckContainer" title="' . get_text('IndClEvent', 'Tournament') .'">' . $ChkIndCl . '</td>' .
