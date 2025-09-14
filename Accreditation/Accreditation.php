@@ -117,14 +117,13 @@ if (!IsBlocked(BIT_BLOCK_ACCREDITATION)) {
 
 	$SetRap=$_SESSION['SetRap'];
 
-	if ($SetRap==1) {
 		// il conto vale solo per l'accredito (Operazione 1)
 		$Select = "SELECT SUM(APPrice) AS Quanto, ToCurrency "
 			. "FROM "
 			. "Entries INNER JOIN AccEntries ON EnId=AEId AND EnPays=1 AND EnTournament=AETournament AND EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " "
-			. "INNER JOIN AccPrice ON CONCAT(EnDivision,EnClass) LIKE APDivClass AND APTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND AERapp='1' "
+			. "INNER JOIN AccPrice ON CONCAT(EnDivision,EnClass) LIKE APDivClass AND APTournament= " . StrSafe_DB($_SESSION['TourId'])
 			. "LEFT JOIN Tournament on EnTournament=ToID "
-			. "WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . "  AND AEOperation='1' AND AEFromIP=INET_ATON(" . StrSafe_DB(($_SERVER['REMOTE_ADDR']=='::1' ? '127.0.0.1':$_SERVER['REMOTE_ADDR'])) .") "
+			. "WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . "  AND AEOperation='3' AND AEFromIP=INET_ATON(" . StrSafe_DB(($_SERVER['REMOTE_ADDR']=='::1' ? '127.0.0.1':$_SERVER['REMOTE_ADDR'])) .") "
 			. "GROUP BY ToId ";
 
 		$Rs=safe_r_sql($Select);
@@ -137,7 +136,6 @@ if (!IsBlocked(BIT_BLOCK_ACCREDITATION)) {
 			}
 			$StrConto=get_text('Bill','Tournament') . ': ' . $Euro . '&nbsp;' . $row->ToCurrency;
 		}
-	}
 }
 
 $ONLOAD=' onLoad="javascript:document.Frm.bib.focus()"';
@@ -168,7 +166,6 @@ $MyRowCounter = safe_fetch($Rs);
     </tr>
     <tr>
       <th colspan="6" class="Title"><?php
-          echo '<span class="mx-2"><input type="checkbox" class="chk_Turni" value="0" onclick="checkSession()" '.(in_array('0', $_SESSION['chk_Turni']) ? 'checked="checked"' : '').'>0</span>';
           foreach (GetSessions('Q',true) as $s) {
               echo '<span class="mx-2"><input type="checkbox" class="chk_Turni" value="' . $s->SesOrder . '" onclick="checkSession()" onclick="checkSession()" '.(in_array($s->SesOrder, $_SESSION['chk_Turni']) ? 'checked="checked"' : '').'>' . $s->Descr . '</span>';
           }
@@ -300,8 +297,8 @@ $MyRowCounter = safe_fetch($Rs);
 			print '</td>';
 			print '<td class="Center">' . $MyRow->QuSession . '</td>';
 			print '<td class="Center">' . $MyRow->TargetNo . '</td>';
-			print '<td>' . $MyRow->EnFirstName . ' ' . $MyRow->EnName . (!is_null($MyRow->AEOperation) ? ' <span class="Link" onclick="delAccr(' . $MyRow->EnId . ')">[' . $DelAccr . ']</a>':'') . '</td>';
-			print '<td>' . $MyRow->CoCode . ' - ' . $MyRow->CoName . '</td>';
+			print '<td>' . getFullAthleteName($MyRow->EnFirstName, $MyRow->EnName, $MyRow->EnMiddleName) . (!is_null($MyRow->AEOperation) ? ' <br><span class="Link" onclick="delAccr(' . $MyRow->EnId . ')">[' . $DelAccr . ']</a>':'') . '</td>';
+			print '<td>' . getFullCountryName($MyRow->CoNameComplete, $MyRow->CoNameComplete2, $MyRow->CoNameComplete3) . '</td>';
 			print '<td class="Center">' . $MyRow->EnDivision . '</td>';
 			print '<td class="Center">' . $MyRow->EnClass . '</td>';
 			print '<td class="Center">' . ($MyRow->EnIndClEvent=='1' ? get_text('Yes'): get_text('No')) . '</td>';

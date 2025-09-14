@@ -50,7 +50,6 @@ include('Common/Templates/head.php');
 
 	print '<tr>';
 	print '<td class="Center">';
-	print '<input type="checkbox" name="chk_Turni[]" value="0">0<br>' . "\n";
 	foreach ($sessions as $s)
 	{
 		print '<input type="checkbox" name="chk_Turni[]" value="' . $s->SesOrder . '">' . $s->Descr . '<br>' . "\n";

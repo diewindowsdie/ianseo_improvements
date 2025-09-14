@@ -43,10 +43,15 @@ function getAccrQuery($Id=0) {
 		$Where[]="EnId=$Id";
 	} else {
 		if(!empty($_REQUEST['txt_Cognome'])) {
-			$Where[]="concat(EnFirstName,' ',EnName, ' ', EnCode) LIKE '%" . StrSafe_DB($_REQUEST['txt_Cognome'], true) . "%'";
+			$Where[]="concat(EnFirstName,' ',EnName, ' ', EnMiddleName, ' ', EnCode) LIKE '%" . StrSafe_DB($_REQUEST['txt_Cognome'], true) . "%'";
 		}
 		if(!empty($_REQUEST['txt_Societa'])) {
-			$Where[]="(CoCode LIKE '%" . StrSafe_DB($_REQUEST['txt_Societa'], true) . "%' OR CoName LIKE '%" . StrSafe_DB($_REQUEST['txt_Societa'], true) . "%')";
+			$Where[]="(c.CoCode LIKE '%" . StrSafe_DB($_REQUEST['txt_Societa'], true) . "%'" .
+			" OR c2.CoCode LIKE '%" . StrSafe_DB($_REQUEST['txt_Societa'], true) . "%'" .
+            " OR c3.CoCode LIKE '%" . StrSafe_DB($_REQUEST['txt_Societa'], true) . "%'" .
+			" OR c.CoNameComplete LIKE '%" . StrSafe_DB($_REQUEST['txt_Societa'], true) . "%'" .
+            " OR c2.CoNameComplete LIKE '%" . StrSafe_DB($_REQUEST['txt_Societa'], true) . "%'" .
+			" OR c3.CoNameComplete LIKE '%" . StrSafe_DB($_REQUEST['txt_Societa'], true) . "%')";
 		}
 		if(!empty($_REQUEST['txt_Category'])) {
 			$Where[]="concat(EnDivision, EnClass) LIKE '%" . StrSafe_DB($_REQUEST['txt_Category'], true) . "%'";
@@ -59,14 +64,16 @@ function getAccrQuery($Id=0) {
 			}
 		}
 	}
-	return "Select EnId,EnTournament,EnDivision,EnClass,EnCountry,CoCode,CoName,EnCode,EnName,EnFirstName,EnStatus,
+	return "Select EnId,EnTournament,EnDivision,EnClass,EnCountry,c.CoCode,c.CoNameComplete as CoNameComplete, c2.CoNameComplete as CoNameComplete2, c3.CoNameComplete as CoNameComplete3,EnCode,EnName,EnFirstName,EnMiddleName,EnStatus,
 			EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,EnTeamMixEvent,EnPays,QuSession,SUBSTRING(QuTargetNo,2) As TargetNo,
 			m.AEOperation, PhEnId
 			, ".($_SESSION['chk_Photo'] ? 'PhEnId is not null and PhPhoto!=""' : '1')." as HasPhoto
 			, ".($_SESSION['chk_Paid']==1 ? 'p.AEId is not null' : '1')." as HasPaid
 			, ".($_SESSION['chk_Accredited']==1 ? 'a.AEId is not null' : '1')." as IsAccredited
 		FROM Entries
-		LEFT JOIN Countries ON EnCountry=CoId
+		LEFT JOIN Countries c ON EnCountry=c.CoId
+		LEFT JOIN Countries c2 ON EnCountry2=c2.CoId
+		LEFT JOIN Countries c3 ON EnCountry3=c3.CoId
 		INNER JOIN Qualifications ON EnId=QuId AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . "
 		LEFT JOIN AccEntries m ON EnId=m.AEId AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND m.AEOperation=" . StrSafe_DB($_SESSION['AccOp']) . "
 		LEFT JOIN AccEntries p ON EnId=p.AEId AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND p.AEOperation=3
