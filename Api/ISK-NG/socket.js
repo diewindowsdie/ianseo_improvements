@@ -71,7 +71,7 @@ function initSocket() {
                     break;
                 case 'socketBroadcast':
                 case 'notify':
-                    $('#ctrMastersNo').html(data.controllersNo + "&nbsp;-&nbsp;");
+                    $('#ctrMastersNo').html(data.controllersNo + ",&nbsp;");
                     if (data.level & BCastDevices && typeof updateDevices !== 'undefined' && $.isFunction(updateDevices)) {
                         updateDevices();
                     }

@@ -122,7 +122,7 @@ echo '<tr>'.
 echo '<tr>'.
     (($_SESSION["UseApi"] === ISK_NG_LIVE_CODE) ?
         '<td id="ctrConnStatus" class="socketOFF" ondblclick="changeMasterSocket()">DISCONNECTED</td>'.
-        '<td class="txtFixW"><span id="ctrMastersNo" class="TargetAssigned"></span><span id="ctrMasters"></span></td>'
+        '<td class="txtFixW"><span class="TargetAssigned">' . get_text("Total", "ISK") . ': </span><span id="ctrMastersNo" class="TargetAssigned"></span><span>' . get_text("YourId", "Api") . ': </span><span id="ctrMasters"></span></td>'
         : ''
     ).
     '<td><form method="POST" enctype="multipart/form-data"><input type="file" name="devices" class="loadParams w-80"><input class="iskButton" type="submit" class="w-15" value="'.get_text('CmdImport', 'Tournament').'"></form></td>'.
