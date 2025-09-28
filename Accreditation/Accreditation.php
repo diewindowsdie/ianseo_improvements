@@ -116,26 +116,27 @@ if (!IsBlocked(BIT_BLOCK_ACCREDITATION)) {
 	}
 
 	$SetRap=$_SESSION['SetRap'];
+}
 
-		// il conto vale solo per l'accredito (Operazione 1)
-		$Select = "SELECT SUM(APPrice) AS Quanto, ToCurrency "
-			. "FROM "
-			. "Entries INNER JOIN AccEntries ON EnId=AEId AND EnPays=1 AND EnTournament=AETournament AND EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " "
-			. "INNER JOIN AccPrice ON CONCAT(EnDivision,EnClass) LIKE APDivClass AND APTournament= " . StrSafe_DB($_SESSION['TourId'])
-			. "LEFT JOIN Tournament on EnTournament=ToID "
-			. "WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . "  AND AEOperation='3' AND AEFromIP=INET_ATON(" . StrSafe_DB(($_SERVER['REMOTE_ADDR']=='::1' ? '127.0.0.1':$_SERVER['REMOTE_ADDR'])) .") "
-			. "GROUP BY ToId ";
+//сумму будем показывать, даже если редактирование залочено
+// il conto vale solo per l'accredito (Operazione 1)
+$Select = "SELECT SUM(APPrice) AS Quanto, ToCurrency "
+        . "FROM "
+        . "Entries INNER JOIN AccEntries ON EnId=AEId AND EnPays=1 AND EnTournament=AETournament AND EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " "
+        . "INNER JOIN AccPrice ON CONCAT(EnDivision,EnClass) LIKE APDivClass AND APTournament= " . StrSafe_DB($_SESSION['TourId'])
+        . "LEFT JOIN Tournament on EnTournament=ToID "
+        . "WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . "  AND AEOperation='3' "
+        . "GROUP BY ToId ";
 
-		$Rs=safe_r_sql($Select);
-		//print $Select;exit;
-		if (safe_num_rows($Rs)==1) {
-			$Euro = NumFormat(0,2);
-			$row=safe_fetch($Rs);
-			if (!is_null($row->Quanto)) {
-				$Euro=NumFormat($row->Quanto,2);
-			}
-			$StrConto=get_text('Bill','Tournament') . ': ' . $Euro . '&nbsp;' . $row->ToCurrency;
-		}
+$Rs=safe_r_sql($Select);
+//print $Select;exit;
+if (safe_num_rows($Rs)==1) {
+    $Euro = NumFormat(0,2);
+    $row=safe_fetch($Rs);
+    if (!is_null($row->Quanto)) {
+        $Euro=NumFormat($row->Quanto,2);
+    }
+    $StrConto=get_text('Bill','Tournament') . ': ' . $Euro . '&nbsp;' . $row->ToCurrency;
 }
 
 $ONLOAD=' onLoad="javascript:document.Frm.bib.focus()"';
