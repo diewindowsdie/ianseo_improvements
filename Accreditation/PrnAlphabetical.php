@@ -45,6 +45,7 @@ $MyQuery.= "ORDER BY FirstName, Name, TargetNo ";
 $Rs=safe_r_sql($MyQuery);
 $StartLetter = ".";
 $ShowStatusLegend = false;
+$isStartPage = true;
 while($MyRow=safe_fetch($Rs)) {
     if ($StartLetter != $MyRow->Initial || !$pdf->SamePage(4)) {
         $TmpSegue = !($pdf->SamePage(4));
@@ -52,8 +53,15 @@ while($MyRow=safe_fetch($Rs)) {
         if($StartLetter != $MyRow->Initial && !$pdf->SamePage(20)) {
             $TmpSegue=false;
             $pdf->AddPage();
+            $isStartPage = true;
         } else if($StartLetter != ".") {
             $pdf->SetY($pdf->GetY() + 5);
+        }
+        if ($TmpSegue || $isStartPage) {
+            $pdf->SetDefaultColor();
+            $pdf->SetFont($pdf->FontStd,'B',10);
+            $pdf->Cell(190, 8, get_text($OpDetails, "Tournament"), 0, 1, 'C');
+            $isStartPage = false;
         }
         $StartLetter = $MyRow->Initial;
         $pdf->SetDefaultColor();

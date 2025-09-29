@@ -61,6 +61,8 @@ $OldTeam='#@#@#';
 while($MyRow=safe_fetch($Rs)) {
     $pdf->SetDefaultColor();
     if ($FirstTime || !$pdf->SamePage(4)) {
+        $pdf->SetFont($pdf->FontStd,'B',10);
+        $pdf->Cell(190, 8, get_text($OpDetails, "Tournament"), 0, 1, 'C');
         $pdf->SetFont($pdf->FontStd,'B',7);
         $pdf->Cell(42+($payDetails ? 0:15), 4,  (get_text('Country')), 1, 0, 'L', 1);
         $pdf->Cell(7, 4,  (get_text('SessionShort','Tournament')), 1, 0, 'C', 1);
