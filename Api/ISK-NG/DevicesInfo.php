@@ -49,7 +49,7 @@ echo '<tr>'.
     '</tr>';
 echo '<tr>'.
     '<td id="ctrConnStatus" class="socketOFF" ondblclick="changeMasterSocket()">DISCONNECTED</td>'.
-    '<td class="txtFixW"><span class="TargetAssigned">' . get_text("Total", "ISK") . ': </span><span id="ctrMastersNo" class="TargetAssigned"></span><span>' . get_text("YourId", "Api") . ': </span><span id="ctrMasters"></span></td>' .
+    '<td class="txtFixW"><span class="TargetAssigned">' . get_text("Total", "ISK") . ': </span><span id="ctrMastersNo" class="TargetAssigned">0</span><span>' . get_text("YourId", "Api") . ': </span><span id="ctrMasters"></span></td>' .
     '<td class="Center"><select id="infoGroup">'.implode($grpOptions).'</select></td>'.
     '<td><input type="text" id="infoTarget" class="w-100"></td>'.
     '<td class="Center"><input type="button" value="'.get_text('CmdOk').'" onclick="getInfo()"></td>'.

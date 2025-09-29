@@ -28,14 +28,14 @@ function initSocket() {
         socket = new WebSocket(SocketProtocol+"://"+SocketIP+':'+SocketPort+"/ngSocket");
         socket.onopen = (msg) => {
             $('#ctrConnStatus').html(socketStatus[socket.readyState]).addClass('socketOUTDATED').removeClass('socketOFF socketON');
-            $('#ctrMastersNo').html('');
+            $('#ctrMastersNo').html('0,&nbsp;');
             $('#ctrMasters').html('');
             sendPayload({action: "handshake", mode: "controller", tournament: tourCode});
         };
 
         socket.onclose = (msg) => {
             $('#ctrConnStatus').html(socketStatus[socket.readyState]).removeClass('socketON socketOUTDATED').addClass('socketOFF');
-            $('#ctrMastersNo').html('');
+            $('#ctrMastersNo').html('0,&nbsp;');
             $('#ctrMasters').html('');
             if(typeof connectedStatus !== 'undefined' && $.isFunction(connectedStatus)) {
                 connectedStatus([]);
@@ -46,7 +46,7 @@ function initSocket() {
 
         socket.onerror = (msg) => {
             $('#ctrConnStatus').html(socketStatus[socket.readyState]).removeClass('socketON socketOUTDATED').addClass('socketOFF');
-            $('#ctrMastersNo').html('');
+            $('#ctrMastersNo').html('0,&nbsp;');
             $('#ctrMasters').html('');
             if(typeof connectedStatus !== 'undefined' && $.isFunction(connectedStatus)) {
                 connectedStatus([]);

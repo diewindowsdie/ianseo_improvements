@@ -43,7 +43,7 @@ echo '<tr>'.
 echo '<tr>'.
     (($_SESSION["UseApi"] === ISK_NG_LIVE_CODE) ?
         '<td id="ctrConnStatus" class="socketOFF" ondblclick="changeMasterSocket()">DISCONNECTED</td>'.
-        '<td class="txtFixW"><span class="TargetAssigned">' . get_text("Total", "ISK") . ': </span><span id="ctrMastersNo" class="TargetAssigned"></span><span>' . get_text("YourId", "Api") . ': </span><span id="ctrMasters"></span></td>'.
+        '<td class="txtFixW"><span class="TargetAssigned">' . get_text("Total", "ISK") . ': </span><span id="ctrMastersNo" class="TargetAssigned">0</span><span>' . get_text("YourId", "Api") . ': </span><span id="ctrMasters"></span></td>'.
         '<td class="txtFixW"><span id="runningDeviceId" class="TargetAssigned"></span><span class="ml-3" id="qrLastRead"></span></td>'
         : ''
     ).
