@@ -235,6 +235,6 @@ $lang['VerNotVerifiedErr']='Não foi possível verificar a versão do aplicativo
 $lang['Version']='Versão';
 $lang['VisibleAP']='Access points visíveis (mais forte primeiro)';
 $lang['WifiConn']='Wi-Fi conectado';
-$lang['Winner']='Vencedor';
+$lang['Winner']='Vitória';
 $lang['Yes']='Sim';
 ?>
