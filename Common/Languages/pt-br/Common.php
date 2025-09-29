@@ -472,6 +472,7 @@ $lang['Rank']='Ranking';
 $lang['RankingInd']='Rankings Individuais - Partidas';
 $lang['Rankings']='Rankings';
 $lang['RankingSq']='Rankings por Equipes- Rounds Eliminatórios e Finais';
+$lang['RankScoreShort']='Qualificatório';
 $lang['RB']='Arco Recurvo';
 $lang['RecalcIndTeamsRank']='Rankings individual e por equipes recalculados corretamente';
 $lang['Review']='Comentários';
@@ -570,6 +571,6 @@ $lang['W']='Feminino';
 $lang['WADivision']='Divisão equivalente na WA';
 $lang['WA_Pool4']='World Archery - 4 Grupos';
 $lang['WG_Pool2']='Jogos Mundiais - 2 grupos';
-$lang['Winner']='Vencedor';
+$lang['Winner']='Vitória';
 $lang['Yes']='Sim';
 ?>

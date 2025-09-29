@@ -3894,12 +3894,16 @@ Class Scheduler {
                                                         // Get which session and distance is shot at this time...
                                                         $Sql="select * from DistanceInformation where DiTournament={$this->TourId} and DiType='{$Item->Type}' and DiDistance=$Distance and ((DiDay='$Date' and DiStart='$Time') or (DiDay=0 and DiSession=$Session))";
                                                         $t=safe_r_sql($Sql);
+                                                        $SesFilter='';
+                                                        if($this->SesLocations) {
+                                                            $SesFilter=" and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).") and if(SesFirstTarget>0, QuTarget between SesFirstTarget and SesFirstTarget+SesTar4Session-1, true)";
+                                                        }
                                                         while($u=safe_fetch($t)) {
                                                             $Sql="select distinct SesAth4Target, cast(substr(QuTargetNo,2) as unsigned) TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart from
                                                                 Entries
                                                                 inner join Qualifications on EnId=QuId
                                                                 inner join DistanceInformation on QuSession=DiSession and DiTournament={$this->TourId} and DiDistance={$u->DiDistance} and ((DiDay='$Date' and DiStart='$Time') or (DiDay=0 and DiSession=$Session))
-                                                                inner join Session on SesOrder=QuSession and SesType='{$Item->Type}' and SesTournament={$this->TourId}
+                                                                inner join Session on SesOrder=QuSession and SesType='{$Item->Type}' and SesTournament={$this->TourId} $SesFilter
                                                                 left join TournamentDistances on concat(trim(EnDivision),trim(EnClass)) like TdClasses and EnTournament=TdTournament
                                                                 left join (select TfId, TarDescr, TfW{$u->DiDistance} as TarDim, TfTournament from TargetFaces inner join Targets on TfT{$u->DiDistance}=TarId) tf on TfTournament=EnTournament and TfId=EnTargetFace
                                                                 where EnTournament={$this->TourId}
@@ -4380,6 +4384,10 @@ Class Scheduler {
 
                                                         }
                                                     } else {
+                                                        $SesFilter='';
+                                                        if($this->SesLocations) {
+                                                            $SesFilter=" and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).") and if(SesFirstTarget>0, QuTarget between SesFirstTarget and SesFirstTarget+SesTar4Session-1, true)";
+                                                        }
                                                         $Sql="select * from DistanceInformation where DiTournament={$this->TourId} and DiDay='$Date' and DiWarmStart='$Time'";
                                                         $t=safe_r_sql($Sql);
                                                         while($u=safe_fetch($t)) {
@@ -4387,7 +4395,7 @@ Class Scheduler {
                                                                 Entries
                                                                 inner join Qualifications on EnId=QuId
                                                                 inner join DistanceInformation on QuSession=DiSession and DiTournament={$this->TourId} and DiDistance={$u->DiDistance} and DiDay='$Date' and DiWarmStart='$Time'
-                                                                inner join Session on SesOrder=QuSession and SesType='{$Item->Type}' and SesTournament={$this->TourId}
+                                                                inner join Session on SesOrder=QuSession and SesType='{$Item->Type}' and SesTournament={$this->TourId} $SesFilter
                                                                 left join TournamentDistances on concat(trim(EnDivision),trim(EnClass)) like TdClasses and EnTournament=TdTournament
                                                                 left join (select TfId, TarDescr, TfW{$u->DiDistance} as TarDim, TfTournament from TargetFaces inner join Targets on TfT{$u->DiDistance}=TarId) tf on TfTournament=EnTournament and TfId=EnTargetFace
                                                                 where EnTournament={$this->TourId}

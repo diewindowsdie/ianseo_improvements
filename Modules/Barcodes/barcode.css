@@ -71,10 +71,19 @@ tr.newTgt>td {
     color: var(--header-dark);
     background-color: var(--bg-cell-header);
     flex:1 0 30%;
-    padding: 0.4em;}
+    padding: 0.4em;
+}
 .matchHighlight div.Score {
     flex:1 0 70%;
     background-color:white;
     text-align:center;
     font-size: 1.5em;
-    color: black;}
+    color: black;
+}
+
+select, select option {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50vw;
+}
