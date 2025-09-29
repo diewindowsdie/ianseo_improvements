@@ -187,8 +187,10 @@
 //		echo '</form></td>';
 // Bill
 	echo '<td width="18%" class="Center"><form action="PrnBill.php" method="get" target="PrintOut">&nbsp;';
-	echo '<input type="hidden" name="OperationType" value="Accreditation">';
+	echo '<input type="hidden" name="OperationType" value="Payments">';
 	echo '<br />' . get_text('Session') . '&nbsp;&nbsp;&nbsp;'. $ComboSessions;
+    echo '<br />&nbsp;<br />';
+    echo 'Поле региона:&nbsp;&nbsp;&nbsp;<select name="countryIndex"><option value="1" selected="selected">Регион 1</option><option value="2">Регион 2</option><option value="3">Регион 3</option></select>';
 	echo '<br />&nbsp;<br />';
 	echo get_text('Country') . '&nbsp;&nbsp;&nbsp;<input name="CountryName" type="text" size="20" maxlength="30">';
 	echo '<br />&nbsp;<br />';

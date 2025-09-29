@@ -4,15 +4,20 @@ checkFullACL(AclAccreditation, 'acStandard', AclReadOnly);
 require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/Fun_Number.inc.php');
 
-$OpDetails = "Accreditation";
+$OpDetails = "Payments";
 if(isset($_REQUEST["OperationType"]))
 	$OpDetails = $_REQUEST["OperationType"];
 
 if(!isset($isCompleteResultBook))
 	$pdf = new ResultPDF((get_text('StartlistCountry','Tournament')));
 
+$countryField = "EnCountry";
+if (isset($_REQUEST["countryIndex"])) {
+    $countryField = "EnCountry" . ($_REQUEST["countryIndex"] == "1" ? '' : $_REQUEST["countryIndex"]);
+}
+
 $TmpWhere="";
-if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z]*$/i",str_replace(" ","",$_REQUEST["CountryName"])))
+if(isset($_REQUEST["CountryName"]))
 {
 	foreach(explode(",",$_REQUEST["CountryName"]) as $Value)
 	{
@@ -20,14 +25,14 @@ if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z]*$/i",str_replace(
 		if(preg_match("/^([A-Z0-9]*)\-([A-Z0-9]*)$/i",str_replace(" ","",$Value),$Tmp))
 			$TmpWhere .= "(CoCode >= " . StrSafe_DB(strtoupper($Tmp[1]) ) . " AND CoCode <= " . StrSafe_DB(strtoupper($Tmp[2].chr(255))) . ") OR ";
 		else
-			$TmpWhere .= "CoCode LIKE " . StrSafe_DB(strtoupper(trim($Value)) . "%") . " OR CONCAT(EnFirstName, ' ', EnName) LIKE " . StrSafe_DB(strtoupper(trim($Value)) . "%") . " OR ";
+			$TmpWhere .= "CoCode LIKE " . StrSafe_DB("%" . strtoupper(trim($Value)) . "%") . " OR CoNameComplete LIKE " . StrSafe_DB("%" . strtoupper(trim($Value)) . "%") . " OR ";
 	}
 	$TmpWhere = substr($TmpWhere,0,-3);
 }
 
 $MyQuery = "SELECT EnCode as Bib, EnPays,EnName AS Name, upper(EnFirstName) AS FirstName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, APPrice ";
 $MyQuery.= "FROM Entries AS e ";
-$MyQuery.= "INNER JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament ";
+$MyQuery.= "INNER JOIN Countries AS c ON e." . $countryField . "=c.CoId AND e.EnTournament=c.CoTournament ";
 $MyQuery.= "INNER JOIN Qualifications AS q ON e.EnId=q.QuId ";
 $MyQuery.= "INNER JOIN AccEntries AS ae ON e.EnId=ae.AEId AND e.EnTournament=ae.AETournament ";
 $MyQuery.= "AND ae.AEOperation=(SELECT AOTId FROM AccOperationType WHERE AOTDescr=" . StrSafe_DB($OpDetails) . ") ";
@@ -65,8 +70,7 @@ if($Rs)
 		   	$pdf->SetFont($pdf->FontStd,'',8);
 			$pdf->Cell($pdf->GetStringWidth(get_text('Country'))+5, 10, (get_text('Country')), 0, 0, 'L', 0);
 		   	$pdf->SetFont($pdf->FontStd,'B',12);
-			$pdf->Cell(15, 10,  $MyRow->NationCode, 0, 0, 'C', 0);
-			$pdf->Cell(50, 10,  $MyRow->Nation, 0, 1, 'L', 0);
+			$pdf->Cell(65, 10,  $MyRow->Nation, 0, 1, 'L', 0);
 		   	$pdf->SetFont($pdf->FontStd,'',8);
 			$pdf->Cell(19, 10, get_text('Partecipants'), 0, 1, 'L', 0);
 		   	$pdf->SetFont($pdf->FontStd,'B',7);
