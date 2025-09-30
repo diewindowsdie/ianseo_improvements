@@ -159,6 +159,7 @@ $lang['LockToEnds']='Restrict scoring to following ends (none means unrestricted
 $lang['ManageGroupTarget']='Group and Target Management';
 $lang['ManageLockedSessions']='Manage Locked Sessions';
 $lang['Masters']='Masters';
+$lang['YourId']='your ID';
 $lang['MissingParameter']='Missing Parameter';
 $lang['MsgDelAllTablets']='Delete all the tablets in the list';
 $lang['MsgDelTablet']='Delete Tablet';

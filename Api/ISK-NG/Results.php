@@ -51,7 +51,7 @@ if($_SESSION["UseApi"] === ISK_NG_LIVE_CODE) {
         '</tr>';
     echo '<tr>' .
         '<td id="ctrConnStatus" class="socketOFF" ondblclick="changeMasterSocket()">DISCONNECTED</td>' .
-        '<td class="txtFixW"><span id="ctrMastersNo" class="TargetAssigned"></span><span id="ctrMasters"></span></td>' .
+        '<td class="txtFixW"><span class="TargetAssigned">' . get_text("Total", "ISK") . ': </span><span id="ctrMastersNo" class="TargetAssigned">0</span><span>' . get_text("YourId", "Api") . ': </span><span id="ctrMasters"></span></td>' .
         '<td id="IskLog"></td>' .
         '</tr>';
 }
