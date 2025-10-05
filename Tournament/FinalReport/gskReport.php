@@ -45,12 +45,29 @@ while ($row = safe_fetch($rs)) {
 
 //регионы судей
 $query = "select c.CoId, c.CoNameComplete, count(*) FromRegion from TournamentInvolved ti 
-    left join Countries c on ti.TiCountry = c.CoId and ti.TiTournament = c.CoTournament where ti.TiTournament = " . $_SESSION["TourId"] . " group by ti.TiCountry order by c.CoNameComplete";
+    left join Countries c on ti.TiCountry = c.CoId and ti.TiTournament = c.CoTournament where ti.TiTournament = " . $_SESSION["TourId"] . " group by ti.TiCountry, c.CoNameComplete order by c.CoNameComplete";
 $rs = safe_r_SQL($query);
 $judgeRegions = array();
 while ($row = safe_fetch($rs)) {
     $judgeRegions[$row->CoId]["Name"] = $row->CoNameComplete;
     $judgeRegions[$row->CoId]["FromRegion"] = $row->FromRegion;
+}
+
+//статистика по регионам
+$query = "select CoId, CoNameComplete, sum(coalesce(Males, 0)) Males, sum(coalesce(Females, 0)) Females from
+(select c.CoId, c.CoNameComplete, count(e.EnId) Males, null Females from Entries e left join Countries c on c.CoId = e.EnCountry and c.CoTournament = e.EnTournament
+where e.EnTournament = " . $_SESSION["TourId"] . " and e.EnSex = 0 group by c.CoId
+union all
+ select c.CoId, c.CoNameComplete, null Males, count(e.EnId) Females from Entries e left join Countries c on c.CoId = e.EnCountry and c.CoTournament = e.EnTournament
+ where e.EnTournament = " . $_SESSION["TourId"] . " and e.EnSex = 1 group by c.CoId) t group by CoId, CoNameComplete order by CoNameComplete";
+$rs = safe_r_SQL($query);
+$participantsByRegion = array();
+while ($row = safe_fetch($rs)) {
+    $participantsByRegion[$row->CoId]["Name"] = $row->CoNameComplete;
+    $participantsByRegion[$row->CoId]["isBasicSport"] = getField("is_basic_sport_" . $row->CoId, false);
+    $participantsByRegion[$row->CoId]["Males"] = $row->Males;
+    $participantsByRegion[$row->CoId]["Females"] = $row->Females;
+    $participantsByRegion[$row->CoId]["Coaches"] = getField("coaches_" . $row->CoId, 0);
 }
 
 if (array_key_exists("doPrint", $_REQUEST)) {
@@ -124,6 +141,23 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                         echo "<option value='" . $id . "'" . ($id == $homeRegionId ? " selected='selected'" : "") . ">" . $region["Name"] . "</option>";
                     }
                     ?></select>
+        </tr>
+        <tr><td style="text-align: left; padding-left: 40px">6. Состав участвующих команд (регионов), в том числе количество спортсменов, тренеров и другого обслуживающего персонала:</td></tr>
+        <tr>
+            <td style="text-align: left; padding-left: 40px">
+                <table class="Tabella w-30">
+                    <tr><td rowspan="2">№ п/п</td><td rowspan="2">Команда (субъект РФ)</td><td rowspan="2">Базовый вид</td><td colspan="3">Спортсмены, чел.</td><td rowspan="2">Тренеры и др. обсл. персонал, чел.</td><td rowspan="2">Всего</td></tr>
+                    <tr><td>М</td><td>Ж</td><td>Всего</td></tr>
+                    <?php
+                        $index = 1;
+                        $tabIndexOffset = count($participantsByRegion);
+                        foreach ($participantsByRegion as $id => $data) {
+                            echo "<tr><td>" . $index . "</td><td>" . $data["Name"] . "</td><td><input type='checkbox' tabindex='" . $index . "' name='is_basic_sport_" . $id . "'" . ($data["isBasicSport"] ? "checked='checked'" : '') . " onclick='toggleBasicSport(this)'/></td><td>" . $data["Males"] . "</td><td>" . $data["Females"] . "</td><td id='athletesTotal_" . $id . "'>" . $data["Males"] + $data["Females"] . "</td><td><input class='w-15' id='" . $id . "' type='text' tabIndex='" . $index + $tabIndexOffset . "' name='coaches_" . $id . "' value='" . $data["Coaches"] . "' onblur='coachesChanged(this)'/></td><td id='regionTotal_" . $id . "'>" . $data["Males"] + $data["Females"] + $data["Coaches"] . "</td></tr>\n";
+                            ++$index;
+                        }
+                    ?>
+                </table>
+            </td>
         </tr>
     </table>
 </form>
