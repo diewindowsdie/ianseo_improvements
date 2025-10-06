@@ -70,6 +70,36 @@ while ($row = safe_fetch($rs)) {
     $participantsByRegion[$row->CoId]["Coaches"] = getField("coaches_" . $row->CoId, 0);
 }
 
+//классы
+$query = "select ClId, ClDescription from Classes where ClTournament = " . StrSafe_DB($_SESSION['TourId']);
+$rs = safe_r_SQL($query);
+$classes = array();
+while ($row = safe_fetch($rs)) {
+    $classes[$row->ClId] = $row->ClDescription;
+}
+
+//звания
+$query = "select ScId, ScDescription from SubClass where ScTournament = " . StrSafe_DB($_SESSION['TourId']) . " order by ScViewOrder desc";
+$rs = safe_r_SQL($query);
+$subclasses = array();
+while ($row = safe_fetch($rs)) {
+    $subclasses[$row->ScId] = $row->ScDescription;
+}
+
+//статистика по имеющимся разрядам
+$query = "SELECT EnClass, EnSubClass, ScId, count(*) as numArchers 
+    FROM Entries 
+    LEFT JOIN Classes ON EnClass=ClId AND ClTournament=EnTournament
+    LEFT JOIN SubClass ON EnSubClass=ScId AND ScTournament=EnTournament
+    WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " 
+    GROUP BY ClViewOrder, ScViewOrder, EnClass, EnSubClass 
+    ORDER BY ClViewOrder, ScViewOrder, EnClass, EnSubClass";
+$rs = safe_r_SQL($query);
+$subclassStatistics = array();
+while ($row = safe_fetch($rs)) {
+    $subclassStatistics[$row->ScId][$row->EnClass] = $row->numArchers;
+}
+
 if (array_key_exists("doPrint", $_REQUEST)) {
 
 } else {
@@ -154,6 +184,31 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                         foreach ($participantsByRegion as $id => $data) {
                             echo "<tr><td>" . $index . "</td><td>" . $data["Name"] . "</td><td><input type='checkbox' tabindex='" . $index . "' name='is_basic_sport_" . $id . "'" . ($data["isBasicSport"] ? "checked='checked'" : '') . " onclick='toggleBasicSport(this)'/></td><td>" . $data["Males"] . "</td><td>" . $data["Females"] . "</td><td id='athletesTotal_" . $id . "'>" . $data["Males"] + $data["Females"] . "</td><td><input class='w-15' id='" . $id . "' type='text' tabIndex='" . $index + $tabIndexOffset . "' name='coaches_" . $id . "' value='" . $data["Coaches"] . "' onblur='coachesChanged(this)'/></td><td id='regionTotal_" . $id . "'>" . $data["Males"] + $data["Females"] + $data["Coaches"] . "</td></tr>\n";
                             ++$index;
+                        }
+                    ?>
+                </table>
+            </td>
+        </tr>
+        <tr><td style="text-align: left; padding-left: 40px">7. Уровень подготовки спортсменов:</td></tr>
+        <tr>
+            <td style="text-align: left; padding-left: 40px">
+                <table class="Tabella w-30">
+                    <tr><td rowspan="2"></td><td colspan="<?php echo count($classes); ?>">Возрастные группы в соответствии с ЕВСК</td><td rowspan="2">Всего</td></tr>
+                    <?php
+                        echo "<tr>\n";
+                        foreach ($classes as $id => $description) {
+                            echo "<td>" . $description . "</td>";
+                        }
+                        echo "</tr>\n";
+                        foreach ($subclasses as $subclassId => $subclassDescription) {
+                            echo "<tr><td>" . $subclassDescription . "</td>";
+                            $subclassTotal = 0;
+                            foreach ($classes as $id => $description) {
+                                $subclassForGroup = $subclassStatistics[$subclassId][$id] ?? "0";
+                                $subclassTotal += $subclassForGroup;
+                                echo "<td>" . $subclassForGroup . "</td>";
+                            }
+                            echo "<td>" . $subclassTotal . "</td></tr>\n";
                         }
                     ?>
                 </table>
