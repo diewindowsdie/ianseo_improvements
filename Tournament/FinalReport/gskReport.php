@@ -100,6 +100,37 @@ while ($row = safe_fetch($rs)) {
     $subclassStatistics[$row->ScId][$row->EnClass] = $row->numArchers;
 }
 
+function getParticipansFromOrganisationCount($patterns) {
+    $firstQueryPart = true;
+    $queryPart = "";
+    foreach ($patterns as $pattern) {
+        if (!$firstQueryPart) {
+            $queryPart .= " or ";
+        }
+        $firstQueryPart = false;
+        $queryPart .= "c2.CoNameComplete rlike '" . $pattern . "' or c2.CoName rlike '" . $pattern . "' or c3.CoNameComplete rlike '" . $pattern . "' or c3.CoName rlike '" . $pattern . "'";
+    }
+    $query = "select count(*) Count from Entries e
+                         left join Countries c2 on c2.CoId = e.EnCountry2 and c2.CoTournament = e.EnTournament
+                         left join Countries c3 on c3.CoId = e.EnCountry3 and c3.CoTournament = e.EnTournament
+                where e.EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " and (" . $queryPart . ")";
+    return safe_fetch(safe_r_SQL($query))->Count;
+}
+
+$participantsPerOrganisation = array();
+//вооруженные силы
+$participantsPerOrganisation["armedForces"] = getParticipansFromOrganisationCount(["^(?i).*ЦСКА.*$", "^(?i).*Динамо.*$"]); //todo (?i) не работает на кириллице
+//Динамо
+$participantsPerOrganisation["dinamo"] = getParticipansFromOrganisationCount(["^(?i).*Динамо.*$"]);
+//спортивные клубы - из поиска исключим паттерн "ЦСКА"
+$participantsPerOrganisation["clubs"] = getParticipansFromOrganisationCount(["^(?!.*ЦСКА)(?=.*СК).*$"]);
+//спортивные школы
+$participantsPerOrganisation["sportSchools"] = getParticipansFromOrganisationCount(["^.*СШ.*$"]);
+//спортивные школы олимпийского резерва
+$participantsPerOrganisation["sportSchoolsOlympic"] = getParticipansFromOrganisationCount(["^.*СШОР.*$"]);
+//училища олимпийского резерва
+$participantsPerOrganisation["sportFacilitiesOlympic"] = getParticipansFromOrganisationCount(["^(?i).*УОР.*$"]);
+
 if (array_key_exists("doPrint", $_REQUEST)) {
 
 } else {
@@ -214,6 +245,10 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                 </table>
             </td>
         </tr>
+        <tr><td style="text-align: left; padding-left: 40px">8. Представительство спортивных организаций:</td></tr>
+        <tr><td style="text-align: left; padding-left: 40px">Вооруженные силы: <b><?php echo $participantsPerOrganisation["armedForces"]; ?></b>, "Динамо": <b><?php echo $participantsPerOrganisation["dinamo"]; ?></b>, спортивные клубы (СК): <b><?php echo $participantsPerOrganisation["clubs"]; ?></b></td></tr>
+        <tr><td style="text-align: left; padding-left: 40px">9. Принадлежность к спортивной школе:</td></tr>
+        <tr><td style="text-align: left; padding-left: 40px">СШ: <b><?php echo $participantsPerOrganisation["sportSchools"]; ?></b>, СШОР: <b><?php echo $participantsPerOrganisation["sportSchoolsOlympic"]; ?></b>, УОР: <b><?php echo $participantsPerOrganisation["sportFacilitiesOlympic"]; ?></b></td></tr>
     </table>
 </form>
 
