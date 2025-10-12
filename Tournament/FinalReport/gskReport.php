@@ -2,6 +2,9 @@
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/pdf/ResultPDF.inc.php');
+require_once("Common/Lib/Normative/NormativeStatistics.php");
+
+error_reporting(E_ALL);
 
 const moduleName = "GSK-Report";
 const prefix = "field_";
@@ -249,6 +252,19 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         <tr><td style="text-align: left; padding-left: 40px">Вооруженные силы: <b><?php echo $participantsPerOrganisation["armedForces"]; ?></b>, "Динамо": <b><?php echo $participantsPerOrganisation["dinamo"]; ?></b>, спортивные клубы (СК): <b><?php echo $participantsPerOrganisation["clubs"]; ?></b></td></tr>
         <tr><td style="text-align: left; padding-left: 40px">9. Принадлежность к спортивной школе:</td></tr>
         <tr><td style="text-align: left; padding-left: 40px">СШ: <b><?php echo $participantsPerOrganisation["sportSchools"]; ?></b>, СШОР: <b><?php echo $participantsPerOrganisation["sportSchoolsOlympic"]; ?></b>, УОР: <b><?php echo $participantsPerOrganisation["sportFacilitiesOlympic"]; ?></b></td></tr>
+        <tr><td style="text-align: left; padding-left: 40px">10. Выполнение (подтверждение) нормативов (количество показанных результатов):</td></tr>
+        <tr><td style="text-align: left; padding-left: 40px">
+                <?php
+                    $first = true;
+                    foreach(NormativeStatistics::getNormativeStatistics()["normativeTotals"] as $normative => $count) {
+                        if (!$first) {
+                            echo ", ";
+                        }
+                        $first = false;
+                        echo "<b>" . $normative . ":</b> " . $count;
+                    }
+                ?>
+            </td></tr>
     </table>
 </form>
 
