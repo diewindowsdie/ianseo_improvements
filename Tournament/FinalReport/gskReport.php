@@ -1,7 +1,7 @@
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Common/Fun_FormatText.inc.php');
-require_once('Common/pdf/ResultPDF.inc.php');
+require_once('Common/pdf/LabelPDF.inc.php');
 require_once("Common/Lib/Normative/NormativeStatistics.php");
 
 error_reporting(E_ALL);
@@ -135,7 +135,31 @@ $participantsPerOrganisation["sportSchoolsOlympic"] = getParticipansFromOrganisa
 $participantsPerOrganisation["sportFacilitiesOlympic"] = getParticipansFromOrganisationCount(["^(?i).*УОР.*$"]);
 
 if (array_key_exists("doPrint", $_REQUEST)) {
+    $pdf = new LabelPDF();
+    $pdf->setMargins(5, 5, 5);
+    //$pdf->setTextColor()
+//    $pdf->setFont
+    $pdf->setFontSize(10);
+    $pdf->setPrintHeader(false);
+    $pdf->setPrintFooter(false);
+    $pdf->setAutoPageBreak(true);
 
+    $pdf->AddPage();
+
+    $pdf->Cell(190, 6, "Отчет", 0, 1, 'C');
+    $pdf->Cell(190, 6, "о проведении " . getField("competitionTitle", $_SESSION["TourName"]), 0, 1, 'C');
+
+    $pdf->Cell(190, 10, "", 0, 1, 'C');
+
+    $pdf->writeHTMLCell(190, 7, null, null, "1. Сроки проведения: <b>" . $_SESSION['TourWhenFrom'] . " - " . $_SESSION['TourWhenTo'] . "</b>", 0, 1, 0, 1, 'L', );
+    $pdf->writeHTMLCell(190, 7, null, null, "2. Место проведения: <b>" . $_SESSION['TourWhere'] . "</b>", 0, 1, 0, 1, 'L', );
+    $pdf->writeHTMLCell(190, 7, null, null, "3. Наименование спортивного сооружения: <b>" . $tournamentData->ToVenue . "</b>", 0, 1, 0, 1, 'L', );
+    $pdf->writeHTMLCell(190, 5, null, null, "4. Всего участников соревнований: <b>" . $participantsStatistics->Total + getField("coachesAndRepresentativesCount", 0) . "</b>, из <b>" . $participantsStatistics->RegionsCount . "</b> регион(ов);", 0, 1, 0, 1, 'L', );
+    $pdf->writeHTMLCell(190, 5, 10, null, "Спортсменов <b>" . $participantsStatistics->Total . "</b> чел., в том числе <b>" . $participantsStatistics->Males . "</b> муж., <b>" . $participantsStatistics->Females . "</b> жен.", 0, 1, 0, 1, 'L', );
+    $pdf->writeHTMLCell(190, 7, 10, null, "Представителей, тренеров <b>" . getField("coachesAndRepresentativesCount", 0) . "</b> чел.", 0, 1, 0, 1, 'L', );
+
+
+    $pdf->Output("Отчет ГСК.pdf");
 } else {
     $IncludeFA = true;
     $IncludeJquery = true;
@@ -173,13 +197,13 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             <td style="text-align: left; padding-left: 40px">3. Наименование спортивного сооружения: <b><?php echo $tournamentData->ToVenue; ?></b></td>
         </tr>
         <tr>
-            <td style="text-align: left; padding-left: 40px">4. Всего участников соревнований: <span style="font-weight: bold" id="totalParticipants"><?php echo $participantsStatistics->Total + getField("coachesAndRepresentativesCount", 0); ?></span>, из <b><?php echo $participantsStatistics->RegionsCount; ?></b> региона(ов);</td>
+            <td style="text-align: left; padding-left: 40px">4. Всего участников соревнований: <span style="font-weight: bold" id="totalParticipants"><?php echo $participantsStatistics->Total + getField("coachesAndRepresentativesCount", "0"); ?></span>, из <b><?php echo $participantsStatistics->RegionsCount; ?></b> региона(ов);</td>
         </tr>
         <tr>
             <td style="text-align: left; padding-left: 40px">Спортсменов <span style="font-weight: bold" id="totalAthletes"><?php echo $participantsStatistics->Total; ?></span> чел., в том числе <b><?php echo $participantsStatistics->Males; ?></b> муж., <b><?php echo $participantsStatistics->Females; ?></b> жен.</td>
         </tr>
         <tr>
-            <td style="text-align: left; padding-left: 40px">Представителей, тренеров <input style="width: 3%" type="text" name="coachesAndRepresentatives" value="<?php echo getField("coachesAndRepresentativesCount", 0); ?>" onblur="representativesOnChange(this)" /> чел.</td>
+            <td style="text-align: left; padding-left: 40px">Представителей, тренеров <input style="width: 3%" type="text" name="coachesAndRepresentatives" value="<?php echo getField("coachesAndRepresentativesCount", "0"); ?>" onblur="representativesOnChange(this)" /> чел.</td>
         </tr>
         <tr>
             <td style="text-align: left; padding-left: 40px">5. Количество судей: <span style="font-weight: bold" id="judgesTotal"><?php echo $judgesData->Total; ?></span>, в том числе иногородних: <span style="font-weight: bold" id="nonLocalJudges"><?php echo $judgesData->NonLocal; ?></span></td>
