@@ -1,10 +1,12 @@
 <?php
-require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+
+error_reporting(E_ALL);
+
+require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/pdf/LabelPDF.inc.php');
 require_once("Common/Lib/Normative/NormativeStatistics.php");
-
-error_reporting(E_ALL);
+require_once("Tournament/FinalReport/GskReport/GskFields.php");
 
 const moduleName = "GSK-Report";
 const prefix = "field_";
@@ -147,7 +149,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->AddPage();
 
     $pdf->Cell(190, 6, "Отчет", 0, 1, 'C');
-    $pdf->Cell(190, 6, "о проведении " . getField("competitionTitle", $_SESSION["TourName"]), 0, 1, 'C');
+    $pdf->Cell(190, 6, "о проведении " . GskFields::getCompetitionTitle()->getValue(), 0, 1, 'C');
 
     $pdf->Cell(190, 10, "", 0, 1, 'C');
 
@@ -163,7 +165,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
 } else {
     $IncludeFA = true;
     $IncludeJquery = true;
-    $JS_SCRIPT[] = '<script src="'.$CFG->ROOT_DIR.'Tournament/FinalReport/gskReport.js"></script>';
+    $JS_SCRIPT[] = '<script src="'.$CFG->ROOT_DIR.'Tournament/FinalReport/GskReport/gskReport.js"></script>';
     include('Common/Templates/head.php');
     ?>
 
@@ -184,7 +186,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
 <form id="printProtocol" method="GET" action="gskReport.php?doPrint=1" target="_blank">
     <table class="Tabella">
         <tr>
-            <td colspan="2" style="text-align: left; padding-left: 40px">Отчет о проведении <input style="width: 40%" type="text" name="gsk_competitionTitle" value="<?php echo getField("competitionTitle", $_SESSION["TourName"]); ?>" onblur="updateField('competitionTitle', this.value)"/></td>
+            <td colspan="2" style="text-align: left; padding-left: 40px">Отчет о проведении <input style="width: 40%" type="text" name="gsk_competitionTitle" value="<?php echo GskFields::getCompetitionTitle()->getValue(); ?>" onblur="updateField('<?php echo GskFields::getCompetitionTitle()->getParameterName(); ?>', this.value)"/></td>
         </tr>
         <tr></tr>
         <tr>
