@@ -21,9 +21,6 @@ $Age = intval($_REQUEST['Age']);
 $ClId = $_REQUEST['ClId'];
 
 $ClDivAllowed=(empty($_REQUEST['AlDivs']) ? '' : $_REQUEST['AlDivs']);
-if (!CheckClassAge($ClId, $Age, $_REQUEST['Field']=='ClAgeFrom'?'From':'To', $ClDivAllowed)) {
-	JsonOut($JSON);
-}
 
 $Update = "UPDATE Classes SET "
     . $_REQUEST['Field'] . "=" . StrSafe_DB($Age) . " "
