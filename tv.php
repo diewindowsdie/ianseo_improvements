@@ -80,7 +80,7 @@ while($r=safe_fetch($q)) {
 $JS_SCRIPT=array(
 	'<script type="text/javascript" src="'.$CFG->ROOT_DIR.'Common/js/jquery-3.2.1.min.js"></script>',
 	'<script type="text/javascript" src="'.$CFG->ROOT_DIR.'TV/Channel.js"></script>',
-	phpVars2js(array('Pages' => $Pages, 'Channel' => $RealChannel)),
+	phpVars2js(array('Pages' => $Pages, 'Channel' => $RealChannel, "rootPath" => $CFG->ROOT_DIR)),
 		'<style>
 		body {position:absolute; margin:0; padding:0; top:0; bottom:0; width:100%; height:100%;}
 		.TvoChannel {display:block;border:none;padding:0;width:100%;}</style>'

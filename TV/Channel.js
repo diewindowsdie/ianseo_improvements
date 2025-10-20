@@ -5,7 +5,7 @@ $(document).ready(function() {
 });
 
 function checkChannel() {
-	$.getJSON("TV/ChannelCheck.php?id="+Channel,
+	$.getJSON(rootPath + "TV/ChannelCheck.php?id="+Channel,
 		function(data) {
 			if(data.error==0) {
 				if(data.reload) {
