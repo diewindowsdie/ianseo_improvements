@@ -27,16 +27,18 @@ function rotList($TVsettings, $RULE) {
         $HallField.=" end";
     }
 
-	$Select = "SELECT EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, AtSession AS Session, concat(AtTarget, AtLetter) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, $HallField as Hall
+	$Select = "SELECT EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, AtSession AS Session, concat(AtTarget, AtLetter) AS TargetNo, c.CoCode AS NationCode, c2.CoCode as CountryCode2, c3.CoCode as CountryCode3, c.CoNameComplete AS Nation, c2.CoNameComplete as Country2, c3.CoNameComplete as Country3, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, $HallField as Hall
 	    FROM AvailableTarget at
         inner join Qualifications on QuTargetNo=AtTargetNo
         INNER JOIN Entries ON EnId=QuId AND EnTournament=AtTournament
-        INNER JOIN Countries ON CoId=EnCountry AND CoTournament=AtTournament
+        INNER JOIN Countries c ON c.CoId=EnCountry AND c.CoTournament=AtTournament
+        left JOIN Countries c2 ON c2.CoId=EnCountry2 AND c2.CoTournament=AtTournament
+        left JOIN Countries c3 ON c3.CoId=EnCountry3 AND c3.CoTournament=AtTournament
         LEFT JOIN Classes ON EnClass=ClId AND AtTournament=ClTournament
         LEFT JOIN Session ON QuSession=SesOrder AND SesType='Q' AND AtTournament=SesTournament
         LEFT JOIN Divisions ON EnDivision=DivId AND AtTournament=DivTournament
         WHERE " . implode(' and ',$Filter) . "
-        ORDER BY AtTargetNo, CoCode, Name, CoName, FirstName ";
+        ORDER BY AtTargetNo, c.CoCode, Name, c.CoNameComplete, FirstName ";
 	$Rs=safe_r_sql($Select);
 
 	$RowCounter = 0;
@@ -88,11 +90,11 @@ function rotList($TVsettings, $RULE) {
 			$tmp.='<div class="CountryCode Rotate Rev1'.$Class.'">'.$MyRow->NationCode.'</div>';
 		}
 		if($ViewFlag) {
-			$tmp.='<div class="FlagDiv">'.get_flag_ianseo($MyRow->NationCode, '', '', $IsCode).'</div>';
+           $tmp.='<div class="FlagDiv">'.get_flag_ianseo($MyRow->NationCode, $MyRow->CountryCode2, $MyRow->CountryCode3, '', '', $IsCode).'</div>';
 		}
 		$tmp.='<div class="Athlete">' . $MyRow->FirstName . ' ' . ($TVsettings->TVPNameComplete==0 ? FirstLetters($MyRow->Name) : $MyRow->Name) . '</div>';
 		if($ViewTeams) {
-			$tmp.= '<div class="CountryDescr">' . $MyRow->Nation . '</div>';
+			$tmp.= '<div class="CountryDescr">' . getFullCountryName($MyRow->Nation, $MyRow->Country2, $MyRow->Country3) . '</div>';
 		}
 		if($ViewCatCode) {
 			$tmp.= '<div class="CategoryCode">' . $MyRow->DivCode . $MyRow->ClassCode . '</div>';
@@ -152,11 +154,11 @@ function getPageDefaults(&$RMain) {
 		'CountryCode' => 'flex: 0 0 3.5vw; font-size:0.8vw; margin-left:-3.75ch',
 		'FlagDiv' => 'flex: 0 0 4.35vw;',
 		'Flag' => 'height:2.8vw; border:0.05vw solid #888;box-sizing:border-box;',
-		'Target' => 'flex: 0 0 6vw; text-align:right;margin-right:0.5em;',
-		'Athlete' => 'flex: 1 1 20vw;white-space:nowrap;overflow:hidden;',
-		'CountryDescr' => 'flex: 0 1 20vw;white-space:nowrap;overflow:hidden;',
+		'Target' => 'flex: 0 0 5vw; text-align:right;margin-right:0.5em;',
+		'Athlete' => 'flex: 1 1 6vw;white-space:nowrap;overflow:hidden;',
+		'CountryDescr' => 'flex: 1 1 35vw;white-space:nowrap;overflow:hidden;',
 		'Category' => 'flex: 1 1 10vw;white-space:nowrap;overflow:hidden;',
-		'CategoryCode' => 'flex: 0 0 4vw; text-align:center;',
+		'CategoryCode' => 'flex: 0 0 7vw; text-align:center;',
         'Hall' => 'flex: 1 1 10vw; font-size:0.7em; text-align:left;white-space:nowrap;overflow:hidden;',
 		);
 	foreach($ret as $k=>$v) {
