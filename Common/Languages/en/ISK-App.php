@@ -98,7 +98,7 @@ $lang['ScoreTotalsConfirmOrReview']='One or more of the totals does not match.
 
 Change the values and press Confirm to verify again or press Close to return and check your scores.';
 $lang['ScoreTotalsMessage']='Please enter the results from your paper scorecard';
-$lang['ScoreTotalsMissingValues']='Please enter the all the required values';
+$lang['ScoreTotalsMissingValues']='Please enter all the required values';
 $lang['ScoreTotalsScore']='Score total';
 $lang['ScoreTotalsTitle']='Score Confirmation';
 $lang['ScoringDeleteArrow']='Delete Arrow';
