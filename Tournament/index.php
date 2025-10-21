@@ -740,14 +740,19 @@ if(file_exists($CFG->DOCUMENT_PATH.'Api/index.php')) {
 
 ?><tr>
 <th class="TitleLeft w-15" rowspan="2"><?php print get_text('AddSubclasses','Tournament');?></th>
-<td>
+<?php if (!$MyRow) {
+    ?>
+        <td>
 <input type="checkbox" id="createSubClasses" name="createSubClasses" value="1" onchange="subclassesCheckboxChanged()"/>
     <label for="createSubClasses">Создать коды и названия разрядов</label>
     <select name="subclassesSet" id="subclassesSet" disabled>
         <option id="SportIdent" value="SportIdent" selected="selected">Идентификаторы из SportIdent (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)</option>
         <option id="LetterCodes" value="LetterCodes">Буквенные идентификаторы (NO, 3J, 2J, 1J, 3, 2, 1, C, M, MM, Z)</option>
     </select>
-</td></tr>
+</td>
+            <?php
+            }
+            ?></tr>
         <tr>
             <td>
                 <input type="checkbox" id="internationalProtocol" name="d_InternationalProtocol" value="1" <?php
