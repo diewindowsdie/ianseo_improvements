@@ -1041,7 +1041,7 @@ function GetElimScoreBySessionQuery($Session, $Phase, $FromTgt, $ToTgt, $Include
 			WHERE EnTournament = {$_SESSION['TourId']} AND EnAthlete=1 " . ($Session!=-1 ? "AND QuSession=$Session and QuTarget between $FromTgt and $ToTgt " : "") .
 			") as Tgt ON TgtTournament=AtTournament AND TgtNo=AtTarget and TgtSession=AtSession";
 	}
-	$MyQuery = "SELECT SUBSTRING(ElTargetNo,1,4) as tNo, ElTargetNo as AtTargetNo, ElTargetNo+0 as AtTarget, ElSession as Session, '' as Dist, EnCode, ElDateTime as QuTimestamp, EnDob as DoB, CoCode, CoName, ElTargetNo as QuTargetNo, CONCAT(EnFirstName,' ', EnName) AS Ath, CONCAT(CoCode, ' - ', CoName) as Noc, EnDivision as `Div`, EnClass as Cls, EdEmail as Email, 
+	$MyQuery = "SELECT SUBSTRING(ElTargetNo,1,4) as tNo, ElTargetNo as AtTargetNo, ElTargetNo+0 as AtTarget, ElSession as Session, '' as Dist, EnCode, ElDateTime as QuTimestamp, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, CoCode, CoName, ElTargetNo as QuTargetNo, CONCAT(EnFirstName,' ', EnName) AS Ath, CONCAT(CoCode, ' - ', CoName) as Noc, EnDivision as `Div`, EnClass as Cls, EdEmail as Email, 
             EvCode as Cat,
             '' as D0, '' as D1,
             '' as Arr0, ElArrowstring as Arr1,
@@ -1085,7 +1085,7 @@ function GetScoreBySessionQuery($Session, $FromTgt, $ToTgt, $IncludeEmpty=true, 
 	for($i=1;$i<=8;$i++) {
 		$EndSql.=", d{$i}.DiEnds as NumEnds{$i}, d{$i}.DiArrows as NumArrows{$i}, d{$i}.DiScoringEnds as ScoringEnds{$i}, d{$i}.DiScoringOffset as ScoringOffset{$i}";
 	}
-	$MyQuery = "SELECT concat(AtTarget,AtLetter) as tNo, AtTargetNo, AtTarget, AtSession as Session, '' as Dist, EnCode, QuTimestamp, EnDob as DoB, CoCode, CoName, QuTargetNo, CONCAT(EnFirstName,' ', EnName) AS Ath, CONCAT(CoCode, ' - ', CoName) as Noc, EnDivision as `Div`, EnClass as Cls, EdEmail as Email, 
+	$MyQuery = "SELECT concat(AtTarget,AtLetter) as tNo, AtTargetNo, AtTarget, AtSession as Session, '' as Dist, EnCode, QuTimestamp, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, CoCode, CoName, QuTargetNo, CONCAT(EnFirstName,' ', EnName) AS Ath, CONCAT(CoCode, ' - ', CoName) as Noc, EnDivision as `Div`, EnClass as Cls, EdEmail as Email, 
             concat(EnDivision, ' ', EnClass) as Cat, SesName, 
             IF(TfGolds='',ToGolds,TfGolds) as Golds, IF(TfXNine='',ToXNine,TfXNine) as XNine,
             IF(TfGoldsChars='',ToGoldsChars,TfGoldsChars) as GoldsChars, IF(TfXNineChars='',ToXNineChars,TfXNineChars) as XNineChars,
@@ -1125,7 +1125,7 @@ function GetScoreBySessionQuery($Session, $FromTgt, $ToTgt, $IncludeEmpty=true, 
 }
 
 function GetScoreByCategoryQuery($Category='') {
-	$MyQuery = "SELECT EnCode, EnDob as DoB, CoCode, CoName, QuSession as Session, QuTimestamp, QuTargetNo, QuTarget as AtTarget, '' as Dist, SUBSTRING(QuTargetNo,2) as tNo, CONCAT(EnFirstName,' ', EnName) AS Ath, CONCAT(CoCode, ' - ', CoName) as Noc, EnDivision as `Div`, EnClass as Cls, EdEmail as Email, 
+	$MyQuery = "SELECT EnCode, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, CoCode, CoName, QuSession as Session, QuTimestamp, QuTargetNo, QuTarget as AtTarget, '' as Dist, SUBSTRING(QuTargetNo,2) as tNo, CONCAT(EnFirstName,' ', EnName) AS Ath, CONCAT(CoCode, ' - ', CoName) as Noc, EnDivision as `Div`, EnClass as Cls, EdEmail as Email, 
            concat(EnDivision, ' ', EnClass) as Cat, SesName,
             IF(TfGolds='',ToGolds,TfGolds) as Golds, IF(TfXNine='',ToXNine,TfXNine) as XNine,
             IF(TfGoldsChars='',ToGoldsChars,TfGoldsChars) as GoldsChars, IF(TfXNineChars='',ToXNineChars,TfXNineChars) as XNineChars,
