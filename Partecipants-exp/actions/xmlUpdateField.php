@@ -41,6 +41,21 @@
 			$TimestampUpdate=true;
 
 			switch($field) {
+                case 'sub_class':
+                    if (isSubclassesUsed()) {
+                        $query = "SELECT EnDivision FROM Entries WHERE EnId=" . StrSafe_DB($id) . " AND EnSubClass<>" . StrSafe_DB($value) . " ";
+                        $rs = safe_r_sql($query);
+
+                        if ($rs && safe_num_rows($rs) == 1) {
+                            $recalc = true;
+
+                            $x = Params4Recalc($id);
+                            if ($x !== false) {
+                                list($indFEventOld, $teamFEventOld, $countryOld, $divOld, $clOld, $subClOld, $zeroOld) = $x;
+                            }
+                        }
+                    }
+                    break;
 				case 'division':
 					$resetPrintBadge=true;
 					$query="SELECT EnDivision FROM Entries WHERE EnId=". StrSafe_DB($id). " AND EnDivision<>" . StrSafe_DB($value) . " " ;

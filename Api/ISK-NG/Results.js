@@ -204,7 +204,7 @@ function devicesRenderer(data) {
                         '<div class="targetInfoImg" onClick="deviceDetails(parentNode)"><div class="deviceInfoImg">'+tmpConnection+'</div><i class="fa fa-circle-info fa-lg"></i></div>'+
                         letters + '</div>' +
                         '<div class="devFooter">' +
-                        '<div><div class="Button disabled" onclick="importDevice(this)">Import</div></div>' +
+                        '<div><div class="Button disabled" onclick="importDevice(this)">' + msgCmdImport + '</div></div>' +
                         '<div class="notice"></div>' +
                         '</div>' +
                         '</div>');

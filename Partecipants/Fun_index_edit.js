@@ -75,7 +75,13 @@ function createTextField(cell, what) {
     $(cell).attr('onclick', null);
 
     $(cell).html('<input type="text" onblur="updateField(this, resetCell)" value="'+$(cell).attr('oldvalue')+'">');
-    $(cell).find('input')[0].focus();
+    let input = $(cell).find('input')[0];
+    input.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.keyCode === 13) {
+            event.currentTarget.blur();
+        }
+    });
+    input.focus();
 }
 
 function createComboField(cell, what, url, oldValue, resetCallback) {
