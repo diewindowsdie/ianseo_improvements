@@ -80,7 +80,7 @@
 
 					// Updates the name anyway
 					$Update = "UPDATE Countries SET "
-						. "CoName=" . StrSafe_DB($CoName) . " "
+						. "CoName=" . StrSafe_DB($CoName) . ", CoNameComplete = " . StrSafe_DB($CoName) . " "
 						. "WHERE CoId=" . StrSafe_DB($CoId) . " AND CoTournament=" . StrSafe_DB($_SESSION['TourId']) . " ";
 					$Rs=safe_w_sql($Update);
 
