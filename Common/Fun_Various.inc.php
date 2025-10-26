@@ -55,6 +55,16 @@ function checkAgainstLUE($id) {
 	}
 }
 
+function isSubclassesUsed() {
+    $query = "select EcCode from EventClass where EcSubClass <> '' and EcTournament = " . $_SESSION["TourId"];
+    $resultSet = safe_r_SQL($query);
+    if (safe_fetch($resultSet)) {
+        return true;
+    }
+
+    return false;
+}
+
 function getLUEArray() {
 	return array(
 		1=>array("EnFirstName","LueFamilyName"),

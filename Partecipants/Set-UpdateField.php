@@ -43,7 +43,7 @@ if($field) {
 	switch($field) {
 		case 'subclass':
 			$FIELD='EnSubclass';
-			$Recalc=true;
+			$Recalc=isSubclassesUsed();
 			break;
 		case 'division':
 			$FIELD='EnDivision';

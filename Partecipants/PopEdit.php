@@ -128,7 +128,12 @@
 			if ($id!=0)
 			{
 			// se la vecchia classe o divisione è diversa ricalcolo spareggi e squadre per la vecchia e la nuova
-				$query= "SELECT EnClass FROM Entries WHERE EnId=" . StrSafe_DB($id) . " AND (EnClass<>" . StrSafe_DB($_REQUEST['d_e_EnClass_']) . " OR EnDivision<>" . StrSafe_DB($_REQUEST['d_e_EnDivision_']) . " OR EnStatus<>" . StrSafe_DB($_REQUEST['d_e_EnStatus_']) . ") ";
+                $whereClause = " WHERE EnId=" . StrSafe_DB($id) . " AND (EnClass<>" . StrSafe_DB($_REQUEST['d_e_EnClass_']) . " OR EnDivision<>" . StrSafe_DB($_REQUEST['d_e_EnDivision_']) . " OR EnStatus<>" . StrSafe_DB($_REQUEST['d_e_EnStatus_']) . " ";
+                if (isSubclassesUsed()) {
+                    $whereClause .= " OR EnSubClass <> " . StrSafe_DB($_REQUEST['d_e_EnSubClass_']);
+                }
+                $whereClause .= ")";
+                $query = "SELECT EnClass FROM Entries" . $whereClause;
 				//print $query;exit;
 				$rs=safe_r_sql($query);
 				if ($rs && safe_num_rows($rs)==1)
