@@ -242,7 +242,18 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->writeHTMLCell(190, 7, 10, null, "Вооруженные силы: <b>" . $participantsPerOrganisation["armedForces"] . "</b>, \"Динамо\": <b>" . $participantsPerOrganisation["dinamo"] . "</b>, спортивные клубы (СК): <b>" . $participantsPerOrganisation["clubs"] . "</b>", 0, 1, 0, 1, 'L');
     $pdf->writeHTMLCell(190, 5, null, null, "9. Принадлежность к спортивной школе:", 0, 1, 0, 1, 'L');
     $pdf->writeHTMLCell(190, 7, 10, null, "СШ: <b>" . $participantsPerOrganisation["sportSchools"] . "</b>, СШОР: <b>" . $participantsPerOrganisation["sportSchoolsOlympic"] . "</b>, УОР: <b>" . $participantsPerOrganisation["sportFacilitiesOlympic"] . "</b>", 0, 1, 0, 1, 'L');
+    $pdf->writeHTMLCell(190, 5, null, null, "10. Выполнение (подтверждение) нормативов (количество показанных результатов):", 0, 1, 0, 1, 'L');
 
+    $athleteNormatives = "";
+    $first = true;
+    foreach(NormativeStatistics::getNormativeStatistics()["normativeTotals"] as $normative => $count) {
+        if (!$first) {
+            $athleteNormatives .= ", ";
+        }
+        $first = false;
+        $athleteNormatives .= ($normative . ": <b> " . $count . "</b>");
+    }
+    $pdf->writeHTMLCell(190, 7, 10, null, $athleteNormatives, 0, 1, 0, 1, 'L');
 
     $pdf->Output("Отчет ГСК.pdf");
 } else {
