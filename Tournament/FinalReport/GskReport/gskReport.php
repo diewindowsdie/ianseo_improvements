@@ -7,6 +7,8 @@ require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/pdf/LabelPDF.inc.php');
 require_once("Common/Lib/Normative/NormativeStatistics.php");
 require_once("Tournament/FinalReport/GskReport/GskFields.php");
+require_once("Tournament/FinalReport/GskReport/fields/IsBasicRegionGskField.php");
+require_once("Tournament/FinalReport/GskReport/fields/NumberOfCoachesFromRegion.php");
 
 const moduleName = "GSK-Report";
 const prefix = "field_";
@@ -59,6 +61,7 @@ while ($row = safe_fetch($rs)) {
 }
 
 //статистика по регионам
+$totalCoaches = 0;
 $query = "select CoId, CoNameComplete, sum(coalesce(Males, 0)) Males, sum(coalesce(Females, 0)) Females from
 (select c.CoId, c.CoNameComplete, count(e.EnId) Males, null Females from Entries e left join Countries c on c.CoId = e.EnCountry and c.CoTournament = e.EnTournament
 where e.EnTournament = " . $_SESSION["TourId"] . " and e.EnSex = 0 group by c.CoId
@@ -69,13 +72,13 @@ $rs = safe_r_SQL($query);
 $participantsByRegion = array();
 while ($row = safe_fetch($rs)) {
     $participantsByRegion[$row->CoId]["Name"] = $row->CoNameComplete;
-    $participantsByRegion[$row->CoId]["isBasicSport"] = getField("is_basic_sport_" . $row->CoId, false);
+    $participantsByRegion[$row->CoId]["isBasicSport"] = (new IsBasicRegionGskField($row->CoId))->getValue();
     $participantsByRegion[$row->CoId]["Males"] = $row->Males;
     $participantsByRegion[$row->CoId]["Females"] = $row->Females;
-    $participantsByRegion[$row->CoId]["Coaches"] = getField("coaches_" . $row->CoId, 0);
+    $participantsByRegion[$row->CoId]["Coaches"] = (new NumberOfCoachesFromRegion($row->CoId))->getValue();
+    $totalCoaches += $participantsByRegion[$row->CoId]["Coaches"];
 }
 
-//классы
 $query = "select ClId, ClDescription from Classes where ClTournament = " . StrSafe_DB($_SESSION['TourId']);
 $rs = safe_r_SQL($query);
 $classes = array();
@@ -139,8 +142,6 @@ $participantsPerOrganisation["sportFacilitiesOlympic"] = getParticipansFromOrgan
 if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf = new LabelPDF();
     $pdf->setMargins(5, 5, 5);
-    //$pdf->setTextColor()
-//    $pdf->setFont
     $pdf->setFontSize(10);
     $pdf->setPrintHeader(false);
     $pdf->setPrintFooter(false);
@@ -153,13 +154,54 @@ if (array_key_exists("doPrint", $_REQUEST)) {
 
     $pdf->Cell(190, 10, "", 0, 1, 'C');
 
-    $pdf->writeHTMLCell(190, 7, null, null, "1. Сроки проведения: <b>" . $_SESSION['TourWhenFrom'] . " - " . $_SESSION['TourWhenTo'] . "</b>", 0, 1, 0, 1, 'L', );
-    $pdf->writeHTMLCell(190, 7, null, null, "2. Место проведения: <b>" . $_SESSION['TourWhere'] . "</b>", 0, 1, 0, 1, 'L', );
-    $pdf->writeHTMLCell(190, 7, null, null, "3. Наименование спортивного сооружения: <b>" . $tournamentData->ToVenue . "</b>", 0, 1, 0, 1, 'L', );
-    $pdf->writeHTMLCell(190, 5, null, null, "4. Всего участников соревнований: <b>" . $participantsStatistics->Total + getField("coachesAndRepresentativesCount", 0) . "</b>, из <b>" . $participantsStatistics->RegionsCount . "</b> регион(ов);", 0, 1, 0, 1, 'L', );
-    $pdf->writeHTMLCell(190, 5, 10, null, "Спортсменов <b>" . $participantsStatistics->Total . "</b> чел., в том числе <b>" . $participantsStatistics->Males . "</b> муж., <b>" . $participantsStatistics->Females . "</b> жен.", 0, 1, 0, 1, 'L', );
-    $pdf->writeHTMLCell(190, 7, 10, null, "Представителей, тренеров <b>" . getField("coachesAndRepresentativesCount", 0) . "</b> чел.", 0, 1, 0, 1, 'L', );
+    $pdf->writeHTMLCell(190, 7, null, null, "1. Сроки проведения: <b>" . $_SESSION['TourWhenFrom'] . " - " . $_SESSION['TourWhenTo'] . "</b>", 0, 1, 0, 1, 'L');
+    $pdf->writeHTMLCell(190, 7, null, null, "2. Место проведения: <b>" . $_SESSION['TourWhere'] . "</b>", 0, 1, 0, 1, 'L');
+    $pdf->writeHTMLCell(190, 7, null, null, "3. Наименование спортивного сооружения: <b>" . $tournamentData->ToVenue . "</b>", 0, 1, 0, 1, 'L');
 
+    $pdf->writeHTMLCell(190, 5, null, null, "4. Всего участников соревнований: <b>" . $participantsStatistics->Total + $totalCoaches . "</b>, из <b>" . $participantsStatistics->RegionsCount . "</b> регион(ов);", 0, 1, 0, 1, 'L');
+    $pdf->writeHTMLCell(190, 5, 10, null, "Спортсменов <b>" . $participantsStatistics->Total . "</b> чел., в том числе <b>" . $participantsStatistics->Males . "</b> муж., <b>" . $participantsStatistics->Females . "</b> жен.", 0, 1, 0, 1, 'L');
+    $pdf->writeHTMLCell(190, 7, 10, null, "Представителей, тренеров <b>" . $totalCoaches . "</b> чел.", 0, 1, 0, 1, 'L');
+    $pdf->writeHTMLCell(190, 5, null, null, "5. Количество судей: <b>" . $judgesData->Total . "</b>, в том числе иногородних: <b>" . $judgesData->NonLocal . "</b>" , 0, 1, 0, 1, 'L');
+    $judgesDetails = "Уровень подготовки судей по судейским категориям: ";
+    $isFirst = true;
+    foreach ($judgesAccreditation as $accreditation => $count) {
+        if (!$isFirst) {
+            $judgesDetails .= ", ";
+        }
+        $judgesDetails .= get_text("JudgeAccreditation_" . $accreditation, "Tournament") . ": <b>" . $count . "</b>";
+        $isFirst = false;
+    }
+    $pdf->writeHTMLCell(190, 7, 10, null, $judgesDetails, 0, 1, 0, 1, 'L');
+    $pdf->writeHTMLCell(190, 5, null, null, "6. Состав участвующих команд (регионов), в том числе количество спортсменов, тренеров и другого обслуживающего персонала:", 0, 1, 0, 1, 'L');
+    $pdf->setY($pdf->GetY() + 2);
+    $pdf->setX($pdf->GetX() + 5);
+    $pdf->SetFont($pdf->FontStd,'B', 9);
+    $pdf->Cell(10, 10, "№ п/п", 1, 0, "C");
+    $pdf->Cell(65, 10, "Команда (субъект РФ)", 1, 0, "C");
+    $pdf->Cell(15, 5, "Базовый", "RLT", 0, "C", 0, "", 1, false, "T", "B");
+    $pdf->Cell(60, 5, "Спортсмены, чел.", 1, 0, "C");
+    $pdf->Cell(20, 5, "Тренеры и др.", "RLT", 0, "C", 0, "", 1, false, "T", "B");
+    $pdf->Cell(20, 10, "Всего", 1, 1, "C");
+    $pdf->SetXY($pdf->getX() + 80, $pdf->GetY() - 5);
+    $pdf->Cell(15, 5, "вид", "RLB", 0, "C", 0, "", 1, false, "T", "T");
+    $pdf->Cell(20, 5, "М", 1, 0, "C");
+    $pdf->Cell(20, 5, "Ж", 1, 0, "C");
+    $pdf->Cell(20, 5, "Всего", 1, 0, "C");
+    $pdf->Cell(20, 5, "обсл. персонал, чел.", "RLB", 1, "C", 0, "", 1, false, "T", "T");
+    $pdf->SetFont($pdf->FontStd,'');
+    $index = 1;
+    foreach ($participantsByRegion as $id => $data) {
+        $pdf->setX($pdf->GetX() + 5);
+        $pdf->Cell(10, 5, $index, 1, 0, 'C');
+        $pdf->Cell(65, 5, $data["Name"], 1, 0, 'L');
+        $pdf->Cell(15, 5, $data["isBasicSport"] ? "✔" : "", 1, 0, 'C');
+        $pdf->Cell(20, 5, $data["Males"], 1, 0, 'C');
+        $pdf->Cell(20, 5, $data["Females"], 1, 0, 'C');
+        $pdf->Cell(20, 5, $data["Males"] + $data["Females"], 1, 0, 'C');
+        $pdf->Cell(20, 5, $data["Coaches"], 1, 0, 'C');
+        $pdf->Cell(20, 5, $data["Males"] + $data["Females"] + $data["Coaches"], 1, 1, 'C');
+        ++$index;
+    }
 
     $pdf->Output("Отчет ГСК.pdf");
 } else {
@@ -180,7 +222,19 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                 echo $id . ": " . $region["FromRegion"];
                 $isFirst = false;
             }
-    ?>}
+    ?>};
+
+    const coachesPerRegion = {
+        <?php
+            $isFirst = true;
+            foreach ($participantsByRegion as $id => $data) {
+                if (!$isFirst) {
+                    echo ",\n";
+                }
+                echo $id . ": " . $data["Coaches"];
+                $isFirst = false;
+            }
+        ?>};
 </script>
 
 <form id="printProtocol" method="GET" action="gskReport.php?doPrint=1" target="_blank">
@@ -199,13 +253,13 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             <td style="text-align: left; padding-left: 40px">3. Наименование спортивного сооружения: <b><?php echo $tournamentData->ToVenue; ?></b></td>
         </tr>
         <tr>
-            <td style="text-align: left; padding-left: 40px">4. Всего участников соревнований: <span style="font-weight: bold" id="totalParticipants"><?php echo $participantsStatistics->Total + getField("coachesAndRepresentativesCount", "0"); ?></span>, из <b><?php echo $participantsStatistics->RegionsCount; ?></b> региона(ов);</td>
+            <td style="text-align: left; padding-left: 40px">4. Всего участников соревнований: <span style="font-weight: bold" id="totalParticipants"><?php echo $participantsStatistics->Total + $totalCoaches; ?></span>, из <b><?php echo $participantsStatistics->RegionsCount; ?></b> региона(ов);</td>
         </tr>
         <tr>
             <td style="text-align: left; padding-left: 40px">Спортсменов <span style="font-weight: bold" id="totalAthletes"><?php echo $participantsStatistics->Total; ?></span> чел., в том числе <b><?php echo $participantsStatistics->Males; ?></b> муж., <b><?php echo $participantsStatistics->Females; ?></b> жен.</td>
         </tr>
         <tr>
-            <td style="text-align: left; padding-left: 40px">Представителей, тренеров <input style="width: 3%" type="text" name="coachesAndRepresentatives" value="<?php echo getField("coachesAndRepresentativesCount", "0"); ?>" onblur="representativesOnChange(this)" /> чел.</td>
+            <td style="text-align: left; padding-left: 40px">Представителей, тренеров <span style="font-weight: bold" id="totalCoaches"><?php echo $totalCoaches; ?></span> чел.</td>
         </tr>
         <tr>
             <td style="text-align: left; padding-left: 40px">5. Количество судей: <span style="font-weight: bold" id="judgesTotal"><?php echo $judgesData->Total; ?></span>, в том числе иногородних: <span style="font-weight: bold" id="nonLocalJudges"><?php echo $judgesData->NonLocal; ?></span></td>
@@ -223,12 +277,15 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                 ?>
         </tr>
         <tr>
-            <td style="text-align: left; padding-left: 80px">Выберите регион, судьи из которого не считаются иногородними: <select id="judgesRegions" onchange="judgesHomeRegionChanged(this)"><?php
-                    $homeRegionId = getField("localCountryIdForJudges");
-                    foreach ($judgeRegions as $id => $region) {
-                        echo "<option value='" . $id . "'" . ($id == $homeRegionId ? " selected='selected'" : "") . ">" . $region["Name"] . "</option>";
-                    }
-                    ?></select>
+            <td style="text-align: left; padding-left: 80px">Выберите регион, судьи из которого не считаются иногородними:
+            <?php
+                $localRegionIdForJudgesField = GskFields::getLocalRegionIdForJudges();
+                echo '<select id="judgesRegions" onchange="judgesHomeRegionChanged(\'' . $localRegionIdForJudgesField->getParameterName() . '\', this)">';
+                $homeRegionId = $localRegionIdForJudgesField->getValue();
+                foreach ($judgeRegions as $id => $region) {
+                    echo "<option value='" . $id . "'" . ($id == $homeRegionId ? " selected='selected'" : "") . ">" . $region["Name"] . "</option>";
+                }
+            ?></select></td>
         </tr>
         <tr><td style="text-align: left; padding-left: 40px">6. Состав участвующих команд (регионов), в том числе количество спортсменов, тренеров и другого обслуживающего персонала:</td></tr>
         <tr>
@@ -240,7 +297,9 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                         $index = 1;
                         $tabIndexOffset = count($participantsByRegion);
                         foreach ($participantsByRegion as $id => $data) {
-                            echo "<tr><td>" . $index . "</td><td>" . $data["Name"] . "</td><td><input type='checkbox' tabindex='" . $index . "' name='is_basic_sport_" . $id . "'" . ($data["isBasicSport"] ? "checked='checked'" : '') . " onclick='toggleBasicSport(this)'/></td><td>" . $data["Males"] . "</td><td>" . $data["Females"] . "</td><td id='athletesTotal_" . $id . "'>" . $data["Males"] + $data["Females"] . "</td><td><input class='w-15' id='" . $id . "' type='text' tabIndex='" . $index + $tabIndexOffset . "' name='coaches_" . $id . "' value='" . $data["Coaches"] . "' onblur='coachesChanged(this)'/></td><td id='regionTotal_" . $id . "'>" . $data["Males"] + $data["Females"] + $data["Coaches"] . "</td></tr>\n";
+                            $isBasicParameterName = IsBasicRegionGskField::getParameterNameForRegion($id);
+                            $numberOfCoachesParameterName = NumberOfCoachesFromRegion::getParameterNameForRegion($id);
+                            echo "<tr><td>" . $index . "</td><td>" . $data["Name"] . "</td><td><input type='checkbox' tabindex='" . $index . "' name='" . $isBasicParameterName . "'" . ($data["isBasicSport"] ? "checked='checked'" : '') . " onclick='toggleBasicSport(this)'/></td><td>" . $data["Males"] . "</td><td>" . $data["Females"] . "</td><td id='athletesTotal_" . $id . "'>" . $data["Males"] + $data["Females"] . "</td><td><input class='w-15' id='" . $id . "' type='text' tabIndex='" . $index + $tabIndexOffset . "' name='" . $numberOfCoachesParameterName . "' value='" . $data["Coaches"] . "' onblur='coachesChanged(this)'/></td><td id='regionTotal_" . $id . "'>" . $data["Males"] + $data["Females"] + $data["Coaches"] . "</td></tr>\n";
                             ++$index;
                         }
                     ?>

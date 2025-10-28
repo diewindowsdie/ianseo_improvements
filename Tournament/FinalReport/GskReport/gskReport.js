@@ -1,14 +1,6 @@
-function representativesOnChange(input) {
-    if (!isNaN(input.value)) {
-        let coachesAndRepresentatives = parseInt(input.value);
-        $("#totalParticipants").html(parseInt($("#totalAthletes").html()) + coachesAndRepresentatives);
-        updateField("coachesAndRepresentativesCount", coachesAndRepresentatives);
-    }
-}
-
-function judgesHomeRegionChanged(select) {
+function judgesHomeRegionChanged(fieldName, select) {
     $("#nonLocalJudges").html(parseInt($("#judgesTotal").html()) - judgesPerRegion[select.value]);
-    updateField("localCountryIdForJudges", select.value);
+    updateField(fieldName, select.value);
 }
 
 function updateField(field, value) {
@@ -25,6 +17,19 @@ function coachesChanged(input) {
         newValue = "0";
     }
     let wrappedInput = $(input);
-    $("#regionTotal_" + wrappedInput.attr("id")).html(parseInt($("#athletesTotal_" + wrappedInput.attr("id")).html()) + parseInt(newValue));
+    let id = wrappedInput.attr("id");
+    coachesPerRegion[id] = parseInt(newValue);
+    $("#regionTotal_" + id).html(parseInt($("#athletesTotal_" + wrappedInput.attr("id")).html()) + coachesPerRegion[id]);
     updateField(input.name, newValue);
+
+    let totalCoaches = calcTotalCoaches();
+    $("#totalParticipants").html(parseInt($("#totalAthletes").html()) + totalCoaches);
+    $("#totalCoaches").html(totalCoaches);
+}
+
+function calcTotalCoaches() {
+    let result = 0;
+    Object.keys(coachesPerRegion).forEach(key => result += coachesPerRegion[key]);
+
+    return result;
 }
