@@ -202,6 +202,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         $pdf->Cell(20, 5, $data["Males"] + $data["Females"] + $data["Coaches"], 1, 1, 'C');
         ++$index;
     }
+
     if (!$pdf->SamePage(2+5+1+10+5*count($subclasses))) { //отступ от предыдущей таблицы + текст + отступ до таблицы + заголовок таблицы + 5 пунктов на каждый разряд
         $pdf->AddPage();
     }
@@ -236,6 +237,11 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     }
     $pdf->SetFont($pdf->FontStd,'', 10);
 
+    $pdf->writeHTMLCell(190, 2, null, null, "", 0, 1, 0, 1, 'L'); //отступ
+    $pdf->writeHTMLCell(190, 5, null, null, "8. Представительство спортивных организаций:", 0, 1, 0, 1, 'L');
+    $pdf->writeHTMLCell(190, 7, 10, null, "Вооруженные силы: <b>" . $participantsPerOrganisation["armedForces"] . "</b>, \"Динамо\": <b>" . $participantsPerOrganisation["dinamo"] . "</b>, спортивные клубы (СК): <b>" . $participantsPerOrganisation["clubs"] . "</b>", 0, 1, 0, 1, 'L');
+    $pdf->writeHTMLCell(190, 5, null, null, "9. Принадлежность к спортивной школе:", 0, 1, 0, 1, 'L');
+    $pdf->writeHTMLCell(190, 7, 10, null, "СШ: <b>" . $participantsPerOrganisation["sportSchools"] . "</b>, СШОР: <b>" . $participantsPerOrganisation["sportSchoolsOlympic"] . "</b>, УОР: <b>" . $participantsPerOrganisation["sportFacilitiesOlympic"] . "</b>", 0, 1, 0, 1, 'L');
 
 
     $pdf->Output("Отчет ГСК.pdf");
