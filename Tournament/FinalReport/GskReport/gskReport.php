@@ -202,6 +202,16 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         $pdf->Cell(20, 5, $data["Males"] + $data["Females"] + $data["Coaches"], 1, 1, 'C');
         ++$index;
     }
+    $pdf->SetFont($pdf->FontStd,'B', 9);
+    $pdf->setX($pdf->GetX() + 5);
+    $pdf->Cell(10, 5, "", 1, 0, 'C');
+    $pdf->Cell(65, 5, "Всего", 1, 0, 'L');
+    $pdf->Cell(15, 5, "", 1, 0, 'C');
+    $pdf->Cell(20, 5, $participantsStatistics->Males, 1, 0, 'C');
+    $pdf->Cell(20, 5, $participantsStatistics->Females, 1, 0, 'C');
+    $pdf->Cell(20, 5, $participantsStatistics->Total, 1, 0, 'C');
+    $pdf->Cell(20, 5, $totalCoaches, 1, 0, 'C');
+    $pdf->Cell(20, 5, $participantsStatistics->Total + $totalCoaches, 1, 1, 'C');
 
     if (!$pdf->SamePage(2+5+1+10+5*count($subclasses))) { //отступ от предыдущей таблицы + текст + отступ до таблицы + заголовок таблицы + 5 пунктов на каждый разряд
         $pdf->AddPage();
