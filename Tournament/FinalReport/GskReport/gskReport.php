@@ -173,7 +173,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     }
     $pdf->writeHTMLCell(190, 7, 10, null, $judgesDetails, 0, 1, 0, 1, 'L');
     $pdf->writeHTMLCell(190, 5, null, null, "6. Состав участвующих команд (регионов), в том числе количество спортсменов, тренеров и другого обслуживающего персонала:", 0, 1, 0, 1, 'L');
-    $pdf->setY($pdf->GetY() + 2);
+    $pdf->setY($pdf->GetY() + 1);
     $pdf->setX($pdf->GetX() + 5);
     $pdf->SetFont($pdf->FontStd,'B', 9);
     $pdf->Cell(10, 10, "№ п/п", 1, 0, "C");
@@ -188,7 +188,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->Cell(20, 5, "Ж", 1, 0, "C");
     $pdf->Cell(20, 5, "Всего", 1, 0, "C");
     $pdf->Cell(20, 5, "обсл. персонал, чел.", "RLB", 1, "C", 0, "", 1, false, "T", "T");
-    $pdf->SetFont($pdf->FontStd,'');
+    $pdf->SetFont($pdf->FontStd,'', 9);
     $index = 1;
     foreach ($participantsByRegion as $id => $data) {
         $pdf->setX($pdf->GetX() + 5);
@@ -202,6 +202,41 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         $pdf->Cell(20, 5, $data["Males"] + $data["Females"] + $data["Coaches"], 1, 1, 'C');
         ++$index;
     }
+    if (!$pdf->SamePage(2+5+1+10+5*count($subclasses))) { //отступ от предыдущей таблицы + текст + отступ до таблицы + заголовок таблицы + 5 пунктов на каждый разряд
+        $pdf->AddPage();
+    }
+    $pdf->SetFont($pdf->FontStd,'', 10);
+    $pdf->writeHTMLCell(190, 2, null, null, "", 0, 1, 0, 1, 'L'); //отступ
+    $pdf->writeHTMLCell(190, 5, null, null, "7. Уровень подготовки спортсменов:", 0, 1, 0, 1, 'L');
+    $groupSize = (190 - 15 - 15) / count($classes);
+    $pdf->setY($pdf->GetY() + 1);
+    $pdf->setX($pdf->GetX() + 5);
+    $pdf->SetFont($pdf->FontStd,'B', 9);
+    $pdf->Cell(15, 10, "", 1, 0, "C");
+    $pdf->Cell($groupSize * count($classes), 5, "Возрастные группы в соответствии с ЕВСК", 1, 0, "C");
+    $pdf->Cell(15, 10, "Всего", 1, 1, "C");
+    $pdf->setY($pdf->GetY() - 5);
+    $pdf->setX($pdf->GetX() + 5 + 15);
+    foreach ($classes as $id => $description) {
+        $pdf->Cell($groupSize, 5, $description, 1, 0, "C");
+    }
+    $pdf->ln();
+    foreach ($subclasses as $subclassId => $subclassDescription) {
+        $pdf->SetFont($pdf->FontStd,'B', 9);
+        $pdf->setX($pdf->GetX() + 5);
+        $pdf->Cell(15, 5, $subclassDescription, 1, 0, "C");
+        $subclassTotal = 0;
+        $pdf->SetFont($pdf->FontStd,'', 9);
+        foreach ($classes as $id => $description) {
+            $subclassForGroup = $subclassStatistics[$subclassId][$id] ?? "0";
+            $subclassTotal += $subclassForGroup;
+            $pdf->Cell($groupSize, 5, $subclassTotal, 1, 0, "C");
+        }
+        $pdf->Cell(15, 5, $subclassTotal, 1, 1, "C");
+    }
+    $pdf->SetFont($pdf->FontStd,'', 10);
+
+
 
     $pdf->Output("Отчет ГСК.pdf");
 } else {
