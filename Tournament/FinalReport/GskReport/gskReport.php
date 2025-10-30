@@ -6,6 +6,7 @@ require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/pdf/LabelPDF.inc.php');
 require_once("Common/Lib/Normative/NormativeStatistics.php");
+require_once('Common/pdf/PdfChunkLoader.php');
 require_once("Tournament/FinalReport/GskReport/GskFields.php");
 require_once("Tournament/FinalReport/GskReport/fields/IsBasicRegionGskField.php");
 require_once("Tournament/FinalReport/GskReport/fields/NumberOfCoachesFromRegion.php");
@@ -141,7 +142,7 @@ $participantsPerOrganisation["sportFacilitiesOlympic"] = getParticipansFromOrgan
 
 if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf = new LabelPDF();
-    $pdf->setMargins(5, 5, 5);
+    $pdf->setMargins(10, 10, 10);
     $pdf->setFontSize(10);
     $pdf->setPrintHeader(false);
     $pdf->setPrintFooter(false);
@@ -174,7 +175,6 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->writeHTMLCell(190, 7, 10, null, $judgesDetails, 0, 1, 0, 1, 'L');
     $pdf->writeHTMLCell(190, 5, null, null, "6. Состав участвующих команд (регионов), в том числе количество спортсменов, тренеров и другого обслуживающего персонала:", 0, 1, 0, 1, 'L');
     $pdf->setY($pdf->GetY() + 1);
-    $pdf->setX($pdf->GetX() + 5);
     $pdf->SetFont($pdf->FontStd,'B', 9);
     $pdf->Cell(10, 10, "№ п/п", 1, 0, "C");
     $pdf->Cell(65, 10, "Команда (субъект РФ)", 1, 0, "C");
@@ -182,7 +182,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->Cell(60, 5, "Спортсмены, чел.", 1, 0, "C");
     $pdf->Cell(20, 5, "Тренеры и др.", "RLT", 0, "C", 0, "", 1, false, "T", "B");
     $pdf->Cell(20, 10, "Всего", 1, 1, "C");
-    $pdf->SetXY($pdf->getX() + 80, $pdf->GetY() - 5);
+    $pdf->SetXY($pdf->getX() + 75, $pdf->GetY() - 5);
     $pdf->Cell(15, 5, "вид", "RLB", 0, "C", 0, "", 1, false, "T", "T");
     $pdf->Cell(20, 5, "М", 1, 0, "C");
     $pdf->Cell(20, 5, "Ж", 1, 0, "C");
@@ -191,7 +191,6 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->SetFont($pdf->FontStd,'', 9);
     $index = 1;
     foreach ($participantsByRegion as $id => $data) {
-        $pdf->setX($pdf->GetX() + 5);
         $pdf->Cell(10, 5, $index, 1, 0, 'C');
         $pdf->Cell(65, 5, $data["Name"], 1, 0, 'L');
         $pdf->Cell(15, 5, $data["isBasicSport"] ? "✔" : "", 1, 0, 'C');
@@ -203,7 +202,6 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         ++$index;
     }
     $pdf->SetFont($pdf->FontStd,'B', 9);
-    $pdf->setX($pdf->GetX() + 5);
     $pdf->Cell(10, 5, "", 1, 0, 'C');
     $pdf->Cell(65, 5, "Всего", 1, 0, 'L');
     $pdf->Cell(15, 5, "", 1, 0, 'C');
@@ -221,20 +219,18 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->writeHTMLCell(190, 5, null, null, "7. Уровень подготовки спортсменов:", 0, 1, 0, 1, 'L');
     $groupSize = (190 - 15 - 15) / count($classes);
     $pdf->setY($pdf->GetY() + 1);
-    $pdf->setX($pdf->GetX() + 5);
     $pdf->SetFont($pdf->FontStd,'B', 9);
     $pdf->Cell(15, 10, "", 1, 0, "C");
     $pdf->Cell($groupSize * count($classes), 5, "Возрастные группы в соответствии с ЕВСК", 1, 0, "C");
     $pdf->Cell(15, 10, "Всего", 1, 1, "C");
     $pdf->setY($pdf->GetY() - 5);
-    $pdf->setX($pdf->GetX() + 5 + 15);
+    $pdf->setX($pdf->GetX() + 15);
     foreach ($classes as $id => $description) {
         $pdf->Cell($groupSize, 5, $description, 1, 0, "C");
     }
     $pdf->ln();
     foreach ($subclasses as $subclassId => $subclassDescription) {
         $pdf->SetFont($pdf->FontStd,'B', 9);
-        $pdf->setX($pdf->GetX() + 5);
         $pdf->Cell(15, 5, $subclassDescription, 1, 0, "C");
         $subclassTotal = 0;
         $pdf->SetFont($pdf->FontStd,'', 9);
@@ -264,6 +260,17 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         $athleteNormatives .= ($normative . ": <b> " . $count . "</b>");
     }
     $pdf->writeHTMLCell(190, 7, 10, null, $athleteNormatives, 0, 1, 0, 1, 'L');
+
+    $pdf->writeHTMLCell(190, 5, null, null, "11. Результаты соревнований:", 0, 1, 0, 1, 'L');
+    $PdfData=getMedalList();
+    $PdfData->HideOfficials = true;
+    require_once(PdfChunkLoader('MedalList.inc.php'));
+
+    $pdf->setY($pdf->GetY() + 4);
+    $pdf->SetFont($pdf->FontStd,'', 10);
+    $pdf->writeHTMLCell(190, 5, null, null, "12. Количество субъектов Российской Федерации команд (перечислить территории согласно  занятым местам):", 0, 1, 0, 1, 'L');
+    $PdfData=getMedalStand();
+    require_once(PdfChunkLoader('MedalStand.inc.php'));
 
     $pdf->Output("Отчет ГСК.pdf");
 } else {

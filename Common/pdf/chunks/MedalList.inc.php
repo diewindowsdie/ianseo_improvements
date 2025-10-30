@@ -84,6 +84,7 @@ foreach($PdfData->rankData['events'] as $Event => $section) {
 		}
 	}
 }
-
-TournamentOfficials::printOfficials($pdf);
+if (!$PdfData->HideOfficials) {
+    TournamentOfficials::printOfficials($pdf);
+}
 ?>
