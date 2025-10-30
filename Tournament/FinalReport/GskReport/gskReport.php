@@ -142,11 +142,11 @@ $participantsPerOrganisation["sportFacilitiesOlympic"] = getParticipansFromOrgan
 
 if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf = new LabelPDF();
-    $pdf->setMargins(10, 10, 10);
+    $pdf->setMargins(10, 10, 10, );
+    $pdf->setAutoPageBreak(true, 10);
     $pdf->setFontSize(10);
     $pdf->setPrintHeader(false);
     $pdf->setPrintFooter(false);
-    $pdf->setAutoPageBreak(true);
 
     $pdf->AddPage();
 
@@ -262,6 +262,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->writeHTMLCell(190, 7, 10, null, $athleteNormatives, 0, 1, 0, 1, 'L');
 
     $pdf->writeHTMLCell(190, 5, null, null, "11. Результаты соревнований:", 0, 1, 0, 1, 'L');
+    $pdf->setY($pdf->GetY() + 1);
     $PdfData=getMedalList();
     $PdfData->HideOfficials = true;
     require_once(PdfChunkLoader('MedalList.inc.php'));
@@ -269,8 +270,41 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->setY($pdf->GetY() + 4);
     $pdf->SetFont($pdf->FontStd,'', 10);
     $pdf->writeHTMLCell(190, 5, null, null, "12. Количество субъектов Российской Федерации команд (перечислить территории согласно  занятым местам):", 0, 1, 0, 1, 'L');
+    $pdf->setY($pdf->GetY() + 1);
     $PdfData=getMedalStand();
     require_once(PdfChunkLoader('MedalStand.inc.php'));
+
+    $pdf->setY($pdf->GetY() + 3);
+    $pdf->SetFont($pdf->FontStd,'', 10);
+    $pdf->writeHTMLCell(190, 5, null, null, "13. Общая оценка состояния спортивной базы, наличие и состояние спортивного оборудования и инвентаря, возможности для разминки и тренировок: <b>" . GskFields::getGeneralIssues()->getValue() . "</b>", 0, 1, 0, 1, 'J');
+
+    $pdf->setY($pdf->GetY() + 3);
+    $pdf->writeHTMLCell(190, 5, null, null, "14. Общая оценка состояния и оснащения служебных помещений - раздевалок для спортсменов, помещений для судей и других служб: <b>" . GskFields::getServiceRoomIssues()->getValue() . "</b>", 0, 1, 0, 1, 'J');
+
+    $pdf->setY($pdf->GetY() + 3);
+    $pdf->writeHTMLCell(190, 5, null, null, "15. Информационное обеспечение соревнований - табло, радиоинформация, своевременность и доступность стартовых протоколов и результатов соревнований, обеспечение судейской коллегии средствами вычислительной техники и множительной аппаратурой: <b>" . GskFields::getInformationServices()->getValue() . "</b>", 0, 1, 0, 1, 'J');
+
+    $pdf->setY($pdf->GetY() + 3);
+    $pdf->writeHTMLCell(190, 5, null, null, "16. Обеспечение работы средств массовой информации - места на трибунах, помещение для пресс-центра и т.д., в том числе освещение соревнования в местных СМИ (копии публикаций в СМИ прилагаются): <b>" . GskFields::getPressIssues()->getValue() . "</b>", 0, 1, 0, 1, 'J');
+
+    $pdf->setY($pdf->GetY() + 3);
+    $pdf->writeHTMLCell(190, 5, null, null, "17. Количество зрителей: <b>" . GskFields::getViewersAmount()->getValue() . "</b> чел.", 0, 1, 0, 1, 'J');
+
+    $pdf->setY($pdf->GetY() + 3);
+    $pdf->writeHTMLCell(190, 5, null, null, "18. Общая оценка качества проведения соревнований - точность соблюдения расписания, объективность судейства (с указанием нарушений правил соревнований и т.д.): <b>" . GskFields::getGeneralOrganisation()->getValue() . "</b>", 0, 1, 0, 1, 'J');
+
+    $pdf->setY($pdf->GetY() + 3);
+    $pdf->writeHTMLCell(190, 5, null, null, "19. Медицинское обеспечение соревнований, в том числе сведения о травмах и других несчастных случаях: <b>" . GskFields::getMedicalIssues()->getValue() . "</b>", 0, 1, 0, 1, 'J');
+
+    $pdf->setY($pdf->GetY() + 3);
+    $pdf->writeHTMLCell(190, 5, null, null, "20. Общая оценка качества размещения, питания, транспортного обслуживания, организации встреч и проводов спортивных делегаций, шефская работа и т.п.: <b>" . GskFields::getGuestDelegationIssues()->getValue() . "</b>", 0, 1, 0, 1, 'J');
+
+    $pdf->setY($pdf->GetY() + 3);
+    $pdf->writeHTMLCell(190, 5, null, null, "21. Общая оценка соблюдения мер по обеспечению безопасности при проведении соревнования: <b>" . GskFields::getSecurityNotes()->getValue() . "</b>", 0, 1, 0, 1, 'J');
+
+    $pdf->setY($pdf->GetY() + 3);
+    $pdf->writeHTMLCell(190, 5, null, null, "22. Выводы и предложения (замечания) по подготовке и проведению соревнования: <b>" . GskFields::getOtherNotes()->getValue() . "</b>", 0, 1, 0, 1, 'J');
+
 
     $pdf->Output("Отчет ГСК.pdf");
 } else {
@@ -418,25 +452,24 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                 ?>
             </td></tr>
         <tr><td style="text-align: left; padding-left: 40px">13. Общая оценка состояния спортивной базы, наличие и состояние спортивного оборудования и инвентаря, возможности для разминки и тренировок:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="general_issues" onblur="updateField('general_issues', this.value)"><?php echo getField("general_issues", "Состояние спортивной базы соответствует требованиям техники безопасности и правил проведения соревнований по стрельбе из лука"); ?></textarea></td></tr>
+        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getGeneralIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getGeneralIssues()->getValue(); ?></textarea></td></tr>
         <tr><td style="text-align: left; padding-left: 40px">14. Общая оценка состояния и оснащения служебных помещений - раздевалок для спортсменов, помещений для судей и других служб:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="service_room_issues" onblur="updateField('service_room_issues', this.value)"><?php echo getField("service_room_issues", "Состояние и оснащение служебных помещений соответствует требованиям"); ?></textarea></td></tr>
+        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getServiceRoomIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getServiceRoomIssues()->getValue(); ?></textarea></td></tr>
         <tr><td style="text-align: left; padding-left: 40px">15. Информационное обеспечение соревнований - табло, радиоинформация, своевременность и доступность стартовых протоколов и результатов соревнований, обеспечение судейской коллегии средствами вычислительной техники и множительной аппаратурой:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="information_services" onblur="updateField('information_services', this.value)"><?php echo getField("information_services", "Информационное обеспечение соревнований – радио-информация, выпуск стартовых протоколов, результатов соревнований, а также обеспечение вычислительной техникой и множительной аппаратурой предоставлялось своевременно"); ?></textarea></td></tr>
+        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getInformationServices()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getServiceRoomIssues()->getValue(); ?></textarea></td></tr>
         <tr><td style="text-align: left; padding-left: 40px">16. Обеспечение работы средств массовой информации - места на трибунах, помещение для пресс-центра и т.д., в том числе освещение соревнования в местных СМИ (копии публикаций в СМИ прилагаются):</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="smi_issues" onblur="updateField('smi_issues', this.value)"><?php echo getField("smi_issues", "Сотрудникам СМИ были предоставлены места на трибунах, а также помещения для расположения пресс-центра. Ход соревнований освещался в местных СМИ"); ?></textarea></td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">17. Количество зрителей: <input type="text" name="viewers_amount" value="<?php echo getField("viewers_amount", "0"); ?>" onblur="updateField('viewers_amount', this.value)"/> чел.</td></tr>
+        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getPressIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getPressIssues()->getValue(); ?></textarea></td></tr>
+        <tr><td style="text-align: left; padding-left: 40px">17. Количество зрителей: <input type="text" name="<?php echo GskFields::getViewersAmount()->getParameterName(); ?>" value="<?php echo GskFields::getViewersAmount()->getValue(); ?>" onblur="updateField(this.name, this.value)"/> чел.</td></tr>
         <tr><td style="text-align: left; padding-left: 40px">18. Общая оценка качества проведения соревнований - точность соблюдения расписания, объективность судейства (с указанием нарушений правил соревнований и т.д.):</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="general_organisation" onblur="updateField('general_organisation', this.value)"><?php echo getField("general_organisation", "Объективность судейства и точность расписания соблюдались на протяжении всех дней соревнований"); ?></textarea></td></tr>
+        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getGeneralOrganisation()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getGeneralOrganisation()->getValue(); ?></textarea></td></tr>
         <tr><td style="text-align: left; padding-left: 40px">19. Медицинское обеспечение соревнований, в том числе сведения о травмах и других несчастных случаях:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="medical_issues" onblur="updateField('medical_issues', this.value)"><?php echo getField("medical_issues", "Травм и заболеваний не было, на соревнованиях присутствовал врач с дежурной бригадой скорой помощи"); ?></textarea></td></tr>
+        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getMedicalIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getMedicalIssues()->getValue(); ?></textarea></td></tr>
         <tr><td style="text-align: left; padding-left: 40px">20. Общая оценка качества размещения, питания, транспортного обслуживания, организации встреч и проводов спортивных делегаций, шефская работа и т.п.:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="guest_delegation_issues" onblur="updateField('guest_delegation_issues', this.value)"><?php echo getField("guest_delegation_issues", "Размещением все делегации были обеспечены, транспортное обслуживание осуществлялось в соответствии с расписанием"); ?></textarea></td></tr>
+        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getGuestDelegationIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getGuestDelegationIssues()->getValue(); ?></textarea></td></tr>
         <tr><td style="text-align: left; padding-left: 40px">21. Общая оценка соблюдения мер по обеспечению безопасности при проведении соревнования:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="security_notes" onblur="updateField('security_notes', this.value)"><?php echo getField("security_notes", 'Обеспечение безопасности участников соревнований осуществлялось в соответствии с правилами вида спорта «стрельба из лука», утвержденных приказом Министерства спорта Российской Федерации от 29.12.2020г. N 984, Постановлением Правительства Российской Федерации N 353 от 18.04.2014г. «Об утверждении Правил обеспечения безопасности при проведении официальных спортивных соревнований» и приказом Министерства здравоохранения Российской Федерации от 23.10.2020 N 1144н "Об утверждении порядка организации оказания медицинской помощи лицам, занимающимся физической культурой и спортом (в том числе при подготовке и проведении физкультурных мероприятий и спортивных мероприятий), включая порядок медицинского осмотра лиц, желающих пройти спортивную подготовку, заниматься физической культурой и спортом в организациях и (или) выполнить нормативы испытаний (тестов) Всероссийского физкультурно-спортивного комплекса "Готов к труду и обороне" (ГТО)" и форм медицинских заключений о допуске к участию физкультурных и спортивных мероприятиях'); ?></textarea></td></tr>
+        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getSecurityNotes()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getSecurityNotes()->getValue(); ?></textarea></td></tr>
         <tr><td style="text-align: left; padding-left: 40px">22. Выводы и предложения (замечания) по подготовке и проведению соревнования:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="other_notes" onblur="updateField('other_notes', this.value)"><?php echo getField("other_notes", 'Замечаний нет'); ?></textarea></td></tr>
-
+        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getOtherNotes()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getOtherNotes()->getValue(); ?></textarea></td></tr>
     </table>
 </form>
 
