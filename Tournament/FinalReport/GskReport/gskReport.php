@@ -160,7 +160,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->AddPage();
 
     $pdf->Cell(190, 6, "Отчет", 0, 1, 'C');
-    $pdf->Cell(190, 6, "о проведении " . GskFields::getCompetitionTitle()->getValue(), 0, 1, 'C');
+    $pdf->writeHTMLCell(190, 6, null, null, "о проведении <b>" . GskFields::getCompetitionTitle()->getValue() . "</b>", 0, 1, 0, 1, 'C');
 
     $pdf->Cell(190, 10, "", 0, 1, 'C');
 
@@ -383,18 +383,9 @@ if (array_key_exists("doPrint", $_REQUEST)) {
 
 <form id="printProtocol" method="GET" action="gskReport.php?doPrint=1" target="_blank">
     <table class="Tabella">
+        <tr><td colspan="2" style="padding: 20px; font-weight: bold">При необходимости укажите ниже данные, нужные для формирования отчета ГСК:</td></tr>
         <tr>
             <td colspan="2" style="text-align: left; padding-left: 40px">Отчет о проведении <input style="width: 40%" type="text" name="gsk_competitionTitle" value="<?php echo GskFields::getCompetitionTitle()->getValue(); ?>" onblur="updateField('<?php echo GskFields::getCompetitionTitle()->getParameterName(); ?>', this.value)"/></td>
-        </tr>
-        <tr></tr>
-        <tr>
-            <td style="text-align: left; padding-left: 40px">1. Сроки проведения: <b><?php echo $_SESSION['TourWhenFrom'] . " - " . $_SESSION['TourWhenTo']; ?> г.</b></td>
-        </tr>
-        <tr>
-            <td style="text-align: left; padding-left: 40px">2. Место проведения: <b><?php echo $_SESSION['TourWhere']; ?></b></td>
-        </tr>
-        <tr>
-            <td style="text-align: left; padding-left: 40px">3. Наименование спортивного сооружения: <b><?php echo $tournamentData->ToVenue; ?></b></td>
         </tr>
         <tr>
             <td style="text-align: left; padding-left: 40px">4. Всего участников соревнований: <span style="font-weight: bold" id="totalParticipants"><?php echo $participantsStatistics->Total + $totalCoaches; ?></span>, из <b><?php echo $participantsStatistics->RegionsCount; ?></b> региона(ов);</td>
@@ -409,19 +400,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             <td style="text-align: left; padding-left: 40px">5. Количество судей: <span style="font-weight: bold" id="judgesTotal"><?php echo $judgesData->Total; ?></span>, в том числе иногородних: <span style="font-weight: bold" id="nonLocalJudges"><?php echo $judgesData->NonLocal; ?></span></td>
         </tr>
         <tr>
-            <td style="text-align: left; padding-left: 40px">Уровень подготовки судей по судейским категориям: <?php
-                    $isFirst = true;
-                    foreach ($judgesAccreditation as $accreditation => $count) {
-                        if (!$isFirst) {
-                            echo ", ";
-                        }
-                        echo get_text("JudgeAccreditation_" . $accreditation, "Tournament") . ": <b>" . $count . "</b>";
-                        $isFirst = false;
-                    }
-                ?>
-        </tr>
-        <tr>
-            <td style="text-align: left; padding-left: 80px">Выберите регион, судьи из которого не считаются иногородними:
+            <td style="text-align: left; padding-left: 80px">Выберите регион, судьи из которого <b>не</b> считаются иногородними:
             <?php
                 $localRegionIdForJudgesField = GskFields::getLocalRegionIdForJudges();
                 echo '<select id="judgesRegions" onchange="judgesHomeRegionChanged(\'' . $localRegionIdForJudgesField->getParameterName() . '\', this)">';
@@ -435,63 +414,21 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         <tr>
             <td style="text-align: left; padding-left: 40px">
                 <table class="Tabella w-30">
-                    <tr><td rowspan="2">№ п/п</td><td rowspan="2">Команда (субъект РФ)</td><td rowspan="2">Базовый вид</td><td colspan="3">Спортсмены, чел.</td><td rowspan="2">Тренеры и др. обсл. персонал, чел.</td><td rowspan="2">Всего</td></tr>
-                    <tr><td>М</td><td>Ж</td><td>Всего</td></tr>
+                    <tr><td rowspan="2" style="border: 1px solid">№ п/п</td><td rowspan="2" style="border: 1px solid">Команда (субъект РФ)</td><td rowspan="2" style="border: 1px solid">Базовый вид</td><td colspan="3" style="border: 1px solid">Спортсмены, чел.</td><td rowspan="2" style="border: 1px solid">Тренеры и др. обсл. персонал, чел.</td><td rowspan="2" style="border: 1px solid">Всего</td></tr>
+                    <tr><td style="border: 1px solid">М</td><td style="border: 1px solid">Ж</td><td style="border: 1px solid">Всего</td></tr>
                     <?php
                         $index = 1;
                         $tabIndexOffset = count($participantsByRegion);
                         foreach ($participantsByRegion as $id => $data) {
                             $isBasicParameterName = IsBasicRegionGskField::getParameterNameForRegion($id);
                             $numberOfCoachesParameterName = NumberOfCoachesFromRegion::getParameterNameForRegion($id);
-                            echo "<tr><td>" . $index . "</td><td>" . $data["Name"] . "</td><td><input type='checkbox' tabindex='" . $index . "' name='" . $isBasicParameterName . "'" . ($data["isBasicSport"] ? "checked='checked'" : '') . " onclick='toggleBasicSport(this)'/></td><td>" . $data["Males"] . "</td><td>" . $data["Females"] . "</td><td id='athletesTotal_" . $id . "'>" . $data["Males"] + $data["Females"] . "</td><td><input class='w-15' id='" . $id . "' type='text' tabIndex='" . $index + $tabIndexOffset . "' name='" . $numberOfCoachesParameterName . "' value='" . $data["Coaches"] . "' onblur='coachesChanged(this)'/></td><td id='regionTotal_" . $id . "'>" . $data["Males"] + $data["Females"] + $data["Coaches"] . "</td></tr>\n";
+                            echo "<tr><td style='border: 1px solid'>" . $index . "</td><td style='border: 1px solid'>" . $data["Name"] . "</td><td style='border: 1px solid'><input type='checkbox' tabindex='" . $index . "' name='" . $isBasicParameterName . "'" . ($data["isBasicSport"] ? "checked='checked'" : '') . " onclick='toggleBasicSport(this)'/></td><td style='border: 1px solid'>" . $data["Males"] . "</td><td style='border: 1px solid'>" . $data["Females"] . "</td><td id='athletesTotal_" . $id . "' style='border: 1px solid'>" . $data["Males"] + $data["Females"] . "</td><td style='border: 1px solid'><input class='w-15' id='" . $id . "' type='text' tabIndex='" . $index + $tabIndexOffset . "' name='" . $numberOfCoachesParameterName . "' value='" . $data["Coaches"] . "' onblur='coachesChanged(this)'/></td><td id='regionTotal_" . $id . "' style='border: 1px solid'>" . $data["Males"] + $data["Females"] + $data["Coaches"] . "</td></tr>\n";
                             ++$index;
                         }
                     ?>
                 </table>
             </td>
         </tr>
-        <tr><td style="text-align: left; padding-left: 40px">7. Уровень подготовки спортсменов:</td></tr>
-        <tr>
-            <td style="text-align: left; padding-left: 40px">
-                <table class="Tabella w-30">
-                    <tr><td rowspan="2"></td><td colspan="<?php echo count($classes); ?>">Возрастные группы в соответствии с ЕВСК</td><td rowspan="2">Всего</td></tr>
-                    <?php
-                        echo "<tr>\n";
-                        foreach ($classes as $id => $description) {
-                            echo "<td>" . $description . "</td>";
-                        }
-                        echo "</tr>\n";
-                        foreach ($subclasses as $subclassId => $subclassDescription) {
-                            echo "<tr><td>" . $subclassDescription . "</td>";
-                            $subclassTotal = 0;
-                            foreach ($classes as $id => $description) {
-                                $subclassForGroup = $subclassStatistics[$subclassId][$id] ?? "0";
-                                $subclassTotal += $subclassForGroup;
-                                echo "<td>" . $subclassForGroup . "</td>";
-                            }
-                            echo "<td>" . $subclassTotal . "</td></tr>\n";
-                        }
-                    ?>
-                </table>
-            </td>
-        </tr>
-        <tr><td style="text-align: left; padding-left: 40px">8. Представительство спортивных организаций:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">Вооруженные силы: <b><?php echo $participantsPerOrganisation["armedForces"]; ?></b>, "Динамо": <b><?php echo $participantsPerOrganisation["dinamo"]; ?></b>, спортивные клубы (СК): <b><?php echo $participantsPerOrganisation["clubs"]; ?></b></td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">9. Принадлежность к спортивной школе:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">СШ: <b><?php echo $participantsPerOrganisation["sportSchools"]; ?></b>, СШОР: <b><?php echo $participantsPerOrganisation["sportSchoolsOlympic"]; ?></b>, УОР: <b><?php echo $participantsPerOrganisation["sportFacilitiesOlympic"]; ?></b></td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">10. Выполнение (подтверждение) нормативов (количество показанных результатов):</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">
-                <?php
-                    $first = true;
-                    foreach(NormativeStatistics::getNormativeStatistics()["normativeTotals"] as $normative => $count) {
-                        if (!$first) {
-                            echo ", ";
-                        }
-                        $first = false;
-                        echo $normative . ": <b> " . $count . "</b>";
-                    }
-                ?>
-            </td></tr>
         <tr><td style="text-align: left; padding-left: 40px">13. Общая оценка состояния спортивной базы, наличие и состояние спортивного оборудования и инвентаря, возможности для разминки и тренировок:</td></tr>
         <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getGeneralIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getGeneralIssues()->getValue(); ?></textarea></td></tr>
         <tr><td style="text-align: left; padding-left: 40px">14. Общая оценка состояния и оснащения служебных помещений - раздевалок для спортсменов, помещений для судей и других служб:</td></tr>
