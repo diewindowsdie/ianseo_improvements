@@ -6,6 +6,7 @@ require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/pdf/LabelPDF.inc.php');
 require_once("Common/Lib/Normative/NormativeStatistics.php");
+require_once("Common/Lib/TournamentOfficials.php");
 require_once('Common/pdf/PdfChunkLoader.php');
 require_once("Tournament/FinalReport/GskReport/GskFields.php");
 require_once("Tournament/FinalReport/GskReport/fields/IsBasicRegionGskField.php");
@@ -60,6 +61,14 @@ while ($row = safe_fetch($rs)) {
     $judgeRegions[$row->CoId]["Name"] = $row->CoNameComplete;
     $judgeRegions[$row->CoId]["FromRegion"] = $row->FromRegion;
 }
+
+//главный судья и главный секретарь
+$query = "select TiName, TiGivenName, TiLastName from TournamentInvolved where TiType = '5' and TiTournament = " . $_SESSION["TourId"];
+$rs = safe_r_SQL($query);
+$chairpersonOfJudges = safe_fetch($rs);
+$query = "select TiName, TiGivenName, TiLastName from TournamentInvolved where TiType = '23' and TiTournament = " . $_SESSION["TourId"];
+$rs = safe_r_SQL($query);
+$chiefSecretary = safe_fetch($rs);
 
 //статистика по регионам
 $totalCoaches = 0;
@@ -305,6 +314,38 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->setY($pdf->GetY() + 3);
     $pdf->writeHTMLCell(190, 5, null, null, "22. Выводы и предложения (замечания) по подготовке и проведению соревнования: <b>" . GskFields::getOtherNotes()->getValue() . "</b>", 0, 1, 0, 1, 'J');
 
+    $pdf->setY($pdf->GetY() + 3);
+    $pdf->writeHTMLCell(190, 5, null, null, "Приложения:", 0, 1, 0, 1, 'J');
+    $pdf->writeHTMLCell(190, 5, null, null, "1. Полный состав судейской коллегии с указанием выполняемых на соревновании функций (судейская категория, субъект РФ, город).", 0, 1, 0, 1, 'J');
+    $pdf->writeHTMLCell(190, 5, null, null, "2. Итоги командного первенства.", 0, 1, 0, 1, 'J');
+    $pdf->writeHTMLCell(190, 5, null, null, "3. Протоколы (результаты) соревнований, подписанные главным судьей и главным секретарем.", 0, 1, 0, 1, 'J');
+
+    $pdf->setY($pdf->GetY() + 10);
+    $pdf->setX($pdf->GetX() + 20);
+    $pdf->SetFont($pdf->FontStd,'B', 10);
+    $pdf->Cell(50, 5, "Главный судья", 0, 0, 'L');
+    $pdf->Cell(45, 5, "", "B", 0, 'L');
+    $pdf->Cell(5, 5, "", "0", 0, 'L');
+    $pdf->Cell(60, 5, TournamentOfficials::getJudgetSurnameWithInitials($chairpersonOfJudges->TiName, $chairpersonOfJudges->TiGivenName, $chairpersonOfJudges->TiLastName), "0", 1, 'L');
+    $pdf->setX($pdf->GetX() + 20 + 50);
+    $pdf->SetFont($pdf->FontStd,'', 7);
+    $pdf->Cell(45, 5, "(подпись)", "0", 1, 'C', 0, 0, 0, false, 'T', 'T');
+
+    $pdf->setY($pdf->GetY() + 8);
+    $pdf->setX($pdf->GetX() + 20);
+    $pdf->SetFont($pdf->FontStd,'B', 10);
+    $pdf->Cell(50, 5, "Главный секретарь", 0, 0, 'L');
+    $pdf->Cell(45, 5, "", "B", 0, 'L');
+    $pdf->Cell(5, 5, "", "0", 0, 'L');
+    $pdf->Cell(60, 5, TournamentOfficials::getJudgetSurnameWithInitials($chiefSecretary->TiName, $chiefSecretary->TiGivenName, $chiefSecretary->TiLastName), "0", 1, 'L');
+    $pdf->setX($pdf->GetX() + 20 + 50);
+    $pdf->SetFont($pdf->FontStd,'', 7);
+    $pdf->Cell(45, 5, "(подпись)", "0", 1, 'C', 0, 0, 0, false, 'T', 'T');
+
+    $pdf->setY($pdf->GetY() + 10);
+    $pdf->setX($pdf->GetX() + 30);
+    $pdf->SetFont($pdf->FontStd,'', 10);
+    $pdf->Cell(50, 5, $_SESSION['TourWhenTo'] . " г.", 0, 0, 'L');
 
     $pdf->Output("Отчет ГСК.pdf");
 } else {
