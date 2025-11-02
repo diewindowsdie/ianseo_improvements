@@ -1,6 +1,6 @@
 <?php
 
-error_reporting(E_ALL);
+global $CFG;
 
 require_once(dirname(dirname(dirname(dirname(__FILE__)))) . '/config.php');
 require_once('Common/Fun_FormatText.inc.php');
@@ -12,15 +12,14 @@ require_once("Tournament/FinalReport/GskReport/GskFields.php");
 require_once("Tournament/FinalReport/GskReport/fields/IsBasicRegionGskField.php");
 require_once("Tournament/FinalReport/GskReport/fields/NumberOfCoachesFromRegion.php");
 
-const moduleName = "GSK-Report";
-const prefix = "field_";
+checkFullACL(AclCompetition, 'acStandard', AclReadWrite);
 
-if (!CheckTourSession()) { //todo check some acl
-//todo redirect
+if (!CheckTourSession()) {
+    CD_redirect($CFG->ROOT_DIR);
 }
 
-function getField($field, $defaultValue = null) {
-    return getModuleParameter(moduleName, prefix . $field, $defaultValue, $_SESSION["TourId"]);
+function getResetInputJs(GskField $gskField): string {
+    return "resetInput('" . $gskField->getParameterName() . "', '" . htmlspecialchars($gskField->getDefaultValue()) . "')";
 }
 
 //общая информация о соревновании
@@ -40,7 +39,7 @@ $participantsStatistics = safe_fetch($rs);
 $query = "select count(NonLocal) NonLocal, count(Total) Total from (
     select TiId Total, null NonLocal from TournamentInvolved where TiTournament = " . $_SESSION["TourId"] . "
         union
-    select null Total, TiId NonLocal from TournamentInvolved where TiTournament = " . $_SESSION["TourId"] . " and TiCountry != " . getField("localCountryIdForJudges", "''") . ") t";
+    select null Total, TiId NonLocal from TournamentInvolved where TiTournament = " . $_SESSION["TourId"] . " and TiCountry != '" . GskFields::getLocalRegionIdForJudges()->getValue() . "') t";
 $rs = safe_r_SQL($query);
 $judgesData = safe_fetch($rs);
 
@@ -118,7 +117,7 @@ while ($row = safe_fetch($rs)) {
     $subclassStatistics[$row->ScId][$row->EnClass] = $row->numArchers;
 }
 
-function getParticipansFromOrganisationCount($patterns) {
+function getParticipantsFromOrganisationCount($patterns) {
     $firstQueryPart = true;
     $queryPart = "";
     foreach ($patterns as $pattern) {
@@ -137,17 +136,17 @@ function getParticipansFromOrganisationCount($patterns) {
 
 $participantsPerOrganisation = array();
 //вооруженные силы
-$participantsPerOrganisation["armedForces"] = getParticipansFromOrganisationCount(["^(?i).*ЦСКА.*$", "^(?i).*Динамо.*$"]); //todo (?i) не работает на кириллице
+$participantsPerOrganisation["armedForces"] = getParticipantsFromOrganisationCount(["^(?i).*ЦСКА.*$", "^(?i).*Динамо.*$"]); //todo (?i) не работает на кириллице
 //Динамо
-$participantsPerOrganisation["dinamo"] = getParticipansFromOrganisationCount(["^(?i).*Динамо.*$"]);
+$participantsPerOrganisation["dinamo"] = getParticipantsFromOrganisationCount(["^(?i).*Динамо.*$"]);
 //спортивные клубы - из поиска исключим паттерн "ЦСКА"
-$participantsPerOrganisation["clubs"] = getParticipansFromOrganisationCount(["^(?!.*ЦСКА)(?=.*СК).*$"]);
+$participantsPerOrganisation["clubs"] = getParticipantsFromOrganisationCount(["^(?!.*ЦСКА)(?=.*СК).*$"]);
 //спортивные школы
-$participantsPerOrganisation["sportSchools"] = getParticipansFromOrganisationCount(["^.*СШ.*$"]);
+$participantsPerOrganisation["sportSchools"] = getParticipantsFromOrganisationCount(["^.*СШ.*$"]);
 //спортивные школы олимпийского резерва
-$participantsPerOrganisation["sportSchoolsOlympic"] = getParticipansFromOrganisationCount(["^.*СШОР.*$"]);
+$participantsPerOrganisation["sportSchoolsOlympic"] = getParticipantsFromOrganisationCount(["^.*СШОР.*$"]);
 //училища олимпийского резерва
-$participantsPerOrganisation["sportFacilitiesOlympic"] = getParticipansFromOrganisationCount(["^(?i).*УОР.*$"]);
+$participantsPerOrganisation["sportFacilitiesOlympic"] = getParticipantsFromOrganisationCount(["^(?i).*УОР.*$"]);
 
 if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf = new LabelPDF();
@@ -381,26 +380,26 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         ?>};
 </script>
 
-<form id="printProtocol" method="GET" action="gskReport.php?doPrint=1" target="_blank">
-    <table class="Tabella">
-        <tr><td colspan="2" style="padding: 20px; font-weight: bold">При необходимости укажите ниже данные, нужные для формирования отчета ГСК:</td></tr>
+<form id="gskReport">
+    <table class="Tabella w-40">
+        <tr><td colspan="3" style="padding: 20px; font-weight: bold">При необходимости укажите ниже данные, нужные для формирования отчета ГСК:</td></tr>
         <tr>
-            <td colspan="2" style="text-align: left; padding-left: 40px">Отчет о проведении <input style="width: 40%" type="text" name="gsk_competitionTitle" value="<?php echo GskFields::getCompetitionTitle()->getValue(); ?>" onblur="updateField('<?php echo GskFields::getCompetitionTitle()->getParameterName(); ?>', this.value)"/></td>
+            <td style="text-align: left; padding-left: 40px; white-space: nowrap">Отчет о проведении</td><td class="w-100"><input class="w-100" type="text" id="title" name="<?php echo GskFields::getCompetitionTitle()->getParameterName(); ?>" value="<?php echo GskFields::getCompetitionTitle()->getValue(); ?>" onblur="updateField(this.name, this.value)"/></td><td style="white-space: nowrap"><div class="Button" onclick="<?php echo getResetInputJs(GskFields::getCompetitionTitle()); ?>">Вернуть стандартное значение</div></td>
         </tr>
         <tr>
-            <td style="text-align: left; padding-left: 40px">4. Всего участников соревнований: <span style="font-weight: bold" id="totalParticipants"><?php echo $participantsStatistics->Total + $totalCoaches; ?></span>, из <b><?php echo $participantsStatistics->RegionsCount; ?></b> региона(ов);</td>
+            <td colspan="3" style="text-align: left; padding-left: 40px">4. Всего участников соревнований: <span style="font-weight: bold" id="totalParticipants"><?php echo $participantsStatistics->Total + $totalCoaches; ?></span>, из <b><?php echo $participantsStatistics->RegionsCount; ?></b> региона(ов);</td>
         </tr>
         <tr>
-            <td style="text-align: left; padding-left: 40px">Спортсменов <span style="font-weight: bold" id="totalAthletes"><?php echo $participantsStatistics->Total; ?></span> чел., в том числе <b><?php echo $participantsStatistics->Males; ?></b> муж., <b><?php echo $participantsStatistics->Females; ?></b> жен.</td>
+            <td colspan="3" style="text-align: left; padding-left: 40px">Спортсменов <span style="font-weight: bold" id="totalAthletes"><?php echo $participantsStatistics->Total; ?></span> чел., в том числе <b><?php echo $participantsStatistics->Males; ?></b> муж., <b><?php echo $participantsStatistics->Females; ?></b> жен.</td>
         </tr>
         <tr>
-            <td style="text-align: left; padding-left: 40px">Представителей, тренеров <span style="font-weight: bold" id="totalCoaches"><?php echo $totalCoaches; ?></span> чел.</td>
+            <td colspan="3" style="text-align: left; padding-left: 40px">Представителей, тренеров <span style="font-weight: bold" id="totalCoaches"><?php echo $totalCoaches; ?></span> чел.</td>
         </tr>
         <tr>
-            <td style="text-align: left; padding-left: 40px">5. Количество судей: <span style="font-weight: bold" id="judgesTotal"><?php echo $judgesData->Total; ?></span>, в том числе иногородних: <span style="font-weight: bold" id="nonLocalJudges"><?php echo $judgesData->NonLocal; ?></span></td>
+            <td colspan="3" style="text-align: left; padding-left: 40px">5. Количество судей: <span style="font-weight: bold" id="judgesTotal"><?php echo $judgesData->Total; ?></span>, в том числе иногородних: <span style="font-weight: bold" id="nonLocalJudges"><?php echo $judgesData->NonLocal; ?></span></td>
         </tr>
         <tr>
-            <td style="text-align: left; padding-left: 80px">Выберите регион, судьи из которого <b>не</b> считаются иногородними:
+            <td colspan="3" style="text-align: left; padding-left: 80px">Выберите регион, судьи из которого <b>не</b> считаются иногородними:
             <?php
                 $localRegionIdForJudgesField = GskFields::getLocalRegionIdForJudges();
                 echo '<select id="judgesRegions" onchange="judgesHomeRegionChanged(\'' . $localRegionIdForJudgesField->getParameterName() . '\', this)">';
@@ -410,44 +409,49 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                 }
             ?></select></td>
         </tr>
-        <tr><td style="text-align: left; padding-left: 40px">6. Состав участвующих команд (регионов), в том числе количество спортсменов, тренеров и другого обслуживающего персонала:</td></tr>
+        <tr><td colspan="3" style="text-align: left; padding-left: 40px">6. Состав участвующих команд (регионов), в том числе количество спортсменов, тренеров и другого обслуживающего персонала:</td></tr>
         <tr>
-            <td style="text-align: left; padding-left: 40px">
-                <table class="Tabella w-30">
-                    <tr><td rowspan="2" style="border: 1px solid">№ п/п</td><td rowspan="2" style="border: 1px solid">Команда (субъект РФ)</td><td rowspan="2" style="border: 1px solid">Базовый вид</td><td colspan="3" style="border: 1px solid">Спортсмены, чел.</td><td rowspan="2" style="border: 1px solid">Тренеры и др. обсл. персонал, чел.</td><td rowspan="2" style="border: 1px solid">Всего</td></tr>
-                    <tr><td style="border: 1px solid">М</td><td style="border: 1px solid">Ж</td><td style="border: 1px solid">Всего</td></tr>
+            <td colspan="3" style="text-align: left; padding-left: 40px">
+                <table class="Tabella w-100">
+                    <tr><td rowspan="2" style="border: 1px solid" class="w-5">№<br/>п/п</td><td rowspan="2" style="border: 1px solid">Команда (субъект РФ)</td><td rowspan="2" style="border: 1px solid">Базовый вид</td><td colspan="3" style="border: 1px solid">Спортсмены, чел.</td><td rowspan="2" style="border: 1px solid">Тренеры и др. обсл. персонал, чел.</td><td rowspan="2" style="border: 1px solid; padding-right: 10px">Всего</td></tr>
+                    <tr><td style="border: 1px solid">М</td><td style="border: 1px solid">Ж</td><td style="border: 1px solid;">Всего</td></tr>
                     <?php
                         $index = 1;
                         $tabIndexOffset = count($participantsByRegion);
                         foreach ($participantsByRegion as $id => $data) {
                             $isBasicParameterName = IsBasicRegionGskField::getParameterNameForRegion($id);
                             $numberOfCoachesParameterName = NumberOfCoachesFromRegion::getParameterNameForRegion($id);
-                            echo "<tr><td style='border: 1px solid'>" . $index . "</td><td style='border: 1px solid'>" . $data["Name"] . "</td><td style='border: 1px solid'><input type='checkbox' tabindex='" . $index . "' name='" . $isBasicParameterName . "'" . ($data["isBasicSport"] ? "checked='checked'" : '') . " onclick='toggleBasicSport(this)'/></td><td style='border: 1px solid'>" . $data["Males"] . "</td><td style='border: 1px solid'>" . $data["Females"] . "</td><td id='athletesTotal_" . $id . "' style='border: 1px solid'>" . $data["Males"] + $data["Females"] . "</td><td style='border: 1px solid'><input class='w-15' id='" . $id . "' type='text' tabIndex='" . $index + $tabIndexOffset . "' name='" . $numberOfCoachesParameterName . "' value='" . $data["Coaches"] . "' onblur='coachesChanged(this)'/></td><td id='regionTotal_" . $id . "' style='border: 1px solid'>" . $data["Males"] + $data["Females"] + $data["Coaches"] . "</td></tr>\n";
+                            echo "<tr><td style='border: 1px solid'>" . $index . "</td><td style='border: 1px solid'>" . $data["Name"] . "</td><td style='border: 1px solid'><input type='checkbox' tabindex='" . $index . "' name='" . $isBasicParameterName . "'" . ($data["isBasicSport"] ? "checked='checked'" : '') . " onclick='toggleBasicSport(this)'/></td><td style='border: 1px solid'>" . $data["Males"] . "</td><td style='border: 1px solid'>" . $data["Females"] . "</td><td id='athletesTotal_" . $id . "' style='border: 1px solid'>" . $data["Males"] + $data["Females"] . "</td><td style='border: 1px solid'><input class='w-25' id='" . $id . "' type='text' tabIndex='" . $index + $tabIndexOffset . "' name='" . $numberOfCoachesParameterName . "' value='" . $data["Coaches"] . "' onblur='coachesChanged(this)'/></td><td id='regionTotal_" . $id . "' style='border: 1px solid'>" . $data["Males"] + $data["Females"] + $data["Coaches"] . "</td></tr>\n";
                             ++$index;
                         }
                     ?>
                 </table>
             </td>
         </tr>
-        <tr><td style="text-align: left; padding-left: 40px">13. Общая оценка состояния спортивной базы, наличие и состояние спортивного оборудования и инвентаря, возможности для разминки и тренировок:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getGeneralIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getGeneralIssues()->getValue(); ?></textarea></td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">14. Общая оценка состояния и оснащения служебных помещений - раздевалок для спортсменов, помещений для судей и других служб:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getServiceRoomIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getServiceRoomIssues()->getValue(); ?></textarea></td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">15. Информационное обеспечение соревнований - табло, радиоинформация, своевременность и доступность стартовых протоколов и результатов соревнований, обеспечение судейской коллегии средствами вычислительной техники и множительной аппаратурой:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getInformationServices()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getServiceRoomIssues()->getValue(); ?></textarea></td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">16. Обеспечение работы средств массовой информации - места на трибунах, помещение для пресс-центра и т.д., в том числе освещение соревнования в местных СМИ (копии публикаций в СМИ прилагаются):</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getPressIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getPressIssues()->getValue(); ?></textarea></td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">17. Количество зрителей: <input type="text" name="<?php echo GskFields::getViewersAmount()->getParameterName(); ?>" value="<?php echo GskFields::getViewersAmount()->getValue(); ?>" onblur="updateField(this.name, this.value)"/> чел.</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">18. Общая оценка качества проведения соревнований - точность соблюдения расписания, объективность судейства (с указанием нарушений правил соревнований и т.д.):</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getGeneralOrganisation()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getGeneralOrganisation()->getValue(); ?></textarea></td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">19. Медицинское обеспечение соревнований, в том числе сведения о травмах и других несчастных случаях:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getMedicalIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getMedicalIssues()->getValue(); ?></textarea></td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">20. Общая оценка качества размещения, питания, транспортного обслуживания, организации встреч и проводов спортивных делегаций, шефская работа и т.п.:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getGuestDelegationIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getGuestDelegationIssues()->getValue(); ?></textarea></td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">21. Общая оценка соблюдения мер по обеспечению безопасности при проведении соревнования:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getSecurityNotes()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getSecurityNotes()->getValue(); ?></textarea></td></tr>
-        <tr><td style="text-align: left; padding-left: 40px">22. Выводы и предложения (замечания) по подготовке и проведению соревнования:</td></tr>
-        <tr><td style="text-align: left; padding-left: 40px"><textarea style="width: 40%"  rows=3 name="<?php echo GskFields::getOtherNotes()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getOtherNotes()->getValue(); ?></textarea></td></tr>
+        <tr><td colspan="3" style="text-align: left; padding-left: 40px">13. Общая оценка состояния спортивной базы, наличие и состояние спортивного оборудования и инвентаря, возможности для разминки и тренировок:</td></tr>
+        <tr><td colspan="2" style="text-align: left; padding-left: 40px;"><textarea class="w-100" rows=5 name="<?php echo GskFields::getGeneralIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getGeneralIssues()->getValue(); ?></textarea></td><td style="vertical-align: top"><div class="Button" onclick="<?php echo getResetInputJs(GskFields::getGeneralIssues()); ?>">Вернуть стандартное значение</div></td></tr>
+        <tr><td colspan="3" style="text-align: left; padding-left: 40px">14. Общая оценка состояния и оснащения служебных помещений - раздевалок для спортсменов, помещений для судей и других служб:</td></tr>
+        <tr><td colspan="2" style="text-align: left; padding-left: 40px"><textarea class="w-100"  rows=5 name="<?php echo GskFields::getServiceRoomIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getServiceRoomIssues()->getValue(); ?></textarea></td><td style="vertical-align: top"><div class="Button" onclick="<?php echo getResetInputJs(GskFields::getServiceRoomIssues()); ?>">Вернуть стандартное значение</div></td></tr>
+        <tr><td colspan="3" style="text-align: left; padding-left: 40px">15. Информационное обеспечение соревнований - табло, радиоинформация, своевременность и доступность стартовых протоколов и результатов соревнований, обеспечение судейской коллегии средствами вычислительной техники и множительной аппаратурой:</td></tr>
+        <tr><td colspan="2" style="text-align: left; padding-left: 40px"><textarea class="w-100"  rows=5 name="<?php echo GskFields::getInformationServices()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getInformationServices()->getValue(); ?></textarea></td><td style="vertical-align: top"><div class="Button" onclick="<?php echo getResetInputJs(GskFields::getInformationServices()); ?>">Вернуть стандартное значение</div></td></tr>
+        <tr><td colspan="3" style="text-align: left; padding-left: 40px">16. Обеспечение работы средств массовой информации - места на трибунах, помещение для пресс-центра и т.д., в том числе освещение соревнования в местных СМИ (копии публикаций в СМИ прилагаются):</td></tr>
+        <tr><td colspan="2" style="text-align: left; padding-left: 40px"><textarea class="w-100"  rows=5 name="<?php echo GskFields::getPressIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getPressIssues()->getValue(); ?></textarea></td><td style="vertical-align: top"><div class="Button" onclick="<?php echo getResetInputJs(GskFields::getPressIssues()); ?>">Вернуть стандартное значение</div></td></tr>
+        <tr><td colspan="3" style="text-align: left; padding-left: 40px">17. Количество зрителей: <input type="text" name="<?php echo GskFields::getViewersAmount()->getParameterName(); ?>" value="<?php echo GskFields::getViewersAmount()->getValue(); ?>" onblur="updateField(this.name, this.value)"/> чел.</td></tr>
+        <tr><td colspan="3" style="text-align: left; padding-left: 40px">18. Общая оценка качества проведения соревнований - точность соблюдения расписания, объективность судейства (с указанием нарушений правил соревнований и т.д.):</td></tr>
+        <tr><td colspan="2" style="text-align: left; padding-left: 40px"><textarea class="w-100"  rows=5 name="<?php echo GskFields::getGeneralOrganisation()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getGeneralOrganisation()->getValue(); ?></textarea></td><td style="vertical-align: top"><div class="Button" onclick="<?php echo getResetInputJs(GskFields::getGeneralOrganisation()); ?>">Вернуть стандартное значение</div></td></tr>
+        <tr><td colspan="3" style="text-align: left; padding-left: 40px">19. Медицинское обеспечение соревнований, в том числе сведения о травмах и других несчастных случаях:</td></tr>
+        <tr><td colspan="2" style="text-align: left; padding-left: 40px"><textarea  class="w-100"  rows=5 name="<?php echo GskFields::getMedicalIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getMedicalIssues()->getValue(); ?></textarea></td><td style="vertical-align: top"><div class="Button" onclick="<?php echo getResetInputJs(GskFields::getMedicalIssues()); ?>">Вернуть стандартное значение</div></td></tr>
+        <tr><td colspan="3" style="text-align: left; padding-left: 40px">20. Общая оценка качества размещения, питания, транспортного обслуживания, организации встреч и проводов спортивных делегаций, шефская работа и т.п.:</td></tr>
+        <tr><td colspan="2" style="text-align: left; padding-left: 40px"><textarea class="w-100"  rows=5 name="<?php echo GskFields::getGuestDelegationIssues()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getGuestDelegationIssues()->getValue(); ?></textarea></td><td style="vertical-align: top"><div class="Button" onclick="<?php echo getResetInputJs(GskFields::getGuestDelegationIssues()); ?>">Вернуть стандартное значение</div></td></tr>
+        <tr><td colspan="3" style="text-align: left; padding-left: 40px">21. Общая оценка соблюдения мер по обеспечению безопасности при проведении соревнования:</td></tr>
+        <tr><td colspan="2" style="text-align: left; padding-left: 40px"><textarea class="w-100" rows=10 name="<?php echo GskFields::getSecurityNotes()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getSecurityNotes()->getValue(); ?></textarea></td><td style="vertical-align: top"><div class="Button" onclick="<?php echo getResetInputJs(GskFields::getSecurityNotes()); ?>">Вернуть стандартное значение</div></td></tr>
+        <tr><td colspan="3" style="text-align: left; padding-left: 40px">22. Выводы и предложения (замечания) по подготовке и проведению соревнования:</td></tr>
+        <tr><td colspan="2" style="text-align: left; padding-left: 40px"><textarea class="w-100" rows=5 name="<?php echo GskFields::getOtherNotes()->getParameterName(); ?>" onblur="updateField(this.name, this.value)"><?php echo GskFields::getOtherNotes()->getValue(); ?></textarea></td><td style="vertical-align: top"><div class="Button" onclick="<?php echo getResetInputJs(GskFields::getOtherNotes()); ?>">Вернуть стандартное значение</div></td></tr>
+        <tr>
+            <th colspan="3" class="Left" style="padding-left: 50px; padding-top: 10px; padding-bottom: 10px">
+                <div class="Button" onclick="window.open('gskReport.php?doPrint', '_blank')">Распечатать</div>
+            </th>
+        </tr>
     </table>
 </form>
 

@@ -33,3 +33,9 @@ function calcTotalCoaches() {
 
     return result;
 }
+
+function resetInput(target, value) {
+    let input = document.getElementsByName(target)[0];
+    input.value = value;
+    updateField(input.name, input.value);
+}
