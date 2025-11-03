@@ -401,7 +401,7 @@ function getStartListQuery($ORIS=false, $Event='', $Elim=false, $Filled=false, $
 					EnTimestamp
 				FROM Qualifications AS q 
 				INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 
-				LEFT JOIN SubClass sc on sc.ScId = e.EnSubClass
+				LEFT JOIN SubClass sc on sc.ScId = e.EnSubClass and sc.ScTournament = e.EnTournament
 				INNER JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament
 				INNER JOIN Tournament on ToId=EnTournament 
 				LEFT JOIN Countries AS c2 ON e.EnCountry2=c2.CoId AND e.EnTournament=c2.CoTournament 

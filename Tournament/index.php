@@ -523,7 +523,7 @@ if (!isset($_REQUEST['New'])) {
 if (!$MyRow) {
 	print (array_key_exists('d_ToVenue',$_REQUEST) ? $_REQUEST['d_ToVenue'] : '');
 } else {
-	print $MyRow->ToVenue;
+	print htmlspecialchars($MyRow->ToVenue);
 }
 ?>">
 

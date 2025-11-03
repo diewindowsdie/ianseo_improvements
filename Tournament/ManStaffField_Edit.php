@@ -13,7 +13,6 @@ if(!empty($_REQUEST['act'])) {
 				empty($_REQUEST['Code']) or
 				empty($_REQUEST['FamilyName']) or
 				empty($_REQUEST['GivenName']) or
-                empty($_REQUEST['LastName']) or
                 empty($_REQUEST['Accreditation']) or
 				!isset($_REQUEST['Gender']) or
 				$_REQUEST['Gender']==='' or
@@ -58,7 +57,7 @@ if($CanEdit) {
                 "TiCodeLocal=".StrSafe_DB($_REQUEST['CodeLocal']),
 				"TiName=".StrSafe_DB($_REQUEST['FamilyName']),
 				"TiGivenName=".StrSafe_DB($_REQUEST['GivenName']),
-                "TiLastName=".StrSafe_DB($_REQUEST['LastName']),
+                "TiLastName=".($_REQUEST['LastName'] ? StrSafe_DB($_REQUEST['LastName']) : 'null'),
                 "TiAccreditation=".StrSafe_DB($_REQUEST['Accreditation']),
                 "TiIsSigningProtocols=".StrSafe_DB($_REQUEST['IsSigningProtocols']),
 				"TiCountry=$CoId",

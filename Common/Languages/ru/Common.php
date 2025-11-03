@@ -247,6 +247,7 @@ $lang['MenuLM_Get Info']='Запросить информацию со смар�
 $lang['MenuLM_getBiographies']='Запрос WA биографий';
 $lang['MenuLM_GetScoreBarcode']='Запрос результ. штрих кодов';
 $lang['MenuLM_GetScoreBarcodeReport']='Напечатать установки Barcode';
+$lang['MenuLM_GskReport']='Отчет ГСК';
 $lang['MenuLM_Header for Result Printouts']='Заголовок для печати результатов';
 $lang['MenuLM_HTT']='HTT';
 $lang['MenuLM_HTT Communication Setup']='Установка HTT';

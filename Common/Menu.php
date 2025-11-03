@@ -125,6 +125,7 @@ function get_which_menu($on=false) {
         if (subFeatureAcl($acl,AclCompetition,'cFinalReport') >= AclReadOnly) {
             $ret['COMP']['REPT'][] = get_text('MenuLM_Final report');
             $ret['COMP']['REPT'][] = get_text('MenuLM_PrintProtocol') . '|' . $CFG->ROOT_DIR . 'Tournament/FinalReport/Protocol.php|||PrintOut';
+            $ret['COMP']['REPT'][] = get_text('MenuLM_GskReport') . '|' . $CFG->ROOT_DIR . 'Tournament/FinalReport/GskReport/gskReport.php';
             if (subFeatureAcl($acl,AclCompetition,'cFinalReport') == AclReadWrite) {
                 $ret['COMP']['REPT'][] = get_text('MenuLM_EditFinalReport') . '|' . $CFG->ROOT_DIR . 'Tournament/FinalReport/index.php';
             }

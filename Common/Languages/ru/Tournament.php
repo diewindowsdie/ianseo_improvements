@@ -213,6 +213,7 @@ $lang['Color']='Цвет';
 $lang['ColouredPhases']='Цветные рамки этапов';
 $lang['CompetitionOfficials']='Судейская коллегия';
 $lang['CompleteSchedule']='Полное расписание';
+$lang['CompVenue']='Площадка';
 $lang['Confirm']='Подтвердить';
 $lang['ConfirmByeMsg']='Вы уверены, что хотите назначить "Bye" этому матчу?';
 $lang['ConfirmDescr']='ЭТО УНИЧТОЖИТ ПРЕДЫДУЩЕЕ НАЗНАЧЕНИЕ И НЕ МОЖЕТ БЫТЬ ОТМЕНЕНО!';
