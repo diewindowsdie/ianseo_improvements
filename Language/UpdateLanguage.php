@@ -6,6 +6,7 @@ require_once('Language/lib.php');
 
 $JSON=array('error' => 1, 'date' => '', 'lang' => '');
 
+/*
 
 if(!empty($_REQUEST['lang']) and preg_match('/^[A-Z_-]+$/i', $_REQUEST['lang'])) {
     $LANG=strtoupper($_REQUEST['lang']);
@@ -51,5 +52,6 @@ if(!empty($_REQUEST['lang']) and preg_match('/^[A-Z_-]+$/i', $_REQUEST['lang']))
         }
     }
 }
+*/
 
 JsonOut($JSON);
