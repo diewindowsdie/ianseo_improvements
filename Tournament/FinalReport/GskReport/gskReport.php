@@ -245,7 +245,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         foreach ($classes as $id => $description) {
             $subclassForGroup = $subclassStatistics[$subclassId][$id] ?? "0";
             $subclassTotal += $subclassForGroup;
-            $pdf->Cell($groupSize, 5, $subclassTotal, 1, 0, "C");
+            $pdf->Cell($groupSize, 5, $subclassForGroup, 1, 0, "C");
         }
         $pdf->Cell(15, 5, $subclassTotal, 1, 1, "C");
     }
