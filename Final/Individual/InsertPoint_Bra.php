@@ -223,11 +223,17 @@ print '</select>' . "\n";
 					// Codice Nazione (o bandiera)
 						$MyGrid[$Row][$Col].= '<td nowrap class="' . ($AthPrinted==1 ? 'Bottom ' : '') . 'Top Right Left"><div id="idCty_' . $Key . '">' . (!is_null($MyRow->CoCode) ? $MyRow->CoCode : '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;') . '</div></td>';
 					// Punteggio
-						$MyGrid[$Row][$Col].= '<td  nowrap class="' . ($AthPrinted==1 ? 'Bottom ' : '') . 'Top Right Left TextRight ph-' . $CurPhase . '"><input type="text" class="'.($ActivePhase==$CurPhase ? '' : 'disabled').'" tabindex="' . ($TabIndex++) . '" size="3" maxlength="3" name="d_S_' . $Key . '" id="d_S_' . $Key . '" value="' . $MyRow->Score . '" onBlur="SendToServer(this);" '.($ActivePhase==$CurPhase ? '' : 'disabled').'></td>';
+						$MyGrid[$Row][$Col].= '<td  nowrap class="' . ($AthPrinted==1 ? 'Bottom ' : '') . 'Top Right Left TextRight ph-' . $CurPhase . '">';
+                        if ($MyRow->FinAthlete) {
+                            $MyGrid[$Row][$Col].='<input type="text" class="' . ($ActivePhase == $CurPhase ? '' : 'disabled') . '" tabindex="' . ($TabIndex++) . '" size="3" maxlength="3" name="d_S_' . $Key . '" id="d_S_' . $Key . '" value="' . $MyRow->Score . '" onBlur="SendToServer(this);" ' . ($ActivePhase == $CurPhase ? '' : 'disabled') . '>';
+                        } else {
+                            $MyGrid[$Row][$Col].="&nbsp;";
+                        }
+                        $MyGrid[$Row][$Col].='</td>';
 					// tie
 						$MyGrid[$Row][$Col].= '<td nowrap class="' . ($AthPrinted==1 ? 'wBottom Top' : 'wTop ') . ' wRight wLeft ph-' . $CurPhase . '">';
 
-						if (isset($_REQUEST['d_Tie']) && $_REQUEST['d_Tie']==1) {
+						if (isset($_REQUEST['d_Tie']) && $_REQUEST['d_Tie']==1 && $MyRow->FinAthlete) {
 							$MyGrid[$Row][$Col].= '<select event="M'.$_REQUEST['d_Event'].'" team="0" phase="'.$MyRow->GrPhase.'" class="'.($ActivePhase==$CurPhase ? '' : 'disabled').' mr-2" tabindex="' . ($TabIndex++) . '" name="d_T_' . $Key . '" id="d_T_' . $Key . '" onChange="SendToServer(this);" '.($ActivePhase==$CurPhase ? '' : 'disabled').'>';
 							$MyGrid[$Row][$Col].= '<option value="0"' . ($MyRow->FinTie==0 ? ' selected' : '') . '>' . get_text('NoTie', 'Tournament') . '</option>' . "\n";
 							$MyGrid[$Row][$Col].= '<option value="1"' . ($MyRow->FinTie==1 ? ' selected' : '') . '>' . get_text('TieWinner', 'Tournament') . '</option>' . "\n";
