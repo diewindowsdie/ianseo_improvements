@@ -3,6 +3,7 @@ require_once(dirname(dirname(__FILE__)) . '/config.php');
 checkFullACL(AclParticipants, 'pEntries', AclReadOnly);
 require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/Lib/Normative/NormativeCalculator.php');
+require_once('Common/Lib/Normative/NormativeStatistics.php');
 
 if (!isset($isCompleteResultBook)) {
     $pdf = new ResultPDF((get_text('StatSubClasses', 'Tournament')), false);
@@ -98,48 +99,10 @@ $pdf->Cell(2 * $WCell, 5, $total, 1, 1, 'R', 1);
 $pdf->setY($pdf->GetY() + 10);
 
 //сбрасываем статистику
-$data = array();
-$normativeTotals = array();
 
 //названия выполненных нормативов в базе не хранятся, поэтому берем все что янсео знает
-$normativeDescriptions = array();
-foreach (Normative::all() as $existingNormative) {
-    $normativeDescriptions[$existingNormative["codeLetters"]] = $existingNormative["name"];
-}
-
-//для каждого спортсмена выбираем, какие дистанции он стрелял и сколько попал, на основании его класса и дивизиона
-$Sql = "SELECT EnClass, EnDivision, Td1, Td2, Td3, Td4, Td5, Td6, Td7, Td8, QuD1Score, QuD2Score, QuD3Score, QuD4Score, QuD5Score, QuD6Score, QuD7Score, QuD8Score
-        FROM Entries
-         INNER JOIN Qualifications on EnId = QuId
-         LEFT JOIN Classes ON EnClass = ClId AND ClTournament = EnTournament
-         left join TournamentDistances on TdTournament = EnTournament and TdTournament and CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE TdClasses
-    WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) .
-    " ORDER BY ClViewOrder";
-
-$q = safe_r_SQL($Sql);
-while ($r = safe_fetch($q)) {
-    if (!array_key_exists($r->EnClass, $data)) {
-        $data[$r->EnClass] = array();
-    }
-    $thisRowDistances = array();
-    $thisRowScore = array();
-    for ($i = 1; $i <= 8; $i++) {
-        $thisRowDistances[] = $r->{'Td' . $i};
-        $thisRowScore["dist_" . $i] = "0|" . $r->{'QuD' . $i . 'Score'} . "|0|0";
-    }
-    $normative = calcNormative($thisRowDistances, $r->EnClass, $r->EnDivision, $thisRowScore);
-
-    if (!array_key_exists($normative["codeLetters"], $data[$r->EnClass])) {
-        $data[$r->EnClass][$normative["codeLetters"]] = 0;
-    }
-    ++$data[$r->EnClass][$normative["codeLetters"]];
-
-    if (!array_key_exists($normative["codeLetters"], $normativeTotals)) {
-        $normativeTotals[$normative["codeLetters"]] = 0;
-    }
-    ++$normativeTotals[$normative["codeLetters"]];
-}
-safe_free_result($q);
+$normativeDescriptions = NormativeStatistics::normativeDescriptions();
+$data = NormativeStatistics::getNormativeStatistics();
 
 $WCode = 15;
 $normativesPresentCount = count($normativeDescriptions);
@@ -163,6 +126,9 @@ $pdf->SetFont($pdf->FontStd, 'B', 10);
 $pdf->Cell(2 * $WCell, 5, get_text('TotalShort', 'Tournament'), 1, 1, 'R', 1);
 
 foreach ($data as $classKey => $classData) {
+    if ($classKey === "normativeTotals") {
+        continue;
+    }
     $classTotal = 0;
     $pdf->SetFont($pdf->FontStd, 'B', 10);
     //класс
@@ -183,8 +149,8 @@ $pdf->Cell($WCode, 5, get_text('Total'), 1, 0, 'C', 1);
 $pdf->SetFont($pdf->FontStd, 'B', 8);
 $total = 0;
 foreach ($normativeDescriptions as $normativeKey => $normativeName) {
-    $pdf->Cell($WCell, 5, $normativeTotals[$normativeKey] ?? 0, 1, 0, 'R', 1);
-    $total += $normativeTotals[$normativeKey] ?? 0;
+    $pdf->Cell($WCell, 5, $data["normativeTotals"][$normativeName] ?? 0, 1, 0, 'R', 1);
+    $total += $data["normativeTotals"][$normativeName] ?? 0;
 }
 $pdf->SetFont($pdf->FontStd, 'B', 10);
 $pdf->Cell(2 * $WCell, 5, $total, 1, 1, 'R', 1);

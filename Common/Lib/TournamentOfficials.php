@@ -65,49 +65,43 @@ class TournamentOfficials
 
         $pdf->SetFont($pdf->FontStd, '', $pdf->FontSizeLines);
         $pdf->Cell($cellWidth, self::$judgeNameCellHeight,
-            $judges[0]->Surname .
-            ' ' .
-            mb_substr($judges[0]->FirstName, 0, 1) .
-            '. ' .
-            mb_substr($judges[0]->Patronymic, 0, 1) .
-            '. ('
+            self::getJudgetSurnameWithInitials($judges[0]->Surname, $judges[0]->FirstName, $judges[0]->Patronymic) .
+            ' ('
             . $judges[0]->Region
             . '), '
             . get_text("JudgeAccreditation_" . $judges[0]->Credential, "Tournament"),
             1, 0, 'C', 1);
         $pdf->Cell($spacerCellWidth, self::$judgeNameCellHeight, '', 0, 0, 'R', 0);
         $pdf->Cell($cellWidth, self::$judgeNameCellHeight,
-            $judges[1]->Surname .
-            ' ' .
-            mb_substr($judges[1]->FirstName, 0, 1) .
-            '. ' .
-            mb_substr($judges[1]->Patronymic, 0, 1) .
-            '. ('
+            self::getJudgetSurnameWithInitials($judges[1]->Surname, $judges[1]->FirstName, $judges[1]->Patronymic) .
+            ' ('
             . $judges[1]->Region
             . '), '
             . get_text("JudgeAccreditation_" . $judges[1]->Credential, "Tournament"),
             1, 0, 'C', 1);
         $pdf->Cell($spacerCellWidth, self::$judgeNameCellHeight, '', 0, 0, 'R', 0);
         $pdf->Cell($cellWidth, self::$judgeNameCellHeight,
-            $judges[2]->Surname .
-            ' ' .
-            mb_substr($judges[2]->FirstName, 0, 1) .
-            '. ' .
-            mb_substr($judges[2]->Patronymic, 0, 1) .
-            '. ('
+            self::getJudgetSurnameWithInitials($judges[2]->Surname, $judges[2]->FirstName, $judges[2]->Patronymic) .
+            ' ('
             . $judges[2]->Region
             . '), '
             . get_text("JudgeAccreditation_" . $judges[2]->Credential, "Tournament"),
             1, 1, 'C', 1);
     }
 
-    static function getOfficialsBlockHeight()
+    public static function getOfficialsBlockHeight()
     {
         if (getModuleParameter("Tournament", "InternationalProtocol", false, $_SESSION['TourId'])) {
             return 0;
         }
 
         return self::$offsetBeforeOfficials + self::$judgeRoleCellHeight + self::$judgeSignatureCellHeight + self::$judgeNameCellHeight;
+    }
+
+    public static function getJudgetSurnameWithInitials($surname, $firstName, $patronymic = null): string {
+        return $surname . " " .
+            mb_substr($firstName, 0, 1) . "." .
+            ($patronymic ? " " . mb_substr($patronymic, 0, 1) . "." : "");
     }
 }
 

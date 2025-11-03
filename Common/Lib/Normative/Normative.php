@@ -15,17 +15,15 @@ class Normative {
     public static function all(): array
     {
         return [
-            self::None,
-            self::ThirdJunior,
-            self::SecondJunior,
-            self::FirstJunior,
-            self::Third,
-            self::Second,
-            self::First,
-            self::Candidate,
-            self::Master,
             self::International,
-            self::Esteemed
+            self::Master,
+            self::Candidate,
+            self::First,
+            self::Second,
+            self::Third,
+            self::FirstJunior,
+            self::SecondJunior,
+            self::ThirdJunior
         ];
     }
 }
