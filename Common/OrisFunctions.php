@@ -19,7 +19,7 @@ require_once('Qualification/Fun_Qualification.local.inc.php');
 function getPdfHeader($ForOnline=true) {
 	$RET=new StdClass();
 
-	$Sql = "SELECT ToCode, ToLocRule, ToType, ToTypeSubRule, ToName, ToComDescr, ToWhere, ToTimeZone, 
+	$Sql = "SELECT ToCode, ToLocRule, ToType, ToTypeSubRule, ToName, ToComDescr, ToWhere, ToVenue, ToTimeZone, 
 		date_format(ToWhenFrom, '".get_text('DateFmtDB')."') as ToWhenFrom, date_format(ToWhenTo, '".get_text('DateFmtDB')."') as ToWhenTo,
 		ToWhenFrom AS DtFrom,ToWhenTo AS DtTo,
 		(ToImgL) as ImgL, (ToImgR) as ImgR, (ToImgB) as ImgB, ToGolds AS TtGolds, ToXNine AS TtXNine,ToGoldsChars,ToXNineChars,
@@ -32,7 +32,7 @@ function getPdfHeader($ForOnline=true) {
 	$RET->Code		= $r->ToCode;
 	$RET->Name		= $r->ToName;
 	$RET->Oc		= $r->ToComDescr;
-	$RET->Where	= $r->ToWhere;
+	$RET->Where	= $r->ToWhere . ($r->ToVenue ? (" (" . $r->ToVenue . ")") : "");
 	$RET->WhenF	= $r->ToWhenFrom;
 	$RET->WhenT	= $r->ToWhenTo;
 	$RET->imgL		= $r->ImgL;

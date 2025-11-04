@@ -200,7 +200,7 @@ class IanseoPdf extends TCPDF {
 		$this->Cell($this->w-$LeftStart-$RightStart, 4, (preg_replace("/[\r\n]+/sim", ' ', $this->Oc)) , 0, 1, 'L', 0);
     	$this->SetFont($this->FontStd,'',10);
 		$this->SetX($LeftStart);
-		$this->Cell($this->w-$LeftStart-$RightStart, 4,  ($this->Where . ", " . $this->TournamentDate2String ), 0, 1, 'L', 0);
+		$this->Cell($this->w-$LeftStart-$RightStart, 4,  ($this->Where . ", " . $this->TournamentDate2String ), 0, 1, 'L', 0); //todo
     	$this->SetFont($this->FontStd,'',6);
 
     	if ($this->ShowStaff && count($this->StaffCategories)>0) {
