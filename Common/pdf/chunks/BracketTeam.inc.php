@@ -60,10 +60,11 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 
     $CellHeight=$Cella+($Componenti*$CellaNomi);
 
-	$pdf->SetXY($InitMargin,25+($PaginaUtile-(2*$section['meta']['firstPhase']*$CellHeight))/$section['meta']['firstPhase']/2);
+    $titleXPosition = $InitMargin + $MisPos + $MisName+$AddSize + $MisScore + 5;
+	$pdf->SetXY($titleXPosition,25+($PaginaUtile-(2*$section['meta']['firstPhase']*$CellHeight))/$section['meta']['firstPhase']/2);
 	$pdf->SetFont($pdf->FontStd,'B',12);
-	$pdf->Cell($LarghezzaPagina, $Cella , $section['meta']['eventName'],0,0,'R');
-	if ($section['meta']['printHead']) {
+    $pdf->Cell($LarghezzaPagina - $titleXPosition + $InitMargin, $Cella , $section['meta']['eventName'],0,0,'R');
+    if ($section['meta']['printHead']) {
 		$pdf->SetFont($pdf->FontStd,'B',10);
 		$pdf->SetXY($InitMargin,$pdf->gety()+5);
 		$pdf->Cell($LarghezzaPagina,$Cella , $section['meta']['printHead'],0,0,'R');
