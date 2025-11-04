@@ -49,7 +49,7 @@
 					// Name is Title!
 					$CoCode=mb_convert_case(trim($_REQUEST['d_c_CoCode' . $v.'_']), MB_CASE_UPPER, "UTF-8");
 					$EnCoCodes[$v]=$CoCode;
-					$CoName=AdjustCaseTitle($_REQUEST['d_c_CoName' . $v.'_']);
+					$CoName=$_REQUEST['d_c_CoName' . $v.'_'];
 
 					// if code already exists, updates the name
 					$Select
@@ -167,9 +167,9 @@
 				$recalc=true;
 			}
 
-			$EnName=AdjustCaseTitle($_REQUEST['d_e_EnName_']);
-			$EnFirstName=AdjustCaseTitle($_REQUEST['d_e_EnFirstName_']);
-            $EnMiddleName=AdjustCaseTitle($_REQUEST['d_e_EnMiddleName_']);
+			$EnName=$_REQUEST['d_e_EnName_'];
+			$EnFirstName=$_REQUEST['d_e_EnFirstName_'];
+            $EnMiddleName=$_REQUEST['d_e_EnMiddleName_'];
 
 			$EnCode=trim($_REQUEST['d_e_EnCode_']);
 			$EnIocCode=$_REQUEST['LupSelect'];
