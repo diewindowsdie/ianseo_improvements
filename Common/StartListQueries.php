@@ -674,12 +674,12 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 	$Emails=isset($_REQUEST['Emails']);
 
 	$TmpWhere="";
-	if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z_]*$/i",str_replace(" ","",$_REQUEST["CountryName"])))
+	if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z_А-ЯË]*$/ui",str_replace(" ","",$_REQUEST["CountryName"])))
 	{
 		foreach(explode(",",$_REQUEST["CountryName"]) as $Value)
 		{
 			$Tmp=NULL;
-			if(preg_match("/^([A-Z0-9_]*)-([A-Z0-9_]*)$/i",str_replace(" ","",$Value),$Tmp))
+			if(preg_match("/^([A-Z0-9_А-ЯË]*)-([A-Z0-9_А-ЯË]*)$/ui",str_replace(" ","",$Value),$Tmp))
 				$TmpWhere .= "(c.CoCode >= " . StrSafe_DB(stripslashes($Tmp[1]) ) . " AND c.CoCode <= " . StrSafe_DB(stripslashes($Tmp[2])) . ") OR ";
 			else
 				$TmpWhere .= "c.CoCode LIKE " .  StrSafe_DB("%" . stripslashes(trim($Value)) . "%") . " OR ";
