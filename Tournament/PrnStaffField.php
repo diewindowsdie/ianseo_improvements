@@ -82,7 +82,7 @@ while ($judge = safe_fetch($resultSet)) {
     }
 
     $pdf->Cell(8, $rowHeight, $index, 1, 0, 'L');
-    $pdf->Cell(62, $rowHeight, $judge->TiName . ' ' . $judge->TiGivenName . ' ' . $judge->TiLastName, 1, 0, 'L');
+    $pdf->Cell(62, $rowHeight, $judge->TiName . ' ' . $judge->TiGivenName . ($judge->TiLastName ? ' ' . $judge->TiLastName : ""), 1, 0, 'L');
     $pdf->Cell(55, $rowHeight, get_text($judge->ItDescription, 'Tournament'), 1, 0, 'L');
     $pdf->Cell(25, $rowHeight, get_text("JudgeAccreditation_" . $judge->TiAccreditation, "Tournament"), 1, 0, 'C');
     $pdf->Cell(40, $rowHeight, $judge->CoNameComplete, 1, 1, 'L');
