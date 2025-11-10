@@ -642,7 +642,6 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 				 	'oppPosition'=> ($myRow->OppQualRank and in_array($myRow->EvElimType, [0,3,4])) ? $myRow->OppQualRank : (useGrPostion2($myRow->EvFinalFirstPhase, $myRow->Phase) ? ($myRow->OppPosition2 ? $myRow->OppPosition2:'') : $myRow->OppPosition),
                     'oppSaved'=> ($myRow->OppPosition>0 and $myRow->OppPosition<=SavedInPhase($myRow->EvFinalFirstPhase)),
                     'oppTeamId'=> $myRow->OppTeam,
-                    'oppTeamId'=> $myRow->OppTeam,
 				 	'oppSubTeam'=> $myRow->OppSubTeam,
                     'oppOdfArrows' => $myRow->OppOdfArrows ? json_decode($myRow->OppOdfArrows, true) : [],
                     'oppOdfTiming' => $myRow->OppOdfTiming ? json_decode($myRow->OppOdfTiming, true) : [],

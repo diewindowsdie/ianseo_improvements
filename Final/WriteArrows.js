@@ -152,5 +152,6 @@ function move2next(obj) {
 
 		alert(msg);
 
+        getArrows();
 	});
 }

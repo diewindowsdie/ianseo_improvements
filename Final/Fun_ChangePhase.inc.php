@@ -9,6 +9,68 @@
  3) Matchno e evento e muove solo il matchno in question
 */
 
+function getParticipantInNextPhase($team, $phase = null, $event, $matchNo, $TourId=0) {
+    if ($team) {
+        return getAthleteInNextPhaseTeam($phase, $event, $matchNo, $TourId);
+    }
+
+    return getAthleteInNextPhase($phase, $event, $matchNo, $TourId);
+}
+
+function getAthleteInNextPhase($Phase=NULL, $Event, $MatchNo, $TourId=0) {
+    if(!$TourId) $TourId=$_SESSION['TourId'];
+
+    $nextMatchSelect = "SELECT
+    f.FinEvent AS Event, f.FinMatchNo, f2.FinMatchNo OppMatchNo,
+    IF(GrPhase>2, FLOOR(f.FinMatchNo/2),FLOOR(f.FinMatchNo/2)-2) AS NextMatchNo
+    FROM Finals AS f
+        INNER JOIN Finals AS f2 ON f.FinEvent=f2.FinEvent and f2.FinMatchNo > 0 AND f.FinMatchNo=IF((f.FinMatchNo % 2)=0,f2.FinMatchNo-1,f2.FinMatchNo+1) AND f.FinTournament=f2.FinTournament";
+
+    if(!is_null($Phase)) {
+        $nextMatchSelect .= " INNER JOIN Grids ON f.FinMatchNo=GrMatchNo AND GrPhase=" . StrSafe_DB($Phase) . " ";
+    } else {
+        $nextMatchSelect .= " INNER JOIN Grids ON f.FinMatchNo=GrMatchNo AND GrMatchNo=" . StrSafe_DB(($MatchNo % 2 == 0 ? $MatchNo:$MatchNo-1)) . " ";
+    }
+    $nextMatchSelect .= "WHERE f.FinTournament=" . StrSafe_DB($TourId) . " AND (f.FinMatchNo % 2)=0 ";
+    $nextMatchSelect .= "AND f.FinEvent=" . StrSafe_DB($Event) . " ";
+    $nextMatchSelect .= "ORDER BY f.FinEvent, NextMatchNo ASC";
+
+    $resultSet = safe_r_SQL($nextMatchSelect);
+    $row = safe_fetch($resultSet);
+
+    $checkAthlete = "select FinAthlete from Finals where FinTournament = " . StrSafe_DB($TourId) . " and FinEvent = " . StrSafe_DB($Event) . " and FinMatchNo = " . StrSafe_DB($row->NextMatchNo);
+    $resultSet = safe_r_SQL($checkAthlete);
+    $row = safe_fetch($resultSet);
+
+    return $row->FinAthlete;
+}
+
+function getAthleteInNextPhaseTeam($Phase=NULL, $Event, $MatchNo, $TourId=0) {
+    if(!$TourId) $TourId=$_SESSION['TourId'];
+
+    $nextMatchSelect = "SELECT
+			tf.TfEvent AS Event, tf.TfMatchNo, tf2.TfMatchNo OppMatchNo,
+			GrPhase, tf.TfTeam AS Team,tf.TfSubTeam AS SubTeam, tf.TfCoach as Coach, tf2.TfTeam AS OppTeam,tf2.TfSubTeam AS OppSubTeam, tf2.TfCoach as OppCoach, 
+			IF(EvMatchMode=0,tf.TfScore,tf.TfSetScore) AS Score, tf.TfTie as Tie, IF(EvMatchMode=0,tf2.TfScore,tf2.TfSetScore) as OppScore, tf2.TfTie as OppTie,
+			IF(GrPhase>2, FLOOR(tf.TfMatchNo/2),FLOOR(tf.TfMatchNo/2)-2) AS NextMatchNo
+		FROM TeamFinals AS tf
+		INNER JOIN TeamFinals AS tf2 ON tf.TfEvent=tf2.TfEvent AND tf.TfMatchNo=IF((tf.TfMatchNo % 2)=0,tf2.TfMatchNo-1,tf2.TfMatchNo+1) AND tf.TfTournament=tf2.TfTournament
+		INNER JOIN Events ON tf.TfEvent=EvCode AND tf.TfTournament=EvTournament AND EvTeamEvent=1
+		INNER JOIN Grids ON tf.TfMatchNo=GrMatchNo AND ".(is_null($Phase) ? "GrMatchNo=" . StrSafe_DB(($MatchNo % 2 == 0 ? $MatchNo:$MatchNo-1)) : "GrPhase=" . StrSafe_DB($Phase))."
+		LEFT JOIN Countries ON tf.TfTeam=CoId AND tf.TfTournament=CoTournament
+		WHERE tf.TfTournament=" . StrSafe_DB($TourId) . " AND (tf.TfMatchNo % 2)=0 
+        AND tf.TfEvent=" . StrSafe_DB($Event) . "
+        ORDER BY tf.TfEvent, NextMatchNo ASC, Score DESC, Tie DESC";
+
+    $resultSet = safe_r_SQL($nextMatchSelect);
+    $row = safe_fetch($resultSet);
+
+    $checkAthlete = "select TfTeam from TeamFinals where TfTournament = " . StrSafe_DB($TourId) . " and TfEvent = " . StrSafe_DB($Event) . " and TfMatchNo = " . StrSafe_DB($row->NextMatchNo);
+    $resultSet = safe_r_SQL($checkAthlete);
+    $row = safe_fetch($resultSet);
+
+    return $row->TfTeam;
+}
 
 function move2NextPhase($Phase=NULL, $Event=NULL, $MatchNo=NULL, $TourId=0, $NoRecalc=false, $Pool='') {
 	require_once('Common/Fun_Modules.php');
