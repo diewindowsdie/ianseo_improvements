@@ -1,5 +1,20 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
+require_once(dirname(dirname(__FILE__)) . '/Api/ISK-NG/config_defines.php');
+
+function getAvailableGroupsForRule() {
+    if($_SESSION["UseApi"] != ISK_NG_PRO_CODE and $_SESSION["UseApi"] != ISK_NG_LIVE_CODE) {
+        return array();
+    }
+
+    $groups = array();
+    $resultSet = safe_r_SQL("select distinct IskDvGroup from IskDevices order by IskDvGroup asc");
+    while ($row = safe_fetch($resultSet)) {
+        $groups[] = $row->IskDvGroup;
+    }
+
+    return $groups;
+}
 
 CheckTourSession(true);
 checkFullACL(AclOutput,'outTv', AclReadWrite, false);
@@ -290,18 +305,16 @@ if(!empty($_REQUEST['Id']) and isset($_REQUEST['RuleId'])) {
 				$ResCols[$i]['header']=get_text('TVFilterEventInd','Tournament');
 				$ResCols[$i+1]['header']=get_text('TVFilterPhaseIndFinal','Tournament');
 				if (safe_num_rows($Rs)) {
-					if($IskGroup=getModuleParameter('ISK-NG', 'Sequence')) {
-						foreach($IskGroup as $Group => $sequence) {
-							if(!is_numeric($Group)) {
-								// this is the old sequences system still used by the ISK ... so not supported
-								break;
-							}
-							$ResCols[$i]['data'][] = '<input type="checkbox" name="d_TVEventInd[]"'
-								. (in_array("##".$Group."##", $Arr_EventIndRule) ? ' checked' : '')
-								. ' value="##'.$Group.'##">Follow Group '.chr(65+$Group);
-							$ResCols[$i+1]['data'][]='<span style="font-size:150%">&nbsp;</span>';
-						}
-					}
+                    foreach(getAvailableGroupsForRule() as $Group) {
+                        if(!is_numeric($Group)) {
+                            // this is the old sequences system still used by the ISK ... so not supported
+                            break;
+                        }
+                        $ResCols[$i]['data'][] = '<input type="checkbox" name="d_TVEventInd[]"'
+                            . (in_array("##".$Group."##", $Arr_EventIndRule) ? ' checked' : '')
+                            . ' value="##'.$Group.'##">Follow group '.chr(65+$Group);
+                        $ResCols[$i+1]['data'][]='<span style="font-size:150%">&nbsp;</span>';
+                    }
 
 					while ($r=safe_fetch($Rs)) {
 						$ResCols[$i]['data'][] = '<input type="checkbox" name="d_TVEventInd[]"'
@@ -377,17 +390,15 @@ if(!empty($_REQUEST['Id']) and isset($_REQUEST['RuleId'])) {
             $ResCols[$i]['header']=get_text('TVFilterEventInd','Tournament');
             $ResCols[$i+1]['header']=get_text('TVFilterPhaseIndFinal','Tournament');
 
-            if($IskGroup=getModuleParameter('ISK-NG', 'Sequence')) {
-                foreach($IskGroup as $Group => $sequence) {
-                    if(!is_numeric($Group)) {
-                        // this is the old sequences system still used by the ISK ... so not supported
-                        break;
-                    }
-                    $ResCols[$i]['data'][] = '<input type="checkbox" name="d_TVEventInd[]"'
-                        . (in_array("##".$Group."##", $Arr_EventIndRule) ? ' checked' : '')
-                        . ' value="##'.$Group.'##"><b>Follow Group '.chr(65+$Group).'</b>';
-                    $ResCols[$i+1]['data'][]='<span style="font-size:150%">&nbsp;</span>';
+            foreach(getAvailableGroupsForRule() as $Group) {
+                if(!is_numeric($Group)) {
+                    // this is the old sequences system still used by the ISK ... so not supported
+                    break;
                 }
+                $ResCols[$i]['data'][] = '<input type="checkbox" name="d_TVEventInd[]"'
+                    . (in_array("##".$Group."##", $Arr_EventIndRule) ? ' checked' : '')
+                    . ' value="##'.$Group.'##"><b>Follow group '.chr(65+$Group).'</b>';
+                $ResCols[$i+1]['data'][]='<span style="font-size:150%">&nbsp;</span>';
             }
 
             $OldTeam=-1;
@@ -527,17 +538,15 @@ if(!empty($_REQUEST['Id']) and isset($_REQUEST['RuleId'])) {
 				$ResCols[$i]['header']=get_text('TVFilterEventTeam','Tournament');
 				$ResCols[$i+1]['header']=get_text('TVFilterPhaseTeamFinal','Tournament');
 				if (safe_num_rows($Rs)) {
-					if($IskGroup=getModuleParameter('ISK-NG', 'Sequence')) {
-						foreach($IskGroup as $Group => $sequence) {
-							if(!is_numeric($Group)) {
-								// this is the old sequences system still used by the ISK ... so not supported
-								break;
-							}
-							$ResCols[$i]['data'][] = '<input type="checkbox" name="d_TVEventTeam[]"'
-								. (in_array("##".$Group."##", $Arr_EventTeamRule) ? ' checked' : '')
-								. ' value="##'.$Group.'##">Follow Group '.chr(65+$Group);
-							$ResCols[$i+1]['data'][]='<span style="font-size:150%">&nbsp;</span>';
+					foreach(getAvailableGroupsForRule() as $Group) {
+						if(!is_numeric($Group)) {
+							// this is the old sequences system still used by the ISK ... so not supported
+							break;
 						}
+						$ResCols[$i]['data'][] = '<input type="checkbox" name="d_TVEventTeam[]"'
+							. (in_array("##".$Group."##", $Arr_EventTeamRule) ? ' checked' : '')
+							. ' value="##'.$Group.'##">Follow group '.chr(65+$Group);
+						$ResCols[$i+1]['data'][]='<span style="font-size:150%">&nbsp;</span>';
 					}
 					while ($r=safe_fetch($Rs)) {
 						$FullPhase=valueFirstPhase($r->EvFinalFirstPhase);
