@@ -381,7 +381,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
 </script>
 
 <form id="gskReport">
-    <table class="Tabella w-40">
+    <table class="Tabella">
         <tr><td colspan="3" style="padding: 20px; font-weight: bold">При необходимости укажите ниже данные, нужные для формирования отчета ГСК:</td></tr>
         <tr>
             <td style="text-align: left; padding-left: 40px; white-space: nowrap">Отчет о проведении</td><td class="w-100"><input class="w-100" type="text" id="title" name="<?php echo GskFields::getCompetitionTitle()->getParameterName(); ?>" value="<?php echo GskFields::getCompetitionTitle()->getValue(); ?>" onblur="updateField(this.name, this.value)"/></td><td style="white-space: nowrap"><div class="Button" onclick="<?php echo getResetInputJs(GskFields::getCompetitionTitle()); ?>">Вернуть стандартное значение</div></td>
@@ -412,7 +412,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         <tr><td colspan="3" style="text-align: left; padding-left: 40px">6. Состав участвующих команд (регионов), в том числе количество спортсменов, тренеров и другого обслуживающего персонала:</td></tr>
         <tr>
             <td colspan="3" style="text-align: left; padding-left: 40px">
-                <table class="Tabella w-100">
+                <table class="Tabella w-60">
                     <tr><td rowspan="2" style="border: 1px solid" class="w-5">№<br/>п/п</td><td rowspan="2" style="border: 1px solid">Команда (субъект РФ)</td><td rowspan="2" style="border: 1px solid">Базовый вид</td><td colspan="3" style="border: 1px solid">Спортсмены, чел.</td><td rowspan="2" style="border: 1px solid">Тренеры и др. обсл. персонал, чел.</td><td rowspan="2" style="border: 1px solid; padding-right: 10px">Всего</td></tr>
                     <tr><td style="border: 1px solid">М</td><td style="border: 1px solid">Ж</td><td style="border: 1px solid;">Всего</td></tr>
                     <?php
