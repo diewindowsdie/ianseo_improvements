@@ -24,6 +24,7 @@
 	$pdf->setBarcodeHeader(empty($_REQUEST['Barcode']) ? '10' : '70');
     $pdf->setPrintHeader(true);
     $pdf->setPrintFooter(true);
+    $pdf->PrintFooterSerialNumber=true;
 	$pdf->ScoreCellHeight=9;
 
 	//error_reporting(E_ALL);
@@ -217,11 +218,11 @@
                 $pdf->Cell(90, 8, (get_text('TimeStampSignature', 'Tournament')), 1, 1, 'L', 0);
                 $pdf->Ln(6);
                 $pdf->Cell((($pdf->GetPageWidth()-$pdf->getSideMargin()*2))-($pdf->ArucoSize ? $pdf->ArucoSize-3 : 0), 4, (get_text('JudgeNotes')), 'B', 1, 'L', 0);
-                $Aru['E']['Y']=$pdf->getY()+2;
-                $Aru['O']['Y']=$pdf->getY()+2;
-                $Aru['W']['Y']=$pdf->getY()+2;
-                $Aru['H']['Y']=$pdf->getY()+2;
-                $Aru['A']['Y']=$pdf->getY()+2;
+                $Aru['E']['Y']=$pdf->getY()+4;
+                $Aru['O']['Y']=$pdf->getY()+4;
+                $Aru['W']['Y']=$pdf->getY()+4;
+                $Aru['H']['Y']=$pdf->getY()+4;
+                $Aru['A']['Y']=$pdf->getY()+4;
             }
             $pdf->PrintAruco($Aru);
 

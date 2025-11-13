@@ -212,8 +212,9 @@ class IanseoPdf extends TCPDF {
 	function Footer() {
 		global $CFG;
 		$this->SetDefaultColor();
-		$this->Line(IanseoPdf::sideMargin, $this->h - $this->savedBottomMargin, ($this->w-IanseoPdf::sideMargin), $this->h - $this->savedBottomMargin);
-
+        if($this->PrintFooterSerialNumber) {
+            $this->Line(IanseoPdf::sideMargin, $this->h - $this->savedBottomMargin, ($this->w - IanseoPdf::sideMargin), $this->h - $this->savedBottomMargin);
+        }
 		if($this->ToPaths['ToBottom']) {
 			$im=getimagesize($this->ToPaths['ToBottom']);
 			$imgwidth = $im[0] * (IanseoPdf::footerImageH) / $im[1];

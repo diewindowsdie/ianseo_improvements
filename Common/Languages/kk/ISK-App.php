@@ -18,6 +18,7 @@ $lang['GenericDelete']='Жою';
 $lang['GenericNext']='Келесі';
 $lang['GenericOk']='ОК';
 $lang['GenericYes']='Иә';
+$lang['HelpIntro13D']='3D садақ ату';
 $lang['HelpIntro2Elim']='Іріктеу';
 $lang['SettingsLanguageCategory']='Тіл';
 $lang['SettingsLanguageCurrent']='Ағымдағы Тіл';

@@ -1,7 +1,7 @@
 <?php
 	require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 	require_once('Common/Fun_FormatText.inc.php');
-	require_once('Common/pdf/ResultPDF.inc.php');
+	require_once('Common/pdf/ScorePDF.inc.php');
 	require_once('Common/Fun_FormatText.inc.php');
 	require_once('Common/Fun_Phases.inc.php');
     checkFullACL(AclIndividuals, '', AclReadOnly);
@@ -12,8 +12,11 @@
         }
     }
 
-	$pdf = new ResultPDF((get_text('IndFinal')));
+	$pdf = new ScorePDF((get_text('IndFinal')));
 	$pdf->setlinewidth(0.1);
+    $pdf->setPrintHeader(true);
+    $pdf->setPrintFooter(true);
+    $pdf->PrintFooterSerialNumber=true;
 
 	$Fasi = array(get_text('64_Phase'),get_text('32_Phase'), get_text('16_Phase'), get_text('8_Phase'), get_text('4_Phase'), get_text('2_Phase'), get_text('ScoreFinalMatch', 'Tournament'));
 	$TgtNoFasi = array('s64','s32', 's16', 's8', 's4', 's2', 'sGo');
@@ -122,7 +125,6 @@
 		$WhereStartY=array($TopPage, $TopPage, $TopPage+5+$ScoreHeight, $TopPage+5+$ScoreHeight, $TopPage+10+$ScoreHeight*2, $TopPage+10+$ScoreHeight*2);
 		$WhereX=NULL;
 		$WhereY=NULL;
-		$RowNo=0;
 		while($MyRow=safe_fetch($Rs)) {
 			// sets the corrects headers based on the Events...
 			$Fasi = array(get_text('64_Phase'),get_text('32_Phase'), get_text('16_Phase'), get_text('8_Phase'), get_text('4_Phase'), get_text('2_Phase'), get_text('ScoreFinalMatch', 'Tournament'));
@@ -140,9 +142,7 @@
 					$Fasi[$Start2FirstPhase[$MyRow->EvFinalFirstPhase]]=get_text($MyRow->EvFinalFirstPhase.'_Phase');
 			}
 
-			if($RowNo++ != 0) {
-                $pdf->AddPage();
-            }
+			$pdf->AddPage();
 			$WhereX=$WhereStartX;
 			$WhereY=$WhereStartY;
 //Intestazione Atleta
@@ -414,6 +414,13 @@ function DrawScore(&$pdf, $MyRow, $WhichScore, $WhereX, $WhereY, $FinalScore=fal
             $pdf->Cell($ScoreHeight * 0.45, 5, '*' . mb_convert_encoding($MyRow->{$MatchFasi[$WhichScore + 1]} . '-0-' . $MyRow->EvCode, "UTF-8", "cp1252") . "*", 0, 0, 'R', 0);
         }
         $pdf->StopTransform();
+        if($NumFasi[$WhichScore] == 1) {
+            $pdf->SetFont($pdf->FontStd, '', 8);
+            $pdf->SetXY($scoreStartX + $defGoldW + 2 * $defTotalW + $defArrowTotW + 1, $scoreStartY + $ScoreHeight * 0.44);
+            $pdf->Cell(9, 5, get_text('1_Phase'), 0, 0, 'C', 0);
+            $pdf->SetXY($scoreStartX + $defGoldW + 2 * $defTotalW + $defArrowTotW + 1, $scoreStartY + $ScoreHeight * 0.99);
+            $pdf->Cell(9, 5, get_text('0_Phase'), 0, 0, 'C', 0);
+        }
         $pdf->SetFont($pdf->FontStd, '', 10);
     }
 

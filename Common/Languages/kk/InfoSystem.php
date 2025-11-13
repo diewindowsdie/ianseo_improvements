@@ -1,5 +1,6 @@
 <?php
 $lang['AutoUpdate']='Автоматты жаңарту';
+$lang['ByClub']='Ел/клуб бойынша';
 $lang['ByEvent']='Іс-шара бойынша';
 $lang['ByTarget']='Нысана бойынша';
 $lang['ClassDiv']='Санат';

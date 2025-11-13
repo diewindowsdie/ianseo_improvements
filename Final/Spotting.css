@@ -1,8 +1,7 @@
 #IrmSelectL,
 #IrmSelectR {
-    max-width:7em;
+    max-width:8em;
     float: right;
-    font-size: 80%;
 }
 #IrmSelectR {
     float: left;

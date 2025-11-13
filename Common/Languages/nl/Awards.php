@@ -1,4 +1,5 @@
 <?php
+$lang['Aw-Anthem']='Volkslied regel';
 $lang['CM0']='Mannen Compound';
 $lang['CM1']='Mannen Team Compound';
 $lang['CustomAward']='Aangepaste prijs';

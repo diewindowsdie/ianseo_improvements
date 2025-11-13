@@ -1061,6 +1061,7 @@ $lang['ScoreFile-2']='Per categorie';
 $lang['ScoreFinalMatch']='Finale';
 $lang['ScoreFlags']='Aggiungi bandiera Società';
 $lang['ScoreLogos']='Includi Loghi della Manifestazione';
+$lang['ScorePageHeaderFooter']='Intestazione e piè di pagina a tutta pagina';
 $lang['ScorePrintMode']='Dettagli Stampa Score';
 $lang['ScoreRank']='Rank sullo score';
 $lang['ScoreSingle']='Score singolo Distanza singola (stile Vegas)';

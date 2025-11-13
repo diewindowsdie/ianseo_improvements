@@ -64,9 +64,9 @@ switch($TourType) {
             case 1:
             case 3:
                 CreateTargetFace($TourId, 1, 'Weiß', 'REG-^RU13|^RU15|^CU13|^CU15|^BU13|^BU15|^LU13|^LU15|^TU13|^TU15', '1', TGT_FIELD, 0);
-                CreateTargetFace($TourId, 2, 'Gelb', 'REG-^BU18|^LU18|^TU18|^LU21|^L60|^L[M|W]$', '1', TGT_FIELD, 0);
-                CreateTargetFace($TourId, 3, 'Blau', 'REG-^RU18|^CU18|^BU21|^B60|^B[M|W]$|^TU21|^T60|^T[M|W]$', '1', TGT_FIELD, 0);
-                CreateTargetFace($TourId, 4, 'Rot', 'REG-^RU21|^R60|^R[M|W]$|^CU21|^C60|^C[M|W]$', '1', TGT_FIELD, 0);
+                CreateTargetFace($TourId, 2, 'Gelb', 'REG-^BU18|^LU18|^TU18|^LU21|^L50|^L60|^L65|^L[M|W]$', '1', TGT_FIELD, 0);
+                CreateTargetFace($TourId, 3, 'Blau', 'REG-^RU18|^CU18|^BU21|^B50|^B60|^B65|^B[M|W]$|^TU21|^T50|^T60|^T65|^T[M|W]$', '1', TGT_FIELD, 0);
+                CreateTargetFace($TourId, 4, 'Rot', 'REG-^RU21|^R50|^R60|^R65|^R[M|W]$|^CU21|^C50|^C60|^C65|^C[M|W]$', '1', TGT_FIELD, 0);
                 break;
             case 2:
             case 4:
@@ -82,9 +82,9 @@ switch($TourType) {
             case 1:
             case 3:
                 CreateTargetFace($TourId, 1, 'Weiß', 'REG-^RU13|^RU15|^CU13|^CU15|^BU13|^BU15|^LU13|^LU15|^TU13|^TU15', '1', TGT_FIELD, 0, TGT_FIELD, 0);
-                CreateTargetFace($TourId, 2, 'Gelb', 'REG-^BU18|^LU18|^TU18|^LU21|^L60|^L[M|W]$', '1', TGT_FIELD, 0, TGT_FIELD, 0);
-                CreateTargetFace($TourId, 3, 'Blau', 'REG-^RU18|^CU18|^BU21|^B60|^B[M|W]$|^TU21|^T60|^T[M|W]$', '1', TGT_FIELD, 0, TGT_FIELD, 0);
-                CreateTargetFace($TourId, 4, 'Rot', 'REG-^RU21|^R60|^R[M|W]$|^CU21|^C60|^C[M|W]$', '1', TGT_FIELD, 0, TGT_FIELD, 0);
+                CreateTargetFace($TourId, 2, 'Gelb', 'REG-^BU18|^LU18|^TU18|^LU21|^L50|^L60|^L65|^L[M|W]$', '1', TGT_FIELD, 0, TGT_FIELD, 0);
+                CreateTargetFace($TourId, 3, 'Blau', 'REG-^RU18|^CU18|^BU21|^B50|^B60|^B65|^B[M|W]$|^TU21|^T50|^T60|^T65|^T[M|W]$', '1', TGT_FIELD, 0, TGT_FIELD, 0);
+                CreateTargetFace($TourId, 4, 'Rot', 'REG-^RU21|^R50|^R60|^R65|^R[M|W]$|^CU21|^C50|^C60|^C65|^C[M|W]$', '1', TGT_FIELD, 0, TGT_FIELD, 0);
                 break;
             case 2:
             case 4:

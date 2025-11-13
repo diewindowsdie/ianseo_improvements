@@ -39,8 +39,9 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 		$FromTgt=1;
 		$ToTgt=999;
 		$Options['ScoreDraw'] = "Complete";
-		$Options['ScoreHeader'] = "1";
-		$Options['ScoreLogos'] = "1";
+        $Options['ScorePageHeaderFooter'] = "1";
+        $Options['ScoreHeader'] = "0";
+		$Options['ScoreLogos'] = "0";
 		$Options['ScoreFlags'] = "1";
 		$Options['ScoreBarcode'] = "1";
 		$Options['PersonalScore'] = "1";
@@ -98,6 +99,7 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 	if(empty($Options["ScoreFlags"])) {
 		$pdf->HideFlags();
 	}
+    $pdf->FullHeaderShow(!empty($Options["ScorePageHeaderFooter"]) and empty($Options["TourField3D"]));
 	if(!empty($Options["ScoreBarcode"])) {
 		$pdf->PrintBarcode=true;
 	}
@@ -146,14 +148,14 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 	$defScoreX = $pdf->getSideMargin()+($pdf->ArucoSize?$pdf->ArucoSize-3:0);
 	$defScoreX2 = $defScoreX + ($pdf->ArucoSize ? 5 :$pdf->getSideMargin()) + $defScoreW;
 	$defScoreY = $pdf->getSideMargin();
-	$defScoreY2 = $defScoreY + ($pdf->ArucoSize ? 5 :$pdf->getSideMargin()) + $defScoreH;
+	$defScoreY2 = $defScoreY + ($pdf->ArucoSize ? 5 :$pdf->getSideMargin()) + $defScoreH - ($pdf->PrintFullHeader ? 10 + (empty($pdf->QRCode) ? 5 : 0) : 0);
 
 	if(!$Options["TourField3D"]) {
 		// target archery
         $ScoreGutter=0;
 		if($Data->Ath4Target<=2) {
 			$defScoreX = $pdf->getSideMargin()*3;
-			$defScoreH = ($pdf->GetPageWidth()-$pdf->getSideMargin()*2 - ($pdf->NoTensOnlyX ? 7 : 0)- ($pdf->ArucoSize?$pdf->ArucoSize-3:0));
+			$defScoreH = ($pdf->GetPageWidth()-$pdf->getSideMargin()*2 - ($pdf->NoTensOnlyX ? 7 : 0)-$pdf->ArucoSize-($pdf->PrintFullHeader ? 10 : 0));
 			$defScoreW = ($pdf->GetPageHeight()-$defScoreX*3)/2;
 		} elseif($Data->Ath4Target==3 or $Data->Ath4Target==5 or $Data->Ath4Target==6) {
             if($pdf->ArucoSize) {
@@ -161,7 +163,7 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
             } else {
                 $ScoreGutter=$pdf->getSideMargin();
             }
-			$defScoreH = ($pdf->GetPageWidth()-$pdf->getSideMargin()*2-($pdf->ArucoSize?$pdf->ArucoSize-3:0));
+			$defScoreH = ($pdf->GetPageWidth()-$pdf->getSideMargin()*2-$pdf->ArucoSize)-($pdf->PrintFullHeader ? 10 : 0);
 			$defScoreW = ($pdf->GetPageHeight()-$pdf->getSideMargin()*4-($pdf->ArucoSize?$pdf->ArucoSize-13:0))/3;
 		} elseif($ScoreDraw=='HorScoreAllDist' or $ScoreDraw=='HorScore') {
             $ScoreGutter=$pdf->getSideMargin()/2;
@@ -186,7 +188,7 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 					// ATTENTION HERE: Landscape page!
 					$defScoreH-=25;
 					$quanti=count($pdf->QRCode)+($pdf->ScoreQrPersonal ? 1 : 0);
-					$QRCodeY=min($pdf->GetPageHeight(),$pdf->GetPageWidth()) - $pdf->getSideMargin() - 25;
+					$QRCodeY=min($pdf->GetPageHeight(),$pdf->GetPageWidth()) - $pdf->getSideMargin() - 25 - ($pdf->PrintFullHeader ? 20 : $pdf->ArucoSize);
 					$QRCodeX=(max($pdf->GetPageWidth(), $pdf->GetPageHeight()) + 5 - (25*$quanti))/2;
 					break;
 				default:
@@ -416,7 +418,7 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 			switch($Data->Ath4Target) {
                 case 1:
 				case 2:
-					$QRCodeY=$pdf->GetPageHeight() - $pdf->getSideMargin() - 25;
+					$QRCodeY=$pdf->GetPageHeight() - $pdf->getSideMargin() - 25 - ($pdf->PrintFullHeader ? 20 : $pdf->ArucoSize);
 					$QRCodeX=($defScoreW + 5 - (25*$quanti))/2;
 					if($Options["TourField3D"]) {
 						//$defScoreH-=5;

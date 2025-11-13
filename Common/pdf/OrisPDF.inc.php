@@ -451,9 +451,9 @@ class OrisPDF extends IanseoPdf {
 		$this->SetY($Offset, true);
 		$this->SetFont('','B',14);
         $PhaseName=$Phase['matchName'];
-        if($Section['elimType']==3 and isset($this->PoolMatches[$Data['matchNo']])) {
+        if(array_key_exists('elimType',$Section) and $Section['elimType']==3 and isset($this->PoolMatches[$Data['matchNo']])) {
             $PhaseName=$this->PoolMatches[$Data['matchNo']];
-        } elseif($Section['elimType']==4 and isset($this->PoolMatchesWA[$Data['matchNo']])) {
+        } elseif(array_key_exists('elimType',$Section) and $Section['elimType']==4 and isset($this->PoolMatchesWA[$Data['matchNo']])) {
             $PhaseName=$this->PoolMatchesWA[$Data['matchNo']];
         }
 		$this->Cell(0,0, $PhaseName, '', '1','C');

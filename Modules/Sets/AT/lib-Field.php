@@ -149,7 +149,7 @@ function CreateStandardFieldEvents($TourId, $SubRule) {
 
 function InsertStandardFieldEvents($TourId, $SubRule) {
     foreach (array('R'=>'R','C'=>'C','B'=>'B','L'=>'L','T'=>'T') as $kDiv=>$vDiv) {
-        $clsTmpArr = array('W','U21W','60W');
+        $clsTmpArr = array('W','U21W','50W','60W','65W');
         foreach($clsTmpArr as $kClass=>$vClass) {
             if($vClass=='CW' and $kDiv!='L') {
                 continue;
@@ -160,7 +160,7 @@ function InsertStandardFieldEvents($TourId, $SubRule) {
             }
             InsertClassEvent($TourId, 1, 1, $vDiv.'X', $kDiv, $vClass);
         }
-        $clsTmpArr = array('M','U21M','60','60M');
+        $clsTmpArr = array('M','U21M','50M','60M','65M');
         foreach($clsTmpArr as $kClass=>$vClass) {
             if($vClass=='CM' and $kDiv!='L') {
                 continue;

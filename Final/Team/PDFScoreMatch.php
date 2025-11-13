@@ -16,6 +16,7 @@ $pdf = new ScorePDF(false);
 $pdf->setBarcodeHeader(70);
 $pdf->setPrintHeader(true);
 $pdf->setPrintFooter(true);
+$pdf->PrintFooterSerialNumber=true;
 
 $Score3D = false;
 //$MyQuery = "SELECT (TtElabTeam=2) as is3D FROM Tournament INNER JOIN Tournament*Type AS tt ON ToType=TtId WHERE ToId=" . StrSafe_DB($_SESSION['TourId']);
@@ -233,11 +234,11 @@ if (safe_num_rows($Rs)>0) {
         $pdf->Cell(90, 8, (get_text('TimeStampSignature', 'Tournament')), 1, 1, 'L', 0);
         $pdf->Ln(6);
         $pdf->Cell(0,4,(get_text('JudgeNotes')),'B',1,'L',0);
-        $Aru['E']['Y']=$pdf->getY()+2;
-        $Aru['O']['Y']=$pdf->getY()+2;
-        $Aru['W']['Y']=$pdf->getY()+2;
-        $Aru['H']['Y']=$pdf->getY()+2;
-        $Aru['A']['Y']=$pdf->getY()+2;
+        $Aru['E']['Y']=$pdf->getY()+4;
+        $Aru['O']['Y']=$pdf->getY()+4;
+        $Aru['W']['Y']=$pdf->getY()+4;
+        $Aru['H']['Y']=$pdf->getY()+4;
+        $Aru['A']['Y']=$pdf->getY()+4;
         $pdf->PrintAruco($Aru);
 
         // print barcode if any
