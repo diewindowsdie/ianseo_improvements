@@ -72,16 +72,28 @@ if(isset($_REQUEST['bye'])) {
 		if($Items[0]==0) {
 			$EnId=intval($Items[4]);
 
+            $query = "select FinMatchNo from Finals 
+                        inner join Grids on GrMatchNo = FinMatchNo and GrPhase = $Phase
+                        where FinTournament={$_SESSION['TourId']} and FinEvent=".StrSafe_DB($Event)." and FinAthlete=$EnId";
+            $resultSet = safe_r_SQL($query);
+            $row = safe_fetch($resultSet);
+
 			safe_w_sql("update Finals 
 				inner join Grids on GrMatchNo=FinMatchNo and GrPhase=$Phase
 				set FinTie=$Bye 
 				where FinTournament={$_SESSION['TourId']} and FinEvent=".StrSafe_DB($Event)." and FinAthlete=$EnId");
 
 			// recalculate winners
-			move2NextPhase($Phase, $Event);
+			move2NextPhase(null, $Event, $row->FinMatchNo);
 		} else {
 			$CoId=intval($Items[4]);
 			$SubTeam=intval($Items[5]);
+
+            $query = "select TfMatchNo from TeamFinals 
+                        inner join Grids on GrMatchNo = TfMatchNo and GrPhase = $Phase
+                        where TfTournament={$_SESSION['TourId']} and TfEvent=".StrSafe_DB($Event)." and TfSubTeam=$SubTeam and TfTeam=$CoId";
+            $resultSet = safe_r_SQL($query);
+            $row = safe_fetch($resultSet);
 
 			safe_w_sql("update TeamFinals 
 				inner join Grids on GrMatchNo=TfMatchNo and GrPhase=$Phase
@@ -89,7 +101,7 @@ if(isset($_REQUEST['bye'])) {
 				where TfTeam=$CoId and TfSubTeam=$SubTeam and TfTournament={$_SESSION['TourId']} and TfEvent=".StrSafe_DB($Event));
 
 			// recalculate winners
-			move2NextPhaseTeam($Phase, $Event);
+			move2NextPhaseTeam(null, $Event, $row->TfMatchNo);
 		}
 		$JSON['error']=0;
 		$JSON['msg']=get_text('ByeMovedToPhase', 'Tournament');
@@ -243,7 +255,7 @@ switch($Items[0].$Items[1]) {
 
 							// recalculates the rank
 							require_once('Final/Fun_ChangePhase.inc.php');
-							move2NextPhase($Phase, $Event);
+							move2NextPhase(null, $Event, $OppMatchno);
 
 							$Opponents=explode('|', $u->Opponents);
 							$Items[4] = $EnId==$Opponents[0] ? $Opponents[1] : $Opponents[0];
@@ -317,7 +329,7 @@ switch($Items[0].$Items[1]) {
 
 							// recalculates the rank
 							require_once('Final/Fun_ChangePhase.inc.php');
-							move2NextPhaseTeam($Phase, $Event);
+							move2NextPhase(null, $Event, $OppMatchno);
 
 							$Opponents=explode('|', $u->Opponents);
 							$Items[4] = $CoId.'-'.$SubTeam==$Opponents[0] ? $Opponents[1] : $Opponents[0];
