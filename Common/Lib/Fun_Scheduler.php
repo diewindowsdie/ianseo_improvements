@@ -4351,6 +4351,7 @@ Class Scheduler {
                                         }
 
                                     } else {
+                                        //это разминка
                                         if($Item->Comments) {
                                             $lnk=$Item->Comments;
                                             if(!in_array($Item->Comments, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['text'])) {
@@ -4399,13 +4400,13 @@ Class Scheduler {
                                                             } else {
                                                                 $tmp=explode('-', $Range);
 
-                                                                foreach($this->LocationsToPrint as $i => $k) {
+                                                                foreach($this->LocationsToPrint as $i => $k2) {
                                                                     if(count($tmp)>1) {
-                                                                        if($k->Tg1 <= $tmp[1] and $k->Tg2 >= $tmp[0]) {
+                                                                        if($k2->Tg1 <= $tmp[1] and $k2->Tg2 >= $tmp[0]) {
                                                                             // portion is inside the printed area
-                                                                            $Ranges[]=array(max($tmp[0], $k->Tg1), min($tmp[1], $k->Tg2));
+                                                                            $Ranges[]=array(max($tmp[0], $k2->Tg1), min($tmp[1], $k2->Tg2));
                                                                         }
-                                                                    } elseif($tmp[0]>=$k->Tg1 and $tmp[0]<=$k->Tg2) {
+                                                                    } elseif($tmp[0]>=$k2->Tg1 and $tmp[0]<=$k2->Tg2) {
                                                                         $Ranges[]=$tmp;
                                                                     }
                                                                 }
@@ -4447,7 +4448,7 @@ Class Scheduler {
                                                                 inner join Session on SesOrder=QuSession and SesType='{$Item->Type}' and SesTournament={$this->TourId} $SesFilter
                                                                 left join TournamentDistances on concat(trim(EnDivision),trim(EnClass)) like TdClasses and EnTournament=TdTournament
                                                                 left join (select TfId, TarDescr, TfW{$u->DiDistance} as TarDim, TfTournament from TargetFaces inner join Targets on TfT{$u->DiDistance}=TarId) tf on TfTournament=EnTournament and TfId=EnTargetFace
-                                                                where EnTournament={$this->TourId}
+                                                                where EnTournament={$this->TourId} and cast(substr(QuTargetNo, 2) as unsigned) >= SesFirstTarget and cast(substr(QuTargetNo, 2) as unsigned) <= SesFirstTarget + SesTar4Session
                                                                 order by TargetNo, Distance desc, TargetNo, TarDescr, TarDim";
                                                             $v=safe_r_sql($Sql);
                                                             $k="";
@@ -4509,19 +4510,24 @@ Class Scheduler {
                                                 case 'T':
 
                                                     // get the warmup targets first (will be overwritten by the real matches...
-                                                    $MyQuery = "SELECT FwEvent ,
+                                                    $MyQuery = "SELECT distinct FwEvent ,
                                                             FwTargets,
                                                             FwOptions,
                                                             UNIX_TIMESTAMP(FwDay) as SchDate,
                                                             DATE_FORMAT(FwTime,'" . get_text('TimeFmt') . "') as SchTime,
+                                                            count(FsTarget) TargetsPerButt,
                                                             FwDay,
                                                             FwTime, EvDistance, TarDescr, EvTargetSize, EvMaxTeamPerson
                                                         FROM FinWarmup
                                                         INNER JOIN Events ON FwEvent=EvCode AND FwTeamEvent=EvTeamEvent AND FwTournament=EvTournament
                                                         left join Targets on EvFinalTargetType=TarId
+                                                        left join FinSchedule on FSTournament = FwTournament and FwDay = FSScheduledDate and FwMatchTime= FSScheduledTime and FSEvent = FwEvent
                                                         WHERE FwTournament=" . StrSafe_DB($this->TourId) . "
                                                                 AND date_format(FwDay, '%Y-%m-%d')='$Date' and FwTime='$Time'
                                                                 and FwTargets!=''
+                                                                and FSTarget != '' 
+                                                                and FsTarget is not null
+                                                                group by FSTarget
                                                                 ORDER BY FwTargets, FwEvent";
                                                     $t = safe_r_sql($MyQuery);
 
@@ -4532,13 +4538,13 @@ Class Scheduler {
                                                             if($this->LocationsToPrint) {
                                                                 $tmp=explode('-', $range);
 
-                                                                foreach($this->LocationsToPrint as $i => $k) {
+                                                                foreach($this->LocationsToPrint as $i => $k2) {
                                                                     if(count($tmp)>1) {
-                                                                        if($k->Tg1 <= $tmp[1] and $k->Tg2 >= $tmp[0]) {
+                                                                        if($k2->Tg1 <= $tmp[1] and $k2->Tg2 >= $tmp[0]) {
                                                                             // portion is inside the printed area
-                                                                            $Ranges[]=array(max($tmp[0], $k->Tg1), min($tmp[1], $k->Tg2));
+                                                                            $Ranges[]=array(max($tmp[0], $k2->Tg1), min($tmp[1], $k2->Tg2));
                                                                         }
-                                                                    } elseif($tmp[0]>=$k->Tg1 and $tmp[0]<=$k->Tg2) {
+                                                                    } elseif($tmp[0]>=$k2->Tg1 and $tmp[0]<=$k2->Tg2) {
                                                                         $Ranges[]=$tmp;
                                                                     }
                                                                 }
@@ -4557,6 +4563,7 @@ Class Scheduler {
                                                                         $rows[$u->FwEvent][$tgt]['f']=get_text($u->TarDescr)." $u->EvTargetSize cm";
                                                                         $rows[$u->FwEvent][$tgt]['ph']=get_text('WarmUp', 'Tournament');
                                                                         $rows[$u->FwEvent][$tgt]['mp']=$u->EvMaxTeamPerson;
+                                                                        $rows[$u->FwEvent][$tgt]["TargetsPerButt"] = $u->TargetsPerButt;
                                                                         if(empty($RowTgts[$tgt])) {
                                                                             $rows[$u->FwEvent][$tgt]['l']=0;
                                                                         } else {
@@ -4600,6 +4607,7 @@ Class Scheduler {
                                                                 $bl->Target=$def['f'];
                                                                 $bl->Event=$def['e'];
                                                                 $bl->Distance=$def['d'];
+                                                                $bl->ArcTarget = $def["TargetsPerButt"];
                                                                 $DistanceMin=min($DistanceMin, $def['d']);
                                                                 $DistanceMax=max($DistanceMax, $def['d']);
 
@@ -4622,6 +4630,7 @@ Class Scheduler {
                                                                 $bl->Target=$def['f'];
                                                                 $bl->Event=$def['e'];
                                                                 $bl->Distance=$def['d'];
+                                                                $bl->ArcTarget = $def["TargetsPerButt"];
                                                                 $DistanceMin=min($DistanceMin, $def['d']);
                                                                 $DistanceMax=max($DistanceMax, $def['d']);
 

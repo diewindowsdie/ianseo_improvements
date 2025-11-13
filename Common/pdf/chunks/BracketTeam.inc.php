@@ -1,4 +1,5 @@
 <?php
+require_once("Final/Fun_ChangePhase.inc.php");
 
 $ShowTargetNo = (isset($PdfData->ShowTargetNo) ? $PdfData->ShowTargetNo : true);
 $ShowSchedule = (isset($PdfData->ShowSchedule) ? $PdfData->ShowSchedule : true);
@@ -94,7 +95,13 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 			$OrgY=$pdf->GetY();
 
 			// Target Numbers
-			if($ShowTargetNo && ($Match['target'] or $Match['oppTarget']) and !($Match['score'] or $Match['setScore']) and !($Match['oppScore'] or $Match['oppSetScore']) and in_array($Match['tie'], [0, 2]) and in_array($Match['oppTie'], [0, 2])) {
+			if($ShowTargetNo &&
+                (($Match['tie'] == 0 && $Match['oppTie'] == 0) or !getTeamOpponentInNextPhase(null, $Event, $Match['matchNo'])) and //обе команды - не bye или уже известен оппонент в следующем матче
+                ($Match['target'] or $Match['oppTarget']) and
+                !($Match['score'] or $Match['setScore']) and
+                !($Match['oppScore'] or $Match['oppSetScore']) and
+                in_array($Match['tie'], [0, 2]) and
+                in_array($Match['oppTie'], [0, 2])) {
 			   	$pdf->SetFont($pdf->FontStd,'I',7);
 				if($FirstPhase) {
 					$pdf->SetX($LineXstart-7);
@@ -118,7 +125,14 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 				$pdf->SetXY($LineXstart, $OrgY);
 			}
 
-			if($ShowSchedule && $Match['scheduledDate']!='00-00-0000'  && $Match['scheduledTime']!='00:00' and !($Match['score'] or $Match['setScore']) and !($Match['oppScore'] or $Match['oppSetScore']) and !$Match['tie'] and !$Match['oppTie']) {
+			if($ShowSchedule &&
+                (($Match['tie'] == 0 && $Match['oppTie'] == 0) or !getTeamOpponentInNextPhase(null, $Event, $Match['matchNo'])) and //обе команды - не bye или уже известен оппонент в следующем матче
+                $Match['scheduledDate']!='00-00-0000'  &&
+                $Match['scheduledTime']!='00:00' and
+                !($Match['score'] or $Match['setScore']) and
+                !($Match['oppScore'] or $Match['oppSetScore']) and
+                in_array($Match['tie'], [0, 2]) and
+                in_array($Match['oppTie'], [0, 2])) {
 				if($FirstPhase) {
 					$pdf->SetFont($pdf->FontStd,'I',6);
 					$pdf->SetXY($LineXstart, $OrgY-3);

@@ -1097,6 +1097,7 @@ $lang['ScoreFile-2']='By Categories';
 $lang['ScoreFinalMatch']='Final Match';
 $lang['ScoreFlags']='Add Country/Club Flags';
 $lang['ScoreLogos']='Add Competition Images';
+$lang['ScorePageHeaderFooter']='Full Page Header & Footer';
 $lang['ScorePrintMode']='Print Score - Details';
 $lang['ScoreRank']='Score Rank';
 $lang['ScoreSingle']='Single Score Single Distance (Vegas Style)';

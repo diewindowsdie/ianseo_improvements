@@ -7,7 +7,7 @@ require_once('Common/Lib/CommonLib.php');
 require_once('Common/Fun_Sessions.inc.php');
 
 class ScorePDF extends IanseoPdf {
-	var $PrintLogo, $PrintHeader, $PrintDrawing, $PrintFlags, $PrintBarcode, $FillWithArrows=false, $PrintLineNo = true;
+	var $PrintFullHeader, $PrintLogo, $PrintHeader, $PrintDrawing, $PrintFlags, $PrintBarcode, $FillWithArrows=false, $PrintLineNo = true;
     var $IsRedding=false;
 
 	/**
@@ -32,9 +32,11 @@ class ScorePDF extends IanseoPdf {
 		parent::__construct('Scorecard', $Portrait);
 		$this->setPrintHeader(false);
 		$this->setPrintFooter(false);
+        $this->PrintFooterSerialNumber=false;
 		$this->SetMargins(10,10,10);
 		$this->SetAutoPageBreak(false, 10);
-	    $this->PrintLogo = true;
+        $this->PrintFullHeader = false;
+        $this->PrintLogo = true;
 	    $this->PrintHeader = true;
 	    $this->PrintDrawing = true;
 	    $this->PrintFlags = true;
@@ -78,6 +80,17 @@ class ScorePDF extends IanseoPdf {
 	function HideHeader() {
 	    $this->PrintHeader = false;
 	}
+
+    function FullHeaderShow($toShow = false) {
+        $this->PrintFullHeader = $toShow;
+        $this->savedBottomMargin+=($toShow ? ($this->ArucoSize + (empty($this->QRCode) ? 5 : 2)) : 0);
+        if($toShow) {
+            $this->PrintHeader = !$toShow;
+            $this->PrintLogo = !$toShow;
+        }
+        $this->setPrintHeader($toShow);
+        $this->setPrintFooter($toShow);
+    }
 
 	function NoDrawing() {
 	    $this->PrintDrawing = false;

@@ -1,4 +1,5 @@
 <?php
+require_once("Final/Fun_ChangePhase.inc.php");
 
 //error_reporting(E_ALL);
 $rankData=$PdfData->rankData;
@@ -197,7 +198,13 @@ foreach($rankData['sections'] as $Event => $section) {
 			}
 
 			// Target Numbers
-			if($ShowTargetNo && ($Match['target'] or $Match['oppTarget']) and !($Match['score'] or $Match['setScore']) and !($Match['oppScore'] or $Match['oppSetScore']) and in_array($Match['tie'], [0, 2]) and in_array($Match['oppTie'], [0, 2])) {
+			if($ShowTargetNo &&
+                (($Match['tie'] == 0 && $Match['oppTie'] == 0) or !getOpponentInNextPhase(null, $Event, $Match['matchNo'])) and //обе команды - не bye или уже известен оппонент в следующем матче
+                ($Match['target'] or $Match['oppTarget']) and
+                !($Match['score'] or $Match['setScore']) and
+                !($Match['oppScore'] or $Match['oppSetScore']) and
+                in_array($Match['tie'], [0, 2]) and
+                in_array($Match['oppTie'], [0, 2])) {
 				if($FirstPhase) {
 					// Target numbers in front of the row
 					$pdf->SetXY($LineXstart-7, $OrgY);
@@ -227,7 +234,15 @@ foreach($rankData['sections'] as $Event => $section) {
 				$pdf->SetXY($LineXstart,$OrgY);
 			}
 
-			if($ShowSchedule and $Match['scheduledTime']!='00:00' and $Match['scheduledDate']!='00-00-0000' and (trim($Match['scheduledTime']??'') or trim($Match['scheduledDate']??'')) and !($Match['score'] or $Match['setScore']) and !($Match['oppScore'] or $Match['oppSetScore']) and !$Match['tie'] and !$Match['oppTie']) {
+			if($ShowSchedule and
+                (($Match['tie'] == 0 && $Match['oppTie'] == 0) or !getOpponentInNextPhase(null, $Event, $Match['matchNo'])) and //обе команды - не bye или уже известен оппонент в следующем матче
+                $Match['scheduledTime']!='00:00' and
+                $Match['scheduledDate']!='00-00-0000' and
+                (trim($Match['scheduledTime']??'') or trim($Match['scheduledDate']??'')) and
+                !($Match['score'] or $Match['setScore']) and
+                !($Match['oppScore'] or $Match['oppSetScore']) and
+                in_array($Match['tie'], [0, 2]) and
+                in_array($Match['oppTie'], [0, 2])) {
 				if($FirstPhase && $section['meta']['firstPhase']<24) {
 					$pdf->SetY($OrgY-3, false);
 					$pdf->SetFont($pdf->FontStd,'I',6);

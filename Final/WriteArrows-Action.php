@@ -111,7 +111,7 @@ switch($_REQUEST['act']) {
 					$MaxArrows=$Phases['meta'][$Items['meta']['FinElimChooser']?'elimEnds':'finEnds']*$Phases['meta'][$Items['meta']['FinElimChooser']?'elimArrows':'finArrows'];
 					$EndIdx=min($StartIdx+$Arrows, $MaxArrows);
 					$First=true;
-					$Cols=8+$EndIdx+($EndIdx==$MaxArrows ? (3*$Phases['meta'][$Items['meta']['FinElimChooser']?'elimSO':'finSO']) : 0)-$StartIdx;
+					$Cols=8+$EndIdx+($EndIdx==$MaxArrows ? (3*$Phases['meta'][$Items['meta']['FinElimChooser']?'elimSO':'finSO']) : 0)-$StartIdx+1;
 					if($StartIdx > $MaxArrows) {
 						// too many arrows :)
 						continue;
@@ -135,7 +135,7 @@ switch($_REQUEST['act']) {
 						}
 						$JSON['html'].='<th>'.get_text('ClosestShort', 'Tournament').'</th>';
 					}
-					$JSON['html'].='<th colspan="3"></th></tr>';
+					$JSON['html'].='<th colspan="4"></th></tr>';
 
 					$Html=['',''];
 
@@ -183,6 +183,12 @@ switch($_REQUEST['act']) {
 								}
 								$Html[$ByeChooser] .= '<td align="center"><input type="checkbox" id="cl_' . $id . '" ' . ($Match['closest'] ? ' checked="checked"' : '') . ' onclick="updateScore(this)" tabindex="' . ($TabIndex++) . '"></td>';
 							}
+                            $Html[$ByeChooser].= "<td id='inNextPhase_'" . $id . ">";
+                            $athleteInNextPhase = getParticipantInNextPhase($Team, null, $EvCode, $Match['matchNo']);
+                            if ($athleteInNextPhase == $Match[$Team ? 'teamId' : 'id']) {
+                                $Html[$ByeChooser].="✅";
+                            }
+                            $Html[$ByeChooser].= "</td>";
 							$Html[$ByeChooser].='<td>';
 							$Html[$ByeChooser].='<input '.(($Match['winner'] or $Match['oppWinner'] or ($Match['irm'] and $Match['oppIrm']))?'':'class="d-none"').' type="button" value="'.get_text('NextPhase').'" id="next_'.$id.'" onclick="move2next(this)" tabindex="'.($Offset++).'">';
 							$Html[$ByeChooser].='</td>';
@@ -238,6 +244,12 @@ switch($_REQUEST['act']) {
 								}
 								$Html[$ByeChooser] .= '<td align="center"><input type="checkbox" id="cl_' . $id . '" ' . ($Match['oppClosest'] ? ' checked="checked"' : '') . ' onclick="updateScore(this)" tabindex="' . ($TabIndex++) . '"></td>';
 							}
+                            $Html[$ByeChooser].= "<td id='inNextPhase_'" . $id . ">";
+                            $athleteInNextPhase = getParticipantInNextPhase($Team, null, $EvCode, $Match['matchNo']);
+                            if ($athleteInNextPhase == $Match[$Team ? 'oppTeamId' : 'oppId']) {
+                                $Html[$ByeChooser].="✅";
+                            }
+                            $Html[$ByeChooser].= "</td>";
 							$Html[$ByeChooser].='<td>';
 							if(!$Match[$Athlete1]) {
 								$Html[$ByeChooser].='<input '.(($Match['winner'] or $Match['oppWinner'] or ($Match['irm'] and $Match['oppIrm']))?'':'class="d-none"').' type="button" value="'.get_text('NextPhase').'" id="next_'.$id.'" onclick="move2next(this)" tabindex="'.($Offset++).'">';
@@ -352,6 +364,16 @@ switch($_REQUEST['act']) {
 			}
 		}
 		if($tmp) {
+            $JSON['updates'][]=[
+                'id'=>"#inNextPhase_{$TeamEvent}_{$event}_{$tmp['matchNo']}",
+                'k'=>'html',
+                'val'=> getParticipantInNextPhase($TeamEvent, null, $event, $tmp['matchNo']) == ($TeamEvent ? $tmp['teamId'] : $tmp['id']) ? "✅" : ""
+            ];
+            $JSON['updates'][]=[
+                'id'=>"#inNextPhase_{$TeamEvent}_{$event}_{$tmp['oppMatchNo']}",
+                'k'=>'html',
+                'val'=> getParticipantInNextPhase($TeamEvent, null, $event, $tmp['oppMatchNo']) == ($TeamEvent ? $tmp['oppTeamId'] : $tmp['oppId']) ? "✅" : ""
+            ];
 			$JSON['updates'][]=[
 				'id'=>"#tot_{$TeamEvent}_{$event}_{$tmp['matchNo']}",
 				'k'=>'html',
