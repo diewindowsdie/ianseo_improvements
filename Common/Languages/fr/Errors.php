@@ -25,6 +25,7 @@ $lang['EntriesNoCountry']='Archer sans Club/Cie';
 $lang['ErrCodeExists']='Le code existe déjà!';
 $lang['ErrCommitteeError']='Code comité ou description invalide';
 $lang['ErrConnection']='Pas de connexion au serveur $a';
+$lang['ErrDateGeneric']='Date manquante ou incorrecte';
 $lang['ErrEmptyFields']='Champs vides';
 $lang['ErrGenericError']='Erreur Générique';
 $lang['ErrInvalidCode']='Code invalide';

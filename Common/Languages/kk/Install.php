@@ -34,6 +34,7 @@ $lang['SetCompound70m']='Компаунд - 70м';
 $lang['SetJ-CClass']='U21 және U18';
 $lang['SetNoElim']='Іріктеу кезеңдері жоқ';
 $lang['SetPara']='Пара Садақ Ату';
+$lang['SetSE_WaDist']='WA Қашықтықтары';
 $lang['SetUK_STFD']='Стаффорд';
 $lang['SetUK_STNIC']='Әулие Николай';
 $lang['SetUK_WARS']='Уорвикс';

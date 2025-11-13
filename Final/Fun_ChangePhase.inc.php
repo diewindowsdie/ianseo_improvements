@@ -187,16 +187,16 @@ function move2NextPhase($Phase=NULL, $Event=NULL, $MatchNo=NULL, $TourId=0, $NoR
         // first check the IRM of the athletes if none of them have an IRM status set because the procedures rechecks the winner!
         if(!($MyRow->IrmType and $MyRow->OppIrmType)) {
             if($MyRow->IrmType and !$MyRow->OppIrmType) {
-                // opponent gets a bye only if not a DQB
-                if($MyRow->IrmType!=20) {
+                // opponent gets a bye only if not a DQB or a DNF with rank
+                if($MyRow->IrmType!=20 AND $MyRow->IrmType!=5) {
                     $SqlUpdate = "UPDATE Finals SET FinTie=0, FinWinLose=0, FinDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . " WHERE FinEvent=" . StrSafe_DB($MyRow->FinEvent) . " AND FinMatchNo=". StrSafe_DB($MyRow->MatchNo) . " AND FinTournament=" . StrSafe_DB($TourId);
                     safe_w_sql($SqlUpdate);
                     $SqlUpdate = "UPDATE Finals SET FinTie=2, FinWinLose=1, FinDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . " WHERE FinEvent=" . StrSafe_DB($MyRow->FinEvent) . " AND FinMatchNo=". StrSafe_DB($MyRow->OppMatchNo) . " AND FinTournament=" . StrSafe_DB($TourId);
                     safe_w_sql($SqlUpdate);
                 }
             } elseif(!$MyRow->IrmType and $MyRow->OppIrmType) {
-                // competitor gets a bye only if it is not a DQB
-                if ($MyRow->OppIrmType != 20) {
+                // competitor gets a bye only if it is not a DQB or a DNF with rank
+                if ($MyRow->OppIrmType != 20  AND $MyRow->OppIrmType!=5) {
                     $SqlUpdate = "UPDATE Finals SET FinTie=0, FinWinLose=0, FinDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . " WHERE FinEvent=" . StrSafe_DB($MyRow->FinEvent) . " AND FinMatchNo=" . StrSafe_DB($MyRow->OppMatchNo) . " AND FinTournament=" . StrSafe_DB($TourId);
                     safe_w_sql($SqlUpdate);
                     $SqlUpdate = "UPDATE Finals SET FinTie=2, FinWinLose=1, FinDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . " WHERE FinEvent=" . StrSafe_DB($MyRow->FinEvent) . " AND FinMatchNo=" . StrSafe_DB($MyRow->MatchNo) . " AND FinTournament=" . StrSafe_DB($TourId);

@@ -68,6 +68,23 @@ $JS_SCRIPT=array(
 				document.getElementById("ChkDist0").checked = true;
 			}
 		}
+        
+        function fullScoreHeader(level) {
+            switch(level) {
+                case 0:
+                    if($("#ScorePageHeaderFooter").is(":checked")) {
+                        $("#ScoreHeader").prop("checked", false);
+                        $("#ScoreLogos").prop("checked", false);
+                    }
+                    break;
+                case 1:
+                case 2:
+                    if($("#ScoreHeader").is(":checked") || $("#ScoreLogos").is(":checked")) {
+                        $("#ScorePageHeaderFooter").prop("checked", false);
+                    }
+                    break;
+            }
+        }
 	</script>',
 	'<style>#x_Coalesce_div {display:inline-block;margin-left:2em;vertical-align:middle;text-align: left;}#x_Coalesce_div div {font-size:0.8em}</style>'
 	);
@@ -106,8 +123,10 @@ echo '</div>';
 echo '</td>';
 //Header e Immagini
 echo '<td class="w-50"><br>';
-echo '<input name="ScoreHeader" type="checkbox" value="1" checked>&nbsp;' . get_text('ScoreTournament','Tournament') . '<br>';
-echo '<input name="ScoreLogos" type="checkbox" value="1" checked>&nbsp;' . get_text('ScoreLogos','Tournament') . '<br>';
+echo '<input id="ScorePageHeaderFooter" name="ScorePageHeaderFooter" type="checkbox" value="1" checked onclick="fullScoreHeader(0)">&nbsp;' . get_text('ScorePageHeaderFooter','Tournament') . '<br>';
+echo '<input id="ScoreHeader" name="ScoreHeader" type="checkbox" value="1" onclick="fullScoreHeader(1)">&nbsp;' . get_text('ScoreTournament','Tournament') . '<br>';
+echo '<input id="ScoreLogos" name="ScoreLogos" type="checkbox" value="1" onclick="fullScoreHeader(2)">&nbsp;' . get_text('ScoreLogos','Tournament') . '<br>';
+echo '<br>';
 echo '<input name="ScoreFlags" type="checkbox" value="1" checked>&nbsp;' . get_text('ScoreFlags','Tournament') . '<br>';
 echo '<input name="GetArcInfo" type="checkbox" value="1" >&nbsp;' . get_text('GetArcInfo','Tournament') . '<br>';
 if(module_exists("Barcodes")) {

@@ -1018,6 +1018,7 @@ function EvaluateMatch($Event, $Team, $Matchno, $CompId=0, $Recalculate=true, $P
 
     if($r->IrmType1 or $r->IrmType2) {
 		// we have an IRM, check what happens...
+        $MatchFinished = true;
 		if($r->IrmType1>=10 and $r->IrmType2>=10) {
 			// both opponents lose their match
 			// so removes the winner and ties if any
@@ -1025,15 +1026,15 @@ function EvaluateMatch($Event, $Team, $Matchno, $CompId=0, $Recalculate=true, $P
 			$UpdateSql1['FinWinLose'] = "{$Prefix}WinLose=0";
 			$UpdateSql2['FinTie'] = "{$Prefix}Tie=0";
 			$UpdateSql2['FinWinLose'] = "{$Prefix}WinLose=0";
-		} elseif($r->IrmType1>=10) {
+		} elseif($r->IrmType1) {
 			// Opp2 wins the match with a bye,
 			$UpdateSql1['FinTie'] = "{$Prefix}Tie=0";
 			$UpdateSql1['FinWinLose'] = "{$Prefix}WinLose=0";
-			$UpdateSql2['FinTie'] = "{$Prefix}Tie=2";
+			$UpdateSql2['FinTie'] = "{$Prefix}Tie=".($r->IrmType1 >= 10 ? 2 : 0);
 			$UpdateSql2['FinWinLose'] = "{$Prefix}WinLose=1";
-		} elseif($r->IrmType2>=10) {
+		} elseif($r->IrmType2) {
 			// Opp1 wins the match with a bye,
-			$UpdateSql1['FinTie'] = "{$Prefix}Tie=2";
+			$UpdateSql1['FinTie'] = "{$Prefix}Tie=".($r->IrmType2 >= 10 ? 2 : 0);
 			$UpdateSql1['FinWinLose'] = "{$Prefix}WinLose=1";
 			$UpdateSql2['FinTie'] = "{$Prefix}Tie=0";
 			$UpdateSql2['FinWinLose'] = "{$Prefix}WinLose=0";

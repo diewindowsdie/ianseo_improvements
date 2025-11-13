@@ -52,6 +52,7 @@ $lang['AgeClass']='Kelas Umur';
 $lang['AllDistances']='Semua';
 $lang['AllEntries']='Semua Peserta';
 $lang['AllEvents']='Semua Acara';
+$lang['AllLocations']='Semua Lokasi';
 $lang['AllRound']='Semua Pusingan';
 $lang['AllSessions']='Semua Sesi';
 $lang['AllsF']='Semua';

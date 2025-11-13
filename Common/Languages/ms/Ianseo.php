@@ -8,6 +8,7 @@ $lang['Cert-Level4']='Kursus Master';
 $lang['Cert-Level5']='Kru Ianseo';
 $lang['CertificateManagement']='Pengurusan Sijil';
 $lang['GenerateFile']='Cipta Fail';
+$lang['GenerateFileRyngDyng']='Buat Aturan Arahan Ryngdyng';
 $lang['ResetItems']='Tetapkan Semula Item.<br>Tindakan ini tidak akan meminta pengesahan dan tidak boleh dibuat asal!<br>Menetapkan semula kelayakan akan menetapkan semula semua acara berikutnya juga!';
 $lang['ResetResult']='Sesi yang diminta telah ditetapkan semula';
 $lang['ResetSessions']='Sahkan Set Semula';

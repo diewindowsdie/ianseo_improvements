@@ -83,7 +83,7 @@ echo '</table>';
 $IrmStatus='<option value="0">' . get_text('IrmStatus','Tournament') . '</option>';
 $q=safe_r_sql("select * from IrmTypes where IrmId>0 order by IrmId");
 while($r=safe_fetch($q)) {
-	$IrmStatus.='<option value="'.$r->IrmId.'">' . $r->IrmType . ' - ' . get_text($r->IrmType,'Tournament') . '</option>';
+	$IrmStatus.='<option value="'.$r->IrmId.'">' . get_text('IRM-'.$r->IrmId,'Tournament') . '</option>';
 }
 
 

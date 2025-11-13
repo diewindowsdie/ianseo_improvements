@@ -1,4 +1,5 @@
 <?php
+$lang['AclNotSuperuser']='<b>OBS!</b> Utan åtkomst som "ADMIN" kommer du att vara utelåst från den här sektionen och därför kan du inte aktivera åtkomstpolicyer.';
 $lang['AuthTourCode']='Kommaseparerad lista med tävlingskoder som användaren har tillgång till.<br>Tillåten joker "%"';
 $lang['AutoImportSettings']='<b><u>OBS! Endast för experter</u></b><br>Om du ändrar dessa inställningar till manuellt, får du inte publicera några resultat förrän du uppdaterat rankingen manuellt.<br> Det är viktigt att du uppdaterar ranking som du ställt om till "manuellt" <b>INNAN</b> du skickar till ianseo.net, eller publicerar/skriver ut.';
 $lang['ChangeComponents']='<p>Börja med att klicka ur den skytt du vill ta bort ur laget innan du klicka i en ny.</p>&#9654&nbsp;Skyttens poäng är inräknad i lagets kvalpoäng.<br>&#9655&nbsp;Skyttens poäng är inte medräknad i lagets kvalpoäng.';

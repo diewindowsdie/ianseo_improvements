@@ -217,6 +217,7 @@ $pdf->setEvent('Complete Results Booklet');
 $pdf->setComment('');
 $pdf->setOrisCode('SUMMARY', 'Complete Results Booklet');
 $pdf->setPhase('');
+$pdf->SetTopMargin(OrisPDF::topStart);
 $pdf->setDocUpdate($LastUpdate ?? '');
 
 $pdf->addTOCPage();

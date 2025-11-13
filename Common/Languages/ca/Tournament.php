@@ -1034,6 +1034,7 @@ $lang['ScoreFile-2']='Per Categories';
 $lang['ScoreFinalMatch']='Encontre Final';
 $lang['ScoreFlags']='Afegir Banderes Associació/Club';
 $lang['ScoreLogos']='Afegir Imatges de la Competició';
+$lang['ScorePageHeaderFooter']='Encapçalament i peu de pàgina complets';
 $lang['ScorePrintMode']='Impressió de la Puntuació - Detalls';
 $lang['ScoreRank']='Classificació de la Puntuació';
 $lang['ScoreSingle']='Puntuació Individual Distància Individual (Vegas Style)';

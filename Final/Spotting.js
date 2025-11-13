@@ -1055,6 +1055,7 @@ function updateIrm(obj) {
 		if(data.error==0) {
 			$(obj).attr('initial', obj.value);
 			alert(data.msg);
+            buildScorecard();
 		}
 	});
 }

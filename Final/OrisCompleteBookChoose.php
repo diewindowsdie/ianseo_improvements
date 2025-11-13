@@ -187,6 +187,7 @@ if($_POST) {
 	$pdf->setComment('');
     $pdf->setOrisCode('SUMMARY', 'Complete Results Booklet');
 	$pdf->setPhase('');
+    $pdf->SetTopMargin(OrisPDF::topStart);
 
 	$pdf->addTOCPage();
 
