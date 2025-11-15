@@ -83,7 +83,7 @@ function AddEvent() {
             $('#New_EvProgr').val()!='' &&
             (($('#New_EvElim1').length>0 && $('#New_EvElim1').val()!='') || $('#New_EvElim1').length == 0) &&
             (($('#New_EvElim2').length>0 && $('#New_EvElim2').val()!='') || $('#New_EvElim2').length == 0)) {
-        if($('#New_EvCode').val().search(/[^0-9a-z_.-]/i)!=-1) {
+        if($('#New_EvCode').val().search(/[^0-9a-z.-]/i)!=-1) {
             doAlert(InvalidCode);
             return;
         }

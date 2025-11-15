@@ -75,7 +75,7 @@ function AddEvent() {
         $('#New_EvEventName').val()!='' &&
         $('#New_EvProgr').val()!='') {
 
-        if($('#New_EvCode').val().search(/[^0-9a-z_.-]/i)!=-1) {
+        if($('#New_EvCode').val().search(/[^0-9a-z.-]/i)!=-1) {
             doAlert(InvalidCode);
             return;
         }
