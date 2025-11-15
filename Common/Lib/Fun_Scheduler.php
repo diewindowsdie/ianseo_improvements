@@ -1628,17 +1628,29 @@ Class Scheduler {
                                     $Singles[]=$SingleKey;
                                 }
 
-                                if(!$pdf->SamePage(1, $CellHeight, '', false)) {
+                                $spaceRequired = $CellHeight;
+                                if (!$FirstTitle) {
+                                    $spaceRequired += 5;
+                                }
+                                if(!$pdf->SamePage($spaceRequired)) {
                                     $pdf->AddPage();
                                     // Day...
                                     $pdf->SetFont('', 'B');
                                     $pdf->Cell(0, $CellHeight, formatTextDate($Date, true) . ($SesGroup? " - $SesGroup" :'') . '    ('.get_text('Continue').')',1,1,'L',1);
+                                    $pdf->SetY($pdf->GetY()+0.1);
                                     $FirstTitle=true;
 
                                     // maybe the session title?
                                     if($Item->Type!='Z' and $OldTitle==$Item->Title and $RepeatTitle) {
                                         $pdf->SetX($StartX+$TimeColumns);
-                                        $pdf->Cell($descrSize, $CellHeight, $RepeatTitle . ", " . formatWeekDayLong($Date) . '    ('.get_text('Continue').')',1,1,'L',0);
+
+                                        //рисуем как заголовок смены (или как первый подзаголовок на странице)
+                                        $pdf->SetFont('', 'B');
+                                        $pdf->SetFontSize(10);
+                                        $pdf->SetX($StartX + 5);
+                                        $pdf->Cell($descrSize + $TimeColumns - 10, 8, $RepeatTitle . '    ('.get_text('Continue').')', 0, 1, 'C', 1);
+                                        $pdf->SetFont('', '');
+                                        $pdf->SetFontSize(8);
                                     }
                                     $pdf->SetFont('', '');
                                 }
@@ -1741,11 +1753,10 @@ Class Scheduler {
 									if(!$IsTitle) {
 										if(!$FirstTitle) $pdf->ln(2);
 										$pdf->SetFont('', 'B');
-
-                                        $mainText = $Item->SubTitle;
+                                        $mainText = ($Item->SubTitle != "") ? $Item->SubTitle : $Item->Title;
                                         $pdf->SetFontSize(10);
                                         $pdf->SetX($StartX + 5);
-                                        $titleDescrSize = $descrSize + $TimeColumns - 10;;
+                                        $titleDescrSize = $descrSize + $TimeColumns - 10;
                                         $titleAlign = 'C';
                                         $titleCellHeight = 8;
                                         $fill = 1;
