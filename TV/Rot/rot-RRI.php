@@ -2,7 +2,7 @@
 
 require_once('Common/Lib/Obj_RankFactory.php');
 
-function rotFint($TVsettings, $RULE) {
+function rotRri($TVsettings, $RULE) {
 	global $CFG, $IsCode, $SubBlock;
 	$CSS=unserialize($TVsettings->TVPSettings);
 	getPageDefaults($CSS);
@@ -20,31 +20,32 @@ function rotFint($TVsettings, $RULE) {
 	$ViewTeams=(in_array('TEAM', $Columns) or in_array('ALL', $Columns));
 	$ViewFlag=(in_array('FLAG', $Columns) or in_array('ALL', $Columns));
 	$ViewCode=(in_array('CODE', $Columns) or in_array('ALL', $Columns));
-	$ViewAths=(in_array('ATHL', $Columns) or in_array('ALL', $Columns));
-	$ViewByes=(in_array('BYE', $Columns) or in_array('ALL', $Columns));
 	$ViewEnds=(in_array('ENDS', $Columns) or in_array('ALL', $Columns));
-    $ViewSchedule=(in_array('SCHED', $Columns));
+// 	$View10s=((in_array('10', $Columns) or in_array('ALL', $Columns)) and $TourType != 14);
+// 	$ViewX9s=(in_array('X9', $Columns) or in_array('ALL', $Columns));
 	$Title2Rows=(in_array('TIT2ROWS', $Columns) ? '<br/>' : ': ');
 
 	$options=array();
 	$Arr_Ev = array();
 	$Arr_Ph = array();
-	if($TVsettings->TVPEventTeam) {
-		$Arr_Ev = explode('|', $TVsettings->TVPEventTeam);
+	if($TVsettings->TVPEventInd) {
+		$Arr_Ev = explode('|', $TVsettings->TVPEventInd);
 		$Group='';
 		if(preg_match('/^##([0-9]+)##$/', $Arr_Ev[0], $Group)) {
 			if ($IskGroup=getModuleParameter('ISK-NG', 'Sequence', '', $RULE->TVRTournament)) {
 				$Group = $IskGroup[$Group[1]];
-				if($Group['type']=='T' OR ($Group['type']=='M' AND $Group['subtype']=='T')) {
+				if(($Group['type']=='I' OR ($Group['type']=='M' AND $Group['subtype']=='I')) and $Group['subtype']=='R') {
 					// get the events and phases of that session!!!
 					$options['schedule']=substr($Group['session'], 0, 10).' '.substr($Group['session'], -8);
-					$q=safe_r_sql("select distinct FSEvent, GrPhase from FinSchedule inner join Grids on GrMatchNo=FSMatchNo where FSTeamEvent=1 and FSScheduledDate='".substr($Group['session'], 0, 10)."' and FSScheduledTime='".substr($Group['session'], -8)."' and FSTournament=$RULE->TVRTournament");
+					$q=safe_r_sql("select distinct RrMatchEvent, RrMatchLevel, RrMatchGroup, RrMatchRound 
+						from RoundRobinMatches 
+						where RrMatchTeam=0 and RrMatchScheduledDate='".substr($Group['session'], 0, 10)."' and RRMatchScheduledTime='".substr($Group['session'], -8)."' and RrMatchTournament=$RULE->TVRTournament");
 					while($r=safe_fetch($q)) {
-						$options['events'][] = $r->FSEvent . '@' . $r->GrPhase;
+						$options['phasedEvents'][] = [$r->RrMatchEvent, $r->RrMatchLevel, $r->RrMatchGroup, $r->RrMatchRound];
 					}
 					$Arr_Ev = array();
 					$Arr_Ph = array();
-					$TVsettings->TVPPhasesTeam='';
+					$TVsettings->TVPPhasesInd='';
 				}
 			}
 			if(empty($options)) {
@@ -53,11 +54,11 @@ function rotFint($TVsettings, $RULE) {
 			}
 		}
 	}
-	if(strlen($TVsettings->TVPPhasesTeam)) {
-		$Arr_Ph = explode('|', $TVsettings->TVPPhasesTeam);
+	if(strlen($TVsettings->TVPPhasesInd)) {
+		$Arr_Ph = explode('|', $TVsettings->TVPPhasesInd);
 	}
 
-	$options['tournament']=$RULE->TVRTournament;
+	$options['tournament'] = $RULE->TVRTournament;
 
 	if($Arr_Ev and count($Arr_Ph)) {
 		$options['events']=array();
@@ -70,7 +71,10 @@ function rotFint($TVsettings, $RULE) {
 			foreach($Arr_Ph as $p) {
 				$t=explode('+',$p);
 				$l=array_shift($t);
-				foreach($t as $e) $options['events'][] = $l . '@' . $e;
+		        $options['events'][]=$l;
+				foreach($t as $e) {
+                    $options['eventLevels'][] = "'$l'" . ',' . $e;
+                }
 			}
 		} else {
 			foreach($Arr_Ph as $p) {
@@ -81,7 +85,8 @@ function rotFint($TVsettings, $RULE) {
 		$options['events'] = $Arr_Ev;
 	}
 
-	$rank=Obj_RankFactory::create('GridTeam',$options);
+	$options['onlyMatch'] = true;
+	$rank=Obj_RankFactory::create('Robin',$options);
 	$rank->read();
 	$rankData=$rank->getData();
 
@@ -100,6 +105,9 @@ function rotFint($TVsettings, $RULE) {
 	}
 
 	$Columns=(isset($TVsettings->TVPColumns) && !empty($TVsettings->TVPColumns) ? explode('|',$TVsettings->TVPColumns) : array());
+	$ViewTeams=(in_array('TEAM', $Columns) or in_array('ALL', $Columns)) ;
+	$ViewByes=(in_array('BYE', $Columns) or in_array('ALL', $Columns));
+	$View10s=(in_array('10', $Columns) or in_array('ALL', $Columns));
 	$TotalColWidth=7;
 	foreach($Columns as $sub) if(substr($sub,0,5)=='WIDTH') $TotalColWidth=substr($sub,6);
 
@@ -119,7 +127,7 @@ function rotFint($TVsettings, $RULE) {
 				' . $section['meta']['eventName'] . $Title2Rows . $phase['meta']['phaseName'] . '</div>' ;
 
 			foreach($phase['items'] as $key => $item) {
-				if(($IsBye=($item['tie']==2 or $item['oppTie']==2) or (!$item['countryCode'] or !$item['oppCountryCode'])) and !$ViewByes) continue;
+				if(($IsBye=($item['tie']==2 or $item['oppTie']==2) or (!$item['athlete'] or !$item['oppAthlete'])) and !$ViewByes) continue;
 
 				// 1a riga, è il target
 				$Tgt=get_text('Target') . ' ' . ltrim($item['target'], '0');
@@ -151,8 +159,8 @@ function rotFint($TVsettings, $RULE) {
 					$tmp2.='<div class="CountryCode Rotate Rev1e">'.$item['oppCountryCode'].'</div>';
 				}
 				if($ViewFlag) {
-					$tmp1.='<div class="FlagDiv">'.get_flag_ianseo($item['countryCode'], '', '', '', '', $IsCode).'</div>';
-					$tmp2.='<div class="FlagDiv">'.get_flag_ianseo($item['oppCountryCode'], '', '', '', '', $IsCode).'</div>';
+					$tmp1.='<div class="FlagDiv">'.get_flag_ianseo($item['countryCode'], '', '',  '', '', $IsCode).'</div>';
+					$tmp2.='<div class="FlagDiv">'.get_flag_ianseo($item['oppCountryCode'], '', '',  '', '', $IsCode).'</div>';
 				}
 				if($ViewTeams) {
 					$tmp1.='<div class="CountryDescr">'.$item['countryName'].'</div>';
@@ -198,139 +206,119 @@ function rotFint($TVsettings, $RULE) {
 		$Return['BlockCss']='display:flex; flex-direction:row; justify-content:center; align-items:center; box-sizing:border-box; overflow:hidden; white-space: nowrap; font-size:2em; margin:auto; box-sizing:border-box;';
 	} elseif(!empty($section['meta'])) {
 		// Grid view
+		$Return['Block']='Grid';
+		$Return['BlockCss']='height:2em; width:100%; padding-right:0.5rem; overflow:hidden; font-size:2em; display:flex; flex-direction:row; justify-content:left; align-items:center; box-sizing:border-box;';
 
-        $ret[] = '<div class="Title" >
-				<div class="TitleImg" style="float:left;"><img src="'.$CFG->ROOT_DIR.'TV/Photos/'.$IsCode.'-ToLeft.jpg"></div>
-				<div class="TitleImg" style="float:right;"><img src="'.$CFG->ROOT_DIR.'TV/Photos/'.$IsCode.'-ToRight.jpg"></div>
-				' . $section['meta']['eventName'] . '</div>' ;
+		$ret[] = '<div class="Title">' . $section['meta']['descr'] . '</div>';
 		$ret[]='<div id="content" data-direction="up">';
 		$NumColBase = 3 + $ViewTeams;
-			$RowIndex=0;
+		foreach($section['levels'] as $IdLevel => $level) {
+			foreach($level['matches'] as $IdGroup => $MatchGroup) {
+				foreach($MatchGroup['rounds'] as $IdRound => $Round) {
+					$ret[] = '<div class="Title" style="margin-top:0.25em">' . $level['name'] . ' ' . $MatchGroup['name'] . ' ' . $Round['name'] . '</div>';
+					$RowIndex=0;
+					foreach($Round['items'] as $item) {
+						if(($IsBye=($item['tie']==2 or $item['oppTie']==2) or (!$item['athlete'] or !$item['oppAthlete'])) and !$ViewByes) continue;
+						if(!$item['athlete'] and !$item['oppAthlete']) continue;
+						$Class=($RowIndex++%2 ? 'e' : 'o');
+						$tmp1 ='<div class="Grid Font1'.$Class.' Back1'.$Class.' TopRow'.($item['oppWinner'] ? ' Loser' : '').'">';
+						$tmp2 ='<div class="Grid Font1'.$Class.' Back1'.$Class.' BottomRow'.($item['winner'] ? ' Loser' : '').'">';
 
-		foreach($section['phases'] as $IdPhase => $phase) {
+						$tmp1.='<div class="Target Rev1'.$Class.'">'.ltrim($item['target'],'0').'</div>';
+						$tmp2.='<div class="Target Rev1'.$Class.'">'.ltrim($item['oppTarget'],'0').'</div>';
 
-			// Titolo della tabella
-			$ret[] = '<div class="Title">' . $phase['meta']['phaseName'] . '</div>';
+						$tmp1.='<div class="CountryCode Rotate Rev1'.$Class.'">'.$item['countryCode'].'</div>';
+						$tmp2.='<div class="CountryCode Rotate Rev1'.$Class.'">'.$item['oppCountryCode'].'</div>';
 
-			foreach($phase['items'] as $key => $item) {
-				if(($IsBye=($item['tie']==2 or $item['oppTie']==2) or (!$item['countryCode'] or !$item['oppCountryCode'])) and !$ViewByes) continue;
-
-				$Class=($RowIndex++%2 ? 'e' : 'o');
-				$tmp1 ='<div class="Grid Font1'.$Class.' Back1'.$Class.' TopRow'.($item['oppWinner'] ? ' Loser' : '').'">';
-				$tmp2 ='<div class="Grid Font1'.$Class.' Back1'.$Class.' BottomRow'.($item['winner'] ? ' Loser' : '').'">';
-
-				$tmp1.='<div class="Target Rev1'.$Class.'">'.ltrim($item['target'],'0').'</div>';
-				$tmp2.='<div class="Target Rev1'.$Class.'">'.ltrim($item['oppTarget'],'0').'</div>';
-
-				if($ViewCode) {
-					$tmp1.='<div class="CountryCode Rotate Rev1'.$Class.'">'.$item['countryCode'].'</div>';
-					$tmp2.='<div class="CountryCode Rotate Rev1'.$Class.'">'.$item['oppCountryCode'].'</div>';
-				}
-
-				if($ViewFlag) {
-					$tmp1.='<div class="FlagDiv">'.get_flag_ianseo($item['countryCode'], '', '', '', '', $IsCode).'</div>';
-					$tmp2.='<div class="FlagDiv">'.get_flag_ianseo($item['oppCountryCode'], '', '', '', '', $IsCode).'</div>';
-				}
-
-				$tmp1.='<div class="CountryDescr">'.$item['countryName'].'</div>';
-				$tmp2.='<div class="CountryDescr">'.$item['oppCountryName'].'</div>';
-
-				if($ViewAths) {
-					$tmp1 .= '<div class="Athlete">';
-					if($item['teamId']) {
-						foreach($section['athletes'][$item['teamId']][$item['subTeam']] as $ath) {
-							$tmp1.=$ath['athlete'].'<br/>';
+						if($ViewFlag) {
+							$tmp1.='<div class="FlagDiv">'.get_flag_ianseo($item['countryCode'], '', '',  '', '', $IsCode).'</div>';
+							$tmp2.='<div class="FlagDiv">'.get_flag_ianseo($item['oppCountryCode'], '', '',  '', '', $IsCode).'</div>';
 						}
-					}
-					$tmp1 .= '</div>';
-					$tmp2 .= '<div class="Athlete">';
-					if($item['oppTeamId']) {
-						foreach($section['athletes'][$item['oppTeamId']][$item['oppSubTeam']] as $ath) {
-							$tmp2.=$ath['athlete'].'<br/>';
+
+						$tmp1.='<div class="Athlete">'.$item['athlete'].'</div>';
+						$tmp2.='<div class="Athlete">'.$item['oppAthlete'].'</div>';
+
+						if($ViewTeams) {
+							$tmp1.='<div class="CountryDescr">'.$item['countryCode'].'</div>';
+							$tmp2.='<div class="CountryDescr">'.$item['oppCountryCode'].'</div>';
 						}
+
+						if($ViewEnds) {
+							$ends1=explode('|', $item['setPoints']);
+							$ends2=explode('|', $item['oppSetPoints']);
+							if(count($ends1)==count($ends2)) {
+								while($ends1 and end($ends1)==0 and end($ends2)==0) {
+									array_pop($ends1);
+									array_pop($ends2);
+								}
+							}
+
+							if($item['tiebreakDecoded']) {
+								$ends1[]='- '.$item['tiebreakDecoded'];
+							}
+							if($item['oppTiebreakDecoded']) {
+								$ends2[]='- '.$item['oppTiebreakDecoded'];
+							}
+
+							$tmp1.='<div class="EndPoints">'.implode(' ', $ends1).'</div>';
+							$tmp2.='<div class="EndPoints">'.implode(' ', $ends2).'</div>';
+						}
+
+						if($item['tie']==2) {
+							// it is a bye
+							$Score=$rankData['meta']['fields']['bye'];
+						} elseif($item['athlete']) {
+							// archer is there
+							if($section['meta']['matchMode']) {
+								$Score=  $item['setScore'];
+							} else {
+								$Score=  $item['score'] . ($item['tie']==1 ? '*' : '<tt>&nbsp;</tt>');
+							}
+						} else {
+							// it is the bye's opponent?
+							$Score='';
+						}
+						$tmp1.='<div class="Score">'.$Score.'</div>';
+
+						if($item['oppTie']==2) {
+							// it is a bye
+							$Score=$rankData['meta']['fields']['bye'];
+						} elseif($item['oppAthlete']) {
+							// archer is there
+							if($section['meta']['matchMode']) {
+								$Score= $item['oppSetScore'];
+							} else {
+								$Score= $item['oppScore'] . ($item['oppTie']==1 ? '*' : '<tt>&nbsp;</tt>');
+							}
+						} else {
+							// it is the bye's opponent?
+							$Score='';
+						}
+						$tmp2.='<div class="Score">'.$Score.'</div>';
+
+						$tmp1.='</div>';
+						$tmp2.='</div>';
+
+						$ret[] = $tmp1;
+						$ret[] = '<div class="Divider"></div>';
+						$ret[] = $tmp2;
+
 					}
-					$tmp2 .= '</div>';
 				}
-
-                if($ViewSchedule) {
-                    // overrides all the following options
-                    $tmp1.='<div class="Schedule">'.($item['scheduledKey']=='0000-00-00 00:00:00' ? '' : date('j M H:i', strtotime($item['scheduledKey']))).'</div>';
-                    $tmp2.='<div class="Schedule"></div>';
-                } else {
-                    if($ViewEnds) {
-                        $ends1=explode('|', $item['setPoints']);
-                        $ends2=explode('|', $item['oppSetPoints']);
-                        if(count($ends1)==count($ends2)) {
-                            while($ends1 and end($ends1)==0 and end($ends2)==0) {
-                                array_pop($ends1);
-                                array_pop($ends2);
-                            }
-                        }
-
-                        if($item['tiebreakDecoded']) {
-                            $ends1[]='- '.$item['tiebreakDecoded'];
-                        }
-                        if($item['oppTiebreakDecoded']) {
-                            $ends2[]='- '.$item['oppTiebreakDecoded'];
-                        }
-
-                        $tmp1.='<div class="EndPoints">'.implode(' ', $ends1).'</div>';
-                        $tmp2.='<div class="EndPoints">'.implode(' ', $ends2).'</div>';
-                    }
-
-                    if($item['tie']==2) {
-                        // it is a bye
-                        $Score=$rankData['meta']['fields']['bye'];
-                    } elseif($item['countryName']) {
-                        // archer is there
-                        if($section['meta']['matchMode']) {
-                            // sets
-                            $Score = $item['setScore'];
-                        } else {
-                            // cumulative
-                            $Score = $item['score'] . ($item['tie']==1 ? '*' : '<tt>&nbsp;</tt>' );
-                        }
-                    } else {
-                        // it is the bye's opponent?
-                        $Score='';
-                    }
-                    $tmp1.='<div class="Score">'.$Score.'</div>';
-
-                    if($item['oppTie']==2) {
-                        // it is a bye
-                        $Score=$rankData['meta']['fields']['bye'];
-                    } elseif($item['oppCountryName']) {
-                        // archer is there
-                        if($section['meta']['matchMode']) {
-                            // set system
-                            $Score= $item['oppSetScore'];
-                        } else {
-                            $Score= $item['oppScore'] . ($item['oppTie']==1 ? '*' : '<tt>&nbsp;</tt>' );
-                        }
-                    } else {
-                        // it is the bye's opponent?
-                        $Score='';
-                    }
-                    $tmp2.='<div class="Score">'.$Score.'</div>';
-                }
-
-				$tmp1.='</div>';
-				$tmp2.='</div>';
-
-				$ret[] = $tmp1;
-				$ret[] = '<div class="Divider"></div>';
-				$ret[] = $tmp2;
 			}
 		}
 		$ret[]='</div>';
-		$Return['Block']='Grid';
-		$Return['BlockCss']='height:2em; width:100%; padding-right:0.5rem; overflow:hidden; font-size:2em; display:flex; flex-direction:row; justify-content:left; align-items:center; box-sizing:border-box;';
+	//} else {
+	//	// Grid view
+	//	$Return['Block']='Grid';
+	//	$Return['BlockCss']='height:2em; width:100%; padding-right:0.5rem; overflow:hidden; font-size:2em; display:flex; flex-direction:row; justify-content:left; align-items:center; box-sizing:border-box;';
+
 	}
 	$Return['html']=implode('', $ret);
 	return $Return;
 }
 
-function rotFintSettings($Settings) {
+function rotRriSettings($Settings) {
 	global $CFG;
 	$ret='<br/>';
 	$ret.= '<table class="Tabella Css3">';
@@ -348,7 +336,7 @@ function rotFintSettings($Settings) {
 	// if(!isset($RMain[''])) $RMain['']='';
 
 	foreach($PageDefaults as $key => $Value) {
-		if(!isset($PageDefaults[$key])) continue;
+//		if(!isset($PageDefaults[$key])) continue;
         $ret.= '<tr ref="'.$Value.'">
 			<th nowrap="nowrap">
 			    <div class="d-flex">
@@ -371,31 +359,29 @@ function getPageDefaults(&$RMain) {
 	$ret=array(
 		'MainContent' => 'left:2vw;width:96vw;',
 		'Title' => '',
-		'TopRow' => 'margin-top:1vh',
-		'Divider' => 'display:block;height:0.5vh; background-color:gray;',
+		'TopRow' => 'margin-top:1em',
+		'Divider' => 'display:block;height:0.5vw; background-color:gray;',
 		'BottomRow' => '',
 		'Loser' => 'opacity:0.3;',
 		'CountryCode' => 'flex: 0 0 3.5vw; font-size:0.8vw; margin-left:-3.75ch',
 		'FlagDiv' => 'flex: 0 0 4.35vw;',
 		'Flag' => 'height:2.8vw; border:0.05vw solid #888;box-sizing:border-box;',
 		'Target' => 'flex: 0 0 6vw; text-align:right;margin-right:0.5em;',
-		'Athlete' => 'flex: 1 1 20vw;font-size:0.5em;white-space:nowrap;overflow:hidden;',
-		'CountryDescr' => 'flex: 1 1 25vw;white-space:nowrap;overflow:hidden;',
-        'Schedule' => 'flex: 1 0 12vw; text-align:left; white-space:nowrap; font-size:1.1em;margin-right:0.5rem;',
-		'Arrows' => 'flex: 0 0 5vw; text-align:right; font-size:1em;margin-right:0.5rem;',
+		'Athlete' => 'flex: 1 1 20vw;white-space:nowrap;overflow:hidden;',
+		'CountryDescr' => 'flex: 0 1 20vw;white-space:nowrap;overflow:hidden;',
 		'DistScore' => 'flex: 0 0 5vw; text-align:right; font-size:0.8em;',
 		'DistPos' => 'flex: 0 0 3vw; text-align:left; font-size:0.7em;',
 		'Score' => 'flex: 0 0 6vw; text-align:right; font-size:1.25em;margin-right:0.5rem;',
 		'Gold' => 'flex: 0 0 3vw; text-align:right; font-size:1em;',
 		'XNine' => 'flex: 0 0 3vw; text-align:right; font-size:1em;',
-		'EndPoints' => 'flex: 0 0 14ch; text-align:left; font-size:0.8em;',
+		'EndPoints' => 'flex: 0 0 17ch; text-align:left; font-size:0.8em;',
 		'IdTarget' => 'border-top-left-radius:1em; border-top-right-radius:1em; width:100%; margin-top:1em; padding:0.5em; box-sizing:border-box; font-size:1em;',
 		'IdAthletes' => 'flex:2 0 20%; font-size:1.5em; text-align: center; padding:0 0.5em; ',
 		'IdPanel' => 'flex:2 0 20%; display:flex;flex-flow:row nowrap; justify-content:center;align-items:center',
 		'IdPicture' => 'flex:2 0 33%; text-align:center; ',
 		'IdPictureImg' => 'height:5em; padding:1rem; ',
 		'IdScore' => 'flex:0 0 auto; text-align:center; font-size:4rem; ',
-		);
+	);
 	foreach($ret as $k=>$v) {
 		if(!isset($RMain[$k])) $RMain[$k]=$v;
 	}

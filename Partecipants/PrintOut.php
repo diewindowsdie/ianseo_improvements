@@ -278,6 +278,7 @@ echo '<td width="20%" class="Center">
 			<div>'.get_text('Country').'&nbsp;2&nbsp;&nbsp;&nbsp;<input name="includeRegion2" type="checkbox"></div>
 			<div>'.get_text('Country').'&nbsp;3&nbsp;&nbsp;&nbsp;<input name="includeRegion3" type="checkbox"></div>
 			</div>
+			<div>'.get_text('SinglePage', 'Tournament').'   <input name="SinglePage" type="checkbox"></div>
 			<div>'.get_text('NoPhoto').'&nbsp;&nbsp;&nbsp;<input name="NoPhoto" type="checkbox"></div>
 			<div>'.get_text('Email', 'Tournament').'&nbsp;&nbsp;&nbsp;<input name="Email" type="checkbox"></div>
 			<div><input type="submit" name="Submit" value="'.get_text('CmdOk').'"></div>
