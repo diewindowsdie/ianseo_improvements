@@ -12,7 +12,7 @@ abstract class GskField
     abstract public function getDefaultValue(): string;
 
     public function getValue() {
-        return getModuleParameter(self::module, self::fieldPrefix . $this->getParameterName(), $this->getDefaultValue());
+        return htmlspecialchars(getModuleParameter(self::module, self::fieldPrefix . $this->getParameterName(), $this->getDefaultValue()));
     }
 
     public function setValue($newValue): void
