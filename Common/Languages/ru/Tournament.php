@@ -757,6 +757,7 @@ $lang['ShowSetEnds']='Включить серии сетов';
 $lang['ShowSubClass']='Показать разряды';
 $lang['Sign/guide-board']='Подпись';
 $lang['SingleArrow']='Каждая стрела';
+$lang['SinglePage']='Разбить по страницам';
 $lang['Snapshot']='Изображение';
 $lang['SnapshotRecalculated']='Данные обновлены после $a стрел';
 $lang['SOFirstTarget']='Первая мишень';
