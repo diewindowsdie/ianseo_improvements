@@ -105,7 +105,8 @@ if (safe_num_rows($RsEv)==1 and $RowEv=safe_fetch($RsEv)) {
     echo '<th>&nbsp;</th>';
     echo '</tr>';
 
-    $Select = "SELECT * FROM EventClass 
+    $Select = "SELECT ec.*, sc.ScDescription FROM EventClass ec
+        left join SubClass sc on ec.EcTournament = sc.ScTournament and ec.EcSubClass = sc.ScId  
         WHERE EcCode=" . StrSafe_DB($RowEv->EvCode) . " AND EcTeamEvent='0' AND EcTournament=" . StrSafe_DB($_SESSION['TourId']) . " 
         ORDER BY EcDivision,EcClass,EcSubClass ";
     $Rs=safe_r_sql($Select);
@@ -116,7 +117,7 @@ if (safe_num_rows($RsEv)==1 and $RowEv=safe_fetch($RsEv)) {
             print '<tr id="Row_' . $RowEv->EvCode . '_' . $MyRow->EcDivision . $MyRow->EcClass . $MyRow->EcSubClass . $MyRow->EcExtraAddons  . '">';
             print '<td class="Center">' . $MyRow->EcDivision . '</td>';
             print '<td class="Center">' . $MyRow->EcClass . '</td>';
-            print '<td class="Center">' . $MyRow->EcSubClass . '</td>';
+            print '<td class="Center">' . $MyRow->EcSubClass . " - " . $MyRow->ScDescription . '</td>';
             if($AddOnsEnabled) {
                 $tmpAddOn = array();
                 foreach ($listAddOns as $kAO => $vAO) {

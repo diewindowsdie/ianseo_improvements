@@ -52,13 +52,14 @@ if (safe_num_rows($RsEv)==1) {
     echo '<th class="w-5">&nbsp;</th>';
     echo '</tr>';
     $Select
-        = "SELECT ec.*,Quanti "
+        = "SELECT ec.*,Quanti, sc.ScDescription "
         . "FROM EventClass AS ec INNER JOIN("
         . "SELECT COUNT(*) AS Quanti,EcCode,EcTeamEvent,EcTournament "
         . "FROM EventClass "
         . "WHERE EcCode=" . StrSafe_DB($RowEv->EvCode) . " AND EcTeamEvent!='0' AND EcTournament= " . StrSafe_DB($_SESSION['TourId']) . " "
         . "GROUP BY EcCode,EcTeamEvent,EcTournament"
         . ") AS sq ON ec.EcCode=sq.EcCode AND ec.EcTeamEvent=sq.EcTeamEvent AND ec.EcTournament=sq.EcTournament "
+        . "left join SubClass sc on ec.EcTournament = sc.ScTournament and ec.EcSubClass = sc.ScId "
         . "WHERE ec.EcCode=" . StrSafe_DB($RowEv->EvCode) . " AND ec.EcTeamEvent<>0 AND ec.EcTournament=" . StrSafe_DB($_SESSION['TourId']) . " "
         . "ORDER BY EcTeamEvent ASC,EcDivision,EcClass ";
     $Rs=safe_r_sql($Select);
@@ -75,7 +76,7 @@ if (safe_num_rows($RsEv)==1) {
                 print '<td rowspan="' . $MyRow->Quanti . '" class="Center">' . $MyRow->EcNumber . '</td>';
             echo '<td class="Center">' . $MyRow->EcDivision . '</td>';
             echo '<td class="Center">' . $MyRow->EcClass . '</td>';
-            echo '<td class="Center">' . $MyRow->EcSubClass . '</td>';
+            echo '<td class="Center">' . $MyRow->EcSubClass . " - " . $MyRow->ScDescription . '</td>';
             if($AddOnsEnabled) {
                 $tmpAddOn = array();
                 foreach ($listAddOns as $kAO => $vAO) {
