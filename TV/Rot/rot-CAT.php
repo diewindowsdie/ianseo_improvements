@@ -88,7 +88,7 @@ function rotCat($TVsettings, $RULE) {
 			$tmp.='<div class="CountryCode Rotate Rev1'.$Class.'">'.$MyRow->NationCode.'</div>';
 		}
 		if($ViewFlag) {
-			$tmp.='<div class="FlagDiv">'.get_flag_ianseo($MyRow->NationCode, '', '', $IsCode).'</div>';
+			$tmp.='<div class="FlagDiv">'.get_flag_ianseo($MyRow->NationCode, '', '',  '', '', $IsCode).'</div>';
 		}
 		if($ViewTeams) {
 			$tmp.= '<div class="CountryDescr">' . $MyRow->Nation . '</div>';

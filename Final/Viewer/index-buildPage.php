@@ -192,11 +192,11 @@ $JSON['NumEnds'] = intval($NumEnds);
 $JSON['NumSO'] = ($IsSO ? $EndNo : 0);
 
 if($Team) {
-	$JSON['Opp'.$Left]=$Match['countryName'].get_flag_ianseo($Match['countryCode'], 0, '', $_SESSION['TourCode']);
-	$JSON['Opp'.$Right]=$Match['oppCountryName'].get_flag_ianseo($Match['oppCountryCode'], 0, '', $_SESSION['TourCode']);
+	$JSON['Opp'.$Left]=$Match['countryName'].get_flag_ianseo($Match['countryCode'], '', '',  0, '', $_SESSION['TourCode']);
+	$JSON['Opp'.$Right]=$Match['oppCountryName'].get_flag_ianseo($Match['oppCountryCode'], '', '',  0, '', $_SESSION['TourCode']);
 } else {
-	$JSON['Opp'.$Left]= $Match['fullName'] . ' - '.$Match['countryName'].get_flag_ianseo($Match['countryCode'], 0, '', $_SESSION['TourCode']);
-	$JSON['Opp'.$Right]=$Match['oppFullName'] . ' - '.$Match['oppCountryName'].get_flag_ianseo($Match['oppCountryCode'], 0, '', $_SESSION['TourCode']);
+	$JSON['Opp'.$Left]= $Match['fullName'] . ' - '.$Match['countryName'].get_flag_ianseo($Match['countryCode'], '', '',  0, '', $_SESSION['TourCode']);
+	$JSON['Opp'.$Right]=$Match['oppFullName'] . ' - '.$Match['oppCountryName'].get_flag_ianseo($Match['oppCountryCode'], '', '',  0, '', $_SESSION['TourCode']);
 }
 $JSON['Event']=$Event.'<br/>'.$MatchName;
 

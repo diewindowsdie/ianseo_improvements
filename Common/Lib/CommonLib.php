@@ -568,6 +568,7 @@ function getFullAthleteName($surname, $firstName, $middleName) {
 
 function get_flag_ianseo($r0, $r2=null, $r3=null, $h=0, $align='', $direct='') {
 	global $TourCode, $CFG;
+    $r = '';
 	if($direct) {
         if (is_file($f=$CFG->DOCUMENT_PATH.($img='TV/Photos/'.$direct.'-Fl-'.$r0.'.jpg'))) {
             $r = $r0;
@@ -591,7 +592,7 @@ function get_flag_ianseo($r0, $r2=null, $r3=null, $h=0, $align='', $direct='') {
 		foreach($r as $flag) {
 			$q=safe_r_SQL("select FlJPG, FlCode, unix_timestamp(FlEntered) FlModded from Flags
 				where FlCode=".StrSafe_DB($flag)." and FlTournament in (-1, ".getIdFromCode($TourCode).") order by FlTournament desc");
-			$ret[]=get_flag_ianseo(safe_fetch($q), $h, $align);
+			$ret[]=get_flag_ianseo(safe_fetch($q), '', '', $h, $align);
 		}
 		return implode('<br>', $ret);
 	}

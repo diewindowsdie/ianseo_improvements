@@ -99,7 +99,7 @@ function rotLsph($TVsettings, $RULE) {
 						$tmp.='<div class="Athlete">'.$r->FirstName . ' ' . ($TVsettings->TVPNameComplete==0 ? FirstLetters($r->Name) : $r->Name).'</div>';
 						$tmp.='<div class="CountryBlock">'
 							. ($ViewCode ? '<div class="CountryCode Rotate Rev2'.$Class.'">'.$r->NationCode.'</div>' : '')
-							. ($ViewFlag ? '<div class="FlagDiv">'.get_flag_ianseo($r->NationCode, '', '', $IsCode).'</div>' : '')
+							. ($ViewFlag ? '<div class="FlagDiv">'.get_flag_ianseo($r->NationCode, '', '',  '', '', $IsCode).'</div>' : '')
 							. ($ViewTeams ? '<div class="CountryDescr">' . $r->Nation . '</div>' : '')
 							.'</div>';
 					} else {
@@ -144,7 +144,7 @@ function rotLsph($TVsettings, $RULE) {
 				$tmp.='<div class="Athlete">'.$r->FirstName . ' ' . ($TVsettings->TVPNameComplete==0 ? FirstLetters($r->Name) : $r->Name).'</div>';
 				$tmp.='<div class="CountryBlock">'
 					. ($ViewCode ? '<div class="CountryCode Rotate Rev2'.$Class.'">'.$r->NationCode.'</div>' : '')
-					. ($ViewFlag ? '<div class="FlagDiv">'.get_flag_ianseo($r->NationCode, '', '', $IsCode).'</div>' : '')
+					. ($ViewFlag ? '<div class="FlagDiv">'.get_flag_ianseo($r->NationCode, '', '',  '', '', $IsCode).'</div>' : '')
 					. ($ViewTeams ? '<div class="CountryDescr">' . $r->Nation . '</div>' : '')
 					.'</div>';
 			} else {

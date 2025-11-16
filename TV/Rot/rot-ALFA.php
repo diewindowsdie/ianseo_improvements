@@ -90,7 +90,7 @@ function rotAlfa($TVsettings, $RULE) {
 			$tmp.='<div class="CountryCode Rotate Rev1'.$Class.'">'.$MyRow->NationCode.'</div>';
 		}
 		if($ViewFlag) {
-			$tmp.='<div class="FlagDiv">'.get_flag_ianseo($MyRow->NationCode, '', '', $IsCode).'</div>';
+			$tmp.='<div class="FlagDiv">'.get_flag_ianseo($MyRow->NationCode, '', '', '', '', $IsCode).'</div>';
 		}
 		$tmp.='<div class="Athlete">' . $MyRow->FirstName . ' ' . ($TVsettings->TVPNameComplete==0 ? FirstLetters($MyRow->Name) : $MyRow->Name) . '</div>';
 		if($ViewTeams) {

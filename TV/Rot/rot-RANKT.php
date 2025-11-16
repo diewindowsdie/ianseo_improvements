@@ -139,7 +139,7 @@ function rotRankt($TVsettings, $RULE) {
 			$tmp.='<div class="CountryCode Rotate Rev1'.$Class.'">' . $archer['countryCode'] . '</div>';
 		}
 		if($ViewFlag) {
-			$tmp.='<div class="FlagDiv">'.get_flag_ianseo($archer['countryCode'], '', '', $IsCode).'</div>';
+			$tmp.='<div class="FlagDiv">'.get_flag_ianseo($archer['countryCode'], '', '',  '', '', $IsCode).'</div>';
 		}
 
 		$tmp.='<div class="CountryDescr">' . $archer['countryName'] . '</div>';

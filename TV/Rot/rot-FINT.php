@@ -151,8 +151,8 @@ function rotFint($TVsettings, $RULE) {
 					$tmp2.='<div class="CountryCode Rotate Rev1e">'.$item['oppCountryCode'].'</div>';
 				}
 				if($ViewFlag) {
-					$tmp1.='<div class="FlagDiv">'.get_flag_ianseo($item['countryCode'], '', '', $IsCode).'</div>';
-					$tmp2.='<div class="FlagDiv">'.get_flag_ianseo($item['oppCountryCode'], '', '', $IsCode).'</div>';
+					$tmp1.='<div class="FlagDiv">'.get_flag_ianseo($item['countryCode'], '', '', '', '', $IsCode).'</div>';
+					$tmp2.='<div class="FlagDiv">'.get_flag_ianseo($item['oppCountryCode'], '', '', '', '', $IsCode).'</div>';
 				}
 				if($ViewTeams) {
 					$tmp1.='<div class="CountryDescr">'.$item['countryName'].'</div>';
@@ -228,8 +228,8 @@ function rotFint($TVsettings, $RULE) {
 				}
 
 				if($ViewFlag) {
-					$tmp1.='<div class="FlagDiv">'.get_flag_ianseo($item['countryCode'], '', '', $IsCode).'</div>';
-					$tmp2.='<div class="FlagDiv">'.get_flag_ianseo($item['oppCountryCode'], '', '', $IsCode).'</div>';
+					$tmp1.='<div class="FlagDiv">'.get_flag_ianseo($item['countryCode'], '', '', '', '', $IsCode).'</div>';
+					$tmp2.='<div class="FlagDiv">'.get_flag_ianseo($item['oppCountryCode'], '', '', '', '', $IsCode).'</div>';
 				}
 
 				$tmp1.='<div class="CountryDescr">'.$item['countryName'].'</div>';

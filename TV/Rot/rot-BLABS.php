@@ -105,7 +105,7 @@ function rotBlAbs($TVsettings, $RULE) {
 			$tmp.='<div class="CountryCode Rotate Rev1'.$Class.'">' . $r->CoCode . '</div>';
 		}
 		if($ViewFlag) {
-			$tmp.='<div class="FlagDiv">'.get_flag_ianseo($r->CoCode, '', '', $IsCode).'</div>';
+			$tmp.='<div class="FlagDiv">'.get_flag_ianseo($r->CoCode, '', '', '', '', $IsCode).'</div>';
 		}
 
 		$tmp.='<div class="Athlete">'.$r->CoName.'</div>';
