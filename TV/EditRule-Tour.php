@@ -197,7 +197,7 @@ ORDER BY DivViewOrder, ClViewOrder	";
 	// the default object...
 	$MyRow=new StdClass();
 	$MyRow->TVPTimeStop=3; // seconds of stop before starting scrolling: default to 3 seconds
-	$MyRow->TVPTimeScroll=10; // tenths of seconds for scrolling one row: default to 1 second
+	$MyRow->TVPTimeScroll=20; // tenths of seconds for scrolling one row: default to 1 second
 	$MyRow->TVPNumRows=0; // rows of result to show: default to 0 (all)
 	$MyRow->TVPViewNationName=1; // show nation complete names: default to yes (1)
 	$MyRow->TVPNameComplete=1; // show athletes complete names: default to yes (1)
