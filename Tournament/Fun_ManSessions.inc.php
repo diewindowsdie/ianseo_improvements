@@ -12,7 +12,7 @@
  * @param int $SesFollow: 0 no, 1 sì
  * @return mixed: true se ok; messaggio di errore altrimenti
  */
-function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTar4Session,$SesAth4Target,$SesFirstTarget,$SesFollow,$SesDtStart=0,$SesDtEnd=0,$SesOdfCode='',$SesOdfPeriod='',$SesOdfVenue='',$SesOdfLocation='') {
+function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTar4Session,$SesAth4Target,$SesFirstTarget,$SesFollow,$SesDtStart=0,$SesDtEnd=0,$SesOdfCode='',$SesOdfPeriod='',$SesOdfVenue='',$SesOdfLocation='', $SesEvents='') {
     $ret=true;
     $SQL=[
         "SesTournament=". StrSafe_DB($SesTournament),
@@ -43,6 +43,10 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
     if($SesOdfLocation) {
         $SQL[]="SesOdfLocation=". StrSafe_DB($SesOdfLocation);
     }
+    if($SesEvents) {
+        $SQL[]="SesEvents=". StrSafe_DB($SesEvents);
+    }
+
 
     $q=implode(', ', $SQL);
     safe_w_sql("insert into Session set $q on duplicate key update $q");
@@ -113,7 +117,7 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
  * @param boll $forceRegenerateTargets: true per forzare la rigenerazione dei bersagli
  * @return mixed: true se ok; messaggio di errore altrimenti
  */
-	function updateSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTar4Session,$SesAth4Target,$SesFirstTarget,$SesFollow,$SesDtStart=0,$SesDtEnd=0,$SesOdfCode='',$SesOdfPeriod='',$SesOdfVenue='',$SesOdfLocation='',$forceRegenerateTargets=false)
+	function updateSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTar4Session,$SesAth4Target,$SesFirstTarget,$SesFollow,$SesDtStart=0,$SesDtEnd=0,$SesOdfCode='',$SesOdfPeriod='',$SesOdfVenue='',$SesOdfLocation='', $SesEvents='', $forceRegenerateTargets=false)
 	{
 		$ret=true;
 
@@ -142,7 +146,8 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
 				SesOdfVenue=".StrSafe_DB($SesOdfVenue) . ",
 				SesOdfLocation=".StrSafe_DB($SesOdfLocation) . ",
 				SesDtStart=".StrSafe_DB($SesDtStart) . ",
-				SesDtEnd=".StrSafe_DB($SesDtEnd) . "
+				SesDtEnd=".StrSafe_DB($SesDtEnd) . ",
+				SesEvents=".StrSafe_DB($SesEvents) . "
 			WHERE SesOrder=" .StrSafe_DB($SesOrder) ." 
 				AND SesType=" .StrSafe_DB($SesType) . " 
 				AND SesTournament=" .StrSafe_DB($SesTournament);
