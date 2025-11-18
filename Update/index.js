@@ -1,3 +1,16 @@
+function update_improvements(url) {
+    if (confirm("Будет произведено обновление IANSEO. Продолжить?")) {
+        $("#main").html("<span>Начинаем процесс обновления...</span><br/><span>Скачиваем файл <b>" + url + "</b></span>");
+        $.getJSON("improvementsDownload-action.php", {url: url}, function(response) {
+            $("#main").html(response.msg);
+            if (response.error === 0) {
+                $.getJSON("improvementsUnpack-action.php", {url: url}, function(secondResponse) {
+                    $("#main").html(secondResponse.msg);
+                });
+            }
+        });
+    }
+}
 
 function doUpdate(force) {
     let form={
