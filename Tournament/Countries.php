@@ -164,7 +164,6 @@ $q=safe_r_sql("select distinct CoCode, CoName, fl.*
 	left join (select distinct FlCode, (FlJPG IS NOT NULL) as isFlJPG, (FlSVG IS NOT NULL) as isFlSVG, FlTournament from Flags where FlTournament in (-1, {$_SESSION['TourId']}) order by FlCode, FlTournament desc) fl on FlCode=CoCode
 	where
 		CoTournament = {$_SESSION['TourId']}
-		and coalesce(EnId, TiId) is not null
 		" . ($edit?" and CoCode='$edit' ":" and CoCode>'' ") . "
 		order by isFlSVG, isFlJPG, CoCode, FlTournament desc");
 
