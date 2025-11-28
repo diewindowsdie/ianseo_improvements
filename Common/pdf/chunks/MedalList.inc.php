@@ -16,6 +16,8 @@ $pdf->SetFont($pdf->FontStd,'',8);
 
 $arrMedals = array(1=>'gold','2'=>'silver','3'=>'bronze');
 
+global $totalMedalsAwarded;
+$totalMedalsAwarded = 0;
 foreach($PdfData->rankData['events'] as $Event => $section) {
 	$Rows=0;
 	foreach($arrMedals as $vMed)
@@ -64,6 +66,7 @@ foreach($PdfData->rankData['events'] as $Event => $section) {
 		if(!empty($section[$vMed]))
 		{
 			foreach($section[$vMed] as $item) {
+                $totalMedalsAwarded += count($item['athletes']);
 				$pdf->SetX($X);
 				//Nome della medaglia
 				$pdf->Cell(15, 5 * count($item['athletes']), $PdfData->{'Medal_'.$kMed}, '1', 0, 'L', 0);
