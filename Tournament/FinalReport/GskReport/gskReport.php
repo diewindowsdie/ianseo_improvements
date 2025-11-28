@@ -274,6 +274,9 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $PdfData=getMedalList();
     $PdfData->HideOfficials = true;
     require_once(PdfChunkLoader('MedalList.inc.php'));
+    global $totalMedalsAwarded;
+    $pdf->setY($pdf->GetY() + 2);
+    $pdf->writeHTMLCell(190, 5, null, null, "Количество награжденных: <b>" . $totalMedalsAwarded . "</b> чел.;", 0, 1, 0, 1, 'L');
 
     $pdf->setY($pdf->GetY() + 4);
     $pdf->SetFont($pdf->FontStd,'', 10);
@@ -323,21 +326,26 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->setX($pdf->GetX() + 20);
     $pdf->SetFont($pdf->FontStd,'B', 10);
     $pdf->Cell(50, 5, "Главный судья", 0, 0, 'L');
+    $pdf->Cell(20, 5, "", 0, 0, 'L');
     $pdf->Cell(45, 5, "", "B", 0, 'L');
     $pdf->Cell(5, 5, "", "0", 0, 'L');
     $pdf->Cell(60, 5, TournamentOfficials::getJudgetSurnameWithInitials($chairpersonOfJudges->TiName, $chairpersonOfJudges->TiGivenName, $chairpersonOfJudges->TiLastName), "0", 1, 'L');
-    $pdf->setX($pdf->GetX() + 20 + 50);
+    $pdf->setX($pdf->GetX() + 20 + 70);
     $pdf->SetFont($pdf->FontStd,'', 7);
     $pdf->Cell(45, 5, "(подпись)", "0", 1, 'C', 0, 0, 0, false, 'T', 'T');
 
-    $pdf->setY($pdf->GetY() + 8);
+    $pdf->setX($pdf->GetX() + 20 + 50);
+    $pdf->Cell(20, 5, "М. П.", 0, 1, 'C');
+    $pdf->setY($pdf->GetY() + 3);
+
     $pdf->setX($pdf->GetX() + 20);
     $pdf->SetFont($pdf->FontStd,'B', 10);
     $pdf->Cell(50, 5, "Главный секретарь", 0, 0, 'L');
+    $pdf->Cell(20, 5, "", 0, 0, 'L');
     $pdf->Cell(45, 5, "", "B", 0, 'L');
     $pdf->Cell(5, 5, "", "0", 0, 'L');
     $pdf->Cell(60, 5, TournamentOfficials::getJudgetSurnameWithInitials($chiefSecretary->TiName, $chiefSecretary->TiGivenName, $chiefSecretary->TiLastName), "0", 1, 'L');
-    $pdf->setX($pdf->GetX() + 20 + 50);
+    $pdf->setX($pdf->GetX() + 20 + 70);
     $pdf->SetFont($pdf->FontStd,'', 7);
     $pdf->Cell(45, 5, "(подпись)", "0", 1, 'C', 0, 0, 0, false, 'T', 'T');
 
