@@ -4521,7 +4521,7 @@ Class Scheduler {
                                                 case 'T':
 
                                                     // get the warmup targets first (will be overwritten by the real matches...
-                                                    $MyQuery = "SELECT distinct FwEvent ,
+                                                    $MyQuery = "SELECT distinct FwEvent, FwTeamEvent,
                                                             FwTargets,
                                                             FwOptions,
                                                             UNIX_TIMESTAMP(FwDay) as SchDate,
@@ -4574,7 +4574,7 @@ Class Scheduler {
                                                                         $rows[$u->FwEvent][$tgt]['f']=get_text($u->TarDescr)." $u->EvTargetSize cm";
                                                                         $rows[$u->FwEvent][$tgt]['ph']=get_text('WarmUp', 'Tournament');
                                                                         $rows[$u->FwEvent][$tgt]['mp']=$u->EvMaxTeamPerson;
-                                                                        $rows[$u->FwEvent][$tgt]["TargetsPerButt"] = $u->TargetsPerButt;
+                                                                        $rows[$u->FwEvent][$tgt]["TargetsPerButt"] = $u->FwTeamEvent == 0 ? $u->TargetsPerButt : 2;
                                                                         if(empty($RowTgts[$tgt])) {
                                                                             $rows[$u->FwEvent][$tgt]['l']=0;
                                                                         } else {
