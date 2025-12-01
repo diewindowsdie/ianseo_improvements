@@ -95,16 +95,11 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 		//Disegna i Pallini per la partecipazione
 			if(!$PdfData->HideCols)
 			{
-				if(!$MyRow->IsAthlete)
-					$pdf->DrawParticipantDetails(-1);
-				elseif($MyRow->secTeam==0)
-					$pdf->DrawParticipantDetails($MyRow->IC, $MyRow->IF, $MyRow->TC, $MyRow->TF, $MyRow->TM);
-				elseif($MyRow->secTeam==1)
-					$pdf->DrawParticipantDetails($MyRow->IC, $MyRow->IF);
-				elseif($MyRow->secTeam==2)
-					$pdf->DrawParticipantDetails(0, 0, $MyRow->TC, $MyRow->TF, $MyRow->TM);
-				else
-					$pdf->Cell(14,4,' ');
+				if(!$MyRow->IsAthlete) {
+                    $pdf->DrawParticipantDetails(-1);
+                } else {
+                    $pdf->DrawParticipantDetails($MyRow->IC, $MyRow->IF, $MyRow->TC, $MyRow->TF, $MyRow->TM);
+                }
 
 				$pdf->SetDefaultColor();
 				$pdf->SetFont($pdf->FontStd,'',7);
