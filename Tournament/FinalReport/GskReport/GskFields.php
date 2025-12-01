@@ -1,7 +1,7 @@
 <?php
 require_once("Tournament/FinalReport/GskReport/GskField.php");
 require_once("Tournament/FinalReport/GskReport/fields/CompetitionTitleGskField.php");
-require_once("Tournament/FinalReport/GskReport/fields/LocalRegionIdForJudgesGskField.php");
+require_once("Tournament/FinalReport/GskReport/fields/LocalRegionCodeForJudgesGskField.php");
 require_once("Tournament/FinalReport/GskReport/fields/IsBasicRegionGskField.php");
 require_once("Tournament/FinalReport/GskReport/fields/NumberOfCoachesFromRegion.php");
 require_once("Tournament/FinalReport/GskReport/fields/GeneralIssuesGskField.php");
@@ -18,7 +18,7 @@ require_once("Tournament/FinalReport/GskReport/fields/OtherNotesGskField.php");
 class GskFields
 {
     private static $competitionTitle;
-    private static $localRegionIdForJudgesGskField;
+    private static $localRegionCodeForJudgesGskField;
     private static $generalIssuesGskField;
     private static $serviceRoomIssuesGskField;
     private static $informationServicesGskField;
@@ -39,13 +39,13 @@ class GskFields
         return self::$competitionTitle;
     }
 
-    public static function getLocalRegionIdForJudges(): LocalRegionIdForJudgesGskField
+    public static function getLocalRegionCodeForJudges(): LocalRegionCodeForJudgesGskField
     {
-        if (is_null(self::$localRegionIdForJudgesGskField)) {
-            self::$localRegionIdForJudgesGskField = new LocalRegionIdForJudgesGskField();
+        if (is_null(self::$localRegionCodeForJudgesGskField)) {
+            self::$localRegionCodeForJudgesGskField = new LocalRegionCodeForJudgesGskField();
         }
 
-        return self::$localRegionIdForJudgesGskField;
+        return self::$localRegionCodeForJudgesGskField;
     }
 
     public static function getGeneralIssues(): GeneralIssuesGskField
@@ -142,8 +142,8 @@ class GskFields
     {
         if ($fieldName === self::getCompetitionTitle()->getParameterName()) {
             return self::$competitionTitle;
-        } else if ($fieldName === self::getLocalRegionIdForJudges()->getParameterName()) {
-            return self::$localRegionIdForJudgesGskField;
+        } else if ($fieldName === self::getLocalRegionCodeForJudges()->getParameterName()) {
+            return self::$localRegionCodeForJudgesGskField;
         } else if ($fieldName === self::getGeneralIssues()->getParameterName()) {
             return self::$generalIssuesGskField;
         } else if ($fieldName === self::getServiceRoomIssues()->getParameterName()) {

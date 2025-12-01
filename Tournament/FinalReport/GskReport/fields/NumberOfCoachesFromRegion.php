@@ -20,7 +20,7 @@ class NumberOfCoachesFromRegion extends GskField
         return "0";
     }
 
-    public static function getParameterNameForRegion($regionId): string {
-        return  self::fieldPrefix . $regionId;
+    public static function getParameterNameForRegion($regionCode): string {
+        return  self::fieldPrefix . $regionCode;
     }
 }

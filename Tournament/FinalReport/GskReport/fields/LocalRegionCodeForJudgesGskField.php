@@ -1,11 +1,11 @@
 <?php
 require_once("Tournament/FinalReport/GskReport/GskField.php");
 
-class LocalRegionIdForJudgesGskField extends GskField
+class LocalRegionCodeForJudgesGskField extends GskField
 {
     public function getParameterName(): string
     {
-        return "localCountryIdForJudges";
+        return "localCountryCodeForJudges";
     }
 
     public function getDefaultValue(): string

@@ -39,7 +39,7 @@ $participantsStatistics = safe_fetch($rs);
 $query = "select count(NonLocal) NonLocal, count(Total) Total from (
     select TiId Total, null NonLocal from TournamentInvolved where TiTournament = " . $_SESSION["TourId"] . "
         union
-    select null Total, TiId NonLocal from TournamentInvolved where TiTournament = " . $_SESSION["TourId"] . " and TiCountry != '" . GskFields::getLocalRegionIdForJudges()->getValue() . "') t";
+    select null Total, ti.TiId NonLocal from TournamentInvolved ti left join Countries c on ti.TiCountry = c.CoId and ti.TiTournament = c.CoTournament where ti.TiTournament = " . $_SESSION["TourId"] . " and c.CoCode != '" . GskFields::getLocalRegionCodeForJudges()->getValue() . "') t";
 $rs = safe_r_SQL($query);
 $judgesData = safe_fetch($rs);
 
@@ -52,13 +52,13 @@ while ($row = safe_fetch($rs)) {
 }
 
 //регионы судей
-$query = "select c.CoId, c.CoNameComplete, count(*) FromRegion from TournamentInvolved ti 
+$query = "select c.CoCode, c.CoNameComplete, count(*) FromRegion from TournamentInvolved ti 
     left join Countries c on ti.TiCountry = c.CoId and ti.TiTournament = c.CoTournament where ti.TiTournament = " . $_SESSION["TourId"] . " group by ti.TiCountry, c.CoNameComplete order by c.CoNameComplete";
 $rs = safe_r_SQL($query);
 $judgeRegions = array();
 while ($row = safe_fetch($rs)) {
-    $judgeRegions[$row->CoId]["Name"] = $row->CoNameComplete;
-    $judgeRegions[$row->CoId]["FromRegion"] = $row->FromRegion;
+    $judgeRegions[$row->CoCode]["Name"] = $row->CoNameComplete;
+    $judgeRegions[$row->CoCode]["FromRegion"] = $row->FromRegion;
 }
 
 //главный судья и главный секретарь
@@ -71,21 +71,21 @@ $chiefSecretary = safe_fetch($rs);
 
 //статистика по регионам
 $totalCoaches = 0;
-$query = "select CoId, CoNameComplete, sum(coalesce(Males, 0)) Males, sum(coalesce(Females, 0)) Females from
-(select c.CoId, c.CoNameComplete, count(e.EnId) Males, null Females from Entries e left join Countries c on c.CoId = e.EnCountry and c.CoTournament = e.EnTournament
-where e.EnTournament = " . $_SESSION["TourId"] . " and e.EnSex = 0 group by c.CoId
+$query = "select CoCode, CoNameComplete, sum(coalesce(Males, 0)) Males, sum(coalesce(Females, 0)) Females from
+(select c.CoCode, c.CoNameComplete, count(e.EnId) Males, null Females from Entries e left join Countries c on c.CoId = e.EnCountry and c.CoTournament = e.EnTournament
+where e.EnTournament = " . $_SESSION["TourId"] . " and e.EnSex = 0 group by c.CoCode
 union all
- select c.CoId, c.CoNameComplete, null Males, count(e.EnId) Females from Entries e left join Countries c on c.CoId = e.EnCountry and c.CoTournament = e.EnTournament
- where e.EnTournament = " . $_SESSION["TourId"] . " and e.EnSex = 1 group by c.CoId) t group by CoId, CoNameComplete order by CoNameComplete";
+ select c.CoCode, c.CoNameComplete, null Males, count(e.EnId) Females from Entries e left join Countries c on c.CoId = e.EnCountry and c.CoTournament = e.EnTournament
+ where e.EnTournament = " . $_SESSION["TourId"] . " and e.EnSex = 1 group by c.CoCode) t group by CoCode, CoNameComplete order by CoNameComplete";
 $rs = safe_r_SQL($query);
 $participantsByRegion = array();
 while ($row = safe_fetch($rs)) {
-    $participantsByRegion[$row->CoId]["Name"] = $row->CoNameComplete;
-    $participantsByRegion[$row->CoId]["isBasicSport"] = (new IsBasicRegionGskField($row->CoId))->getValue();
-    $participantsByRegion[$row->CoId]["Males"] = $row->Males;
-    $participantsByRegion[$row->CoId]["Females"] = $row->Females;
-    $participantsByRegion[$row->CoId]["Coaches"] = (new NumberOfCoachesFromRegion($row->CoId))->getValue();
-    $totalCoaches += $participantsByRegion[$row->CoId]["Coaches"];
+    $participantsByRegion[$row->CoCode]["Name"] = $row->CoNameComplete;
+    $participantsByRegion[$row->CoCode]["isBasicSport"] = (new IsBasicRegionGskField($row->CoCode))->getValue();
+    $participantsByRegion[$row->CoCode]["Males"] = $row->Males;
+    $participantsByRegion[$row->CoCode]["Females"] = $row->Females;
+    $participantsByRegion[$row->CoCode]["Coaches"] = (new NumberOfCoachesFromRegion($row->CoCode))->getValue();
+    $totalCoaches += $participantsByRegion[$row->CoCode]["Coaches"];
 }
 
 $query = "select ClId, ClDescription from Classes where ClTournament = " . StrSafe_DB($_SESSION['TourId']);
@@ -198,7 +198,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->Cell(20, 5, "обсл. персонал, чел.", "RLB", 1, "C", 0, "", 1, false, "T", "T");
     $pdf->SetFont($pdf->FontStd,'', 9);
     $index = 1;
-    foreach ($participantsByRegion as $id => $data) {
+    foreach ($participantsByRegion as $regionCode => $data) {
         $pdf->Cell(10, 5, $index, 1, 0, 'C');
         $pdf->Cell(65, 5, $data["Name"], 1, 0, 'L');
         $pdf->Cell(15, 5, $data["isBasicSport"] ? "✔" : "", 1, 0, 'C');
@@ -233,7 +233,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->Cell(15, 10, "Всего", 1, 1, "C");
     $pdf->setY($pdf->GetY() - 5);
     $pdf->setX($pdf->GetX() + 15);
-    foreach ($classes as $id => $description) {
+    foreach ($classes as $regionCode => $description) {
         $pdf->Cell($groupSize, 5, $description, 1, 0, "C");
     }
     $pdf->ln();
@@ -242,8 +242,8 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         $pdf->Cell(15, 5, $subclassDescription, 1, 0, "C");
         $subclassTotal = 0;
         $pdf->SetFont($pdf->FontStd,'', 9);
-        foreach ($classes as $id => $description) {
-            $subclassForGroup = $subclassStatistics[$subclassId][$id] ?? "0";
+        foreach ($classes as $regionCode => $description) {
+            $subclassForGroup = $subclassStatistics[$subclassId][$regionCode] ?? "0";
             $subclassTotal += $subclassForGroup;
             $pdf->Cell($groupSize, 5, $subclassForGroup, 1, 0, "C");
         }
@@ -366,11 +366,11 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     const judgesPerRegion = {
         <?php
             $isFirst = true;
-            foreach ($judgeRegions as $id => $region) {
+            foreach ($judgeRegions as $regionCode => $region) {
                 if (!$isFirst) {
                     echo ",\n";
                 }
-                echo $id . ": " . $region["FromRegion"];
+                echo $regionCode . ": " . $region["FromRegion"];
                 $isFirst = false;
             }
     ?>};
@@ -378,11 +378,11 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     const coachesPerRegion = {
         <?php
             $isFirst = true;
-            foreach ($participantsByRegion as $id => $data) {
+            foreach ($participantsByRegion as $regionCode => $data) {
                 if (!$isFirst) {
                     echo ",\n";
                 }
-                echo $id . ": " . $data["Coaches"];
+                echo $regionCode . ": " . $data["Coaches"];
                 $isFirst = false;
             }
         ?>};
@@ -409,11 +409,11 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         <tr>
             <td colspan="3" style="text-align: left; padding-left: 80px">Выберите регион, судьи из которого <b>не</b> считаются иногородними:
             <?php
-                $localRegionIdForJudgesField = GskFields::getLocalRegionIdForJudges();
-                echo '<select id="judgesRegions" onchange="judgesHomeRegionChanged(\'' . $localRegionIdForJudgesField->getParameterName() . '\', this)">';
-                $homeRegionId = $localRegionIdForJudgesField->getValue();
-                foreach ($judgeRegions as $id => $region) {
-                    echo "<option value='" . $id . "'" . ($id == $homeRegionId ? " selected='selected'" : "") . ">" . $region["Name"] . "</option>";
+                $localRegionCodeForJudgesField = GskFields::getLocalRegionCodeForJudges();
+                echo '<select id="judgesRegions" onchange="judgesHomeRegionChanged(\'' . $localRegionCodeForJudgesField->getParameterName() . '\', this)">';
+                $homeRegionId = $localRegionCodeForJudgesField->getValue();
+                foreach ($judgeRegions as $regionCode => $region) {
+                    echo "<option value='" . $regionCode . "'" . ($regionCode == $homeRegionId ? " selected='selected'" : "") . ">" . $region["Name"] . "</option>";
                 }
             ?></select></td>
         </tr>
@@ -426,10 +426,10 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                     <?php
                         $index = 1;
                         $tabIndexOffset = count($participantsByRegion);
-                        foreach ($participantsByRegion as $id => $data) {
-                            $isBasicParameterName = IsBasicRegionGskField::getParameterNameForRegion($id);
-                            $numberOfCoachesParameterName = NumberOfCoachesFromRegion::getParameterNameForRegion($id);
-                            echo "<tr><td style='border: 1px solid'>" . $index . "</td><td style='border: 1px solid'>" . $data["Name"] . "</td><td style='border: 1px solid'><input type='checkbox' tabindex='" . $index . "' name='" . $isBasicParameterName . "'" . ($data["isBasicSport"] ? "checked='checked'" : '') . " onclick='toggleBasicSport(this)'/></td><td style='border: 1px solid'>" . $data["Males"] . "</td><td style='border: 1px solid'>" . $data["Females"] . "</td><td id='athletesTotal_" . $id . "' style='border: 1px solid'>" . $data["Males"] + $data["Females"] . "</td><td style='border: 1px solid'><input class='w-25' id='" . $id . "' type='text' tabIndex='" . $index + $tabIndexOffset . "' name='" . $numberOfCoachesParameterName . "' value='" . $data["Coaches"] . "' onblur='coachesChanged(this)'/></td><td id='regionTotal_" . $id . "' style='border: 1px solid'>" . $data["Males"] + $data["Females"] + $data["Coaches"] . "</td></tr>\n";
+                        foreach ($participantsByRegion as $regionCode => $data) {
+                            $isBasicParameterName = IsBasicRegionGskField::getParameterNameForRegion($regionCode);
+                            $numberOfCoachesParameterName = NumberOfCoachesFromRegion::getParameterNameForRegion($regionCode);
+                            echo "<tr><td style='border: 1px solid'>" . $index . "</td><td style='border: 1px solid'>" . $data["Name"] . "</td><td style='border: 1px solid'><input type='checkbox' tabindex='" . $index . "' name='" . $isBasicParameterName . "'" . ($data["isBasicSport"] ? "checked='checked'" : '') . " onclick='toggleBasicSport(this)'/></td><td style='border: 1px solid'>" . $data["Males"] . "</td><td style='border: 1px solid'>" . $data["Females"] . "</td><td id='athletesTotal_" . $regionCode . "' style='border: 1px solid'>" . $data["Males"] + $data["Females"] . "</td><td style='border: 1px solid'><input class='w-25' id='" . $regionCode . "' type='text' tabIndex='" . $index + $tabIndexOffset . "' name='" . $numberOfCoachesParameterName . "' value='" . $data["Coaches"] . "' onblur='coachesChanged(this)'/></td><td id='regionTotal_" . $regionCode . "' style='border: 1px solid'>" . $data["Males"] + $data["Females"] + $data["Coaches"] . "</td></tr>\n";
                             ++$index;
                         }
                     ?>
