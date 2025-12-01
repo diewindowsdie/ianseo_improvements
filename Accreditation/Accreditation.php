@@ -239,6 +239,7 @@ $MyRowCounter = safe_fetch($Rs);
 <th width="3%"><?php print get_text('Session');?></th>
 <th width="5%"><?php print get_text('Target');?></th>
 <th width="15%"><?php print get_text('Archer');?></th>
+<th width="5%"><?php print get_text('DOB', 'Tournament');?></th>
 <th width="20%"><?php print get_text('Country');?></th>
 <th width="5%"><?php print get_text('Division');?></th>
 <th width="5%"><?php print get_text('Class');?></th>
@@ -299,6 +300,7 @@ $MyRowCounter = safe_fetch($Rs);
 			print '<td class="Center">' . $MyRow->QuSession . '</td>';
 			print '<td class="Center">' . $MyRow->TargetNo . '</td>';
 			print '<td>' . getFullAthleteName($MyRow->EnFirstName, $MyRow->EnName, $MyRow->EnMiddleName) . (!is_null($MyRow->AEOperation) ? ' <br><span class="Link" onclick="delAccr(' . $MyRow->EnId . ')">[' . $DelAccr . ']</a>':'') . '</td>';
+            print '<td class="Center">' . $MyRow->BirthDate . '</td>';
 			print '<td>' . getFullCountryName($MyRow->CoNameComplete, $MyRow->CoNameComplete2, $MyRow->CoNameComplete3) . '</td>';
 			print '<td class="Center">' . $MyRow->EnDivision . '</td>';
 			print '<td class="Center">' . $MyRow->EnClass . '</td>';
