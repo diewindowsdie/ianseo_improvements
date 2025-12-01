@@ -182,7 +182,7 @@ foreach($PdfData->rankData['sections'] as $section) {
                         $pdf->Cell(strlen($v['tiebreak'])>0 ? 8 : 15, 4, $v['setScore'] . '(' . $v['score'] . ')', (strlen($v['tiebreak'])>0 ? 'TB' : 'RTB'), 0, 'L', 0);
                         $spaceUsed += strlen($v['tiebreak'])>0 ? 8 : 15;
                         if(strlen($v['tiebreak'])>0) {
-                            $pdf->Cell(7, 4, "T." . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RTB', 0, 'L', 0);
+                            $pdf->Cell(7, 4, get_text('ShotOffShort', 'Tournament') . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RTB', 0, 'L', 0);
                             $spaceUsed += 7;
                         }
 					}
@@ -191,7 +191,7 @@ foreach($PdfData->rankData['sections'] as $section) {
 						$pdf->Cell(15 - (strlen($v['tiebreak'])>0 ? 7 : 0), 4, ($section['meta']['matchMode']==0 ? $v['score'] : $v['setScore']) . ($v['tie']==1 && strlen($v['tiebreak'])==0 ? '*' : ''), (strlen($v['tiebreak'])>0 ? 'LTB' : 1), 0, 'L', 0);
                         $spaceUsed += 15 - (strlen($v['tiebreak'])>0 ? 7 : 0);
 						if(strlen($v['tiebreak'])>0) {
-                            $pdf->Cell(7, 4, "T." . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RTB', 0, 'L', 0);
+                            $pdf->Cell(7, 4, get_text('ShotOffShort', 'Tournament') . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RTB', 0, 'L', 0);
                             $spaceUsed += 7;
                         }
 					}

@@ -144,7 +144,7 @@ foreach($PdfData->rankData['sections'] as $section) {
                             $previousY = $pdf->GetY();
                             $pdf->SetXY($previousX, $previousY + 2 * $NumComponenti);
 
-                            $pdf->Cell(15, 2 * $NumComponenti, "T." . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RBL', 0, 'R', 0, '', 1, false, 'T', 'T');
+                            $pdf->Cell(15, 2 * $NumComponenti, get_text('ShotOffShort', 'Tournament') . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RBL', 0, 'R', 0, '', 1, false, 'T', 'T');
                             $pdf->SetXY($previousX, $previousY);
                         }
                         $pdf->Cell(15, $tiebreakScore ? 2*$NumComponenti : 4*$NumComponenti, $v['setScore'] . '(' . $v['score'] . ')', ($tiebreakScore ? 'RTL' : 1), 0, 'L', 0, '', 1, false, 'T', $tiebreakScore ? 'B' : 'C');
@@ -160,7 +160,7 @@ foreach($PdfData->rankData['sections'] as $section) {
                             $previousX = $pdf->GetX();
                             $previousY = $pdf->GetY();
                             $pdf->SetXY($previousX, $previousY + 2 * $NumComponenti);
-							$pdf->Cell(15, 2*$NumComponenti,  "T." . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RBL', 0, 'R', 0, '', 1, false, 'T', 'T');
+							$pdf->Cell(15, 2*$NumComponenti,  get_text('ShotOffShort', 'Tournament') . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RBL', 0, 'R', 0, '', 1, false, 'T', 'T');
                             $pdf->SetXY($previousX, $previousY);
 						}
                         $pdf->Cell(15, $tiebreakScore ? 2*$NumComponenti : 4*$NumComponenti, ($section['meta']['matchMode']==0 ? $v['score'] : $v['setScore']) . ($k<=1 && $v['tie']==1 && strlen($v['tiebreak'])==0 ? '*' : ''), ($tiebreakScore ? 'RTL' : 1), 0, 'L', 0, '', 1, false, 'T', $tiebreakScore ? 'B' : 'C');

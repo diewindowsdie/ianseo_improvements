@@ -512,7 +512,7 @@ class ResultPDF extends IanseoPdf {
 					if(!empty($item['so']) &&  $item['so']>0) {
 						$tmpNote=$this->ShotOffShort .' ';
 						if(strlen(trim($item['tiebreak']))) {
-							$tmpNote .= 'T.'.$item['tiebreakDecoded'];
+							$tmpNote .= $item['tiebreakDecoded'];
 						}
 					} elseif(!empty($item['ct']) &&  $item['ct']>1) {
 						$tmpNote = $this->CoinTossShort;

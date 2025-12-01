@@ -512,7 +512,7 @@
 	);
 
 	// Class Selection
-	$rsCl=safe_r_sql("SELECT ClId FROM Classes WHERE ClTournament=" . StrSafe_DB($_SESSION['TourId']) . " ORDER BY ClViewOrder ASC");
+	$rsCl=safe_r_sql("SELECT ClId FROM Classes WHERE ClTournament=" . StrSafe_DB($_SESSION['TourId']) . " ORDER BY ClViewOrder ASC"); //    tut
 
 	$comboCl=ComboFromRs(
 		$rsCl,

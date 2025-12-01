@@ -247,7 +247,7 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 			$tieText = "";
 			if($Match['tiebreakDecoded']) {
 				$pdf->SetFont($pdf->FontStd,'',6);
-				$tieText = 'T.'.$Match['tiebreakDecoded'];
+				$tieText = get_text('ShotOffShort', 'Tournament') . $Match['tiebreakDecoded'];
 			} elseif($Match['tie']==1) {
 				$tieText = "+";
 			}
@@ -262,7 +262,7 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 			$tieText = "";
 			if($Match['oppTiebreakDecoded']) {
 				$pdf->SetFont($pdf->FontStd,'',6);
-				$tieText = 'T.'.$Match['oppTiebreakDecoded'];
+				$tieText = get_text('ShotOffShort', 'Tournament') . $Match['oppTiebreakDecoded'];
 			} elseif($Match['oppTie']==1) {
 				$tieText = "+";
 			}
