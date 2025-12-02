@@ -7,7 +7,7 @@ $isCompleteResultBook = true;
 
 $pdf = new ResultPDF(get_text('ResultClass','Tournament'));
 include 'PrnIndividualAbs.php';
-$pdf->SetXY(10,$pdf->GetY()+5);
+$pdf->AddPage();
 include 'PrnTeamAbs.php';
 
 $pdf->DrawShootOffLegend();
