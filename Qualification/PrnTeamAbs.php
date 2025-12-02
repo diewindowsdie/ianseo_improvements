@@ -15,6 +15,11 @@ checkFullACL(AclQualification, '', AclReadOnly);
 $PdfData=getQualificationTeam();
 $rankData=$PdfData->rankData;
 
+global $hideTempHeader;
+if (isset($_REQUEST["hideTempHeader"])) {
+    $hideTempHeader = true;
+}
+
 if(!isset($isCompleteResultBook))
 	$pdf = new ResultPDF($PdfData->Description);
 

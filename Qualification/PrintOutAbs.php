@@ -33,19 +33,23 @@
 	echo '<img src="../Common/Images/pdf_small.gif" alt="' . get_text('ResultIndAbs','Tournament') . '" border="0"></a>&nbsp;&nbsp;&nbsp;';
 	echo '<a href="OrisIndividual.php" class="Link" target="ORISPrintOut">';
 	echo '<img src="../Common/Images/pdfOris_small.gif" title="' . get_text('StdORIS','Tournament') . '"  alt="' . get_text('StdORIS','Tournament') . '" border="0"></a><br>';
-	echo '<a href="'.($_SESSION['ISORIS'] ? 'OrisIndividual.php' : 'PrnIndividualAbs.php').'" class="Link" target="PrintOut">' . get_text('ResultIndAbs','Tournament') . '</a>';
+	echo '<a href="'.($_SESSION['ISORIS'] ? 'OrisIndividual.php' : 'PrnIndividualAbs.php').'" class="Link" target="PrintOut">' . get_text('ResultIndAbs','Tournament') . '</a><br/>';
+    echo '<a href="'.($_SESSION['ISORIS'] ? 'OrisIndividual.php' : 'PrnIndividualAbs.php?hideTempHeader=1').'" class="Link" target="PrintOut">' . get_text('ResultIndAbs','Tournament') . ' (' . mb_strtolower(get_text("NoTempHeader")) . ')</a>';
 	echo '</a></td>';
 //Completa
 	echo '<td class="Center"  colspan="2"><br><a href="PrnCompleteAbs.php" class="Link" target="PrintOut">';
 	echo '<img src="../Common/Images/pdf.gif" alt="' . get_text('ResultAbs','Tournament') . '" border="0"><br>';
 	echo get_text('ResultAbs','Tournament');
-	echo '</a></td>';
+	echo '</a><br/>';
+    echo '<a href="PrnCompleteAbs.php?hideTempHeader=1" class="Link" target="PrintOut">' . get_text('ResultAbs','Tournament') . ' (' . mb_strtolower(get_text("NoTempHeader")) . ')</a>';
+    echo '</td>';
 //Squadre
 	echo '<td class="Center"><br><a href="PrnTeamAbs.php" class="Link" target="PrintOut">';
 	echo '<img src="../Common/Images/pdf_small.gif" alt="' . get_text('ResultSqAbs','Tournament') . '" border="0"></a>&nbsp;&nbsp;&nbsp;';
 	echo '<a href="OrisTeam.php" class="Link" target="OrisPrintOut">';
 	echo '<img src="../Common/Images/pdfOris_small.gif" title="' . get_text('StdORIS','Tournament') . '"  alt="' . get_text('StdORIS','Tournament') . '" border="0"></a><br>';
-	echo '<a href="'.($_SESSION['ISORIS'] ? 'OrisTeam.php' : 'PrnTeamAbs.php').'" class="Link" target="PrintOut">' . get_text('ResultSqAbs','Tournament') . '</a>';
+	echo '<a href="'.($_SESSION['ISORIS'] ? 'OrisTeam.php' : 'PrnTeamAbs.php').'" class="Link" target="PrintOut">' . get_text('ResultSqAbs','Tournament') . '</a><br/>';
+    echo '<a href="'.($_SESSION['ISORIS'] ? 'OrisTeam.php' : 'PrnTeamAbs.php?hideTempHeader=1').'" class="Link" target="PrintOut">' . get_text('ResultSqAbs','Tournament') . ' (' . mb_strtolower(get_text("NoTempHeader")) . ')</a>';
 	echo '</a></td>';
 	echo '</tr>';
 //Selezione dei singoli files
@@ -71,6 +75,7 @@
 	}
 	echo '</td><td class="Center" width="50%">';
 	echo get_text('NumResult','Tournament') . '<br><input name="MaxNum" type="text" size="10" maxlength="3">';
+    echo '<br/><br/><input name="hideTempHeader" type="checkbox">&nbsp;' . get_text("NoTempHeader");
 	echo '<br/><br/><input id="ShowOrisInd" name="ShowOrisInd" type="checkbox" '.($_SESSION['ISORIS'] ? 'checked="checked" ' : '').'value="1">&nbsp;' . get_text('StdORIS','Tournament') . '<br>';
 
 	echo '<br/><div id="SnapShot"><input name="Snapshot" type="checkbox" onclick="changevisibility(this, null, \'DistanceRankings\')">' . get_text('Snapshot','Tournament') . '</div>';
@@ -122,6 +127,7 @@
 	}
 	echo '</td><td class="Center" width="50%">';
 	echo get_text('NumResult','Tournament') . '<br><input name="MaxNum" type="text" size="10" maxlength="3">';
+    echo '<br/><br/><input name="hideTempHeader" type="checkbox">&nbsp;' . get_text("NoTempHeader");
 	echo '<br/><br/><input id="ShowOrisTeam" name="ShowOrisTeam" type="checkbox" value="1" '.($_SESSION['ISORIS'] ? 'checked="checked" ' : '').'>&nbsp;' . get_text('StdORIS','Tournament') . '<br>';
 	echo '</td>';
 	echo '</tr>';

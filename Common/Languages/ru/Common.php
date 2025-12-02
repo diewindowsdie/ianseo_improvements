@@ -392,6 +392,7 @@ $lang['NoManTie']='Не управлять тай-брейками';
 $lang['NoPhoto']='Печатать без фото';
 $lang['Normative']='Норматив';
 $lang['NoTargetFound']='Мишень не найдена';
+$lang['NoTempHeader']='Без заголовков групп';
 $lang['Number']='Количество спортсменов';
 $lang['NumberDecimalSeparator']='.';
 $lang['NumberThousandsSeparator']=',';

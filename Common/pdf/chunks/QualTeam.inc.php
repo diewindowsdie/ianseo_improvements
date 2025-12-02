@@ -10,6 +10,8 @@ $pdf->ShotOffShort=$PdfData->ShotOffShort;
 $pdf->CoinTossShort=$PdfData->CoinTossShort;
 
 $legendStatusProvider = new StatusLegendProvider($pdf, true);
+
+global $hideTempHeader;
 if (!isset($hideTempHeader)) {
     $hideTempHeader = false;
 }

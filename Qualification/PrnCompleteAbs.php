@@ -5,6 +5,10 @@ require_once('Common/Fun_FormatText.inc.php');
 
 $isCompleteResultBook = true;
 
+global $hideTempHeader;
+if (isset($_REQUEST["hideTempHeader"])) {
+    $hideTempHeader = true;
+}
 $pdf = new ResultPDF(get_text('ResultClass','Tournament'));
 include 'PrnIndividualAbs.php';
 $pdf->AddPage();

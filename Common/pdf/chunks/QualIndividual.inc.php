@@ -18,6 +18,7 @@ $spaceBetweenSections = 5;
 $legendStatusProvider = new StatusLegendProvider($pdf, true);
 $legendSize = $legendStatusProvider->getLegendBlockHeight();
 
+global $hideTempHeader;
 if (!isset($hideTempHeader)) {
     $hideTempHeader = false;
 }

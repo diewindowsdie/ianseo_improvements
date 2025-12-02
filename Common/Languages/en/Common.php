@@ -485,6 +485,7 @@ $lang['NoLiveEvent']='No LIVE events!';
 $lang['NoManTie']='Don\'t Manage Tie-Break';
 $lang['NoPhoto']='Print missing photos';
 $lang['NoTargetFound']='No target found';
+$lang['NoTempHeader']='No group headers';
 $lang['Number']='Number';
 $lang['NumberDecimalSeparator']='.';
 $lang['NumberThousandsSeparator']=',';
