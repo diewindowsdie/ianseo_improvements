@@ -569,9 +569,9 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
 	$pdf->Cell($ShootOffW/2,$pdf->ScoreCellHeight/2,'',1,0,'R',0);
 	if($closeToCenter) {
 		$tmpWidth=$pdf->GetLineWidth();
-		$pdf->SetLineWidth($tmpWidth*5);
-		$pdf->Line($WhereX[$WhichScore]+$GoldW+$ShootOffW/2-1,$WhereY[$WhichScore]+$pdf->ScoreCellHeight*($MyRow->EvElimType ? 1 : 13)/8-1,$WhereX[$WhichScore]+$GoldW+$ShootOffW+1,$WhereY[$WhichScore]+$pdf->ScoreCellHeight*(($MyRow->EvElimType ? 1 : 13)+4)/8+1);
-		$pdf->Line($WhereX[$WhichScore]+$GoldW+$ShootOffW/2-1,$WhereY[$WhichScore]+$pdf->ScoreCellHeight*(($MyRow->EvElimType ? 1 : 13)+4)/8+1,$WhereX[$WhichScore]+$GoldW+$ShootOffW+1,$WhereY[$WhichScore]+$pdf->ScoreCellHeight*($MyRow->EvElimType ? 1 : 13)/8-1);
+		$pdf->SetLineWidth($tmpWidth*5); //
+		$pdf->Line($WhereX[$WhichScore]+$GoldW+$ShootOffW/2-0.5,$WhereY[$WhichScore]+$pdf->ScoreCellHeight*($MyRow->EvElimType ? 1 : 13)/8+6.5,$WhereX[$WhichScore]+$GoldW+$ShootOffW+0.5,$WhereY[$WhichScore]+$pdf->ScoreCellHeight*(($MyRow->EvElimType ? 1 : 13)+4)/8+7.5);
+		$pdf->Line($WhereX[$WhichScore]+$GoldW+$ShootOffW/2-0.5,$WhereY[$WhichScore]+$pdf->ScoreCellHeight*(($MyRow->EvElimType ? 1 : 13)+4)/8+7.5,$WhereX[$WhichScore]+$GoldW+$ShootOffW+0.5,$WhereY[$WhichScore]+$pdf->ScoreCellHeight*($MyRow->EvElimType ? 1 : 13)/8+6.5);
 		$pdf->SetLineWidth($tmpWidth);
 	}
 	$pdf->Cell($ArrowW*($NumCol-1),$pdf->ScoreCellHeight*2/4,get_text('Close2Center','Tournament'),0,0,'L',0);
