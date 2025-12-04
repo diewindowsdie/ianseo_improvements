@@ -58,6 +58,7 @@
 						. "WHERE CoCode='$CoCode' AND CoTournament=" . StrSafe_DB($_SESSION['TourId']) . " ";
 					$Rs=safe_r_sql($Select);
 
+                    $isNewCountry = false;
 					if ($myrow=safe_fetch($Rs)) {
 						$CoId=$myrow->CoId;
 					} else {
@@ -68,6 +69,7 @@
 							. StrSafe_DB($CoCode) . " "
 							. ")";
 						$RsIns=safe_w_sql($Insert);
+                        $isNewCountry = true;
 
 						// estraggo l'ultimo id
 						$CoId=safe_w_last_id();
@@ -80,7 +82,7 @@
 
 					// Updates the name anyway
 					$Update = "UPDATE Countries SET "
-						. "CoName=" . StrSafe_DB($CoName) . ", CoNameComplete = " . StrSafe_DB($CoName) . " "
+						. "CoName=" . StrSafe_DB($CoName) . ($isNewCountry ? (", CoNameComplete = " . StrSafe_DB($CoName)) : "") . " "
 						. "WHERE CoId=" . StrSafe_DB($CoId) . " AND CoTournament=" . StrSafe_DB($_SESSION['TourId']) . " ";
 					$Rs=safe_w_sql($Update);
 
@@ -512,7 +514,7 @@
 	);
 
 	// Class Selection
-	$rsCl=safe_r_sql("SELECT ClId FROM Classes WHERE ClTournament=" . StrSafe_DB($_SESSION['TourId']) . " ORDER BY ClViewOrder ASC"); //    tut
+	$rsCl=safe_r_sql("SELECT ClId FROM Classes WHERE ClTournament=" . StrSafe_DB($_SESSION['TourId']) . " ORDER BY ClViewOrder ASC");
 
 	$comboCl=ComboFromRs(
 		$rsCl,
