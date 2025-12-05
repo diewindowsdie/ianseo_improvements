@@ -263,6 +263,8 @@ select.red {font-weight:bold; background-color:var(--dark-red);}
 
 .disabled {background-color:var(--light-grey)!important;}
 .disabledDark {background-color:var(--dark-grey)!important;}
+.inNextPhase0 {background-color: #c8ebc8 !important;}
+.inNextPhase1 {background-color: #c8dcc8 !important;}
 
 .blue {background-color: #2cc0f1}
 .green  {background-color:#96f886;}

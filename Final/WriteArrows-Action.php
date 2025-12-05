@@ -141,12 +141,18 @@ switch($_REQUEST['act']) {
 
 					$Offset=1 + count($Items['items'])*2*($Arrows+1+(3*$Phases['meta'][$Items['meta']['FinElimChooser']?'elimSO':'finSO']));
 
+                    $matchIndex = -1;
 					foreach($Items['items'] as $Match) {
+                        ++$matchIndex;
 						$Class=(($Match['winner'] or $Match['oppWinner'] or ($Match['irm'] and $Match['oppIrm'])) ? 'disabled'.($Match['winner'] ? ' win' : '') : '');
 						$ByeChooser=intval($Match['tie']==2 or $Match['irm'] or $Match['oppTie']==2 or $Match['oppIrm']);
 						if($ByeChooser) {
 							$Class= 'Bye';
 						}
+                        $athleteInNextPhase = getParticipantInNextPhase($Team, null, $EvCode, $Match['matchNo']);
+                        if (str_contains($Class, "disabled") && $athleteInNextPhase) {
+                            $Class .= " inNextPhase" . ($matchIndex % 2);
+                        }
 						$Athlete1=($Team ? 'countryName' : 'athlete');
 						$Athlete2=($Team ? 'oppCountryName' : 'oppAthlete');
 						if($Match[$Athlete1]) {
@@ -184,13 +190,12 @@ switch($_REQUEST['act']) {
 								$Html[$ByeChooser] .= '<td align="center"><input type="checkbox" id="cl_' . $id . '" ' . ($Match['closest'] ? ' checked="checked"' : '') . ' onclick="updateScore(this)" tabindex="' . ($TabIndex++) . '"></td>';
 							}
                             $Html[$ByeChooser].= "<td id='inNextPhase_'" . $id . ">";
-                            $athleteInNextPhase = getParticipantInNextPhase($Team, null, $EvCode, $Match['matchNo']);
                             if ($athleteInNextPhase == $Match[$Team ? 'teamId' : 'id']) {
                                 $Html[$ByeChooser].="✅";
                             }
                             $Html[$ByeChooser].= "</td>";
-							$Html[$ByeChooser].='<td>';
-							$Html[$ByeChooser].='<input '.(($Match['winner'] or $Match['oppWinner'] or ($Match['irm'] and $Match['oppIrm']))?'':'class="d-none"').' type="button" value="'.get_text('NextPhase').'" id="next_'.$id.'" onclick="move2next(this)" tabindex="'.($Offset++).'">';
+							$Html[$ByeChooser].='<td rowspan="' . ($Match[$Athlete2] ? 2 : 1) . '" style="padding-left: 10px; padding-right: 10px">';
+							$Html[$ByeChooser].='<input style="padding: 3px; padding-left: 10px; padding-right: 10px" '.(($Match['winner'] or $Match['oppWinner'] or ($Match['irm'] and $Match['oppIrm']))?'':'class="d-none"').' type="button" value="'.get_text('NextPhase').'" id="next_'.$id.'" onclick="move2next(this)" tabindex="'.($Offset++).'">';
 							$Html[$ByeChooser].='</td>';
 							$Val=$Match['tie'];
 							if($Match['irm']) {
@@ -211,6 +216,9 @@ switch($_REQUEST['act']) {
                             $ByeChooser=intval($Match['tie']==2 or $Match['irm'] or $Match['oppTie']==2 or $Match['oppIrm']);
                             if($ByeChooser) {
                                 $Class= 'Bye';
+                            }
+                            if (str_contains($Class, "disabled") && $athleteInNextPhase) {
+                                $Class .= " inNextPhase" . ($matchIndex % 2);
                             }
 							$Arrowstring=str_pad($Match['oppArrowstring'], $MaxArrows, ' ', STR_PAD_RIGHT);
 
@@ -250,11 +258,11 @@ switch($_REQUEST['act']) {
                                 $Html[$ByeChooser].="✅";
                             }
                             $Html[$ByeChooser].= "</td>";
-							$Html[$ByeChooser].='<td>';
 							if(!$Match[$Athlete1]) {
-								$Html[$ByeChooser].='<input '.(($Match['winner'] or $Match['oppWinner'] or ($Match['irm'] and $Match['oppIrm']))?'':'class="d-none"').' type="button" value="'.get_text('NextPhase').'" id="next_'.$id.'" onclick="move2next(this)" tabindex="'.($Offset++).'">';
+                                $Html[$ByeChooser].='<td style="padding-left: 10px; padding-right: 10px">';
+								$Html[$ByeChooser].='<input style="padding: 3px; padding-left: 10px; padding-right: 10px" '.(($Match['winner'] or $Match['oppWinner'] or ($Match['irm'] and $Match['oppIrm']))?'':'class="d-none"').' type="button" value="'.get_text('NextPhase').'" id="next_'.$id.'" onclick="move2next(this)" tabindex="'.($Offset++).'">';
+                                $Html[$ByeChooser].='</td>';
 							}
-							$Html[$ByeChooser].='</td>';
 							$Val=$Match['oppTie'];
 							if($Match['oppIrm']) {
 								if(strstr($TieSelect, 'irm-'.$Match['oppIrm'])) {
