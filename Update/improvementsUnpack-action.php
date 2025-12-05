@@ -29,8 +29,14 @@ if (!is_writable($targetDir) || !is_writable($targetDir . "/index.php")) {
 
 require_once(dirname(__FILE__, 2) . '/Common/PclZip/pclzip.lib.php');
 
+//список паттернов, которые указывают на файлы, которые не нужно обновлять. Каждый паттерн - это отрицание, потому что pclzip использует паттерн на файлы, которые надо обновлять
+$excludePattern = "^" .
+    "(?!.*Common\/config\.inc\.php.*$)" . //основной конфиг янсео
+    "(?!.*TV\/Photos.*$)" . //Изображения турнира
+    ".*";
+
 $zipArchive = new PclZip($fullFilename);
-$files = $zipArchive->extract(PCLZIP_OPT_PATH, $targetDir, PCLZIP_OPT_REPLACE_NEWER);
+$files = $zipArchive->extract(PCLZIP_OPT_PATH, $targetDir, PCLZIP_OPT_REPLACE_NEWER, PCLZIP_OPT_BY_EREG, $excludePattern);
 $failed = array();
 foreach ($files as $fileStatus) {
     if (($fileStatus["folder"] === "1" && ($fileStatus["status"] !== "ok" || $fileStatus["status"] !== "already_a_directory")) || (!$fileStatus["folder"] && $fileStatus["status"] !== "ok")) {
