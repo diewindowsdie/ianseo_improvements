@@ -72,7 +72,7 @@ function getAthleteInNextPhaseTeam($Phase=NULL, $Event, $MatchNo, $TourId=0) {
     return $row->TfTeam;
 }
 
-function getOpponentInNextPhase($Phase=NULL, $Event, $MatchNo, $TourId=0) {
+function anyMatchScoreOrTieInNextPhase($Phase=NULL, $Event, $MatchNo, $TourId=0) {
     if(!$TourId) $TourId=$_SESSION['TourId'];
 
     $nextMatchSelect = "SELECT
@@ -95,14 +95,17 @@ function getOpponentInNextPhase($Phase=NULL, $Event, $MatchNo, $TourId=0) {
 
     $nextOpponentMatch = $row->NextMatchNo % 2 == 0 ? $row->NextMatchNo + 1 : $row->NextMatchNo - 1;
 
-    $checkAthlete = "select FinAthlete from Finals where FinTournament = " . StrSafe_DB($TourId) . " and FinEvent = " . StrSafe_DB($Event) . " and FinMatchNo = " . StrSafe_DB($nextOpponentMatch);
+    $anyScoreYet = false;
+    $checkAthlete = "select FinScore, FinSetScore, FinTie from Finals where FinTournament = " . StrSafe_DB($TourId) . " and FinEvent = " . StrSafe_DB($Event) . " and FinMatchNo in (" . StrSafe_DB($nextOpponentMatch) . ", " . $row->NextMatchNo . ")";
     $resultSet = safe_r_SQL($checkAthlete);
-    $row = safe_fetch($resultSet);
+    while ($row = safe_fetch($resultSet)) {
+        $anyScoreYet |= ($row->FinScore != 0 || $row->FinSetScore != 0 || $row->FinTie != 0);
+    }
 
-    return $row->FinAthlete;
+    return $anyScoreYet;
 }
 
-function getTeamOpponentInNextPhase($Phase=NULL, $Event, $MatchNo, $TourId=0) {
+function anyTeamMatchScoreOrTieInNextPhase($Phase=NULL, $Event, $MatchNo, $TourId=0) {
     if(!$TourId) $TourId=$_SESSION['TourId'];
 
     $nextMatchSelect = "SELECT
@@ -121,11 +124,14 @@ function getTeamOpponentInNextPhase($Phase=NULL, $Event, $MatchNo, $TourId=0) {
 
     $nextOpponentMatch = $row->NextMatchNo % 2 == 0 ? $row->NextMatchNo + 1 : $row->NextMatchNo - 1;
 
-    $checkAthlete = "select TfTeam from TeamFinals where TfTournament = " . StrSafe_DB($TourId) . " and TfEvent = " . StrSafe_DB($Event) . " and TfMatchNo = " . StrSafe_DB($nextOpponentMatch);
+    $anyScoreYet = false;
+    $checkAthlete = "select TfScore, TfSetScore, TfTie from TeamFinals where TfTournament = " . StrSafe_DB($TourId) . " and TfEvent = " . StrSafe_DB($Event) . " and TfMatchNo in (" . StrSafe_DB($nextOpponentMatch) . ", " . $row->NextMatchNo . ")";
     $resultSet = safe_r_SQL($checkAthlete);
-    $row = safe_fetch($resultSet);
+    while ($row = safe_fetch($resultSet)) {
+        $anyScoreYet |= ($row->TfScore != 0 || $row->TfSetScore != 0 || $row->TfTie != 0);
+    }
 
-    return $row->TfTeam;
+    return $anyScoreYet;
 }
 
 function move2NextPhase($Phase=NULL, $Event=NULL, $MatchNo=NULL, $TourId=0, $NoRecalc=false, $Pool='') {

@@ -199,7 +199,10 @@ foreach($rankData['sections'] as $Event => $section) {
 
 			// Target Numbers
 			if($ShowTargetNo &&
-                (($Match['tie'] == 0 && $Match['oppTie'] == 0) or !getOpponentInNextPhase(null, $Event, $Match['matchNo'])) and //обе команды - не bye или уже известен оппонент в следующем матче
+                (
+                    ($Match['tie'] == 0 and $Match['oppTie'] == 0) or //обе команды - не bye
+                    (($Match['tie'] == 2 xor $Match['oppTie'] == 2) and !anyMatchScoreOrTieInNextPhase(null, $Event, $Match['matchNo'])) //только одна из команд - не bye и в следующем матче еще нет никаких результатов
+                ) and
                 ($Match['target'] or $Match['oppTarget']) and
                 !($Match['score'] or $Match['setScore']) and
                 !($Match['oppScore'] or $Match['oppSetScore']) and
@@ -209,7 +212,7 @@ foreach($rankData['sections'] as $Event => $section) {
 					// Target numbers in front of the row
 					$pdf->SetXY($LineXstart-7, $OrgY);
 					$pdf->SetFont($pdf->FontStd,'I',6);
-					if($Match['target']==$Match['oppTarget']) {
+					if($Match['target']==$Match['oppTarget'] && ($Match['athlete'] || $Match['oppAthlete'])) {
 						$pdf->Cell(7, $Cella*2, get_text('TargetWithoutN') . ' ' . ltrim($Match['target'],'0'), 0, 0, 'R', 0);
 					} else {
 						if ($Match['athlete']) {
@@ -224,7 +227,7 @@ foreach($rankData['sections'] as $Event => $section) {
 					// up and down
 					$pdf->SetXY($LineXstart, $OrgY-$Cella);
 					$pdf->SetFont($pdf->FontStd,'I',6);
-					$pdf->Cell($MisName + $AddSize + $MisScore + 2*$AddSize + ($PrintCountry ? $MisCountry : 0), 2.5, get_text('TargetWithoutN') . ' ' . ltrim($Match['target'],'0') . (($ShowSchedule and $Match['scheduledTime']!='00:00' and $Match['scheduledDate']!='00-00-0000') ?  ($DateShown ? '' : ' ' . $Match['scheduledDate']) . " @ "  . $Match['scheduledTime'] : '') , 0, 0, 'L', 0);
+					$pdf->Cell($MisName + $AddSize + $MisScore + 2*$AddSize + ($PrintCountry ? $MisCountry : 0), 2.5, get_text('TargetWithoutN') . ' ' . ltrim($Match['target'],'0') . (($ShowSchedule and $Match['scheduledTime']!='00:00' and $Match['scheduledDate']!='00-00-0000') ?  ($DateShown ? '' : ' ' . $Match['scheduledDate']) . get_text("DateTimeAtPreposition")  . $Match['scheduledTime'] : '') , 0, 0, 'L', 0);
 					if($Match['target']!=$Match['oppTarget']) {
 						$pdf->SetXY($LineXstart,$OrgY+ 2*$Cella);
 						$pdf->Cell($MisName + $AddSize + $MisScore + 2*$AddSize + ($PrintCountry ? $MisCountry : 0), 2.5, get_text('TargetWithoutN') . ' ' . ltrim($Match['oppTarget'],'0') , 0, 0, 'L', 0);
@@ -235,7 +238,10 @@ foreach($rankData['sections'] as $Event => $section) {
 			}
 
 			if($ShowSchedule and
-                (($Match['tie'] == 0 && $Match['oppTie'] == 0) or !getOpponentInNextPhase(null, $Event, $Match['matchNo'])) and //обе команды - не bye или уже известен оппонент в следующем матче
+                (
+                    ($Match['tie'] == 0 and $Match['oppTie'] == 0) or //обе команды - не bye
+                    (($Match['tie'] == 2 xor $Match['oppTie'] == 2) and !anyMatchScoreOrTieInNextPhase(null, $Event, $Match['matchNo'])) //только одна из команд - не bye и в следующем матче еще нет никаких результатов
+                ) and
                 $Match['scheduledTime']!='00:00' and
                 $Match['scheduledDate']!='00-00-0000' and
                 (trim($Match['scheduledTime']??'') or trim($Match['scheduledDate']??'')) and
@@ -246,13 +252,15 @@ foreach($rankData['sections'] as $Event => $section) {
 				if($FirstPhase && $section['meta']['firstPhase']<24) {
 					$pdf->SetY($OrgY-3, false);
 					$pdf->SetFont($pdf->FontStd,'I',6);
-					$pdf->Cell($MisPos + $MisName + $AddSize + $MisScore + $AddSize + ($PrintCountry ? $MisCountry + $AddSize : 0), 2.5, $Match['scheduledDate'] . " @ "  . $Match['scheduledTime'] , 0, 0, 'L', 0);
-					$DateShown=true;
+                    if ($Match['athlete'] || $Match['oppAthlete']) {
+                        $pdf->Cell($MisPos + $MisName + $AddSize + $MisScore + $AddSize + ($PrintCountry ? $MisCountry + $AddSize : 0), 2.5, $Match['scheduledDate'] . get_text("DateTimeAtPreposition") . $Match['scheduledTime'], 0, 0, 'L', 0);
+                        $DateShown = true;
+                    }
 				} elseif(!$FirstPhase && !$ShowTargetNo) {
 					// up and down
 					$pdf->SetY($OrgY-$Cella, false);
 					$pdf->SetFont($pdf->FontStd,'I',6);
-					$pdf->Cell($MisName + $AddSize + $MisScore + 2*$AddSize + ($PrintCountry ? $MisCountry : 0), 2.5, $Match['scheduledDate'] . " @ "  . $Match['scheduledTime'] , 0, 0, 'L', 0);
+					$pdf->Cell($MisName + $AddSize + $MisScore + 2*$AddSize + ($PrintCountry ? $MisCountry : 0), 2.5, $Match['scheduledDate'] . get_text("DateTimeAtPreposition")  . $Match['scheduledTime'] , 0, 0, 'L', 0);
 					$DateShown=true;
 				}
 				$pdf->SetXY($LineXstart,$OrgY);

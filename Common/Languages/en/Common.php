@@ -109,6 +109,7 @@ $lang['DateFmtDB']='%d.%m.%Y';
 $lang['DateFmtDBshort']='%d-%m';
 $lang['DateFmtMoreDays']='from $a[0] to $a[1]';
 $lang['DateTimeViewFmt']='dd-mm-yyyy @ hh:mm';
+$lang['DateTimeAtPreposition']=' @ ';
 $lang['DateViewFmt']='dd-mm-yyyy';
 $lang['DayOfWeekLong_0']='Sunday';
 $lang['DayOfWeekLong_1']='Monday';
