@@ -155,7 +155,7 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 			if($Phase<2) {
 				// if Medals write names
 			   	$pdf->SetFont($pdf->FontStd,'B',7);
-				$pdf->SetXY($LineXstart, $OrgY-$Cella*1.5);
+				$pdf->SetXY($LineXstart, $OrgY-$Cella*1.7);
 				$pdf->Cell($MisName+$MisScore+$AddSize, $Cella, ($Match['matchNo']==0 ? $PdfData->Final : $PdfData->Bronze), 0, 1, 'C', 0);
 				$pdf->SetXY($LineXstart, $OrgY);
 			}
