@@ -380,7 +380,6 @@
 	if ($id!=0)
 	{
 		$record=GetRows($id);
-        print_r($record[0]);
 		$record=$record[0];
 		$record['dob']=dateRenderer($record['dob'],get_text('DateFmt'));
 	}
