@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-$previousMessages = "<span>Начинаем процесс обновления...</span><br/><span>Скачиваем файл <b>" . $_REQUEST["url"] . "</b></span><br /><span>Файл обновления успешно сохранен во временный каталог.</span><br />";
+$previousMessages = "<span>Начинаем процесс обновления...</span><br/><span>Скачиваем файл <b>" . $_REQUEST["url"] . "</b>...</span><br /><span>Файл обновления успешно сохранен во временный каталог.</span><br />";
 
 $jsonResponse = array('error' => 1, 'msg' => '');
 define('DIRNAME', dirname($_SERVER['SCRIPT_FILENAME']));

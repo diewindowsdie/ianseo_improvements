@@ -557,6 +557,7 @@ $lang['Status_6']='Pull Out';
 $lang['Status_7']='Not accredited';
 $lang['Status_8']='Cannot Participate - Incomplete documentation';
 $lang['Status_9']='Cannot Participate';
+$lang['SwapOnTarget']='Swap on<br/>target';
 $lang['TabletScoring']='Tablet scoring';
 $lang['TabletScoringManage']='Manage tablet scoring';
 $lang['Target']='Target';

@@ -32,6 +32,17 @@ function UpdateSession(Field)
 	}
 }
 
+function swapOnTarget(data, target, session) {
+    let request = {
+        data: data,
+        target: target,
+        session: session
+    }
+    $.getJSON('SwapOnTarget-action.php', request, function() {
+        location.reload();
+    });
+}
+
 function UpdateSession_StateChange()
 {
 	// se lo stato � Complete vado avanti

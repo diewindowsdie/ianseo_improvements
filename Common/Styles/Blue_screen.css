@@ -165,6 +165,8 @@ table.Tabella {width:100%; background-color:var(--table-background); border: 2px
 table.Tabella.freeWidth {width:unset; min-width: 50%; margin-left:auto; margin-right:auto; }
 table.Tabella tr { background-color:var(--row-background); color: var(--header-dark);}
 table.Tabella tr.OtherColor { background-color:white; color: var(--header-dark);}
+table.Tabella tr.Background0, table.Tabella tr td.Background0 { background-color:darkgray !important}
+table.Tabella tr.Background1, table.Tabella tr td.Background1 { background-color:lightgray !important}
 table.Tabella tr.CanShoot { background-color:var(--bg-green); color: var(--header-dark);}
 table.Tabella tr.CouldShoot { background-color:var(--bg-yellow); color: var(--header-dark);}
 table.Tabella tr.UnknownShoot { background-color:var(--bg-pink); color: var(--header-dark);}

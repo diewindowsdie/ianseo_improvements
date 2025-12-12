@@ -6,6 +6,7 @@
     checkFullACL(AclParticipants, 'pTarget', AclReadWrite);
 	require_once('Common/Fun_FormatText.inc.php');
 	require_once('Common/Fun_Sessions.inc.php');
+    $IncludeJquery = true;
 
 	$JS_SCRIPT=array(
 		'<script type="text/javascript" src="'.$CFG->ROOT_DIR.'Common/ajax/ObjXMLHttpRequest.js"></script>',
@@ -66,20 +67,8 @@
 </form>
 <br>
 <?php
+    $isOrderedByTarget = true;
 	if (isset($_REQUEST['Ses']) && ((is_numeric($_REQUEST['Ses']) && $_REQUEST['Ses']>0 && $_REQUEST['Ses']<=$MaxSession) || (!is_numeric($_REQUEST['Ses']) && $_REQUEST['Ses']=='*')))	{
-		echo '<table class="Tabella">'.
-            '<tr>'.
-		        '<th class="Title w-15"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordTarget=' . (isset($_REQUEST['ordTarget']) ? ( $_REQUEST['ordTarget']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Session') . '</a></th>'.
-		        '<th class="Title w-5"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordTarget=' . (isset($_REQUEST['ordTarget']) ? ( $_REQUEST['ordTarget']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Target') . '</a></th>'.
-		        '<th class="Title w-5"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordCode=' . (isset($_REQUEST['ordCode']) ? ( $_REQUEST['ordCode']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Code','Tournament') . '</a></th>'.
-		        '<th class="Title w-25"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordName=' . (isset($_REQUEST['ordName']) ? ( $_REQUEST['ordName']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Athlete') . '</a></th>'.
-                '<th class="Title w-20" colspan="2"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordCountry=' . (isset($_REQUEST['ordCountry']) ? ($_REQUEST['ordCountry']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Country') . '</a></th>'.
-                '<th class="Title w-10"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordScore=' . (isset($_REQUEST['ordScore']) ? ( $_REQUEST['ordScore']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Score', 'Tournament') . '</a></th>'.
-                '<th class="Title w-5">' . get_text('WheelChair', 'Tournament') . '</th>'.
-		        '<th class="Title w-5"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordDiv=' . (isset($_REQUEST['ordDiv']) ? ($_REQUEST['ordDiv']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Division') . '</a></th>'.
-                '<th class="Title w-5"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordCl=' . (isset($_REQUEST['ordCl']) ? ($_REQUEST['ordCl']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Class') . '</a></th>'.
-                '<th class="Title w-10">' . get_text('TargetType') . '</th>'.
-		    '</tr>';
 
 		$OrderBy = "QuSession ASC, QuTargetNo ASC, EnDivision, EnClass ";
 
@@ -87,18 +76,107 @@
             $OrderBy = "QuSession " . $_REQUEST['ordTarget'] . ", QuTargetNo " . $_REQUEST['ordTarget'] . ", EnDivision, EnClass ";
         } elseif (isset($_REQUEST['ordCode']) && ($_REQUEST['ordCode']=='ASC' || $_REQUEST['ordCode']=='DESC')) {
             $OrderBy = "EnCode " . $_REQUEST['ordCode'] . " ";
+            $isOrderedByTarget = false;
         } elseif (isset($_REQUEST['ordName']) && ($_REQUEST['ordName']=='ASC' || $_REQUEST['ordName']=='DESC')) {
             $OrderBy = "EnFirstName " . $_REQUEST['ordName'] . ",EnName " . $_REQUEST['ordName'] . " ";
+            $isOrderedByTarget = false;
         } elseif (isset($_REQUEST['ordCountry']) && ($_REQUEST['ordCountry']=='ASC' || $_REQUEST['ordCountry']=='DESC')) {
             $OrderBy = "EnCountry " . $_REQUEST['ordCountry'] . " ";
+            $isOrderedByTarget = false;
         } elseif (isset($_REQUEST['ordDiv']) && ($_REQUEST['ordDiv']=='ASC' || $_REQUEST['ordDiv']=='DESC')) {
             $OrderBy = "EnDivision " . $_REQUEST['ordDiv'] . " ";
+            $isOrderedByTarget = false;
         } elseif (isset($_REQUEST['ordCl']) && ($_REQUEST['ordCl']=='ASC' || $_REQUEST['ordCl']=='DESC')) {
             $OrderBy = "EnClass " . $_REQUEST['ordCl'] . " ";
+            $isOrderedByTarget = false;
         } elseif (isset($_REQUEST['ordScore']) && ($_REQUEST['ordScore']=='ASC' || $_REQUEST['ordScore']=='DESC')) {
             $OrderBy = "QuScore " . $_REQUEST['ordScore'] . ", QuGold " . $_REQUEST['ordScore'] . ", QuXNine " . $_REQUEST['ordScore'];
+            $isOrderedByTarget = false;
         }
 
+        echo '<table class="Tabella">'.
+                '<tr>'.
+                '<th class="Title w-15"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordTarget=' . (isset($_REQUEST['ordTarget']) ? ( $_REQUEST['ordTarget']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Session') . '</a></th>'.
+                ($isOrderedByTarget ? ('<th class="Title w-5">' . get_text("SwapOnTarget") . '</th>') : "").
+                '<th class="Title w-5"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordTarget=' . (isset($_REQUEST['ordTarget']) ? ( $_REQUEST['ordTarget']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Target') . '</a></th>'.
+                '<th class="Title w-5"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordCode=' . (isset($_REQUEST['ordCode']) ? ( $_REQUEST['ordCode']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Code','Tournament') . '</a></th>'.
+                '<th class="Title w-20"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordName=' . (isset($_REQUEST['ordName']) ? ( $_REQUEST['ordName']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Athlete') . '</a></th>'.
+                '<th class="Title w-20"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordCountry=' . (isset($_REQUEST['ordCountry']) ? ($_REQUEST['ordCountry']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Country') . '</a></th>'.
+                '<th class="Title w-10"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordScore=' . (isset($_REQUEST['ordScore']) ? ( $_REQUEST['ordScore']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Score', 'Tournament') . '</a></th>'.
+                '<th class="Title w-5">' . get_text('WheelChair', 'Tournament') . '</th>'.
+                '<th class="Title w-5"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordDiv=' . (isset($_REQUEST['ordDiv']) ? ($_REQUEST['ordDiv']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Division') . '</a></th>'.
+                '<th class="Title w-5"><a class="LinkRevert" href="' . $_SERVER['PHP_SELF'] . '?' . (isset($_REQUEST['Event']) ? 'Event=' . $_REQUEST['Event'] . '&amp;' : '') . 'Ses=' . $_REQUEST['Ses'] . '&amp;ordCl=' . (isset($_REQUEST['ordCl']) ? ($_REQUEST['ordCl']=='ASC' ? 'DESC' : 'ASC') : 'ASC') . '">' . get_text('Class') . '</a></th>'.
+                '<th class="Title w-10">' . get_text('TargetType') . '</th>'.
+                '</tr>';
+
+
+        $athletes = array();
+        global $athletesPerTarget;
+        $athletesPerTarget = array();
+        //если требуется - запросим отдельно количество спортсменов на каждом щите
+        if ($isOrderedByTarget) {
+            $query = "select QuSession, TargetNo, count(TargetNo) Count
+                        from (SELECT QuSession,
+                            SUBSTRING(QuTargetNo, 2, 3) AS TargetNo
+                            FROM Entries
+                                left JOIN Qualifications ON EnId = QuId
+                            WHERE EnTournament =" . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete = 1 " .
+                            ($_REQUEST['Ses']!='*' ? "AND QuSession in (0," . intval($_REQUEST['Ses']) . ") " : ' ');
+                			if(isset($_REQUEST["Event"]) AND preg_match("/^[0-9A-Z%_]+$/i",$_REQUEST["Event"])) {
+                                $query .= " AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE " . StrSafe_DB($_REQUEST["Event"]) . " ";
+                            }
+                        $query .= ") t
+                        group by QuSession, TargetNo order by TargetNo ASC";
+
+            $resultSet = safe_r_SQL($query);
+            while ($row = safe_fetch($resultSet)) {
+                $athletes[$row->QuSession][$row->TargetNo] = $row->Count;
+            }
+
+            //запросим максимальное количество спортсменов на щит в сессии(сессиях)
+            $query = "select SesOrder, SesAth4Target from Session where SesType = 'Q' and SesTournament = " . StrSafe_DB($_SESSION['TourId']);
+            $resultSet = safe_r_SQL($query);
+            while ($row = safe_fetch($resultSet)) {
+                $athletesPerTarget[$row->SesOrder] = $row->SesAth4Target;
+            }
+        }
+
+        function getTargetSwapButtonsHtml($target, $session) {
+            global $athletesPerTarget;
+            switch($athletesPerTarget[$session]) {
+                case 2:
+                    return "<input style=\"margin: 1px\" type=\"button\" value=\"A <> B\" onclick=\"swapOnTarget([['A', 'B']], '" . $target . "', '" . $session . "')\" />";
+                case 3:
+                    return "<input style=\"margin: 1px\" type=\"button\" value=\"A <> C\" onclick=\"swapOnTarget([['A', 'C']], '" . $target . "', '" . $session . "')\" />" .
+                            "<br/>" .
+                            "<input style=\"margin: 1px\" type=\"button\" value=\"B <> C\" onclick=\"swapOnTarget([['B', 'C']], '" . $target . "', '" . $session . "')\" />";
+                case 4:
+                    return "<input style=\"margin: 1px\" type=\"button\" value=\"A <> C\" onclick=\"swapOnTarget([['A', 'C']], '" . $target . "', '" . $session . "')\" />" .
+                            "<input style=\"margin: 1px\" type=\"button\" value=\"B <> D\" onclick=\"swapOnTarget([['B', 'D']], '" . $target . "', '" . $session . "')\" />" .
+                            "<br/>" .
+                            "<input style=\"margin: 1px\" type=\"button\" value=\"AB <> CD\" onclick=\"swapOnTarget([['A', 'C'], ['B', 'D']], '" . $target . "', '" . $session . "')\" />";
+                case 5:
+                    return "<input style=\"margin: 1px\" type=\"button\" value=\"A <> C\" onclick=\"swapOnTarget([['A', 'C']], '" . $target . "', '" . $session . "')\" />" .
+                            "<input style=\"margin: 1px\" type=\"button\" value=\"B <> D\" onclick=\"swapOnTarget([['B', 'D']], '" . $target . "', '" . $session . "')\" />" .
+                            "<br/>" .
+                            "<input style=\"margin: 1px\" type=\"button\" value=\"A <> E\" onclick=\"swapOnTarget([['A', 'E']], '" . $target . "', '" . $session . "')\" />" .
+                            "<input style=\"margin: 1px\" type=\"button\" value=\"B <> E\" onclick=\"swapOnTarget([['B', 'E']], '" . $target . "', '" . $session . "')\" />" .
+                            "<br/>" .
+                            "<input style=\"margin: 1px\" type=\"button\" value=\"C <> E\" onclick=\"swapOnTarget([['C', 'E']], '" . $target . "', '" . $session . "')\" />" .
+                            "<input style=\"margin: 1px\" type=\"button\" value=\"D <> E\" onclick=\"swapOnTarget([['D', 'E']], '" . $target . "', '" . $session . "')\" />" .
+                            "<br/>" .
+                            "<input style=\"margin: 1px\" type=\"button\" value=\"AB <> CD\" onclick=\"swapOnTarget([['A', 'C'], ['B', 'D']], '" . $target . "', '" . $session . "')\" />";
+                case 6:
+                    return "<input style=\"margin: 1px\" type=\"button\" value=\"AB <> CD\" onclick=\"swapOnTarget([['A', 'C'], ['B', 'D']], '" . $target . "', '" . $session . "')\" />" .
+                            "<br/>" .
+                            "<input style=\"margin: 1px\" type=\"button\" value=\"AB <> EF\" onclick=\"swapOnTarget([['A', 'E'], ['B', 'F']], '" . $target . "', '" . $session . "')\" />" .
+                            "<br/>" .
+                            "<input style=\"margin: 1px\" type=\"button\" value=\"CD <> EF\" onclick=\"swapOnTarget([['C', 'E'], ['D', 'F']], '" . $target . "', '" . $session . "')\" />";
+
+                default:
+                    return "";
+            }
+        }
 		$Select = "SELECT EnId,EnCode,EnName,EnFirstName,EnSex,EnId,EnTournament,EnDivision,EnClass,EnCountry,EnStatus, EnWChair, " .
 			"CoCode,CoName,QuSession, SUBSTRING(QuTargetNo,2) AS TargetNo, TfName, QuScore, QuGold, QuXNine " .
 			"FROM Entries INNER JOIN Qualifications ON EnId=QuId ".
@@ -112,12 +190,22 @@
 			$Select.= "ORDER BY " . $OrderBy;
 		$Rs=safe_r_sql($Select);
 
+        $previousTarget = '';
+        $rowClassSuffix = 1;
+        $rowspan = 1;
+        $newTarget = false;
 		if (safe_num_rows($Rs)>0) {
 			while ($MyRow=safe_fetch($Rs)) {
-				$RowStyle='';
+                $newTarget = substr($previousTarget, 0, 3) != substr($MyRow->TargetNo, 0, 3);
+                if ($newTarget) {
+                    $rowClassSuffix ^= 1;
+                    $rowspan = $athletes[$MyRow->QuSession][substr($MyRow->TargetNo, 0, 3)];
+                }
+                $previousTarget = $MyRow->TargetNo;
+				$RowStyle='Background' . $rowClassSuffix;
 				switch ($MyRow->EnStatus) {
 					case 0:
-						$RowStyle = '';
+						$RowStyle = 'Background' . $rowClassSuffix;
 						break;
 					case 1:
 						$RowStyle = 'CanShoot';
@@ -139,13 +227,19 @@
                     echo '<option value="' . $Key . '"' . ($MyRow->QuSession == $Key ? ' selected' : '') . '>' . $Value . '</option>';
                 }
 				echo '</select></td>';
+                if ($isOrderedByTarget) {
+                    if ($newTarget) {
+                        echo '<td class="Center Background' . $rowClassSuffix . '" rowspan="' . $rowspan . '">' . getTargetSwapButtonsHtml(substr($MyRow->TargetNo, 0, 3), $MyRow->QuSession) . '</td>';
+                    } else if (empty($MyRow->TargetNo)) {
+                        echo '<td class="Center"></td>';
+                    }
+                }
 				echo '<td class="Center">'.
 				    '<input type="text" size="4" maxlength="4" name="d_q_QuTargetNo_' . $MyRow->EnId . '" id="d_q_QuTargetNo_' . $MyRow->EnId . '" value="' . $MyRow->TargetNo . '"' . ($MyRow->QuSession==0 || $MyRow->EnStatus>8 ? ' readonly' : '') . ' onBlur="javascript:UpdateTargetNo(\'d_q_QuTargetNo_' . $MyRow->EnId . '\',\'' . $_REQUEST['Ses'] . '\');">'.
                     (isset($MyRow->QuTargetNo) ? $MyRow->QuTargetNo : '').
 				    '</td>';
 				echo '<td class="Center">' . (empty($MyRow->EnCode) ? '&nbsp;' : $MyRow->EnCode) . '</td>';
 				echo '<td>' . ((!empty($MyRow->EnFirstName) OR !empty($MyRow->EnName)) ? $MyRow->EnFirstName . ' ' . $MyRow->EnName : '&nbsp;') . '</td>';
-				echo '<td class="Center w-5">' . (empty($MyRow->CoCode) ? '&nbsp;' : $MyRow->CoCode).'</td>';
 				echo '<td class="w-15">' . (empty($MyRow->CoName) ? '&nbsp;' : $MyRow->CoName) . '</td>';
                 echo '<td class="Right NoWrap">' . (empty($MyRow->QuScore) ? '&nbsp;' : $MyRow->QuScore . ' / ' . $MyRow->QuGold . ' / ' . $MyRow->QuXNine) . '</td>';
 				echo '<td class="Center">' . ($MyRow->EnWChair ? 'X' : '&nbsp;') . '</td>';
