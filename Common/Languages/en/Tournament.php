@@ -167,6 +167,7 @@ $lang['BigNames']='Full page print';
 $lang['Bill']='Bill';
 $lang['BillAndCash']='Total Bill';
 $lang['Birthdays']='Birthdays';
+$lang['BirthYear']='Birth Yaar';
 $lang['BlockDescrLimit']='At the moment <b>ONLY THE LOCALHOST OPERATOR AND THE FOLOWING IPv4 PCs</b> can make changes to Ianseo, provided the specific item is not blocked throught the <a href="$a"><b>lock mechanism</b></a>.<br/>
 <b>To delete an access blank out the IP field.</b>';
 $lang['BlockDescrNoLimit']='At the moment NO limits are set: every user that can connect to Ianseo can make changes, provided the specific item is not blocked throught the <a href="$a"><b>lock mechanism</b></a>.';

@@ -128,6 +128,7 @@ $lang['BigNames']='Печать полной страницы';
 $lang['Bill']='Стартовые взносы';
 $lang['BillAndCash']='Собранные деньги';
 $lang['Birthdays']='День рождения';
+$lang['BirthYear']='Год рождения';
 $lang['BlockedPhase']='Этап заблокирован';
 $lang['BlockFill']='Не заполнять ряд!';
 $lang['BlockSet']='Блокировать редактирование.';

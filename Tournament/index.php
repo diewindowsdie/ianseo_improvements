@@ -163,6 +163,11 @@ if (isset($_REQUEST['Command'])) {
                     } else {
                         delModuleParameter("Tournament", "InternationalProtocol", $_SESSION['TourId']);
                     }
+                    if ($_REQUEST["d_HidePatronymicAndBirthDate"]) {
+                        setModuleParameter("Tournament", "HidePatronymicAndBirthDate", true, $_SESSION['TourId']);
+                    } else {
+                        delModuleParameter("Tournament", "HidePatronymicAndBirthDate", $_SESSION['TourId']);
+                    }
                     $_SESSION['ISORIS']=!empty($_REQUEST['d_ORIS']);
                     // need those in the class creation engine!
                     $_SESSION['TourRealWhenFrom']=sprintf("%04d-%02d-%02d", intval($_REQUEST['xx_ToWhenFromYear']), intval($_REQUEST['xx_ToWhenFromMonth']), intval($_REQUEST['xx_ToWhenFromDay']));
@@ -710,35 +715,8 @@ echo '<select name="xx_ToUseHHT">
 </select>
 &nbsp;&nbsp;<input type="checkbox" name="TargetsToHHt"'.(empty($_SESSION['TargetsToHHt']) ? '' : ' checked="checked"').'>'.get_text('TargetsToHHt', 'Tournament').'
 </td>
-</tr>';
-
-require_once('Common/Lib/Fun_Modules.php');
-$ISKMode=getModuleParameter('ISK-NG', 'Mode', '');
-
-if(file_exists($CFG->DOCUMENT_PATH.'Api/index.php')) {
-//	include_once $CFG->DOCUMENT_PATH.'Api/index.php';
-	$Apis=AvailableApis();
-	$IskType=array();
-
-	// checks all the ISK option types
-	foreach($Apis as $Api) {
-	    @include($CFG->DOCUMENT_PATH.'Api/'.$Api.'/ConfigOptions.php');
-    }
-    if($IskType) {
-
-	    echo '<tbody id="ISK-config"><tr>
-            <th class="TitleLeft w-15">'.get_text('ISK-EnableScore','Api').'</th>
-                <td>
-                    <select name="Module[ISK-NG][Mode]" onchange="ChangeIskConfig(this)" id="IskSelect" oldval="'.$ISKMode.'">
-                    <option value="">'.get_text('No').'</option>';
-	    foreach($IskType as $val => $option) {
-	        echo '<option value="'.$val.'"'.($ISKMode==$val ? ' selected="selected"' : '').'>'.$option.'</option>';
-        }
-	    echo '</select>
-                </td>
-            </tr>';
-
-?><tr>
+</tr>';?>
+<tr>
 <th class="TitleLeft w-15" rowspan="2"><?php print get_text('AddSubclasses','Tournament');?></th>
 <?php if (!$MyRow) {
     ?>
@@ -766,7 +744,48 @@ if(file_exists($CFG->DOCUMENT_PATH.'Api/index.php')) {
                 <label for="internationalProtocol">Протокол международного формата (скрыть подписи ГСК, список судей, отчества спортсменов)</label>
             </td>
         </tr>
+    <tr>
+        <th class="TitleLeft w-15"></th>
+        <td>
+            <input type="checkbox" id="hidePatronymicAndBirthDate" name="d_HidePatronymicAndBirthDate" value="1" <?php
+            if (!$MyRow) {
+                print array_key_exists('d_HidePatronymicAndBirthDate',$_REQUEST) ? ("checked=\"checked\"") : '';
+            } else {
+                if (getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $MyRow->ToId)) {
+                    print "checked=\"checked\"";
+                }
+            } ?>/>
+            <label for="hidePatronymicAndBirthDate">Скрывать отчества и полные даты рождения спортсменов</label>
+        </td>
+    </tr>
+    <?php
+require_once('Common/Lib/Fun_Modules.php');
+$ISKMode=getModuleParameter('ISK-NG', 'Mode', '');
 
+if(file_exists($CFG->DOCUMENT_PATH.'Api/index.php')) {
+//	include_once $CFG->DOCUMENT_PATH.'Api/index.php';
+	$Apis=AvailableApis();
+	$IskType=array();
+
+	// checks all the ISK option types
+	foreach($Apis as $Api) {
+	    @include($CFG->DOCUMENT_PATH.'Api/'.$Api.'/ConfigOptions.php');
+    }
+    if($IskType) {
+
+	    echo '<tbody id="ISK-config"><tr>
+            <th class="TitleLeft w-15">'.get_text('ISK-EnableScore','Api').'</th>
+                <td>
+                    <select name="Module[ISK-NG][Mode]" onchange="ChangeIskConfig(this)" id="IskSelect" oldval="'.$ISKMode.'">
+                    <option value="">'.get_text('No').'</option>';
+	    foreach($IskType as $val => $option) {
+	        echo '<option value="'.$val.'"'.($ISKMode==$val ? ' selected="selected"' : '').'>'.$option.'</option>';
+        }
+	    echo '</select>
+                </td>
+            </tr>';
+
+?>
 <?php
 
 	    echo '<tr><th id="ISK-Messages"></th><td id="IskConfig"></td></tr></tbody>';

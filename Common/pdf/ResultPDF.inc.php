@@ -535,7 +535,7 @@ class ResultPDF extends IanseoPdf {
 		}
 	}
 
-	function writeGroupHeaderPrnIndividualAbs($section, $distSize, $addSize, $running, $distances, $double, $follows=false, $hideTempHeader=false, $internationalProtocol = false)
+	function writeGroupHeaderPrnIndividualAbs($section, $distSize, $addSize, $running, $distances, $double, $follows=false, $hideTempHeader=false, $internationalProtocol = false, $hideMiddleNameAndBirthDate = false)
 	{
 		$tmpHeader="";
 		$this->SetFont($this->FontStd,'B',$this->FontSizeTitle);
@@ -573,7 +573,7 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(8, 4 * ($double ? 2 : 1),  $section['fields']['rank'], 1, 0, 'C', 1);
 
 		$this->Cell(35 + $addSize + ($internationalProtocol ? 8 : 0), 4 * ($double ? 2 : 1),  $section['fields']['athlete'], 1, 0, 'L', 1);
-		$this->Cell(12, 4 * ($double ? 2 : 1),  $section['fields']['birthdate'], 1, 0, 'C', 1);
+		$this->Cell(12, 4 * ($double ? 2 : 1), $hideMiddleNameAndBirthDate ? $section['fields']['birthyear'] : $section['fields']['birthdate'], 1, 0, 'C', 1);
         if (!$internationalProtocol) {
             $this->Cell(8, 4 * ($double ? 2 : 1), $section['fields']['subclass'], 1, 0, 'C', 1);
         }
@@ -616,7 +616,7 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(0, 0.5,  '', 1, 1, 'C', 0);
 	}
 
-	function writeGroupHeaderPrnTeamAbs($section, $follows=false, $hideTempHeader=false, $internationalProtocol = false) {
+	function writeGroupHeaderPrnTeamAbs($section, $follows=false, $hideTempHeader=false, $internationalProtocol = false, $hideMiddleNameAndBirthDate = false) {
 		$tmpHeader="";
 		$this->SetFont($this->FontStd,'B',$this->FontSizeTitle);
 		if (!empty($section['sesArrows'])) {
@@ -652,7 +652,7 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(9, 4,  $section['fields']['rank'], 1, 0, 'C', 1);
 		$this->Cell(63 - ($section['running'] ? 5 : 0), 4, $section['fields']['countryName'], 1, 0, 'L', 1);
 		$this->Cell(51 - ($section['running'] ? 5 : 0) + ($internationalProtocol ? 8 : 0), 4, $section['fields']['athletes']['name'], 1, 0, 'L', 1);
-		$this->Cell(12, 4, $section['fields']['athletes']['fields']['birthdate'], 1, 0, 'C', 1);
+		$this->Cell(12, 4, $hideMiddleNameAndBirthDate ? $section['fields']['athletes']['fields']['birthyear'] : $section['fields']['athletes']['fields']['birthdate'], 1, 0, 'C', 1);
         if (!$internationalProtocol) {
             $this->Cell(8, 4,  $section['fields']['athletes']['fields']['subclass'], 1, 0, 'C', 1);
         }

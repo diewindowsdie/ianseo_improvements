@@ -355,6 +355,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 			$this->data['meta']['double']=-1;
 			$this->data['meta']['lastUpdate']='0000-00-00 00:00:00';
             $this->data["meta"]["InternationalProtocol"] = getModuleParameter("Tournament", "InternationalProtocol", false, $this->tournament);
+            $this->data["meta"]["HidePatronymicAndBirthDate"] = getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $this->tournament);
 			$this->data['sections']=array();
 
 			if (safe_num_rows($r)>0) {
@@ -424,6 +425,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 							'target' => get_text('Target'),
 							'athlete' => get_text('Athlete'),
                             'birthdate' => get_text('DOB', 'Tournament'),
+                            'birthyear' => get_text('BirthYear', 'Tournament'),
 							'familyname' => get_text('FamilyName', 'Tournament'),
 							'givenname' => get_text('Name', 'Tournament'),
 							'gender' => get_text('Sex', 'Tournament'),
@@ -523,12 +525,13 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 
 					$Score=$myRow->IrmShowRank ? (!empty($this->opts['runningDist']) && $this->opts['runningDist']>0 ? $myRow->OrderScore : ($myRow->EvRunning==1 ? $myRow->RunningScore: $myRow->Score)) : $myRow->IrmType;
 
+                    $birthDateFormat = $this->data["meta"]["HidePatronymicAndBirthDate"] ? 'Y' : 'd.m.Y';
 					$item=array(
 						'id'  => $myRow->EnId,
 						'bib' => $myRow->EnCode,
 						'localbib' => $myRow->LocalId,
 						'tvname' => $myRow->EnOdfShortname,
-						'birthdate' => $myRow->BirthDate ? DateTime::createFromFormat('Y-m-d', $myRow->BirthDate)->format('d.m.Y') : '',
+						'birthdate' => $myRow->BirthDate ? DateTime::createFromFormat('Y-m-d', $myRow->BirthDate)->format($birthDateFormat) : '', //
 						'session' => $myRow->Session,
 						'sessionName' => $myRow->SesName,
 						'target' => $myRow->TargetNo,
