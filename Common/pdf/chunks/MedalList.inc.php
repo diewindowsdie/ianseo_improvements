@@ -16,28 +16,42 @@ $pdf->SetFont($pdf->FontStd,'',8);
 
 $arrMedals = array(1=>'gold','2'=>'silver','3'=>'bronze');
 
+function getSectionHeightRequired($section) {
+    $Rows=0;
+    global $arrMedals;
+    foreach($arrMedals as $vMed)
+    {
+        if(!empty($section[$vMed]))
+        {
+            $Rows += count($section[$vMed]);
+            foreach($section[$vMed] as $ath)
+            {
+                if(!empty($ath))
+                    $Rows += (count($ath['athletes'])-1);
+            }
+        }
+    }
+    if(!$Rows) {
+        return 0;
+    }
+
+    return $Rows*5;
+}
+
 global $totalMedalsAwarded;
 $totalMedalsAwarded = 0;
+$blockIndex = 0;
 foreach($PdfData->rankData['events'] as $Event => $section) {
-	$Rows=0;
-	foreach($arrMedals as $vMed)
-	{
-		if(!empty($section[$vMed]))
-		{
-			$Rows += count($section[$vMed]);
-			foreach($section[$vMed] as $ath)
-			{
-				if(!empty($ath))
-					$Rows += (count($ath['athletes'])-1);
-			}
-		}
-	}
-	if(!$Rows)
-		continue;
 
-	$blockHeight=$Rows*5;
+    $blockHeight = getSectionHeightRequired($section);
+    $spaceRequired = $blockHeight;
+    if ($blockIndex == count($PdfData->rankData["events"]) - min(2, count($PdfData->rankData["events"]))) {
+        //последние две (или все) секции не должны отрываться от подписей ГСК
+        $spaceRequired += getSectionHeightRequired(end($PdfData->rankData['events'])) +
+            ($PdfData->HideOfficials ? 0 : (TournamentOfficials::getOfficialsBlockHeight() + 5)); //отступ 5 перед подписями
+    }
 
-	if(!$pdf->SamePage($blockHeight)) {
+	if(!$pdf->SamePage($spaceRequired)) {
   		$pdf->AddPage();
 		$pdf->SetFont($pdf->FontStd,'B',10);
 		$pdf->Cell(190, 6, $PdfData->Description, 1, 1, 'C', 1);
@@ -86,6 +100,7 @@ foreach($PdfData->rankData['events'] as $Event => $section) {
 			}
 		}
 	}
+    ++$blockIndex;
 }
 if (!$PdfData->HideOfficials) {
     TournamentOfficials::printOfficials($pdf);
