@@ -253,10 +253,42 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                         уровня</label></td>
             </tr>
             <tr>
-                <td class="Left" style="padding-left: 20px">
+                <td class="Left" style="padding-left: 20px; padding-top: 15px; padding-bottom: 15px">
                     Заголовок отчета о странах/регионах третьего уровня. Например, "Спортивные клубы" или "Команды":<br/>
                     <input style="width: 500px; height: 25px" type="text" name="StatHeader3" id="StatHeader3"
                            value="<?= getModuleParameter(ModuleName, Header3ParameterName, get_text('RegionsAndCountries', 'Tournament'), $_SESSION['TourId']) ?>" <?= getModuleParameter(ModuleName, Checked3ParameterName, "0", $_SESSION['TourId']) !== "1" ? ' disabled' : ''?>/></td>
+            </tr>
+            <tr>
+                <th style="width: 10%; text-align: left; padding-left: 20px">Какие индивидуальные и командные события необходимо включить в протокол?
+                </th>
+            </tr>
+            <tr>
+                <td class="Left" style="padding-left: 20px; padding-top: 15px"><?php
+                    $MySql = "SELECT EvCode, EvEventName FROM Events WHERE EvTeamEvent='0' AND EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " and EvCodeParent='' ORDER BY EvProgr";
+                    $Rs = safe_r_sql($MySql);
+                    if(safe_num_rows($Rs)>0) {
+                        echo 'Включить в протокол индивидуальные события:<br><select id="IndividualEvents" name="Event[]" multiple="multiple" size="10">';
+                        echo '<option value=".">' . get_text('AllEvents')  . '</option>';
+                        while($MyRow=safe_fetch($Rs))
+                            echo '<option value="' . $MyRow->EvCode . '">' . $MyRow->EvCode . ' - ' . get_text($MyRow->EvEventName,'','',true)  . '</option>';
+                        echo '</select>';
+                        safe_free_result($Rs);
+                    }
+                ?></td>
+            </tr>
+            <tr>
+                <td class="Left" style="padding-left: 20px; padding-top: 15px""><?php
+                    $MySql = "SELECT EvCode, EvEventName FROM Events WHERE EvTeamEvent='1' AND EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvFinalFirstPhase!=0 and EvCodeParent='' ORDER BY EvProgr";
+                    $Rs = safe_r_sql($MySql);
+                    if(safe_num_rows($Rs)>0) {
+                        echo 'Включить в протокол командные события:<br><select id="TeamEvents" name="Event[]" multiple="multiple" size="10">';
+                        echo '<option value=".">' . get_text('AllEvents')  . '</option>';
+                        while($MyRow=safe_fetch($Rs))
+                            echo '<option value="' . $MyRow->EvCode . '">' . $MyRow->EvCode . ' - ' . get_text($MyRow->EvEventName,'','',true)  . '</option>';
+                        echo '</select>';
+                        safe_free_result($Rs);
+                    }
+                ?></td>
             </tr>
             <tr>
                 <th class="Left" style="padding-left: 50px; padding-top: 10px; padding-bottom: 10px">
