@@ -4,7 +4,7 @@ function update_improvements(url) {
         $.getJSON("improvementsDownload-action.php", {url: url}, function(response) {
             $("#main").html(response.msg);
             if (response.error === 0) {
-                $.getJSON("improvementsUnpack-action.php", {url: url}, function(secondResponse) {
+                $.getJSON("improvementsUnpack.php", {url: url}, function(secondResponse) {
                     $("#main").html(secondResponse.msg);
                 });
             }
