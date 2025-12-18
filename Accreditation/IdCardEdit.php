@@ -261,7 +261,7 @@ $Select.='<option value="ColoredArea">'.get_text('ColoredArea', 'BackNumbers').'
 $Select.='<option value="CompName">'.get_text('CompName', 'BackNumbers').'</option>';
 // Comp Details
 $Select.='<option value="CompDetails">'.get_text('CompDetails', 'BackNumbers').'</option>';
-if($CardType=='T') {
+if($CardType=='T' || $CardType == 'Z') {
     // Team components
     $Select.='<option value="TeamComponents">'.get_text('TeamComponents').'</option>';
 } else {

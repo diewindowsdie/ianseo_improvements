@@ -188,6 +188,8 @@ function draw_pip($r) {
 					case 'NocCaps':$Text=get_text('NocCaps','BackNumbers'); break;
 					case 'ClubCamel':$Text=get_text('ClubCamel','BackNumbers'); break;
 					case 'ClubCaps':$Text=get_text('ClubCaps','BackNumbers'); break;
+                    case 'ClubCamelGenitive':$Text=get_text('ClubCamelGenitive','BackNumbers'); break;
+                    case 'ClubCapsGenitive':$Text=get_text('ClubCapsGenitive','BackNumbers'); break;
 				}
 			}
 		case 'AthCode':

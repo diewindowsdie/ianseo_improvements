@@ -1,5 +1,9 @@
 <?php
 
+require_once(dirname(dirname(__FILE__)) . "/vendor/autoload.php");
+
+use morphos\Russian\GeographicalNamesInflection;
+
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/pdf/LabelPDF.inc.php');
 require_once('Common/Lib/CommonLib.php');
@@ -470,6 +474,9 @@ while ($MyRow=safe_fetch($Rs)) {
                             case 'NocCaps':$Text=array($MyRow->NationCode); break;
                             case 'ClubCamel':$Text=array($MyRow->Nation); break;
                             case 'ClubCaps':$Text=array($MyRow->NationCaps); break;
+                            case 'ClubCamelGenitive':$Text=array(GeographicalNamesInflection::getCase($MyRow->Nation, "родительный")); break;
+                            //morphos возвращает капс к обычном написанию, поэтому нужно обратно вернуть его вручную
+                            case 'ClubCapsGenitive':$Text=array(mb_strtoupper(GeographicalNamesInflection::getCase($MyRow->NationCaps, "родительный"))); break;
                         }
                     }
                 case 'Club2':

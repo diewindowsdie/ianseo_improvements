@@ -108,6 +108,7 @@ switch($_REQUEST['act']) {
             case 'AthQrCode':
             case 'AthBarCode':
             case 'TgtSequence':
+            case 'TeamComponents':
                 safe_w_sql("update IdCardElements set IceContent=".StrSafe_DB($_REQUEST[$_REQUEST['fldname']]??'')." where $IceFilter");
                 break;
             case 'Image':
@@ -664,6 +665,8 @@ function getFieldPos($r, $new=false) {
 					<option value="NocCaps"'    .($r->IceContent=='NocCaps'    ?' selected':'').'>'.get_text('NocCaps',    'BackNumbers').'</option>
 					<option value="ClubCamel"'   .($r->IceContent=='ClubCamel'   ?' selected':'').'>'.get_text('ClubCamel',   'BackNumbers').'</option>
 					<option value="ClubCaps"'   .($r->IceContent=='ClubCaps'   ?' selected':'').'>'.get_text('ClubCaps',   'BackNumbers').'</option>
+					<option value="ClubCamelGenitive"'   .($r->IceContent=='ClubCamelGenitive'   ?' selected':'').'>'.get_text('ClubCamelGenitive',   'BackNumbers').'</option>
+					<option value="ClubCapsGenitive"'   .($r->IceContent=='ClubCapsGenitive'   ?' selected':'').'>'.get_text('ClubCapsGenitive',   'BackNumbers').'</option>
 					</select>';
             }
 
