@@ -8,6 +8,10 @@
 /dataSources.local.xml
 .htaccess
 .idea/*
+**/.DS_Store
 /TV/Photos/*.jpg
 /TV/Photos/*.svg
 /TV/Photos/*.png
+/TV/Photos/improvements_update_log.html
+/Common/config.inc.php
+/__MACOSX/
