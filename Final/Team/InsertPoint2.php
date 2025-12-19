@@ -111,7 +111,25 @@ if(!IsBlocked(BIT_BLOCK_TEAM)) {
         }
 
         // Execute next phase
-        foreach($_REQUEST['Phase'] as $event => $phase) move2NextPhaseTeam($phase, $event);
+        foreach($_REQUEST['Phase'] as $event => $phase) {
+            //определим матчи
+
+            $options=array();
+            $options['tournament']=$_SESSION['TourId'];
+            $options['events']=$event . "@" . $phase;
+            $rank = Obj_RankFactory::create('GridTeam', $options);
+            $rank->read();
+
+            foreach(end(end($rank->getData()["sections"])["phases"])["items"] as $matchData) {
+                if ($matchData["winner"] || ($matchData["irm"] && $matchData["oppIrm"])) {
+                    move2NextPhaseTeam(null, $event, $matchData["matchNo"]);
+                }
+
+                if ($matchData["oppWinner"] || ($matchData["irm"] && $matchData["oppIrm"])) {
+                    move2NextPhaseTeam(null, $event, $matchData["oppMatchNo"]);
+                }
+            }
+        }
     } elseif(!empty($_REQUEST['Tie'])) {
         foreach($_REQUEST['Tie'] as $Event => $MatchNos) {
             foreach($MatchNos as $MatchNo => $Tie) {
@@ -126,7 +144,25 @@ if(!IsBlocked(BIT_BLOCK_TEAM)) {
         }
 
         // Execute next phase
-        foreach($_REQUEST['Phase'] as $event => $phase) move2NextPhaseTeam($phase, $event);
+        foreach($_REQUEST['Phase'] as $event => $phase) {
+            //определим матчи
+
+            $options=array();
+            $options['tournament']=$_SESSION['TourId'];
+            $options['events']=$event . "@" . $phase;
+            $rank = Obj_RankFactory::create('GridTeam', $options);
+            $rank->read();
+
+            foreach(end(end($rank->getData()["sections"])["phases"])["items"] as $matchData) {
+                if ($matchData["winner"] || ($matchData["irm"] && $matchData["oppIrm"])) {
+                    move2NextPhaseTeam(null, $event, $matchData["matchNo"]);
+                }
+
+                if ($matchData["oppWinner"] || ($matchData["irm"] && $matchData["oppIrm"])) {
+                    move2NextPhaseTeam(null, $event, $matchData["oppMatchNo"]);
+                }
+            }
+        }
     }
 }
 
@@ -392,7 +428,7 @@ if (safe_num_rows($Rs)>0) {
 
         $MyEvent=$MyRow->TfEvent;
     }
-    print '<tr><td colspan="' . (9-$Cols2Remove) . '" class="Center"><input type="submit" value="' . get_text('CmdSave') . '"></td></tr>';
+    print '<tr><td colspan="' . (9-$Cols2Remove) . '" class="Center"><input type="submit" value="' . get_text('SaveNextPhase') . '"></td></tr>';
 } else {
     print '<tr>';
     print '<td colspan="' . (9-$Cols2Remove) . '">';
