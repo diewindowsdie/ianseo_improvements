@@ -622,6 +622,7 @@ $lang['Q-Session']='Квалификационный раунд';
 $lang['QF_Phase']='Четвертьфинал';
 $lang['QrCode']='QR-код с данными спортсмена';
 $lang['QualSessionShort']='Квал-ция';
+$lang['R-Session']='Круговые спарринги';
 $lang['RaiseFlag']='Поднять флаги';
 $lang['RankByDistance']='Ранг по дистанции';
 $lang['RankError']='Проверить ранг';
