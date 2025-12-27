@@ -33,6 +33,7 @@ $lang['DetailsButton']='Детали';
 $lang['DistanceNum']='дистанция $a';
 $lang['FieldMonitor']='Мониторинг поля';
 $lang['FlashCodeDistance']='для ввода результатов $a';
+$lang['HitToWin']='Попасть для победы';
 $lang['ISK-Anomalies']='Аномалия !';
 $lang['ISK-AppInfo']='Информация о приложении';
 $lang['ISK-AppList']='Список APK';

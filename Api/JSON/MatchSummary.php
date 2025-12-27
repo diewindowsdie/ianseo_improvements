@@ -566,15 +566,15 @@ foreach($Data['sections'] as $kSec=>$vSec) {
                                         }
                                         if($ToWin>=$vSec['meta']['minPoint']) {
                                             if($dif==1) {
-                                                $tmpR['ToWin']=$ToWin.' to win';
+                                                $tmpR['ToWin']=get_text("XToWin", "Api", $ToWin);
                                             } else {
-                                                $tmpL['ToWin']=$ToWin.' to win';
+                                                $tmpL['ToWin']=get_text("XToWin", "Api", $ToWin);
                                             }
                                         } else {
                                             if($dif==1) {
-                                                $tmpR['ToWin']='Hit to win';
+                                                $tmpR['ToWin']=get_text("HitToWin", "Api");
                                             } else {
-                                                $tmpL['ToWin']='Hit to win';
+                                                $tmpL['ToWin']=get_text("HitToWin", "Api");
                                             }
                                         }
                                     }
@@ -614,15 +614,15 @@ foreach($Data['sections'] as $kSec=>$vSec) {
                                     }
                                     if($ToWin>=$vSec['meta']['minPoint']) {
                                         if($dif==1) {
-                                            $tmpR['ToWin']=$ToWin.' to win';
+                                            $tmpR['ToWin']=get_text("XToWin", "Api", $ToWin);
                                         } else {
-                                            $tmpL['ToWin']=$ToWin.' to win';
+                                            $tmpL['ToWin']=get_text("XToWin", "Api", $ToWin);
                                         }
                                     } else {
                                         if($dif==1) {
-                                            $tmpR['ToWin']='Hit to win';
+                                            $tmpR['ToWin']=get_text("HitToWin", "Api");
                                         } else {
-                                            $tmpL['ToWin']='Hit to win';
+                                            $tmpL['ToWin']=get_text("HitToWin", "Api");
                                         }
                                     }
                                 }
@@ -1132,17 +1132,17 @@ foreach($Data['sections'] as $kSec=>$vSec) {
                                             }
                                         }
                                     }
-                                    if($ToWin>=$vSec['meta']['minPoint']) {
+                                    if($ToWin>$vSec['meta']['minPoint']) {
                                         if($dif==1) {
-                                            $tmpR['ToWin']=$ToWin.' to win';
+                                            $tmpR['ToWin']=get_text("XToWin", "Api", $ToWin);
                                         } else {
-                                            $tmpL['ToWin']=$ToWin.' to win';
+                                            $tmpL['ToWin']=get_text("XToWin", "Api", $ToWin);
                                         }
                                     } else {
                                         if($dif==1) {
-                                            $tmpR['ToWin']='Hit to win';
+                                            $tmpR['ToWin']=get_text("HitToWin", "Api");
                                         } else {
-                                            $tmpL['ToWin']='Hit to win';
+                                            $tmpL['ToWin']=get_text("HitToWin", "Api");
                                         }
                                     }
                                 }
@@ -1180,17 +1180,17 @@ foreach($Data['sections'] as $kSec=>$vSec) {
                                         }
                                     }
                                 }
-                                if($ToWin>=$vSec['meta']['minPoint']) {
+                                if($ToWin>$vSec['meta']['minPoint']) {
                                     if($dif==1) {
-                                        $tmpR['ToWin']=$ToWin.' to win';
+                                        $tmpR['ToWin']=get_text("XToWin", "Api", $ToWin);
                                     } else {
-                                        $tmpL['ToWin']=$ToWin.' to win';
+                                        $tmpL['ToWin']=get_text("XToWin", "Api", $ToWin);
                                     }
                                 } else {
                                     if($dif==1) {
-                                        $tmpR['ToWin']='Hit to win';
+                                        $tmpR['ToWin']=get_text("HitToWin", "Api");
                                     } else {
-                                        $tmpL['ToWin']='Hit to win';
+                                        $tmpL['ToWin']=get_text("HitToWin", "Api");
                                     }
                                 }
                             }
