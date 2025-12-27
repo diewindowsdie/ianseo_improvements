@@ -535,7 +535,9 @@ class Obj_Rank_Robin extends Obj_Rank{
                     'gender' => $myRow->En1Gender,
                     'countryId' => $myRow->En1CoId,
 					'countryCode' => $myRow->CoShort1,
-					'countryName' => $myRow->Country1,
+					'countryName' => $myRow->CoName1,
+                    'countryName2' => $myRow->En1CoName2,
+                    'countryName3' => $myRow->En1CoName3,
 					 'qualRank' => $myRow->Rank1,
 					 'sourceRank' => $myRow->En1SourceRank,
 					// 'qualIrm' => $myRow->IrmQual,
@@ -599,7 +601,9 @@ class Obj_Rank_Robin extends Obj_Rank{
                     'oppCountryId' => $myRow->En2CoId,
 
                     'oppCountryCode' => $myRow->CoShort2,
-					'oppCountryName' => $myRow->Country2,
+					'oppCountryName' => $myRow->CoName2,
+                    'oppCountryName2' => $myRow->En2CoName2,
+                    'oppCountryName3' => $myRow->En2CoName3,
 					// 'oppContAssoc' => $myRow->OppCaCode,
 					// 'oppMemberAssoc' => $myRow->OppMaCode,
 					// 'oppCountryIocCode'=> $myRow->OppCountryIocCode,
@@ -692,8 +696,8 @@ class Obj_Rank_Robin extends Obj_Rank{
        		EvCode, EvEventName, EvTeamEvent, EvProgr, EvShootOff, EvCodeParent, RrLevMatchMode, RrLevBestRankMode,
        		TarId, TarDescr, EvDistance as Distance, EvTargetSize as TargetSize,
        		RrLevCheckGolds as EvCheckGolds, RrLevCheckXNines as EvCheckXNines, EvGoldsChars, EvXNineChars,
-            coalesce(En1Entry, Te1Country) as Athlete1, coalesce(En1Country, Te1Code) as Country1, coalesce(En1CoShort, Te1Code) as CoShort1, coalesce(En1CoName, Te1Country) as CoName1, coalesce(En1TvFamilyName, '') as TvFamilyName1, coalesce(En1TvInitials, '') as TvInitials1, coalesce(En1TvGivenName, '') as TvGivenName1,
-            coalesce(En2Entry, Te2Country) as Athlete2, coalesce(En2Country, Te2Code) as Country2, coalesce(En2CoShort, Te2Code) as CoShort2, coalesce(En2CoName, Te2Country) as CoName2, coalesce(En2TvFamilyName, '') as TvFamilyName2, coalesce(En2TvInitials, '') as TvInitials2, coalesce(En2TvGivenName, '') as TvGivenName2,
+            coalesce(En1Entry, Te1Country) as Athlete1, coalesce(En1Country, Te1Code) as Country1, coalesce(En1CoShort, Te1Code) as CoShort1, coalesce(En1CoName, Te1Country) as CoName1, En1CoName2, En1CoName3, coalesce(En1TvFamilyName, '') as TvFamilyName1, coalesce(En1TvInitials, '') as TvInitials1, coalesce(En1TvGivenName, '') as TvGivenName1,
+            coalesce(En2Entry, Te2Country) as Athlete2, coalesce(En2Country, Te2Code) as Country2, coalesce(En2CoShort, Te2Code) as CoShort2, coalesce(En2CoName, Te2Country) as CoName2, En2CoName2, En2CoName3, coalesce(En2TvFamilyName, '') as TvFamilyName2, coalesce(En2TvInitials, '') as TvInitials2, coalesce(En2TvGivenName, '') as TvGivenName2,
 			coalesce(En1Rank, Te1Rank) as Rank1, coalesce(En2Rank, Te2Rank) as Rank2,
 			coalesce(En1EntryShort, Te1Short) as AthleteShort1, coalesce(En2EntryShort, Te2Short) as AthleteShort2,
             '' as LineJudge, '' as LineCode,  '' as LineCodeLocal, '' as LineFamName, '' as LineGivName, '' as LineCountry, '' as LineGender, '' as LineOdfCode,
@@ -815,20 +819,22 @@ class Obj_Rank_Robin extends Obj_Rank{
 		LEFT JOIN DocumentVersions DV2 on EvTournament=DV2.DvTournament AND DV2.DvFile = 'ROBIN' and DV2.DvEvent=EvCode
 		left join (
 		    select EnId as En1Id, IndEvent as En1Event, IndRank as En1Rank, EnCode as En1Bib, coalesce(EdExtra, EnCode) as En1LocalBib,
-		           EnFirstName as En1FamilyName, EnName as En1GivenName, EnNameOrder as En1NameOrder, upper(EnFirstName) as En1FamilyUpper, EnSex En1Gender, CoId En1CoId,
-		           trim(concat_ws(' ', upper(EnFirstName), EnName)) as En1Entry, trim(concat(upper(EnFirstName), ' ', left(EnName,1))) as En1EntryShort, CoName as En1Country, CoCode as En1CoShort, CoName as En1CoName, EnTvFamilyName as En1TvFamilyName, EnTvGivenName as En1TvGivenName, EnTvInitials as En1TvInitials,
+		           EnFirstName as En1FamilyName, EnName as En1GivenName, EnNameOrder as En1NameOrder, upper(EnFirstName) as En1FamilyUpper, EnSex En1Gender, c1.CoId En1CoId,
+		           trim(concat_ws(' ', upper(EnFirstName), EnName)) as En1Entry, trim(concat(upper(EnFirstName), ' ', left(EnName,1))) as En1EntryShort, c1.CoName as En1Country, c1.CoCode as En1CoShort, c1.CoNameComplete as En1CoName, c2.CoNameComplete as En1CoName2, c3.CoNameComplete as En1CoName3, EnTvFamilyName as En1TvFamilyName, EnTvGivenName as En1TvGivenName, EnTvInitials as En1TvInitials,
 		           QuScore as Qu1Score, RrPartSourceRank as En1SourceRank
 			from Entries
 			inner join Individuals on IndId=EnId and IndTournament=EnTournament
             inner join Events on EvTournament=EnTournament and EvCode=IndEvent and EvTeamEvent=0
-		    left join Countries on CoId=
+		    left join Countries c1 on c1.CoId=
                 case EvTeamCreationMode 
                     when 0 then EnCountry
                     when 1 then EnCountry2
                     when 2 then EnCountry3
                     else EnCountry
                 end
-                AND CoTournament=EnTournament
+                AND c1.CoTournament=EnTournament
+            left join Countries c2 on c2.CoId = EnCountry2 AND c2.CoTournament=EnTournament 
+            left join Countries c3 on c3.CoId = EnCountry3 AND c3.CoTournament=EnTournament 
 		    inner join Qualifications on QuId=EnId
             LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z'
             left join RoundRobinParticipants on RrPartTournament=EnTournament and RrPartSourceLevel=0 AND RrPartSourceGroup=0 and RrPartParticipant=EnId and RrPartEvent=IndEvent and RrPartTeam=0
@@ -836,20 +842,22 @@ class Obj_Rank_Robin extends Obj_Rank{
 		    ) en1 on En1Id=M1Athlete and M1Team=0 and En1Event=M1Event
 		left join (
 		    select EnId as En2Id, IndEvent as En2Event, IndRank as En2Rank, EnCode as En2Bib, coalesce(EdExtra, EnCode) as En2LocalBib,
-		           EnFirstName as En2FamilyName, EnName as En2GivenName, EnNameOrder as En2NameOrder, upper(EnFirstName) as En2FamilyUpper, EnSex En2Gender, CoId En2CoId,
-		           trim(concat_ws(' ', upper(EnFirstName), EnName)) as En2Entry, trim(concat(upper(EnFirstName), ' ', left(EnName,1))) as En2EntryShort, CoName as En2Country, CoCode as En2CoShort, CoName as En2CoName, EnTvFamilyName as En2TvFamilyName,EnTvGivenName as En2TvGivenName, EnTvInitials as En2TvInitials,
+		           EnFirstName as En2FamilyName, EnName as En2GivenName, EnNameOrder as En2NameOrder, upper(EnFirstName) as En2FamilyUpper, EnSex En2Gender, c1.CoId En2CoId,
+		           trim(concat_ws(' ', upper(EnFirstName), EnName)) as En2Entry, trim(concat(upper(EnFirstName), ' ', left(EnName,1))) as En2EntryShort, c1.CoName as En2Country, c1.CoCode as En2CoShort, c1.CoNameComplete as En2CoName, c2.CoNameComplete as En2CoName2, c3.CoNameComplete as En2CoName3, EnTvFamilyName as En2TvFamilyName,EnTvGivenName as En2TvGivenName, EnTvInitials as En2TvInitials,
 		           QuScore as Qu2Score, RrPartSourceRank as En2SourceRank
 			from Entries
 			inner join Individuals on IndId=EnId and IndTournament=EnTournament
             inner join Events on EvTournament=EnTournament and EvCode=IndEvent and EvTeamEvent=0
-		    left join Countries on CoId=
+		    left join Countries c1 on c1.CoId=
                 case EvTeamCreationMode 
                     when 0 then EnCountry
                     when 1 then EnCountry2
                     when 2 then EnCountry3
                     else EnCountry
                 end
-                AND CoTournament=EnTournament
+                AND c1.CoTournament=EnTournament
+            left join Countries c2 on c2.CoId = EnCountry2 AND c2.CoTournament=EnTournament 
+            left join Countries c3 on c3.CoId = EnCountry3 AND c3.CoTournament=EnTournament 
 		    inner join Qualifications on QuId=EnId
             LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' 
             left join RoundRobinParticipants on RrPartTournament=EnTournament and RrPartSourceLevel=0 AND RrPartSourceGroup=0 and RrPartParticipant=EnId and RrPartEvent=IndEvent and RrPartTeam=0

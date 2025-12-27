@@ -155,8 +155,8 @@ function rotRri($TVsettings, $RULE) {
 				$tmp1='';
 				$tmp2='';
 				if($ViewCode) {
-					$tmp1.='<div class="CountryCode Rotate Rev1e">'.$item['countryCode'].'</div>';
-					$tmp2.='<div class="CountryCode Rotate Rev1e">'.$item['oppCountryCode'].'</div>';
+//					$tmp1.='<div class="CountryCode Rotate Rev1e">'.$item['countryCode'].'</div>';
+//					$tmp2.='<div class="CountryCode Rotate Rev1e">'.$item['oppCountryCode'].'</div>';
 				}
 				if($ViewFlag) {
 					$tmp1.='<div class="FlagDiv">'.get_flag_ianseo($item['countryCode'], '', '',  '', '', $IsCode).'</div>';
@@ -209,7 +209,11 @@ function rotRri($TVsettings, $RULE) {
 		$Return['Block']='Grid';
 		$Return['BlockCss']='height:2em; width:100%; padding-right:0.5rem; overflow:hidden; font-size:2em; display:flex; flex-direction:row; justify-content:left; align-items:center; box-sizing:border-box;';
 
-		$ret[] = '<div class="Title">' . $section['meta']['descr'] . '</div>';
+		$ret[] = '<div class="Title">
+				<div class="TitleImg" style="float:left;"><img src="'.$CFG->ROOT_DIR.'TV/Photos/'.$IsCode.'-ToLeft.jpg"></div>
+				<div class="TitleImg" style="float:right;"><img src="'.$CFG->ROOT_DIR.'TV/Photos/'.$IsCode.'-ToRight.jpg"></div>
+                ' . $section['meta']['descr'] . '</div>';
+
 		$ret[]='<div id="content" data-direction="up">';
 		$NumColBase = 3 + $ViewTeams;
 		foreach($section['levels'] as $IdLevel => $level) {
@@ -239,8 +243,8 @@ function rotRri($TVsettings, $RULE) {
 						$tmp2.='<div class="Athlete">'.$item['oppAthlete'].'</div>';
 
 						if($ViewTeams) {
-							$tmp1.='<div class="CountryDescr">'.$item['countryCode'].'</div>';
-							$tmp2.='<div class="CountryDescr">'.$item['oppCountryCode'].'</div>';
+							$tmp1.='<div class="CountryDescr">'. getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']).'</div>';
+							$tmp2.='<div class="CountryDescr">'.getFullCountryName($item['oppCountryName'], $item['oppCountryName2'], $item['oppCountryName3']).'</div>';
 						}
 
 						if($ViewEnds) {
