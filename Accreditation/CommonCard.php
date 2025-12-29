@@ -7,7 +7,7 @@ $ExtraGroup='GROUP BY EnId';
 
 $QuSession='QuSession';
 $QuSesLetter='Q';
-$QuOrder='QuTargetNo';
+$QuOrder='QuSession, QuTarget, QuLetter';
 
 $EventBased='';
 
@@ -47,7 +47,7 @@ if(!empty($_REQUEST['Specifics'])) {
 switch($CardType) {
 	case 'A': // Accreditation
 		if($_SESSION['AccreditationTourIds']) $TourId=$_SESSION['AccreditationTourIds'];
-		$FIELDS.=", (EnBadgePrinted is not null and EnBadgePrinted!=0) as Printed, '' ExtraCode, substr(QuTargetNo, 2) as TargetNo";
+		$FIELDS.=", (EnBadgePrinted is not null and EnBadgePrinted!=0) as Printed, '' ExtraCode, CONCAT(QuTarget, QuLetter) as TargetNo";
 		if(!empty($_REQUEST['PrintNotPrinted']) and empty($BibNumber)) {
 			// solo quelli non ancora stampati...
 			// EnBadgePrinted contiene data e ora della stampa del badge...
@@ -78,7 +78,7 @@ switch($CardType) {
 		}
 		break;
 	case 'Q': // Qualifications
-		$FIELDS.=", ToNumEnds as Ends, ToElabTeam, substr(QuTargetNo, 2)+0 as RealTarget, (QuBacknoPrinted is not null and QuBacknoPrinted!=0) as Printed, '' ExtraCode, substr(QuTargetNo, 2) as TargetNo";
+		$FIELDS.=", ToNumEnds as Ends, ToElabTeam, QuTarget as RealTarget, (QuBacknoPrinted is not null and QuBacknoPrinted!=0) as Printed, '' ExtraCode, CONCAT(QuTarget, QuLetter) as TargetNo";
 		if(!empty($_REQUEST['PrintNotPrinted']) and empty($BibNumber)) {
 			$Where[] = ' AND (QuBacknoPrinted is NULL or QuBacknoPrinted=0) ';
 		}
@@ -380,7 +380,7 @@ if(!empty($BibNumber)) {
 
 
 
-$MyQuery = "SELECT $FIELDS, QuTargetNo as AbcdTarget
+$MyQuery = "SELECT $FIELDS, QuSession as ABCDSes, QuTarget as ABCDTgt, QuLetter as ABCDLet
 	FROM Entries AS e
 	INNER JOIN Tournament on EnTournament=ToId
 	INNER JOIN Qualifications AS q ON e.EnId=q.QuId
@@ -408,14 +408,15 @@ $MyQuery = "SELECT $FIELDS, QuTargetNo as AbcdTarget
 	ORDER BY  ".(empty($SORTSTRICT) ? "EnTournament, IcNumber, $SORT, Bib" : $SORTSTRICT);
 
 if(!empty($_REQUEST['SortACBD'])) {
-    $MyQuery="select realQuery.*, AtTargetNo
-        from AvailableTarget
-        left join ($MyQuery) realQuery on AtTargetNo=AbcdTarget and AtTournament=EnTournament
-        where AtTournament in ($TourId) and (AtTarget, AtSession, AtTournament) in (
-            select distinct QuTarget, QuSession, EnTournament 
+    $atSql = createAvailableTargetSQL(0, $TourId);
+    $MyQuery="select realQuery.*, FullTgtSession, FullTgtTarget, FullTgtLetter
+        from ($atSql) at
+        left join ($MyQuery) realQuery on ABCDSes=FullTgtSession AND ABCDTgt=FullTgtTarget AND ABCDLet=FullTgtLetter
+        where (FullTgtSession, FullTgtTarget) in (
+            select distinct QuSession, QuTarget 
             from Qualifications 
             inner join Entries on EnId=QuId and EnTournament in ($TourId)
             ".implode(' ', $Where)."
             )
-        order by AtSession, AtTarget, AtLetter in ('B','D'), AtLetter";
+        order by FullTgtSession, FullTgtTarget, (ORD(FullTgtLetter) % 2) DESC, FullTgtLetter";
 }

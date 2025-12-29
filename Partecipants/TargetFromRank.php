@@ -85,20 +85,20 @@ if (isset($_REQUEST['command'])) {
                         $targets=array();
                         $index=0;	// indice di $targets
 
-                        $SubStrLen=strlen($endSession . $start);
+                        $atSql = createAvailableTargetSQL(($endSession??0), $_SESSION['TourId']);
 
-                        $query = "SELECT AtTargetNo, substr(AtTargetNo,1,$SubStrLen) Target, substr(AtTargetNo,-1) Letter 
-                            FROM AvailableTarget 
+                        $query = "SELECT FullTgtSession AS Session, FullTgtTarget AS Target, FullTgtLetter AS Letter 
+                            FROM ($atSql) at 
                             LEFT JOIN (
-                                SELECT QuTargetNo 
+                                SELECT QuSession, QuTarget, QuLetter
                                 FROM Entries 
                                     INNER JOIN Qualifications ON EnId = QuId 
-                                WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND QuTargetNo >= '" . $endSession . $start . "A' AND QuTargetNo <= '" . $endSession . $end . "Z') as Sqy ON AtTargetNo=QuTargetNo
-                            WHERE AtTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND AtTargetNo>='" . $endSession . $start . "A' AND AtTargetNo<='" . $endSession . $end . "Z' AND QuTargetNo IS NULL 
-                            ORDER BY Target ASC, Letter ASC ";
+                                WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND QuSession=". $endSession ." AND QuTarget >= '" . $start . "' AND QuTarget <= '" . $end . "') as Sqy ON QuSession=FullTgtSession AND QuTarget=FullTgtTarget AND QuLetter=FullTgtLetter
+                            WHERE FullTgtTarget>='" . $start . "' AND FullTgtTarget<='" . $end . "' AND QuSession IS NULL 
+                            ORDER BY FullTgtSession ASC, FullTgtTarget ASC, FullTgtLetter ASC";
                         $rs=safe_r_sql($query);
                         while ($row=safe_fetch($rs)) {
-	                        $targets[]=$row->AtTargetNo;
+	                        $targets[]=$row->Target.$row->Letter;
                         }
 
                         $rank1 = min($sourceRankFrom,$sourceRankTo);
@@ -118,7 +118,7 @@ if (isset($_REQUEST['command'])) {
 							 * Un eventuale confronto con la classifica di classe potrebbe mostrare discrepanze
 							 * (l'elenco delle persone di questa query ha un numero di righe >= a quello della classifica di classe)
 							 */
-                            $query = "SELECT QuId, EnFirstName, EnName, EnWChair, EnDoubleSpace, CONCAT(EnDivision,EnClass) AS `Event`, QuSession, QuTargetNo, ".($filterev ? "QuSubClassRank" : "QuClRank")." as `Rank` 
+                            $query = "SELECT QuId, EnFirstName, EnName, EnWChair, EnDoubleSpace, CONCAT(EnDivision,EnClass) AS `Event`, QuSession, ".($filterev ? "QuSubClassRank" : "QuClRank")." as `Rank` 
                                 FROM Tournament 
                                 INNER JOIN Entries ON ToId=EnTournament 
                                 INNER JOIN Qualifications ON EnId=QuId 
@@ -127,7 +127,7 @@ if (isset($_REQUEST['command'])) {
                                 " ORDER BY QuClRank $RankOrder, EnFirstName, EnName ";
                         } else {
                             // assoluti individuali
-                            $query = "SELECT QuId, EnFirstName, EnName,EnWChair, EnDoubleSpace, CONCAT(EnDivision,EnClass) AS `Event`, QuSession, QuTargetNo, ".($filterev ? "QuSubClassRank" : "IndRank")." as `Rank` 
+                            $query = "SELECT QuId, EnFirstName, EnName,EnWChair, EnDoubleSpace, CONCAT(EnDivision,EnClass) AS `Event`, QuSession, ".($filterev ? "QuSubClassRank" : "IndRank")." as `Rank` 
                                 FROM Tournament 
                                 INNER JOIN Entries ON ToId=EnTournament 
                                 INNER JOIN Qualifications ON EnId=QuId 
@@ -146,7 +146,7 @@ if (isset($_REQUEST['command'])) {
                              * E HO ancora bersagli di destinazione aggiungo in $data2up
                              */
                             if ($index<count($targets)) {
-                                if ($MyRow->Rank>=$rank1 && $MyRow->Rank<=$rank2 && ($startSession==0 || ($MyRow->QuSession!=0 && $MyRow->QuSession==$startSession))) {
+                                if ($MyRow->Rank>=$rank1 AND $MyRow->Rank<=$rank2 AND ($startSession==0 OR ($MyRow->QuSession!=0 AND $MyRow->QuSession==$startSession))) {
                                     $trgt=$targets[0];
                                     $index=0;
 
@@ -181,8 +181,7 @@ if (isset($_REQUEST['command'])) {
                             foreach ($data2up as $d) {
                                 $query = "UPDATE Qualifications
                                     SET QuSession='" . $d['session'] . "',
-                                        QuTargetNo='" . $d['target'] . "',
-                                        QuTarget='" . intval(substr($d['target'],1)) . "',
+                                        QuTarget='" . intval(substr($d['target'],0,-1)) . "',
                                         QuLetter='" . substr($d['target'], -1) . "',
                                         QuTimestamp=QuTimestamp
                                     WHERE QuId='" . $d['id'] . "' ";
@@ -193,7 +192,7 @@ if (isset($_REQUEST['command'])) {
                                     safe_w_sql("UPDATE Qualifications SET QuBacknoPrinted=0, QuTimestamp=QuTimestamp WHERE QuId='{$d['id']}'");
                                 }
 
-                                $msg.=get_text('TargetAssigned', 'Tournament',substr($d['target'],1)) . '<br/>';
+                                $msg.=get_text('TargetAssigned', 'Tournament',$d['target']) . '<br/>';
 
                             }
                         } else {

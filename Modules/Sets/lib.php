@@ -50,6 +50,7 @@ TtId TtType               TtDistance
 
 define('TGT_IND_1_big10', 1);
 define('TGT_IND_6_big10', 2);
+define('TGT_IND_5_big10', 32);
 define('TGT_IND_1_small10', 3);
 define('TGT_IND_6_small10', 4);
 define('TGT_OUT_FULL', 5);

@@ -522,11 +522,11 @@ function CheckTargetNo()
 		try
 		{
 			var d_q_QuSession = encodeURIComponent(document.getElementById('d_q_QuSession_').value);
-			var d_q_QuTargetNo = encodeURIComponent(document.getElementById('d_q_QuTargetNo_').value);
+			var d_q_QuTarget = encodeURIComponent(document.getElementById('d_q_QuTargetNo_').value);
 
 			if ((XMLHttp.readyState==XHS_COMPLETE || XMLHttp.readyState==XHS_UNINIT) )
 			{
-				XMLHttp.open("GET","CheckTargetNo.php?d_q_QuSession=" + d_q_QuSession + "&d_q_QuTargetNo=" + d_q_QuTargetNo,true);
+				XMLHttp.open("GET","CheckTargetNo.php?d_q_QuSession=" + d_q_QuSession + "&d_q_QuTargetNo=" + d_q_QuTarget,true);
 				XMLHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
 				XMLHttp.onreadystatechange=CheckTargetNo_StateChange;
 				XMLHttp.send(null);

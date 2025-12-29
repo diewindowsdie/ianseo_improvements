@@ -29,9 +29,9 @@
         }
 		safe_w_sql("update Entries inner join Qualifications on EnId=QuId
 			set EnTimestamp='".date('Y-m-d H:i:s')."'
-			where QuTargetNo!='' and $Where");
+			where QuTarget!=0 and $Where");
 		safe_w_sql("UPDATE Qualifications INNER JOIN Entries ON QuId=EnId
-			SET QuTargetNo='', QuTarget=0, QuLetter='', QuBacknoPrinted=0
+			SET QuTarget=0, QuLetter='', QuBacknoPrinted=0
 			WHERE $Where");
 		header("Location: " . $_SERVER['PHP_SELF']);
 		exit();
@@ -121,26 +121,19 @@ echo '<td class="Center" colspan="9"><input type="submit" value="'.get_text('Cmd
 echo '<input type="submit" name="Erase" value="'.get_text('TargetAssErase','Tournament').'"></td>';
 echo '</tr>';
 
-	if(isset($_REQUEST["Session"]) && $_REQUEST["Session"]>=1 && $_REQUEST['Session']<=$MaxSession)
-	{
+	if(isset($_REQUEST["Session"]) && $_REQUEST["Session"]>=1 && $_REQUEST['Session']<=$MaxSession)	{
 		$MySes=GetSessions(null,false,array($_REQUEST['Session'].'_'.'Q'));
 
-		if($MySes[0]->SesAth4Target>=4) {
+		if($MySes[0]->SesAth4Target==4) {
 		    if($_REQUEST['FieldSeed']==3) {
                 $TgtArray=array('A','B','C','D');
             } else {
                 $TgtArray=array('A','C','B','D');
             }
-			$StartLetter='E';
-			if($MySes[0]->SesAth4Target>4) {
-				for($i=4;$i<$MySes[0]->SesAth4Target;$i++) {
-					$TgtArray[] = $StartLetter++;
-				}
-			}
-		} else {
-            $q = safe_r_SQL("SELECT DISTINCT AtLetter FROM `AvailableTarget` WHERE `AtTournament` = {$_SESSION['TourId']} AND `AtSession` = {$MySes[0]->SesOrder} ORDER BY AtLetter ");
-			while($r=safe_fetch($q)) {
-                $TgtArray[] = $r->AtLetter;
+        } else {
+			$StartLetter='A';
+            for($i=1;$i<=$MySes[0]->SesAth4Target;$i++) {
+                $TgtArray[] = $StartLetter++;
             }
 		}
 	}
@@ -189,14 +182,11 @@ if(isset($_REQUEST["Event"]) && isset($_REQUEST["Session"]) && isset($_REQUEST["
 	$TgtList = array();
 	$TgtAvailable = array();
 
-	for($i=$CurTarget; $i<=$EndTarget; $i++)
-	{
-		for($j=0; $j<$ArcPerButt; $j++)
-		{
-			if(($i==$CurTarget && $j>=$CurPlace) || ($i==$EndTarget && $j<=$EndPlace) || ($i>$CurTarget && $i<$EndTarget))
-			{
+	for($i=$CurTarget; $i<=$EndTarget; $i++) {
+		for($j=0; $j<$ArcPerButt; $j++) {
+			if(($i==$CurTarget AND $j>=$CurPlace) || ($i==$EndTarget AND $j<=$EndPlace) || ($i>$CurTarget AND $i<$EndTarget)) {
 				$TgtList[] = str_pad($i . $TgtArray[$j],(TargetNoPadding+1),'0',STR_PAD_LEFT);
-				$MySql = "SELECT QuId FROM Qualifications INNER JOIN Entries ON QuId = EnId WHERE QuTargetNo=" . StrSafe_DB($_REQUEST['Session'].str_pad($i . $TgtArray[$j],(TargetNoPadding+1),'0',STR_PAD_LEFT)) . " AND EnTournament=" . StrSafe_DB($_SESSION['TourId']);
+				$MySql = "SELECT QuId FROM Qualifications INNER JOIN Entries ON QuId = EnId WHERE QuSession=" . StrSafe_DB($_REQUEST['Session']) . " AND QuTarget=" . intval($i) . " AND QuLetter=".StrSafe_DB($TgtArray[$j])." AND EnTournament=" . StrSafe_DB($_SESSION['TourId']);
 				$Rs = safe_r_sql($MySql);
 				if(safe_num_rows($Rs)==1)
 					$TgtAvailable[str_pad($i . $TgtArray[$j],(TargetNoPadding+1),'0',STR_PAD_LEFT)] = 0;
@@ -248,7 +238,7 @@ if(isset($_REQUEST["Event"]) && isset($_REQUEST["Session"]) && isset($_REQUEST["
 		. "  EnTournament=" . StrSafe_DB($_SESSION['TourId'])
 		. "  AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE " . StrSafe_DB($_REQUEST['Event'])
 		. "  AND QuSession=" . StrSafe_DB($_REQUEST['Session'])
-		.    (isset($_REQUEST['Exclude']) && $_REQUEST['Exclude']=='1' ? " AND substr(QuTargetNo,2)='' " : "")
+		.    (isset($_REQUEST['Exclude']) && $_REQUEST['Exclude']=='1' ? " AND QuTarget=0 " : "")
 		. " ORDER BY ".implode(',',$SortOrder);
 	$q=safe_r_SQL($MySql);
 
@@ -566,8 +556,7 @@ if(isset($_REQUEST["Event"]) && isset($_REQUEST["Session"]) && isset($_REQUEST["
 function ArcherAssign($Archer, $Target, $Country) {
 
 	if(!empty($_REQUEST['DoAssign'])) {
-		$UpdateQry = "UPDATE Qualifications SET QuTimestamp=QuTimestamp, QuTarget=".intval($Target).", QuLetter='".substr($Target, -1)."', QuTargetNo=" . StrSafe_DB($_REQUEST['Session'].$Target)
-			. " WHERE QuId = $Archer";
+		$UpdateQry = "UPDATE Qualifications SET QuTimestamp=QuTimestamp, QuTarget=".intval($Target).", QuLetter='".strtoupper(substr($Target, -1))."' WHERE QuId = $Archer";
 		$RsUpd=safe_w_sql($UpdateQry);
 		if(safe_w_affected_rows()) {
 			safe_w_sql("Update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId=$Archer");

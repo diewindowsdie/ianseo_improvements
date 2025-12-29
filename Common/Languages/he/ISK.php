@@ -167,7 +167,6 @@ $lang['Total']='סיכום';
 $lang['TruncateMatches']='מחק נתונים זמניים (התמודדויות)';
 $lang['TruncateQual']='מחק נתונים זמניים (מוקדמות)';
 $lang['Unknown']='לא ידוע';
-$lang['UnlockAll']='שחרר נעילת כל מקצי הירי';
 $lang['Update']='עדכן';
 $lang['UpdateLang']='עדכן שפות';
 $lang['Url']='כתובת:';

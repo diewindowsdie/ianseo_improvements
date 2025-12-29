@@ -283,7 +283,7 @@ if(count($EventCodes) != 0) {
                             if ($item['rankBeforeSO'] != $endRank) {
                                 $wasCTSO = true;
                                 $autoCTallowed = true;
-                                echo '<td class="Center w-5"><select name="R' . $nn . '"'. ($item['ct'] != 1 ? ' ctFlag="'.$item['rankBeforeSO'].','.$item['ct'].'"' : '') .'>';
+                                echo '<td class="Center w-5"><select name="R' . $nn . '"'. (($item['ct'] != 1 and $item['so'] == 0) ? ' ctFlag="'.$item['rankBeforeSO'].','.$item['ct'].'"' : '') .'>';
                                 for ($i = $item['rankBeforeSO']; $i <= $endRank; ++$i) {
                                     echo '<option value="' . $i . '"' . (($i == $item['rank'] OR (isset($_REQUEST["R"][$section['meta']['event']][$item['id'] . '_' . $item['subteam']]) and $i == $_REQUEST["R"][$section['meta']['event']][$item['id'] . '_' . $item['subteam']])) ? ' selected' : '') . '>' . $i . '</option>';
                                 }

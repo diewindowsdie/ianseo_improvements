@@ -49,7 +49,7 @@ if (safe_num_rows($rsInfo)==1)
 	$rowInfo=safe_fetch($rsInfo);
 
 $MyQuery = "SELECT EnCode as Bib, EnName AS Name, upper(EnFirstName) AS FirstName, QuSession AS Session, ";
-$MyQuery.= "SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, ";
+$MyQuery.= "CONCAT(QuTarget, QuLetter) AS TargetNo, CoCode AS NationCode, CoName AS Nation, ";
 $MyQuery.= "EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, DivDescription,ClDescription,EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, ";
 $MyQuery.= "AcColor, AcIsAthlete, PhPhoto, EnId ";
 $MyQuery.= "FROM Entries AS e ";

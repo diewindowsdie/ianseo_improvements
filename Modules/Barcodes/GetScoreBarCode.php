@@ -91,9 +91,9 @@ if($_GET) {
 							$GoBack=$_SERVER['SCRIPT_NAME'].go_get();
 								// edit the scorecard
 							$_REQUEST['Command']='OK';
-							$_REQUEST['x_Session']=$archer->QuTargetNo[0];
+							$_REQUEST['x_Session']=$archer->QuSession;
 							$_REQUEST['x_Dist']=$D;
-							$_REQUEST['x_Target']=substr($archer->QuTargetNo, 1);
+							$_REQUEST['x_Target']=$archer->QuTarget.$archer->QuLetter;
 							require_once('Qualification/WriteScoreCard.php');
 							die();
 						}
@@ -103,11 +103,11 @@ if($_GET) {
 							$GoBack=$_SERVER['SCRIPT_NAME'].go_get().'&return=1';
 								// edit the scorecard
 							$_REQUEST['Command']='OK';
-							$_REQUEST['x_Session']=$archer->QuTargetNo[0];
+							$_REQUEST['x_Session']=$archer->QuSession;
 							$_REQUEST['x_Dist']=$D;
-							$_REQUEST['x_From']=substr($archer->QuTargetNo, 1, -1);
-							$_REQUEST['x_To']=substr($archer->QuTargetNo, 1, -1);
-							if(count($archers)==1) $_REQUEST['x_Target']=$archer->QuTargetNo;
+							$_REQUEST['x_From']=$archer->QuTarget;
+							$_REQUEST['x_To']=$archer->QuTarget;
+							if(count($archers)==1) $_REQUEST['x_Target']=$archer->QuTarget.$archer->QuLetter;
 							$_REQUEST['x_Gold']=1;
 							require_once('Qualification/index.php');
 							die();
@@ -351,10 +351,10 @@ if(!$archers){
     echo '<th colspan="4"></th>';
     echo '</tr>';
     foreach($archers as $archer) {
-        $tgtList[] = $archer->QuTargetNo;
-        $T=$archer->QuTargetNo[0];
+        $tgtList[] = $archer->QuSession.'.'.$archer->QuTarget;
+        $T=$archer->QuSession;
         echo '<tr'.($archer->EnBib==$EnBib ? ' class="selected"' : '').'>';
-        echo '<td class="Score">'.ltrim(substr($archer->QuTargetNo, 1), '0').'</td>';
+        echo '<td class="Score">'.$archer->QuTarget.$archer->QuLetter.'</td>';
         echo '<td class="Score">'.intval($D).'</td>';
         echo '<td>'.$archer->Firstname.'</td>';
         echo '<td>'.$archer->EnName.'</td>';
@@ -412,7 +412,7 @@ if($ShowMiss) {
 			, EnName AS Name
 			, upper(EnFirstName) AS FirstName
 			, QuSession AS Session
-			, SUBSTRING(QuTargetNo,2) AS TargetNo
+			, CONCAT(QuTarget, QuLetter) AS TargetNo
 			, CoCode AS NationCode, CoName AS Nation
 			, EnClass AS ClassCode, ClDescription
 			, EnDivision AS DivCode, DivDescription
@@ -424,7 +424,7 @@ if($ShowMiss) {
 		WHERE EnAthlete=1
 			AND EnTournament = {$_SESSION['TourId']} AND EnStatus<=1
 			AND QuConfirm & ".pow(2, $D)." = 0
-		ORDER BY QuTargetNo ";
+		ORDER BY QuSession, QuTarget, QuLetter";
     $Q=safe_r_sql($MyQuery);
 
     while($r=safe_fetch($Q)) {
@@ -435,7 +435,7 @@ if($ShowMiss) {
             $cnt++;
         }
         $tmpRow .= '<tr class="'.$tgtClass.'" '.
-            (in_array($r->Session.$r->TargetNo, $tgtList) ? '' : 'onclick="sendTarget(\''.(empty($_GET['Targets']) ? $r->TargetNo : $tgt).'\')"').
+            (in_array($r->Session.'.'.$r->TargetNo, $tgtList) ? '' : 'onclick="sendTarget(\''.(empty($_GET['Targets']) ? $r->TargetNo : $tgt).'\')"').
             '><td>'.$r->TargetNo.'</td><td>'.$r->DivCode.$r->ClassCode.'</td><td>'.$r->FirstName.' '.$r->Name.'</td></tr>';
     }
     echo '<div class="fixedHead">' . get_text('TotalMissingScorecars','Tournament',$cnt) . '</div>';
@@ -453,19 +453,16 @@ function getScore($dist, $barcode, $strict=false, $Session=0) {
 	$ret=array();
 	$div='';
 	$cls='';
+    $bib = '';
+    $filter2 = '';
 	if($barcode[0]=='@') {
 		$barcode=substr($barcode,1);
-        $letter='%';
+        $letter='';
         if(!is_numeric($barcode)) {
             $letter=substr($barcode,-1);
             $barcode=substr($barcode,0, -1);
         }
-		// left-pad with 0 and insert jolly session if session not defined or not set
-		if(strlen($barcode)<4) {
-            $barcode=($Session ?: '_').str_pad($barcode, 3, '0', STR_PAD_LEFT);
-        }
-
-		$filter=" QuTargetNo like '".$barcode.$letter."'";
+		$filter=(empty($Session) ? "" : " QuSession=$Session and "). " QuTarget=$barcode " . (empty($letter) ? "" : " and QuLetter='".$letter."' ");
 	} elseif($barcode[0]=='#') {
 		$filter=" (EnFirstname like ".StrSafe_DB(substr($barcode,1).'%')." or EnName like ".StrSafe_DB(substr($barcode,1).'%').")";
 	} else {
@@ -491,11 +488,11 @@ function getScore($dist, $barcode, $strict=false, $Session=0) {
         $EnBib=$bib;
 
 		if(!$strict and !empty($_GET['Targets'])) {
-			$filter="left(QuTargetNo,4)=(select left(QuTargetNo,4) from Qualifications inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} where $filter)";
+			$filter="(QuSession, QuTarget) IN (select QuSession, QuTarget from Qualifications inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} where $filter)";
 		}
 		if(empty($bib) or empty($div) or empty($cls)) return;
 	}
-	$SQL="select QuTargetNo, EnCode EnBib, EnId, EnName, upper(EnFirstname) Firstname, EnDivision, EnClass, QuScore tScore, QuGold tGold, QuXnine tXnine, IFNULL(if(DiScoringEnds=0, DiEnds, DiScoringEnds)*DiArrows,0) as expectedArrows, 
+	$SQL="select QuSession, QuTarget, QuLetter, EnCode EnBib, EnId, EnName, upper(EnFirstname) Firstname, EnDivision, EnClass, QuScore tScore, QuGold tGold, QuXnine tXnine, IFNULL(if(DiScoringEnds=0, DiEnds, DiScoringEnds)*DiArrows,0) as expectedArrows, 
 	    " . ($_SESSION['TourLocSubRule']=='NFAA3D-ReddingWestern' ? "QuD1Score Score1, QuD2Score Score2, QuD3Score Score3, QuD1Hits Hits1, QuD2Hits Hits2, QuD3Hits Hits3," : "") . "
 	    " . ($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits" : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits") . "
 		from Qualifications 
@@ -503,7 +500,7 @@ function getScore($dist, $barcode, $strict=false, $Session=0) {
 		inner join Session on SesTournament=EnTournament and SesOrder=QuSession and SesType='Q'
 		left join DistanceInformation on DiTournament=EnTournament AND DiSession=QuSession AND DiDistance={$dist} AND DiType='Q'
 		where $filter
-		order by QuTargetNo, EnDivision='$div' desc, EnClass='$cls' desc ";
+		order by Qusession, QuTarget, QuLetter, EnDivision='$div' desc, EnClass='$cls' desc ";
     $q=@safe_r_sql($SQL, false, true);
     if(!$q) {
         return false;
@@ -512,13 +509,13 @@ function getScore($dist, $barcode, $strict=false, $Session=0) {
 		$ret["$r->EnBib"]=$r;
 	}
 	if(!$ret) {
-		$SQL="select QuTargetNo, EnCode EnBib, EnId, EnName, upper(EnFirstname) Firstname, EnDivision, EnClass, QuScore tScore, QuGold tGold, QuXnine tXnine, IFNULL(if(DiScoringEnds=0, DiEnds, DiScoringEnds)*DiArrows,0) as expectedArrows, " .
+		$SQL="select QuSession, QuTarget, QuLetter, EnCode EnBib, EnId, EnName, upper(EnFirstname) Firstname, EnDivision, EnClass, QuScore tScore, QuGold tGold, QuXnine tXnine, IFNULL(if(DiScoringEnds=0, DiEnds, DiScoringEnds)*DiArrows,0) as expectedArrows, " .
 				($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits" : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits") . "
 				from Qualifications 
 				inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} 
-				left join DistanceInformation on DiTournament=EnTournament AND DiSession=QuSession AND DiDistance={$dist} AND DiType='Q'
-				where $filter2
-				order by QuTargetNo, EnDivision='$div' desc, EnClass='$cls' desc ";
+				left join DistanceInformation on DiTournament=EnTournament AND DiSession=QuSession AND DiDistance={$dist} AND DiType='Q' ".
+                ($filter2 ? "where $filter2 " : "").
+				" order by QuSession, QuTarget, QuLetter, EnDivision='$div' desc, EnClass='$cls' desc ";
 		$q=safe_r_sql($SQL, false, true);
 		while($r=safe_fetch($q)) {
 			$ret["$r->EnBib"]=$r;
@@ -537,29 +534,29 @@ function getScore($dist, $barcode, $strict=false, $Session=0) {
 		$EnBib=$bib;
 
 		if(!$strict and !empty($_GET['Targets'])) {
-			$filter="left(QuTargetNo,4)=(select left(QuTargetNo,4) from Qualifications inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} inner JOIN ExtraData ON EdType='Z' and EdId=EnId where $filter)";
+			$filter="(QuSession, QuTarget)IN(select QuSession, QuTarget from Qualifications inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} inner JOIN ExtraData ON EdType='Z' and EdId=EnId where $filter)";
 		}
 		if(empty($bib) or empty($div) or empty($cls)) return;
 
-		$SQL="select QuTargetNo, EdExtra EnBib, EnId, EnName, upper(EnFirstname) Firstname, EnDivision, EnClass, QuScore tScore, QuGold tGold, QuXnine tXnine, IFNULL(if(DiScoringEnds=0, DiEnds, DiScoringEnds)*DiArrows,0) as expectedArrows, " .
+		$SQL="select QuSession, QuTarget, QuLetter, EdExtra EnBib, EnId, EnName, upper(EnFirstname) Firstname, EnDivision, EnClass, QuScore tScore, QuGold tGold, QuXnine tXnine, IFNULL(if(DiScoringEnds=0, DiEnds, DiScoringEnds)*DiArrows,0) as expectedArrows, " .
 			($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits" : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits") . "
             from Qualifications 
             inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} 
             inner JOIN ExtraData ON EdType='Z' and EdId=EnId
             left join DistanceInformation on DiTournament=EnTournament AND DiSession=QuSession AND DiDistance={$dist} AND DiType='Q'
             where $filter
-            order by QuTargetNo, EnDivision='$div' desc, EnClass='$cls' desc ";
+            order by QuSession, QuTarget, QuLetter, EnDivision='$div' desc, EnClass='$cls' desc ";
 		$q=safe_r_sql($SQL, false, true);
 		while($r=safe_fetch($q)) $ret["$r->EnBib"]=$r;
 		if(!$ret) {
-			$SQL="select QuTargetNo, EdExtra EnBib, EnId, EnName, upper(EnFirstname) Firstname, EnDivision, EnClass, QuScore tScore, QuGold tGold, QuXnine tXnine, IFNULL(if(DiScoringEnds=0, DiEnds, DiScoringEnds)*DiArrows,0) as expectedArrows, " .
+			$SQL="select QuSession, QuTarget, QuLetter, EdExtra EnBib, EnId, EnName, upper(EnFirstname) Firstname, EnDivision, EnClass, QuScore tScore, QuGold tGold, QuXnine tXnine, IFNULL(if(DiScoringEnds=0, DiEnds, DiScoringEnds)*DiArrows,0) as expectedArrows, " .
 				($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits" : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits") . "
 				from Qualifications 
 				inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} 
                 inner JOIN ExtraData ON EdType='Z' and EdId=EnId
                 left join DistanceInformation on DiTournament=EnTournament AND DiSession=QuSession AND DiDistance={$dist} AND DiType='Q'
 				where $filter2
-				order by QuTargetNo, EnDivision='$div' desc, EnClass='$cls' desc ";
+				order by QuSession, QuTarget, QuLetter, EnDivision='$div' desc, EnClass='$cls' desc ";
 			$q=safe_r_sql($SQL, false, true);
 			while($r=safe_fetch($q)) $ret["$r->EnBib"]=$r;
 			if(count($ret)>1) {

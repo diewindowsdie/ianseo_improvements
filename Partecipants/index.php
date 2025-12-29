@@ -57,7 +57,7 @@
 			$GroupType=GROUP_TYPE_NOGROUP;
 			break;
 		case 'ordTar':
-			$OrderBy = "Session {$OrderDir}, TargetNo {$OrderDir}, EnDivision, EnClass, EnFirstName, EnName ";
+			$OrderBy = "Session {$OrderDir}, Target {$OrderDir}, Letter {$OrderDir}, EnDivision, EnClass, EnFirstName, EnName ";
 			$GroupType=GROUP_TYPE_TARGET;
 			break;
 		case 'ordCode':
@@ -329,7 +329,7 @@ if (count($Rows)>0) {
 		}
 		echo '</td>';
 		echo '<td>'.$r['session'].'</td>';
-		echo '<td>'.$r['targetno'].'</td>';
+		echo '<td>'.(!empty($r['targetno']) ? $r['targetno'] : '') . '</td>';
 		echo '<td>'.$r['code'].'</td>';
 		echo '<td onclick="insertInput(this,\'localCode\')">'.$r['locCode'].'</td>';
 		echo '<td onclick="insertInput(this,\'firstname\')">'.$r['firstname'].'</td>';
@@ -337,7 +337,7 @@ if (count($Rows)>0) {
 		//echo '<td onclick="insertInput(this,\'tvname\')">'.$r['tvname'].'</td>';
 		echo '<td onclick="insertInput(this,\'email\')">'.$r['email'].'</td>';
 		echo '<td onclick="insertInput(this,\'caption\')">'.$r['caption'].'</td>';
-		echo '<td>'.dateRenderer($r['dob'],get_text('DateFmt')).'</td>';
+		echo '<td>'.dateRenderer($r['dob']??'',get_text('DateFmt')).'</td>';
 		echo '<td>'.$r['sex'].'</td>';
 		echo '<td>';
 		echo $r['country_code'].($r['country_id2']!=0?'&nbsp;<img src="'.$CFG->ROOT_DIR.'Common/Images/info.gif" style="width:12px;height:12px;" title="'.get_text('Country') . ' (2): ' . $r['country_code2'] .' - ' . $r['country_name2'].'" />':'');

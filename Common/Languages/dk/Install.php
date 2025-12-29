@@ -55,6 +55,9 @@ $lang['FieldPegRed']='Rød pind';
 $lang['FieldPegWhite']='Hvid pind';
 $lang['FieldPegYellow']='Gul pind';
 $lang['File permission error']='Du skal checke alle tilladelser af IANSEO installations mapper: den skal ikke være skrivebeskyttet af brugeren.';
+$lang['FreeOnlineResults']='<b>Gratis online udgivelse</b>. Via nettet kan du vise verdenen hvad der sker under konkurrencen. Det er gratis, så hvorfor vente? Når turneringen først er oprettet, så bed om en turneringskode under menu punktet «{$a}».
+Bed venligst om koden så hurtigt som muligt, helst en uge før selve konkurrencen, så vi har tid til at validere den!';
+$lang['GettingLanguagePacks']='Henter sprogpakker... Dette kan tage lidt tid...';
 $lang['Host']='Host';
 $lang['Install-0']='KRITISK FEJL';
 $lang['Install-0 Title']='GPL3 License Agreement';
@@ -280,6 +283,7 @@ $lang['UpdatePrepared']='Din installation vil blive automatisk opdateret. Husk a
 $lang['Updating']='Opdaterer den lokale installation af IANSEO';
 $lang['UpdatingLanguages']='Opdaterer installerede sprog';
 $lang['UpdatingModulesInfo']='Opdater modul information';
+$lang['UpgradeFinished']='Opdaterings processen er afsluttet. Du kan opdatere sprog på vilkårligt tidspunkt fra Vælg sprog siden';
 $lang['User']='Brugernavn';
 $lang['Value']='Værdi (indexed arrays items: key1::value1|key2::value2)';
 $lang['WhatIanseoDoes01']='<b>Følger World Archery</b> - Ianseo er altid opdateret i forhold til World Archery reglerne. Hvis der ønskes tilpasning for at følge nationale regler eller turneringsregler, så kontakt udviklerne som kan hjælpe med tilpasninger!';

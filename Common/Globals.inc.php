@@ -17,7 +17,7 @@ global $CFG;
 define ("ProgramName","Ianseo");	// Nome del programma
 define ("ProgramVersion","2025-09-03"); // "Congratulations to Greg Easton, 10th President of World Archery - Change is the essential process of all existence. (Spock)"
 
-define ("TargetNoPadding",3);		// Padding del targetno
+define ("TargetNoPadding",4);		// Padding del targetno
 
 define ("TieBreakArrows_Ind",3);	// Numero di frecce per il tiebreak dell'olympic round IND
 define ("TieBreakArrowsSet_Ind",1);	// Numero di frecce per il tiebreak dell'olympic round IND a SET
@@ -372,7 +372,7 @@ function CheckTourSession($PrintCrack=false, $popup=false)
 		isset($_SESSION['TourWhenTo']) && $_SESSION['TourWhenTo']!='0000-00-00')
 		{
 
-		if(!defined("TargetNoPadding")) define ("TargetNoPadding",3);
+		if(!defined("TargetNoPadding")) define ("TargetNoPadding",4);
 
 		return true;
 	}
@@ -1107,6 +1107,11 @@ function checkCompetitionAnomalies() {
             'Msg'=>get_text('EventIncompleteSetting', 'Errors', get_text('TeamFinEvent', 'Tournament')),
             'Lnk'=>$CFG->ROOT_DIR.'Final/Team/ListEvents.php',
         ],
+        'Q'=>[
+            'Cats'=>[],
+            'Msg'=>get_text('EndsArrowsMisMatch', 'Errors', get_text('Q-Session', 'Tournament')),
+            'Lnk'=>$CFG->ROOT_DIR.'Tournament/ManSessions_kiss.php',
+        ],
         'I'=>[
             'Cats'=>[],
             'Msg'=>get_text('EndsArrowsMisMatch', 'Errors', get_text('IndFinEvent', 'Tournament')),
@@ -1158,7 +1163,7 @@ function checkCompetitionAnomalies() {
               inner join Tournament on ToId=DivTournament
               where DivTournament={$_SESSION['TourId']} and DivAthlete=1) as AllCats
         left join TournamentDistances on TdTournament={$_SESSION['TourId']} and TdType=ToType and Category like TdClasses
-        group by Category
+        group by Category, DivViewOrder, ClViewOrder
         having Distances!=1 or NoDistances=1
         order by DivViewOrder, ClViewOrder");
     while($r=safe_fetch($q)) {
@@ -1191,12 +1196,20 @@ function checkCompetitionAnomalies() {
         $Ret[$r->TeamEvent]['Cats'][]='<a href="'.$CFG->ROOT_DIR.'Final/Individual/SetEventRules.php?EvCode='.$r->EvCode.'">'.$r->EvCode.'</a>';
     }
 
+    // check events End/Arrows anomalies in Qualification
+    $q=safe_r_sql("SELECT `DiSession`, `DiDistance` 
+        FROM `DistanceInformation` 
+        WHERE `DiTournament` = {$_SESSION['TourId']} and (DiEnds=0 or DiArrows=0)
+        order by DiSession, DiDistance");
+    while($r=safe_fetch($q)) {
+        $Ret['Q']['Cats'][]=get_text('PopupStatusSession', 'Api',$r->DiSession) . ': ' . get_text('DistanceNum', 'Api',$r->DiDistance);
+    }
+
     // check events End/Arrows anomalies
     $q=safe_r_sql("select EvCode, if(EvTeamEvent=1,'T','I') as TeamEvent
         from Events
         where EvTournament={$_SESSION['TourId']} and (EvElimEnds=0 or EvFinEnds=0 or EvElimArrows=0 or EvFinArrows=0) and EvFinalFirstPhase!=0
         order by EvTeamEvent,EvProgr");
-
     while($r=safe_fetch($q)) {
         $Ret[$r->TeamEvent]['Cats'][]=$r->EvCode;
     }
@@ -1301,4 +1314,36 @@ function UpdateToInnoDb($Apply=true) {
     }
 
     return false;
+}
+
+function createAvailableTargetSQL($Session=0, $TourId=0) {
+    if(!$TourId) {
+        $TourId=$_SESSION['TourId'];
+    }
+    /*
+SELECT A.Session as AtSession,  A.Target AS AtTarget, B.Letter as AtLetter
+FROM
+    (SELECT 1 as Session, 1 as Target UNION ALL SELECT 1,2) AS A
+CROSS JOIN
+	(SELECT 'A' as Letter UNION ALL SELECT 'B') AS B
+ORDER BY AtSession, AtTarget, AtLetter;
+     */
+    $aSub = array();
+    $bSub = array();
+    $Sql = "SELECT `SesOrder`, `SesTar4Session`, `SesAth4Target`, `SesFirstTarget` 
+        FROM `Session` 
+        WHERE `SesTournament`=$TourId AND `SesType`='Q'" . ($Session ? " AND `SesOrder`=$Session" : "");
+    $q=safe_r_SQL($Sql);
+    while($r=safe_fetch($q)) {
+        foreach (range($r->SesFirstTarget, $r->SesFirstTarget+$r->SesTar4Session-1) as $i) {
+            $tmp = "SELECT $r->SesOrder as `Session`, $i as `Target`,";
+            foreach (range("A", chr(64+$r->SesAth4Target)) as $i) {
+                $aSub[] = $tmp . " '$i' as `Letter`";
+            }
+        }
+    }
+    return  "SELECT `A`.`Session` as `FullTgtSession`,  `A`.`Target` AS `FullTgtTarget`, `A`.`Letter` as `FullTgtLetter` 
+        FROM  (".implode(' UNION ALL ', $aSub).') AS `A` 
+        ORDER BY `FullTgtSession`, `FullTgtTarget`, `FullTgtLetter`';
+
 }

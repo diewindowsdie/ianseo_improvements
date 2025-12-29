@@ -83,7 +83,6 @@ function GetSessions($type=null,$extend=false,$ids=null,$tour=null) {
 function GetNumQualSessions() {
     $q="SELECT ToNumSession FROM Tournament WHERE ToId={$_SESSION['TourId']}";
     $r=safe_r_sql($q);
-
     return safe_fetch($r)->ToNumSession;
 }
 

@@ -1,16 +1,43 @@
 <?php
 
-require_once(dirname(dirname(__FILE__)) . '/config.php');
+require_once(dirname(__FILE__, 2) . '/config.php');
 require_once('Common/Lib/Fun_DateTime.inc.php');
 require_once('Scheduler/LibScheduler.php');
 
-$JSON=array('error'=>1, 'msg'=>get_text('NoPrivilege', 'Errors'));
+$JSON=array('error'=>1);
 
 if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cSchedule', AclReadWrite) or empty($_REQUEST['act'])) {
-	JsonOut($JSON);
+    $JSON['msg']=get_text('NoPrivilege', 'Errors');
+    JsonOut($JSON);
 }
 
 switch($_REQUEST['act']) {
+    case 'getDistanceSessions':
+        $JSON['error']=0;
+        $Value=array();
+        $q=safe_r_sql("SELECT `ToNumDist`, `SesOrder`, `SesName`, `DistanceInformation`.* 
+            FROM `Tournament`
+            INNER JOIN `Session` on `SesTournament`=`ToId` and SesType='Q'
+            INNER JOIN `DistanceInformation` on DiTournament=ToId and DiSession=SesOrder AND DiType=SesType
+            where `ToId`={$_SESSION['TourId']}");
+        while($r=safe_fetch($q)) {
+            if(!array_key_exists($r->DiSession, $Value)) {
+                $Value[$r->DiSession] = array('Order'=>$r->SesOrder, 'Name'=>$r->SesName, 'Distances'=>array());
+            }
+            $Value[$r->DiSession]['Distances'][$r->DiDistance]=array(
+                "Ends"=>$r->DiEnds,
+                "Arrows"=>$r->DiArrows,
+                "ScoringEnds"=>$r->DiScoringEnds,
+                "ScoringOffset"=>$r->DiScoringOffset,
+                "Day"=>$r->DiDay=='0000-00-00' ? '' : $r->DiDay,
+                "Start"=>$r->DiStart=='00:00:00' ? '' : substr($r->DiStart, 0, 5),
+                "Duration"=>$r->DiDuration,
+                "WarmStart"=>$r->DiWarmStart=='00:00:00' ? '' : substr($r->DiWarmStart, 0, 5),
+                "WarmDuration"=>$r->DiWarmDuration,
+                "Options"=>$r->DiOptions
+            );
+        }
+        break;
 	case 'update':
 		$JSON['value']='';
 		if(!empty($_REQUEST['end'])) {

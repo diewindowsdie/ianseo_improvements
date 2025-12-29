@@ -100,6 +100,41 @@ if($version<'2025-07-30 11:05:00') {
     db_save_version('2025-07-30 11:05:00');
 }
 
+if($version<'2025-12-07 11:25:00') {
+    safe_w_sql("UPDATE `LookUpPaths` SET `LupFlagsPath` = 'https://extranet.ffta.fr/ianseo/logo.php' WHERE `LupIocCode` = 'FRA'",false, array());
+    safe_w_sql("ALTER TABLE `AvailableTarget` CHANGE `AtTargetNo` `AtTargetNo` VARCHAR(9) NOT NULL",false, array(1146, 1054));
+    safe_w_sql("ALTER TABLE `Eliminations` CHANGE `ElTargetNo` `ElTargetNo` VARCHAR(9) NOT NULL",false, array(1146, 1054));
+    safe_w_sql("ALTER TABLE `HhtData` CHANGE `HdTargetNo` `HdTargetNo` VARCHAR(9) NOT NULL",false, array(1146, 1054));
+    safe_w_sql("ALTER TABLE `HTTData` CHANGE `HtdTargetNo` `HtdTargetNo` VARCHAR(9) NOT NULL",false, array(1146, 1054));
+    safe_w_sql("ALTER TABLE `IskData` CHANGE `IskDtTargetNo` `IskDtTargetNo` VARCHAR(9) NOT NULL",false, array(1146, 1054));
+    safe_w_sql("ALTER TABLE `Qualifications` CHANGE `QuTargetNo` `QuTargetNo` VARCHAR(9) NOT NULL",false, array(1146, 1054));
+    db_save_version('2025-12-07 11:25:00');
+}
+
+if($version<'2025-12-11 16:50:00') {
+    safe_w_sql("ALTER TABLE `IskDevices` CHANGE `IskDvTarget` `IskDvTarget` VARCHAR(4) NOT NULL, CHANGE `IskDvTargetReq` `IskDvTargetReq` VARCHAR(4) NOT NULL",false, array(1146, 1054));
+    safe_w_sql("ALTER TABLE `DistanceInformation` CHANGE `DiSession` `DiSession` TINYINT UNSIGNED NOT NULL",false, array(1146, 1054));
+    db_save_version('2025-12-11 16:50:00');
+}
+
+if($version<'2025-12-12 21:05:00') {
+    safe_w_sql("ALTER TABLE `FinSchedule` CHANGE `FSTarget` `FSTarget` VARCHAR(4) NOT NULL",false, array(1146, 1054));
+    safe_w_sql("ALTER TABLE `CasScore` CHANGE `CaSTarget` `CaSTarget` VARCHAR(4) NOT NULL",false, array(1146, 1054));
+    safe_w_sql("ALTER TABLE `CasTeamTarget` CHANGE `CTTTarget` `CTTTarget` VARCHAR(4) NOT NULL",false, array(1146, 1054));
+    safe_w_sql("ALTER TABLE `ClubTeamScore` CHANGE `CTSTarget` `CTSTarget` VARCHAR(4) NOT NULL",false, array(1146, 1054));
+    safe_w_sql("ALTER TABLE `HhtData` CHANGE `HdRealTargetNo` `HdRealTargetNo` VARCHAR(4) NOT NULL",false, array(1146, 1054));
+    db_save_version('2025-12-12 21:05:00');
+}
+
+if($version<'2025-12-18 17:50:00') {
+    safe_w_sql("REPLACE INTO `Targets` (`TarId`, `TarDescr`, `TarArray`, `TarStars`, `TarOrder`, `TarFullSize`, 
+        `A_size`, `A_color`, `B_size`, `B_color`, `C_size`, `C_color`, `D_size`, `D_color`, `E_size`, `E_color`, `F_size`, `F_color`, `G_size`, `G_color`, `H_size`, `H_color`, `I_size`, `I_color`, `J_size`, `J_color`, 
+        `K_size`, `K_color`, `L_size`, `L_color`, `M_size`, `M_color`, `N_size`, `N_color`, `O_size`, `O_color`, `P_size`, `P_color`, `Q_size`, `Q_color`, `R_size`, `R_color`, `S_size`, `S_color`, `T_size`, `T_color`, 
+        `U_size`, `U_color`, `V_size`, `V_color`, `W_size`, `W_color`, `X_size`, `X_color`, `Y_size`, `Y_color`, `Z_size`, `Z_color`, `TarDummyLine`, `1_size`, `1_color`, `2_size`, `2_color`, `3_size`, `3_color`, `4_size`, `4_color`, `5_size`, `5_color`, `6_size`, `6_color`, `7_size`, `7_color`, `8_size`, `8_color`, `9_size`, `9_color`, `TarIskDefinition`) 
+        VALUES(32, 'TrgIndSmall5', 'TrgIndSmall5', 'af-j', '5', '100', '0', '', '0', '', '0', '', '0', '', '0', '', '60', '00A3D1', '50', '00A3D1', '40', 'ED2939', '30', 'ED2939', '20', 'F9E11E', '5', 'F9E11E', '10', 'F9E11E', 
+       '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '0', '', '')", false,  array(1146, 1054));
+    db_save_version('2025-12-18 17:50:00');
+}
 /*
 
 // TEMPLATE

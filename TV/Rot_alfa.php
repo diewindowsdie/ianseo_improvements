@@ -16,7 +16,7 @@ if(in_array('HALL',$TVsettings->Columns) and $FopLocations=Get_Tournament_Option
 }
 
 $Select
-	= "SELECT LEFT(UPPER(EnFirstName), 1) as Initial, EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, $HallField as Hall "
+	= "SELECT LEFT(UPPER(EnFirstName), 1) as Initial, EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, QuSession AS Session, CONCAT(QuTarget, QuLetter) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, $HallField as Hall "
 	. "FROM Entries  "
 	. "INNER JOIN Countries ON EnCountry=CoId AND EnTournament=CoTournament "
 	. "INNER JOIN Divisions ON EnDivision=DivId AND EnTournament=DivTournament and DivAthlete=1 "

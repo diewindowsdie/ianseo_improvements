@@ -16,8 +16,7 @@
 	$Dist=0;
 
 
-	if(isset($_REQUEST["x_Hht"]) && $_REQUEST["x_Hht"]!=-1)
-	{
+	if(isset($_REQUEST["x_Hht"]) && $_REQUEST["x_Hht"]!=-1) {
 		$Select = "Select HsPhase, HsSequence, HsDistance FROM HhtSetup WHERE HsTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND HsId=" . StrSafe_DB($_REQUEST['x_Hht']);
 		$rs = safe_w_sql($Select);
 		$MyRow = safe_fetch($rs);
@@ -40,31 +39,27 @@
 	$Status=array(); // will be orange (wrong arrow range)
 	$Disable=array();	// no se final
 
-	if (is_numeric($xSession))	//qual
-	{
-		$Sql  = "SELECT SUBSTRING(AtTargetNo,2," . (TargetNoPadding) . ") as ChiTarget, SUBSTRING(AtTargetNo," . (TargetNoPadding+2) . ",1) as ChiLetter ";
-		$Sql .= "FROM AvailableTarget at ";
-		$Sql .= "LEFT JOIN ";
-		$Sql .= "(SELECT QuTargetNo FROM Qualifications AS q  ";
-		$Sql .= "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 AND EnStatus<6) as Sq ON at.AtTargetNo=Sq.QuTargetNo ";
-		$Sql .= "WHERE AtTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND LEFT(AtTargetNo,1)='" . $xSession . "' AND Sq.QuTargetNo is NULL ";
-
+	if (is_numeric($xSession)) {	//qual
+        $atSql = createAvailableTargetSQL(($Session??0), $_SESSION['TourId']);
+        $Sql  = "SELECT FullTgtTarget as ChiTarget, FullTgtLetter as ChiLetter ";
+        $Sql .= "FROM ($atSql) at ";
+        $Sql .= "LEFT JOIN ";
+        $Sql .= "(SELECT QuSession, QuTarget, QuLetter FROM Qualifications AS q  ";
+        $Sql .= "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1) as Sq ON QuSession=FullTgtSession AND QuTarget=FullTgtTarget AND QuLetter=FullTgtLetter ";
+        $Sql .= "WHERE FullTgtSession='" . $_REQUEST['x_Session'] . "' AND Sq.QuTarget is NULL";
 		$Rs = safe_r_sql($Sql);
-		if(safe_num_rows($Rs)>0)
-		{
+		if(safe_num_rows($Rs)>0) {
 			while($myRow = safe_fetch($Rs)) {
 				$Disable[] = intval($myRow->ChiTarget) . $myRow->ChiLetter;
 				$Status[intval($myRow->ChiTarget) . $myRow->ChiLetter]='Disabled';
 			}
 		}
 
-		$Sql = "SELECT QuTargetNo FROM Qualifications AS q  ";
-		$Sql .= "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 AND EnStatus<6 AND LEFT(QuTargetNo,1)='" . $xSession . "'";
+		$Sql = "SELECT QuTarget FROM Qualifications AS q  ";
+		$Sql .= "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 AND EnStatus<6 AND QuSession='" . $xSession . "'";
 		$Rs = safe_r_sql($Sql);
 		$Num2Download = safe_num_rows($Rs);
-	}
-	else
-	{
+	} else {
 	// if matchmode==0 the code manages the thing directly so it doesn't matter here
 		$Team=substr($xSession,0,1);
 		$prefix=($Team?'Tf':'Fin');
@@ -121,12 +116,9 @@
 
 	$HTTs=(isset($_REQUEST['HTT']) ? $_REQUEST['HTT'] : null);
 
-	if (!is_null($Command))
-	{
-		if ($Command=='OK' || $Command=='STORE')
-		{
-			if (!is_null($HTTs) && is_array($HTTs))
-			{
+	if (!is_null($Command)) {
+		if ($Command=='OK' || $Command=='STORE') {
+			if (!is_null($HTTs) && is_array($HTTs)) {
 				// preparo i destinatari
 					$Dests=array_values($HTTs);
 					sort($Dests);	// per essere sicuro che se c'è lo zero allora sarà all'inizio
@@ -140,16 +132,13 @@
 
 					// Risposte
 					$Results = array();
-					if(count($Frames)>0)
-					{
+					if(count($Frames)>0) {
 						$ResponseFromHHT=false;
 						$Results=SendHTT(HhtParam($_REQUEST['x_Hht']),$Frames,true);
 						if(!is_null($Results))
 							$ResponseFromHHT=true;
-						if (count($Results)!=0)
-						{
-							foreach($Results as $v)
-							{
+						if (count($Results)!=0) {
+							foreach($Results as $v) {
 							//Carico il vettore HTTOK
 								if ($v["TargetNo"]!=-1) {
 									$HTTOK[]=$v["TargetNo"];
@@ -163,14 +152,11 @@
 							//Verifico il tipo di dato che torna
 								$EnId=0;
 								if ($v["FlagWhat"]==-1)	{//Qualifica
-									$TargetNo = $v["Session"] . str_pad($v["TargetNo"],(TargetNoPadding+1),'0',STR_PAD_LEFT);
 									$t=safe_r_sql("select EnId from Entries
-											inner join Qualifications on QuId=EnId and QuTargetNo='{$TargetNo}'
-											where EnTournament={$_SESSION['TourId']}
-											");
+                                        inner join Qualifications on QuId=EnId and QuSession=" .StrSafe_DB($v["Session"] ). " AND QuTarget=" .StrSafe_DB($v["TargetNo"]) . " 
+                                        where EnTournament={$_SESSION['TourId']}");
 									if($u=safe_fetch($t)) $EnId=$u->EnId;
-								} else	// finali
-								{
+								} else	{// finali
 									$TargetType='';
 									$TargetNo=str_pad($v["TargetNo"],(TargetNoPadding+1),'0',STR_PAD_LEFT);
 									$team = $v["FlagWhat"];
@@ -185,8 +171,7 @@
 										. "FSTarget=" .StrSafe_DB(substr($TargetNo,0,-1));
 									$rs=safe_r_sql($query);
 
-									if (safe_num_rows($rs)==1)
-									{
+									if (safe_num_rows($rs)==1) {
 										$myRow = safe_fetch($rs);
 										$TargetType=$myRow->EvFinalTargetType;
 									}
@@ -194,13 +179,14 @@
 
 								$ArrowString='';
 								$str=$v["ArrowString"];
-								for ($k=0;$k<strlen($str);++$k)
-								{
+								for ($k=0;$k<strlen($str);++$k) {
 									$value=$str[$k];
-									if ($value=='0')
-										$value='M';
-									elseif ($value==chr(158))
-										$value=10;
+									if ($value=='0') {
+                                        $value = 'M';
+                                    }
+									else if ($value==chr(158)) {
+                                        $value = 10;
+                                    }
 
 									$ChekedValue1=GetLetterFromPrint($value);
 									if($v["FlagWhat"]==-1) { // Qualifications
@@ -239,16 +225,13 @@
 						// imposto gli id
 							$Sql="";
 
-							if (is_numeric($xSession))
-							{
+							if (is_numeric($xSession)) {
 								$Sql = "UPDATE HhtData "
-									. "INNER JOIN Qualifications ON HdTargetNo=QuTargetNo "
+									. "INNER JOIN Qualifications ON HdTargetNo=CONCAT(QuSession,'.',QuQuTarget) "
 									. "INNER JOIN Entries ON QuId=EnId AND HdTournament=EnTournament "
 									. "SET HdEnId=EnId "
 									. "WHERE HdTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND HdHhtId=". StrSafe_DB($_REQUEST['x_Hht']);
-							}
-							else
-							{
+							} else {
 								$Sql
 									= "UPDATE "
 										. "Grids "
@@ -268,76 +251,34 @@
 										. "HdEvent=FSEvent "
 									. "WHERE "
 										. "FSTournament=" . StrSafe_DB($_SESSION['TourId']) . " ";
-/*
-
-update HhtData
-inner join FinSchedule on
-	FSLetter=HdTargetNo
-	AND HdFinScheduling=CONCAT(FSScheduledDate,' ',FSScheduledTime)
-	AND HdTeamEvent=FSTeamEvent
-	AND HdTournament=FSTournament
-
-set HdMatchNo=FSMatchNo, HdEvent=FSEvent
-where
-	HdTournament=296
-	AND HdTeamEvent=1
-	AND HdHhtId=1
-
-Original
-UPDATE
- Grids
- INNER JOIN FinSchedule ON GrMatchNo=FSMatchNo AND FSTeamEvent=1 AND FSTournament='147'
- INNER JOIN Events ON FSEvent=EvCode AND FSTeamEvent=1 AND FSTournament=EvTournament AND FSTournament='147'
- INNER JOIN HhtData ON FSTarget=LEFT(HdTargetNo,CHAR_LENGTH(HdTargetNo)-1) AND IF(IF((IF(GrPhase>0,GrPhase*2,1) & EvFinalAthTarget)=IF(GrPhase>0,GrPhase*2,1),1,0)=1 && MOD(GrMatchNo,2)=1,'B','A') = RIGHT(HdTargetNo,1) AND HdFinScheduling=CONCAT(FSScheduledDate,' ',FSScheduledTime) AND HdTeamEvent=FSTeamEvent AND HdTeamEvent=1 AND HdTournament=FSTournament AND HdHhtId='1' SET HdMatchNo=FSMatchNo,HdEvent=FSEvent WHERE FSTournament='147'
-
-Maybe this one is better!
-
-
-UPDATE Grids INNER JOIN FinSchedule ON GrMatchNo = FSMatchNo AND FSTeamEvent =1 INNER JOIN EVENTS ON FSEvent = EvCode AND FSTeamEvent =1 AND FSTournament = EvTournament INNER JOIN HhtData ON FSTarget = HdRealTargetNo AND if( IF( GrPhase >0, GrPhase *2, 1 ) & EvFinalAthTarget >0 AND MOD( GrMatchNo, 2 ) =1, 'B', 'A' ) = HdRealLetter AND HdFinScheduling = CONCAT( FSScheduledDate, ' ', FSScheduledTime ) AND HdTeamEvent = FSTeamEvent AND HdTournament = FSTournament SET HdMatchNo = FSMatchNo,
-HdEvent = FSEvent WHERE FSTournament = '296' AND HdTeamEvent =1 AND HdHhtId = '1'
-
-
-*/
 							}
-							//print $Sql;exit();
 							safe_w_sql($Sql);
-
 						}
 					}
-				/*}
-				else
-					$Msg=get_text('SetDistanceError','HTT');*/
 			}
 		}
 	}
 
-	if(isset($_REQUEST['x_Hht']) && $_REQUEST['x_Hht']!=-1)
-	{
+	if(isset($_REQUEST['x_Hht']) && $_REQUEST['x_Hht']!=-1) {
 		$Sql="";
-		if (is_numeric($xSession))	// qual
-		{
+		if (is_numeric($xSession)) {	// qual
 			$Sql = "SELECT SUBSTRING(HdTargetNo,2," . (TargetNoPadding) . ") as ChiTarget, SUBSTRING(HdTargetNo," . (TargetNoPadding+2) . ",1) as ChiLetter "
 				. "FROM `HhtData` "
 				. "WHERE LEFT(HdTargetNo,1)='" . $xSession . "' AND HdDistance='" . $Dist . "' "
 				. "AND HdArrowStart='". $FirstArr . "' AND HdArrowEnd='". $LastArr . "' AND INSTR(HdArrowString, ' ')!= 0 "
 				. "AND HdTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND HdHhtId=". StrSafe_DB($_REQUEST['x_Hht']);
-		}
-		else	// final
-		{
-
+		} else {	// final
 			$Sql
 				= "SELECT LEFT(HdTargetNo,CHAR_LENGTH(HdTargetNo)-1) AS ChiTarget, RIGHT(HdTargetNo,1) AS ChiLetter "
 				. "FROM HhtData "
 				. "WHERE HdFinScheduling=" . StrSafe_DB(substr($xSession,1)) . " AND HdTeamEvent=" . StrSafe_DB(substr($xSession,0,1)) . " "
 				. "AND HdArrowStart='". $FirstArr . "' AND HdArrowEnd='". $LastArr . "' AND INSTR(HdArrowString, ' ')!= 0 "
 				. "AND HdTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND HdHhtId=". StrSafe_DB($_REQUEST['x_Hht']);
-
 		}
 	//print $Sql;Exit;
 // ora gestisce le arrowstring con errore per colorare di rosso
 		$Rs = safe_r_sql($Sql);
-		if(safe_num_rows($Rs)>0)
-		{
+		if(safe_num_rows($Rs)>0) {
 			while($myRow = safe_fetch($Rs)) {
 				$FromDB[] = intval($myRow->ChiTarget) . $myRow->ChiLetter;
 				$Status[intval($myRow->ChiTarget) . $myRow->ChiLetter]='Red';
@@ -358,8 +299,7 @@ HdEvent = FSEvent WHERE FSTournament = '296' AND HdTeamEvent =1 AND HdHhtId = '1
 	<input type="hidden" name="Command" value="">
 	<table class="Tabella" >
 <?php
-if(!$ResponseFromHHT)
-{
+if(!$ResponseFromHHT) {
 	echo '<tr class="error" style="height:35px;"><td colspan="5" class="Center LetteraGrande">' . get_text('HTTNotConnected','HTT') . '</td></tr>';
 }
 ?>
@@ -371,8 +311,7 @@ if(!$ResponseFromHHT)
 			<td colspan="3"><?php print get_text('KeepSelectedHHT','HTT');?>: <input type="checkbox" name="propagate"<?php echo (!empty($_REQUEST['propagate']) || empty($_REQUEST['x_Session'])?' checked="checked"':'') ?> onclick="UpdateLinks(this.checked,'FrmParam')" id="d_UpdateLinks"></td>
 		</tr>
 		<?php
-		if(isset($_REQUEST["x_Hht"]) && $_REQUEST["x_Hht"]!=-1)
-		{
+		if(isset($_REQUEST["x_Hht"]) && $_REQUEST["x_Hht"]!=-1) {
 		?>
 		<tr>
 			<th width="20%"><?php print get_text('Session');?></th>
@@ -395,23 +334,18 @@ if(!$ResponseFromHHT)
 	<br/>
 	<div id="HhtSearchResult">
 	<?php
-		if(isset($_REQUEST["x_Hht"]) && $_REQUEST["x_Hht"]!=-1)
-		{
-			if ($xSession!='0' &&
-				($FirstArr<=$LastArr) &&
-				$Volee>0)
-			{
+		if(isset($_REQUEST["x_Hht"]) && $_REQUEST["x_Hht"]!=-1) {
+			if ($xSession!='0' && ($FirstArr<=$LastArr) && $Volee>0) {
 				print SelectTableHTT(10, 'FrmParam', false, $HTTOK, $FromDB, $Disable, false, $Status);
 
 				print '<br /><table class="Tabella"><tr><td class="Center LetteraGrande">' . count($HTTOK) . ' / ' . $Num2Download . "</td></tr></table>\n";
-				print '<br/><table class="Tabella">' . "\n";
-					print '<tr><td class="Center"><input type="submit" value="' . get_text('CmdOk') . '" onclick="document.FrmParam.Command.value=\'OK\'"/></td></tr>' . "\n";
-					print '<tr><td class="Center"><br/><a target="import" class="Link" href="Import.php?x_Hht=' . $_REQUEST["x_Hht"] . '&x_Session=' . $xSession . '&amp;FirstArr=' . $FirstArr . '&amp;LastArr=' . $LastArr . '&amp;Volee=' . $Volee . '&amp;Dist=' . $Dist . '&amp;Command=OK">' . get_text('CmdImport','HTT') . '</a></td></tr>' . "\n";
-					if ($Msg!='')
-					{
-						print '<tr><td class="Center Bold">' . $Msg . '</td></tr>' . "\n";
+				print '<br/><table class="Tabella">';
+					print '<tr><td class="Center"><input type="submit" value="' . get_text('CmdOk') . '" onclick="document.FrmParam.Command.value=\'OK\'"/></td></tr>';
+					print '<tr><td class="Center"><br/><a target="import" class="Link" href="Import.php?x_Hht=' . $_REQUEST["x_Hht"] . '&x_Session=' . $xSession . '&amp;FirstArr=' . $FirstArr . '&amp;LastArr=' . $LastArr . '&amp;Volee=' . $Volee . '&amp;Dist=' . $Dist . '&amp;Command=OK">' . get_text('CmdImport','HTT') . '</a></td></tr>';
+					if ($Msg!='') {
+						print '<tr><td class="Center Bold">' . $Msg . '</td></tr>';
 					}
-				print '</table>' . "\n";
+				print '</table>';
 
 				print '<br/><div>';
 				$outhht='';
@@ -421,19 +355,17 @@ if(!$ResponseFromHHT)
 				print '<div align="left" style="position: relative; float: left; width: 45%;"><a href="Sequence.php?propagate='.(!empty($_REQUEST['propagate'])).'&x_Hht=' . $_REQUEST['x_Hht'] . '&x_Session=' . $_REQUEST['x_Session'] . $outhht . '" id="HhtPrevPage">' . get_text('HTTSequence', 'HTT') . '</a></div>';
 				print '</div><br/>';
 
-				print '<br/><table class="Tabella">' . "\n";
-					print '<tr><td class="Center"><input type="submit" value="' . get_text('Store','HTT') . '" onclick="document.FrmParam.Command.value=\'STORE\'"/></td></tr>' . "\n";
-				print '</table>' . "\n";
+				print '<br/><table class="Tabella">';
+					print '<tr><td class="Center"><input type="submit" value="' . get_text('Store','HTT') . '" onclick="document.FrmParam.Command.value=\'STORE\'"/></td></tr>';
+				print '</table>';
 
-			}
-			else
-			{
+			} else {
 				print '<br/>';
-				print '<div align="center">' . "\n";
-					print '<table class="Tabella">' . "\n";
-						print '<tr><th>' . get_text('Error') . '</th></tr>' . "\n";
-					print '</table>' . "\n";
-				print '</div>' . "\n";
+				print '<div align="center">';
+					print '<table class="Tabella">';
+						print '<tr><th>' . get_text('Error') . '</th></tr>';
+					print '</table>';
+				print '</div>';
 			}
 		}
 	?>

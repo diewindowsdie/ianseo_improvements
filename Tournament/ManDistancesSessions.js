@@ -1,4 +1,40 @@
+$(function() {
+	LoadDistanceSessions();
+})
 
+function LoadDistanceSessions() {
+	$.getJSON('ManDistancesSessions-Action.php', {act:'getDistanceSessions'}, function(data) {
+		if(data.error==0) {
+			buildDistanceSessions(data.value);
+		}
+	});
+}
+
+function buildDistanceSessions(sessions) {
+	let tmpHtml = ''
+	$.each(sessions, (index, item) => {
+		tmpHtml += '<tr><th class="Title" colspan="11">' + (item.Name ? item.Name : Session + ': ' +item.Order) +'</th></tr>'+
+			headerDistanceSession;
+		$.each(item.Distances, (iDist, itemDist) => {
+			tmpHtml += '<tr>'+
+				'<th>.' + iDist + '.</th>' +
+				'<td class="Center"><input size="4" maxlength="3" type="text" name="end['+item.Order+']['+iDist+']" onchange="ChangeInfo(this)" value="'+itemDist.Ends+'"></td>'+
+				'<td class="Center"><input size="4" maxlength="3" type="text" name="arr['+item.Order+']['+iDist+']" onchange="ChangeInfo(this)" value="'+itemDist.Arrows+'"></td>'+
+				'<td class="Center d-none advanced"><input size="4" maxlength="3" type="text" name="shoot['+item.Order+']['+iDist+']" onchange="ChangeInfo(this)" value="'+itemDist.ScoringEnds+'"></td>'+
+				'<td class="Center d-none advanced"><input size="4" maxlength="3" type="text" name="offset['+item.Order+']['+iDist+']" onchange="ChangeInfo(this)" value="'+itemDist.ScoringOffset+'"></td>'+
+				'<td class="Center"><input size="10" maxlength="10" type="date" name="startday['+item.Order+']['+iDist+']" onblur="ChangeInfo(this)" value="'+itemDist.Day+'"></td>'+
+				'<td class="Center"><input size="6" maxlength="5" type="time" name="warmtime['+item.Order+']['+iDist+']" onchange="ChangeInfo(this)" value="'+itemDist.WarmStart+'"></td>'+
+				'<td class="Center"><input size="4" maxlength="3" type="text" name="warmduration['+item.Order+']['+iDist+']" onchange="ChangeInfo(this)" value="'+itemDist.WarmDuration+'"></td>'+
+				'<td class="Center"><input size="6" maxlength="5" type="time" name="starttime['+item.Order+']['+iDist+']" onblur="ChangeInfo(this)" value="'+itemDist.Start+'"></td>'+
+				'<td class="Center"><input size="5" maxlength="3" type="text" name="duration['+item.Order+']['+iDist+']" onchange="ChangeInfo(this)" value="'+itemDist.Duration+'"></td>'+
+				'<td class="Center"><input size="70" type="text" name="comment['+item.Order+']['+iDist+']" onchange="ChangeInfo(this)" value="'+itemDist.Options+'"></td>'+
+			'</tr>';
+		});
+		tmpHtml += '<tr class="Divider"><td colspan="11"></td></tr>'
+	});
+	$('#lstDistanceSession').html(tmpHtml);
+
+}
 
 function ChangeInfo(obj) {
 	if((obj.type=='date' || obj.type=='time')) {
@@ -21,45 +57,5 @@ function ChangeInfo(obj) {
 			showAlert(data.msg);
 		}
 	});
-	// var field=+'='+;
-	//
-	// var XMLHttp=CreateXMLHttpRequestObject();
-	// if (XMLHttp) {
-	// 	try {
-	// 		if ((XMLHttp.readyState==XHS_COMPLETE || XMLHttp.readyState==XHS_UNINIT)) {
-	// 			XMLHttp.open("GET","?"+field,true);
-	// 			XMLHttp.onreadystatechange=function() {
-	// 				if (XMLHttp.readyState!=XHS_COMPLETE) return;
-	// 				if (XMLHttp.status!=200) return;
-	// 				try {
-	// 					var XMLResp=XMLHttp.responseXML;
-	// 					// intercetto gli errori di IE e Opera
-	// 					if (!XMLResp || !XMLResp.documentElement) throw(XMLResp.responseText);
-	//
-	// 					// Intercetto gli errori di Firefox
-	// 					var XMLRoot;
-	// 					if ((XMLRoot = XMLResp.documentElement.nodeName)=="parsererror") throw("ParseError");
-	//
-	// 					XMLRoot = XMLResp.documentElement;
-	//
-	// 					var Error = XMLRoot.getElementsByTagName('error').item(0).firstChild.data;
-	// 					var Data = XMLRoot.getElementsByTagName('fld').item(0).firstChild.data;
-	//
-	// 					if (Error==0) {
-	// 						obj.style.color='green';
-	// 						obj.value=Data;
-	// 					} else {
-	// 						// SetStyle(Which,'error');
-	// 					}
-	//
-	// 				} catch(e) {
-	// 				}
-	//
-	// 			};
-	// 			XMLHttp.send();
-	// 		}
-	// 	} catch (e) {
-	// 	}
-	// }
 }
 

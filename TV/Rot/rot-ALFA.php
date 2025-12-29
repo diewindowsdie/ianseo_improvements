@@ -26,7 +26,7 @@ function rotAlfa($TVsettings, $RULE) {
     }
 
 	$Select = "SELECT LEFT(UPPER(EnFirstName), 1) as Initial, EnCode as Bib, EnName AS Name, $HallField as Hall,
-			SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo,
+			SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, QuSession AS Session, CONCAT(QuTarget, QuLetter) AS TargetNo,
 			CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status "
 		. "FROM Entries  "
 		. "INNER JOIN Countries ON EnCountry=CoId AND EnTournament=CoTournament "
@@ -82,7 +82,7 @@ function rotAlfa($TVsettings, $RULE) {
 
 		$Class=($RowCounter++%2 ? 'e' : 'o');
 		$tmp= '<div class="StartList Font1'.$Class.' Back1'.$Class.'">';
-		$tmp.='<div class="Target">' . ltrim($MyRow->TargetNo, '0') . '</div>';
+		$tmp.='<div class="Target">' . $MyRow->TargetNo . '</div>';
 		if($ViewHalls) {
 			$tmp.='<div class="Hall">'.$MyRow->Hall.'</div>';
 		}

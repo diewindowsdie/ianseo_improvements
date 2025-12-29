@@ -64,11 +64,11 @@ $GridTeamTemplate="select EvFinalFirstPhase, fs1.FsLetter Target, fs2.FsLetter O
 	. " and f1.TfEvent='%s'"
 	. " and GrPhase=%s";
 
-$LstTemplate="Select substr(QuTargetNo,2) Target, EnName, EnFirstName
+$LstTemplate="Select CONCAT(QuTarget,QuLetter) Target, EnName, EnFirstName
 	from Qualifications
 	inner join Entries on EnId=QuId and EnTournament=$TourId
 	Where QuSession='%s'
-	order by QuTargetNo";
+	order by QuSession, QuTarget, QuLetter";
 
 // finds out what Feeds are to be served!
 $MyQuery="select * from BoinxSchedule

@@ -10,7 +10,7 @@ if(!isset($isCompleteResultBook))
 
 $Select = "SELECT
 	CONCAT(upper(EnFirstName), ' ', EnName) as Athlete, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, CoCode, CoName, SesName, DATE_FORMAT(EnDob,'%d') as Day, DATE_FORMAT(EnDob,'%m') as Month, 
-	SUBSTRING(QuTargetNo,1,1) AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo
+	QuSession AS Session, CONCAT(QuTarget, QuLetter) AS TargetNo
 	FROM Entries
 	INNER JOIN Qualifications ON EnId=QuId
 	INNER JOIN Countries on EnCountry=CoId

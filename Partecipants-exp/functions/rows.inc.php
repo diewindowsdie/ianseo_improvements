@@ -170,7 +170,7 @@
 
 		$query
 			= "SELECT "
-				. "e.*, if(year(EnDob)>0, year(ToWhenFrom) - year(EnDob),'') as EnYears, DATE_FORMAT(EnDob,'" . $dtFormat . "') AS Dob, IF(PhPhoto IS NULL OR PhPhoto='',0,1) AS HasPhoto,c.CoCode,c.CoName,c2.CoCode AS CoCode2,c2.CoName AS CoName2,c3.CoCode AS CoCode3,c3.CoName AS CoName3,q.QuSession,SUBSTRING(q.QuTargetNo,2) AS TargetNo,ToWhenFrom "
+				. "e.*, if(year(EnDob)>0, year(ToWhenFrom) - year(EnDob),'') as EnYears, DATE_FORMAT(EnDob,'" . $dtFormat . "') AS Dob, IF(PhPhoto IS NULL OR PhPhoto='',0,1) AS HasPhoto,c.CoCode,c.CoName,c2.CoCode AS CoCode2,c2.CoName AS CoName2,c3.CoCode AS CoCode3,c3.CoName AS CoName3,q.QuSession,CONCAT(q.QuTarget,q.QuLetter) AS TargetNo,ToWhenFrom "
 			. "FROM "
 				. "Entries AS e LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament "
 				. "LEFT JOIN Countries AS c2 on e.EnCountry2=c2.CoId AND e.EnTournament=c2.CoTournament "
@@ -201,7 +201,7 @@
 				'code'=> trim($myRow->EnCode),
 				'status'=> $myRow->EnStatus,
 				'session'=> $myRow->QuSession,
-				'target_no'=> trim($myRow->TargetNo),
+				'target_no'=> (empty($myRow->TargetNo) ? '': $myRow->TargetNo),
 				'first_name'=> stripslashes(trim($myRow->EnFirstName)),
 				'name'=> stripslashes(trim($myRow->EnName)),
 				'sex'=>$myRow->EnSex,
@@ -238,7 +238,7 @@
 
 		$query
 			= "SELECT "
-				. "e.*,IF(EnDob!='0000-00-00',DATE_FORMAT(EnDob,'" . $dtFormat . "'),'') AS Dob, IF(PhPhoto IS NULL OR PhPhoto='',0,1) AS HasPhoto,c.CoCode,c.CoName,q.QuSession,SUBSTRING(q.QuTargetNo,2) AS TargetNo,ToWhenFrom "
+				. "e.*,IF(EnDob!='0000-00-00',DATE_FORMAT(EnDob,'" . $dtFormat . "'),'') AS Dob, IF(PhPhoto IS NULL OR PhPhoto='',0,1) AS HasPhoto,c.CoCode,c.CoName,q.QuSession,CONCAT(q.QuTarget,q.QuLetter) AS TargetNo,ToWhenFrom "
 			. "FROM "
 				. "Entries AS e LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament "
 				. "INNER JOIN Qualifications AS q ON e.EnId=q.QuId "
@@ -367,7 +367,7 @@
 
 		$query
 			= "SELECT "
-				. "e.*,IF(PhPhoto IS NULL OR PhPhoto='',0,1) AS HasPhoto,c.CoCode,c.CoName,q.QuSession,SUBSTRING(q.QuTargetNo,2) AS TargetNo,ToWhenFrom "
+				. "e.*,IF(PhPhoto IS NULL OR PhPhoto='',0,1) AS HasPhoto,c.CoCode,c.CoName,q.QuSession,CONCAT(q.QuTarget,q.QuLetter) AS TargetNo,ToWhenFrom "
 			. "FROM "
 				. "Entries AS e LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament "
 				. "INNER JOIN Qualifications AS q ON e.EnId=q.QuId "

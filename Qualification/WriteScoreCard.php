@@ -27,7 +27,7 @@ $JS_SCRIPT=array(
 
 $PAGE_TITLE=get_text('QualRound');
 
-$ONLOAD=(isset($_REQUEST['chk_PostUpdate']) && $_REQUEST['chk_PostUpdate']==1 ? ' onLoad="ManagePostUpdateArrow(true)"' : '');
+$ONLOAD=(isset($_REQUEST['chk_PostUpdate']) AND $_REQUEST['chk_PostUpdate']==1 ? ' onLoad="ManagePostUpdateArrow(true)"' : '');
 
 include('Common/Templates/head.php');
 
@@ -52,12 +52,14 @@ if (safe_num_rows($RsTour)==1) {
 	$ComboDist = '<select name="x_Dist" id="x_Dist">';
 	$ComboDist.= '<option value="-1">---</option>';
 
-	for ($i=1;$i<=$RowTour->ToNumSession;++$i)
-		$ComboSes.= '<option value="' . $i . '"' . (isset($_REQUEST['x_Session']) && $_REQUEST['x_Session']==$i ? ' selected' : '') . '>' . $i . '</option>';
+	for ($i=1;$i<=$RowTour->ToNumSession;++$i) {
+        $ComboSes .= '<option value="' . $i . '"' . ((isset($_REQUEST['x_Session']) AND $_REQUEST['x_Session'] == $i) ? ' selected' : '') . '>' . $i . '</option>';
+    }
 	$ComboSes.= '</select>';
 
-	for ($i=1;$i<=$RowTour->TtNumDist;++$i)
-		$ComboDist.= '<option value="' . $i . '"' . (isset($_REQUEST['x_Dist']) && $_REQUEST['x_Dist']==$i ? ' selected' : '') . '>' . $i . '</option>';
+	for ($i=1;$i<=$RowTour->TtNumDist;++$i) {
+        $ComboDist .= '<option value="' . $i . '"' . ((isset($_REQUEST['x_Dist']) AND $_REQUEST['x_Dist'] == $i) ? ' selected' : '') . '>' . $i . '</option>';
+    }
 	$ComboDist.= '</select>';
 
 	$TxtTarget = '<input type="text" name="x_Target" id="x_Target" size="5" maxlength="' . (TargetNoPadding +1) . '" value="' . (isset($_REQUEST['x_Target']) ? $_REQUEST['x_Target'] : '') . '">';
@@ -92,7 +94,7 @@ if (safe_num_rows($RsTour)==1) {
 <tr class="Divider"><td colspan="8"></td></tr>
 <tr><td colspan="8" class="Bold">
 	<input type="checkbox" name="chk_PostUpdate" id="chk_PostUpdate" value="1"
-		<?php print (isset($_REQUEST['chk_PostUpdate']) && $_REQUEST['chk_PostUpdate']==1 ? ' checked' : '');?>
+		<?php print (isset($_REQUEST['chk_PostUpdate']) AND $_REQUEST['chk_PostUpdate']==1 ? ' checked' : '');?>
 		onclick="ManagePostUpdateArrow();"
 	/><?php print get_text('CmdPostUpdate');?>
 </td></tr>
@@ -102,11 +104,12 @@ if (safe_num_rows($RsTour)==1) {
 <br>
 <?php
 
-if (isset($_REQUEST['Command']) && $_REQUEST['Command']=='OK' && $_REQUEST['x_Session']!=-1 && $_REQUEST['x_Dist']!=-1) {
+if (isset($_REQUEST['Command']) AND $_REQUEST['Command']=='OK' AND $_REQUEST['x_Session']!=-1 AND $_REQUEST['x_Dist']!=-1) {
 	if(!preg_match("/^[0-9]{1," . TargetNoPadding . "}[A-Z]{1}$/i",$_REQUEST['x_Target'])) {
 		// shows the whole target
+        $atSql = createAvailableTargetSQL($_REQUEST['x_Session'], $_SESSION['TourId']);
 		$Select = "SELECT EnId,EnCode,EnName,EnFirstName,EnTournament,EnDivision,EnClass,EnCountry,CoCode, CoName, (EnStatus <=1) AS EnValid,EnStatus,
-			QuTargetNo, SUBSTRING(QuTargetNo,2) AS Target,(QuTarget-1) as TgtOffset,
+			QuSession, CONCAT(QuTarget,QuLetter) AS Target,(QuTarget-1) as TgtOffset,
 			QuD" . $_REQUEST['x_Dist'] . "Score AS SelScore,QuD" . $_REQUEST['x_Dist'] . "Hits AS SelHits,QuD" . $_REQUEST['x_Dist'] . "Gold AS SelGold,QuD" . $_REQUEST['x_Dist'] . "Xnine AS SelXNine, ";
 		for ($i=1; $i<=$RowTour->TtNumDist; $i++) {
 			$Select .= "QuD" . $i . "Score, QuD" . $i . "Hits, QuD" . $i . "Gold, QuD" . $i . "Xnine, ";
@@ -116,11 +119,11 @@ if (isset($_REQUEST['Command']) && $_REQUEST['Command']=='OK' && $_REQUEST['x_Se
 			FROM Entries 
 			INNER JOIN Qualifications ON EnId=QuId 
 			INNER JOIN Countries ON EnCountry=CoId 
-			RIGHT JOIN AvailableTarget ON QuTargetNo=AtTargetNo AND AtTournament=EnTournament
+			RIGHT JOIN ($atSql) at ON QuSession=FullTgtSession AND QuTarget=FullTgtTarget AND QuLetter=FullTgtLetter
 			INNER JOIN Tournament ON EnTournament=ToId
             LEFT JOIN TargetFaces ON TfTournament=EnTournament and EnTargetFace=TfId
 			WHERE EnAthlete=1 AND QuSession=" . StrSafe_DB($_REQUEST['x_Session']) . " AND ToId=" . StrSafe_DB($_SESSION['TourId']) . "
-			AND QuTargetNo LIKE " . StrSafe_DB($_REQUEST['x_Session'] . str_pad($_REQUEST['x_Target'],TargetNoPadding,'0',STR_PAD_LEFT) . "_");
+			AND QuTarget=" . intval($_REQUEST['x_Target']);
 		$Rs=safe_r_sql($Select);
 		echo '<table class="Tabella">';
 		echo '<tr>';
@@ -155,12 +158,13 @@ if (isset($_REQUEST['Command']) && $_REQUEST['Command']=='OK' && $_REQUEST['x_Se
 	} else {
 		// show the single scorecard
 		$Dist=intval($_REQUEST['x_Dist']);
+        $atSql = createAvailableTargetSQL($_REQUEST['x_Session'], $_SESSION['TourId']);
 		$tmpSel='';
 		for ($i=1; $i<=$RowTour->TtNumDist; $i++) {
 			$tmpSel .= "QuD" . $i . "Score, QuD" . $i . "Hits, QuD" . $i . "Gold, QuD" . $i . "Xnine, ";
 		}
 		$Select = "SELECT EnId,EnCode,EnName,EnFirstName,EnTournament,EnDivision,EnClass,EnCountry,CoCode, (EnStatus <=1) AS EnValid,EnStatus,
-				QuTargetNo, QuTarget, SUBSTRING(QuTargetNo,2) AS Target, (QuTarget-1) as TgtOffset,
+				QuSession, QuTarget, CONCAT(QuTarget,QuLetter) AS Target, (QuTarget-1) as TgtOffset,
 				QuD{$Dist}Score AS SelScore,QuD{$Dist}Hits AS SelHits,QuD{$Dist}Gold AS SelGold,QuD{$Dist}Xnine AS SelXNine, 
 				$tmpSel
 				QuScore, QuGold, QuXnine, QuD{$Dist}ArrowString AS ArrowString, ToId, ToType, ToNumDist AS TtNumDist, 
@@ -170,12 +174,12 @@ if (isset($_REQUEST['Command']) && $_REQUEST['Command']=='OK' && $_REQUEST['x_Se
 			FROM Entries 
 			INNER JOIN Qualifications ON EnId=QuId 
 			INNER JOIN Countries ON EnCountry=CoId AND EnTournament=CoTournament 
-			RIGHT JOIN AvailableTarget ON QuTargetNo=AtTargetNo AND AtTournament=EnTournament
+			RIGHT JOIN ($atSql) at ON QuSession=FullTgtSession AND QuTarget=FullTgtTarget AND QuLetter=FullTgtLetter
 			INNER JOIN Tournament ON EnTournament=ToId
 			left join DistanceInformation on DiTournament=EnTournament and DiSession=QuSession and DiDistance=$Dist and DiType='Q'
             LEFT JOIN TargetFaces ON TfTournament=EnTournament AND EnTargetFace=TfId
 			WHERE EnAthlete=1 AND QuSession=" . StrSafe_DB($_REQUEST['x_Session']) . " AND ToId = " . StrSafe_DB($_SESSION['TourId']) . "
-			AND QuTargetNo =" . StrSafe_DB($_REQUEST['x_Session'] . str_pad($_REQUEST['x_Target'],TargetNoPadding+1,'0',STR_PAD_LEFT));
+			AND QuTarget=" . intval(substr($_REQUEST['x_Target'],0,-1)) . " AND QuLetter=".StrSafe_DB(substr($_REQUEST['x_Target'],-1));
 		$Rs=safe_r_sql($Select);
 
 		if (safe_num_rows($Rs)==1) {
@@ -265,7 +269,7 @@ if (isset($_REQUEST['Command']) && $_REQUEST['Command']=='OK' && $_REQUEST['x_Se
 							$TotRunning += ValutaArrowString($ArrowString[$ArrNo+$j]);
 						}
 						echo '<td class="Right"><div id="idEnd_' . $Dist . '_' . $CurEnd . '_' . $MyRow->EnId . '">' . $TotEnd . '</div></td>';
-						if($MultiLine && !(($ArrNo+3) % $ScoreNumArrows)) {
+						if($MultiLine AND !(($ArrNo+3) % $ScoreNumArrows)) {
 							echo '<td class="Right"><div id="idEndRun_' . $Dist . '_' . intval($CurEnd/($ScoreNumArrows/$NumArrows)) . '_' . $MyRow->EnId . '">' . $TotEndRun . '</div></td>';
 							echo '<td class="Bold Right"><div id="idScore_' . $Dist . '_' . intval($CurEnd/($ScoreNumArrows/$NumArrows)) . '_' . $MyRow->EnId . '">' . $TotRunning . '</div></td>';
 							$TotEndRun=0;

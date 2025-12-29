@@ -1703,8 +1703,7 @@ function WriteTeamAbs($CurTeam,$CurSubTeam,$CurComponent,$EventCode,$Scores,$Gol
 		return $StrData;
 	}
 
-	function recalSnapshot($Session, $Distance, $fromTarget, $toTarget)
-	{
+	function recalSnapshot($Session, $Distance, $fromTarget, $toTarget) {
 		CheckTourSession();
 		$Select
 			= "REPLACE INTO ElabQualifications SELECT EnId as ID, ";
@@ -1717,9 +1716,9 @@ function WriteTeamAbs($CurTeam,$CurSubTeam,$CurComponent,$EventCode,$Scores,$Gol
 			. "QuTimeStamp as Tstamp "
 			. "FROM Entries "
 			. "INNER JOIN Qualifications ON EnId=QuId "
-			. "WHERE EnAthlete=1 AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND QuSession<>0 AND QuTargetNo<>'' AND QuScore>0 AND QuSession=" . StrSafe_DB($Session) . " "
-			. "AND QuTargetNo >='" . $Session . str_pad($fromTarget,TargetNoPadding,'0',STR_PAD_LEFT) . "A' AND QuTargetNo<='" . $Session . str_pad($toTarget,TargetNoPadding,'0',STR_PAD_LEFT) . "Z' "
-			. "ORDER BY QuTargetNo ASC ";
+			. "WHERE EnAthlete=1 AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND QuSession!=0 AND QuTarget!=0 AND QuScore>0 AND QuSession=" . StrSafe_DB($Session) . " "
+			. "AND QuTarget>=" . intval($fromTarget) . " AND QuTarget<=" . intval($toTarget) . " "
+			. "ORDER BY QuSession, QuTarget, QuLetter ";
 		$Rs=safe_w_sql($Select);
 		return 0;
 	}
@@ -1740,9 +1739,9 @@ function WriteTeamAbs($CurTeam,$CurSubTeam,$CurComponent,$EventCode,$Scores,$Gol
 			INNER JOIN Qualifications ON EnId=QuId 
 			INNER JOIN Tournament ON EnTournament=ToId 
 			LEFT JOIN TargetFaces ON EnTournament=TfTournament and EnTargetFace=TfId 
-			WHERE EnAthlete=1 AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND QuTargetNo<>'' AND QuSession=" . StrSafe_DB($Session) . " 
-			AND QuTargetNo >='" . $Session . str_pad($fromTarget,TargetNoPadding,'0',STR_PAD_LEFT) . "A' AND QuTargetNo<='" . $Session . str_pad($toTarget,TargetNoPadding,'0',STR_PAD_LEFT) . "Z' 
-			ORDER BY QuTargetNo ASC ";
+			WHERE EnAthlete=1 AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND QuTarget!=0 AND QuSession=" . StrSafe_DB($Session) . " 
+			AND QuTarget>=" . intval($fromTarget) . " AND QuTarget<=" . intval($toTarget) . " 
+			ORDER BY QuSession, QuTarget, QuLetter ";
 
 		//echo $Select."<br><br>";exit;
 		$Rs=safe_r_sql($Select);
@@ -1766,7 +1765,7 @@ function WriteTeamAbs($CurTeam,$CurSubTeam,$CurComponent,$EventCode,$Scores,$Gol
 		return $numArrows;
 	}
 
-function useArrowsSnapshotTarget($Distance, $Target, $numArrows) {
+function useArrowsSnapshotTarget($Distance, $Sessiom, $Target, $Letter, $numArrows) {
 	CheckTourSession();
 
 	$Select = "SELECT EnId as ID, ". $Distance . " AS Distance, ";
@@ -1781,8 +1780,8 @@ function useArrowsSnapshotTarget($Distance, $Target, $numArrows) {
 		INNER JOIN Tournament ON EnTournament=ToId 
 		WHERE EnAthlete=1 
 			AND EnTournament={$_SESSION['TourId']} 
-			AND QuTargetNo ='$Target' 
-		ORDER BY QuTargetNo ASC ";
+			AND QuSession ='$Sessiom' AND QuTarget='$Target' AND QuLetter='$Letter'
+		ORDER BY QuSession ASC, QuTarget ASC, QuLetter ASC";
 
 	//echo $Select."<br><br>";exit;
 	$Rs=safe_r_sql($Select);

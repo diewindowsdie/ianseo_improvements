@@ -25,6 +25,7 @@ $lang['EntriesNoCountry']='Tilmeldte uden klub';
 $lang['ErrCodeExists']='Kode findes allerede!';
 $lang['ErrCommitteeError']='Ugyldig Udvalg kode eller beskrivelse';
 $lang['ErrConnection']='Ingen forbindelse til server $a';
+$lang['ErrDateGeneric']='Dato manglende eller ugyldig';
 $lang['ErrEmptyFields']='Blanke felter';
 $lang['ErrGenericError']='Generel fejl';
 $lang['ErrInvalidCode']='Ugyldig kode';

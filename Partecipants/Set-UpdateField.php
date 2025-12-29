@@ -250,11 +250,11 @@ if($field) {
 				// insert a new one and gives alert back to the page
 				safe_w_sql("insert into Entries set EnTournament={$_SESSION['TourId']}, $FIELD=".StrSafe_DB($value)."");
 				$ID=safe_w_last_id();
-				safe_w_sql("insert into Qualifications set QuId=$ID".($session ? ", QuSession=$session" . ($targetno ? "QuTarget=".intval($targetno).", QuLetter='".substr($targetno, -1)."', QuTargetno=".StrSafe_DB($session.$targetno) : '') : ''));
+				safe_w_sql("insert into Qualifications set QuId=$ID".($session ? ", QuSession=$session" . ($targetno ? "QuTarget=".intval($targetno).", QuLetter='".strtoupper(substr($targetno, -1))."'" : '') : ''));
 
 				if($_SESSION['AccBooth']) {
 					LogAccBoothQuerry("insert into Entries set EnTournament=§TOCODETOID§, $FIELD=".StrSafe_DB($value), $_SESSION['TourCode']);
-					LogAccBoothQuerry("insert into Qualifications set QuId=($SelectEnId) ".($session ? ", QuSession=$session" . ($targetno ? "QuTarget=".intval($targetno).", QuLetter='".substr($targetno, -1)."', QuTargetno=".StrSafe_DB($session.$targetno) : '') : ''), $_SESSION['TourCode']);
+					LogAccBoothQuerry("insert into Qualifications set QuId=($SelectEnId) ".($session ? ", QuSession=$session" . ($targetno ? "QuTarget=".intval($targetno).", QuLetter='".strtoupper(substr($targetno, -1))."'" : '') : ''), $_SESSION['TourCode']);
 				}
 			}
 			checkAgainstLUE($ID);

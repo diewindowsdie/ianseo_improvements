@@ -45,16 +45,16 @@ CreateFinals($TourId);
 // Default Target
 switch($TourType) {
 	case 11:
-        CreateTargetFace($TourId, 1, get_text('FieldPegYellow', 'Install'), 'REG-^(((A|F|L|T|B|CB)U16[MW])|((C|R|CL)U15[MW]))$', '1', 8, 0);
-        CreateTargetFace($TourId, 2, get_text('FieldPegBlue', 'Install'), 'REG-^(((A|F|L|T|B|CB)(U21[MW]|U18[MW]|[MW]|50[MW]))|((R|C|CL)U16[MW]))$', '1', 8, 0);
-        CreateTargetFace($TourId, 3, 'White Peg', 'REG-^(([A-Z]{1,3}U(12|14)[MW])|((A|F|L|T|B|CB)U15[MW]))$', '1', 8, 0);
-        CreateTargetFace($TourId, 4, get_text('FieldPegRed', 'Install'), 'REG-^((R|C|CL)(U21[MW]|U18[MW]|[MW]|50[MW]))$', '1', 8, 0);
+        CreateTargetFace($TourId, 1, get_text('FieldPegYellow', 'Install'), 'REG-^(((A|F|L|T|B|CB)U16[OW])|((C|R|CL)U15[OW]))$', '1', 8, 0);
+        CreateTargetFace($TourId, 2, get_text('FieldPegBlue', 'Install'), 'REG-^(((A|F|L|T|B|CB)(U21[OW]|U18[OW]|[OW]|50[OW]))|((R|C|CL)U16[OW]))$', '1', 8, 0);
+        CreateTargetFace($TourId, 3, 'White Peg', 'REG-^(([A-Z]{1,3}U(12|14)[OW])|((A|F|L|T|B|CB)U15[OW]))$', '1', 8, 0);
+        CreateTargetFace($TourId, 4, get_text('FieldPegRed', 'Install'), 'REG-^((R|C|CL)(U21[OW]|U18[OW]|[OW]|50[OW]))$', '1', 8, 0);
 		break;
 	case 13:
-        CreateTargetFace($TourId, 1, get_text('FieldPegYellow', 'Install'), 'REG-^(((A|F|L|T|B|CB)U16[MW])|((C|R|CL)U15[MW]))$', '1', 8, 0, 8, 0);
-        CreateTargetFace($TourId, 2, get_text('FieldPegBlue', 'Install'), 'REG-^(((A|F|L|T|B|CB)(U21[MW]|U18[MW]|[MW]|50[MW]))|((R|C|CL)U16[MW]))$', '1', 8, 0, 8, 0);
-        CreateTargetFace($TourId, 3, 'White Peg', 'REG-^(([A-Z]{1,3}U(12|14)[MW])|((A|F|L|T|B|CB)U15[MW]))$', '1', 8, 0, 8, 0);
-        CreateTargetFace($TourId, 4, get_text('FieldPegRed', 'Install'), 'REG-^((R|C|CL)(U21[MW]|U18[MW]|[MW]|50[MW]))$', '1', 8, 0, 8, 0);
+        CreateTargetFace($TourId, 1, get_text('FieldPegYellow', 'Install'), 'REG-^(((A|F|L|T|B|CB)U16[OW])|((C|R|CL)U15[OW]))$', '1', 8, 0, 8, 0);
+        CreateTargetFace($TourId, 2, get_text('FieldPegBlue', 'Install'), 'REG-^(((A|F|L|T|B|CB)(U21[OW]|U18[OW]|[OW]|50[OW]))|((R|C|CL)U16[OW]))$', '1', 8, 0, 8, 0);
+        CreateTargetFace($TourId, 3, 'White Peg', 'REG-^(([A-Z]{1,3}U(12|14)[OW])|((A|F|L|T|B|CB)U15[OW]))$', '1', 8, 0, 8, 0);
+        CreateTargetFace($TourId, 4, get_text('FieldPegRed', 'Install'), 'REG-^((R|C|CL)(U21[OW]|U18[OW]|[OW]|50[OW]))$', '1', 8, 0, 8, 0);
 		break;
 }
 

@@ -48,7 +48,7 @@
 <?php
 	$Select
 		= "Select EnId,EnTournament,EnDivision,EnClass,EnCountry,CoCode,CoName,EnCode,EnName,EnFirstName,"
-		. "EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,QuSession,SUBSTRING(QuTargetNo,2) As TargetNo, "
+		. "EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,QuSession,CONCAT(QuTarget, QuLetter) As TargetNo, "
 		. "AEOperation "
 		. "FROM Entries LEFT JOIN Countries ON EnCountry=CoId "
 		. "INNER JOIN Qualifications ON EnId=QuId AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " "

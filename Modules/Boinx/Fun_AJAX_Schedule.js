@@ -55,14 +55,13 @@ function toggle(but) {
 			}
 			break;
 		case 'Qua':
-			var Bib='0000'+document.getElementById('Qua_Ind_Bib').value.toUpperCase();
 			if(idToDo.substr(idToDo.length-3, 3)=='Bib') {
 				idToDo=idToDo.substr(0,idToDo.length-4);
 			} else {
 				QuaSes=parseInt(idToDo.substr(idToDo.length-1));
 				idToDo=idToDo.substr(0,idToDo.length-2);
 			}
-			extra=QuaSes+Bib.substr(Bib.length-4);
+			extra=QuaSes+'|'+document.getElementById('Qua_Ind_Bib').value.toUpperCase();
 			break;
 		}
 		todo = todo + 'type[' + idToDo + ']='+extra;

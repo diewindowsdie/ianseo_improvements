@@ -74,6 +74,7 @@ Insert {{time}} to have the ticking time in ISO format (ie: 15:03:23)<br>
 Insert {{time-am}} to have ticking time in AM/PM format (ie: 3:03:23 PM)<br>
 Insert {{counter-datetime}} to have a full date countdown (ie: [[[days:]hours:]minutes:]seconds layout, where datetime is the time to reach in ISO format 2024-12-04T09:00:00 for local time)<br>
 There can only be one of these fields in a text';
+$lang['Sport80-ForceUpdate']='This operation will overwrite all the changes done in the system with the original information coming from Sport80 Registration System.<br>Be advised to make a backup before proceeding.<br>Proceed only if you are extremely sure.';
 $lang['TargetRequests-Printout']='Prints the QrCodes of the requested targets to allow personal devices to quickly be reassigned to the correct target.<br>
 Select which group(s) of devices you want to print and the range of target butts:<br>
 1-10 prints QrCOde from target 1 to 10<br>

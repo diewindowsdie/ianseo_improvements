@@ -214,7 +214,7 @@ if(isset($_REQUEST['Action']) && preg_match("/^(tSendMessage|tPersonal|tSendQrSe
             }
             break;
         case 'tGroupTarget':
-            if(preg_match("/^[0-9]+$/",$_REQUEST["newGrp"],$tmpGrp) AND $tmpGrp[0]<=26 AND preg_match("/^[0-9]+$/",$_REQUEST["newTgt"],$tmpTgt) AND $tmpTgt[0]<=999) {
+            if(preg_match("/^[0-9]+$/",$_REQUEST["newGrp"],$tmpGrp) AND $tmpGrp[0]<=26 AND preg_match("/^[0-9]+$/",$_REQUEST["newTgt"],$tmpTgt) AND $tmpTgt[0]<=9999) {
 				$SQL[] = "IskDvGroup={$tmpGrp[0]}, IskDvTarget={$tmpTgt[0]}, IskDvSetup=''";
             }
             break;
@@ -227,7 +227,7 @@ if(isset($_REQUEST['Action']) && preg_match("/^(tSendMessage|tPersonal|tSendQrSe
             $SQL[] = "IskDvTournament=IF(IskDvTournament=".$_SESSION["TourId"].", 0, ".$_SESSION["TourId"].") ";
             break;
         case 'tTargetFrom':
-            if(preg_match("/^[0-9]+$/",$_REQUEST["newTgt"],$tmpTgt) AND $tmpTgt[0]<=999) {
+            if(preg_match("/^[0-9]+$/",$_REQUEST["newTgt"],$tmpTgt) AND $tmpTgt[0]<=9999) {
                 foreach ($tmpDevices as $tmpDev) {
                     safe_w_SQL("UPDATE IskDevices SET IskDvTarget='".($tmpTgt[0]++) ."' WHERE IskDvDevice = '{$tmpDev}'");
                 }

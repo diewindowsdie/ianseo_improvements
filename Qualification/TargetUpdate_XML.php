@@ -15,24 +15,24 @@
 
 	if(isset($_REQUEST["Session"]) && isset($_REQUEST["Hour"]) && preg_match("/^[1-9]{1}$/i",$_REQUEST["Session"]) && preg_match("/^[0-9]{2}:[0-9]{2}$/i",$_REQUEST["Hour"]))
 	{
-		$MyQuery = "SELECT QuTargetNo, (QuTimeStamp > " . StrSafe_DB(date("Y-m-d") . " " . $_REQUEST["Hour"]. ":00") . ") as isUpdated"
+		$MyQuery = "SELECT QuTarget, (QuTimeStamp > " . StrSafe_DB(date("Y-m-d") . " " . $_REQUEST["Hour"]. ":00") . ") as isUpdated"
         . " FROM Qualifications"
         . " INNER JOIN Entries ON QuId=EnId"
         . " WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND QuSession=" . StrSafe_DB($_REQUEST["Session"]) . " AND EnStatus <=1 "
-        . " ORDER BY QuTargetNo";
+        . " ORDER BY QuTarget";
 		//echo $MyQuery; exit();
 		$Rs=safe_r_sql($MyQuery);
 		if(safe_num_rows($Rs)>0)
 		{
-			$OldTarget='';
+			$OldTarget=0;
 			$cntOk=0;
 			$cntKo=0;
 			while($MyRow=safe_fetch($Rs))
 			{
-				if($OldTarget != substr($MyRow->QuTargetNo,0,-1) && $OldTarget!='')
+				if($OldTarget != $MyRow->QuTarget AND $OldTarget!=0)
 				{
 					$XmlOut .= "<target>";
-					$XmlOut .= "<no>" . substr($OldTarget,1) . "</no>";
+					$XmlOut .= "<no>" . $OldTarget . "</no>";
 					$XmlOut .= "<status>" . ($cntKo==0 ? '0' : ($cntOk==0 ? '2' : '1')) . "</status>";
 					$XmlOut .= "</target>";
 					$cntOk=0;
@@ -42,10 +42,10 @@
 					$cntOk++;
 				else
 					$cntKo++;
-				$OldTarget = substr($MyRow->QuTargetNo,0,-1);
+				$OldTarget = $MyRow->QuTarget;
 			}
 			$XmlOut .= "<target>";
-			$XmlOut .= "<no>" . substr($OldTarget,1) . "</no>";
+			$XmlOut .= "<no>" . $OldTarget . "</no>";
 			$XmlOut .= "<status>" . ($cntKo==0 ? '0' : ($cntOk==0 ? '2' : '1')) . "</status>";
 			$XmlOut .= "</target>";
 

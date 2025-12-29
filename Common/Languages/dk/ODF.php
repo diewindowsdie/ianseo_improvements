@@ -1,6 +1,6 @@
 <?php
 $lang['AssignAndSend']='Tildel og send';
-$lang['AssignAndSendSchedule']='Update Unit, send SCHEDULE';
+$lang['AssignAndSendSchedule']='Opdater enhed, send TIDSPLAN';
 $lang['BrokenRecords']='Rekorder slået';
 $lang['ByesAll']='Alle enheder';
 $lang['ByesNone']='Enheder uden byes';
@@ -59,6 +59,7 @@ $lang['OdfReceiverOn']='Modtager aktiv';
 $lang['OdfReceiverSetup']='ODF modtager opsætning';
 $lang['OdfSportCodeVersion']='Sport Data Dictionary Version';
 $lang['OdfUploadFileText']='Vælg venligst en XML for upload...';
+$lang['ParticExtraData']='DT_PARTIC ekstra muligheder';
 $lang['Production']='Produktion';
 $lang['Receiver']='Modtager';
 $lang['ReceiverLanguage']='Modtager sprog (3 cifre)';

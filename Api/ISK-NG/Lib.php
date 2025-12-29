@@ -226,7 +226,7 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 					QuConfirm & ".pow(2, $Data->distance).">0 as StopScore, 0 as IsClosest,
 			        concat_ws('|','Q', QuSession, DiDistance) as LockKey
 				from Entries
-				inner join Qualifications on EnId=QuId and QuTargetNo='{$Data->refKey}'
+				inner join Qualifications on EnId=QuId and CONCAT(QuSession, '.', QuTarget, QuLetter)='{$Data->refKey}'
 				INNER JOIN DistanceInformation ON EnTournament=DiTournament and DiSession=QuSession and DiDistance={$Data->distance} and DiType='Q'
 				INNER JOIN IskDevices on IskDvTournament=EnTournament and IskDvDevice='{$Data->device}' and IskDvProActive=1 and IskDvTarget in ({$TargetNo})
 				where EnTournament=$ToId and QuSession={$Data->session}";
@@ -515,7 +515,7 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
                     $Filtre = " AND concat(EnDivision,EnClass)='{$Options['Category']}'";
                 }
 			}
-			$SQL="SELECT QuId, QuSession, QuTargetNo, QuD{$Options['dist']}Arrowstring as Arrowstring, DIDistance, DIEnds, DIArrows, DiScoringEnds,
+			$SQL="SELECT QuId, QuSession, QuTarget, QuLetter, CONCAT(QuSession, '.', QuTarget, QuLetter) as QuTargetKey, QuD{$Options['dist']}Arrowstring as Arrowstring, DIDistance, DIEnds, DIArrows, DiScoringEnds,
                     IF(TfGoldsChars{$Options['dist']}='',IF(TfGoldsChars='',ToGoldsChars,TfGoldsChars),TfGoldsChars{$Options['dist']}) as GoldsChars, 
                     IF(TfXNineChars{$Options['dist']}='',IF(TfXNineChars='',ToXNineChars,TfXNineChars),TfXNineChars{$Options['dist']}) as XNineChars,
                     EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent+EnTeamMixEvent as EnTeamFinals,
@@ -526,7 +526,7 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
 				INNER JOIN Tournament ON ToId=EnTournament
 				INNER JOIN DistanceInformation ON DITournament=EnTournament AND DISession=QuSession AND DIDistance={$Options['dist']} AND DIType='Q'
                 INNER JOIN TargetFaces on TfId=EnTargetFace and TfTournament=EnTournament
-				INNER JOIN IskData ON iskDtTournament=EnTournament AND IskDtMatchNo=0 AND IskDtEvent='' AND IskDtTeamInd=0 AND IskDtType='Q' AND IskDtTargetNo=QuTargetNo AND IskDtDistance={$Options['dist']} ".($End ? "AND IskDtEndNo={$End}" : '')."
+				INNER JOIN IskData ON iskDtTournament=EnTournament AND IskDtMatchNo=0 AND IskDtEvent='' AND IskDtTeamInd=0 AND IskDtType='Q' AND IskDtTargetNo=CONCAT(QuSession, '.', QuTarget, QuLetter) AND IskDtDistance={$Options['dist']} ".($End ? "AND IskDtEndNo={$End}" : '')."
 					$Filtre
 				INNER JOIN IskDevices on IskDvTournament=IskDtTournament and IskDvProActive>0 and IskDvDevice=IskDtDevice" . ($isLiteMode ? "" : " and IskDvSchedKey=".StrSafe_DB($Key))." and IskDvGroup=$Group
 				WHERE QuSession={$qSes}
@@ -545,7 +545,7 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
                     // scorecard validated, do not accept anything: deletes the data and skip to next record
                     $Update = "DELETE FROM IskData
                         WHERE IskDtTournament={$CompId} AND IskDtMatchNo=0 AND IskDtEvent='' AND IskDtTeamInd=0 AND IskDtType='Q'
-                        AND IskDtTargetNo='{$r->QuTargetNo}' AND IskDtDistance={$Options['dist']}";
+                        AND IskDtTargetNo='{$r->QuTargetKey}' AND IskDtDistance={$Options['dist']}";
                     safe_w_SQL($Update);
                     continue;
                 }
@@ -594,7 +594,7 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
 				}
 				$Update = "DELETE FROM IskData
 					WHERE IskDtTournament={$CompId} AND IskDtMatchNo=0 AND IskDtEvent='' AND IskDtTeamInd=0 AND IskDtType='Q'
-					AND IskDtTargetNo='{$r->QuTargetNo}' AND IskDtDistance={$Options['dist']}".($End ? " AND IskDtEndNo={$End}" : "");
+					AND IskDtTargetNo='{$r->QuTargetKey}' AND IskDtDistance={$Options['dist']}".($End ? " AND IskDtEndNo={$End}" : "");
 				safe_w_SQL($Update);
 
 				// run Jack Event
@@ -602,7 +602,7 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
 
 				// calculate snapshot if any
 				if(getModuleParameter('ISK-NG', 'Snapshot', '', $CompId)) {
-					useArrowsSnapshotTarget($Options['dist'], $r->QuTargetNo, strlen(rtrim($arrowString)));
+					useArrowsSnapshotTarget($Options['dist'], $r->QuSession, $r->QuTarget, $r->QuLetter, strlen(rtrim($arrowString)));
 				}
 			}
 			if($IsSendall) {

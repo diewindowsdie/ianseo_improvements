@@ -19,11 +19,11 @@ $msg='';
 $msg=get_text('Error');
 if (isset($_REQUEST['command'])) {
 	if (!IsBlocked(BIT_BLOCK_PARTICIPANT)) {
-		if (!(is_numeric($startSession) && $startSession>0)) $errors[]='startSession';
+		if (!(is_numeric($startSession) AND $startSession>0)) $errors[]='startSession';
 		if (!is_numeric($endSession)) $errors[]='endSession';
 		if (empty($filter)) $errors[]='filter';
-		if (!(is_numeric($sourceFrom) && $sourceFrom>0)) $errors[]='sourceFrom';
-		if (!(is_numeric($sourceTo) && $sourceTo>0)) $errors[]='sourceTo';
+		if (!(is_numeric($sourceFrom) AND $sourceFrom>0)) $errors[]='sourceFrom';
+		if (!(is_numeric($sourceTo) AND $sourceTo>0)) $errors[]='sourceTo';
 		if (!is_numeric($destFrom)) $errors[]='destFrom';
 
 		$query="";
@@ -31,16 +31,14 @@ if (isset($_REQUEST['command'])) {
 			$Where="EnTournament=" . StrSafe_DB($_SESSION['TourId']) . "
 				AND CONCAT(Entries.EnDivision,Entries.EnClass) LIKE " . StrSafe_DB($filter) . "
 				AND Qualifications.QuSession=" . StrSafe_DB($startSession) . "
-				AND QuTargetNo>=CONCAT(" . StrSafe_DB($startSession) . ", RIGHT(CONCAT('000'," . StrSafe_DB($sourceFrom) . "),LENGTH(QuTargetNo)-2),'A')
-				AND QuTargetNo<=CONCAT(" . StrSafe_DB($startSession) . ", RIGHT(CONCAT('000'," . StrSafe_DB($sourceTo) . "),LENGTH(QuTargetNo)-2),'Z') ";
+				AND QuTarget>=" . intval($sourceFrom) . " AND QuTarget<=" . intval($sourceTo);
 			safe_w_sql("Update Entries inner join Qualifications on EnId=QuId
 				set EnTimestamp='".date('Y-m-d H:i:s')."'
-				where (QuSession!=" . StrSafe_DB($endSession) . " or QuTargetNo!=CONCAT(" . StrSafe_DB($endSession) . ",RIGHT(CONCAT('000',SUBSTRING(QuTargetNo,2,".TargetNoPadding.")+(" . (intval($destFrom)-intval($sourceFrom)) . ")), ".TargetNoPadding."),RIGHT(QuTargetNo,1))) and $Where");
+				where (QuSession!=" . StrSafe_DB($endSession) . " or QuTarget!=0) and $Where");
 			$query = "UPDATE Entries INNER JOIN Qualifications ON EnId=QuId
 				SET QuTimestamp=Qutimestamp,
 					QuBacknoPrinted=0,
 					QuSession=" . StrSafe_DB($endSession) . ",
-					QuTargetNo=CONCAT(" . StrSafe_DB($endSession) . ",RIGHT(CONCAT('000',SUBSTRING(QuTargetNo,2,".TargetNoPadding.")+(" . (intval($destFrom)-intval($sourceFrom)) . ")), ".TargetNoPadding."),RIGHT(QuTargetNo,1)),
 					QuTarget=QuTarget+(" . (intval($destFrom)-intval($sourceFrom)) . ")
 					WHERE $Where";
 
@@ -71,8 +69,8 @@ $comboEndSession
 
 foreach ($sessions as $s)
 {
-	$comboStartSession.='<option value="' . $s->SesOrder. '"' . (!is_null($startSession) && $s->SesOrder==$startSession ? ' selected' : '') . '>' . $s->SesOrder .': ' . $s->SesName . '</option>';
-	$comboEndSession.='<option value="' . $s->SesOrder . '"' . (!is_null($endSession) && $s->SesOrder==$endSession ? ' selected' : '') . '>' . $s->SesOrder .': ' . $s->SesName . '</option>';
+	$comboStartSession.='<option value="' . $s->SesOrder. '"' . (!is_null($startSession) AND $s->SesOrder==$startSession ? ' selected' : '') . '>' . $s->SesOrder .': ' . $s->SesName . '</option>';
+	$comboEndSession.='<option value="' . $s->SesOrder . '"' . (!is_null($endSession) AND $s->SesOrder==$endSession ? ' selected' : '') . '>' . $s->SesOrder .': ' . $s->SesName . '</option>';
 }
 
 

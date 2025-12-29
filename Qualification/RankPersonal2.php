@@ -43,7 +43,7 @@
 		$Cl=$r->EnClass;
 
 
-		$MyQuery = "SELECT EnId,EnCode as Bib, EnName AS Name, EnFirstName AS FirstName, SUBSTRING(QuTargetNo,1,1) AS SessionNo, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode,EnAgeClass as AgeClass,  EnSubClass as SubClass, ClDescription, DivDescription, ";
+		$MyQuery = "SELECT EnId,EnCode as Bib, EnName AS Name, EnFirstName AS FirstName, QuSession AS SessionNo, CONCAT(QuTarget, QuLetter) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode,EnAgeClass as AgeClass,  EnSubClass as SubClass, ClDescription, DivDescription, ";
 			$MyQuery.= "ToType, ToNumDist as NumDist, IFNULL(Td1,'.1.') as Td1, IFNULL(Td2,'.2.') as Td2, IFNULL(Td3,'.3.') as Td3, IFNULL(Td4,'.4.') as Td4, IFNULL(Td5,'.5.') as Td5, IFNULL(Td6,'.6.') as Td6, IFNULL(Td7,'.7.') as Td7, IFNULL(Td8,'.8.') as Td8, ";
 			$MyQuery.= "QuD1Score, QuD1Rank, QuD2Score, QuD2Rank, QuD3Score, QuD3Rank, QuD4Score, QuD4Rank, ";
 			$MyQuery.= "QuD5Score, QuD5Rank, QuD6Score, QuD6Rank, QuD7Score, QuD7Rank, QuD8Score, QuD8Rank, ";

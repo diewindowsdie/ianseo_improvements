@@ -173,12 +173,9 @@ function UpdateTargetNo_Response()
 	var Id = XMLRoot.getElementsByTagName('id').item(0).firstChild.data;
 	//alert(Id);
 
-	if (Error==1)
-	{
+	if (Error==1) {
 		SetStyle('d_q_QuTargetNo_' + Id,'error');
-	}
-	else
-	{
+	} else {
 		SetStyle('d_q_QuTargetNo_' + Id,'');
 		var PadValue = XMLRoot.getElementsByTagName('pad_value').item(0).firstChild.data;
 		document.getElementById('d_q_QuTargetNo_' + Id).value=(PadValue!='#' ? PadValue : '');
@@ -256,18 +253,16 @@ function FindRedTarget_Response()
 	var Error = XMLRoot.getElementsByTagName('error').item(0).firstChild.data;
 	//alert(Error);
 
-	if (Error==0)
-	{
+	if (Error==0) {
 		var Arr_Id = XMLRoot.getElementsByTagName('id');
 		var Arr_Num = XMLRoot.getElementsByTagName('num');
-		for (i=0;i<Arr_Id.length;++i)
-		{
-			if(document.getElementById('d_q_QuTargetNo_' + Arr_Id.item(i).firstChild.data))
-			{
-				if (Arr_Num.item(i).firstChild.data!=1)
-					SetStyle('d_q_QuTargetNo_' + Arr_Id.item(i).firstChild.data,'red');
-				else
-					SetStyle('d_q_QuTargetNo_' + Arr_Id.item(i).firstChild.data,'');
+		for (i=0;i<Arr_Id.length;++i) {
+			if(document.getElementById('d_q_QuTargetNo_' + Arr_Id.item(i).firstChild.data)) {
+				if (Arr_Num.item(i).firstChild.data!=1) {
+                    SetStyle('d_q_QuTargetNo_' + Arr_Id.item(i).firstChild.data, 'red');
+                } else {
+                    SetStyle('d_q_QuTargetNo_' + Arr_Id.item(i).firstChild.data, '');
+                }
 			}
 		}
 	}

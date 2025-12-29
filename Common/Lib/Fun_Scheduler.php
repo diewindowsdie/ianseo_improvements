@@ -632,7 +632,7 @@ Class Scheduler {
 
 				from FinWarmup
 				inner join Events on FwEvent=EvCode and EvTeamEvent=FwTeamEvent and EvTournament=FwTournament
-				left join Session on SesTournament=FwTournament and SesType='F' and concat(FwDay,' ',FwMatchTime) between SesDtStart and SesDtEnd
+				left join Session on SesTournament=FwTournament and SesType='F' and concat(FwDay,' ',FwMatchTime) between SesDtStart and SesDtEnd and if(SesEvents='', true, find_in_set(concat(EvTeamEvent,EvCode), SesEvents))
 				where FwTournament=$this->TourId
 					and FwMatchTime=0
 				group by FwTeamEvent, FwDay, FwTime
@@ -830,7 +830,7 @@ Class Scheduler {
 		$debug=array();
 
 		while($r=safe_fetch($q)) {
-            $r->SesGrouping=($this->FopSingleLocations?'':$r->SesGrouping);
+            $r->SesGrouping=((!$this->SesLocations and ($this->FopSingleLocations or !$this->SplitLocations))?'':$r->SesGrouping);
 			if($r->WarmStart or ($r->Type=='RA' and $r->grPos)) {
 				$this->push($r, true);
 			}
@@ -3313,7 +3313,7 @@ Class Scheduler {
                                                         }
                                                         $MaxTgt=0;
                                                         while($u=safe_fetch($t)) {
-                                                            $Sql="select distinct cast(substr(QuTargetNo,2) as unsigned) TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart from
+                                                            $Sql="select distinct QuTarget as TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart from
                                                                 Entries
                                                                 inner join Qualifications on EnId=QuId
                                                                 inner join DistanceInformation on QuSession=DiSession and DiTournament={$this->TourId} and DiDistance={$u->DiDistance} and DiDay='$Date' and DiStart='$Time'
@@ -3899,7 +3899,7 @@ Class Scheduler {
                                                             $SesFilter=" and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).") and if(SesFirstTarget>0, QuTarget between SesFirstTarget and SesFirstTarget+SesTar4Session-1, true)";
                                                         }
                                                         while($u=safe_fetch($t)) {
-                                                            $Sql="select distinct SesAth4Target, cast(substr(QuTargetNo,2) as unsigned) TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart from
+                                                            $Sql="select distinct SesAth4Target, QuTarget TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart from
                                                                 Entries
                                                                 inner join Qualifications on EnId=QuId
                                                                 inner join DistanceInformation on QuSession=DiSession and DiTournament={$this->TourId} and DiDistance={$u->DiDistance} and ((DiDay='$Date' and DiStart='$Time') or (DiDay=0 and DiSession=$Session))
@@ -3972,7 +3972,7 @@ Class Scheduler {
                                                         $Sql="select * from DistanceInformation where DiTournament={$this->TourId} and DiSession='$Session' and DiType='{$Item->Type}' and DiDistance=$Distance";
                                                         $t=safe_r_sql($Sql);
                                                         while($u=safe_fetch($t)) {
-                                                            $Sql="select distinct SesAth4Target, cast(substr(QuTargetNo,2) as unsigned) TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart
+                                                            $Sql="select distinct SesAth4Target, QuTarget as TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart
                                                                 from Entries
                                                                 inner join Qualifications on EnId=QuId
                                                                 inner join DistanceInformation on QuSession=DiSession and DiTournament={$this->TourId} and DiDistance={$u->DiDistance} and DiDay='".(is_numeric($Date[0])?$Date:'0000-00-00')."' and DiStart='".(is_numeric($Time[0])?$Time:'00:00:00')."'
@@ -4070,11 +4070,13 @@ Class Scheduler {
                                                             EvMaxTeamPerson, group_concat(distinct if(instr('ABCD', right(FsLetter,1))>0, right(FsLetter,1), '') order by right(FsLetter,1) separator '') as Persons
                                                         FROM FinWarmup
                                                         INNER JOIN Events ON FwEvent=EvCode AND FwTeamEvent=EvTeamEvent AND FwTournament=EvTournament
+				                                        left join Session on SesTournament=FwTournament and SesType='F' and concat(FwDay,' ',FwMatchTime) between SesDtStart and SesDtEnd and if(SesEvents='', true, find_in_set(concat(EvTeamEvent,EvCode), SesEvents))
                                                         left join Targets on EvFinalTargetType=TarId
                                                         left join FinSchedule on FwTeamEvent=FsTeamEvent and FwEvent=FsEvent and FsTournament=FwTournament and FsScheduledDate='$Date' and FsScheduledTime='$Time'
                                                         WHERE FwTournament=" . StrSafe_DB($this->TourId) . "
                                                             AND FwDay='$Date' and FwTime='$Time'
                                                             and FwTargets!=''
+                                                        ".($this->SesLocations ? " and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).")":'')."
                                                         GROUP BY FwEvent
                                                         ORDER BY FwTargets, FwEvent";
                                                     $t = safe_r_sql($MyQuery);
@@ -4148,13 +4150,15 @@ Class Scheduler {
                                                             FROM RoundRobinMatches
                                                             INNER JOIN RoundRobinLevel ON RrLevTournament=RrMatchTournament AND RrLevTeam=RrMatchTeam and RrLevEvent=RrMatchEvent and RrLevLevel=RrMatchLevel
                                                             INNER JOIN Events ON EvCode=RrMatchEvent AND EvTeamEvent=RrMatchTeam AND EvTournament=RrMatchTournament
+                                                            left join Session on SesTournament=EvTournament and SesType='R' and concat(RrMatchScheduledDate,' ',RrMatchScheduledTime) between SesDtStart and SesDtEnd and if(SesEvents='', true, find_in_set(concat(EvTeamEvent,EvCode), SesEvents))
                                                             left join Targets on EvFinalTargetType=TarId
                                                             WHERE RrMatchTournament=$this->TourId
                                                                 AND RrMatchScheduledDate='$Date' and RrMatchScheduledTime='$Time'
                                                                 and RrMatchTarget!=''
-                                                                group by RrMatchEvent, RrMatchTarget+0
+                                                            ".($this->SesLocations ? " and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).")":'')."
+                                                            group by RrMatchEvent, RrMatchTarget+0
                                                             ".($this->TargetsInvolved ? ' HAVING '.sprintf($this->TargetsInvolved, 'FsTarget+0') : '')."
-                                                                ORDER BY Warmup ASC, RrMatchEvent, RrMatchTarget ASC, RrMatchMatchNo ASC";
+                                                            ORDER BY Warmup ASC, RrMatchEvent, RrMatchTarget ASC, RrMatchMatchNo ASC";
                                                     } else {
                                                         $MyQuery = "SELECT '' as Warmup, FSEvent, FSTeamEvent, GrPhase, FsMatchNo, FsTarget, '' as TargetTo, EvMatchArrowsNo, EvMatchMode, EvMixedTeam, EvTeamEvent, UNIX_TIMESTAMP(FSScheduledDate) as SchDate, DATE_FORMAT(FSScheduledTime,'" . get_text('TimeFmt') . "') as SchTime, EvFinalFirstPhase,
                                                                 @bit:=if(GrPhase=0, 1, pow(2, ceil(log2(GrPhase))+1)) & EvMatchArrowsNo,
@@ -4169,14 +4173,16 @@ Class Scheduler {
                                                             INNER JOIN Grids ON FSMatchNo=GrMatchNo
                                                             INNER JOIN Events ON FSEvent=EvCode AND FSTeamEvent=EvTeamEvent AND FSTournament=EvTournament
                                                             inner join Phases on EvFinalFirstPhase in (PhId, PhLevel) and (PhIndTeam & pow(2, EvTeamEvent))>0 and PhRuleSets in ('', '{$_SESSION['TourLocRule']}')
+                                                            left join Session on SesTournament=EvTournament and SesType='F' and concat(FsScheduledDate,' ',FsScheduledTime) between SesDtStart and SesDtEnd and if(SesEvents='', true, find_in_set(concat(EvTeamEvent,EvCode), SesEvents))
                                                             left join Targets on EvFinalTargetType=TarId
                                                             WHERE FSTournament=" . StrSafe_DB($this->TourId) . "
                                                                 AND FSScheduledDate='$Date' and FSScheduledTime='$Time'
                                                                 and FsTarget!=''
                                                                 AND GrPhase<=greatest(ifnull(PhId,0), ifnull(PhLevel,0), EvFinalFirstPhase)
-                                                                group by FsEvent, FsTarget, GrPhase
+                                                                ".($this->SesLocations ? " and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).")":'')."
+                                                            group by FsEvent, FsTarget, GrPhase
                                                             ".($this->TargetsInvolved ? ' HAVING '.sprintf($this->TargetsInvolved, 'FsTarget+0') : '')."
-                                                                ORDER BY Warmup ASC, FSTarget ASC, FsEvent, FSMatchNo ASC";
+                                                            ORDER BY Warmup ASC, FSTarget ASC, FsEvent, FSMatchNo ASC";
                                                     }
                                                     $t = safe_r_sql($MyQuery);
                                                     while($u=safe_fetch($t)) {
@@ -4391,7 +4397,7 @@ Class Scheduler {
                                                         $Sql="select * from DistanceInformation where DiTournament={$this->TourId} and DiDay='$Date' and DiWarmStart='$Time'";
                                                         $t=safe_r_sql($Sql);
                                                         while($u=safe_fetch($t)) {
-                                                            $Sql="select distinct SesAth4Target, cast(substr(QuTargetNo,2) as unsigned) TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart from
+                                                            $Sql="select distinct SesAth4Target, QuTarget as TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart from
                                                                 Entries
                                                                 inner join Qualifications on EnId=QuId
                                                                 inner join DistanceInformation on QuSession=DiSession and DiTournament={$this->TourId} and DiDistance={$u->DiDistance} and DiDay='$Date' and DiWarmStart='$Time'
@@ -4470,10 +4476,12 @@ Class Scheduler {
                                                         FROM FinWarmup
                                                         INNER JOIN Events ON FwEvent=EvCode AND FwTeamEvent=EvTeamEvent AND FwTournament=EvTournament
                                                         left join Targets on EvFinalTargetType=TarId
+				                                        left join Session on SesTournament=FwTournament and SesType='F' and concat(FwDay,' ',FwMatchTime) between SesDtStart and SesDtEnd and if(SesEvents='', true, find_in_set(concat(EvTeamEvent,EvCode), SesEvents))
                                                         WHERE FwTournament=" . StrSafe_DB($this->TourId) . "
-                                                                AND date_format(FwDay, '%Y-%m-%d')='$Date' and FwTime='$Time'
-                                                                and FwTargets!=''
-                                                                ORDER BY FwTargets, FwEvent";
+                                                            AND date_format(FwDay, '%Y-%m-%d')='$Date' and FwTime='$Time'
+                                                            and FwTargets!=''
+                                                        ".($this->SesLocations ? " and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).")":'')."
+                                                        ORDER BY FwTargets, FwEvent";
                                                     $t = safe_r_sql($MyQuery);
 
                                                     $RowTgts=array();
@@ -4627,15 +4635,16 @@ Class Scheduler {
             foreach($Days as $Day => $Blocks) {
                 if(!$Blocks['min'] and !$Blocks['max']) continue;
                 $TwoColumns=false;
+                $Portrait=($Blocks['max']-$Blocks['min']<=32);
                 if($FirstPage) {
-                    $pdf = new ResultPDF(get_text('FopSetup'), $Blocks['max']-$Blocks['min']<=32);
+                    $pdf = new ResultPDF(get_text('FopSetup'), $Portrait);
                     $pdf->Version=$this->FopVersion;
                     $pdf->SetCellPadding(0.1);
                     $pdf->SetFillColor(200);
                     $pdf->SetTextColor(0);
     // 				$pdf->SetAutoPageBreak(false);
                 } else {
-                    $pdf->AddPage($Blocks['max']-$Blocks['min']>32 ? 'L' : 'P');
+                    $pdf->AddPage($Portrait ? 'P' : 'L');
                 }
                 $OldGroupSession=$GroupSession;
                 $FirstPage=false;
@@ -4650,16 +4659,17 @@ Class Scheduler {
                 // Title of the page is ALWAYS the date and the version
                 if($Day[0]!='S') {
                     $Title=formatTextDate($Day, true) . ($GroupSession?" - $GroupSession":'');
-                    $pdf->SetFont('', 'B', 25);
-                    $pdf->Cell(0, 0, $Title, 'B', 1, 'C');
+                    $pdf->SetFont('', 'B', $Portrait ? 18 : 25);
+                    $pdf->Cell(0, 0, $Title, 'B', 1, ($Portrait and $this->FopVersionText) ? 'L' : 'C');
                     $pdf->dy(-5, true);
                     $pdf->SetFontSize(7);
-                    $pdf->Cell(0, 0, $this->FopVersionText, '', 0, 'R');
+                    $pdf->setX($pdf->getPageWidth()-50);
+                    $pdf->Cell(40, 0, $this->FopVersionText, '', 0, 'R');
                 }
                 $pdf->SetFont('', '', 8);
 
                 // calculates the width of the targets
-                $TgtWidthOrg=min(7, ($pdf->getPageWidth()-21-$TimeWidth)/(1+$Blocks['max']-$Blocks['min']));
+                $TgtWidthOrg=min(9, ($pdf->getPageWidth()-21-$TimeWidth)/(1+$Blocks['max']-$Blocks['min']));
                 $pdf->ln(6);
 
                 $SecondColumn=0;
@@ -4893,8 +4903,13 @@ Class Scheduler {
 					$start=max($field->Tg1, $Min);
 					$end=min($field->Tg2, $Max);
 					$pdf->setx($OldX+($start-$Min)*$TgtWidth);
-					$pdf->cell($TgtWidth*(1+$end-$start), $TgtHeight, $field->Loc, 'LR', 0, 'C');
-				}
+                    $pdf->SetFont('','b');
+//                    $old=$pdf->getGraphicVars();
+                    $pdf->setFillColor(230);
+                    $pdf->cell($TgtWidth*(1+$end-$start), $TgtHeight, $field->Loc, 'LR', 0, 'C', true);
+//                    $pdf->setGraphicVars($old);
+                    $pdf->SetFont('','');
+                }
 			}
 			$pdf->setxy($OldX, $OldY+$TgtHeight);
 		}

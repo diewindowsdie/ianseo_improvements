@@ -36,7 +36,7 @@ if(!empty($_REQUEST['SortByTarget'])) {
 			$SORT='ElTargetNo';
 			break;
 		default:
-			$SORT='QuTargetNo, FirstName, Name';
+			$SORT='QuSession, QuTarget, QuLetter, FirstName, Name';
 	}
 	$SORT.=', NationCode, FirstName, Name';
 }
@@ -192,10 +192,15 @@ while ($MyRow=safe_fetch($Rs)) {
             if($BackGround->IcBackground and file_exists($Back=$CFG->DOCUMENT_PATH.'TV/Photos/'.$CurrentCode.'-'.$FileExtra.'-Accreditation.jpg')) {
                 $ElX=$StartX+$BackGround->Options['IdBgX'];
                 $ElY=$StartY+$BackGround->Options['IdBgY'];
-                $pdf->Image($Back, $ElX, $ElY, floatval($BackGround->Options['IdBgW']), floatval($BackGround->Options['IdBgH']));
+                if(!is_null($MyRow->EnTournament)) {
+                    $pdf->Image($Back, $ElX, $ElY, floatval($BackGround->Options['IdBgW']), floatval($BackGround->Options['IdBgH']));
+                }
             }
         } else {
             $pdf->AddPage($Orientation, $Format);
+        }
+        if(is_null($MyRow->EnTournament)) {
+            continue;
         }
 
         $FileExtra="{$CardType}-{$MyRow->IcNumber}-{$Page}";
@@ -426,7 +431,9 @@ while ($MyRow=safe_fetch($Rs)) {
                 case 'CompName':
                     if(!isset($Text)) $Text=array($MyRow->ToName);
                 case 'CompDetails':
-                    if(!isset($Text)) $Text=array(preg_replace("/\s+/", ' ', $MyRow->ToWhere).' - '.TournamentDate2StringShort($MyRow->ToWhenFrom, $MyRow->ToWhenTo));
+                    if($MyRow->ToWhenFrom) {
+                        if (!isset($Text)) $Text = array(preg_replace("/\s+/", ' ', $MyRow->ToWhere) . ' - ' . TournamentDate2StringShort($MyRow->ToWhenFrom, $MyRow->ToWhenTo));
+                    }
                 case 'TeamComponents':
                     if(!isset($Text)) {
                         switch($Element->IceContent) {

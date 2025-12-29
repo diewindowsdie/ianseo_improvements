@@ -596,6 +596,7 @@ $lang['IsDbVersionTooOld']='InfoSystem Database Version is older than Ianseo';
 $lang['IsGenericConfig']='Generic Configuration';
 $lang['IsParamWarning']='InfoSystem Setup!<br/>Use with EXTREME caution!';
 $lang['IsSpecificConfig']='Competition specific items';
+$lang['ItemsNo']='Number of Items: {$a}';
 $lang['Judge']='Judge';
 $lang['JudgesAssigment']='Judges Assigment';
 $lang['JudgesSelectionForm']='Judge Selection Form';

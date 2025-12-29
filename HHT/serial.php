@@ -1,5 +1,5 @@
 <?php
-include_once("config.inc.php");
+include_once("configHHT.inc.php");
 
 function PrepareTxFrame($devices, $sentence)
 {
@@ -32,11 +32,9 @@ function SendHTT($HhtParams, $sentences, $sendResultArray = false, $overTO = 0)
 		$request[] = $sentences;
 	else
 		$request = $sentences;
-	if(count($request) > 0)
-	{
+	if(count($request) > 0) {
 		$fp = @fsockopen ($HhtParams[0], $HhtParams[1], $errno, $errstr, 1);
-		if ($fp)
-		{
+		if ($fp) {
 			$SecondTry=false;
 			stream_set_blocking($fp,0);
 			for($i=0; $i<count($request); $i++)
@@ -206,7 +204,7 @@ function SendHTT($HhtParams, $sentences, $sendResultArray = false, $overTO = 0)
 						}
 					}
 				}
-				usleep(5000 + $overTO);
+				usleep(intval(5000 + $overTO));
 			}
     		fclose ($fp);
 		}

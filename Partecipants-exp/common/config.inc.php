@@ -5,7 +5,6 @@
 		'code'=> 'EnCode',
 		'status'=> 'EnStatus',
 		'session'=> 'QuSession',
-		'target_no'=> 'QuTargetNo',
 		'first_name'=> 'EnFirstName',
 		'name'=> 'EnName',
 		'sex'=>'EnSex',
@@ -22,4 +21,3 @@
 		'sub_class'=>'EnSubClass',
 		'athlete'=>'EnAthlete'
 	);
-?>

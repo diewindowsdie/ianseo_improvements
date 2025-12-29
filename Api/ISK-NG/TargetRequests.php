@@ -13,10 +13,10 @@ $PAGE_TITLE=get_text('TargetRequests-Printout', 'Api');
 
 // check the max target range based on the info
 $SQL=[];
-$SQL[]="select max(AtTarget) as MaxTarget from AvailableTarget where AtTournament={$_SESSION['TourId']}";
-$SQL[]="select max(FSTarget) as MaxTarget  from FinSchedule where FsTournament={$_SESSION['TourId']}";
-$SQL[]="select max(ElTargetNo) as MaxTarget  from Eliminations where ElTournament={$_SESSION['TourId']}";
-$SQL[]="select max(RrMatchTarget) as MaxTarget  from RoundRobinMatches where RrMatchTournament={$_SESSION['TourId']}";
+$SQL[]="SELECT MAX(`SesFirstTarget`+`SesTar4Session`-1) as `MaxTarget` FROM `Session` WHERE `SesTournament` = {$_SESSION['TourId']} and `SesType`='Q'";
+$SQL[]="select max(`FSTarget`) as `MaxTarget`  from `FinSchedule` where `FsTournament`={$_SESSION['TourId']}";
+$SQL[]="select max(`ElTargetNo`) as `MaxTarget`  from `Eliminations` where `ElTournament`={$_SESSION['TourId']}";
+$SQL[]="select max(`RrMatchTarget`) as `MaxTarget`  from `RoundRobinMatches` where `RrMatchTournament`={$_SESSION['TourId']}";
 
 $MaxTarget=25;
 $q=safe_r_sql("(".implode(") UNION (", $SQL).") order by MaxTarget desc");

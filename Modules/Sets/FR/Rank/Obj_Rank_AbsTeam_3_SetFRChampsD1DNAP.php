@@ -202,7 +202,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 					ClDescription, DivDescription,
 					EnId,EnCode,ifnull(EdExtra,EnCode) as LocalBib, EnSex,EnNameOrder,EnFirstName,upper(EnFirstName) EnFirstNameUpper,EnName,EnClass,EnDivision,EnAgeClass,EnSubClass,EnCoCode,EnDob,
 					EvNumQualified AS QualifiedNo, EvFirstQualified, EvQualPrintHead,
-					SUBSTRING(QuTargetNo,1,1) AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo,
+					QuSession AS Session, CONCAT(QuTarget, QuLetter) AS TargetNo,
 					TeHits AS Arrows_Shot, QuScore, QuGold, QuXnine, TeScore,TeRank, TeGold, TeXnine, ToGolds, ToXNine,TeHits,
 				    concat(rtrim(QuD1Arrowstring),rtrim(QuD2Arrowstring),rtrim(QuD3Arrowstring),rtrim(QuD4Arrowstring),rtrim(QuD5Arrowstring),rtrim(QuD6Arrowstring),rtrim(QuD7Arrowstring),rtrim(QuD8Arrowstring)) as DetailedArrows,
 					TeRank, EvRunning, IF(EvRunning=1,IFNULL(ROUND(TeScore/TeHits,3),0),0) as RunningScore,

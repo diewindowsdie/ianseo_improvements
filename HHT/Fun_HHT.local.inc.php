@@ -283,64 +283,30 @@
 		$out='';
 		$jsSelectAll='';
 
-		if (!$Broadcast)
-		{
+		if (!$Broadcast) {
 			$jsSelectAll='if (this.checked==true) SelectAllChecks(\'' . $FormName . '\',\'htt\'); else UnselectAllChecks(\'' . $FormName . '\',\'htt\');';
 		}
-
-
-/*		$Select
-			= "SELECT DISTINCT "
-				. "SUBSTRING(AtTargetNo,2,LENGTH(AtTargetNo)-2) AS TargetNo, "
-				. "SUBSTRING(AtTargetNo,1,1) AS Session, "
-				. " ToAth4Target1, "
-				. " ToAth4Target2, "
-				. " ToAth4Target3, "
-				. " ToAth4Target4, "
-				. " ToAth4Target5, "
-				. " ToAth4Target6, "
-				. " ToAth4Target7, "
-				. " ToAth4Target8, "
-				. " ToAth4Target9 "
-			. "FROM "
-				. "AvailableTarget "
-				. " left join Tournament on AtTournament=ToId "
-			. "WHERE "
-				. "AtTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND "
-				. "AtTargetNo LIKE " . StrSafe_DB($_REQUEST['x_Session'] . '%') . " "
-			. "ORDER BY "
-				. "SUBSTRING(AtTargetNo,2,LENGTH(AtTargetNo)-2) ASC ";*/
-		//print $Select;
 
 		$sessions=GetSessions('Q');
 		$ath4target=array();
 
-		foreach ($sessions as $s)
-		{
+		foreach ($sessions as $s) {
 			$ath4target[$s->SesOrder]=$s->SesAth4Target;
 		}
 
-		$Select
-			= "SELECT DISTINCT "
-				. "SUBSTRING(AtTargetNo,2,LENGTH(AtTargetNo)-2) AS TargetNo, "
-				. "SUBSTRING(AtTargetNo,1,1) AS Session "
-			. "FROM "
-				. "AvailableTarget "
-			. "WHERE "
-				. "AtTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND "
-				. "AtTargetNo LIKE " . StrSafe_DB($_REQUEST['x_Session'] . '%') . " "
-			. "ORDER BY "
-				. "SUBSTRING(AtTargetNo,2,LENGTH(AtTargetNo)-2) ASC ";
+        $atSql = createAvailableTargetSQL(($_REQUEST['x_Session']??0), $_SESSION['TourId']);
+		$Select = "SELECT DISTINCT FullTgtTarget AS TargetNo, FullTgtSession AS Session "
+			. "FROM ($atSql) at  "
+			. "WHERE FullTgtSession=" . StrSafe_DB($_REQUEST['x_Session']??0)
+			. " ORDER BY FullTgtTarget ASC ";
 
 		$Rs=safe_r_sql($Select);
 
-		if ($Rs)
-		{
-			$out.='<table class="Tabella">' . "\n";
-			if (safe_num_rows($Rs))
-			{
+		if ($Rs) {
+			$out.='<table class="Tabella">';
+			if (safe_num_rows($Rs)) {
 				$out
-					.='<tr>' . "\n"
+					.='<tr>'
 						. '<td colspan="' . $RowSize .'" class="Center">'
 							. '<input type="checkbox" '
 								. 'name="HTT[0]" '
@@ -351,19 +317,16 @@
 						. '</td>'
 					. '</tr>';
 				$k=0;
-				$out.='<tr>' . "\n";	// apro il primo tr
-				while ($MyRow=safe_fetch($Rs))
-				{
-					if (($k%$RowSize)==0 && $k!=0)
-					{
-						$out.='</tr>' . "\n";
-						$out.='<tr>' . "\n";
+				$out.='<tr>';	// apro il primo tr
+				while ($MyRow=safe_fetch($Rs)) {
+					if (($k%$RowSize)==0 && $k!=0) {
+						$out.='</tr>';
+						$out.='<tr>';
 					}
 					$num=intval($MyRow->TargetNo);
 					$digits='';
 					$disable=0;
-					for ($i='A';$i<='D';++$i)
-					{
+					for ($i='A';$i<='D';++$i) {
 						$style='';
 						if(!empty($Status[$num . $i])) {
 							switch($Status[$num . $i]) {
@@ -438,9 +401,9 @@
 
 					++$k;
 				}
-				$out.='</tr>' . "\n";	// chudo l'ultimo tr
+				$out.='</tr>';	// chudo l'ultimo tr
 			}
-			$out.='</table>' . "\n";
+			$out.='</table>';
 		}
 
 		return $out;
@@ -488,11 +451,11 @@
 
 		if ($Rs)
 		{
-			$out.='<table class="Tabella">' . "\n";
+			$out.='<table class="Tabella">';
 			if (safe_num_rows($Rs)>0)
 			{
 				$out
-					.='<tr>' . "\n"
+					.='<tr>'
 						. '<td colspan="' . $RowSize .'" class="Center">'
 							. '<input type="checkbox" '
 								. 'name="HTT[0]" '
@@ -503,13 +466,13 @@
 						. '</td>'
 					. '</tr>';
 				$k=0;
-				$out.='<tr>' . "\n";	// apro il primo tr
+				$out.='<tr>';	// apro il primo tr
 				while ($MyRow=safe_fetch($Rs))
 				{
 					if (($k%$RowSize)==0 && $k!=0)
 					{
-						$out.='</tr>' . "\n";
-						$out.='<tr>' . "\n";
+						$out.='</tr>';
+						$out.='<tr>';
 					}
 
 					$digits='';
@@ -589,9 +552,9 @@
 
 					++$k;
 				}
-				$out.='</tr>' . "\n";	// chiudo l'ultimo tr
+				$out.='</tr>';	// chiudo l'ultimo tr
 			}
-			$out.='</table>' . "\n";
+			$out.='</table>';
 		}
 
 		return $out;
@@ -642,11 +605,11 @@
 		}
 		else
 		{
-			$ComboHHT .= '<select name="x_Hht" id="x_Hht" onChange="resetCmbSession();">' . "\n";
-			$ComboHHT .= '<option value="-1">---</option>' . "\n";
+			$ComboHHT .= '<select name="x_Hht" id="x_Hht" onChange="resetCmbSession();">';
+			$ComboHHT .= '<option value="-1">---</option>';
 			while ($MyRow=safe_fetch($Rs))
-				$ComboHHT .='<option value="' . $MyRow->HsId . '" ' . (isset($_REQUEST['x_Hht']) && $_REQUEST['x_Hht']==$MyRow->HsId ? ' selected' : '') . '>' . $MyRow->HsName . ' (' . $MyRow->HsIpAddress . ')</option>' . "\n";
-			$ComboHHT .= '</select>' . "\n";
+				$ComboHHT .='<option value="' . $MyRow->HsId . '" ' . (isset($_REQUEST['x_Hht']) && $_REQUEST['x_Hht']==$MyRow->HsId ? ' selected' : '') . '>' . $MyRow->HsName . ' (' . $MyRow->HsIpAddress . ')</option>';
+			$ComboHHT .= '</select>';
 		}
 
 		return $ComboHHT;
@@ -673,16 +636,11 @@
 
 
 					//Tutte le fasi di qualifica
-					/*for ($i=1;$i<=$RowTour->ToNumSession;++$i)
-					{
-						$ComboSes.= '<option value="' . $i . '"' . (isset($_REQUEST['x_Session']) && $_REQUEST['x_Session']==$i ? ' selected' : '') . '>' . get_text('QualSession','HTT') . ' ' . $i . '</option>' . "\n";
-						$numOptions++;
-					}*/
 					foreach ($sessions as $s) {
 						if ($ComboSesArray!==null) {
 							$ComboArr[]=$s->SesOrder;
 						}
-						$ComboSes.= '<option value="' . $s->SesOrder . '"' . (isset($_REQUEST['x_Session']) && $_REQUEST['x_Session']==$s->SesOrder ? ' selected' : '') . '>' . get_text('QualSession','HTT') . ' ' . $s->Descr . '</option>' . "\n";
+						$ComboSes.= '<option value="' . $s->SesOrder . '"' . (isset($_REQUEST['x_Session']) && $_REQUEST['x_Session']==$s->SesOrder ? ' selected' : '') . '>' . get_text('QualSession','HTT') . ' ' . $s->Descr . '</option>';
 						$numOptions++;
 					}
 				}

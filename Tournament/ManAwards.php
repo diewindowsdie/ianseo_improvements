@@ -53,7 +53,7 @@ if(!empty($_REQUEST['Prize'])) {
 if (isset($_REQUEST['Command'])) {
 	if ($_REQUEST['Command']=='ADD'){
 		foreach($_REQUEST["addField"] as $v) {
-			if(preg_match('/^[A-Z0-9]+\|[0-1]{1}\|[0-1]{1}$/sim',$v)) {
+			if(preg_match('/^[A-Z\-\_0-9]+\|[0-1]{1}\|[0-1]{1}$/sim',$v)) {
 				list($Event,$isFinal,$isTeam) = explode('|',$v);
 				if($Event=='Custom') {
 					$Num=1;

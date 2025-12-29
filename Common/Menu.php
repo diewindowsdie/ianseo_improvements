@@ -371,7 +371,6 @@ function get_which_menu($on=false) {
                 $ret['FINI'][] = get_text('MenuLM_Export Text File') . '|' . $CFG->ROOT_DIR . 'Final/ExportTSV.php';
                 $ret['FINI'][] = MENU_DIVIDER;
                 $ret['FINI'][] = get_text('MenuLM_Scorecard Printout') . '|' . $CFG->ROOT_DIR . 'Final/Individual/PrintScore.php';
-// 			$ret['FINI'][] = get_text('MenuLM_Back Number Printout') .'|'.$CFG->ROOT_DIR.'Final/Individual/PrintBackNo.php';
                 $ret['FINI'][] = get_text('MenuLM_NewBacknumbers') . '|' . $CFG->ROOT_DIR . 'Accreditation/IdCards.php?CardType=I';
             }
 			if($_SESSION['MenuFinIOn']) {
@@ -407,7 +406,6 @@ function get_which_menu($on=false) {
                 $ret['FINT'][] = get_text('MenuLM_Export Text File') . '|' . $CFG->ROOT_DIR . 'Final/ExportTSV.php';
                 $ret['FINT'][] = MENU_DIVIDER;
                 $ret['FINT'][] = get_text('MenuLM_Scorecard Printout') . '|' . $CFG->ROOT_DIR . 'Final/Team/PrintScore.php';
-// 			$ret['FINT'][] = get_text('MenuLM_Back Number Printout') .'|'.$CFG->ROOT_DIR.'Final/Team/PrintBackNo.php';
                 $ret['FINT'][] = get_text('MenuLM_NewBacknumbers') . '|' . $CFG->ROOT_DIR . 'Accreditation/IdCards.php?CardType=T';
             }
 			if($_SESSION['MenuFinTOn']) {

@@ -57,7 +57,7 @@ Then go back to the <a href="../../../Qualification/index.php">Qualification Inp
     <labelhidden="1" >Mode: </label>
     <input type="number" name="TeamMode" hidden="1" value="<?php echo htmlspecialchars($current['TeamMode']); ?>" required /><br><br>
 
-    <label>Male Team Members: </label>
+    <label>Open Team Members: </label>
     <input type="number" name="menComponent" min="0" value="<?php echo htmlspecialchars($current['MenComponent']); ?>" required /><br><br>
 
     <label>Female Team Members: </label>

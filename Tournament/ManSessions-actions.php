@@ -11,11 +11,7 @@ if(!CheckTourSession() or !hasFullACL(AclCompetition, 'cSchedule', AclReadWrite)
     jsonout($JSON);
 }
 
-//require_once('Common/Lib/Fun_DateTime.inc.php');
 require_once('Common/Fun_Sessions.inc.php');
-//require_once('Common/Fun_Various.inc.php');
-//require_once('Tournament/Fun_Tournament.local.inc.php');
-//require_once('Tournament/Fun_ManSessions.inc.php');
 
 switch($_REQUEST['act']??'') {
     case 'getSesLocations':

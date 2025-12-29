@@ -457,7 +457,7 @@ function activateSchedule(obj) {
         Activate:$(obj).attr('ref'),
     }
     $.getJSON('AjaxActivate.php', form, function (data) {
-        $(obj).closest('tr').toggleClass('active', data.active);
+        $('[ref="'+$(obj).attr('ref')+'"]').closest('tr').toggleClass('active', data.active);
     })
 }
 

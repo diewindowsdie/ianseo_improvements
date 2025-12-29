@@ -172,8 +172,8 @@
 
 			$q="
 				SELECT
-					EnId,EnCode,EnSex,EnNameOrder, EnName AS Name, EnFirstName AS FirstName, upper(EnFirstName) AS FirstNameUpper, SUBSTRING(QuTargetNo,1,1) AS Session,
-					SUBSTRING(QuTargetNo,2) AS TargetNo,
+					EnId,EnCode,EnSex,EnNameOrder, EnName AS Name, EnFirstName AS FirstName, upper(EnFirstName) AS FirstNameUpper, QuSession AS Session,
+					CONCAT(QuTarget, QuLetter) AS TargetNo,
 					concat($safeOrder) as MyEvent,
 					concat(EnDivision, EnClass) MyTrueEvent,
 					CoCode, CoName, EnClass, EnDivision,EnAgeClass, EnSubClass, ClDescription, DivDescription, ScDescription, 

@@ -92,5 +92,3 @@
 	}
 
 	include('Common/Templates/tail.php');
-	$mid->printFooter();
-?>

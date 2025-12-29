@@ -27,26 +27,28 @@ if(CheckTourSession()) {
 	$From=intval($_REQUEST['x_From'] ?? 0);
 	$To=intval($_REQUEST['x_To'] ?? 0);
 
-	$MyQuery = "SELECT ToCategory&12 as IsField3D, ToNumEnds, EnName AS Name, EnFirstName AS FirstName, AtSession AS Session, AtTarget AS TargetNo,  AtLetter AS BackNo,  IF(TfGolds='',ToGolds,TfGolds) as Golds, IF(TfXNine='',ToXNine,TfXNine) as XNine
-		FROM AvailableTarget
-		INNER JOIN Tournament AS t ON t.ToId=AtTournament";
+    $atSql = createAvailableTargetSQL($Session, $_SESSION['TourId']);
+
+	$MyQuery = "SELECT ToCategory&12 as IsField3D, ToNumEnds, EnName AS Name, EnFirstName AS FirstName, FullTgtSession AS Session, FullTgtTarget AS TargetNo,  FullTgtLetter AS BackNo,  IF(TfGolds='',ToGolds,TfGolds) as Golds, IF(TfXNine='',ToXNine,TfXNine) as XNine
+		FROM ($atSql) as at
+		INNER JOIN Tournament AS t ON t.ToId={$_SESSION['TourId']}";
 	if(!empty($_REQUEST["noEmpty"])) {
 		$MyQuery .= " INNER JOIN
-				(SELECT DISTINCT EnTournament, QuTarget, QuSession
+				(SELECT DISTINCT EnTournament, QuSession, QuTarget, QuLetter
 				FROM Qualifications
 				INNER JOIN Entries On QuId=EnId
 				WHERE EnTournament = {$_SESSION['TourId']} ".($Session ? " AND QuSession=$Session" : "").($To>0 ? " and QuTarget between $From and $To" : "")."
-				) as Tgt ON AtTournament=Tgt.EnTournament AND AtTarget=QuTarget and AtSession=QuSession	";
+				) as Tgt ON Tgt.QuSession=FullTgtSession AND Tgt.QuTarget=FullTgtTarget AND Tgt.QuLetter=FullTgtLetter	";
 	}
 	$MyQuery.= "LEFT JOIN (
-					SELECT EnName, EnFirstName, EnTournament, QuTargetNo, TfGolds, TfXNine
+					SELECT EnName, EnFirstName, EnTournament, QuSession, QuTarget, QuLetter, TfGolds, TfXNine
 					FROM Entries AS e 
 					INNER JOIN Qualifications AS q ON e.EnId=q.QuId AND e.EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1
 					left join TargetFaces ON TfTournament=EnTournament and EnTargetFace=TfId
-					) sq ON AtTournament=sq.EnTournament AND AtTargetNo=sq.QuTargetNo 
-				WHERE AtTournament = {$_SESSION['TourId']} ".($Session ? " AND AtSession=$Session" : "").($To>0 ? " and AtTarget between $From and $To" : "");
+					) sq ON sq.QuSession=FullTgtSession AND sq.QuTarget=FullTgtTarget AND sq.QuLetter=FullTgtLetter
+				WHERE t.ToId={$_SESSION['TourId']}". ($Session ? " AND FullTgtSession=$Session" : "").($To>0 ? " and FullTgtTarget between $From and $To" : "");
 
-	$MyQuery.= " ORDER BY if(ToCategory&12, (substr(AtTargetNo,2 , 3)-1)%ToNumEnds, 1), AtTargetNo, Name, FirstName ";
+	$MyQuery.= " ORDER BY if(ToCategory&12, (substr(FullTgtTarget,2 , 3)-1)%ToNumEnds, 1), FullTgtTarget, FullTgtLetter, Name, FirstName ";
 
 	$Rs=safe_r_sql($MyQuery);
     $Etichetta=-1;

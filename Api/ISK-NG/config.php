@@ -63,12 +63,12 @@ function getQrConfig($DEVICE, $cachedData=false, $Lightmode=false, $Force=false)
 						$PrevG.="+QuD{$n}Gold";
 						$PrevX.="+QuD{$n}Xnine";
 					}
-					$SQL.= "QuTargetNo, group_concat(concat_ws('-', IskDtDistance, IskDtEndNo, IskDtArrowstring) separator '|') as TempArrows
+					$SQL.= "CONCAT(QuSession, '.', QuTarget, QuLetter) as QuTargetKey, group_concat(concat_ws('-', IskDtDistance, IskDtEndNo, IskDtArrowstring) separator '|') as TempArrows
 						FROM Qualifications
 						INNER JOIN Entries ON EnId=QuId and EnTournament=$toId  AND EnAthlete=1 AND EnStatus <= 1
-						left join IskData on IskDtTournament=EnTournament and IskDtType='Q' and IskDtTargetNo=QuTargetNo
+						left join IskData on IskDtTournament=EnTournament and IskDtType='Q' and IskDtTargetNo=CONCAT(QuSession, '.', QuTarget, QuLetter)
 						WHERE QuIrmType=0 AND {$Filter}
-						group by QuTargetNo";
+						group by QuSession, QuTarget, QuLetter";
 					// Retrieve the competitor info
 					$q=safe_r_sql($SQL);
 					while($r=safe_fetch($q)) {
@@ -80,7 +80,7 @@ function getQrConfig($DEVICE, $cachedData=false, $Lightmode=false, $Force=false)
 							}
 						}
 
-						foreach(($json_array['archers'][$r->QuTargetNo]['scoring']??[]) as $dKey=>$distance) {
+						foreach(($json_array['archers'][$r->QuTargetKey]['scoring']??[]) as $dKey=>$distance) {
 							$arrowstring=str_pad($r->{"QuD{$distance['distance']}Arrowstring"}, $distance['arrows']*$distance['ends'], ' ', STR_PAD_RIGHT);
 							if(!empty($tmpArrows[$distance['distance']])) {
 								foreach($tmpArrows[$distance['distance']] as $End => $AS) {
@@ -88,10 +88,10 @@ function getQrConfig($DEVICE, $cachedData=false, $Lightmode=false, $Force=false)
 									$arrowstring=substr_replace($arrowstring, $AS, $offset, strlen($AS));
 								}
 							}
-                            $json_array['archers'][$r->QuTargetNo]['scoring'][$dKey]['arrowstring']=$arrowstring;
-                            $json_array['archers'][$r->QuTargetNo]['scoring'][$dKey]['previous']=$r->{"D{$distance['distance']}Previous"};
-                            $json_array['archers'][$r->QuTargetNo]['scoring'][$dKey]['previousGold']=$r->{"D{$distance['distance']}PreviousGold"};
-                            $json_array['archers'][$r->QuTargetNo]['scoring'][$dKey]['previousXnine']=$r->{"D{$distance['distance']}PreviousXnine"};
+                            $json_array['archers'][$r->QuTargetKey]['scoring'][$dKey]['arrowstring']=$arrowstring;
+                            $json_array['archers'][$r->QuTargetKey]['scoring'][$dKey]['previous']=$r->{"D{$distance['distance']}Previous"};
+                            $json_array['archers'][$r->QuTargetKey]['scoring'][$dKey]['previousGold']=$r->{"D{$distance['distance']}PreviousGold"};
+                            $json_array['archers'][$r->QuTargetKey]['scoring'][$dKey]['previousXnine']=$r->{"D{$distance['distance']}PreviousXnine"};
 						}
 					}
 					break;
@@ -465,7 +465,7 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 	        // Prepare the select used to retrieve competitor information
 	        $SQL = "SELECT EnId, EnCode, EnName, ucase(EnFirstName) as EnFirstName, EnNameOrder, 
 	                EnSex, EnDivision, DivDescription, EnClass, ClDescription,
-	                CoCode, CoName, QuTargetNo, SUBSTRING(QuTargetNo,2) AS TargetNo, ToNumDist, ToCode,
+	                CoCode, CoName, CONCAT(QuSession, '.', QuTarget, QuLetter) as QuTargetKey, CONCAT(QuTarget, QuLetter) AS TargetNo, ToNumDist, ToCode,
 	                IF(TfGolds='',ToGolds,TfGolds) as Golds, IF(TfXnine='',ToXnine,TfXnine) as Xnine, SesName,
 	                SesTar4Session, TfName as TargetName,
 	                GROUP_CONCAT(DiEnds ORDER BY DiDistance ASC SEPARATOR ',') as Ends,
@@ -490,8 +490,8 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 				INNER JOIN `Session` on SesTournament=EnTournament and SesType='Q' and SesOrder=QuSession
 				$ExtraSql
 				WHERE ToId=$toId AND EnAthlete=1 AND EnStatus <= 1 AND {$Filter}
-				GROUP BY QuTargetNo
-				ORDER BY QuTargetNo ";
+				GROUP BY QuSession, QuTarget, QuLetter
+				ORDER BY QuSession, QuTarget, QuLetter ";
 	        // Retrieve the competitor info
 	        $q=safe_r_sql($SQL);
 	        if(safe_num_rows($q) !== 0) {
@@ -506,7 +506,7 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 
 			        // Now load the json array with the info we need
 			        $row_array = array();
-			        $row_array["refKey"] = $r->QuTargetNo;
+			        $row_array["refKey"] = $r->QuTargetKey;
 			        $row_array["encode"] = $r->EnCode;
 			        $row_array["name"] = $r->EnFirstName . ' ' . $r->EnName;
 			        $row_array["placement"] = '';
@@ -574,7 +574,7 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 			        }
 
 			        $row_array["scoring"] = $tmpScoring;
-			        $json_array['archers'][$r->QuTargetNo] = $row_array;
+			        $json_array['archers'][$r->QuTargetKey] = $row_array;
 		        }
 	        } else {
 		        return resetDevice($DEVICE->IskDvDevice, $json_array['targetAssigned']);

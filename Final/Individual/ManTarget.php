@@ -163,10 +163,10 @@ if (!empty($_REQUEST['Command'])) {
                     $Target = (!is_null($MyRow->FSTarget) ? $MyRow->FSTarget : '');
                     $id = $MyRow->FinEvent . '_' . $MyRow->EvTeamEvent . '_' . $MyRow->GrMatchNo;
                     if ($Ath4Tar == 0) {
-                        $MyGrid[$Row][$Col] .= '<td  nowrap class="' . ($AthPrinted == 1 ? 'Bottom ' : '') . 'Top Right Left Center"><input type="text" tabindex="' . ($TabIndex++) . '" maxlength="7" size="3" phase="'.$MyRow->GrPhase.'" id="' . $id . '" value="' . $Target . '" onchange="WriteTarget(this);"></td>';
+                        $MyGrid[$Row][$Col] .= '<td  nowrap class="' . ($AthPrinted == 1 ? 'Bottom ' : '') . 'Top Right Left Center"><input type="text" tabindex="' . ($TabIndex++) . '" maxlength="7" size="4" phase="'.$MyRow->GrPhase.'" id="' . $id . '" value="' . $Target . '" onchange="WriteTarget(this);"></td>';
                     } else {
                         if ($AthPrinted == 0) {
-                            $MyGrid[$Row][$Col] .= '<td  nowrap rowspan="2" class="Bottom Top Right Left Center"><input type="text" tabindex="' . ($TabIndex++) . '" maxlength="7" size="3" phase="'.$MyRow->GrPhase.'" id="' . $id . '" value="' . $Target . '" onchange="WriteTarget(this);"></td>';
+                            $MyGrid[$Row][$Col] .= '<td  nowrap rowspan="2" class="Bottom Top Right Left Center"><input type="text" tabindex="' . ($TabIndex++) . '" maxlength="7" size="4" phase="'.$MyRow->GrPhase.'" id="' . $id . '" value="' . $Target . '" onchange="WriteTarget(this);"></td>';
                         }
                     }
 
@@ -329,10 +329,10 @@ if (!empty($_REQUEST['Command'])) {
                 $id = $MyRow->FinEvent . '_' . $MyRow->EvTeamEvent . '_' . $MyRow->GrMatchNo;
 
                 if ($Ath4Tar==0) {
-                    $MyGrid[$Row][$Col] .= '<td  nowrap class="' . ($AthPrinted == 1 ? 'Bottom ' : '') . 'Top Right Left Center"><input type="text" tabindex="' . ($TabIndex++) . '" phase="'.$MyRow->GrPhase.'" maxlength="7" size="3" id="' . $id . '" value="' . $Target . '" onchange="WriteTarget(this);"></td>';
+                    $MyGrid[$Row][$Col] .= '<td  nowrap class="' . ($AthPrinted == 1 ? 'Bottom ' : '') . 'Top Right Left Center"><input type="text" tabindex="' . ($TabIndex++) . '" phase="'.$MyRow->GrPhase.'" maxlength="7" size="4" id="' . $id . '" value="' . $Target . '" onchange="WriteTarget(this);"></td>';
                 } else {
                     if ($AthPrinted == 0) {
-                        $MyGrid[$Row][$Col] .= '<td  nowrap rowspan="2" class="Bottom Top Right Left Center"><input type="text" tabindex="' . ($TabIndex++) . '" phase="'.$MyRow->GrPhase.'" maxlength="7" size="3" id="' . $id . '" value="' . $Target . '" onchange="WriteTarget(this);"></td>';
+                        $MyGrid[$Row][$Col] .= '<td  nowrap rowspan="2" class="Bottom Top Right Left Center"><input type="text" tabindex="' . ($TabIndex++) . '" phase="'.$MyRow->GrPhase.'" maxlength="7" size="4" id="' . $id . '" value="' . $Target . '" onchange="WriteTarget(this);"></td>';
                     }
                 }
                 ++$AthPrinted;

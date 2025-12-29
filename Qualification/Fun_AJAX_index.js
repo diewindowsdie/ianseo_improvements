@@ -4,7 +4,6 @@
 	 	index.php
 	 	index_all.php
 	 	WriteArrows.php
-	 	PrintBackNo.php
 	 	PrintScore.php
 */
 

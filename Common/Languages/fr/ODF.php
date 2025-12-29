@@ -35,6 +35,7 @@ $lang['Receiver']='Récepteur';
 $lang['ReceiverLanguage']='Langue du récepteur (3 car.)';
 $lang['ResultsDetails']='Vu détaillé des résultats';
 $lang['ScheduleDetails']='Statut du planning détaillé';
+$lang['SendNewMessage']='Envoyer nouveau message';
 $lang['SendOldMessage']='Renvoyer';
 $lang['SessionName']='$a->Category, $a->RoundType';
 $lang['SourceCode']='Code source';
