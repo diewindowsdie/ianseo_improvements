@@ -38,10 +38,9 @@
 		// query per cancellare i bersagli considerando il filtro un NON evento
 		safe_w_sql("update Entries inner join Qualifications on EnId=QuId
 				set EnTimestamp='".date('Y-m-d H:i:s')."'
-				Where (QuSession=" . StrSafe_DB($endSession) . " or QuTargetNo=CONCAT(" . StrSafe_DB($endSession) . "," . ($startSession==0 || $endSession==0  ?  "''" : "SUBSTRING(QuTargetNo,2) ") . ")) and $Where");
+				Where QuSession=" . StrSafe_DB($endSession) . " and $Where");
 		$query = "UPDATE Entries INNER JOIN Qualifications ON EnId=QuId
 			SET QuSession=" . StrSafe_DB($endSession) . ",
-				QuTargetNo=".($endSession ? "CONCAT(" . StrSafe_DB($endSession) . ", if(QuTarget>0, concat(lpad(QuTarget, 3, '0'), QuLetter), ''))" : "0").",
 				QuTarget=".($endSession ? "QuTarget" : "0").",
 				QuLetter=".($endSession ? "QuLetter" : "''").",
 				QuBacknoPrinted=0,

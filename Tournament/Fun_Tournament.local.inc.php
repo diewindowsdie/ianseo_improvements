@@ -525,8 +525,7 @@ require_once('Common/Fun_Phases.inc.php');
 				foreach($myPhases as $Key => $Value)
 				{
 					//print $Value.'<br><br>';
-					if($Key<=valueFirstPhase($MyRowEv->EvFinalFirstPhase))
-					{
+					if($Key<=valueFirstPhase($MyRowEv->EvFinalFirstPhase)) {
 						// mi servirà dopo nei calcoli dei campi!
 						$PhaseFields[]=array(
 							"X_Phase" => namePhase($MyRowEv->EvFinalFirstPhase,$Key)  . "_Phase",
@@ -539,20 +538,16 @@ require_once('Common/Fun_Phases.inc.php');
 							"X_PhaseNo" => namePhase($MyRowEv->EvFinalFirstPhase,$Key)
 							);
 
-						if($Key!=0)
-						{
-							//$MyQuery .= "SUM(IF(GrPhase=" . $Key . ",IF(IF(EvMatchMode=0,FinScore,FinSetScore)=0 && FinTie=2,(QuScore*10),IF(EvMatchMode=0,FinScore,FinSetScore)),0)) as `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key)  . "_Phase`, SUM(IF(GrPhase=" . $Key . ",FinTie,0)) as `" . $Value . "Tie`, MAX(IF(GrPhase=" . $Key . ",/*FinTieBreak*/'','')) as `" . $Value . "TieBreak`, GROUP_CONCAT(IF(GrPhase=" . $Key . ",FinSetPoints,'') SEPARATOR '') AS `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_SetPoints`, SUM(IF(GrPhase=" . $Key . ",FinMatchNo,0)) as `" . $Value . "Matchno`, ";
+						if($Key!=0) {
 							$MyQuery .= "SUM(IF(GrPhase=" . $Key . ",IF(IF(EvMatchMode=0,FinScore,FinSetScore)=0 && FinTie=2,(QuScore*10),IF(EvMatchMode=0,FinScore,FinSetScore)),0)) as `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key)  . "_Phase`, SUM(IF(GrPhase=" . $Key . ",FinTie,0)) as `" . $Value . "Tie`,GROUP_CONCAT(IF(GrPhase=" . $Key . ",FinArrowstring,'') SEPARATOR '') AS `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_Arrowstring`, GROUP_CONCAT(IF(GrPhase=" . $Key . ",FinTieBreak,'') SEPARATOR '') as `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_TieArrowstring`, GROUP_CONCAT(IF(GrPhase=" . $Key . ",FinSetPoints,'') SEPARATOR '') AS `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_SetPoints`, SUM(IF(GrPhase=" . $Key . ",FinMatchNo,0)) as `" . $Value . "Matchno`, ";
 							$Tmp = ", `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_Phase` DESC " . $Tmp;
-							if($Key==4 && $MyRowEv->EvMatchMode!=0)
+							if($Key==4 AND $MyRowEv->EvMatchMode!=0)
 							{
 								$MyQuery .= "SUM(IF(GrPhase=" . $Key . ",FinSetScore,0)) as `QuarterWinner`, SUM(IF(GrPhase=" . $Key . ",FinScore,0)) as `QuarterScore`, ";
 								$Tmp = ", `QuarterWinner` DESC, `QuarterScore` DESC " . $Tmp;
 							}
 							$NumPhases++;
-						}
-						else
-						{
+						} else {
 							$MyQuery .= "SUM(IF((GrPhase=0 OR GrPhase=1),IF(EvMatchMode=0,FinScore,FinSetScore),0)) as `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_Phase`, SUM(IF((GrPhase=0 OR GrPhase=1),FinTie,0)) as `" . $Value . "Tie`, GROUP_CONCAT(IF((GrPhase=0 OR GrPhase=1),FinTieBreak,'') SEPARATOR '') as `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_TieArrowstring`, GROUP_CONCAT(IF((GrPhase=0 OR GrPhase=1),FinSetPoints,'')  SEPARATOR '') AS `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key). "_SetPoints`, GROUP_CONCAT(IF((GrPhase=0 OR GrPhase=1),FinArrowstring,'')  SEPARATOR '') AS `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key). "_Arrowstring`,SUM(IF((GrPhase=0 OR GrPhase=1),FinMatchNo,0)) as `" . $Value . "Matchno`, ";
 							$Tmp = ", `" . $Key . "_Phase` DESC, `" . $Value . "Tie` DESC " . $Tmp;
 							$NumPhases++;
@@ -928,21 +923,7 @@ require_once('Common/Fun_Phases.inc.php');
 							"X_Live" => $Value . "Live",
 							"X_Matchno" => $Value . "Matchno",
 							);
-						/*if($Key!=0)
-						{
-							$MyQuery .= "SUM(IF(GrPhase=" . $Key . ",IF(TfScore=0 && TfTie=2,(TeScore*10),TfScore),0)) as `" . $Key  . "_Phase`, SUM(IF(GrPhase=" . $Key . ",TfTie,0)) as `" . $Value . "Tie`, SUM(IF(GrPhase=" . $Key . ",LENGTH(TfArrowstring),0)) as `" . $Value . "Live`, SUM(IF(GrPhase=" . $Key . ",TfMatchNo,0)) as `" . $Value . "Matchno`, ";
-							$Tmp = ", `" . $Key . "_Phase` DESC " . $Tmp;
-							$NumPhases++;
-						}
-						else
-						{
-							$MyQuery .= "SUM(IF((GrPhase=0 OR GrPhase=1),TfScore,0)) as `" . $Key . "_Phase`, SUM(IF((GrPhase=0 OR GrPhase=1),TfTie,0)) as `" . $Value . "Tie`, SUM(IF((GrPhase=0 OR GrPhase=1),LENGTH(TfArrowstring),0)) as `" . $Value . "Live`, SUM(IF((GrPhase=0 OR GrPhase=1),TfMatchNo,0)) as `" . $Value . "Matchno`, ";
-							$Tmp = ", `" . $Key . "_Phase` DESC, `" . $Value . "Tie` DESC " . $Tmp;
-							$NumPhases++;
-						}*/
-						if($Key!=0)
-						{
-							//$MyQuery .= "SUM(IF(GrPhase=" . $Key . ",IF(IF(EvMatchMode=0,FinScore,FinSetScore)=0 && FinTie=2,(QuScore*10),IF(EvMatchMode=0,FinScore,FinSetScore)),0)) as `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key)  . "_Phase`, SUM(IF(GrPhase=" . $Key . ",FinTie,0)) as `" . $Value . "Tie`,GROUP_CONCAT(IF(GrPhase=" . $Key . ",FinArrowstring,'') SEPARATOR '') AS `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_Arrowstring`, GROUP_CONCAT(IF(GrPhase=" . $Key . ",FinTieBreak,'') SEPARATOR '') as `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_TieArrowstring`, GROUP_CONCAT(IF(GrPhase=" . $Key . ",FinSetPoints,'') SEPARATOR '') AS `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_SetPoints`, SUM(IF(GrPhase=" . $Key . ",FinMatchNo,0)) as `" . $Value . "Matchno`, ";
+						if($Key!=0) {
 							$MyQuery .= "SUM(IF(GrPhase=" . $Key . ",IF(TfScore=0 && TfTie=2,(TeScore*10),TfScore),0)) as `" . $Key  . "_Phase`, SUM(IF(GrPhase=" . $Key . ",TfTie,0)) as `" . $Value . "Tie`, GROUP_CONCAT(IF(GrPhase=" . $Key . ",TfTieBreak,'') SEPARATOR '') as `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_TieArrowstring`, GROUP_CONCAT(IF(GrPhase=" . $Key . ",TfSetPoints,'') SEPARATOR '') AS `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_SetPoints`, GROUP_CONCAT(IF(GrPhase=" . $Key . ",TfArrowstring,'') SEPARATOR '') AS `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_Arrowstring`, SUM(IF(GrPhase=" . $Key . ",TfMatchNo,0)) as `" . $Value . "Matchno`, ";
 							$Tmp = ", `" . $Key . "_Phase` DESC " . $Tmp;
 							if($Key==4)
@@ -951,10 +932,7 @@ require_once('Common/Fun_Phases.inc.php');
 								$Tmp = ", `QuarterScore` DESC " . $Tmp;
 							}
 							$NumPhases++;
-						}
-						else
-						{
-							//$MyQuery .= "SUM(IF((GrPhase=0 OR GrPhase=1),IF(EvMatchMode=0,FinScore,FinSetScore),0)) as `" . $Key . "_Phase`, SUM(IF((GrPhase=0 OR GrPhase=1),FinTie,0)) as `" . $Value . "Tie`, GROUP_CONCAT(IF((GrPhase=0 OR GrPhase=1),FinTieBreak,'') SEPARATOR '') as `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_TieArrowstring`, GROUP_CONCAT(IF((GrPhase=0 OR GrPhase=1),FinSetPoints,'')  SEPARATOR '') AS `" . $Key. "_SetPoints`, GROUP_CONCAT(IF((GrPhase=0 OR GrPhase=1),FinArrowstring,'')  SEPARATOR '') AS `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key). "_Arrowstring`,SUM(IF((GrPhase=0 OR GrPhase=1),FinMatchNo,0)) as `" . $Value . "Matchno`, ";
+						} else {
 							$MyQuery .= "SUM(IF((GrPhase=0 OR GrPhase=1),TfScore,0)) as `" . $Key . "_Phase`, SUM(IF((GrPhase=0 OR GrPhase=1),TfTie,0)) as `" . $Value . "Tie`, GROUP_CONCAT(IF((GrPhase=0 OR GrPhase=1),TfTieBreak,'')) as `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_TieArrowstring`,GROUP_CONCAT(IF((GrPhase=0 OR GrPhase=1),TfSetPoints,'') SEPARATOR '') AS `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_SetPoints`, GROUP_CONCAT(IF((GrPhase=0 OR GrPhase=1),TfArrowstring,'') SEPARATOR '') AS `" . namePhase($MyRowEv->EvFinalFirstPhase,$Key) . "_Arrowstring`,  SUM(IF((GrPhase=0 OR GrPhase=1),TfMatchNo,0)) as `" . $Value . "Matchno`, ";
 							$Tmp = ", `" . $Key . "_Phase` DESC, `" . $Value . "Tie` DESC " . $Tmp;
 							$NumPhases++;
@@ -1008,15 +986,13 @@ require_once('Common/Fun_Phases.inc.php');
 							$ActualMatch=0;
 							$ActualTie=-1;
 							foreach($PhaseFields as $Key => $Val) {
-								$ActualScore=($MyRow->{$Val["X_Phase"]}!=0 ? $MyRow->{$Val["X_Phase"]} : $ActualScore);
+								$ActualScore=(($MyRow->{$Val["X_Phase"]}??0)!=0 ? $MyRow->{$Val["X_Phase"]} : $ActualScore);
 								$ActualMatch=($MyRow->{$Val["X_Matchno"]}!=0 ? $MyRow->{$Val["X_Matchno"]} : $ActualMatch);
 								$ActualTie=($MyRow->LastPhase<2 ? $MyRow->{$Val["X_Tie"]} : -1);
 
-								$TmpScores[]=($MyRow->{$Val["X_Phase"]}==($MyRow->TeScore*10) ? 'bye' : $MyRow->{$Val["X_Phase"]}) . '|';
+								$TmpScores[]=(($MyRow->{$Val["X_Phase"]}??0)==($MyRow->TeScore*10) ? 'bye' : ($MyRow->{$Val["X_Phase"]}??0)) . '|';
 
 								list($tmpPhase,)=explode('_',$Val['X_Phase']);
-								//$x=DecodeArrowstring($MyRowEv->EvMatchMode,$MyRowEv->EvMatchArrowsNo,1,$MyRowEv->EvMixedTeam,$tmpPhase,$MyRow->{$Val["X_Arrowstring"]},$target);
-								//$x=DecodeArrowstring($MyRowEv->EvMatchMode,$MyRowEv->EvMatchArrowsNo,1,$MyRowEv->EvMixedTeam,$tmpPhase,$MyRow->{$Val["X_Arrowstring"]});
 
 								$numRows=0;
 								$numCols=0;
@@ -1027,47 +1003,10 @@ require_once('Common/Fun_Phases.inc.php');
 								$x=DecodeArrowstring($numRows,$numCols,$MyRow->{$Val["X_Arrowstring"]});
 								$TmpScores[count($TmpScores)-1].='_'.$x;
 
-
-								//$x=DecodeTieArrowstring($MyRow->{$Val['X_TieArrowstring']},$target);
 								$x=DecodeTieArrowstring($MyRow->{$Val['X_TieArrowstring']});
 								$TmpScores[count($TmpScores)-1].='#'.$x;
 							}
-							if($MyRow->LastPhase>=8)
-							{
-							//	$MyRank=$MyRow->LastPhase+1;
-							}
-							elseif($MyRow->LastPhase==4)
-							{
-								$ActualScore=$MyRow->QuarterScore;
-								$ActualTie=$MyRow->QuarterScore;
-//								if ($OldScore!=$ActualScore || $OldTie!=$ActualTie || $OldLastPhase!=$MyRow->LastPhase)
-//								{
-//									$MyRank = $MyPos;
-//								}
-							}
-
 						}
-//						else
-//							$MyRank = -1;
-
-						//Per i primi 4 NON vale la regola sopra
-//						if($MyPos<=4)
-//						{
-//							if($MyRow->CurrentPhase==1 && $MyRank>2)
-//								$MyRank = $MyPos;
-//							elseif($MyRow->CurrentPhase==0)
-//								$MyRank = $MyPos;
-//
-//						}
-
-						//Tolgo tutti Quelli da non scrivere
-
-
-						//Salvo i valori attuali e risistemo i colori
-//						$OldScore=$ActualScore;
-//						$OldTie=$ActualTie;
-//						$OldLastPhase=$MyRow->LastPhase;
-//						$OldMatch=$ActualMatch;
 
 						$cols[]='4';
 						$cols[]=$MyRow->CoCode;
@@ -1170,7 +1109,7 @@ require_once('Common/Fun_Phases.inc.php');
 	 * Matricola-Divisione-Classe-CognomeNome-Societa-CodiceEvento-Totale1-ori1-X1-Totale2-Ori2-X2-CodiceDiControllo-PosizioneClassificaIndividuale(999 se nn partecipa)-Status-Singole distanze-tiearrowstring
 	 */
 
-		$MyQuery = "SELECT EnCode as Bib, EnName AS Name, CONCAT(EnFirstName,' ',EnName) AS Name,SUBSTRING(QuTargetNo,1,1) AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnAgeClass as AgeClass, EnDivision AS DivCode, EvCode as EventCode, EvEventName as EventName, EvQualPrintHead,";
+		$MyQuery = "SELECT EnCode as Bib, EnName AS Name, CONCAT(EnFirstName,' ',EnName) AS Name,QuSession AS Session, concat(QuTarget,QuLetter) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnAgeClass as AgeClass, EnDivision AS DivCode, EvCode as EventCode, EvEventName as EventName, EvQualPrintHead,";
 		$MyQuery.= "IF(EvElim1=0 && EvElim2=0,EvNumQualified,IF(EvElim1=0,EvElim2,EvElim1)) as QualifiedNo, ";
 		$MyQuery.= "ToNumDist AS NumDist, Td1, Td2, Td3, Td4, Td5, Td6, Td7, Td8, ";
 		for ($i=1;$i<=$NumDist;++$i)

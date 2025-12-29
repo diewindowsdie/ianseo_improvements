@@ -223,7 +223,7 @@ class ResultPDF extends IanseoPdf {
 		$this->SetX($this->GetX()+1);
 	}
 
-	function DrawParticipantDetails($IndC='0', $IndF='0', $TeamC='0', $TeamF='0', $TeamMix='0', $bgColor=0)
+	function DrawParticipantDetails($IndC=0, $IndF=0, $TeamC=0, $TeamF=0, $TeamMix=0, $bgColor=0)
 	{
 		$this->SetFont($this->FontStd, '', 4);
 		$this->Cell(14, $this->RealCellHeight,  '', 1, 0, 'C', $bgColor);

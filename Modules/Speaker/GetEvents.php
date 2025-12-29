@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(dirname(__FILE__)) . '/config.php');
+require_once(dirname(__FILE__, 2) . '/config.php');
 require_once('Common/Lib/Fun_Modules.php');
 
 $schedule=(isset($_REQUEST['schedule']) && preg_match('/^[0-1]{1}[0-9]{4}\-[0-9]{2}\-[0-9]{2} [0-9]{2}:[0-9]{2}(:[0-9]{2})*$/',$_REQUEST['schedule']) ? $_REQUEST['schedule'] : '');

@@ -196,7 +196,6 @@ $lang['TargetTypesError']='Datos TargetType no es una matriz';
 $lang['Tgt']='&nbsp;<br/>Ctc';
 $lang['Total']='Total';
 $lang['Unknown']='Desconocido';
-$lang['UnlockAll']='Desbloquear todo el Turno';
 $lang['Update']='Actualizar';
 $lang['UpdateLang']='Actualizar Idiomas';
 $lang['Url']='URL:';

@@ -284,11 +284,6 @@ function Send2Row(Code2Send)
 		opener.CercaMatr('d_e_EnCode_' + OpenerRow,OpenerRow);
 		opener.UpdateField('d_e_EnCode_' + OpenerRow);
 	}
-	else  // provendo da Partecipants.php
-	{
-	// Eseguo a mano le chiamate a CercaMatr_Par()
-		opener.CercaMatr_Par();
-	}
 
 // blocco la riga per l'update sulla matricola
 	opener.document.getElementById('CanComplete_' + OpenerRow).value=0;

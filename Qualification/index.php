@@ -5,9 +5,8 @@
  *
  *
  * */
-	@define('debug',false);	// settare a true per l'output di debug
 
-	require_once(dirname(dirname(__FILE__)) . '/config.php');
+	require_once(dirname(__FILE__, 2) . '/config.php');
 	require_once('Common/Lib/CommonLib.php');
 	require_once('Common/Fun_FormatText.inc.php');
 	require_once('Common/Fun_Various.inc.php');
@@ -46,12 +45,6 @@
 	$PAGE_TITLE=get_text('QualRound');
 
 	include('Common/Templates/head.php');
-
-	/*$Select
-		= "SELECT ToId,ToNumSession,TtNumDist,TtGolds,TtXNine "
-		. "FROM Tournament INNER JOIN Tournament*Type ON ToType=TtId "
-		. "WHERE ToId=" . StrSafe_DB($_SESSION['TourId']) . " ";*/
-
 	$Select
 		= "SELECT ToId,ToNumSession,ToNumDist AS TtNumDist,ToGolds AS TtGolds,ToXNine AS TtXNine "
 		. "FROM Tournament "
@@ -68,36 +61,37 @@
 	if (safe_num_rows($RsTour)==1) {
 		$RowTour=safe_fetch($RsTour);
 
-		$ComboSes = '<select name="x_Session" id="x_Session" onChange="SelectSession();">' . "\n";
-		$ComboSes.= '<option value="-1">---</option>' . "\n";
+		$ComboSes = '<select name="x_Session" id="x_Session" onChange="SelectSession();">';
+		$ComboSes.= '<option value="-1">---</option>';
 
-		$ComboDist = '<select name="x_Dist" id="x_Dist">' . "\n";
-		$ComboDist.= '<option value="-1">---</option>' . "\n";
+		$ComboDist = '<select name="x_Dist" id="x_Dist">';
+		$ComboDist.= '<option value="-1">---</option>';
 
-		foreach (GetSessions('Q') as $ses)
-			$ComboSes.= '<option value="' . $ses->SesOrder . '"' . (isset($_REQUEST['x_Session']) && $_REQUEST['x_Session']==$ses->SesOrder ? ' selected' : '') . '>' . $ses->Descr. '</option>' . "\n";
-		$ComboSes.= '</select>' . "\n";
+		foreach (GetSessions('Q') as $ses) {
+            $ComboSes .= '<option value="' . $ses->SesOrder . '"' . ((isset($_REQUEST['x_Session']) AND $_REQUEST['x_Session'] == $ses->SesOrder) ? ' selected' : '') . '>' . $ses->Descr . '</option>';
+        }
+		$ComboSes.= '</select>';
 
-		for ($i=1;$i<=$RowTour->TtNumDist;++$i)
-			$ComboDist.= '<option value="' . $i . '"' . (isset($_REQUEST['x_Dist']) && $_REQUEST['x_Dist']==$i ? ' selected' : '') . '>' . $i . '</option>' . "\n";
-		$ComboDist.= '</select>' . "\n";
+		for ($i=1;$i<=$RowTour->TtNumDist;++$i) {
+            $ComboDist .= '<option value="' . $i . '"' . ((isset($_REQUEST['x_Dist']) AND $_REQUEST['x_Dist'] == $i) ? ' selected' : '') . '>' . $i . '</option>';
+        }
+		$ComboDist.= '</select>';
 
 
 		$TxtFrom = '<input type="text" name="x_From" id="x_From" size="5" maxlength="' . (TargetNoPadding +1) . '" value="' . (isset($_REQUEST['x_From']) ? $_REQUEST['x_From'] : '') . '">';
 		$TxtTo = '<input type="text" name="x_To" id="x_To" size="5" maxlength="' . (TargetNoPadding +1) . '" value="' . (isset($_REQUEST['x_To']) ? $_REQUEST['x_To'] : '') . '">';
-		$ChkG = '<input type="checkbox" name="x_Gold" id="x_Gold" value="1"' . (isset($_REQUEST['x_Gold']) && $_REQUEST['x_Gold']==1 ? ' checked' : '') . '>';
+		$ChkG = '<input type="checkbox" name="x_Gold" id="x_Gold" value="1"' . ((isset($_REQUEST['x_Gold']) AND $_REQUEST['x_Gold']==1) ? ' checked' : '') . '>';
 
-		//$ChkA = '<input type="checkbox" name="x_Arrows" id="x_Arrows" value="1"' . (isset($_REQUEST['x_Arrows']) && $_REQUEST['x_Arrows']==1 ? ' checked' : '') . '>';
-
-		if(empty($_REQUEST['x_To']) && !empty($_REQUEST['x_From']))
-			$_REQUEST['x_To']=$_REQUEST['x_From'];
+		if(empty($_REQUEST['x_To']) AND !empty($_REQUEST['x_From'])) {
+            $_REQUEST['x_To'] = $_REQUEST['x_From'];
+        }
 
 		if (isset($_REQUEST['x_Arrows']) AND $_REQUEST['x_Arrows']==2 AND isset($_REQUEST['Command']) AND $_REQUEST['Command']=='OK' AND $_REQUEST['x_Session']>0 AND $_REQUEST['x_Dist']>0 AND !IsBlocked(BIT_BLOCK_QUAL)) {
 			$v=0;
-			if (isset($_REQUEST['x_AllArrows']) && preg_match('/^[0-9]{1,4}$/i',$_REQUEST['x_AllArrows'])) {
+			if (isset($_REQUEST['x_AllArrows']) AND preg_match('/^[0-9]{1,4}$/i',$_REQUEST['x_AllArrows'])) {
 				$v=	$_REQUEST['x_AllArrows'];
 
-				$TargetFilter = "AND QuTargetNo >='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_From'],TargetNoPadding,'0',STR_PAD_LEFT) . "A' AND QuTargetNo<='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_To'],TargetNoPadding,'0',STR_PAD_LEFT) . "Z' ";
+				$TargetFilter = "AND QuSession=".StrSafe_DB($_REQUEST['x_Session'])." AND QuTarget>=" . intval($_REQUEST['x_From']) . " AND QuTarget<=" . intval($_REQUEST['x_To']);
 				$Where = "WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND QuSession=" . StrSafe_DB($_REQUEST['x_Session']) . " AND EnStatus<=1 " . $TargetFilter . " ";
 				$query = "UPDATE Qualifications INNER JOIN Entries ON EnId=QuId SET QuD" . $_REQUEST['x_Dist'] ."Hits=" . StrSafe_DB($v) . " " . $Where;
 				$rs=safe_w_sql($query);
@@ -113,11 +107,11 @@
 		}
 
 		$ComboA
-			= '<select name="x_Arrows" id="x_Arrows" onChange="CreateArrowsText();">' . "\n"
-				. '<option value="0"' . (isset($_REQUEST['x_Arrows']) && $_REQUEST['x_Arrows']==0 ? ' selected' : '') . '>' . get_text('No'). '</option>' . "\n"
-				. '<option value="1"' . (isset($_REQUEST['x_Arrows']) && $_REQUEST['x_Arrows']==1 ? ' selected' : '') . '>' . get_text('RowByRow').'</option>' . "\n"
-				. '<option value="2">' . get_text('ToAll') . '</option>' . "\n"
-			. '</select>' . "\n";
+			= '<select name="x_Arrows" id="x_Arrows" onChange="CreateArrowsText();">'
+				. '<option value="0"' . (isset($_REQUEST['x_Arrows']) AND $_REQUEST['x_Arrows']==0 ? ' selected' : '') . '>' . get_text('No'). '</option>'
+				. '<option value="1"' . (isset($_REQUEST['x_Arrows']) AND $_REQUEST['x_Arrows']==1 ? ' selected' : '') . '>' . get_text('RowByRow').'</option>'
+				. '<option value="2">' . get_text('ToAll') . '</option>'
+			. '</select>';
 ?>
 <?php print prepareModalMask('PostUpdateMask','<div align="center" style="font-size: 20px; font-weight: bold;"><br/><br/><br/><br/><br/>'.get_text('PostUpdating').'</div>');?>
 
@@ -155,10 +149,10 @@
 </tr>
 <tr class="Divider"><td colspan="8"></td></tr>
 <tr><td colspan="8" class="Bold">
-	<input type="checkbox" name="chk_BlockAutoSave" id="chk_BlockAutoSave" value="1"<?php print (isset($_REQUEST['chk_BlockAutoSave']) && $_REQUEST['chk_BlockAutoSave']==1 ? ' checked' : '');?>><?php echo get_text('CmdBlocAutoSave') ?>
+	<input type="checkbox" name="chk_BlockAutoSave" id="chk_BlockAutoSave" value="1"<?php print (isset($_REQUEST['chk_BlockAutoSave']) AND $_REQUEST['chk_BlockAutoSave']==1 ? ' checked' : '');?>><?php echo get_text('CmdBlocAutoSave') ?>
 	&nbsp;&nbsp;
 	<input type="checkbox" name="chk_PostUpdate" id="chk_PostUpdate" value="1"
-		<?php print (isset($_REQUEST['chk_PostUpdate']) && $_REQUEST['chk_PostUpdate']==1 ? ' checked' : '');?>
+		<?php print (isset($_REQUEST['chk_PostUpdate']) AND $_REQUEST['chk_PostUpdate']==1 ? ' checked' : '');?>
 		onclick="ManagePostUpdate(this.checked);"
 	/><?php print get_text('CmdPostUpdate');?>
 </td></tr>
@@ -169,16 +163,16 @@
 </form>
 <br>
 <?php
-if (isset($_REQUEST['Command']) && $_REQUEST['Command']=='OK' && $_REQUEST['x_Session']!=-1 && $_REQUEST['x_Dist']!=-1) {
+if (isset($_REQUEST['Command']) AND $_REQUEST['Command']=='OK' AND $_REQUEST['x_Session']!=-1 AND $_REQUEST['x_Dist']!=-1) {
     if(!empty($_REQUEST['x_Target'])) {
-        $TargetFilter = "AND QuTargetNo ='" . $_REQUEST['x_Target'] . "' ";
+        $TargetFilter = "AND QuTarget=" . intval(substr($_REQUEST['x_Target'],0,-1));
     } else {
-        $TargetFilter = "AND QuTargetNo >='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_From'],TargetNoPadding,'0',STR_PAD_LEFT) . "A' AND QuTargetNo<='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_To'],TargetNoPadding,'0',STR_PAD_LEFT) . "Z' ";
+        $TargetFilter = "AND QuTarget>=" . intval($_REQUEST['x_From']) . " AND QuTarget<=" . intval($_REQUEST['x_To']);
     }
 
-
+    $atSql = createAvailableTargetSQL($_REQUEST['x_Session'], $_SESSION['TourId']);
     $Select = "SELECT QuArrow, EnId,EnCode,EnName,EnFirstName,EnTournament,EnDivision,EnClass,EnCountry,CoCode, (EnStatus <=1) AS EnValid,EnStatus,
-            QuTargetNo, SUBSTRING(QuTargetNo,2) AS Target,
+            QuSession, CONCAT(QuTarget, QuLetter) AS Target,
             QuD" . $_REQUEST['x_Dist'] . "Score AS SelScore,QuD" . $_REQUEST['x_Dist'] . "Hits AS SelHits,QuD" . $_REQUEST['x_Dist'] . "Gold AS SelGold,QuD" . $_REQUEST['x_Dist'] . "Xnine AS SelXNine,
             QuScore, QuHits,	QuGold,	QuXnine, QuClRank, QuIrmType, IrmType,
             ToId,ToType,ToNumDist AS TtNumDist
@@ -186,11 +180,10 @@ if (isset($_REQUEST['Command']) && $_REQUEST['Command']=='OK' && $_REQUEST['x_Se
         INNER JOIN Countries ON EnCountry=CoId
         INNER JOIN Qualifications ON EnId=QuId
         INNER JOIN IrmTypes ON IrmId=QuIrmType
-        RIGHT JOIN AvailableTarget ON QuTargetNo=AtTargetNo AND AtTournament=" . StrSafe_DB($_SESSION['TourId']) . "
+        RIGHT JOIN ($atSql) at ON QuSession=FullTgtSession AND QuTarget=FullTgtTarget AND QuLetter=FullTgtLetter
         INNER JOIN Tournament ON EnTournament=ToId AND ToId=" . StrSafe_DB($_SESSION['TourId']) . "
-        WHERE EnAthlete=1 AND QuSession<>0 AND QuTargetNo<>'' AND QuSession=" . StrSafe_DB($_REQUEST['x_Session']) . " "
-        . $TargetFilter . "
-        ORDER BY QuTargetNo ASC ";
+        WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 AND QuSession!=0 AND QuTarget!=0 AND QuSession=" . StrSafe_DB($_REQUEST['x_Session']) . " $TargetFilter 
+        ORDER BY QuSession ASC, QuTarget ASC, QuLetter ASC ";
 
     $Rs=safe_r_sql($Select);
     // form elenco persone
@@ -256,27 +249,16 @@ if (isset($_REQUEST['Command']) && $_REQUEST['Command']=='OK' && $_REQUEST['x_Se
                 echo '<td class="Center"><input type="text" size="4" maxlength="5" name="d_QuArrow_' . $MyRow->EnId . '" id="d_QuArrow_' . $MyRow->EnId . '" value="' . $MyRow->QuArrow . '" onBlur="javascript:UpdateQuals(\'d_QuArrow_' . $MyRow->EnId . '\');"' . ($MyRow->EnValid ? '' : 'disabled') .'></td>';
             }
             echo '<td class="Center">';
-            echo '';
-?>
-
-
-
-
-
-
-
-
-
-<?php
-	if (isset($_REQUEST['x_Gold']) && $_REQUEST['x_Gold']==1)
-		print '<input type="text" size="4" maxlength="5" name="d_QuD' . $_REQUEST['x_Dist'] . 'Gold_' . $MyRow->EnId . '" id="d_QuD' . $_REQUEST['x_Dist'] . 'Gold_' . $MyRow->EnId . '" value="' . $MyRow->SelGold . '" onBlur="javascript:UpdateQuals(\'d_QuD' . $_REQUEST['x_Dist'] . 'Gold_' . $MyRow->EnId . '\');"' . ($MyRow->EnValid ? '' : 'disabled') .'>';
-	else
-		print $MyRow->SelGold;
+            if (isset($_REQUEST['x_Gold']) AND $_REQUEST['x_Gold']==1) {
+                print '<input type="text" size="4" maxlength="5" name="d_QuD' . $_REQUEST['x_Dist'] . 'Gold_' . $MyRow->EnId . '" id="d_QuD' . $_REQUEST['x_Dist'] . 'Gold_' . $MyRow->EnId . '" value="' . $MyRow->SelGold . '" onBlur="javascript:UpdateQuals(\'d_QuD' . $_REQUEST['x_Dist'] . 'Gold_' . $MyRow->EnId . '\');"' . ($MyRow->EnValid ? '' : 'disabled') . '>';
+            } else {
+                print $MyRow->SelGold;
+            }
 ?>
 </td>
 <td class="Center">
 <?php
-	if (isset($_REQUEST['x_Gold']) && $_REQUEST['x_Gold']==1)
+	if (isset($_REQUEST['x_Gold']) AND $_REQUEST['x_Gold']==1)
 		print '<input type="text" size="4" maxlength="5" name="d_QuD' . $_REQUEST['x_Dist'] . 'Xnine_' . $MyRow->EnId . '" id="d_QuD' . $_REQUEST['x_Dist'] . 'Xnine_' . $MyRow->EnId . '" value="' . $MyRow->SelXNine . '" onBlur="javascript:UpdateQuals(\'d_QuD' . $_REQUEST['x_Dist'] . 'Xnine_' . $MyRow->EnId . '\');"' . ($MyRow->EnValid ? '' : 'disabled') .'>';
 	else
 		print $MyRow->SelXNine;
@@ -284,7 +266,7 @@ if (isset($_REQUEST['Command']) && $_REQUEST['Command']=='OK' && $_REQUEST['x_Se
 </td>
 <td class="Center">
 <?php
-	if (isset($_REQUEST['x_Arrows']) && $_REQUEST['x_Arrows']==1)
+	if (isset($_REQUEST['x_Arrows']) AND $_REQUEST['x_Arrows']==1)
 		print '<input type="text" size="4" maxlength="5" name="d_QuD' . $_REQUEST['x_Dist'] . 'Hits_' . $MyRow->EnId . '" id="d_QuD' . $_REQUEST['x_Dist'] . 'Hits_' . $MyRow->EnId . '" value="' . $MyRow->SelHits . '" onBlur="javascript:UpdateQuals(\'d_QuD' . $_REQUEST['x_Dist'] . 'Hits_' . $MyRow->EnId . '\');"' . ($MyRow->EnValid ? '' : 'disabled') .'>';
 	else
 		print $MyRow->SelHits;

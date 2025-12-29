@@ -235,8 +235,8 @@
 			}
 			$q="
 				SELECT distinct
-					EnId,EnCode, EnSex, EnNameOrder, EnName AS Name, upper(EnFirstName) AS FirstNameUpper, EnFirstName AS FirstName, SUBSTRING(QuTargetNo,1,1) AS Session,
-					SUBSTRING(QuTargetNo,2) AS TargetNo, ".($SnapDistance ? 'EqArrowNo' : $RealArrowNo)." as ArrowNo, ".($isAbs ? "IndEvent" : "concat(EnDivision, EnClass)")." as IndEvent,
+					EnId,EnCode, EnSex, EnNameOrder, EnName AS Name, upper(EnFirstName) AS FirstNameUpper, EnFirstName AS FirstName, QuSession AS Session,
+					CONCAT(QuTarget, QuLetter) AS TargetNo, ".($SnapDistance ? 'EqArrowNo' : $RealArrowNo)." as ArrowNo, ".($isAbs ? "IndEvent" : "concat(EnDivision, EnClass)")." as IndEvent,
 					ToNumEnds,ToNumDist,ToMaxDistScore,
 					CoCode, CoName, CoCaCode, CoMaCode, EnClass, EnDivision,EnAgeClass, EnSubClass, ClDescription, DivDescription,
 					IFNULL(Td1,'.1.') as Td1, IFNULL(Td2,'.2.') as Td2, IFNULL(Td3,'.3.') as Td3, IFNULL(Td4,'.4.') as Td4, IFNULL(Td5,'.5.') as Td5, IFNULL(Td6,'.6.') as Td6, IFNULL(Td7,'.7.') as Td7, IFNULL(Td8,'.8.') as Td8,

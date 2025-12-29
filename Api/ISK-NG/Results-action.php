@@ -257,15 +257,15 @@ if($isRW) {
             switch ($Sequences[$group]['type']) {
                 case 'Q':
                     $Target = intval(explode("_", $key)[1]);
-                    $SQL = "select QuTargetNo
+                    $SQL = "select CONCAT(QuSession, '.', QuTarget, QuLetter) as QuTargetKey
 					from Entries
 				    inner join Qualifications on QuId=EnId and QuSession={$Sequences[$group]['session']} and QuTarget={$Target}
-					inner join IskData on IskDtTargetNo=QuTargetNo and IskDtType='Q' and IskDtDevice IN ('" . implode("','", $id) . "') and IskDtEndNo={$end} and IskDtDistance={$dist} and IskDtTournament={$_SESSION['TourId']}
+					inner join IskData on IskDtTargetNo=CONCAT(QuSession, '.', QuTarget, QuLetter) and IskDtType='Q' and IskDtDevice IN ('" . implode("','", $id) . "') and IskDtEndNo={$end} and IskDtDistance={$dist} and IskDtTournament={$_SESSION['TourId']}
 				    inner join IskDevices on IskDvTournament=IskDtTournament and IskDvDevice=IskDtDevice
 					where EnTournament={$_SESSION['TourId']}";
                     $q = safe_r_sql($SQL);
                     while ($r = safe_fetch($q)) {
-                        safe_w_sql("delete from IskData where IskDtType='Q' and IskDtDevice IN ('" . implode("','", $id) . "') and IskDtEndNo={$end} and IskDtDistance={$dist} and IskDtTournament={$_SESSION['TourId']} and IskDtTargetNo='{$r->QuTargetNo}'");
+                        safe_w_sql("delete from IskData where IskDtType='Q' and IskDtDevice IN ('" . implode("','", $id) . "') and IskDtEndNo={$end} and IskDtDistance={$dist} and IskDtTournament={$_SESSION['TourId']} and IskDtTargetNo='{$r->QuTargetKey}'");
                     }
                     $Json['isUpdate'] = true;
                     break;
@@ -354,7 +354,7 @@ if($isRW) {
                 case 'Q':
                     // fetches the imported and temporary table arrows of that end for the key
                     $Target = intval(explode("_", $key)[1]);
-                    $SQL = "select EnId, EnName, ucase(EnFirstName) as EnFirstName, QuTarget, QuLetter, QuTargetNo, QuD{$dist}Arrowstring as QuArrows, DiArrows, coalesce(IskDtArrowstring, '') as IskArrows, QuScore, QuIrmType
+                    $SQL = "select EnId, EnName, ucase(EnFirstName) as EnFirstName, QuTarget, QuLetter, CONCAT(QuSession, '.', QuTarget, QuLetter) as QuTargetKey, QuD{$dist}Arrowstring as QuArrows, DiArrows, coalesce(IskDtArrowstring, '') as IskArrows, QuScore, QuIrmType
 					from Entries
 				    inner join Qualifications on QuId=EnId and QuSession={$Sequences[$group]['session']} and QuTarget={$Target}
 					inner join DistanceInformation on DiDistance=$dist and DiSession=QuSession and DiTournament=EnTournament and DiType='Q'
@@ -363,14 +363,14 @@ if($isRW) {
 					    from IskData
 					    inner join IskDevices on IskDvTournament=IskDtTournament and IskDvDevice=IskDtDevice
 					    where IskDtType='Q' and IskDtDevice IN ('" . implode("','", $id) . "') and IskDtEndNo={$end} and IskDtDistance={$dist} and IskDtTournament={$_SESSION['TourId']}
-					    ) IskData on IskDtTargetNo=QuTargetNo
-					where EnTournament={$_SESSION['TourId']} ORDER BY QuTargetNo";
+					    ) IskData on IskDtTargetNo=CONCAT(QuSession, '.', QuTarget, QuLetter)
+					where EnTournament={$_SESSION['TourId']} ORDER BY QuSession, QuTarget, QuLetter";
                     $q = safe_r_sql($SQL);
                     while ($r = safe_fetch($q)) {
                         $QuArrows = substr($r->QuArrows, $r->DiArrows * ($end - 1), $r->DiArrows);
                         if ($QuArrows == $r->IskArrows) {
                             // remove arrows from IskData
-                            safe_w_sql("delete from IskData where IskDtType='Q' and IskDtDevice IN ('" . implode("','", $id) . "') and IskDtEndNo={$end} and IskDtDistance={$dist} and IskDtTournament={$_SESSION['TourId']} and IskDtTargetNo='{$r->QuTargetNo}'");
+                            safe_w_sql("delete from IskData where IskDtType='Q' and IskDtDevice IN ('" . implode("','", $id) . "') and IskDtEndNo={$end} and IskDtDistance={$dist} and IskDtTournament={$_SESSION['TourId']} and IskDtTargetNo='{$r->QuTargetKey}'");
                             $r->IskArrows = '';
                         }
                         $Json['archer'][] = [
@@ -547,7 +547,7 @@ if (!empty($_REQUEST['groups']) and is_array($_REQUEST['groups'] ?? [])) {
                     inner join Session on SesTournament=EnTournament and SesOrder=QuSession and SesType='Q'
                     inner join Tournament on ToId=EnTournament
                     where QuSession={$Sequences[$gId]['session']} and QuIrmType=0 and QuTarget in (" . implode(',', $AssignedTargets) . ")
-                    order by if(IsField3D, (QuTarget-1)%ToNumEnds, QuTarget), QuTargetNo");
+                    order by if(IsField3D, (QuTarget-1)%ToNumEnds, QuTarget), QuSession, QuTarget, QuLetter");
                 $OldTarget = 0;
                 $item = [];
                 while ($r = safe_fetch($q)) {
@@ -753,19 +753,19 @@ if(!empty($_REQUEST['status']) AND is_array($_REQUEST['status']??[])) {
                     inner join Session on SesTournament=EnTournament and SesOrder=QuSession and SesType='Q'
                     inner join DistanceInformation on DiTournament=EnTournament AND DiType=SesType and DiSession=QuSession and DiDistance={$gDist} 
                     inner join Tournament on ToId=EnTournament
-                    left join IskData on IskDtTournament=EnTournament AND IskDtType=SesType AND IskDtTargetNo=QuTargetNo AND IskDtDistance={$gDist} 
+                    left join IskData on IskDtTournament=EnTournament AND IskDtType=SesType AND IskDtTargetNo=CONCAT(QuSession, '.', QuTarget, QuLetter) AND IskDtDistance={$gDist} 
                     left join (
                         select QuTarget as dQuTarget, QuLetter dQuLetter, GROUP_CONCAT(DISTINCT IskDtDistance) as dListDist 
                         from Entries 
                         inner join Qualifications on EnId=QuId 
-                        inner join IskData on IskDtTournament=EnTournament AND IskDtType='Q' AND IskDtTargetNo=QuTargetNo AND IskDtDistance!={$gDist}
+                        inner join IskData on IskDtTournament=EnTournament AND IskDtType='Q' AND IskDtTargetNo=CONCAT(QuSession, '.', QuTarget, QuLetter) AND IskDtDistance!={$gDist}
                         where EnTournament={$_SESSION['TourId']} AND QuSession={$Sequences[$gId]['session']} and QuTarget in (" . implode(',', $AssignedTargets) . ")
-                        Group by QuTargetNo 
-                        order by QuTargetNo
+                        Group by QuSession, QuTarget, QuLetter 
+                        order by QuSession, QuTarget, QuLetter
                     ) as Sqy on QuTarget=dQuTarget AND QuLetter=dQuLetter
                     where EnTournament={$_SESSION['TourId']} AND QuIrmType=0 AND QuSession={$Sequences[$gId]['session']} and QuTarget in (" . implode(',', $AssignedTargets) . ")
-                    Group by QuTargetNo 
-                    order by if(IsField3D, (QuTarget-1)%DiEnds, QuTarget), QuTargetNo";
+                    Group by QuSession, QuTarget, QuLetter 
+                    order by if(IsField3D, (QuTarget-1)%DiEnds, QuTarget), QuSession, QuTarget, QuLetter";
                 $q = safe_r_sql($SQL);
                 $OldEndNum = 0;
                 $OldTarget = 0;

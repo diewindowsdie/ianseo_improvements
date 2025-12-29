@@ -236,7 +236,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 			$q="
 				SELECT ".($this->Flighted ? "concat(EvCode,EnSubClass)" : "EvCode")." as EventKey,
 					EnId, EnCode, ifnull(EdExtra, EnCode) as LocalId, if(EnDob=0, '', EnDob) as BirthDate, EnOdfShortname, EnSex, EnNameOrder, upper(EnIocCode) EnIocCode, EnName AS Name, EnFirstName AS FirstName, upper(EnFirstName) AS FirstNameUpper, EnMiddleName, QuSession as Session, SesName,
-					SUBSTRING(QuTargetNo,2) AS TargetNo, FlContAssoc,
+					CONCAT(QuTarget, QuLetter) AS TargetNo, FlContAssoc,
 					EvProgr, ToNumEnds,ToNumDist,ToMaxDistScore, FdiDetails,
 					co.CoId, co.CoCode, co.CoNameComplete, co.CoMaCode, co.CoCaCode, co2.CoNameComplete as CoNameComplete2, co3.CoNameComplete as CoNameComplete3, co2.CoCode as CoCode2, co3.CoCode as CoCode3, EnClass, EnDivision,EnAgeClass,  EnSubClass,  ScDescription,
 					IFNULL(Td1,'.1.') as Td1, IFNULL(Td2,'.2.') as Td2, IFNULL(Td3,'.3.') as Td3, IFNULL(Td4,'.4.') as Td4, IFNULL(Td5,'.5.') as Td5, IFNULL(Td6,'.6.') as Td6, IFNULL(Td7,'.7.') as Td7, IFNULL(Td8,'.8.') as Td8,

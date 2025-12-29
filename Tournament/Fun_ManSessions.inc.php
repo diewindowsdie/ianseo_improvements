@@ -174,18 +174,8 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
 					{
 						//print 'pp';exit;
 						$x=regenerateQualTargetsForSession($SesTournament,$SesOrder);
-						if (!$x)
-						{
+						if (!$x) {
 							$ret='_error_';
-						}
-						else
-						{
-						/*
-						 * se si arriva qui bisogna mettere a posto l'assegnazione dei target alle persone
-						 * che sono nella sessione SesOrder.
-						 */
-
-							//$x=correctQualTargetsForSession($SesTournament,$SesOrder,$oldSesTar4Session,$oldSesAth4Target);
 						}
 					}
 					break;
@@ -331,8 +321,8 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
  * @return bool: true se ok false altrimenti
  */
 	function destroyQualTargetsForSession($tour,$session=0) {
-		$session=intval($session);
-		safe_w_sql("DELETE FROM AvailableTarget WHERE AtTournament=" . StrSafe_DB($tour) . " AND AtSession=$session");
+		//$session=intval($session);
+		//safe_w_sql("DELETE FROM AvailableTarget WHERE AtTournament=" . StrSafe_DB($tour) . " AND AtSession=$session");
 
 		return true;
 	}
@@ -353,9 +343,9 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
 		if (!($rs && safe_num_rows($rs)==1))
 			return false;
 
-		$row=safe_fetch($rs);
+		//$row=safe_fetch($rs);
 
-		if ($row->SesTar4Session>0 && $row->SesAth4Target>0)
+		/*if ($row->SesTar4Session>0 && $row->SesAth4Target>0)
 		{
 			$q= "INSERT INTO AvailableTarget (AtTournament, AtTargetNo, AtSession, AtTarget, AtLetter) VALUES";
 
@@ -377,7 +367,7 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
 			$rs=safe_w_sql($q);
 
 			return ($rs!==false);
-		}
+		}*/
 
 		return true;
 	}
@@ -410,12 +400,12 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
 		// first update EnTimestamp
 		$Where="EnTournament=" . StrSafe_DB($tour)
 			. " AND QuSession=" . StrSafe_DB($session)
-			. " AND QuTargetNo>" . StrSafe_DB($session.str_pad($Target+1, 3, '0', STR_PAD_LEFT));
+			. " AND QuTarget>" . StrSafe_DB($Target+1);
 		safe_w_sql("Update Entries inner join Qualifications on QuId=EnId
 			set EnTimestamp='".date('Y-m-d H:i:s')."'
-			where (QuSession!=0 or QuTargetNo!='') and $Where");
+			where (QuSession!=0 or QuTarget!=0) and $Where");
 		safe_w_sql("UPDATE Qualifications INNER JOIN Entries ON QuId=EnId
-			SET QuSession=0, QuTargetNo='', QuTarget=0, QuLetter='', QuBacknoPrinted=0, QuTimestamp=QuTimestamp
+			SET QuSession=0, QuTarget=0, QuLetter='', QuBacknoPrinted=0, QuTimestamp=QuTimestamp
 			WHERE $Where");
 
 		return true;
@@ -576,9 +566,9 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
 								$Where="QuSession=" . $row->SesOrder . " AND EnTournament=" . StrSafe_DB($tour) . "";
 								safe_w_sql("update Entries inner join Qualifications on EnId=QuId
 									set EnTimestamp='".date('Y-m-d H:i:s')."'
-									where (QuSession!=" . $newOrder . " or QuTargetNo!=CONCAT('{$newOrder}',SUBSTRING(QuTargetNo,2))) and $Where");
+									where QuSession!=" . $newOrder . " and $Where");
 								safe_w_sql("UPDATE Qualifications INNER JOIN Entries ON QuId=EnId
-									SET QuSession=" . $newOrder . ", QuTargetNo=CONCAT('{$newOrder}',SUBSTRING(QuTargetNo,2)), QuTarget=SUBSTRING(QuTargetNo,2)+0, QuLetter=right(QuTargetNo, 1), QuBacknoPrinted=0, QuTimestamp=QuTimestamp
+									SET QuSession=" . $newOrder . ", QuBacknoPrinted=0, QuTimestamp=QuTimestamp
 									WHERE $Where");
 								break;
 							case 'E':
@@ -613,229 +603,6 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
 		}
 
 		return $ret;
-	}
-
-/**
- * moveQualOneBackFrom().
- * Riscala di uno tutte le sessioni di qualifica a partire da $from
- *
- * L'idea è:
- * per ogni sessione a partire da $from
- * 1) rinumero la sessione (decremento di uno in pratica)
- * 2) aggiorno la sessione forzando la generazione dei target (l'update non avrà effetto perchè la riga in tabella è uguale)
- * 3) le quals con la sessione vecchia verranno aggiornate.
- *
- * Esempio:
- * 4 sessioni con 10 bersagli e 4 persone su ognuno.
- * Viene cancellata la sessione 2. Otteniamo =>
- * 1) Sparisce da Session la riga
- * 2) In Qualfications alle le persone nella sessione 2 vengono sganciati i bersagli
- * 3) La 3 diventa 2 e vengono rigenerati i bersagli della nuova 2 (uguali a quelli della 3)
- * 4) Le persone sulla 3 vengono spostate sulla 2
- * 5) La 4 diventa 3 e vengono rigenerati i bersagli della nuova 3 (uguali a quelli della 4)
- * 6) Le persone sulla 4 vengono spostate sulla 3
- * 7) I bersagli dell'ultima vegono rancati
- *
- * @param int $tour: torneo
- * @param int $from: sessione di partenza
- * @return bool: true se ok false altrimenti
- */
-	function moveQualOneBackFrom($tour,$from)
-	{
-		$ret=true;
-
-	// prendo le sessioni con SesOrder>=from
-		$q
-			= "SELECT * "
-			. "FROM "
-				. "Session "
-			. "WHERE "
-				. "SesTournament=" . StrSafe_DB($tour) . " AND SesOrder>=" . StrSafe_DB($from) . " AND SesType='Q' "
-		;
-		//print $q.'<br><br>';
-		$rs=safe_r_sql($q);
-
-		if ($rs && safe_num_rows($rs)>0)
-		{
-		/*
-		 * devo partire da $from-1 perchè
-		 * se ho cancellato la 3 $from vale 4 quindi il 4 andrà in 3, il 5 in 4 etc...
-		 */
-			$newOrder=$from-1;
-
-			while ($row=safe_fetch($rs))
-			{
-				$q
-					= "UPDATE "
-						. "Session "
-					. "SET "
-						. "SesOrder=" .StrSafe_DB($newOrder) . " "
-					. "WHERE "
-						. "SesOrder=" .StrSafe_DB($row->SesOrder) ." AND "
-						. "SesType=" .StrSafe_DB($row->SesType) . " AND "
-						. "SesTournament=" .StrSafe_DB($row->SesTournament) . " ";
-				$r=safe_w_sql($q);
-
-				if (!$r)
-				{
-					$ret=false;
-					break;
-				}
-				else
-				{
-
-				/*
-				 * Faccio l'up della sessione forzando la rigenerazione dei targets.
-				 * la query di up non sortisce effetto perchè non ci sono cambiamenti
-				 */
-					$x=updateSession(
-						$tour,
-						$newOrder,
-						$row->SesType,
-						$row->SesName,
-						$row->SesLocation,
-						$row->SesTar4Session,
-						$row->SesAth4Target,
-						$row->SesFirstTarget,
-						$row->SesFollow,
-						$row->SesDtStart,
-						$row->SesDtEnd,
-						$row->SesOdfCode,
-						$row->SesOdfPeriod,
-						$row->SesOdfVenue,
-						$row->SesOdfLocation,
-						true
-					);
-
-					if (!$x)
-					{
-						$ret=false;
-						break;
-					}
-					else
-					{
-					/*
-					 * Aggiorno Qualifications.
-					 * Le persone che hanno sessione e paglione settato sulla sessione $row->SesOrder
-					 * subiranno l'update
-					 */
-						$Where="QuSession=" . $row->SesOrder . " AND EnTournament=" . StrSafe_DB($tour) . "";
-						safe_w_sql("update Entries inner join Qualifications on EnId=QuId
-							set EnTimestamp='".date('Y-m-d H:i:s')."'
-							where (QuSession!=" . $newOrder . " or QuTargetNo!=CONCAT('{$newOrder}',SUBSTRING(QuTargetNo,2))) or $Where");
-						safe_w_sql("UPDATE Qualifications INNER JOIN Entries ON QuId=EnId
-							SET QuSession=" . $newOrder . ", QuTargetNo=CONCAT('{$newOrder}',SUBSTRING(QuTargetNo,2)), QuTarget=SUBSTRING(QuTargetNo,2)+0, QuLetter=right(QuTargetNo, 1), QuBacknoPrinted=0, QuTimestamp=QuTimestamp
-							WHERE $Where");
-
-						if (!$r)
-						{
-							$ret=false;
-							break;
-						}
-					}
-				}
-
-				++$newOrder;
-			}
-
-		/*
-		 * Visto che restano i bersagli della vecchia ultima, li faccio sparire
-		 */
-			if ($ret)
-			{
-			/*
-			 * $newOrder qui contiene l'ultima sessione prima della rinumerazione
-			 * perchè l'ultimo incremento lo ha portato lì.
-			 */
-				$x=destroyQualTargetsForSession($tour,$newOrder);
-
-				if (!$x)
-				{
-					$ret=false;
-				}
-			}
-		}
-
-		return $ret;
-	}
-
-	function correctQualTargetsForSession($SesTournament,$SesOrder,$oldSesTar4Session,$oldSesAth4Target)
-	{
-	// info attuali della sessione
-		$SesTar4Session=0;
-		$SesAth4Target=0;
-
-		$x=getQualTargetsInfoForSession($SesTournament,$SesOrder);
-
-		if ($x!==false)
-		{
-			list($SesTar4Session,$SesAth4Target)=$x;
-
-			/*
-			 * Il problema si presenta se $oldSesTar4Session>$SesTar4Session oppure $oldSesAth4Target>$SesAth4Target.
-			 * Se i numeri aumentano non ci sono problemi perchè la "vecchia" sessione è contenuta nella "nuova".
-			 *
-			 * Se il numero di persone si riduce occorre sganciare tutti quelli che sono nelle lettere superiori
-			 * all'ultima buona dopo l'update.
-			 *
-			 * Se il numero di paglioni si riduce occorre sganciare tutti i bersagli dalle persone nelle piazzole
-			 * dopo l'ultima buona dopo l'update.
-			 */
-
-		// si riducono le persone
-			if ($SesAth4Target<$oldSesAth4Target)
-			{
-			/*
-			 *  in base al numero di persone posso ricavare l'ultima lettera buona
-			 *  chr(64) = '@'
-			 *  chr(65) = 'A'
-			 */
-				$lastLetter=chr($SesAth4Target+64);
-
-			/*
-			 * Quindi tutte le lettere oltre $lastLetter vanno resettate.
-			 * In pratica si annullano le righe di Qualifications che hanno
-			 * QuSession=$SesOrder e QuTargetNo<>'' e l'ultima lettera di QuTargetNo>$lastLetter
-			 */
-				$Where="EnTournament=" . StrSafe_DB($SesTournament) . "
-					AND QuSession=" . StrSafe_DB($SesOrder) . "
-					AND QuTargetNo<>''
-					AND SUBSTRING(QuTargetNo,-1)>'" . $lastLetter . "'";
-				safe_w_sql("update Entries inner join Qualifications on EnId=QuId
-						set EnTimestamp='".date('Y-m-d H:i:s')."'
-						WHERE (QuSession!=0 or QuTargetNo!='') and $Where");
-				safe_w_sql("UPDATE Qualifications INNER JOIN Entries ON QuId=EnId
-					SET QuSession=0,QuTargetNo='',QuTarget=0, QuLetter='', QuBacknoPrinted=0, QuTimestamp=QuTimestamp
-					WHERE $Where");
-			}
-
-		// si riducono i  bersagli
-			if ($SesTar4Session<$oldSesTar4Session)
-			{
-			/*
-			 * L'ultimo target è dato dal numero di bersagli
-			 */
-				$lastTarget=$SesTar4Session;
-
-			/*
-			 * Ora tutte le persone della sessione in bersagli più alti di $lastTarget
-			 * vengono sganciate
-			 */
-				$Where="EnTournament=" . StrSafe_DB($SesTournament) . " AND "
-						. "QuSession=" . StrSafe_DB($SesOrder) . " AND "
-						. "CAST(SUBSTRING(QuTargetNo,2, ".TargetNoPadding.") AS UNSIGNED)>" . $lastTarget . "";
-				safe_w_sql("update Entries inner join Qualifications on EnId=QuId
-						set EnTimestamp='".date('Y-m-d H:i:s')."'
-						WHERE (QuSession!=0 or QuTargetNo!='') and $Where");
-				safe_w_sql("UPDATE Qualifications INNER JOIN Entries ON QuId=EnId
-					SET QuSession=0, QuTargetNo='', QuTarget=0, QuLetter='', QuBacknoPrinted=0, QuTimestamp=QuTimestamp
-					WHERE $Where");
-			}
-		}
-		else
-		{
-			return false;
-		}
 	}
 
 /**

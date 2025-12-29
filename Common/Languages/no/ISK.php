@@ -112,7 +112,6 @@ $lang['ISK-TruncateTableAll']='Avkorte tabell (fullført)';
 $lang['LastEndDist']='Den siste runden for denne avstanden er avsluttet. For å fortsette til neste distanse trykk OK, ellers trykk Avbryt for å forbli i på distansenen.';
 $lang['LastEndSession']='Siste runde for denne puljen er ferdig. Det er ingen flere runder å skyte. Du kan nå kontrollere resultatene eller gå tilbake til oppsett.';
 $lang['LinkSpeed']='Tilkoblingshastighet';
-$lang['LockAll']='Lås alle runder';
 $lang['LRSwipeLabel']='Følsomhet venstre/høyre sveip';
 $lang['LRSwipeText']='Lengde av fingerbevegelser for å registrere et sveip. Flytt glidebryteren eller pek på verdien du vil bruke. <u>Mindre tall er mer følsom</u>.';
 $lang['Manual']='Kontakt serveren';

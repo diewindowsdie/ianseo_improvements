@@ -38,7 +38,7 @@ if (isset($_REQUEST['command']) and !IsBlocked(BIT_BLOCK_PARTICIPANT) and $filte
 		if ($session!=0) {
 			$Where .=" AND Qualifications.QuSession=" . StrSafe_DB($session) . " ";
 		}
-		$Fields=array("QuTargetNo='0'");
+        $Fields=array("QuTarget=0", "QuLetter=''");
 		if ($delSession==1) {
 			$Fields[]= "QuSession=0";
 		}
@@ -47,8 +47,7 @@ if (isset($_REQUEST['command']) and !IsBlocked(BIT_BLOCK_PARTICIPANT) and $filte
 			set EnTimestamp='".date('Y-m-d H:i:s')."'
 			where (".implode(' or ', $Fields).") and $Where");
 		$query = "UPDATE Entries INNER JOIN Qualifications ON EnId=QuId
-			SET QuTimestamp=QuTimestamp, QuBacknoPrinted=0, ".implode(', ', $Fields).", QuTarget=0, QuLetter=''
-			WHERE $Where";
+			SET QuTimestamp=QuTimestamp, QuBacknoPrinted=0, ".implode(', ', $Fields)." WHERE $Where";
 	} else {
 		/*
 		 *  query per cancellare i bersagli considerando il filtro un evento.
@@ -62,7 +61,7 @@ if (isset($_REQUEST['command']) and !IsBlocked(BIT_BLOCK_PARTICIPANT) and $filte
 		if ($session!=0) {
 			$Where .=" AND QuSession=" . StrSafe_DB($session) . " ";
 		}
-		$Fields=array("QuTargetNo='0'");
+		$Fields=array("QuTarget=0", "QuLetter=''");
 		if ($delSession==1) {
 			$Fields[]= "QuSession=0";
 		}
@@ -74,8 +73,7 @@ if (isset($_REQUEST['command']) and !IsBlocked(BIT_BLOCK_PARTICIPANT) and $filte
 		$query = "UPDATE Entries 
             INNER JOIN Qualifications ON EnId=QuId AND EnIndFEvent=1 
             INNER JOIN EventClass ON EnDivision=EcDivision AND EnClass=EcClass AND EnTournament=EcTournament and if(EcSubClass='', true, EcSubClass=EnSubClass) AND EcTeamEvent=0
-			SET QuTimestamp=QuTimestamp, QuBacknoPrinted=0, ".implode(', ', $Fields).", QuTarget=0, QuLetter=''
-			WHERE $Where";
+			SET QuTimestamp=QuTimestamp, QuBacknoPrinted=0, ".implode(', ', $Fields)."	WHERE $Where";
 	}
 
 	safe_w_SQL($query);

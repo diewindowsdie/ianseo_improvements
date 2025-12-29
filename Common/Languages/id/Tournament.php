@@ -1032,6 +1032,7 @@ $lang['ScoreFile-2']='berdasarkan Kategori';
 $lang['ScoreFinalMatch']='Pertandingan Final';
 $lang['ScoreFlags']='Tambahkan Bendera Negara/Klub';
 $lang['ScoreLogos']='Tambahkan Gambar Kompetisi';
+$lang['ScorePageHeaderFooter']='Header & Footer Halaman Penuh';
 $lang['ScorePrintMode']='Cetak Skor - Detail';
 $lang['ScoreRank']='Peringkat Skor';
 $lang['ScoreSingle']='Skor Tunggal Jarak Tunggal (Gaya Vegas)';

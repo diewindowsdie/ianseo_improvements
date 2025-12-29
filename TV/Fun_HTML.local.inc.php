@@ -15,7 +15,10 @@
 		$tourType=(empty($xxx->ToType) ? '' : $xxx->ToType);
 		$tourSubRule=(empty($xxx->ToTypeSubRule) ? '' : $xxx->ToTypeSubRule);
 
-		@define('PRINTLANG', $xxx->ToPrintLang);
+        if(!defined('PRINTLANG')) {
+            @define('PRINTLANG', $xxx->ToPrintLang);
+        }
+
 
 		$Arr_RotPages = array
 		(

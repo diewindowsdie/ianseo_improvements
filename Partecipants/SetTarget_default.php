@@ -70,10 +70,10 @@
     $isOrderedByTarget = true;
 	if (isset($_REQUEST['Ses']) && ((is_numeric($_REQUEST['Ses']) && $_REQUEST['Ses']>0 && $_REQUEST['Ses']<=$MaxSession) || (!is_numeric($_REQUEST['Ses']) && $_REQUEST['Ses']=='*')))	{
 
-		$OrderBy = "QuSession ASC, QuTargetNo ASC, EnDivision, EnClass ";
+		$OrderBy = "QuSession ASC, QuTarget ASC, QuLetter ASC, EnDivision, EnClass ";
 
 		if (isset($_REQUEST['ordTarget']) && ($_REQUEST['ordTarget']=='ASC' || $_REQUEST['ordTarget']=='DESC')) {
-            $OrderBy = "QuSession " . $_REQUEST['ordTarget'] . ", QuTargetNo " . $_REQUEST['ordTarget'] . ", EnDivision, EnClass ";
+            $OrderBy = "QuSession " . $_REQUEST['ordTarget'] . ", QuTarget " . $_REQUEST['ordTarget'] . ", QuLetter " . $_REQUEST['ordTarget'] . ", EnDivision, EnClass ";
         } elseif (isset($_REQUEST['ordCode']) && ($_REQUEST['ordCode']=='ASC' || $_REQUEST['ordCode']=='DESC')) {
             $OrderBy = "EnCode " . $_REQUEST['ordCode'] . " ";
             $isOrderedByTarget = false;
@@ -117,7 +117,7 @@
         if ($isOrderedByTarget) {
             $query = "select QuSession, TargetNo, count(TargetNo) Count
                         from (SELECT QuSession,
-                            SUBSTRING(QuTargetNo, 2, 3) AS TargetNo
+                            QuTarget AS TargetNo
                             FROM Entries
                                 left JOIN Qualifications ON EnId = QuId
                             WHERE EnTournament =" . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete = 1 " .
@@ -178,7 +178,7 @@
             }
         }
 		$Select = "SELECT EnId,EnCode,EnName,EnFirstName,EnSex,EnId,EnTournament,EnDivision,EnClass,EnCountry,EnStatus, EnWChair, " .
-			"CoCode,CoName,QuSession, SUBSTRING(QuTargetNo,2) AS TargetNo, TfName, QuScore, QuGold, QuXNine " .
+			"CoCode,CoName,QuSession, QuTarget, CONCAT(QuTarget, QuLetter) AS TargetNo, TfName, QuScore, QuGold, QuXNine " .
 			"FROM Entries INNER JOIN Qualifications ON EnId=QuId ".
 			"INNER JOIN Countries ON EnCountry=CoId AND EnTournament=CoTournament " .
             "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId " .
@@ -196,12 +196,12 @@
         $newTarget = false;
 		if (safe_num_rows($Rs)>0) {
 			while ($MyRow=safe_fetch($Rs)) {
-                $newTarget = substr($previousTarget, 0, 3) != substr($MyRow->TargetNo, 0, 3);
+                $newTarget = $previousTarget !== $MyRow->QuTarget;
                 if ($newTarget) {
                     $rowClassSuffix ^= 1;
-                    $rowspan = $athletes[$MyRow->QuSession][substr($MyRow->TargetNo, 0, 3)];
+                    $rowspan = $athletes[$MyRow->QuSession][$MyRow->QuTarget];
                 }
-                $previousTarget = $MyRow->TargetNo;
+                $previousTarget =$MyRow->QuTarget;
 				$RowStyle='Background' . $rowClassSuffix;
 				switch ($MyRow->EnStatus) {
 					case 0:
@@ -229,14 +229,13 @@
 				echo '</select></td>';
                 if ($isOrderedByTarget) {
                     if ($newTarget) {
-                        echo '<td class="Center Background' . $rowClassSuffix . '" rowspan="' . $rowspan . '">' . getTargetSwapButtonsHtml(substr($MyRow->TargetNo, 0, 3), $MyRow->QuSession) . '</td>';
+                        echo '<td class="Center Background' . $rowClassSuffix . '" rowspan="' . $rowspan . '">' . getTargetSwapButtonsHtml($MyRow->QuTarget, $MyRow->QuSession) . '</td>';
                     } else if (empty($MyRow->TargetNo)) {
                         echo '<td class="Center"></td>';
                     }
                 }
 				echo '<td class="Center">'.
-				    '<input type="text" size="4" maxlength="4" name="d_q_QuTargetNo_' . $MyRow->EnId . '" id="d_q_QuTargetNo_' . $MyRow->EnId . '" value="' . $MyRow->TargetNo . '"' . ($MyRow->QuSession==0 || $MyRow->EnStatus>8 ? ' readonly' : '') . ' onBlur="javascript:UpdateTargetNo(\'d_q_QuTargetNo_' . $MyRow->EnId . '\',\'' . $_REQUEST['Ses'] . '\');">'.
-                    (isset($MyRow->QuTargetNo) ? $MyRow->QuTargetNo : '').
+				    '<input type="text" size="5" maxlength="5" name="d_q_QuTargetNo_' . $MyRow->EnId . '" id="d_q_QuTargetNo_' . $MyRow->EnId . '" value="' . (!empty($MyRow->TargetNo) ? $MyRow->TargetNo : '') . '"' . ($MyRow->QuSession==0 || $MyRow->EnStatus>8 ? ' readonly' : '') . ' onBlur="javascript:UpdateTargetNo(\'d_q_QuTargetNo_' . $MyRow->EnId . '\',\'' . $_REQUEST['Ses'] . '\');">'.
 				    '</td>';
 				echo '<td class="Center">' . (empty($MyRow->EnCode) ? '&nbsp;' : $MyRow->EnCode) . '</td>';
 				echo '<td>' . ((!empty($MyRow->EnFirstName) OR !empty($MyRow->EnName)) ? $MyRow->EnFirstName . ' ' . $MyRow->EnName : '&nbsp;') . '</td>';

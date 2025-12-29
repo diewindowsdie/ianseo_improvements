@@ -7,16 +7,14 @@
     require_once('Common/Lib/CommonLib.php');
     require_once('Common/Lib/Fun_Phases.inc.php');
 
-	$Modes=array
-	(
+	$Modes=array (
 //		0=>get_text('TerminalMode', 'HTT'),
 //		1=>get_text('OfficeMode', 'HTT'),
 //		2=>get_text('TeamMode', 'HTT'),
 		3=>get_text('IndividualMode', 'HTT')
 	);
 
-	$ModeMapping=array
-	(
+	$ModeMapping=array (
 		0=>chr(208),
 		1=>chr(209),
 		2=>chr(210),
@@ -32,19 +30,15 @@
 
 	$Mode = 0;
 	$DbFlags='';
-	if(isset($_REQUEST['Mode']))
-	{
+	if(isset($_REQUEST['Mode'])) {
 		$Mode = $_REQUEST['Mode'];
-		if(isset($_REQUEST['x_Hht']) && $_REQUEST['x_Hht']!=-1)
-		{
+		if(isset($_REQUEST['x_Hht']) && $_REQUEST['x_Hht']!=-1) {
 			$Select = "Select HsFlags FROM HhtSetup WHERE HsTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND HsId=" . StrSafe_DB($_REQUEST['x_Hht']);
 			$rs = safe_w_sql($Select);
 			$MyRow = safe_fetch($rs);
 			$DbFlags = str_pad(trim($MyRow->HsFlags),16,"N");
 		}
-	}
-	else if(isset($_REQUEST['x_Hht']) && $_REQUEST['x_Hht']!=-1)
-	{
+	} else if(isset($_REQUEST['x_Hht']) && $_REQUEST['x_Hht']!=-1) {
 		$Select = "Select HsMode, HsFlags FROM HhtSetup WHERE HsTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND HsId=" . StrSafe_DB($_REQUEST['x_Hht']);
 		$rs = safe_w_sql($Select);
 		$MyRow = safe_fetch($rs);
@@ -118,12 +112,9 @@
 	}
 
 	if (!is_null($Command)) {
-		if ($Command=='OK')
-		{
-			if (!is_null($Mode) && array_key_exists($Mode,$Modes))
-			{
-				if (!is_null($HTTs) && is_array($HTTs))
-				{
+		if ($Command=='OK') {
+			if (!is_null($Mode) && array_key_exists($Mode,$Modes)) {
+				if (!is_null($HTTs) && is_array($HTTs)) {
 				// scrivo i parametri nel db
 					$Query
 						= "UPDATE "
@@ -149,8 +140,7 @@
 					$Data=Alpha . $ModeMapping[$Mode];
 
 				// a seconda del $Mode aggiungo o no i flags
-					switch ($Mode)
-					{
+					switch ($Mode) {
 						case 2:
 						case 3:
 							for($numFlag=0; $numFlag<count($Flags); $numFlag++ )
@@ -164,21 +154,17 @@
 					$ResponseFromHHT=false;
 					$Updated=SendHTT(HhtParam($_REQUEST['x_Hht']),$Frames,false,3);
 				// se non era un broadcast verifico chi ha risposto ok
-					if ($Dests!=0)
-					{
-						if(!is_null($Updated))
-							$ResponseFromHHT=true;
-						if (count($Updated)!=0)
-						{
-							foreach($Updated as $v)
-							{
+					if ($Dests!=0) {
+						if(!is_null($Updated)) {
+                            $ResponseFromHHT = true;
+                        }
+						if (count($Updated)!=0) {
+							foreach($Updated as $v) {
 								if ($v!=-1)
 									$HTTOK[]=$v;
 							}
 						}
 					}
-
-//exit();
 				}
 			}
 		}
@@ -233,27 +219,25 @@ if(!$ResponseFromHHT) {
 <?php
 
 
-	if (isset($_REQUEST['x_Session']) && $_REQUEST['x_Session']!=-1)
-	{
+	if (isset($_REQUEST['x_Session']) && $_REQUEST['x_Session']!=-1) {
 		$Disable=array();
-		if (is_numeric($_REQUEST['x_Session']))	//qual
-		{
-			$Sql  = "SELECT SUBSTRING(AtTargetNo,2," . (TargetNoPadding) . ") as ChiTarget, SUBSTRING(AtTargetNo," . (TargetNoPadding+2) . ",1) as ChiLetter ";
-			$Sql .= "FROM AvailableTarget at ";
+		if (is_numeric($_REQUEST['x_Session'])) {
+            $atSql = createAvailableTargetSQL(($Session??0), $_SESSION['TourId']);
+			$Sql  = "SELECT FullTgtTarget as ChiTarget, FullTgtLetter as ChiLetter ";
+			$Sql .= "FROM ($atSql) at ";
 			$Sql .= "LEFT JOIN ";
-			$Sql .= "(SELECT QuTargetNo FROM Qualifications AS q  ";
-			$Sql .= "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 AND EnStatus<6) as Sq ON at.AtTargetNo=Sq.QuTargetNo ";
-			$Sql .= "WHERE AtTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND LEFT(AtTargetNo,1)='" . $_REQUEST['x_Session'] . "' AND Sq.QuTargetNo is NULL ";
+			$Sql .= "(SELECT QuSession, QuTarget, QuLetter FROM Qualifications AS q  ";
+			$Sql .= "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 AND EnStatus<6) as Sq ON QuSession=FullTgtSession AND QuTarget=FullTgtTarget AND QuLetter=FullTgtLetter ";
+			$Sql .= "WHERE FullTgtSession='" . $_REQUEST['x_Session'] . "' AND Sq.QuTarget is NULL ";
 
 			$Rs = safe_r_sql($Sql);
-			if(safe_num_rows($Rs)>0)
-			{
+			if(safe_num_rows($Rs)>0) {
 				while($myRow = safe_fetch($Rs))
 					$Disable[] = intval($myRow->ChiTarget) . $myRow->ChiLetter;
 			}
 
-			$Sql = "SELECT QuTargetNo FROM Qualifications AS q  ";
-			$Sql .= "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 AND EnStatus<6 AND LEFT(QuTargetNo,1)='" . $_REQUEST['x_Session'] . "'";
+			$Sql = "SELECT QuTarget FROM Qualifications AS q  ";
+			$Sql .= "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 AND EnStatus<6 AND QuSession='" . $_REQUEST['x_Session'] . "'";
 			$Rs = safe_r_sql($Sql);
 			$Num2Download = safe_num_rows($Rs);
 		}
@@ -264,63 +248,55 @@ if(!$ResponseFromHHT) {
 		if(!empty($_REQUEST['HTT'])) {
 			foreach($_REQUEST['HTT'] as $k => $v) $outhht .= '&HTT['.$k.']='.$v;
 		}
-		$out.='<a href="InitAthletes.php?propagate='.(!empty($_REQUEST['propagate'])).'&x_Hht=' . $_REQUEST['x_Hht'] . '&x_Session=' . $_REQUEST['x_Session'] . $outhht . '" id="HhtNextPage">' . get_text('AthletesSetup', 'HTT') . '</a>' . "\n";
+		$out.='<a href="InitAthletes.php?propagate='.(!empty($_REQUEST['propagate'])).'&x_Hht=' . $_REQUEST['x_Hht'] . '&x_Session=' . $_REQUEST['x_Session'] . $outhht . '" id="HhtNextPage">' . get_text('AthletesSetup', 'HTT') . '</a>';
 		$out.='</div>';
 		$out
-			.='<form name="FrmSetup" id="FrmSetup" method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'?x_Hht=' . $_REQUEST['x_Hht'] . '&x_Session=' . $_REQUEST['x_Session'] . '">' . "\n"
+			.='<form name="FrmSetup" id="FrmSetup" method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'?x_Hht=' . $_REQUEST['x_Hht'] . '&x_Session=' . $_REQUEST['x_Session'] . '">'
 			. '<input type="hidden" name="x_Hht" value="' . $_REQUEST['x_Hht'] . '"/>'
 			. '<input type="hidden" name="x_Session" value="' . $_REQUEST['x_Session'] . '"/>'
 			. '<input type="hidden" name="Command" value="OK"/>'
 			. '<input type="hidden" name="propagate" value="'.(!empty($_REQUEST['propagate'])).'"/>'
 			. '<br/>';
 
-			$ComboMode= '<select name="Mode">' . "\n";
-				foreach ($Modes as $k=>$v)
-				{
-					$ComboMode.='<option value="' . $k .'"' . (!is_null($Mode) && $Mode==$k ? ' selected' : '') . '>' . $v . '</option>' . "\n";
+			$ComboMode= '<select name="Mode">';
+				foreach ($Modes as $k=>$v) {
+					$ComboMode.='<option value="' . $k .'"' . (!is_null($Mode) && $Mode==$k ? ' selected' : '') . '>' . $v . '</option>';
 				}
-			$ComboMode.='</select>' . "\n";
+			$ComboMode.='</select>';
 
 			$out
-				.='<table class="Tabella">' . "\n"
+				.='<table class="Tabella">'
 					. '<tr>'
 					. '<td class="Center" colspan="' . $TrueFlags . '">' . get_text('Mode','HTT') . '<br>' . $ComboMode . '</td>'
-					. '</tr>' . "\n";
+					. '</tr>';
 					$out .= '<tr>';
-					foreach ($HttFlags as $Flg)
-					{
+					foreach ($HttFlags as $Flg) {
 						if($Flg) {
 							$Selected='N';
 							if($Flg=='HTTFlags_ResetInfo') $Selected='Y';
 							if(!empty($_REQUEST[$Flg]) && $_REQUEST[$Flg]=='Y') $Selected='Y';
 							$out
 								.='<td class="Center">' . get_text($Flg,'HTT') . '<br>'
-									. '<select name="' . $Flg . '">' . "\n"
-										. '<option value="N"' . (isset($_REQUEST[$Flg]) && $_REQUEST[$Flg]=='N' ? ' selected' : '') . '>' . get_text('No') . '</option>' . "\n"
-										. '<option value="Y"' . (isset($_REQUEST[$Flg]) && $_REQUEST[$Flg]=='Y' ? ' selected' : '') . '>' . get_text('Yes') . '</option>' . "\n"
-									. '</select>' . "\n"
+									. '<select name="' . $Flg . '">'
+										. '<option value="N"' . (isset($_REQUEST[$Flg]) && $_REQUEST[$Flg]=='N' ? ' selected' : '') . '>' . get_text('No') . '</option>'
+										. '<option value="Y"' . (isset($_REQUEST[$Flg]) && $_REQUEST[$Flg]=='Y' ? ' selected' : '') . '>' . get_text('Yes') . '</option>'
+									. '</select>'
 								. '</td>';
 						}
 					}
 					$out .= '</tr>';
-				$out.='</table>' . "\n";
+				$out.='</table>';
 
 			$out.='<br/><br/>';
-
-			/*if (is_numeric($_REQUEST['x_Session']))
-				$out.=TableHTT(10,'FrmSetup',false,$HTTOK,array(),array());
-			else
-				$out.=TableFinalHTT(10,'FrmSetup',false,$HTTOK,array(),array());*/
 			$out.=SelectTableHTT(10,'FrmSetup',false,$HTTOK,array(),$Disable);
 
 			$out.='<br/><div align="center">';
-				$out.='<input type="submit" value="' . get_text('CmdOk') . '" onsubmit="UpdateLinks(document.getElementById(\'d_UpdateLinks\').checked)" />' . "\n";
+				$out.='<input type="submit" value="' . get_text('CmdOk') . '" onsubmit="UpdateLinks(document.getElementById(\'d_UpdateLinks\').checked)" />';
 			$out.='</div></div>';
 
-		$out.='</form>' . "\n";
+		$out.='</form>';
 
 		print $out;
 	}
 
 	include('Common/Templates/tail.php');
-?>

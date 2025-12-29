@@ -94,22 +94,22 @@ if(isset($_REQUEST["ScoreDraw"]) && $_REQUEST['ScoreDraw']=="Draw") {
 	foreach(range(1, $NumH-1) as $Y) $pdf->Line(0, $y = $Margin*0.5 + $Y*($ScoreH+$Margin), $pdf->getPageWidth(), $y);
 	$pdf->SetLineStyle($oldline);
 } else {
-	$MyQuery = 'SELECT SUBSTRING(at.AtTargetNo,2) as tNo, CoCode, CoName, Ath, Noc, Cat, Td1, Td2, Td3, Td4, Td5, Td6, Td7, Td8, '
-		. 'QuD1Arrowstring, QuD2Arrowstring, QuD3Arrowstring, QuD4Arrowstring, QuD5Arrowstring, QuD6Arrowstring, QuD7Arrowstring, QuD8Arrowstring, '
-		. 'QuD1Score, QuD2Score, QuD3Score, QuD4Score, QuD5Score, QuD6Score, QuD7Score, QuD8Score, '
-		. 'printD1gx, printD2gx, printD3gx, printD4gx, printD5gx, printD6gx, printD7gx, printD8gx '
-		. ' FROM AvailableTarget as at ';
-		if((isset($_REQUEST["noEmpty"]) && $_REQUEST["noEmpty"]==1))
-		{
+    $atSql = createAvailableTargetSQL($_REQUEST['x_Session'], $_SESSION['TourId']);
+	$MyQuery = "SELECT CONCAT(FullTgtTarget,FullTgtLetter) as tNo, CoCode, CoName, Ath, Noc, Cat, Td1, Td2, Td3, Td4, Td5, Td6, Td7, Td8, 
+		QuD1Arrowstring, QuD2Arrowstring, QuD3Arrowstring, QuD4Arrowstring, QuD5Arrowstring, QuD6Arrowstring, QuD7Arrowstring, QuD8Arrowstring, 
+		QuD1Score, QuD2Score, QuD3Score, QuD4Score, QuD5Score, QuD6Score, QuD7Score, QuD8Score, 
+		printD1gx, printD2gx, printD3gx, printD4gx, printD5gx, printD6gx, printD7gx, printD8gx 
+		FROM ($atSql) as at ";
+		if((isset($_REQUEST["noEmpty"]) && $_REQUEST["noEmpty"]==1)) {
 			$MyQuery .= "INNER JOIN
-				(SELECT DISTINCT EnTournament, SUBSTRING(QuTargetNo,1,4) as TgtNo
+				(SELECT DISTINCT EnTournament, QuSession, QuTarget, QuLetter
 				FROM Qualifications
 				INNER JOIN Entries On QuId=EnId
-				WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 AND QuTargetNo>='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_From'],TargetNoPadding,"0",STR_PAD_LEFT) . "A' AND QuTargetNo<='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_To'],TargetNoPadding,"0",STR_PAD_LEFT) . "Z'
-				) as Tgt ON at.AtTournament=Tgt.EnTournament AND SUBSTRING(at.AtTargetNo,1,4)=Tgt.TgtNo	";
+				WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 AND QuSession=".StrSafe_DB($_REQUEST['x_Session'])." AND QuTarget>=" . intval($_REQUEST['x_From']) . " AND QuTarget<=" . intval($_REQUEST['x_To']) . "
+				) as Tgt ON Tgt.QuSession=FullTgtSession AND Tgt.QuTarget=FullTgtTarget AND Tgt.QuLetter=FullTgtLetter	";
 		}
 		$MyQuery .= " LEFT JOIN "
-		. ' (SELECT CoCode, CoName, QuTargetNo, CONCAT(EnFirstName,\' \', EnName) AS Ath, CONCAT(CoCode, \' - \', CoName) as Noc, CONCAT(EnDivision, \' \', EnClass) AS Cat, '
+		. ' (SELECT QuSession, QuTarget, QuLetter, CoCode, CoName, CONCAT(EnFirstName,\' \', EnName) AS Ath, CONCAT(CoCode, \' - \', CoName) as Noc, CONCAT(EnDivision, \' \', EnClass) AS Cat, '
 		. ' Td1, Td2, Td3, Td4, Td5, Td6, Td7, Td8, '
 		. ' QuD1Arrowstring, QuD2Arrowstring, QuD3Arrowstring, QuD4Arrowstring, QuD5Arrowstring, QuD6Arrowstring, QuD7Arrowstring, QuD8Arrowstring, '
 		. ' QuD1Score, QuD2Score, QuD3Score, QuD4Score, QuD5Score, QuD6Score, QuD7Score, QuD8Score, '
@@ -120,15 +120,12 @@ if(isset($_REQUEST["ScoreDraw"]) && $_REQUEST['ScoreDraw']=="Draw") {
 		. ' INNER JOIN Countries ON EnCountry=CoId AND EnTournament=CoTournament '
 		. ' INNER JOIN Tournament ON EnTournament=ToId '
 		. ' LEFT JOIN TournamentDistances ON ToType=TdType and TdTournament=ToId AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE TdClasses '
-		. ' WHERE EnTournament = ' . StrSafe_DB($_SESSION['TourId']) . " AND QuTargetNo>='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_From'],TargetNoPadding,"0",STR_PAD_LEFT) . "A' AND QuTargetNo<='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_To'],TargetNoPadding,"0",STR_PAD_LEFT) . "Z' "
-		. ') as Sqy ON at.AtTargetNo = Sqy.QuTargetNo '
-		. " WHERE at.AtTournament =  " . StrSafe_DB($_SESSION['TourId']) . ' '
-		. " AND at.AtTargetNo>='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_From'],TargetNoPadding,"0",STR_PAD_LEFT) . "A' AND at.AtTargetNo<='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_To'],TargetNoPadding,"0",STR_PAD_LEFT) . "Z' "
-		. ' ORDER BY at.AtTargetNo ASC, Ath, Noc ';
-		//print $MyQuery;Exit;
+		. ' WHERE EnTournament = ' . StrSafe_DB($_SESSION['TourId']) . " AND QuSession=".StrSafe_DB($_REQUEST['x_Session'])." AND QuTarget>=" . intval($_REQUEST['x_From']) . " AND QuTarget<=" . intval($_REQUEST['x_To'])
+		. ') as Sqy ON Sqy.QuSession=FullTgtSession AND Sqy.QuTarget=FullTgtTarget AND Sqy.QuLetter=FullTgtLetter '
+		. " WHERE at.FullTgtSession=" . StrSafe_DB($_REQUEST['x_Session']) . " and FullTgtTarget>=" . intval($_REQUEST['x_From']) . " AND FullTgtTarget<=" . intval($_REQUEST['x_To']) . " "
+		. ' ORDER BY FullTgtSession, FullTgtTarget, FullTgtLetter, Ath, Noc ';
 	$Rs=safe_r_sql($MyQuery);
-	if(safe_num_rows($Rs)>0)
-	{
+	if(safe_num_rows($Rs)>0) {
 		$TmpTarget='-----';
 		$Tmp=array();
 		$DistArray=array();

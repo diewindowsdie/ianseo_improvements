@@ -35,7 +35,7 @@ if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z]*$/i",str_replace(
 $NoPhoto=(!empty($_REQUEST['NoPhoto']));
 
 
-$MyQuery = "SELECT EnCode as Bib, length(PhPhoto)>1 as HasPhoto, EnName AS Name, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, if(AEId IS NULL, 0, 1) as OpDone, IF(NoMember=NoOpDone,1,0) as TeamComplete, EnPays, APPrice, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, sc.ScDescription as SubclassDescripton ";
+$MyQuery = "SELECT EnCode as Bib, length(PhPhoto)>1 as HasPhoto, EnName AS Name, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, CONCAT(QuTarget, QuLetter)1 AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, if(AEId IS NULL, 0, 1) as OpDone, IF(NoMember=NoOpDone,1,0) as TeamComplete, EnPays, APPrice, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, sc.ScDescription as SubclassDescripton ";
 $MyQuery.= "FROM Entries AS e ";
 $MyQuery.= "LEFT JOIN Photos ON e.EnId=PhEnId ";
 $MyQuery.= "LEFT JOIN Countries AS c ON e." . $countryField . "=c.CoId AND e.EnTournament=c.CoTournament ";
@@ -44,7 +44,8 @@ $MyQuery.= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
 $MyQuery.= "LEFT JOIN AccEntries AS ae ON e.EnId=ae.AEId AND e.EnTournament=ae.AETournament AND ae.AEOperation=(SELECT AOTId FROM AccOperationType WHERE AOTDescr=" . StrSafe_DB($OpDetails) . ") ";
 $MyQuery.= "LEFT JOIN AccPrice AS ap ON CONCAT(EnDivision,EnClass) LIKE ap.APDivClass AND e.EnTournament=ap.APTournament ";
 $MyQuery.= 'LEFT JOIN (SELECT EnTournament as sqyto, EnCountry as sqyco, SUM(IF(EnID!= 0,1,0)) as NoMember, SUM(IF(AEId!=0,1,0)) as NoOpDone '
-        . ' FROM Entries LEFT JOIN AccEntries ON EnId = AEId AND EnTournament = AETournament '
+        . ' FROM Entries LEFT JOIN AccEntries ON EnId = AEId AND EnTournament = AETournament AND AEOperation=(SELECT AOTId FROM AccOperationType WHERE AOTDescr=' . StrSafe_DB($OpDetails) . ") "
+        . ' WHERE EnTournament = ' . StrSafe_DB($_SESSION['TourId']) . " "
         . ' GROUP BY EnTournament, EnCountry) as Sqy ON e.EnCountry=Sqy.sqyco AND e.EnTournament=Sqy.sqyto ';
 $MyQuery.= "WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " ";
 if(isset($_REQUEST["Session"]) && is_numeric($_REQUEST["Session"]))
@@ -60,7 +61,7 @@ $FirstTime=true;
 $OldTeam='#@#@#';
 while($MyRow=safe_fetch($Rs)) {
     $pdf->SetDefaultColor();
-    if ($FirstTime || !$pdf->SamePage(4)) {
+    if ($FirstTime OR !$pdf->SamePage(4)) {
         $pdf->SetFont($pdf->FontStd,'B',10);
         $pdf->Cell(190, 8, get_text($OpDetails, "Tournament"), 0, 1, 'C');
         $pdf->SetFont($pdf->FontStd,'B',7);

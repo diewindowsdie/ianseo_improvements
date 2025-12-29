@@ -182,7 +182,7 @@ echo '<div id="PopUp" class="PopUp"><div class="PopUpContent">'.
             '<tr><td class="Right">'.get_text('API-Group', 'Api').'</td><td id="PopGroup"></td></tr>'.
             '<tr><td class="Right">'.get_text('Target', 'ISK').'</td><td id="PopTarget"></td></tr>'.
             '<tr><td class="Right Bold">'.get_text('NewGroup', 'Api').'</td><td><select id="NewGroup">'.$tmpOptionsGrp.'</select></td></tr>'.
-            '<tr><td class="Right Bold">'.get_text('NewTarget', 'Api').'</td><td><input type="number" id="NewTarget" min="1" max="999"></td></tr>'.
+            '<tr><td class="Right Bold">'.get_text('NewTarget', 'Api').'</td><td><input type="number" id="NewTarget" min="1" max="9999"></td></tr>'.
         '</table>'.
         '<div class="PopUpFooter">'.
             '<input type="button" id="PopupImport" value="'.get_text('CmdOk').'" onclick="setGroupTarget()">'.

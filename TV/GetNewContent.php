@@ -27,7 +27,9 @@
 	$t=safe_r_sql("select TVParams.*, ToPrintLang from TVParams inner join Tournament on ToId=TVPTournament where TVPId=$SegmentId AND TVPTournament=$TourId");
 	if(!($u=safe_fetch($t))) die('No data');
 
-	@define('PRINTLANG', $u->ToPrintLang);
+    if(!defined('PRINTLANG')) {
+        @define('PRINTLANG', $u->ToPrintLang);
+    }
 
 	// get the rule
 	$q=safe_r_sql("select * from TVRules where TVRId=$RuleId AND TVRTournament=$TourId");

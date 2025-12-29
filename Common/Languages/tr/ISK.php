@@ -50,7 +50,6 @@ $lang['Help']='Yardım';
 $lang['IpAddr']='IP Adresi';
 $lang['LastEndDist']='Bu turun son serisi tamamlandı. Diğer tura devam etmek için TAMAM\'a (OK) basın, aynı turda kalmak istiyorsanız İPTAL\'e (Cancel) basın.';
 $lang['LastEndSession']='Bu oturum için son seri tamamlandı. Atılacak başka bir seri kalmadı. Skorkartı kontrol edebilir ya da kuruluma dönebilirsiniz.';
-$lang['LockAll']='Tüm Oturumları Kilitle';
 $lang['LRSwipeLabel']='Sol/Sağ Kaydırma Duyarlılığı';
 $lang['ManageLockedSessions']='Kilitli Oturumu Yönet';
 $lang['ManualEntry']='Manuel Giriş';

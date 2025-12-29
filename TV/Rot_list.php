@@ -4,30 +4,30 @@ require_once('Common/Fun_FormatText.inc.php');
 define("HideCols", GetParameter("IntEvent"));
 
 $Filter=[
-    "AtTournament = " . $TourId,
+    "EnTournament = " . $TourId,
 ];
 if(!empty($TVsettings->TVPSession)) {
-    $Filter[]="AtSession = " . $TVsettings->TVPSession;
+    $Filter[]="QuSession = " . $TVsettings->TVPSession;
 }
 $HallField="''";
 if(in_array('HALL',$TVsettings->Columns) and $FopLocations=Get_Tournament_Option('FopLocations', [], $TourId)) {
     $HallField='case';
     foreach($FopLocations as $FopLocation) {
-        $HallField.=" when AtTarget between {$FopLocation->Tg1} and {$FopLocation->Tg2} then ".StrSafe_DB($FopLocation->Loc);
+        $HallField.=" when QuTarget between {$FopLocation->Tg1} and {$FopLocation->Tg2} then ".StrSafe_DB($FopLocation->Loc);
     }
     $HallField.=" end";
 }
 
-$Select = "SELECT EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, AtSession AS Session, concat(AtTarget, AtLetter) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, $HallField as Hall
-    FROM AvailableTarget at
-    inner join Qualifications on QuTargetNo=AtTargetNo
-    INNER JOIN Entries ON EnId=QuId AND EnTournament=AtTournament
-    INNER JOIN Countries ON CoId=EnCountry AND CoTournament=AtTournament
-    LEFT JOIN Classes ON EnClass=ClId AND AtTournament=ClTournament
-    LEFT JOIN Session ON QuSession=SesOrder AND SesType='Q' AND AtTournament=SesTournament
-    LEFT JOIN Divisions ON EnDivision=DivId AND AtTournament=DivTournament
-    WHERE " . implode(' and ',$Filter) . "
-    ORDER BY AtTargetNo, CoCode, Name, CoName, FirstName ";
+$Select = "SELECT EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, QuSession AS Session, concat(QuTarget, QuLetter) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, $HallField as Hall
+        FROM Qualifications
+        INNER JOIN Entries ON EnId=QuId
+        INNER JOIN Countries ON CoId=EnCountry AND CoTournament=EnTournament
+        LEFT JOIN Classes ON EnClass=ClId AND EnTournament=ClTournament
+        LEFT JOIN Session ON QuSession=SesOrder AND SesType='Q' AND EnTournament=SesTournament
+        LEFT JOIN Divisions ON EnDivision=DivId AND EnTournament=DivTournament
+        WHERE " . implode(' and ',$Filter) . "
+        ORDER BY QuSession, QuTarget, QuLetter, CoCode, Name, CoName, FirstName ";
+
 $Rs=safe_r_sql($Select);
 
 $RowCounter = 0;

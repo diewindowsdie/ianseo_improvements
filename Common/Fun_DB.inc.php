@@ -251,6 +251,10 @@ function safe_fetch_field($q) {
 	return mysqli_fetch_field($q);
 }
 
+function safe_fetch_fields($q) {
+    return mysqli_fetch_fields($q);
+}
+
 function safe_free_result($q) {
 	return mysqli_free_result($q);
 }

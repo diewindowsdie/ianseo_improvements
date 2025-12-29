@@ -225,7 +225,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 			$q="
 				SELECT
 					EnId, EnCode, EnSex, EnNameOrder, upper(EnIocCode) EnIocCode, EnName AS Name, upper(EnFirstName) AS FirstNameUpper, EnFirstName AS FirstName, QuSession AS Session, if(SesName='', concat('Session ', SesOrder), SesName) as SesName,
-					SUBSTRING(QuTargetNo,2) AS TargetNo, FlContAssoc, ScDescription,
+					CONCAT(QuTarget, QuLetter) AS TargetNo, FlContAssoc, ScDescription,
 					CoId, CoCode, CoName, CoMaCode, CoCaCode, EnClass, EnDivision,EnAgeClass, EnSubClass, ClDescription, DivDescription,
 					IFNULL(Td1,'.1.') as Td1, IFNULL(Td2,'.2.') as Td2, IFNULL(Td3,'.3.') as Td3, IFNULL(Td4,'.4.') as Td4, IFNULL(Td5,'.5.') as Td5, IFNULL(Td6,'.6.') as Td6, IFNULL(Td7,'.7.') as Td7, IFNULL(Td8,'.8.') as Td8,
 					QuD1Score, QuD1Rank, QuD2Score, QuD2Rank, QuD3Score, QuD3Rank, QuD4Score, QuD4Rank,

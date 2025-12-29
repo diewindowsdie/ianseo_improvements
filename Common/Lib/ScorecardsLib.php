@@ -957,10 +957,7 @@ function QualificationScorecards($Session, $FromTgt, $ToTgt, $IncludeEmpty=true,
 	$FillWithArrows=($FillWithArrows and $ScoreDraw!='TargetNo');
 
 	if(!empty($Options['SessionType']) and $Options['SessionType']=='E') {
-        if(empty($Options['TourField3D'])) {
-            $IncludeEmpty = true;
-        }
-		$MyQuery=GetElimScoreBySessionQuery($Session, $Options['x_Phase'], $FromTgt, $ToTgt, $IncludeEmpty);
+		$MyQuery=GetElimScoreBySessionQuery($Session, $Options['x_Phase'], $FromTgt, $ToTgt);
 	} else {
 		if($Category) {
 			$MyQuery=GetScoreByCategoryQuery();
@@ -973,7 +970,6 @@ function QualificationScorecards($Session, $FromTgt, $ToTgt, $IncludeEmpty=true,
 	$OldTarget='';
     while($MyRow=safe_fetch($Rs)) {
 	    $Data->QuTimestamp=max($Data->QuTimestamp, $MyRow->QuTimestamp);
-        //$MyRow->Session=$Session;
         if(!$FillWithArrows) {
             $MyRow->Arr1='';
             $MyRow->Arr2='';
@@ -999,13 +995,20 @@ function QualificationScorecards($Session, $FromTgt, $ToTgt, $IncludeEmpty=true,
             $MyRow->CoCode='';
             $MyRow->CoName='';
         }
-        $Target=($MyRow->AtTargetNo ? substr($MyRow->AtTargetNo,0,-1) : '-');
+        $Target=($MyRow->AtTarget ?: '-');
         $Data->Scores[$Target][]=(array) $MyRow;
 		if(empty($Data->DefaultScore)) {
-			$Data->DefaultScore=array("Session"=>$MyRow->Session, 'Arr0'=>'', 'Golds'=>$MyRow->Golds, 'XNine'=>$MyRow->XNine,
-					'GoldsChars'=>$MyRow->GoldsChars, 'XNineChars'=>$MyRow->XNineChars,
-				'NumEnds'.$MyRow->Session=>$MyRow->{'NumEnds'.$MyRow->Session}, 'NumArrows'.$MyRow->Session=>$MyRow->{'NumArrows'.$MyRow->Session},
-			);
+            if(!empty($Options['SessionType']) and $Options['SessionType']=='E') {
+                $Data->DefaultScore = array("Session" => $MyRow->Session, 'Arr0' => '', 'Golds' => $MyRow->Golds, 'XNine' => $MyRow->XNine,
+                    'GoldsChars' => $MyRow->GoldsChars, 'XNineChars' => $MyRow->XNineChars,
+                    'NumEnds' . $MyRow->Session => $MyRow->{'NumEnds' . $Options['x_Phase']}, 'NumArrows' . $MyRow->Session => $MyRow->{'NumArrows' . $Options['x_Phase']},
+                );
+            } else {
+                $Data->DefaultScore = array("Session" => $MyRow->Session, 'Arr0' => '', 'Golds' => $MyRow->Golds, 'XNine' => $MyRow->XNine,
+                    'GoldsChars' => $MyRow->GoldsChars, 'XNineChars' => $MyRow->XNineChars,
+                    'NumEnds' . $MyRow->Session => $MyRow->{'NumEnds' . $MyRow->Session}, 'NumArrows' . $MyRow->Session => $MyRow->{'NumArrows' . $MyRow->Session},
+                );
+            }
 		}
 	}
     if($Coalesce) {
@@ -1033,17 +1036,9 @@ function QualificationScorecards($Session, $FromTgt, $ToTgt, $IncludeEmpty=true,
 	return $Data;
 }
 
-function GetElimScoreBySessionQuery($Session, $Phase, $FromTgt, $ToTgt, $IncludeEmpty=true) {
-	$NoEmpty='';
-	if(!$IncludeEmpty) {
-		$NoEmpty = "INNER JOIN
-			(SELECT DISTINCT EnTournament TgtTournament, QuTarget as TgtNo, QuSession as TgtSession
-			FROM Qualifications
-			INNER JOIN Entries On QuId=EnId
-			WHERE EnTournament = {$_SESSION['TourId']} AND EnAthlete=1 " . ($Session!=-1 ? "AND QuSession=$Session and QuTarget between $FromTgt and $ToTgt " : "") .
-			") as Tgt ON TgtTournament=AtTournament AND TgtNo=AtTarget and TgtSession=AtSession";
-	}
-	$MyQuery = "SELECT SUBSTRING(ElTargetNo,1,4) as tNo, ElTargetNo as AtTargetNo, ElTargetNo+0 as AtTarget, ElSession as Session, '' as Dist, EnCode, ElDateTime as QuTimestamp, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, CoCode, CoName, ElTargetNo as QuTargetNo, CONCAT(EnFirstName,' ', EnName) AS Ath, CONCAT(CoCode, ' - ', CoName) as Noc, EnDivision as `Div`, EnClass as Cls, EdEmail as Email, 
+function GetElimScoreBySessionQuery($Session, $Phase, $FromTgt, $ToTgt) {
+    $atSql = createAvailableTargetSQL(($Session == -1 ? 0 : $Session),$_SESSION['TourId']);
+	$MyQuery = "SELECT ElTargetNo as tNo, ElTargetNo as AtTarget, SUBSTRING(ElTargetNo,0,-1) as AtTarget, ElSession as Session, '' as Dist, EnCode, ElDateTime as QuTimestamp, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, CoCode, CoName, CONCAT(EnFirstName,' ', EnName) AS Ath, CONCAT(CoCode, ' - ', CoName) as Noc, EnDivision as `Div`, EnClass as Cls, EdEmail as Email, 
             EvCode as Cat,
             '' as D0, '' as D1,
             '' as Arr0, ElArrowstring as Arr1,
@@ -1074,20 +1069,21 @@ function GetElimScoreBySessionQuery($Session, $Phase, $FromTgt, $ToTgt, $Include
 
 function GetScoreBySessionQuery($Session, $FromTgt, $ToTgt, $IncludeEmpty=true, $PersonalScore=false, $EnId=0) {
 	$NoEmpty='';
-	if(!$IncludeEmpty) {
-		$NoEmpty = "INNER JOIN
-			(SELECT DISTINCT EnTournament TgtTournament, QuTarget as TgtNo, QuSession as TgtSession
+    $atSql = createAvailableTargetSQL(($Session == -1 ? 0 : $Session),$_SESSION['TourId']);
+    if(!$IncludeEmpty) {
+        $NoEmpty = "INNER JOIN
+			(SELECT DISTINCT QuTarget as TgtNo, QuSession as TgtSession
 			FROM Qualifications
 			INNER JOIN Entries On QuId=EnId
-			WHERE EnTournament = {$_SESSION['TourId']} AND EnAthlete=1 " . ($Session!=-1 ? "AND QuSession=$Session ".
-                (!empty($FromTgt) ? (is_numeric($FromTgt) ? " and QuTarget between $FromTgt and $ToTgt " : " and QuTargetNo between '$Session" . str_pad($FromTgt,TargetNoPadding+1,'0',STR_PAD_LEFT)."' and '$Session".str_pad($ToTgt,TargetNoPadding+1,'0',STR_PAD_LEFT)."' ") : "")  : "") .
-			") as Tgt ON TgtTournament=AtTournament AND TgtNo=AtTarget and TgtSession=AtSession";
+			WHERE EnTournament = {$_SESSION['TourId']} AND EnAthlete=1 " .
+            ($Session!=-1 ? "AND QuSession=$Session ". ((!empty($FromTgt) and is_numeric($FromTgt)) ? " and QuTarget between $FromTgt and $ToTgt " :  "")  : "") .
+			") as Tgt ON TgtNo=FullTgtTarget and TgtSession=FullTgtSession";
 	}
 	$EndSql='d1.DiEnds as NumEnds0, d1.DiArrows as NumArrows0, d1.DiScoringEnds as ScoringEnds0, d1.DiScoringOffset as ScoringOffset0';
 	for($i=1;$i<=8;$i++) {
 		$EndSql.=", d{$i}.DiEnds as NumEnds{$i}, d{$i}.DiArrows as NumArrows{$i}, d{$i}.DiScoringEnds as ScoringEnds{$i}, d{$i}.DiScoringOffset as ScoringOffset{$i}";
 	}
-	$MyQuery = "SELECT concat(AtTarget,AtLetter) as tNo, AtTargetNo, AtTarget, AtSession as Session, '' as Dist, EnCode, QuTimestamp, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, CoCode, CoName, QuTargetNo, CONCAT(EnFirstName,' ', EnName) AS Ath, CONCAT(CoCode, ' - ', CoName) as Noc, EnDivision as `Div`, EnClass as Cls, EdEmail as Email, 
+	$MyQuery = "SELECT concat(FullTgtTarget,FullTgtLetter) as tNo, FullTgtTarget as AtTarget, FullTgtSession as Session, '' as Dist, EnCode, QuTimestamp, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, CoCode, CoName, CONCAT(EnFirstName,' ', EnName) AS Ath, CONCAT(CoCode, ' - ', CoName) as Noc, EnDivision as `Div`, EnClass as Cls, EdEmail as Email, 
             concat(EnDivision, ' ', EnClass) as Cat, SesName, 
             IF(TfGolds='',ToGolds,TfGolds) as Golds, IF(TfXNine='',ToXNine,TfXNine) as XNine,
             IF(TfGoldsChars='',ToGoldsChars,TfGoldsChars) as GoldsChars, IF(TfXNineChars='',ToXNineChars,TfXNineChars) as XNineChars,
@@ -1100,7 +1096,7 @@ function GetScoreBySessionQuery($Session, $FromTgt, $ToTgt, $IncludeEmpty=true, 
             '' as gxD0, QuD1Gold+QuD1XNine as gxD1, QuD2Gold+QuD2XNine as gxD2, QuD3Gold+QuD3XNine as gxD3, QuD4Gold+QuD4XNine as gxD4, QuD5Gold+QuD5XNine as gxD5, QuD6Gold+QuD6XNine as gxD6, QuD7Gold+QuD7XNine as gxD7, QuD8Gold+QuD8XNine as gxD8,
             length(trim(concat(QuD1Arrowstring, QuD2Arrowstring, QuD3Arrowstring, QuD4Arrowstring, QuD5Arrowstring, QuD6Arrowstring, QuD7Arrowstring, QuD8Arrowstring))) as Arrows,
        		$EndSql
-		FROM AvailableTarget " .
+		FROM ($atSql) as at " .
         ((!$IncludeEmpty AND $PersonalScore) ? "INNER" : "LEFT") . " join (select * from Qualifications 
 			inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']}
 			inner join Countries on CoId=EnCountry and CoTournament=EnTournament
@@ -1108,26 +1104,24 @@ function GetScoreBySessionQuery($Session, $FromTgt, $ToTgt, $IncludeEmpty=true, 
 			inner join Session on SesTournament=EnTournament AND SesOrder=QuSession AND SesType='Q'
 			left join TargetFaces ON TfTournament=EnTournament and EnTargetFace=TfId
 			left join ExtraData ON EdId=EnId and EdType='E'
-			left join TournamentDistances ON ToType=TdType and TdTournament=ToId AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE TdClasses) sqy on QuTargetNo=AtTargetNo
-			left join DistanceInformation d1 on d1.DiTournament=AtTournament and d1.DiType='Q' and d1.DiSession=AtSession and d1.DiDistance=1
-			left join DistanceInformation d2 on d2.DiTournament=AtTournament and d2.DiType='Q' and d2.DiSession=AtSession and d2.DiDistance=2
-			left join DistanceInformation d3 on d3.DiTournament=AtTournament and d3.DiType='Q' and d3.DiSession=AtSession and d3.DiDistance=3
-			left join DistanceInformation d4 on d4.DiTournament=AtTournament and d4.DiType='Q' and d4.DiSession=AtSession and d4.DiDistance=4
-			left join DistanceInformation d5 on d5.DiTournament=AtTournament and d5.DiType='Q' and d5.DiSession=AtSession and d5.DiDistance=5
-			left join DistanceInformation d6 on d6.DiTournament=AtTournament and d6.DiType='Q' and d6.DiSession=AtSession and d6.DiDistance=6
-			left join DistanceInformation d7 on d7.DiTournament=AtTournament and d7.DiType='Q' and d7.DiSession=AtSession and d7.DiDistance=7
-			left join DistanceInformation d8 on d8.DiTournament=AtTournament and d8.DiType='Q' and d8.DiSession=AtSession and d8.DiDistance=8
-		$NoEmpty
-		where AtTournament={$_SESSION['TourId']} ".
-        ($Session!=-1 ? " AND AtSession=$Session ".
-            (!empty($FromTgt) ? (is_numeric($FromTgt) ? " and AtTarget between $FromTgt and $ToTgt " : " and AtTargetNo between '$Session" . str_pad($FromTgt,TargetNoPadding+1,'0',STR_PAD_LEFT)."' and '$Session".str_pad($ToTgt,TargetNoPadding+1,'0',STR_PAD_LEFT)."' ") : "")  : "") .
+			left join TournamentDistances ON ToType=TdType and TdTournament=ToId AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE TdClasses) sqy ON QuSession=FullTgtSession AND QuTarget=FullTgtTarget AND QuLetter=FullTgtLetter
+			left join DistanceInformation d1 on d1.DiTournament={$_SESSION['TourId']} and d1.DiType='Q' and d1.DiSession=FullTgtSession and d1.DiDistance=1
+			left join DistanceInformation d2 on d2.DiTournament={$_SESSION['TourId']} and d2.DiType='Q' and d2.DiSession=FullTgtSession and d2.DiDistance=2
+			left join DistanceInformation d3 on d3.DiTournament={$_SESSION['TourId']} and d3.DiType='Q' and d3.DiSession=FullTgtSession and d3.DiDistance=3
+			left join DistanceInformation d4 on d4.DiTournament={$_SESSION['TourId']} and d4.DiType='Q' and d4.DiSession=FullTgtSession and d4.DiDistance=4
+			left join DistanceInformation d5 on d5.DiTournament={$_SESSION['TourId']} and d5.DiType='Q' and d5.DiSession=FullTgtSession and d5.DiDistance=5
+			left join DistanceInformation d6 on d6.DiTournament={$_SESSION['TourId']} and d6.DiType='Q' and d6.DiSession=FullTgtSession and d6.DiDistance=6
+			left join DistanceInformation d7 on d7.DiTournament={$_SESSION['TourId']} and d7.DiType='Q' and d7.DiSession=FullTgtSession and d7.DiDistance=7
+			left join DistanceInformation d8 on d8.DiTournament={$_SESSION['TourId']} and d8.DiType='Q' and d8.DiSession=FullTgtSession and d8.DiDistance=8
+		$NoEmpty ".
+        ($Session!=-1 ? " WHERE FullTgtSession=$Session " . ((!empty($FromTgt) AND is_numeric($FromTgt)) ? " and FullTgtTarget between $FromTgt and $ToTgt " : "") : "") .
 		($EnId ? " and EnId=$EnId " : "").
-		"ORDER BY AtTargetNo ASC, Ath, Noc";
+		"ORDER BY FullTgtSession ASC, FullTgtTarget ASC, FullTgtLetter ASC, Ath, Noc";
 	return $MyQuery;
 }
 
 function GetScoreByCategoryQuery($Category='') {
-	$MyQuery = "SELECT EnCode, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, CoCode, CoName, QuSession as Session, QuTimestamp, QuTargetNo, QuTarget as AtTarget, '' as Dist, SUBSTRING(QuTargetNo,2) as tNo, CONCAT(EnFirstName,' ', EnName) AS Ath, CONCAT(CoCode, ' - ', CoName) as Noc, EnDivision as `Div`, EnClass as Cls, EdEmail as Email, 
+	$MyQuery = "SELECT EnCode, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, CoCode, CoName, QuSession as Session, QuTimestamp, QuTarget as AtTarget, '' as Dist, CONCAT(QuTarget, QuLetter) as tNo, CONCAT(EnFirstName,' ', EnName) AS Ath, CONCAT(CoCode, ' - ', CoName) as Noc, EnDivision as `Div`, EnClass as Cls, EdEmail as Email, 
            concat(EnDivision, ' ', EnClass) as Cat, SesName,
             IF(TfGolds='',ToGolds,TfGolds) as Golds, IF(TfXNine='',ToXNine,TfXNine) as XNine,
             IF(TfGoldsChars='',ToGoldsChars,TfGoldsChars) as GoldsChars, IF(TfXNineChars='',ToXNineChars,TfXNineChars) as XNineChars,
@@ -1150,14 +1144,14 @@ function GetScoreByCategoryQuery($Category='') {
 		left join TargetFaces ON TfTournament=EnTournament and EnTargetFace=TfId
         LEFT JOIN ExtraData ON EdId=EnId and EdType='E'
         LEFT JOIN TournamentDistances ON ToType=TdType and TdTournament=ToId AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE TdClasses
-		left join DistanceInformation d1 on d1.DiTournament=AtTournament and d1.DiType and d1.DiSession=AtSession and d1.DiDistance=1
-		left join DistanceInformation d2 on d2.DiTournament=AtTournament and d2.DiType and d2.DiSession=AtSession and d2.DiDistance=2
-		left join DistanceInformation d3 on d3.DiTournament=AtTournament and d3.DiType and d3.DiSession=AtSession and d3.DiDistance=3
-		left join DistanceInformation d4 on d4.DiTournament=AtTournament and d4.DiType and d4.DiSession=AtSession and d4.DiDistance=4
-		left join DistanceInformation d5 on d5.DiTournament=AtTournament and d5.DiType and d5.DiSession=AtSession and d5.DiDistance=5
-		left join DistanceInformation d6 on d6.DiTournament=AtTournament and d6.DiType and d6.DiSession=AtSession and d6.DiDistance=6
-		left join DistanceInformation d7 on d7.DiTournament=AtTournament and d7.DiType and d7.DiSession=AtSession and d7.DiDistance=7
-		left join DistanceInformation d8 on d8.DiTournament=AtTournament and d8.DiType and d8.DiSession=AtSession and d8.DiDistance=8
+		left join DistanceInformation d1 on d1.DiTournament=EnTournament and d1.DiType and d1.DiSession=QuSession and d1.DiDistance=1
+		left join DistanceInformation d2 on d2.DiTournament=EnTournament and d2.DiType and d2.DiSession=QuSession and d2.DiDistance=2
+		left join DistanceInformation d3 on d3.DiTournament=EnTournament and d3.DiType and d3.DiSession=QuSession and d3.DiDistance=3
+		left join DistanceInformation d4 on d4.DiTournament=EnTournament and d4.DiType and d4.DiSession=QuSession and d4.DiDistance=4
+		left join DistanceInformation d5 on d5.DiTournament=EnTournament and d5.DiType and d5.DiSession=QuSession and d5.DiDistance=5
+		left join DistanceInformation d6 on d6.DiTournament=EnTournament and d6.DiType and d6.DiSession=QuSession and d6.DiDistance=6
+		left join DistanceInformation d7 on d7.DiTournament=EnTournament and d7.DiType and d7.DiSession=QuSession and d7.DiDistance=7
+		left join DistanceInformation d8 on d8.DiTournament=EnTournament and d8.DiType and d8.DiSession=QuSession and d8.DiDistance=8
         WHERE EnTournament = {$_SESSION['TourId']} ".($Category ? "AND concat(EnDivision,EnClass)='$Category'" : '')."
         ORDER BY EnFirstName, EnName, CoCode";
 	return $MyQuery;

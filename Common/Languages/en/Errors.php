@@ -15,6 +15,7 @@ $lang['DiameterMandatory']='Diameter of target face is mandatory';
 $lang['DirectoryNotWriteable']='The directory $a is not writeable by the web server. Please change its permissions to be writeable by anyone.';
 $lang['DistanceOutRange']='Distance is out of range';
 $lang['DivClasNumberNotEmpty']='You must select at least one division and one class (and how many archers in teams).';
+$lang['EditLocked']='Cannot edit: section lock is enabled';
 $lang['EmptyBody']='Empty Body: this field is mandatory!';
 $lang['EmptyFrom']='Empty Email: this field is mandatory!';
 $lang['EmptySubject']='Empty Subject: this field is mandatory!';
@@ -86,6 +87,7 @@ $lang['SpecialFilterDiscrepancy']='A special filter has been set but is not acti
 $lang['SqlJolly']='In a SQL statement a "%" acts as a jolly, a "_" replaces a single letter. 
 "R%M" for example will match "RM" as well as "RCM", "RMM" but not "RMC".
 "R_M" will match "RSM", "RJM" but not "RM".';
+$lang['StillEntriesInSession']='There are still entries in the session and/or targets assignment that you want to delete.';
 $lang['SyncNotAvailable']='Sync not available';
 $lang['TargetNumberMismatch']='Target Number can only be of the form [TargetNumber][TargetLetter], as in 129C';
 $lang['TargetRangeMismatch']='Target Ranges must be 2 target numbers (no letters) separated by a dash (minus sign), the first being lower than the second, as in 23-44';
@@ -93,6 +95,7 @@ $lang['TextSmtpDelete']='Please confirm you want to unset the SMTP settings on t
 $lang['TooManyArrows']='Too many total arrows: the maximum is $a';
 $lang['TooManyDistancesMatch']='Categories with multiple distances setting';
 $lang['TooManyElimQualified']='Rounds of type $a[0] can only accept up to $a[1] archers';
+$lang['TooManySessions']='Too many sessions';
 $lang['WrongData']='Wrong data provided';
 $lang['WrongPort']='This port is not supported!';
 ?>

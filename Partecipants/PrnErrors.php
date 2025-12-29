@@ -9,7 +9,7 @@ $internationalProtocol = getModuleParameter("Tournament", "InternationalProtocol
 
 $pdf = new ResultPDF((get_text('StartlistAlpha','Tournament')));
 
-$MyQuery = "SELECT EnCode as Bib, EnName AS Name, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, c.CoCode AS NationCode, c.CoNameComplete AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, ";
+$MyQuery = "SELECT EnCode as Bib, EnName AS Name, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, CONCAT(QuTarget, QuLetter) AS TargetNo, c.CoCode AS NationCode, c.CoNameComplete AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, ";
 $MyQuery.= "s.ScDescription as SubclassDescription, co2.CoNameComplete as Nation2, co3.CoNameComplete as Nation3, date_format(if(EnDOB='0000-00-00', null, EnDOB), '".get_text('DateFmtDB')."') as DOB, ";
 $MyQuery.= "ISNULL(c.CoId) as invalidCountry, ISNULL(DivId) as invalidDivision, (ISNULL(c1.ClId) OR  LOCATE(c2.ClId, c1.ClValidClass)=0) as invalidAgeClass, (ISNULL(c2.ClId) OR  LOCATE(c2.ClId, c1.ClValidClass)=0) as invalidClass, (ISNULL(EnDOB) or EnDOB = '0000-00-00') as invalidDOB ";
 $MyQuery.= "FROM Entries AS e ";

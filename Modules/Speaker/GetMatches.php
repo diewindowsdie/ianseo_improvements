@@ -62,7 +62,7 @@ if ($team==0) {
 			AND UNIX_TIMESTAMP(TfDateTime)>" . StrSafe_DB($serverDate) . " ";
 }
 
-$orderBy=" concat(fs1.FSTarget,fs2.FSTarget) ASC ";
+$orderBy=" CAST(fs1.FSTarget as SIGNED) ASC, CAST(fs2.FSTarget AS SIGNED) ASC";
 
 
 $rs=safe_r_sql($countSql);
@@ -198,8 +198,8 @@ if (safe_num_rows($rs)>0) {
 					'ev'	=> $myRow->event,
 					'ph'	=> get_text(namePhase($myRow->firstPhase,$myRow->phase). '_Phase'),
 					'evn'	=> $myRow->eventName,
-					't'	    => $target,
-                    't2'	=> $target2,
+					't'	    => intval($target),
+                    't2'	=> intval($target2),
 					'n1'	=> $myRow->name1 . ' (#' . $myRow->rank1 . ')',
 					'cn1'	=> $myRow->countryName1,
 					'ar1'	=> strlen(str_replace(' ','',$myRow->arrowString1)),

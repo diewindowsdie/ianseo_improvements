@@ -13,32 +13,41 @@
 			foreach ($_REQUEST as $k=>$v) {
 				if (substr($k,0,2)=='d_') {
 					list(,$field)=explode('_',$k);
-					$up[]="{$field}=".StrSafe_DB($v);
-					if($field=='ToNumDist' and intval($v)>0) {
-					    $v=intval($v);
-					    // removes the distanceinformation records and clean the names of the distances!
-                        safe_w_sql("delete from DistanceInformation where DiTournament={$_SESSION['TourId']} and DiDistance>$v");
-                        if($v<8) {
-                            $sql=array();
-                            for($n=$v+1;$n<=8;$n++) {
-                                $sql[]="Td{$n}=''";
+					$up[]="`{$field}`=".StrSafe_DB($v);
+					if($field=='ToNumDist' and ($maxDist=intval($v)) and $maxDist<=8) {
+                        $q = safe_r_SQL("SELECT `ToNumDist` from `Tournament` where `ToId`={$_SESSION['TourId']}");
+                        if($r = safe_fetch($q) and $actDist=$r->ToNumDist) {
+                            if($actDist > $maxDist) {
+                                // removes the distanceinformation records and clean the names of the distances!
+                                safe_w_sql("DELETE FROM `DistanceInformation` where `DiTournament`={$_SESSION['TourId']} and `DiDistance`>$maxDist");
+                                $sql = array();
+                                for ($n = $maxDist + 1; $n <= 8; $n++) {
+                                    $sql[] = "`Td{$n}`=''";
+                                }
+                                safe_w_sql("UPDATE `TournamentDistances` SET " . implode(',', $sql) . " where `TdTournament`={$_SESSION['TourId']}");
+                            } else if($actDist < $maxDist) {
+                                $sqlDist = array();
+                                $sqlEmpty = array();
+                                for ($n = $actDist + 1; $n <= $maxDist; $n++) {
+                                    $sqlDist[] = "`Td{$n}`='.{$n}.'";
+                                    $sqlEmpty[] = "`Td{$n}`='-'";
+                                }
+                                safe_w_sql("UPDATE `TournamentDistances` SET " . implode(',', $sqlDist) . " where `TdTournament`={$_SESSION['TourId']} and `Td{$actDist}`!='-'");
+                                safe_w_sql("UPDATE `TournamentDistances` SET " . implode(',', $sqlEmpty) . " where `TdTournament`={$_SESSION['TourId']} and `Td{$actDist}`='-'");
+                                $Sql = "SELECT `DiSession`, IF(MIN(DiEnds)=MAX(DiEnds),MAX(DiEnds),0) as e, IF(MIN(DiArrows)=MAX(DiArrows),MAX(DiArrows),0) as a
+                                    FROM `DistanceInformation` WHERE `DiTournament` = {$_SESSION['TourId']} and `DiType`= 'Q' GROUP BY `DiSession`";
+                                $q=safe_r_sql($Sql);
+                                while($r=safe_fetch($q)) {
+                                    for ($n = $actDist + 1; $n <= $maxDist; $n++) {
+                                        safe_w_SQL("INSERT INTO `DistanceInformation` (`DiTournament`, `DiSession`, `DiDistance`, `DiEnds`, `DiArrows`, `DiType`) VALUES ({$_SESSION['TourId']}, $r->DiSession, $n, $r->e, $r->a, 'Q');");
+                                    }
+                                }
                             }
-                            safe_w_sql("update TournamentDistances set ".implode(',',$sql)." where TdTournament={$_SESSION['TourId']}");
                         }
                     }
 				}
 			}
-
-			$up=implode(',',$up);
-			$q="
-				UPDATE
-					Tournament
-				SET
-					{$up}
-				WHERE
-					ToId={$_SESSION['TourId']}
-			";
-					//print $q;Exit;
+			$q="UPDATE Tournament SET ".implode(',',$up)." WHERE ToId={$_SESSION['TourId']}";
 			$r=safe_r_sql($q);
 		}
 	}

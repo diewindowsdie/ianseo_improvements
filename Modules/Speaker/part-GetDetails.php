@@ -67,7 +67,7 @@ switch($_REQUEST['type']) {
 			$Sessions
 			where QuSession>0 and DivAthlete=1 and ClAthlete=1 and EnTournament={$_SESSION['TourId']}
 			".($Where ? "and concat(QuSession,QuTarget) in ($Where)" : '')."
-			order by QuSession, QuTargetNo";
+			order by QuSession, QuTarget, QuLetter";
 
 		break;
 }

@@ -15,21 +15,21 @@ FIELD DEFINITIONS (Target Tournaments)
 function CreateStandardFieldClasses($TourId, $SubRule) {
 	switch($SubRule) {
 		case '1':
-			CreateClass($TourId, 1, 21, 49, 0, 'M', 'M', 'Men');
+			CreateClass($TourId, 1, 21, 49, -1, 'O', 'O', 'Open');
 			CreateClass($TourId, 2, 21, 49, 1, 'W', 'W', 'Women');
-			CreateClass($TourId, 3, 18, 20, 0, 'U21M', 'U21M,M', 'Under 21 Men');
+			CreateClass($TourId, 3, 18, 20, -1, 'U21O', 'U21O,O', 'Under 21 Open');
 			CreateClass($TourId, 4, 18, 20, 1, 'U21W', 'U21W,W', 'Under 21 Women');
-            CreateClass($TourId, 5, 16, 17, 0, 'U18M', 'U18M,U21M,M', 'Under 18 Men');
+            CreateClass($TourId, 5, 16, 17, -1, 'U18O', 'U18O,U21O,O', 'Under 18 Open');
             CreateClass($TourId, 6, 16, 17, 1, 'U18W', 'U18W,U21W,W', 'Under 18 Women');
-            CreateClass($TourId, 7, 15, 15, 0, 'U16M', 'U16M,U18M,U21M,M', 'Under 16 Men');
+            CreateClass($TourId, 7, 15, 15, -1, 'U16O', 'U16O,U18O,U21O,O', 'Under 16 Open');
             CreateClass($TourId, 8, 15, 15, 1, 'U16W', 'U16W,U18W,U21W,W', 'Under 16 Women');
-            CreateClass($TourId, 9, 14, 14, 0, 'U15M', 'U15M,U16M,U18M,U21M,M', 'Under 15 Men');
+            CreateClass($TourId, 9, 14, 14, -1, 'U15O', 'U15O,U16O,U18O,U21O,O', 'Under 15 Open');
             CreateClass($TourId, 10,14, 14, 1, 'U15W', 'U15W,U16W,U18W,U21W,W', 'Under 15 Women');
-            CreateClass($TourId, 11,12, 13, 0, 'U14M', 'U14M,U15,U16M,MU18M,U21M,M', 'Under 14 Men');
+            CreateClass($TourId, 11,12, 13, -1, 'U14O', 'U14O,U15O,U16O,MU18O,U21O,O', 'Under 14 Open');
             CreateClass($TourId, 12,12, 13, 1, 'U14W', 'U14W,U15W,U16W,U18W,U21W,W', 'Under 14 Women');
-            CreateClass($TourId, 13, 1, 11, 0, 'U12M', 'U12M,U14M,U15M,U16M,U18M,U21M,M', 'Under 12 Men');
+            CreateClass($TourId, 13, 1, 11, -1, 'U12O', 'U12O,U14O,U15O,U16O,U18O,U21O,O', 'Under 12 Open');
             CreateClass($TourId, 14, 1, 11, 1, 'U12W', 'U12W,U14W,U15W,U16W,U18W,U21W,W', 'Under 12 Women');
-            CreateClass($TourId, 15, 50,100, 0, '50M', '50M,M', '50+ Men');
+            CreateClass($TourId, 15, 50,100, -1, '50O', '50O,O', '50+ Open');
             CreateClass($TourId, 16, 50,100, 1, '50W', '50W,W', '50+ Women');
 
 			break;
@@ -79,55 +79,55 @@ function CreateStandardFieldEvents($TourId, $SubRule) {
                 'EvMatchArrowsNo'=>FINAL_FROM_2,
             );
 			$i=1;
-			CreateEventNew($TourId,'RM', 'Recurve Men', $i++, $SettingsInd);
+			CreateEventNew($TourId,'RO', 'Recurve Open', $i++, $SettingsInd);
 			CreateEventNew($TourId,'RW', 'Recurve Women', $i++, $SettingsInd);
-			CreateEventNew($TourId,'RU21M', 'Recurve Under 21 Men',$i++, $SettingsInd);
+			CreateEventNew($TourId,'RU21o', 'Recurve Under 21 Open',$i++, $SettingsInd);
 			CreateEventNew($TourId,'RU21W', 'Recurve Under 21 Women', $i++, $SettingsInd);
 			if($SubRule==1) {
-				CreateEventNew($TourId,'RU18M', 'Recurve Under 18 Men', $i++, $SettingsInd);
+				CreateEventNew($TourId,'RU18O', 'Recurve Under 18 Open', $i++, $SettingsInd);
 				CreateEventNew($TourId,'RU18W', 'Recurve Under 18 Women', $i++, $SettingsInd);
-				CreateEventNew($TourId,'R50M', 'Recurve 50+ Men', $i++, $SettingsInd);
+				CreateEventNew($TourId,'R50O', 'Recurve 50+ Open', $i++, $SettingsInd);
 				CreateEventNew($TourId,'R50W', 'Recurve 50+ Women', $i++, $SettingsInd);
 			}
-			CreateEventNew($TourId,'CM', 'Compound Men', $i++, $SettingsInd);
+			CreateEventNew($TourId,'CO', 'Compound Open', $i++, $SettingsInd);
 			CreateEventNew($TourId,'CW', 'Compound Women', $i++, $SettingsInd);
-			CreateEventNew($TourId,'CU21M', 'Compound Under 21 Men', $i++, $SettingsInd);
+			CreateEventNew($TourId,'CU21O', 'Compound Under 21 Open', $i++, $SettingsInd);
 			CreateEventNew($TourId,'CU21W', 'Compound Under 21 Women',$i++, $SettingsInd);
 			if($SubRule==1) {
-				CreateEventNew($TourId,'CU18M', 'Compound Under 18 Men', $i++, $SettingsInd);
+				CreateEventNew($TourId,'CU18O', 'Compound Under 18 Open', $i++, $SettingsInd);
 				CreateEventNew($TourId,'CU18W', 'Compound Under 18 Women', $i++, $SettingsInd);
-				CreateEventNew($TourId,'C50M', 'Compound 50+ Men', $i++, $SettingsInd);
+				CreateEventNew($TourId,'C50O', 'Compound 50+ Open', $i++, $SettingsInd);
 				CreateEventNew($TourId,'C50W', 'Compound 50+ Women',$i++, $SettingsInd);
 			}
-			CreateEventNew($TourId,'BM', 'Barebow Men', $i++, $SettingsInd);
+			CreateEventNew($TourId,'BO', 'Barebow Open', $i++, $SettingsInd);
 			CreateEventNew($TourId,'BW', 'Barebow Women', $i++, $SettingsInd);
-			CreateEventNew($TourId,'BU21M', 'Barebow Under 21 Men', $i++, $SettingsInd);
+			CreateEventNew($TourId,'BU21O', 'Barebow Under 21 Open', $i++, $SettingsInd);
 			CreateEventNew($TourId,'BU21W', 'Barebow Under 21 Women', $i++, $SettingsInd);
 			if($SubRule==1) {
-				CreateEventNew($TourId,'BU18M', 'Barebow Under 18 Men', $i++, $SettingsInd);
+				CreateEventNew($TourId,'BU18O', 'Barebow Under 18 Open', $i++, $SettingsInd);
 				CreateEventNew($TourId,'BU18W', 'Barebow Under 18 Women', $i++, $SettingsInd);
-				CreateEventNew($TourId,'B50M', 'Barebow 50+ Men', $i++, $SettingsInd);
+				CreateEventNew($TourId,'B50O', 'Barebow 50+ Open', $i++, $SettingsInd);
 				CreateEventNew($TourId,'B50W', 'Barebow 50+ Women', $i++, $SettingsInd);
 			}
 			$i=1;
-			CreateEventNew($TourId, 'MT', 'Men Team', $i++, $SettingsTeam);
+			CreateEventNew($TourId, 'OT', 'Open Team', $i++, $SettingsTeam);
 			CreateEventNew($TourId, 'WT', 'Women Team', $i++, $SettingsTeam);
             CreateEventNew($TourId, 'RX', 'Recurve Mixed Team', $i++, $SettingsMixedTeam);
             CreateEventNew($TourId, 'CX', 'Compound Mixed Team', $i++, $SettingsMixedTeam);
             CreateEventNew($TourId, 'BX', 'Barebow Mixed Team', $i++, $SettingsMixedTeam);
-			CreateEventNew($TourId, 'MU21T','Men Under 21 Team', $i++, $SettingsTeam);
+			CreateEventNew($TourId, 'OU21T','Open Under 21 Team', $i++, $SettingsTeam);
 			CreateEventNew($TourId, 'WU21T','Women Under 21 Team', $i++, $SettingsTeam);
             CreateEventNew($TourId, 'RU21X', 'Recurve Under 21 Mixed Team', $i++, $SettingsMixedTeam);
             CreateEventNew($TourId, 'CU21X', 'Compound Under 21 Mixed Team', $i++, $SettingsMixedTeam);
             CreateEventNew($TourId, 'BU21X', 'Barebow Under 21 Mixed Team', $i++, $SettingsMixedTeam);
 
         if($SubRule==1) {
-                CreateEventNew($TourId, 'MU18T','Men Under 18 Team', $i++, $SettingsTeam);
+                CreateEventNew($TourId, 'OU18T','Open Under 18 Team', $i++, $SettingsTeam);
                 CreateEventNew($TourId, 'WU18T','Women Under 18 Team', $i++, $SettingsTeam);
                 CreateEventNew($TourId, 'RU18X', 'Recurve Under 18 Mixed Team', $i++, $SettingsMixedTeam);
                 CreateEventNew($TourId, 'CU18X', 'Compound Under 18 Mixed Team', $i++, $SettingsMixedTeam);
                 CreateEventNew($TourId, 'BU18X', 'Barebow Under 18 Mixed Team', $i++, $SettingsMixedTeam);
-				CreateEventNew($TourId, 'M50T','Men 50+ Team', $i++, $SettingsTeam);
+				CreateEventNew($TourId, 'O50T','Open 50+ Team', $i++, $SettingsTeam);
 				CreateEventNew($TourId, 'W50T','Women 50+ Team', $i++, $SettingsTeam);
                 CreateEventNew($TourId, 'R50X', 'Recurve 50+ Mixed Team', $i++, $SettingsMixedTeam);
                 CreateEventNew($TourId, 'C50X', 'Compound 50+ Mixed Team', $i++, $SettingsMixedTeam);
@@ -138,34 +138,34 @@ function CreateStandardFieldEvents($TourId, $SubRule) {
 }
 
 function InsertStandardFieldEvents($TourId, $SubRule) {
-    InsertClassEvent($TourId, 0, 1, 'RM', 'R', 'M');
-    InsertClassEvent($TourId, 0, 1, 'RU21M', 'R', 'U21M');
-    InsertClassEvent($TourId, 0, 1, 'RU18M', 'R', 'U18M');
-    InsertClassEvent($TourId, 0, 1, 'R50M', 'R', '50M');
+    InsertClassEvent($TourId, 0, 1, 'RO', 'R', 'O');
+    InsertClassEvent($TourId, 0, 1, 'RU21O', 'R', 'U21O');
+    InsertClassEvent($TourId, 0, 1, 'RU18O', 'R', 'U18O');
+    InsertClassEvent($TourId, 0, 1, 'R50O', 'R', '50O');
     InsertClassEvent($TourId, 0, 1, 'RW', 'R', 'W');
     InsertClassEvent($TourId, 0, 1, 'RU21W', 'R', 'U21W');
     InsertClassEvent($TourId, 0, 1, 'RU18W', 'R', 'U18W');
     InsertClassEvent($TourId, 0, 1, 'R50W', 'R', '50W');
-    InsertClassEvent($TourId, 0, 1, 'CM', 'C', 'M');
-    InsertClassEvent($TourId, 0, 1, 'CU21M', 'C', 'U21M');
-    InsertClassEvent($TourId, 0, 1, 'CU18M', 'C', 'U18M');
-    InsertClassEvent($TourId, 0, 1, 'C50M', 'C', '50M');
+    InsertClassEvent($TourId, 0, 1, 'CO', 'C', 'O');
+    InsertClassEvent($TourId, 0, 1, 'CU21O', 'C', 'U21O');
+    InsertClassEvent($TourId, 0, 1, 'CU18O', 'C', 'U18O');
+    InsertClassEvent($TourId, 0, 1, 'C50O', 'C', '50O');
     InsertClassEvent($TourId, 0, 1, 'CW', 'C', 'W');
     InsertClassEvent($TourId, 0, 1, 'CU21W', 'C', 'U21W');
     InsertClassEvent($TourId, 0, 1, 'CU18W', 'C', 'U18W');
     InsertClassEvent($TourId, 0, 1, 'C50W', 'C', '50W');
-    InsertClassEvent($TourId, 0, 1, 'BM', 'B', 'M');
-    InsertClassEvent($TourId, 0, 1, 'BU21M', 'B', 'U21M');
-    InsertClassEvent($TourId, 0, 1, 'BU18M', 'B', 'U18M');
-    InsertClassEvent($TourId, 0, 1, 'B50M', 'B', '50M');
+    InsertClassEvent($TourId, 0, 1, 'BO', 'B', 'O');
+    InsertClassEvent($TourId, 0, 1, 'BU21O', 'B', 'U21O');
+    InsertClassEvent($TourId, 0, 1, 'BU18O', 'B', 'U18O');
+    InsertClassEvent($TourId, 0, 1, 'B50O', 'B', '50O');
     InsertClassEvent($TourId, 0, 1, 'BW', 'B', 'W');
     InsertClassEvent($TourId, 0, 1, 'BU21W', 'B', 'U21W');
     InsertClassEvent($TourId, 0, 1, 'BU18W', 'B', 'U18W');
     InsertClassEvent($TourId, 0, 1, 'B50W', 'B', '50W');
 
-    InsertClassEvent($TourId, 1, 1, 'MT', 'R', 'M');
-    InsertClassEvent($TourId, 2, 1, 'MT', 'C', 'M');
-    InsertClassEvent($TourId, 3, 1, 'MT', 'B', 'M');
+    InsertClassEvent($TourId, 1, 1, 'OT', 'R', 'O');
+    InsertClassEvent($TourId, 2, 1, 'OT', 'C', 'O');
+    InsertClassEvent($TourId, 3, 1, 'OT', 'B', 'O');
     InsertClassEvent($TourId, 1, 1, 'WT', 'R', 'W');
     InsertClassEvent($TourId, 2, 1, 'WT', 'C', 'W');
     InsertClassEvent($TourId, 3, 1, 'WT', 'B', 'W');
@@ -175,39 +175,39 @@ function InsertStandardFieldEvents($TourId, $SubRule) {
     InsertClassEvent($TourId, 2, 1, 'CX', 'C', 'M');
     InsertClassEvent($TourId, 1, 1, 'BX', 'B', 'W');
     InsertClassEvent($TourId, 2, 1, 'BX', 'B', 'M');
-    InsertClassEvent($TourId, 1, 1, 'MU21T', 'R', 'U21M');
-    InsertClassEvent($TourId, 2, 1, 'MU21T', 'C', 'U21M');
-    InsertClassEvent($TourId, 3, 1, 'MU21T', 'B', 'U21M');
+    InsertClassEvent($TourId, 1, 1, 'OU21T', 'R', 'U21O');
+    InsertClassEvent($TourId, 2, 1, 'OU21T', 'C', 'U21O');
+    InsertClassEvent($TourId, 3, 1, 'OU21T', 'B', 'U21O');
     InsertClassEvent($TourId, 1, 1, 'WU21T', 'R', 'U21W');
     InsertClassEvent($TourId, 2, 1, 'WU21T', 'C', 'U21W');
     InsertClassEvent($TourId, 3, 1, 'WU21T', 'B', 'U21W');
     InsertClassEvent($TourId, 1, 1, 'RU21X', 'R', 'U21W');
-    InsertClassEvent($TourId, 2, 1, 'RU21X', 'R', 'U21M');
+    InsertClassEvent($TourId, 2, 1, 'RU21X', 'R', 'U21O');
     InsertClassEvent($TourId, 1, 1, 'CU21X', 'C', 'U21W');
-    InsertClassEvent($TourId, 2, 1, 'CU21X', 'C', 'U21M');
+    InsertClassEvent($TourId, 2, 1, 'CU21X', 'C', 'U21O');
     InsertClassEvent($TourId, 1, 1, 'BU21X', 'B', 'U21W');
-    InsertClassEvent($TourId, 2, 1, 'BU21X', 'B', 'U21M');
-    InsertClassEvent($TourId, 1, 1, 'MU18T', 'R', 'U18M');
-    InsertClassEvent($TourId, 2, 1, 'MU18T', 'C', 'U18M');
-    InsertClassEvent($TourId, 3, 1, 'MU18T', 'B', 'U18M');
+    InsertClassEvent($TourId, 2, 1, 'BU21X', 'B', 'U21O');
+    InsertClassEvent($TourId, 1, 1, 'OU18T', 'R', 'U18O');
+    InsertClassEvent($TourId, 2, 1, 'OU18T', 'C', 'U18O');
+    InsertClassEvent($TourId, 3, 1, 'OU18T', 'B', 'U18O');
     InsertClassEvent($TourId, 1, 1, 'WU18T', 'R', 'U18W');
     InsertClassEvent($TourId, 2, 1, 'WU18T', 'C', 'U18W');
     InsertClassEvent($TourId, 3, 1, 'WU18T', 'B', 'U18W');
     InsertClassEvent($TourId, 1, 1, 'RU18X', 'R', 'U18W');
-    InsertClassEvent($TourId, 2, 1, 'RU18X', 'R', 'U18M');
+    InsertClassEvent($TourId, 2, 1, 'RU18X', 'R', 'U18O');
     InsertClassEvent($TourId, 1, 1, 'CU18X', 'C', 'U18W');
-    InsertClassEvent($TourId, 2, 1, 'CU18X', 'C', 'U18M');
+    InsertClassEvent($TourId, 2, 1, 'CU18X', 'C', 'U18O');
     InsertClassEvent($TourId, 1, 1, 'BU18X', 'B', 'U18W');
-    InsertClassEvent($TourId, 2, 1, 'BU18X', 'B', 'U18M');
-    InsertClassEvent($TourId, 1, 1, 'M50T', 'R', '50M');
-    InsertClassEvent($TourId, 2, 1, 'M50T', 'C', '50M');
-    InsertClassEvent($TourId, 3, 1, 'M50T', 'B', '50M');
+    InsertClassEvent($TourId, 2, 1, 'BU18X', 'B', 'U18O');
+    InsertClassEvent($TourId, 1, 1, 'O50T', 'R', '50O');
+    InsertClassEvent($TourId, 2, 1, 'O50T', 'C', '50O');
+    InsertClassEvent($TourId, 3, 1, 'O50T', 'B', '50O');
     InsertClassEvent($TourId, 1, 1, 'R50X', 'R', '50W');
-    InsertClassEvent($TourId, 2, 1, 'R50X', 'R', '50M');
+    InsertClassEvent($TourId, 2, 1, 'R50X', 'R', '50O');
     InsertClassEvent($TourId, 1, 1, 'C50X', 'C', '50W');
-    InsertClassEvent($TourId, 2, 1, 'C50X', 'C', '50M');
+    InsertClassEvent($TourId, 2, 1, 'C50X', 'C', '50O');
     InsertClassEvent($TourId, 1, 1, 'B50X', 'B', '50W');
-    InsertClassEvent($TourId, 2, 1, 'B50X', 'B', '50M');
+    InsertClassEvent($TourId, 2, 1, 'B50X', 'B', '50O');
     InsertClassEvent($TourId, 1, 1, 'W50T', 'R', '50W');
     InsertClassEvent($TourId, 2, 1, 'W50T', 'C', '50W');
     InsertClassEvent($TourId, 3, 1, 'W50T', 'B', '50W');
@@ -217,10 +217,10 @@ function InsertStandardFieldEliminations($TourId, $SubRule){
 	$cls=array();
 	switch($SubRule) {
 		case '1':
-			$cls=array('M', 'W', 'U21M', 'U21W', 'U18M', 'U18W', '50M', '50W');
+			$cls=array('O', 'W', 'U21O', 'U21W', 'U18O', 'U18W', '50O', '50W');
 			break;
 		case '2':
-			$cls=array('M', 'W', 'U21M', 'U21W');
+			$cls=array('O', 'W', 'U21O', 'U21W');
 			break;
 	}
 	foreach(array('R', 'C', 'B') as $div) {

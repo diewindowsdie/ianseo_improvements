@@ -480,7 +480,7 @@ if($TargetList) {
 				QuSession,
 				upper(EnFirstName) ShortName,
 				concat(upper(EnFirstName), ' ', EnName) as Athlete,
-				substr(QuTargetNo, -4) TargetNo,
+				CONCAT(QuTarget, QuLetter) TargetNo,
 				EnId,
 				CoCode,
 				ClId, DivId, ClDescription, DivDescription,
@@ -496,7 +496,7 @@ if($TargetList) {
 			inner join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0
 			WHERE EnTournament = '{$TourId}' and EnAthlete=1
 			group by EnId
-			ORDER BY QuTargetNo ";
+			ORDER BY QuSession, QuTarget, QuLetter ";
 		$q=safe_r_sql($Select);
 		$Tit='';
 		while($r=safe_fetch($q)) {

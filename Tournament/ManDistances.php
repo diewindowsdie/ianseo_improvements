@@ -31,6 +31,20 @@ $JS_SCRIPT = array(
 		'StrConfirm'=>get_text('MsgAreYouSure'),
 		'NumDist'=>$numDist,
 		'TourType'=>$tourType,
+        "Session" => get_text('Session'),
+        "headerDistanceSession" => '<tr>
+            <th>'.get_text('Distance', 'Tournament').'</th>
+            <th>'.get_text('Ends', 'Tournament').'</th>
+            <th>'.get_text('ArrowsPerEnd', 'Tournament').'</th>
+            <th class="d-none advanced">'.get_text('EndsToShoot', 'Tournament').'</th>
+            <th class="d-none advanced">'.get_text('EndsOffset', 'Tournament').'</th>
+            <th>'.get_text('Date', 'Tournament').'</th>
+            <th>'.get_text('WarmUp', 'Tournament').'</th>
+            <th>'.get_text('Length', 'Tournament').'</th>
+            <th>'.get_text('Time', 'Tournament').'</th>
+            <th>'.get_text('Length', 'Tournament').'</th>
+            <th>'.get_text('ScheduleNotes', 'Tournament').'</th>
+            </tr>'
 		)),
     );
 
@@ -64,8 +78,10 @@ echo '<td class="Center">
     </table>';
 
 // DISTANCE INFORMATION MANAGEMENT
-// Based on SESSIONS!!!!
-require_once('./ManDistancesSessions.php');
+echo '<table class="Tabella">'.
+    '<tbody id="lstDistanceSession"></tbody>'.
+    '<tfoot><tr><th colspan="11" style="padding:0.5em"><div class="Button" onclick="$(\'.advanced\').toggleClass(\'d-none\')">Advanced</div></th></tr></tfoot>'.
+    '</table>';
 
 echo '</div>
     <div id="idOutput"></div>';

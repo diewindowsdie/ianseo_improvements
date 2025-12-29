@@ -13,32 +13,31 @@ function rotList($TVsettings, $RULE) {
 	$ret=array();
 
     $Filter=[
-        "AtTournament = " . $TourId,
+        "EnTournament = " . $TourId,
     ];
     if(!empty($TVsettings->TVPSession)) {
-        $Filter[]="AtSession = " . $TVsettings->TVPSession;
+        $Filter[]="QuSession = " . $TVsettings->TVPSession;
     }
     $HallField="''";
     if(in_array('HALL',$TVsettings->Columns) and $FopLocations=Get_Tournament_Option('FopLocations', [], $TourId)) {
         $HallField='case';
         foreach($FopLocations as $FopLocation) {
-            $HallField.=" when AtTarget between {$FopLocation->Tg1} and {$FopLocation->Tg2} then ".StrSafe_DB($FopLocation->Loc);
+            $HallField.=" when QuTarget between {$FopLocation->Tg1} and {$FopLocation->Tg2} then ".StrSafe_DB($FopLocation->Loc);
         }
         $HallField.=" end";
     }
 
-	$Select = "SELECT EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, AtSession AS Session, concat(AtTarget, AtLetter) AS TargetNo, c.CoCode AS NationCode, c2.CoCode as CountryCode2, c3.CoCode as CountryCode3, c.CoNameComplete AS Nation, c2.CoNameComplete as Country2, c3.CoNameComplete as Country3, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, $HallField as Hall
-	    FROM AvailableTarget at
-        inner join Qualifications on QuTargetNo=AtTargetNo
-        INNER JOIN Entries ON EnId=QuId AND EnTournament=AtTournament
-        INNER JOIN Countries c ON c.CoId=EnCountry AND c.CoTournament=AtTournament
-        left JOIN Countries c2 ON c2.CoId=EnCountry2 AND c2.CoTournament=AtTournament
-        left JOIN Countries c3 ON c3.CoId=EnCountry3 AND c3.CoTournament=AtTournament
-        LEFT JOIN Classes ON EnClass=ClId AND AtTournament=ClTournament
-        LEFT JOIN Session ON QuSession=SesOrder AND SesType='Q' AND AtTournament=SesTournament
+    $Select = "SELECT EnCode as Bib, EnName AS Name, SesName, DivDescription, ClDescription, upper(EnFirstName) AS FirstName, QuSession AS Session, concat(QuTarget, QuLetter) AS TargetNo, c.CoCode AS NationCode, c2.CoCode as CountryCode2, c3.CoCode as CountryCode3, c.CoNameComplete AS Nation, c2.CoNameComplete as Country2, c3.CoNameComplete as Country3, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, $HallField as Hall
+        FROM Qualifications
+        INNER JOIN Entries ON EnId=QuId
+        INNER JOIN Countries c ON c.CoId=EnCountry AND c.CoTournament=EnTournament
+        left JOIN Countries c2 ON c2.CoId=EnCountry2 AND c2.CoTournament=EnTournament
+        left JOIN Countries c3 ON c3.CoId=EnCountry3 AND c3.CoTournament=EnTournament
+        LEFT JOIN Classes ON EnClass=ClId AND EnTournament=ClTournament
+        LEFT JOIN Session ON QuSession=SesOrder AND SesType='Q' AND EnTournament=SesTournament
         LEFT JOIN Divisions ON EnDivision=DivId AND AtTournament=DivTournament
         WHERE " . implode(' and ',$Filter) . "
-        ORDER BY AtTargetNo, c.CoCode, Name, c.CoNameComplete, FirstName ";
+        ORDER BY QuSession, QuTarget, QuLetter, c.CoCode, Name, c.CoNameComplete, FirstName ";
 	$Rs=safe_r_sql($Select);
 
 	$RowCounter = 0;

@@ -202,8 +202,8 @@
 
 			$q="SELECT distinct
 					EnId, EnCode, upper(EnIocCode) EnIocCode, EnName AS Name, upper(EnFirstName) AS FirstNameUpper,
-					EnFirstName AS FirstName, SUBSTRING(QuTargetNo,1,1) AS Session,
-					SUBSTRING(QuTargetNo,2) AS TargetNo, FlContAssoc,
+					EnFirstName AS FirstName, QuSession AS Session,
+					CONCAT(QuTarget, QuLetter) AS TargetNo, FlContAssoc,
 					CoId, CoCode, CoName, CoCaCode, CoMaCode, EnClass, EnDivision,EnAgeClass, EnSubClass, ClDescription, DivDescription, ";
 			for($i=1; $i<=8; $i++) {
 				$q.="IFNULL(Td{$i},'.{$i}.') as Td{$i},

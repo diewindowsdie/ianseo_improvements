@@ -135,22 +135,19 @@ function saveField($Field, $Value, $EnId, $ToId) {
 			}
 			break;
 		case 'targetno':
-			$Value=str_pad($Value, TargetNoPadding+1, '0', STR_PAD_LEFT);
-			$q=safe_r_sql("select QuSession, QuTargetNo from Qualifications where QuId=$EnId");
+			$q=safe_r_sql("select QuSession, QuTarget, QuLetter from Qualifications where QuId=$EnId");
 			if($r=safe_fetch($q)) {
-				$TargetNo=$r->QuSession.$Value;
 				$Target=intval($Value);
-				$Letter=substr($Value, -1);
-				safe_w_sql("update Qualifications set QuTargetNo=".StrSafe_DB($TargetNo).", QuTarget=$Target, QuLetter=".StrSafe_DB($Letter)." where QuId=$EnId");
+				$Letter=strtoupper(substr($Value, -1));
+				safe_w_sql("update Qualifications set QuTarget=$Target, QuLetter=".StrSafe_DB($Letter)." where QuId=$EnId");
 				$Updated=safe_w_affected_rows();
 			}
 			break;
 		case 'session':
 			$Value=intval($Value);
-			$q=safe_r_sql("select QuSession, QuTargetNo, QuLetter, QuTarget from Qualifications where QuId=$EnId");
+			$q=safe_r_sql("select QuSession, QuTarget, QuLetter from Qualifications where QuId=$EnId");
 			if($r=safe_fetch($q)) {
-				$TargetNo=$Value.substr($r->QuTargetNo, 1);
-				safe_w_sql("update Qualifications set QuSession=$Value, QuTargetNo=".StrSafe_DB($TargetNo)." where QuId=$EnId");
+				safe_w_sql("update Qualifications set QuSession=$Value where QuId=$EnId");
 				$Updated=safe_w_affected_rows();
 			}
 			break;
@@ -234,140 +231,6 @@ function saveField($Field, $Value, $EnId, $ToId) {
 
 	$JSON['value']=$Value;
 	$JSON['error']=0;
-
-	// 				switch($Campo) {
-	// 					case 'EnDivision':
-	// 						$query="SELECT EnDivision FROM Entries WHERE EnId=". StrSafe_DB($Chiave). " AND EnDivision<>" . StrSafe_DB($Value) . " " ;
-	// 						$rs=safe_r_sql($query);
-
-	// 						if ($rs && safe_num_rows($rs)==1)
-	// 						{
-	// 							$recalc=true;
-
-	// 						// prendo le vecchie impostazioni
-	// 							$x=Params4Recalc($Chiave);
-	// 							if ($x!==false)
-	// 							{
-	// 								list($indFEventOld,$teamFEventOld,$countryOld,$divOld,$clOld,$zeroOld)=$x;
-	// 							}
-	// 						}
-	// 						break;
-	// 					case 'EnName':
-	// 					case 'EnFirstName':
-	// 						$Value=AdjustCaseTitle($Value);
-	// 					case 'CoName':
-	// 					case 'CoNameComplete':
-	// 						$passValue = $Value;
-	// 						break;
-	// 					case 'EnIndClEvent':
-	// 					case 'EnTeamClEvent':
-	// 					case 'EnIndFEvent':
-	// 					case 'EnTeamFEvent':
-	// 					case 'EnTeamMixEvent':
-	// 						$recalc=true;
-	// 						break;
-	// 					case 'CoParent1':
-	// 					case 'CoParent2':
-	// 						$searchSQL = "SELECT CoId FROM Countries WHERE CoCode=" . StrSafe_DB(stripslashes($Value)) . " AND CoTournament=".StrSafe_DB($_SESSION['TourId']);
-	// 						$rsSearch = safe_r_sql($searchSQL);
-	// 						if(safe_num_rows($rsSearch)==1 && $row = safe_fetch($rsSearch))
-	// 							$Value=$row->CoId;
-	// 						else
-	// 							$Value=0;
-	// 						break;
-	// 				}
-
-	// 				$Update
-	// 					= "UPDATE " . $Arr_Tabelle[$Tabella][0]  . " SET "
-	// 					. $Campo . "=" . StrSafe_DB(stripslashes($Value)) . " "
-	// 					. "WHERE " . $Arr_Tabelle[$Tabella][1] . "=" . StrSafe_DB($Chiave). " ";
-	// 				$RsUp=safe_w_sql($Update);
-	// 				if(safe_w_affected_rows()) {
-	// 					switch($Campo) {
-	// 						case 'EnName':
-	// 						case 'EnFirstName':
-	// 						case 'CoName':
-	// 						case 'CoNameComplete':
-	// 							safe_w_sql("update Qualifications set QuBacknoPrinted=0 where ". $Arr_Tabelle[$Tabella][1] . "=" . StrSafe_DB($Chiave));
-	// 							break;
-	// 					}
-	// 				}
-
-	// 				if (!$RsUp)
-	// 				{
-	// 					$Errore=1;
-	// 				}
-
-	// 				if (debug)
-	// 					print $Update .'<br><br>';
-
-	// 				$Select = "SELECT " . $Campo . " FROM " . $Arr_Tabelle[$Tabella][0] . " WHERE " . $Arr_Tabelle[$Tabella][1] . "=" . StrSafe_DB($Chiave). " ";
-	// 				if($Campo=='CoParent1' || $Campo=='CoParent2')
-	// 				{
-	// 					if($Value!=0)
-	// 						$Select = "SELECT CoCode as " . $Campo . " FROM " . $Arr_Tabelle[$Tabella][0] . " WHERE " . $Arr_Tabelle[$Tabella][1] . "=" . StrSafe_DB($Value). " ";
-	// 					else
-	// 						$Select = "SELECT '' as " . $Campo ;
-	// 				}
-
-	// 				$Rs=safe_r_sql($Select);
-
-	// 				if (debug)
-	// 					print $Select .'<br><br>';
-
-	// 				if (!$Rs || safe_num_rows($Rs)!=1)
-	// 				{
-	// 					$Errore=1;
-	// 				}
-	// 				else
-	// 				{
-	// 					$Row=safe_fetch($Rs);
-	// 					//print '..' . stripslashes($Value) ;
-	// 					if ($Row->{$Campo}!=stripslashes($passValue))
-		// 					{
-	// 						$Errore=1;
-	// 					}
-	// 					else
-	// 					{
-	// 						$Value = $Row->{$Campo};
-	// 						if ($recalc)
-	// 						{
-	// 							$x=Params4Recalc($Chiave);
-	// 							if ($x!==false)
-	// 							{
-	// 								list($indFEvent,$teamFEvent,$country,$div,$cl,$zero)=$x;
-	// 							}
-
-	// 						// ricalcolo il vecchio e il nuovo
-	// 							RecalculateShootoffAndTeams($indFEventOld,$teamFEventOld,$countryOld,$divOld,$clOld,$zeroOld);
-	// 							RecalculateShootoffAndTeams($indFEvent,$teamFEvent,$country,$div,$cl,$zero);
-
-	// 						// rank di classe x tutte le distanze
-	// 							$q="SELECT ToNumDist FROM Tournament WHERE ToId={$_SESSION['TourId']}";
-	// 							$r=safe_r_sql($q);
-	// 							$tmpRow=safe_fetch($r);
-	// 							for ($i=0; $i<$tmpRow->ToNumDist;++$i)
-		// 							{
-	// 								CalcQualRank($i,$divOld.$clOld);
-	// 								CalcQualRank($i,$div.$cl);
-	// 							}
-
-	// 						// individuale abs
-	// 							MakeIndAbs();
-	// 						}
-	// 					}
-	// 				}
-	// 			}
-	// 			else
-	// 				$Errore=1;
-
-	// 			print '<response>' . "\n";
-	// 			print '<error>' . $Errore . '</error>' . "\n";
-	// 			print '<which>' . $Which . '</which>' . "\n";
-	// 			print '<value>' . ((($Campo=='CoParent1' || $Campo=='CoParent2') && $passValue='') ? '' : $Value) . '</value>' . "\n";
-	// 			print '</response>' . "\n";
-	// 		}
-	// 	}
 	return $Value;
 }
 

@@ -61,7 +61,9 @@
 	$q=safe_r_sql("select TVRules.*, ToPrintLang from TVRules inner join Tournament on TVRTournament=ToId where TVRId=$RuleId AND TVRTournament=$TourId");
 	if(!($RULE=safe_fetch($q))) printCrackError();
 
-	@define('PRINTLANG', $RULE->ToPrintLang);
+    if(!defined('PRINTLANG')) {
+        @define('PRINTLANG', $RULE->ToPrintLang);
+    }
 
 
 	// set the correct defines for the torunament

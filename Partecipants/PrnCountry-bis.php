@@ -23,7 +23,7 @@ if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z]*$/i",str_replace(
 	$TmpWhere = substr($TmpWhere,0,-3);
 }
 
-$MyQuery = "(SELECT EnCode as Bib, EnName AS Name, upper(EnFirstName) AS FirstName, QuSession AS Session, QuTargetNo, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnSubTeam, EnClass AS ClassCode, ClDescription, EnDivision AS DivCode, DivDescription, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, IF(EnCountry2=0,0,1) as secTeam ";
+$MyQuery = "(SELECT EnCode as Bib, EnName AS Name, upper(EnFirstName) AS FirstName, QuSession AS Session,  CONCAT(QuTarget, QuLetter) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnSubTeam, EnClass AS ClassCode, ClDescription, EnDivision AS DivCode, DivDescription, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, IF(EnCountry2=0,0,1) as secTeam ";
 $MyQuery.= "FROM Entries AS e ";
 $MyQuery.= "LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament ";
 $MyQuery.= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
@@ -36,7 +36,7 @@ if(isset($_REQUEST["Session"]) && is_numeric($_REQUEST["Session"]))
 if($TmpWhere != "")
 	$MyQuery .= "AND (" . $TmpWhere . ")";
 $MyQuery .= ") UNION ALL ";
-$MyQuery .= "(SELECT EnCode as Bib, EnName AS Name, EnFirstName AS FirstName, QuSession AS Session, QuTargetNo, SUBSTRING(QuTargetNo,2) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnSubTeam, EnClass AS ClassCode, ClDescription, EnDivision AS DivCode, DivDescription, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, 2 as secTeam  ";
+$MyQuery .= "(SELECT EnCode as Bib, EnName AS Name, EnFirstName AS FirstName, QuSession AS Session, CONCAT(QuTarget, QuLetter) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnSubTeam, EnClass AS ClassCode, ClDescription, EnDivision AS DivCode, DivDescription, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, 2 as secTeam  ";
 $MyQuery.= "FROM Entries AS e ";
 $MyQuery.= "LEFT JOIN Countries AS c ON e.EnCountry2=c.CoId AND e.EnTournament=c.CoTournament ";
 $MyQuery.= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";

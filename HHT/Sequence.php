@@ -14,11 +14,9 @@
 	$xSession=0;
 	$DbSeqParam='';
 	$DbDistParam=0;
-	if(isset($_REQUEST['x_Session']))
-	{
+	if(isset($_REQUEST['x_Session'])) {
 		$xSession = $_REQUEST['x_Session'];
-		if(isset($_REQUEST['x_Hht']) && $_REQUEST['x_Hht']!=-1)
-		{
+		if(isset($_REQUEST['x_Hht']) && $_REQUEST['x_Hht']!=-1) {
 			$Select = "Select HsSequence, HsDistance FROM HhtSetup WHERE HsTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND HsId=" . StrSafe_DB($_REQUEST['x_Hht']);
 			$rs = safe_w_sql($Select);
 			$MyRow = safe_fetch($rs);
@@ -27,9 +25,7 @@
 			$Select = "UPDATE HhtSetup SET HsPhase=" . StrSafe_DB($_REQUEST['x_Session']) . " WHERE HsTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND HsId=" . StrSafe_DB($_REQUEST['x_Hht']);
 			$rs = safe_w_sql($Select);
 		}
-	}
-	else if(isset($_REQUEST['x_Hht']) && $_REQUEST['x_Hht']!=-1)
-	{
+	} else if(isset($_REQUEST['x_Hht']) && $_REQUEST['x_Hht']!=-1) {
 		$Select = "Select HsPhase, HsSequence, HsDistance FROM HhtSetup WHERE HsTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND HsId=" . StrSafe_DB($_REQUEST['x_Hht']);
 		$rs = safe_w_sql($Select);
 		$MyRow = safe_fetch($rs);
@@ -37,12 +33,8 @@
 		$DbSeqParam = str_pad($MyRow->HsSequence,12,' ');
 		$DbDistParam = $MyRow->HsDistance;
 	}
-
-
-
-
-	$ScoreStartMapping=array
-	(
+    
+	$ScoreStartMapping=array (
 		0=>'0',
 		1=>'1',
 		2=>'2',
@@ -57,8 +49,7 @@
 		11=>'X'
 	);
 
-	$InfosMapping=array
-	(
+	$InfosMapping=array (
 		'GameInfo'=>chr(221),
 		'Sponsor'=>chr(222),
 		'Sequence'=>chr(223)
@@ -80,25 +71,16 @@
 
 	$What=-1;
 	$Ses=$xSession;
-	if (!is_numeric($xSession))
-	{
+	if (!is_numeric($xSession)) {
 		$What=(substr($xSession,0,1));
 		$Ses=substr($xSession,1);
 	}
 	$Phase =(isset($_REQUEST['phase']) ? $_REQUEST['phase'] : phaseEncode($What,$Ses,$DbDistParam));
-
-	//print $Phase;exit;
-	/*print $ActualArr . '<br>';
-	print $TotalArrs . '<br>';
-	print $Dist . '<br>';
-	exit;*/
+    
 	$Dist='';
-	if (!is_null($Command))
-	{
-		if ($Command=='OK')
-		{
-			if (!is_null($HTTs) && is_array($HTTs))
-			{
+	if (!is_null($Command)) {
+		if ($Command=='OK') {
+			if (!is_null($HTTs) && is_array($HTTs)) {
 				list(,,$Dist)=phaseDecode($Phase);
 				// preparo i destinatari
 				$Dests=null;
@@ -111,34 +93,24 @@
 				$Frames=array();
 
 			// preparo la parte data dei datagram
-				if (isset($_REQUEST['chkGameInfo']) && $_REQUEST['chkGameInfo']==1)
-				{
-					if (isset($_REQUEST['txtGameInfo']))
-					{
+				if (isset($_REQUEST['chkGameInfo']) && $_REQUEST['chkGameInfo']==1)	{
+					if (isset($_REQUEST['txtGameInfo'])) {
 						$GameInfo=str_pad($_REQUEST['txtGameInfo'],21,' ',STR_PAD_RIGHT);
 						$Data=Alpha . $InfosMapping['GameInfo'] . $GameInfo;
 						$Frames=array_merge($Frames, PrepareTxFrame($Dests,$Data));
 					}
 				}
 
-				if (isset($_REQUEST['chkSponsor']) && $_REQUEST['chkSponsor']==1)
-				{
-					if (isset($_REQUEST['txtSponsor1']) && isset($_REQUEST['txtSponsor2']))
-					{
+				if (isset($_REQUEST['chkSponsor']) && $_REQUEST['chkSponsor']==1) {
+					if (isset($_REQUEST['txtSponsor1']) && isset($_REQUEST['txtSponsor2'])) {
 						$Sponsor1=str_pad($_REQUEST['txtSponsor1'],21,' ',STR_PAD_RIGHT);
 						$Sponsor2=str_pad($_REQUEST['txtSponsor2'],21,' ',STR_PAD_RIGHT);
 						$Data=Alpha . $InfosMapping['Sponsor'] . $Sponsor1 . $Sponsor2;
 						$Frames=array_merge($Frames, PrepareTxFrame($Dests,$Data));
 					}
 				}
-				if (isset($_REQUEST['chkSendSequence']) && $_REQUEST['chkSendSequence']==1)
-				{
-					if (intval($FirstArr)>0 &&
-						intval($LastArr)>0 &&
-						intval($Volee)>0 &&
-						array_key_exists($ScoreStart,$ScoreStartMapping) &&
-						intval($StoreTimeout)>0)
-					{
+				if (isset($_REQUEST['chkSendSequence']) && $_REQUEST['chkSendSequence']==1) {
+					if (intval($FirstArr)>0 && intval($LastArr)>0 && intval($Volee)>0 && array_key_exists($ScoreStart,$ScoreStartMapping) && intval($StoreTimeout)>0) {
 						// scrivo i parametri nel DB
 						$Query
 						= "UPDATE "
@@ -170,18 +142,17 @@
 exit();*/
 			// Risposte
 				$Results = array();
-				if(count($Frames)>0)
-				{
+				if(count($Frames)>0) {
 					$ResponseFromHHT=false;
 					$Results=SendHTT(HhtParam($_REQUEST['x_Hht']),$Frames);
-					if(!is_null($Results))
-						$ResponseFromHHT=true;
-					if (count($Results)!=0)
-					{
-						foreach($Results as $v)
-						{
-							if ($v!=-1)
-								$HTTOK[]=$v;
+					if(!is_null($Results)) {
+                        $ResponseFromHHT = true;
+                    }
+					if (count($Results)!=0) {
+						foreach($Results as $v) {
+							if ($v!=-1) {
+                                $HTTOK[] = $v;
+                            }
 						}
 					}
 
@@ -203,8 +174,7 @@ exit();*/
 <form name="FrmParam" method="POST" action="<?php print $_SERVER["PHP_SELF"];?>">
 	<table class="Tabella">
 <?php
-if(!$ResponseFromHHT)
-{
+if(!$ResponseFromHHT) {
 	echo '<tr class="error" style="height:35px;"><td colspan="5" class="Center LetteraGrande">' . get_text('HTTNotConnected','HTT') . '</td></tr>';
 }
 ?>
@@ -226,27 +196,24 @@ if(!$ResponseFromHHT)
 </form>
 
 <?php
-	if (isset($_REQUEST['x_Session']) && $_REQUEST['x_Session']!=-1)
-	{
+	if (isset($_REQUEST['x_Session']) && $_REQUEST['x_Session']!=-1) {
 		$Disable=array();
-		if (is_numeric($_REQUEST['x_Session']))	//qual
-		{
-			$Sql  = "SELECT SUBSTRING(AtTargetNo,2," . (TargetNoPadding) . ") as ChiTarget, SUBSTRING(AtTargetNo," . (TargetNoPadding+2) . ",1) as ChiLetter ";
-			$Sql .= "FROM AvailableTarget at ";
-			$Sql .= "LEFT JOIN ";
-			$Sql .= "(SELECT QuTargetNo FROM Qualifications AS q  ";
-			$Sql .= "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 AND EnStatus<6) as Sq ON at.AtTargetNo=Sq.QuTargetNo ";
-			$Sql .= "WHERE AtTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND LEFT(AtTargetNo,1)='" . $_REQUEST['x_Session'] . "' AND Sq.QuTargetNo is NULL ";
-
+		if (is_numeric($_REQUEST['x_Session'])) {	//qual
+            $atSql = createAvailableTargetSQL(($Session??0), $_SESSION['TourId']);
+            $Sql  = "SELECT FullTgtTarget as ChiTarget, FullTgtLetter as ChiLetter ";
+            $Sql .= "FROM ($atSql) at ";
+            $Sql .= "LEFT JOIN ";
+            $Sql .= "(SELECT QuSession, QuTarget, QuLetter FROM Qualifications AS q  ";
+            $Sql .= "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1) as Sq ON QuSession=FullTgtSession AND QuTarget=FullTgtTarget AND QuLetter=FullTgtLetter ";
+            $Sql .= "WHERE FullTgtSession='" . $_REQUEST['x_Session'] . "' AND Sq.QuTarget is NULL";
 			$Rs = safe_r_sql($Sql);
-			if(safe_num_rows($Rs)>0)
-			{
+			if(safe_num_rows($Rs)>0) {
 				while($myRow = safe_fetch($Rs))
 					$Disable[] = intval($myRow->ChiTarget) . $myRow->ChiLetter;
 			}
 
-			$Sql = "SELECT QuTargetNo FROM Qualifications AS q  ";
-			$Sql .= "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 AND EnStatus<6 AND LEFT(QuTargetNo,1)='" . $_REQUEST['x_Session'] . "'";
+			$Sql = "SELECT QuTarget FROM Qualifications AS q  ";
+			$Sql .= "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1 AND EnStatus<6 AND QuSession='" . $_REQUEST['x_Session'] . "'";
 			$Rs = safe_r_sql($Sql);
 			$Num2Download = safe_num_rows($Rs);
 		}
@@ -262,54 +229,51 @@ if(!$ResponseFromHHT)
 		$out.='</div><br/><br/>';
 
 		$out
-			.='<form name="FrmSetup" id="FrmSetup" method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'?x_Hht=' . $_REQUEST['x_Hht'] . '&x_Session=' . $_REQUEST['x_Session'] . '">' . "\n"
+			.='<form name="FrmSetup" id="FrmSetup" method="post" action="'.basename($_SERVER['SCRIPT_NAME']).'?x_Hht=' . $_REQUEST['x_Hht'] . '&x_Session=' . $_REQUEST['x_Session'] . '">'
 			. '<input type="hidden" name="x_Hht" value="' . $_REQUEST['x_Hht'] . '"/>'
 			. '<input type="hidden" name="propagate" value="'.(!empty($_REQUEST['propagate'])).'"/>'
 			. '<input type="hidden" name="x_Session" value="' . $_REQUEST['x_Session'] . '"/>';
 
 		$out
-				.='<table class="Tabella">' . "\n";
+				.='<table class="Tabella">';
 				$out .= '<tr>'
 						. '<td><input type="checkbox" name="chkGameInfo" value="1"' . (isset($_REQUEST['chkGameInfo']) ? ' checked="true"' : ''). '>' . get_text('SeqGameInfo','HTT')
 						. '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="txtGameInfo" maxlength="21" size="35" value="' . (isset($_REQUEST['txtGameInfo']) ? $_REQUEST['txtGameInfo'] : ''). '"></td>'
-					. '</tr>' . "\n";
+					. '</tr>';
 				$out .= '<tr>'
 						. '<td><input type="checkbox" name="chkSponsor" value="1"' . (isset($_REQUEST['chkSponsor']) ? ' checked="true"' : ''). '>' . get_text('SeqSponsor','HTT')
 						. '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="txtSponsor1" maxlength="21" size="35" value="' . (isset($_REQUEST['txtSponsor1']) ? $_REQUEST['txtSponsor1'] : ''). '">'
 						. '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="txtSponsor2" maxlength="21" size="35" value="' . (isset($_REQUEST['txtSponsor2']) ? $_REQUEST['txtSponsor2'] : ''). '"></td>'
-					. '</tr>' . "\n";
-				$out.='</table>' . "\n";
+					. '</tr>';
+				$out.='</table>';
 
 			$out.='<br/><br/>';
 
-			$ComboScoreStart= '<select name="ScoreStart">' . "\n";
+			$ComboScoreStart= '<select name="ScoreStart">';
 			for ($i=0;$i<=11;++$i)
 			{
-				$ComboScoreStart.='<option value="' . $i . '"' . ($ScoreStart==$i ? ' selected' : '') . '>' . ($i==11 ? 'X' : $i) . '</option>' . "\n";
+				$ComboScoreStart.='<option value="' . $i . '"' . ($ScoreStart==$i ? ' selected' : '') . '>' . ($i==11 ? 'X' : $i) . '</option>';
 			}
-			$ComboScoreStart.='</select>' . "\n";
+			$ComboScoreStart.='</select>';
 
 			$InputPhase='';
-			if (is_numeric($xSession))	// qual
-			{
-				$InputPhase='<select name="phase">' . "\n";
-					$InputPhase.='<option value="000">---</option>' . "\n";
+			if (is_numeric($xSession)) {	// qual
+				$InputPhase='<select name="phase">';
+					$InputPhase.='<option value="000">---</option>';
 					for ($i=1;$i<=$RowTour->TtNumDist;++$i)
 					{
 						//$v=str_pad($i,3,'0',STR_PAD_LEFT);
 						$v='0' . $Ses . $i;
-						$InputPhase.='<option value="' . $v . '"' . ($v==$Phase ? ' selected' : '') . '>' . $i . '</option>' . "\n";
+						$InputPhase.='<option value="' . $v . '"' . ($v==$Phase ? ' selected' : '') . '>' . $i . '</option>';
 					}
-				$InputPhase.='</select>' . "\n";
-			}
-			else
-			{
+				$InputPhase.='</select>';
+			} else {
 				$encode=phaseEncode($What,$Ses,$Dist);
 				$InputPhase='<input type="hidden" name="phase" value="' . $encode . '">' . $encode;
 			}
 
 			$out
-				.='<table class="Tabella">' . "\n"
+				.='<table class="Tabella">'
 					. '<tr>'
 						. '<td class="Title">&nbsp;</td>'
 						. '<td class="Title">&nbsp;</td>'
@@ -319,7 +283,7 @@ if(!$ResponseFromHHT)
 						. '<td class="Title">' . get_text('Phase') . '<br/>(' . get_text('Distance','HTT') . ')</td>'
 						. '<td class="Title">' . get_text('StartScore','HTT') . '</td>'
 						. '<td class="Title">' . get_text('StoreTimeout','HTT') . '</td>'
-					. '</tr>' . "\n"
+					. '</tr>'
 					. '<tr>'
 						. '<td class="Center"><input type="checkbox" name="chkSendSequence" value="1" ' . (isset($_REQUEST['chkSendSequence']) ? ' checked ' : ''). '/>' . get_text('SendInitSequence','HTT') . '</td>'
 						. '<td class="Center">'
@@ -334,7 +298,7 @@ if(!$ResponseFromHHT)
 						. '<td class="Center">' . $ComboScoreStart . '</td>'
 						. '<td class="Center"><input type="text" id="txtStoreTo" name="txtStoreTo" maxlength="2" size="3" value="' . $StoreTimeout . '" /></td>'
 					. '</tr>'
-				. '</table>' . "\n";
+				. '</table>';
 
 			$out.='<br/><br/>';
 
@@ -342,10 +306,10 @@ if(!$ResponseFromHHT)
 			$out.=SelectTableHTT(10,'FrmSetup',false,$HTTOK,array(),$Disable,true);
 
 			$out.='<br/><div align="center">';
-				$out.='<input type="hidden" name="Command" value="OK"><input type="submit" value="' . get_text('CmdOk') . '"/>' . "\n";
+				$out.='<input type="hidden" name="Command" value="OK"><input type="submit" value="' . get_text('CmdOk') . '"/>';
 			$out.='</div>';
 
-		$out.='</form></div>' . "\n";
+		$out.='</form></div>';
 
 		print $out;
 	}

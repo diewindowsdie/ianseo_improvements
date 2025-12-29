@@ -28,6 +28,16 @@ $JS_SCRIPT=array(
 	'<script type="text/javascript" src="'.$CFG->ROOT_DIR.'Qualification/Fun_AJAX_index.js"></script>',
 	'<script type="text/javascript" src="'.$CFG->ROOT_DIR.'Qualification/Fun_JS.js"></script>',
 	'<script type="text/javascript">
+        function optionField3d() {
+            $(\'#ScoreCollectorDiv\').toggleClass(\'d-none\', $(\'#TourField3D\').is(\':checked\'));
+            if($(\'#TourField3D\').is(\':checked\')) {
+                $("#ScoreHeader").prop("checked", true);
+                $("#ScoreLogos").prop("checked", true);
+                $("#ScorePageHeaderFooter").prop("checked", false).prop("disabled", true);
+            } else {
+                $("#ScorePageHeaderFooter").prop("disabled", false)        
+            }
+        }
 		function DisableChkOther(NoDist, NumDist) {
 			if(NoDist) {
 				if(document.getElementById(\'ChkDist0\').checked) {
@@ -114,7 +124,7 @@ if($_SESSION['TourLocRule']=='LANC') {
     echo '<input name="ScoreDraw" type="radio" value="HorScoreAllDist" onClick="manageDistances(true);">&nbsp;' . get_text('HorScoreAllDist', 'Tournament') . '<br>';
 }
 //echo '<input name="ScoreDraw" type="radio" value="VertScoreAllDist" onClick="manageDistances(true);">&nbsp;' . get_text('VertScoreAllDist','Tournament') . '<br>';
-echo '<input name="TourField3D" type="checkbox" value="'.($RowTour->IsTeam3D==0 ? 'FIELD': ($RowTour->IsTeam3D==4 ? 'FIELD'  : '3D')).'" onclick="$(\'#ScoreCollectorDiv\').toggleClass(\'d-none\', this.checked)" '.($RowTour->IsTeam3D==0?'':' checked="checked"').'>&nbsp;'.get_text('FieldScorecard', 'Tournament').'<br/>';
+echo '<input name="TourField3D" id="TourField3D" type="checkbox" value="'.($RowTour->IsTeam3D==0 ? 'FIELD': ($RowTour->IsTeam3D==4 ? 'FIELD'  : '3D')).'" onclick="optionField3d()" '.($RowTour->IsTeam3D==0?'':' checked="checked"').'>&nbsp;'.get_text('FieldScorecard', 'Tournament').'<br/>';
 echo '<div id="ScoreCollectorDiv" class="'.($RowTour->IsTeam3D==0 ? '' : 'd-none').'">';
 echo '<input name="ScoreCollector" id="ScoreCollector" type="checkbox" value="Collector">&nbsp;' . get_text('ScoreCollector', 'Tournament') ;
 echo '<input name="ScoreCollectorArrows" id="ScoreCollector6" type="radio" value="6" checked="checked">6 - ';
@@ -123,9 +133,9 @@ echo '</div>';
 echo '</td>';
 //Header e Immagini
 echo '<td class="w-50"><br>';
-echo '<input id="ScorePageHeaderFooter" name="ScorePageHeaderFooter" type="checkbox" value="1" checked onclick="fullScoreHeader(0)">&nbsp;' . get_text('ScorePageHeaderFooter','Tournament') . '<br>';
-echo '<input id="ScoreHeader" name="ScoreHeader" type="checkbox" value="1" onclick="fullScoreHeader(1)">&nbsp;' . get_text('ScoreTournament','Tournament') . '<br>';
-echo '<input id="ScoreLogos" name="ScoreLogos" type="checkbox" value="1" onclick="fullScoreHeader(2)">&nbsp;' . get_text('ScoreLogos','Tournament') . '<br>';
+echo '<input id="ScorePageHeaderFooter" name="ScorePageHeaderFooter" type="checkbox" value="1" '.($RowTour->IsTeam3D==0 ? 'checked' : 'disabled').' onclick="fullScoreHeader(0)">&nbsp;' . get_text('ScorePageHeaderFooter','Tournament') . '<br>';
+echo '<input id="ScoreHeader" name="ScoreHeader" type="checkbox" value="1" '.($RowTour->IsTeam3D!=0 ? 'checked' : '').' onclick="fullScoreHeader(1)">&nbsp;' . get_text('ScoreTournament','Tournament') . '<br>';
+echo '<input id="ScoreLogos" name="ScoreLogos" type="checkbox" value="1" '.($RowTour->IsTeam3D!=0 ? 'checked' : '').' onclick="fullScoreHeader(2)">&nbsp;' . get_text('ScoreLogos','Tournament') . '<br>';
 echo '<br>';
 echo '<input name="ScoreFlags" type="checkbox" value="1" checked>&nbsp;' . get_text('ScoreFlags','Tournament') . '<br>';
 echo '<input name="GetArcInfo" type="checkbox" value="1" >&nbsp;' . get_text('GetArcInfo','Tournament') . '<br>';

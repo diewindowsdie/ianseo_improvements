@@ -22,7 +22,7 @@ if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z]*$/i",str_replace(
 }
 
 $MyQuery = "SELECT EnCode as Bib, EnName AS Name, upper(EnFirstName) AS FirstName, "
-	. "QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, "
+	. "QuSession AS Session, CONCAT(QuTarget, QuLetter) AS TargetNo, "
 	. "CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, "
 	. "ClDescription, EnDivision AS DivCode, DivDescription, EnAgeClass as AgeClass, "
 	. "EnSubClass as SubClass, EnStatus as Status, "

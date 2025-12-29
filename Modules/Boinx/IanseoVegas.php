@@ -12,10 +12,10 @@ require_once('Common/Fun_Modules.php');
 CreateTourSession(getIdFromCode($_GET['Tour']));
 $StartEnds = getModuleParameter("Vegas", "EndNo", 0)*3;
 
-$q=safe_r_sql("select EnFirstname, EnName, QuTargetNo, QuD5Arrowstring from Qualifications
+$q=safe_r_sql("select EnFirstname, EnName, QuTarget, QuD5Arrowstring from Qualifications
 		inner join Entries on EnId=QuId and EnTournament=$TourId
 		Where QuSession=8
-		order by QuTargetNo");
+		order by QuTarget");
 
 $XmlDoc = new DOMDocument('1.0', 'UTF-8');
 $XmlRoot = $XmlDoc->createElement('shootoff');
@@ -32,7 +32,7 @@ while($r=safe_fetch($q)) {
 	$archer->AppendChild($a);
 
 	$a=$XmlDoc->createElement('target');
-	$a->AppendChild($XmlDoc->createCDATASection(ltrim(substr($r->QuTargetNo, 1, -1), '0')));
+	$a->AppendChild($XmlDoc->createCDATASection($r->QuTarget));
 	$archer->AppendChild($a);
 
 	$Arrows=substr($r->QuD5Arrowstring, $StartEnds, 3);

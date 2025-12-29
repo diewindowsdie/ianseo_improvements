@@ -1,7 +1,6 @@
 <?php
-define('debug',false);	// settare a true per l'output di debug
 
-require_once(dirname(dirname(__FILE__)) . '/config.php');
+require_once(dirname(__FILE__, 2) . '/config.php');
 CheckTourSession(true);
 checkFullACL(AclQualification, '', AclReadWrite);
 
@@ -9,12 +8,6 @@ require_once('Common/Lib/CommonLib.php');
 require_once('Common/Lib/ArrTargets.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Fun_Various.inc.php');
-
-
-/*$Select
-    = "SELECT ToId,ToNumSession,TtGolds,TtXNine,TtNumDist,(TtMaxDistScore/TtGolds) AS MaxArrows "
-    . "FROM Tournament INNER JOIN Tournament*Type ON ToType=TtId "
-    . "WHERE ToId=" . StrSafe_DB($_SESSION['TourId']) . " ";*/
 
 $Select = "SELECT ToId,ToNumSession,ToGolds AS TtGolds,ToXNine AS TtXNine,ToNumDist AS TtNumDist,(ToMaxDistScore/ToGolds) AS MaxArrows,
    ToElabTeam!=127 as MakeTeams
@@ -32,19 +25,21 @@ $TxtArrows = '';
 $TxtVolee = '';
 
 
-$ComboSes = '<select name="x_Session" id="x_Session" onChange="javascript:SelectSession();">' . "\n";
-$ComboSes.= '<option value="-1">---</option>' . "\n";
+$ComboSes = '<select name="x_Session" id="x_Session" onChange="javascript:SelectSession();">';
+$ComboSes.= '<option value="-1">---</option>';
 
-$ComboDist = '<select name="x_Dist" id="x_Dist">' . "\n";
-$ComboDist.= '<option value="-1">---</option>' . "\n";
+$ComboDist = '<select name="x_Dist" id="x_Dist">';
+$ComboDist.= '<option value="-1">---</option>';
 
-for ($i=1;$i<=$RowTour->ToNumSession;++$i)
-    $ComboSes.= '<option value="' . $i . '"' . (isset($_REQUEST['x_Session']) && $_REQUEST['x_Session']==$i ? ' selected' : '') . '>' . $i . '</option>' . "\n";
-$ComboSes.= '</select>' . "\n";
+for ($i=1;$i<=$RowTour->ToNumSession;++$i) {
+    $ComboSes .= '<option value="' . $i . '"' . ((isset($_REQUEST['x_Session']) and $_REQUEST['x_Session'] == $i) ? ' selected' : '') . '>' . $i . '</option>';
+}
+$ComboSes.= '</select>';
 
-for ($i=1;$i<=$RowTour->TtNumDist;++$i)
-    $ComboDist.= '<option value="' . $i . '"' . (isset($_REQUEST['x_Dist']) && $_REQUEST['x_Dist']==$i ? ' selected' : '') . '>' . $i . '</option>' . "\n";
-$ComboDist.= '</select>' . "\n";
+for ($i=1;$i<=$RowTour->TtNumDist;++$i) {
+    $ComboDist .= '<option value="' . $i . '"' . ((isset($_REQUEST['x_Dist']) and $_REQUEST['x_Dist'] == $i) ? ' selected' : '') . '>' . $i . '</option>';
+}
+$ComboDist.= '</select>';
 
 
 $TxtFrom = '<input type="text" name="x_From" id="x_From" size="5" maxlength="' . (TargetNoPadding +1) . '" value="' . (isset($_REQUEST['x_From']) ? $_REQUEST['x_From'] : '') . '">';
@@ -112,7 +107,7 @@ include('Common/Templates/head.php');
 <tr class="Divider"><td colspan="8"></td></tr>
 <tr><td colspan="8" class="Bold">
 	<input type="checkbox" name="chk_PostUpdate" id="chk_PostUpdate" value="1"
-		<?php print (isset($_REQUEST['chk_PostUpdate']) && $_REQUEST['chk_PostUpdate']==1 ? ' checked' : '');?>
+		<?php print (isset($_REQUEST['chk_PostUpdate']) AND $_REQUEST['chk_PostUpdate']==1 ? ' checked' : '');?>
 		onclick="ManagePostUpdateArrow();"
 	/><?php print get_text('CmdPostUpdate');?>
 </td></tr>
@@ -123,12 +118,13 @@ include('Common/Templates/head.php');
 </form>
 <br>
 <?php
-		if(empty($_REQUEST['x_To']) && !empty($_REQUEST['x_From']))
-			$_REQUEST['x_To']=$_REQUEST['x_From'];
-		if (isset($_REQUEST['Command']) && $_REQUEST['Command']=='OK' &&
-			$_REQUEST['x_Session']!=-1 && $_REQUEST['x_Dist']!=-1 &&
-			is_numeric($_REQUEST['x_Arrows']) && $_REQUEST['x_Arrows']>0 &&
-			is_numeric($_REQUEST['x_Volee']) && $_REQUEST['x_Volee']>0)
+		if(empty($_REQUEST['x_To']) AND !empty($_REQUEST['x_From'])) {
+            $_REQUEST['x_To'] = $_REQUEST['x_From'];
+        }
+		if (isset($_REQUEST['Command']) AND $_REQUEST['Command']=='OK' AND
+			$_REQUEST['x_Session']!=-1 AND $_REQUEST['x_Dist']!=-1 AND
+			is_numeric($_REQUEST['x_Arrows']) AND $_REQUEST['x_Arrows']>0 AND
+			is_numeric($_REQUEST['x_Volee']) AND $_REQUEST['x_Volee']>0)
 		{
 
 		/*
@@ -151,61 +147,35 @@ include('Common/Templates/head.php');
 
 		//	print $Ip . ' - ' . $Fp;
 
-			if (($Ip<=$RowTour->MaxArrows-1) && ($Fp<=$RowTour->MaxArrows-1))
-			{
+			if (($Ip<=$RowTour->MaxArrows-1) AND ($Fp<=$RowTour->MaxArrows-1)) {
 
-				$TargetFilter = "AND QuTargetNo >='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_From'],TargetNoPadding,'0',STR_PAD_LEFT) . "A' AND QuTargetNo<='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_To'],TargetNoPadding,'0',STR_PAD_LEFT) . "Z' ";
+				$TargetFilter = "AND QuSession=".StrSafe_DB($_REQUEST['x_Session'])." AND QuTarget >=" . intval($_REQUEST['x_From']) . " AND QuTarget<='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_To'],TargetNoPadding,'0',STR_PAD_LEFT) . "Z' ";
 
 				$ScoreTH = '';	// header dello score
 				$ScoreTD = '';	// td dello score
 
-				for ($i=$Ip; $i<=$Fp;++$i)
-				{
+				for ($i=$Ip; $i<=$Fp;++$i) {
 					$ScoreTH.='<td class="Title">(' . ($i+1) . ')</td>';
-					/*$ScoreTD
-						.='<td class="Center">'
-						. '<input type="text" id="" size="2" maxlength="2" value="">'
-						. '</td>';*/
 				}
 
-				/*$Select
-					= "SELECT EnId,EnCode,EnName,EnFirstName,EnTournament,EnDivision,EnClass,EnCountry,CoCode, (EnStatus <=1) AS EnValid,EnStatus, "
-					. "QuTargetNo, SUBSTRING(QuTargetNo,2) AS Target,"
-					. "QuD" . $_REQUEST['x_Dist'] . "Score AS SelScore,QuD" . $_REQUEST['x_Dist'] . "Hits AS SelHits,QuD" . $_REQUEST['x_Dist'] . "Gold AS SelGold,QuD" . $_REQUEST['x_Dist'] . "Xnine AS SelXNine, "
-					. "QuScore, "
-					. "QuD" . $_REQUEST['x_Dist'] . "ArrowString AS ArrowString,"
-					. "ToId,ToType,TtNumDist "
-					. "FROM Entries INNER JOIN Countries ON EnCountry=CoId "
-					. "INNER JOIN Qualifications ON EnId=QuId "
-					. "RIGHT JOIN AvailableTarget ON QuTargetNo=AtTargetNo AND AtTournament=" . StrSafe_DB($_SESSION['TourId']) . " "
-					. "INNER JOIN Tournament ON EnTournament=ToId AND ToId=" . StrSafe_DB($_SESSION['TourId']) . " "
-					. "INNER JOIN Tournament*Type ON ToType=TtId "
-					. "WHERE EnAthlete=1 AND QuSession<>0 AND QuTargetNo<>'' AND QuSession=" . StrSafe_DB($_REQUEST['x_Session']) . " "
-					. $TargetFilter . " "
-					. "ORDER BY QuTargetNo ASC ";*/
+                $atSql = createAvailableTargetSQL($_REQUEST['x_Session'], $_SESSION['TourId']);
 
-				$Select
-					= "SELECT EnId,EnCode,EnName,EnFirstName,EnTournament,EnDivision,EnClass,EnCountry,CoCode, (EnStatus <=1) AS EnValid,EnStatus, "
-					. "QuTargetNo, SUBSTRING(QuTargetNo,2) AS Target,"
-					. "QuD" . $_REQUEST['x_Dist'] . "Score AS SelScore,QuD" . $_REQUEST['x_Dist'] . "Hits AS SelHits,QuD" . $_REQUEST['x_Dist'] . "Gold AS SelGold,QuD" . $_REQUEST['x_Dist'] . "Xnine AS SelXNine, "
-					. "QuScore, "
-					. "QuD" . $_REQUEST['x_Dist'] . "ArrowString AS ArrowString,"
-					. "ToId,ToType,ToNumDist AS TtNumDist "
-					. "FROM Entries INNER JOIN Countries ON EnCountry=CoId "
-					. "INNER JOIN Qualifications ON EnId=QuId "
-					. "RIGHT JOIN AvailableTarget ON QuTargetNo=AtTargetNo AND AtTournament=" . StrSafe_DB($_SESSION['TourId']) . " "
-					. "INNER JOIN Tournament ON EnTournament=ToId AND ToId=" . StrSafe_DB($_SESSION['TourId']) . " "
-					. "WHERE EnAthlete=1 AND QuSession<>0 AND QuTargetNo<>'' AND QuSession=" . StrSafe_DB($_REQUEST['x_Session']) . " "
-					. $TargetFilter . " "
-					. "ORDER BY QuTargetNo ASC ";
-				if (debug)
-					print $Select . '<br>';
+				$Select = "SELECT EnId,EnCode,EnName,EnFirstName,EnTournament,EnDivision,EnClass,EnCountry,CoCode, (EnStatus <=1) AS EnValid,EnStatus, 
+					QuSession, CONCAT(QuTarget, QuLetter) AS Target,
+					QuD" . $_REQUEST['x_Dist'] . "Score AS SelScore,QuD" . $_REQUEST['x_Dist'] . "Hits AS SelHits,QuD" . $_REQUEST['x_Dist'] . "Gold AS SelGold,QuD" . $_REQUEST['x_Dist'] . "Xnine AS SelXNine, 
+					QuScore, 
+					QuD" . $_REQUEST['x_Dist'] . "ArrowString AS ArrowString,
+					ToId,ToType,ToNumDist AS TtNumDist 
+					FROM Entries INNER JOIN Countries ON EnCountry=CoId 
+					INNER JOIN Qualifications ON EnId=QuId 
+					RIGHT JOIN ($atSql) at ON QuSession=FullTgtSession AND QuTarget=FullTgtTarget AND QuLetter=FullTgtLetter
+					INNER JOIN Tournament ON EnTournament=ToId AND ToId=" . StrSafe_DB($_SESSION['TourId']) . " 
+					WHERE EnAthlete=1 AND QuSession!=0 AND QuTarget!=0 AND QuSession=" . StrSafe_DB($_REQUEST['x_Session']) . "  $TargetFilter 
+					ORDER BY QuSession ASC, QuTarget ASC, QuLetter ASC";
 				$Rs=safe_r_sql($Select);
 
 			// form elenco persone
-				if (safe_num_rows($Rs)>0)
-				{
-
+				if (safe_num_rows($Rs)>0) {
 ?>
 <form name="Frm" method="POST" action="">
 <table class="Tabella">
@@ -228,25 +198,19 @@ include('Common/Templates/head.php');
 					$RowStyle='';	// NoShoot oppure niente
 					$TarStyle='';	// niene oppure warning se $RowStyle==''
 				// elenco persone
-					while ($MyRow=safe_fetch($Rs))
-					{
+					while ($MyRow=safe_fetch($Rs)) {
 						$ScoreTD = '';
-
 						$RowStyle=($MyRow->EnValid ? '' : 'NoShoot');
 
-						//if ($RowStyle=='')
-						//{
-							if ($CurTarget!='xx')
-							{
-								if ($CurTarget!=substr($MyRow->Target,0,-1) )
-								{
-									if ($TarStyle=='')
-										$TarStyle='warning';
-									elseif($TarStyle=='warning')
-										$TarStyle='';
-								}
-							}
-						//}
+                        if ($CurTarget!='xx') {
+                            if ($CurTarget!=substr($MyRow->Target,0,-1) ) {
+                                if ($TarStyle=='') {
+                                    $TarStyle = 'warning';
+                                } else if($TarStyle=='warning') {
+                                    $TarStyle = '';
+                                }
+                            }
+                        }
 ?>
 <tr id="Row_<?php print $MyRow->EnId; ?>" <?php echo 'class="' . ($RowStyle!='' ? $RowStyle : $TarStyle) . '"'; ?>>
 <td><?php print $MyRow->Target; ?></td>
@@ -257,26 +221,21 @@ include('Common/Templates/head.php');
 <td><?php print $MyRow->CoCode; ?></td>
 <?php
 					// elaboro l'arrowstring
+                    $CurArrowString = str_pad($MyRow->ArrowString,$RowTour->MaxArrows,' ',STR_PAD_RIGHT);
+                    $SubArrowString = substr($CurArrowString,$Ip,$_REQUEST['x_Arrows']);
 
-						$CurArrowString = str_pad($MyRow->ArrowString,$RowTour->MaxArrows,' ',STR_PAD_RIGHT);
+                    for ($i=0;$i<$_REQUEST['x_Arrows'];++$i) {
+                        $vv = DecodeFromLetter($SubArrowString[$i]);
+                        $FieldId = 'arr_' . $_REQUEST['x_Dist'] . '_' . ($Ip+$i) . '_' . $MyRow->EnId;
+                        $ScoreTD
+                            .='<td class="Center">'
+                            . '<input type="text" id="' . $FieldId . '" '
+                            . 'size="2" maxlength="'.($_SESSION['TourType']==49 ? 3 : 2).'" value="' . $vv . '" '
+                            . 'onBlur="javascript:UpdateArrow(\'' . $FieldId . '\');">'
+                            . '</td>';
+                    }
 
-						$SubArrowString = substr($CurArrowString,$Ip,$_REQUEST['x_Arrows']);
-
-						//print '<td>...' . $CurArrowString . '...<br>...' . $SubArrowString . '...</td>';
-
-						for ($i=0;$i<$_REQUEST['x_Arrows'];++$i)
-						{
-							$vv = DecodeFromLetter($SubArrowString[$i]);
-							$FieldId = 'arr_' . $_REQUEST['x_Dist'] . '_' . ($Ip+$i) . '_' . $MyRow->EnId;
-							$ScoreTD
-								.='<td class="Center">'
-								. '<input type="text" id="' . $FieldId . '" '
-								. 'size="2" maxlength="'.($_SESSION['TourType']==49 ? 3 : 2).'" value="' . $vv . '" '
-								. 'onBlur="javascript:UpdateArrow(\'' . $FieldId . '\');">'
-								. '</td>';
-						}
-
-						print $ScoreTD;
+                    print $ScoreTD;
 ?>
 <td class="Center Bold">
 <div id="idScore_<?php print $_REQUEST['x_Dist'] . '_' . $MyRow->EnId; ?>"><?php print $MyRow->SelScore; ?></div></td>
@@ -286,21 +245,20 @@ include('Common/Templates/head.php');
 <div id="idScore_<?php print $MyRow->EnId; ?>"><?php print $MyRow->QuScore; ?></div>
 </td>
 <?php
-						$CurTarget=	substr($MyRow->Target,0,-1);
-					}	// fine elenco persone
+                    $CurTarget=	substr($MyRow->Target,0,-1);
+                }	// fine elenco persone
 ?>
 </tr>
 </table>
 </form>
 <?php
-				}
-			}
-			else
-				print get_text('BadParams','Tournament');
-		}
+            }
+        } else {
+            print get_text('BadParams', 'Tournament');
+        }
+    }
 
 ?>
 <div id="idOutput"></div>
 <?php
 	include('Common/Templates/tail.php');
-?>

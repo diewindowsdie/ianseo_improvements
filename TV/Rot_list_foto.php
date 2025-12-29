@@ -2,28 +2,32 @@
 require_once('Common/Fun_Sessions.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
 
-$Select
-	= "SELECT EnCode as Bib, EnName AS Name, SesName, "
-	. " PhPhoto, EnId, "
-	. " upper(EnFirstName) AS FirstName, SUBSTRING(AtTargetNo,1,1) AS Session,"
-	. " SUBSTRING(AtTargetNo,2) AS TargetNo,"
-	. " CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode,"
-	. " EnDivision AS DivCode, EnAgeClass as AgeClass,"
-	. " EnSubClass as SubClass, EnStatus as Status "
-	. "FROM AvailableTarget at "
-	. "LEFT JOIN (SELECT EnTournament, QuTargetNo, EnId, EnCode, EnName, EnFirstName, CoCode, CoName, "
-		. "EnClass, EnDivision, EnAgeClass, EnSubClass, EnStatus, EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent "
-		. "FROM Qualifications AS q  "
-		. "INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($TourId)  . " AND EnAthlete=1 "
-		. "INNER JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament"
-		. ") as Sq ON at.AtTargetNo=Sq.QuTargetNo "
-	. "LEFT JOIN Session on SUBSTRING(AtTargetNo,1,1) = SesOrder and EnTournament=SesTournament and SesType='Q' "
-	. "LEFT JOIN Photos on EnId=PhEnId "
-	. "WHERE"
-		. " AtTournament = " . StrSafe_DB($TourId)
-		. " AND EnCode IS NOT NULL "
-		. ($TVsettings->TVPSession ? " AND SUBSTRING(AtTargetNo,1,1)= " . StrSafe_DB($TVsettings->TVPSession) . " " : "")
-	. "ORDER BY AtTargetNo, CoCode, Name, CoName, FirstName ";
+$HallField="''";
+if(in_array('HALL',$TVsettings->Columns) and $FopLocations=Get_Tournament_Option('FopLocations', [], $TourId)) {
+    $HallField='case';
+    foreach($FopLocations as $FopLocation) {
+        $HallField.=" when QuTarget between {$FopLocation->Tg1} and {$FopLocation->Tg2} then ".StrSafe_DB($FopLocation->Loc);
+    }
+    $HallField.=" end";
+}
+
+$Select = "SELECT EnCode as Bib, EnName AS Name, SesName, $HallField as Hall,
+    PhPhoto, EnId,
+    upper(EnFirstName) AS FirstName, QuSession AS Session,
+    concat(QuTarget, QuLetter) AS TargetNo,
+    CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode,
+    EnDivision AS DivCode, EnAgeClass as AgeClass, DivDescription, ClDescription,
+    EnSubClass as SubClass, EnStatus as Status
+    FROM Qualifications AS q  
+    INNER JOIN Entries AS e ON q.QuId=e.EnId AND e.EnTournament= " . StrSafe_DB($TourId)  . " AND EnAthlete=1 
+    INNER JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament 
+    LEFT JOIN Divisions on EnDivision=DivId and DivTournament=EnTournament  
+    LEFT JOIN Classes on EnClass=ClId and ClTournament=EnTournament 
+    LEFT JOIN Session on QuSession = SesOrder and EnTournament=SesTournament and SesType='Q' 
+    LEFT JOIN Photos on EnId=PhEnId 
+    WHERE EnTournament = " . StrSafe_DB($TourId) . " AND EnCode IS NOT NULL "
+    . ($TVsettings->TVPSession ? " AND QuSession= " . StrSafe_DB($TVsettings->TVPSession) . " " : "")
+    . "ORDER BY QuSession, QuTarget, QuLetter, CoCode, Name, CoName, FirstName ";
 
 $Rs=safe_r_sql($Select);
 //print $Select;exit;

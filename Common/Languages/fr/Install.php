@@ -61,6 +61,7 @@ $lang['FieldPegWhite']='Piquet Blanc';
 $lang['FieldPegYellow']='Piquet Jaune';
 $lang['File permission error']='Vous devez vérifier les autorisations d\'accès au répertoire d\'installation IANSEO : il doit être accessible en écriture pour l\'utilisateur exécutant le serveur (ou pour tous les utilisateurs)';
 $lang['FreeOnlineResults']='<b>Publication en ligne gratuite :</b>Avec une simple connexion à internet, vous pouvez montrez au monde ce qu\'il se passe pendant la compétition. C\'est gratuit alors pourquoi attendre ? Une fois la compétition créée, demandez un code via le menu «{$a}». Merci d\'anticiper la demande de création de votre compétition, cela nous permets de la valider à temps. Merci pour votre patience et votre compréhension..';
+$lang['GettingLanguagePacks']='Récupération des packs de langue ... Cela peut prendre du temps ...';
 $lang['Host']='Serveur hôte';
 $lang['Install-0']='ERREUR CRITIQUE!';
 $lang['Install-0 Title']='Sous licence GPL3';

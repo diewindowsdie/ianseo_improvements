@@ -30,12 +30,12 @@ $pdf->SetFont($fontname);
 
 $Filter='';
 if(!empty($_REQUEST['x_Session'])) $Filter.=" and QuSession={$_REQUEST['x_Session']}";
-if(!empty($_REQUEST['x_From'])) $Filter.=" and substr(QuTargetNo, 2, 3)>='".str_pad($_REQUEST['x_From'], 3, '0', STR_PAD_LEFT)."'";
-if(!empty($_REQUEST['x_To'])) $Filter.=" and substr(QuTargetNo, 2, 3)<='".str_pad($_REQUEST['x_To'], 3, '0', STR_PAD_LEFT)."'";
-$Rs=safe_r_SQL("select EnName, EnFirstName, QuTargetNo
+if(!empty($_REQUEST['x_From'])) $Filter.=" and QuTarget>=".intval($_REQUEST['x_From']);
+if(!empty($_REQUEST['x_To'])) $Filter.=" and QuTarget<=".intval($_REQUEST['x_To']);
+$Rs=safe_r_SQL("select EnName, EnFirstName, QuTarget, QuLetter
 	from Entries
 	inner join Qualifications on EnId=QuId $Filter where EnTournament={$_SESSION['TourId']}
-	order by QuTargetNo");
+	order by QuSession, QuTarget, QuLetter");
 
 //error_reporting(E_ALL);
 
@@ -61,7 +61,7 @@ while($MyRow=safe_fetch($Rs)) {
 
 	$pdf->setx($pdf->GetX()+5);
 	$pdf->setColor('text', 128);
-	$pdf->Cell(10, $CellHeight-8, ltrim(substr($MyRow->QuTargetNo, 1), '0'), 0, 0, 'L', 0, '', true, false, 'T', 'B');
+	$pdf->Cell(10, $CellHeight-8, $MyRow->QuTarget.$MyRow->QuLetter, 0, 0, 'L', 0, '', true, false, 'T', 'B');
 
 	if(!empty($_REQUEST['TargetAssign'])) {
 		// PArte di riconoscimento EVENTO e Paglione

@@ -618,6 +618,7 @@ $lang['IsGenericConfig']='Generic Configuration';
 $lang['IsParamWarning']='InfoSystem Setup!<br/>Use with EXTREME caution!';
 $lang['IsSigningProtocols']="Signing protocols?";
 $lang['IsSpecificConfig']='Competition specific items';
+$lang['ItemsNo']='Number of Items: {$a}';
 $lang['Judge']='Judge';
 $lang['JudgesAssigment']='Judges Assigment';
 $lang['JudgeAccreditation']='Accreditation';

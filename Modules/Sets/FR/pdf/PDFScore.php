@@ -70,14 +70,15 @@ function CreateBeursaultScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=arr
             inner join Classes on ClTournament=EnTournament and ClId=EnClass
             inner join Individuals on IndId=EnId and IndTournament=EnTournament
             inner join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0
-            order by QuSession, QuTargetNo";
+            order by QuSession, QuTarget, QuLetter";
     } else {
-        $SQL="select coalesce(QuD1Hits,0) as Hits, coalesce(QuD1Score,0) as Score, coalesce(QuD1Gold,0) as Gold, coalesce(QuD1Xnine,0) as XNine, coalesce(QuD1Arrowstring,'') as Arrowstring, AtTarget as Target, AtLetter as Letter, AtSession as Session,
+        $atSql = createAvailableTargetSQL(($Session??0), $_SESSION['TourId']);
+        $SQL="select coalesce(QuD1Hits,0) as Hits, coalesce(QuD1Score,0) as Score, coalesce(QuD1Gold,0) as Gold, coalesce(QuD1Xnine,0) as XNine, coalesce(QuD1Arrowstring,'') as Arrowstring, FullTgtTarget as Target, FullTgtLetter as Letter, FullTgtSession as Session,
                 EnFirstName, EnName, EnCode, DivId, DivDescription, ClId, ClDescription, EvCode, EvEventName, 
                 CoCode, CoName,
                 ToVenue
-            from AvailableTarget
-            inner join Tournament on ToId=AtTournament
+            from ($atSql) at
+            inner join Tournament on ToId={$_SESSION['TourId']}
             left join (
                 select QuD1Hits, QuD1Score, QuD1Gold, QuD1Xnine, QuD1Arrowstring, QuTarget, QuLetter, QuSession,
                         EnFirstName, EnName, EnCode, DivId, DivDescription, ClId, ClDescription, EvCode, EvEventName,
@@ -89,8 +90,8 @@ function CreateBeursaultScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=arr
                     inner join Classes on ClTournament=EnTournament and ClId=EnClass
                     inner join Individuals on IndId=EnId and IndTournament=EnTournament
                     inner join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0
-                ) Archers on QuTarget=AtTarget and QuLetter=AtLetter and QuSession=AtSession
-            where AtTournament= {$_SESSION['TourId']} and AtTarget between $FromTgt and $ToTgt ".($Session=='ONLINE' ? '' : "and AtSession=$Session");
+                ) Archers on QuSession=FullTgtSession AND QuTarget=FullTgtTarget AND QuLetter=FullTgtLetter
+            where FullTgtTarget between $FromTgt and $ToTgt and FullTgtSession=$Session";
     }
 
     $q=safe_r_sql($SQL);

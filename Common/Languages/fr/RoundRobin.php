@@ -2,6 +2,7 @@
 $lang['BestRanked']='Meilleur classement';
 $lang['BestRanked_0']='Point de match suivi d\'un tirage au sort';
 $lang['BestRanked_1']='Tirage au sort suivi des points de match';
+$lang['CheckShootOfItem']='Vérification du ShootOff pour $a';
 $lang['CmdSet2AllGroups']='Défini pour tous les groupes';
 $lang['CmdSet2Group']='Défini pour ce groupe';
 $lang['Components']='Composition';
@@ -20,6 +21,7 @@ $lang['Groups']='Groupes';
 $lang['GroupShort']='Grp';
 $lang['Item']='Pos.';
 $lang['ItemName']='Nom des archers';
+$lang['ItemNum']='# {$a}';
 $lang['Level']='Tour';
 $lang['LevelName']='Nom du tour';
 $lang['LevelNum']='Tour {$a}';

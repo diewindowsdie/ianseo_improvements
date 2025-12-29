@@ -10,235 +10,6 @@
 	define('GROUP_TYPE_COUNTRY',3);
 	define('GROUP_TYPE_CATEGORY',4);	// div-agecl-cl
 
-/*
-	- IsValidCF($CodFiscale)
-	Verifica se il codice fiscale passato è ben formato.
-	Si appoggia a ValueEven($Carattere),ValueOdd($Carattere) e a ValueMonth($Mese).
-	Ritorna true se ok altrimenti false
-*/
-function IsValidCF($CodFiscale)
-{
-	$CodFiscale=preg_replace("/[^a-zA-Z0-9]/i","",mb_convert_case($CodFiscale, MB_CASE_UPPER, "UTF-8"));
-	// struttura CODFISC : AAAAAA00A00A000A dove A = A-Z e 0 = A-Z0-9
-	// infatti nei casi di omocodia (stesso CF per 2 persone diverse)
-	// i numeri vengono progressivamente sostituiti da lettere
-	// A NOI interessa solo controllare che il CF sia ben formato, non se sono
-	// corrette le omocodie, quindi saltiamo a piè pari la procedura di ricostruzione del codice!
-
-	if(preg_match("/^[A-Z]{6}[A-Z0-9]{2}[A-Z]{1}[A-Z0-9]{2}[A-Z]{1}[A-Z0-9]{3}[A-Z]{1}$/i",$CodFiscale))
-	{
-		$listaControllo = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		$cCodice		=$CodFiscale;
-		$listaPari		= array(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25);
-		$listaDispari	= array(1,0,5,7,9,13,15,17,19,21,2,4,18,20,11,3,6,8,12,14,16,10,22,25,24,23);
-
-		$somma = 0;
-
-		for ($i = 0; $i < 15; $i++)
-		{
-			$c = $cCodice[$i];
-			$x = strpos("0123456789", $c);
-			if ($x !== FALSE) $c = $listaControllo[$x];
-			$x = strpos($listaControllo, $c);
-
-			// i modulo 2 = 0 � dispari perch� iniziamo da 0
-			if (($i % 2) == 0)
-				 $x = $listaDispari[$x];
-			else
-				 $x = $listaPari[$x];
-			$somma += $x;
-		}
-
-		$CHECK= $listaControllo[($somma % 26)];
-
-		if($CHECK==substr($CodFiscale,-1))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else
-	{
-		return false;
-	}
-}
-
-function ValueEven($Carattere)
-{
-	$Tmp = 0 ;
-	if(preg_match("/[0-9]/i", $Carattere))
-	{
-		$Tmp = (ord($Carattere) - ord("0"));
-	} elseif(preg_match("/[A-Z]/i",$Carattere))
-	{
-		$Tmp = (ord(strtoupper($Carattere)) - ord("A"));
-	}
-	return $Tmp;
-}
-
-function ValueOdd($Carattere)
-{
-	$Tmp = 0 ;
-	switch(strtoupper($Carattere))
-	{
-		case "0":
-		case "A":
-			$Tmp = 1;
-			break;
-		case "1":
-		case "B":
-			$Tmp = 0;
-			break;
-		case "2":
-		case "C":
-			$Tmp = 5;
-			break;
-		case "3":
-		case "D":
-			$Tmp = 7;
-			break;
-		case "4":
-		case "E":
-			$Tmp = 9;
-			break;
-		case "5":
-		case "F":
-			$Tmp = 13;
-			break;
-		case "6":
-		case "G":
-			$Tmp = 15;
-			break;
-		case "7":
-		case "H":
-			$Tmp = 17;
-			break;
-		case "8":
-		case "I":
-			$Tmp = 19;
-			break;
-		case "9":
-		case "J":
-			$Tmp = 21;
-			break;
-		case "K":
-			$Tmp = 2;
-			break;
-		case "L":
-			$Tmp = 4;
-			break;
-		case "M":
-			$Tmp = 18;
-			break;
-		case "N":
-			$Tmp = 20;
-			break;
-		case "O":
-			$Tmp = 11;
-			break;
-		case "P":
-			$Tmp = 3;
-			break;
-		case "Q":
-			$Tmp = 6;
-			break;
-		case "R":
-			$Tmp = 8;
-			break;
-		case "S":
-			$Tmp = 12;
-			break;
-		case "T":
-			$Tmp = 14;
-			break;
-		case "U":
-			$Tmp = 16;
-			break;
-		case "V":
-			$Tmp = 10;
-			break;
-		case "W":
-			$Tmp = 22;
-			break;
-		case "X":
-			$Tmp = 25;
-			break;
-		case "Y":
-			$Tmp = 24;
-			break;
-		case "Z":
-			$Tmp = 23;
-			break;
-	}
-	return $Tmp;
-}
-
-
-function ValueMonth($Mese)
-{
-	switch($Mese)
-	{
-		case 1:
-			return "A";
-		case 2:
-			return "B";
-		case 3:
-			return "C";
-		case 4:
-			return "D";
-		case 5:
-			return "E";
-		case 6:
-			return "H";
-		case 7:
-			return "L";
-		case 8:
-			return "M";
-		case 9:
-			return "P";
-		case 10:
-			return "R";
-		case 11:
-			return "S";
-		case 12:
-			return "T";
-	}
-}
-
-function MonthFromLetter($Letter)
-{
-	switch(strtoupper($Letter))
-	{
-		case 'A':
-			return '01';
-		case 'B':
-			return '02';
-		case 'C':
-			return '03';
-		case 'D':
-			return '04';
-		case 'E':
-			return '05';
-		case 'H':
-			return '06';
-		case 'L':
-			return "07";
-		case 'M':
-			return "08";
-		case 'P':
-			return "09";
-		case 'R':
-			return "10";
-		case 'S':
-			return "11";
-		case 'T':
-			return "12";
-	}
-}
-
 /**
  * Ritorna un array con le persone.
  *
@@ -252,19 +23,17 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 
 	$DefTargets=getTargets();
 
-	if ($OrderBy===null)
-	{
-		$OrderBy= "`Session` ASC, `TargetNo` ASC ";
+	if ($OrderBy===null) {
+		$OrderBy= "`Session` ASC, `Target` ASC, `Letter` ASC ";
 	}
 
 	$Errore = 0;
 
 	$Select="";
-	if (!$AllTargets)
-	{
+	if (!$AllTargets) {
 		$Select
 			= "SELECT e.*,sc.ScDescription,IF(EnDob!='0000-00-00',EnDob,'0000-00-00') AS Dob,c.CoCode,c.CoName,c2.CoCode AS CoCode2,c2.CoName AS CoName2,  c3.CoCode AS CoCode3,c3.CoName AS CoName3,"
-			. "q.QuSession AS `Session`,SUBSTRING(q.QuTargetNo,2) AS TargetNo,ToWhenFrom,TfName, "
+            . "`q`.`QuSession` AS `Session`, `QuTarget` as `Target`, `QuLetter` as `Letter`, CONCAT(QuTarget, QuLetter) AS TargetNo, ToWhenFrom,TfName, "
 			. "eextra.EdEmail, zextra.EdExtra locBib, cextra.EdExtra EnCaption "
 			. "FROM Entries AS e LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament "
 			. "LEFT JOIN Countries AS c2 ON e.EnCountry2=c2.CoId AND e.EnTournament=c2.CoTournament "
@@ -276,12 +45,11 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 			. "LEFT JOIN ExtraData cextra ON cextra.EdType='C' and cextra.EdId=EnId "
 			. "INNER JOIN Qualifications AS q ON e.EnId=q.QuId "
 			. "INNER JOIN Tournament ON EnTournament=ToId "
-			. "WHERE e.EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " /*AND EnAthlete=1*/ "
+			. "WHERE e.EnTournament=" . StrSafe_DB($_SESSION['TourId'])
 			. ($Id!='' ? " AND EnId=" . StrSafe_DB($Id) : '') . " "
 			. "ORDER BY " . $OrderBy . " ";
-	}
-	else
-	{
+	} else {
+        $atSql = createAvailableTargetSQL(0, $_SESSION['TourId']);
 		$Select
 			= "(SELECT EnId,EnIocCode,EnTournament,EnDivision,EnClass,EnSubClass,EnAgeClass,"
 				. "EnCountry,EnSubTeam,EnCountry2,EnCountry3,EnCtrlCode,Dob,"
@@ -289,16 +57,15 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 				. "EnSex,EnWChair,EnSitting,EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,EnTeamMixEvent,"
 				. "EnDoubleSpace,EnPays,EnStatus,EnTargetFace,EnTimestamp,EnOdfShortname,ScDescription,TfName, "
 				. "CoCode,CoName,CoCode2,CoName2,CoCode3,CoName3,"
-				. "SUBSTRING(AtTargetNo,1,1) AS `Session`,SUBSTRING(AtTargetNo,2) AS TargetNo,ToWhenFrom, EdEmail, EdExtra locBib, EnCaption "
-			. "FROM "
-				. "AvailableTarget LEFT JOIN ("
-					. "SELECT "
+				. "SUBSTRING(FullTgtSession,1,1) AS `Session`, `FullTgtTarget` as `Target`, `FullTgtLetter` as `Letter`, CONCAT(FullTgtTarget,FullTgtLetter) AS TargetNo, ToWhenFrom, EdEmail, EdExtra locBib, EnCaption "
+			. "FROM ($atSql) at "
+                ." LEFT JOIN (SELECT "
 						. "EnId,EnIocCode,EnTournament,EnDivision,EnClass,EnSubClass,EnAgeClass,eextra.EdEmail,zextra.EdExtra, cextra.EdExtra EnCaption,"
 						. "EnCountry,EnSubTeam,EnCountry2,EnCountry3,EnCtrlCode,IF(EnDob!='0000-00-00',EnDob,'0000-00-00') AS Dob,"
 						. "EnCode,EnName,EnFirstName,EnMiddleName,EnBadgePrinted,EnAthlete,"
 						. "EnSex,EnWChair,EnSitting,EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,EnTeamMixEvent,"
 						. "EnDoubleSpace,EnPays,EnStatus,EnTargetFace,EnTimestamp,EnOdfShortname,sc.ScDescription,TfName, "
-						. "c.CoCode AS CoCode,c.CoName AS CoName,c2.CoCode AS CoCode2,c2.CoName AS CoName2,c3.CoCode AS CoCode3,c3.CoName AS CoName3, q.QuSession AS `Session`,SUBSTRING(q.QuTargetNo,2) AS TargetNo,q.QuTargetNo AS QuTargetNo,ToWhenFrom "
+						. "c.CoCode AS CoCode,c.CoName AS CoName,c2.CoCode AS CoCode2,c2.CoName AS CoName2,c3.CoCode AS CoCode3,c3.CoName AS CoName3, QuSession, QuTarget, QuLetter, ToWhenFrom "
 					. "FROM Entries AS e LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament "
 						. "LEFT JOIN Countries AS c2 ON e.EnCountry2=c2.CoId AND e.EnTournament=c2.CoTournament "
 						. "LEFT JOIN Countries AS c3 ON e.EnCountry3=c3.CoId AND e.EnTournament=c3.CoTournament "
@@ -309,23 +76,16 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 						. "LEFT JOIN ExtraData cextra ON cextra.EdType='C' and cextra.EdId=EnId "
 						. "INNER JOIN Qualifications AS q ON e.EnId=q.QuId "
 						. "INNER JOIN Tournament ON EnTournament=ToId "
-						. "WHERE e.EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " /*AND EnAthlete=1*/ "
-						. ($Id!='' ? " AND EnId=" . StrSafe_DB($Id) : '') . " "
-					. "ORDER BY " . $OrderBy . " "
-				. ") AS sq ON AtTournament=EnTournament AND AtTargetNo=QuTargetNo "
-			. "WHERE AtTournament=" . StrSafe_DB($_SESSION['TourId']) . " /*AND EnAthlete=1*/) "
-			//. "ORDER BY " . $OrderBy . ") "
-
+						. "WHERE e.EnTournament=" . StrSafe_DB($_SESSION['TourId'])
+						. ($Id!='' ? " AND EnId=" . StrSafe_DB($Id) : '') . ") AS sq ON QuSession=FullTgtSession AND QuTarget=FullTgtTarget AND QuLetter=FullTgtLetter) "
 			. "UNION ALL "
-
 			. "(SELECT EnId,EnIocCode,EnTournament,EnDivision,EnClass,EnSubClass,EnAgeClass,"
 				. "EnCountry,EnSubTeam,EnCountry2,EnCountry3,EnCtrlCode,IF(EnDob!='0000-00-00',EnDob,'0000-00-00') AS Dob,"
 				. "EnCode,EnName,EnFirstName,EnMiddleName,EnBadgePrinted,EnAthlete,"
 				. "EnSex,EnWChair,EnSitting,EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,EnTeamMixEvent,"
 				. "EnDoubleSpace,EnPays,EnStatus,EnTargetFace,EnTimestamp,EnOdfShortname,sc.ScDescription,TfName, "
 				. "c.CoCode AS CoCode,c.CoName AS CoName,c2.CoCode AS CoCode2,c2.CoName AS CoName2,c3.CoCode AS CoCode3,c3.CoName AS CoName3,"
-				. "q.QuSession AS `Session`,SUBSTRING(q.QuTargetNo,2) AS TargetNo,ToWhenFrom,eextra.EdEmail, zextra.EdExtra locBib, cextra.EdExtra EnCaption "
-
+				. "`q`.`QuSession` AS `Session`, `q`.`QuTarget` as `Target`, `q`.`QuLetter` as `Letter`, CONCAT(q.QuTarget, q.QuLetter) AS TargetNo,ToWhenFrom,eextra.EdEmail, zextra.EdExtra locBib, cextra.EdExtra EnCaption "
 			. "FROM "
 				. "Entries LEFT JOIN Countries AS c ON EnCountry=c.CoId AND EnTournament=c.CoTournament "
 				. "LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId "
@@ -337,19 +97,16 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 				. "LEFT JOIN ExtraData cextra ON cextra.EdType='C' and cextra.EdId=EnId "
 				. "INNER JOIN Qualifications AS q ON EnId=q.QuId "
 				. "INNER JOIN Tournament ON EnTournament=ToId "
-				. "WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND QuTargetNo='' "
+				. "WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND QuTarget=0 "
 				. ($Id!='' ? " AND EnId=" . StrSafe_DB($Id) : '') . ") "
 				. "ORDER BY " . $OrderBy . " ";
 	}
 	//print $Select;exit;
 	$Rs=safe_r_sql($Select);
 
-	if (safe_num_rows($Rs)>0)
-	{
-		while ($MyRow=safe_fetch($Rs))
-		{
-			if ($MyRow->EnId!==null)
-			{
+	if (safe_num_rows($Rs)>0) {
+		while ($MyRow=safe_fetch($Rs)) {
+			if ($MyRow->EnId!==null) {
 				if(empty($DefTargets[$MyRow->EnDivision][$MyRow->EnClass])) {
 					// the target is missing for this entry... so sets the EnTargetFace to 0
 					safe_w_sql("update Entries set EnTargetFace=0 where EnId=$MyRow->EnId");
@@ -372,10 +129,10 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 				'status' => $MyRow->EnStatus,
 				'session' => $MyRow->Session!=0 ? $MyRow->Session : '',
 				'targetno' => $MyRow->TargetNo,
-				'firstname' => stripslashes($MyRow->EnFirstName),
-				'name' => stripslashes($MyRow->EnName),
-                'middlename' => stripslashes($MyRow->EnMiddleName),
-				'tvname' => stripslashes($MyRow->EnOdfShortname),
+				'firstname' => stripslashes($MyRow->EnFirstName ?? ''),
+				'name' => stripslashes($MyRow->EnName ?? ''),
+                'middlename' => stripslashes($MyRow->EnMiddleName ?? ''),
+                'tvname' => stripslashes($MyRow->EnOdfShortname ?? ''),
 				'email' => stripslashes($MyRow->EdEmail ?? ''),
 				'sex_id' => $MyRow->EnSex,
 				'sex' =>  $MyRow->EnId!==null ? $MyRow->EnSex==0 ? get_text('ShortMale','Tournament') : get_text('ShortFemale','Tournament') : '',

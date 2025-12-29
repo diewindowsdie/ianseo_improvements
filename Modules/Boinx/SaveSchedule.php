@@ -11,12 +11,16 @@
 	$ret='';
 
 	foreach($_REQUEST['type'] as $Type => $OnOff) {
-		if(preg_match('/[^a-z0-9_]/i', $Type)) continue;
+		if(preg_match('/[^a-z0-9_]/i', $Type)) {
+            continue;
+        }
 
 		if(substr($Type,0,7)=='Qua_Ind') {
 			$q=safe_r_sql("select * from Session where SesTournament={$_SESSION['TourId']} and SesType='Q'");
-			while($r=safe_fetch($q)) $ret.="<button>{$Type}_{$r->SesOrder}</button><onoff>0</onoff>";
-			$ret.="<button>{$Type}_{$OnOff[0]}</button><onoff>$OnOff</onoff>";
+			while($r=safe_fetch($q)) {
+                $ret .= "<button>{$Type}_{$r->SesOrder}</button><onoff>0</onoff>";
+            }
+			$ret.="<button>{$Type}_{$OnOff[0]}</button><onoff>".($OnOff ? 1 : 0)."</onoff>";
 		} elseif(substr($Type,0,7)=='Qua_Lst') {
 			$q=safe_r_sql("select * from Session where SesTournament={$_SESSION['TourId']} and SesType='Q'");
 			while($r=safe_fetch($q)) $ret.="<button>{$Type}_{$r->SesOrder}</button><onoff>0</onoff>";

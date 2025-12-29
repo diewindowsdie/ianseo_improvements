@@ -7,7 +7,6 @@ $JSON=array('error' => 1, 'msg' => get_text('WrongData', 'Install'));
 $JSON['rows']=array(array('key' => '', 'value' => get_text('Select', 'Tournament')));
 
 $ToId=(empty($_REQUEST['ToId']) ? 0 : intval($_REQUEST['ToId']));
-$QuTargetNo=(empty($_REQUEST['QuTargetNo']) ? '' : (preg_match('/^[0-9a-z]+$/sim', $_REQUEST['QuTargetNo']) ? $_REQUEST['QuTargetNo'] : ''));
 $EnId=(empty($_REQUEST['EnId']) ? 0 : intval($_REQUEST['EnId']));
 $Field=(empty($_REQUEST['field']) ? '' : $_REQUEST['field']);
 $q='';

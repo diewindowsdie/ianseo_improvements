@@ -65,7 +65,7 @@ function getAccrQuery($Id=0) {
 		}
 	}
 	return "Select EnId,EnTournament,EnDivision,EnClass,EnCountry,c.CoCode,c.CoNameComplete as CoNameComplete, c2.CoNameComplete as CoNameComplete2, c3.CoNameComplete as CoNameComplete3,EnCode,EnName,EnFirstName,EnMiddleName,EnStatus,
-			EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,EnTeamMixEvent,EnPays,QuSession,SUBSTRING(QuTargetNo,2) As TargetNo, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') AS BirthDate,
+			EnIndClEvent,EnTeamClEvent,EnIndFEvent,EnTeamFEvent,EnTeamMixEvent,EnPays,QuSession,CONCAT(QuTarget, QuLetter) As TargetNo, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') AS BirthDate,
 			m.AEOperation, PhEnId
 			, ".($_SESSION['chk_Photo'] ? 'PhEnId is not null and PhPhoto!=""' : '1')." as HasPhoto
 			, ".($_SESSION['chk_Paid']==1 ? 'p.AEId is not null' : '1')." as HasPaid

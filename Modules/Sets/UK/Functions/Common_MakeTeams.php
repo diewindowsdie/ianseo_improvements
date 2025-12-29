@@ -29,7 +29,7 @@ foreach($divisions as $div)
 	$rs = safe_r_sql($sqlClasses);
 	while($row = safe_fetch($rs))
 	{
-		if($row->ClSex == 0)
+		if($row->ClSex != 1)
 			$clMen[] = StrSafe_DB($div . $row->ClId);
 		else
 			$clWomen[] = StrSafe_DB($div . $row->ClId);

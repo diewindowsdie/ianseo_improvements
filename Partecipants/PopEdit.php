@@ -22,8 +22,7 @@
 	$ses=null;
 	$tar=null;
 
-	if (isset($_REQUEST['ses']) && isset($_REQUEST['tar']))
-	{
+	if (isset($_REQUEST['ses']) && isset($_REQUEST['tar']))	{
 		$ses=$_REQUEST['ses'];
 		$tar=$_REQUEST['tar'];
 	}
@@ -31,10 +30,8 @@
 	$reload=0;	// 0 non succede nulla all'opener;1 ricarica;2 ricarica e il popup si chiude
 
 /* salvo */
-	if (isset($_REQUEST['Command']))
-	{
-		if (!IsBlocked(BIT_BLOCK_PARTICIPANT) && ($_REQUEST['Command']=='SAVE' || $_REQUEST['Command']=='SAVE_CONTINUE'))
-		{
+	if (isset($_REQUEST['Command'])) {
+		if (!IsBlocked(BIT_BLOCK_PARTICIPANT) && ($_REQUEST['Command']=='SAVE' || $_REQUEST['Command']=='SAVE_CONTINUE')) {
 
 			$EnCountries=array(''=>0,'2'=>0,'3'=>0);
 			$EnCoCodes=array(''=>'','2'=>'','3'=>'');
@@ -280,12 +277,10 @@
 			}
 
 
-			$Update
-				= "UPDATE Qualifications SET "
+			$Update = "UPDATE Qualifications SET "
 				. "QuSession=" . StrSafe_DB((!empty($_REQUEST['d_q_QuSession_']) ? $_REQUEST['d_q_QuSession_']:0)) . ", "
-				. "QuTargetNo=" . StrSafe_DB((!empty($_REQUEST['d_q_QuSession_']) ? $_REQUEST['d_q_QuSession_'] :'' ) . $_REQUEST['d_q_QuTargetNo_']) . ", "
 				. "QuTarget=" . intval($_REQUEST['d_q_QuTargetNo_']) . ", "
-				. "QuLetter='" . substr($_REQUEST['d_q_QuTargetNo_'], -1) . "',
+				. "QuLetter='" . strtoupper(substr($_REQUEST['d_q_QuTargetNo_'], -1)) . "',
 				QuTimestamp=QuTimestamp "
 				. "WHERE  ";
 			$Rs=safe_w_sql($Update."QuId=" . StrSafe_DB($id));
@@ -299,8 +294,7 @@
 
 			if ($recalc) {
 				$x=Params4Recalc($id);
-				if ($x!==false)
-				{
+				if ($x!==false) {
 					list($indFEvent,$teamFEvent,$country,$div,$cl,$subCl,$zero)=$x;
 				}
 
@@ -327,46 +321,30 @@
 			checkAgainstLUE($id);
 		}
 		//exit;
-		if ($_REQUEST['Command']=='SAVE')
-		{
+		if ($_REQUEST['Command']=='SAVE') {
 			$reload=2;
-		}
-		elseif ($_REQUEST['Command']=='SAVE_CONTINUE')
-		{
+		} elseif ($_REQUEST['Command']=='SAVE_CONTINUE') {
 			$reload=1;
 
 			$id=0;
 
 		// se $ses e $tar non sono nulli cerco il primo paglione libero dopo $ses.$tar
-			if ($ses!==null && $tar!==null)
-			{
-				$t=$ses.$tar;
-				$q="
-					SELECT
-						AtTargetNo,EnId
-					FROM
-						AvailableTarget
-						LEFT JOIN (
-							SELECT
-								EnTournament,EnId,QuTargetNo
-							FROM
-								Entries INNER JOIN Qualifications ON EnId=QuId AND EnTournament={$_SESSION['TourId']}
-						) AS sq ON AtTournament=EnTournament AND AtTargetNo=QuTargetNo
-					WHERE
-						AtTournament={$_SESSION['TourId']} AND AtTargetNo>'{$t}' AND EnId IS NULL
-					LIMIT 0,1
-				";
-				//print $q;exit;
+			if ($ses!==null AND $tar!==null) {
+                $atSql = createAvailableTargetSQL(($ses??0),$_SESSION['TourId']);
+				$q="SELECT FullTgtSession, CONCAT(FullTgtTarget,FullTgtLetter) AS TargetNo, EnId
+					FROM ($atSql) as at
+                    LEFT JOIN (
+                        SELECT EnId, QuSession, QuTarget, QuLetter FROM Entries INNER JOIN Qualifications ON EnId=QuId AND EnTournament={$_SESSION['TourId']}
+                    ) AS sq ON QuSession=FullTgtSession AND QuTarget=FullTgtTarget AND QuLetter=FullTgtLetter
+					WHERE CONCAT(FullTgtTarget,FullTgtLetter)>".StrSafe_DB($tar)." AND EnId IS NULL
+					LIMIT 0,1";
 				$r=safe_r_sql($q);
 
-				if (safe_num_rows($r)==1)
-				{
+				if (safe_num_rows($r)==1) {
 					$row=safe_fetch($r);
-					$ses=substr($row->AtTargetNo,0,1);
-					$tar=substr($row->AtTargetNo,1);
-				}
-				else
-				{
+					$ses=$row->FullTgtSession;
+					$tar=$row->TargetNo;
+				} else {
 					$ses=null;
 					$tar=null;
 				}

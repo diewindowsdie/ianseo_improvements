@@ -1,6 +1,7 @@
 <?php
 require_once(dirname(__FILE__) . '/config.php');
 require_once('Common/Lib/CommonLib.php');
+require_once('Common/Fun_Sessions.inc.php');
 
 CheckTourSession(true);
 checkFullACL(AclISKServer, 'iskManagement', AclReadWrite);
@@ -25,7 +26,7 @@ $SQL="(select min(ifnull(SesFirstTarget, QuTarget)) as TargetMin, max(ifnull(Ses
 	from Qualifications
 	inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']}
 	left join Session on SesOrder=QuSession and SesTournament={$_SESSION['TourId']}
-	where QuTarget>0 and QuSession>0)
+	where QuTarget!=0 and QuSession!=0)
 	union
 	(select min(FsTarget+0) as TargetMin, max(FsTarget+0) as TargetMax
 	from FinSchedule
@@ -45,11 +46,11 @@ if($Min==100000) {
 
 if(!$Min and !$Max) {
     // no targets have been assigned anywhere!
-    // Default Min and max are then based on the min and max of the available targets!
-    $q=safe_r_sql("select min(AtTarget) as MinTarget, max(AtTarget) as MaxTarget from AvailableTarget where AtTournament={$_SESSION['TourId']} group by AtTournament");
-    if($r=safe_fetch($q)) {
-        $Min=$r->MinTarget;
-        $Max=$r->MaxTarget;
+    // Default Min and max are then based on the min and max of the sessions
+    $Session = GetSessions('Q');
+    foreach($Session as $r) {
+        if($Min==0 or ($r->SesFirstTarget>0 and $Min > $r->SesFirstTarget)) $Min=$r->SesFirstTarget;
+        if($Max < ($r->SesFirstTarget+$r->SesTar4Session-1)) $Max=($r->SesFirstTarget+$r->SesTar4Session-1);
     }
 }
 

@@ -41,7 +41,7 @@ if($DataSource) {
 	// start fetching in an array the entry codes, will be used later
     $OldEntries=array();
     $HasEntries=false;
-    $q=safe_r_sql("select Entries.*, 'ToDelete' as EnFinalStatus, QuSession, QuTargetNo, QuTarget, QuLetter from Entries left join Qualifications on EnId=QuId where EnTournament=" . StrSafe_DB($_SESSION['TourId']) );
+    $q=safe_r_sql("select Entries.*, 'ToDelete' as EnFinalStatus, QuSession, QuTarget, QuLetter from Entries left join Qualifications on EnId=QuId where EnTournament=" . StrSafe_DB($_SESSION['TourId']) );
 	while($r=safe_fetch($q)) {
 	    $OldEntries[$r->EnCode][$r->EnId]=$r;
     }
@@ -278,10 +278,9 @@ if($DataSource) {
                 $q=safe_r_SQL($Sql);
                 $tgt=intval(substr($tmpString[3],0,-1));
                 $letter=strtoupper(substr($tmpString[3],-1,1));
-                $tgtNo=$tmpString[2].str_pad($tgt,3,"0",STR_PAD_LEFT).$letter;
                 if(safe_num_rows($q)) {
                     while($r=safe_fetch($q)) {
-                        safe_w_sql("Update Qualifications SET QuSession={$tmpString[2]}, QuTarget={$tgt}, QuLetter='{$letter}', QuTargetNo='{$tgtNo}' WHERE QuId=$r->EnId");
+                        safe_w_sql("Update Qualifications SET QuSession={$tmpString[2]}, QuTarget={$tgt}, QuLetter='{$letter}',  WHERE QuId=$r->EnId");
                         $ImportResult['Inserted'][]='<tr><td>Inserted/updated</td><td>'.$tmpString[1].'</td><td>'.$tmpString[2].'</td><td>'.$tmpString[3].'</td></tr>';
                         $ImportResult['Imported']++;
                     }
@@ -640,7 +639,6 @@ if($DataSource) {
 			/* Session           */ $Session2Save = intval($tmpString[1]);
 			/* Division          */ $Division2Save = $tmpString[2];
 			/* Class             */ $Class2Save = $tmpString[3];
-			/* Target            */ $TargetNo2Save = (!empty($tmpString[4]) ? intval($tmpString[1]) . str_pad($tmpString[4], TargetNoPadding+1,"0",STR_PAD_LEFT) : "");
 			/* Target            */ $Target2Save = (!empty($tmpString[4]) ? intval($tmpString[4]) : "0");
 			/* Target            */ $Letter2Save = (!empty($tmpString[4]) ? substr($tmpString[4],-1) : "");
 			/* IndQual           */ $ShootInd2Save = (count($tmpString)<=5 || !empty($tmpString[5]) ? '1' : '0');
@@ -913,7 +911,6 @@ if($DataSource) {
                 }
 
 				// checks the changes
-//				$q=safe_r_sql("select Entries.*, QuSession, QuTargetNo from Entries left join Qualifications on EnId=QuId where EnCode=".StrSafe_DB($Code2Save)." and EnTournament=" . StrSafe_DB($_SESSION['TourId']) . "");
 				if($EnIdToUpdate) { //$r=safe_fetch($q)) {
                     // updates the status of the matched element
 					$OldEntries[$Code2Save][$EnIdToUpdate]->EnFinalStatus='Updated';
@@ -935,13 +932,13 @@ if($DataSource) {
 							"update Entries set $EntrySQL, EnTimestamp=EnTimestamp where EnId=$EnIdToUpdate"));
 					$tmp=safe_w_affected_rows();
 					// update the qualification too
-					safe_w_sql("update Qualifications set QuSession='$Session2Save', QuTargetNo='$TargetNo2Save', QuTarget='$Target2Save', QuLetter='$Letter2Save', QuTimestamp=QuTimestamp where QuId=$EnIdToUpdate");
+					safe_w_sql("update Qualifications set QuSession='$Session2Save', QuTarget='$Target2Save', QuLetter='$Letter2Save', QuTimestamp=QuTimestamp where QuId=$EnIdToUpdate");
 					if($tmp or safe_w_affected_rows()) {
 						if(safe_w_affected_rows()) {
 							safe_w_sql("update Qualifications set QuBacknoPrinted=0 where QuId=$EnIdToUpdate");
 							LogAccBoothQuerry("update Qualifications set QuBacknoPrinted=0 where QuId=(select EnId from Entries where $Where)");
 						}
-						LogAccBoothQuerry("update Qualifications set QuSession='$Session2Save', QuTargetNo='$TargetNo2Save', QuTarget='$Target2Save', QuLetter='$Letter2Save', QuTimestamp=QuTimestamp where QuId=(select EnId from Entries where $Where)");
+						LogAccBoothQuerry("update Qualifications set QuSession='$Session2Save', QuTarget='$Target2Save', QuLetter='$Letter2Save', QuTimestamp=QuTimestamp where QuId=(select EnId from Entries where $Where)");
 						checkAgainstLUE($EnIdToUpdate);
 
 						safe_w_sql("Update Entries set EnBadgePrinted=0, EnTimestamp='".date('Y-m-d H:i:s')."' where EnId=$EnIdToUpdate");
@@ -1034,11 +1031,10 @@ if($DataSource) {
 			$idNewRow = safe_w_last_id();
 
 			// aggiungo la riga in Qualifications
-			$Insert = "INSERT INTO Qualifications (QuId,QuSession,QuTargetNo,QuTarget,QuLetter) "
+			$Insert = "INSERT INTO Qualifications (QuId, QuSession, QuTarget, QuLetter) "
 				. "VALUES("
 				. StrSafe_DB($idNewRow) . ","
 				. StrSafe_DB($Session2Save) . ","
-				. StrSafe_DB($TargetNo2Save) . ","
 				. $Target2Save . ","
 				. StrSafe_DB($Letter2Save) . ") ";
 			$Rs=safe_w_sql($Insert);
@@ -1046,7 +1042,6 @@ if($DataSource) {
 			if($Where=GetAccBoothEnWhere($idNewRow, true, true)) {
 				LogAccBoothQuerry("INSERT INTO Qualifications
 						set QuSession=".StrSafe_DB($Session2Save).",
-						QuTargetNo=".StrSafe_DB($TargetNo2Save).",
 						QuTarget=".$Target2Save.",
 						QuLetter=".StrSafe_DB($Letter2Save).",
 						QuId=(select EnId from Entries Where $Where)");
@@ -1058,7 +1053,7 @@ if($DataSource) {
 				<td>$Session2Save</td>
 				<td>$Division2Save</td>
 				<td>$Class2Save</td>
-				<td>$TargetNo2Save</td>
+				<td>$Target2Save.$Letter2Save</td>
 				<td>$ShootInd2Save</td>
 				<td>$ShootTeam2Save</td>
 				<td>$ShootFinInd2Save</td>

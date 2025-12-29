@@ -1,0 +1,35 @@
+.sesInfo {
+    margin:0.1em;
+    border:0.1em solid black;
+    border-radius: 0.4em;
+    min-height: 6em;
+    display: inline-block;
+    box-shadow: 1px 1px 1px #888888;
+}
+
+.sesInfoHeader {
+    padding:0.3em;
+    background-color: var(--header-dark);
+    color: var(--header-light);
+    text-align: center;
+    font-weight: bold;
+    font-size: larger;
+}
+
+.sesInfoBody {
+    white-space: nowrap;
+    padding: 0.5em;
+    text-align: left;
+}
+
+.sesInfoDataRow {
+    margin-bottom: 0.5em;
+}
+
+.inputBox {
+    text-align: right;
+}
+.inputBox input {
+    padding: 0.25em;
+    text-align: right;
+}

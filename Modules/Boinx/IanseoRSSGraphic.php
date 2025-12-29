@@ -22,7 +22,7 @@ $fotodir='http://' . $_SERVER['HTTP_HOST'] . $CFG->ROOT_DIR ;
 $GridIndTemplate="select EvFinalFirstPhase, fs1.FsLetter Target, fs2.FsLetter OppTarget, "
 	. " concat_ws('/', concat_ws(' ', upper(e1.EnFirstName), e1.EnName), concat_ws(' ', upper(e2.EnFirstName), e2.EnName)) QryWho"
 	. ", concat_ws('-', if(EvMatchMode,f1.FinSetScore,f1.FinScore), if(EvMatchMode,f2.FinSetScore,f2.FinScore)) QryScore"
-	. ", '' Rank"
+	. ", '' as `Rank`"
 	. ", GrPhase"
 	. ", f1.FinEvent"
 	. ", EvProgr"
@@ -35,7 +35,7 @@ $GridIndTemplate="select EvFinalFirstPhase, fs1.FsLetter Target, fs2.FsLetter Op
 	. " inner join Entries e2 on f1.FinTournament=e2.EnTournament and f2.FinAthlete=e2.EnId "
 	. " left join FinSchedule fs1 on f1.FinTournament=fs1.FsTournament and f1.FinEvent=fs1.FsEvent and fs1.FsTeamEvent=0 and fs1.FsMatchNo=f1.FinMatchNo "
 	. " left join FinSchedule fs2 on f2.FinTournament=fs2.FsTournament and f2.FinEvent=fs2.FsEvent and fs2.FsTeamEvent=0 and fs2.FsMatchNo=f2.FinMatchNo "
-	. " inner join Events on f1.FinEvent=EvCode and f1.FinTournament=EvTournament and EvTeamEvent=0 "
+	. " inner join `Events` on f1.FinEvent=EvCode and f1.FinTournament=EvTournament and EvTeamEvent=0 "
 	. " inner join Grids on f1.FinMatchNo=GrMatchNo "
 
 	. "where"
@@ -46,7 +46,7 @@ $GridIndTemplate="select EvFinalFirstPhase, fs1.FsLetter Target, fs2.FsLetter Op
 $GridTeamTemplate="select EvFinalFirstPhase, fs1.FsLetter Target, fs2.FsLetter OppTarget, "
 	. " concat_ws('/', concat_ws(' ', c1.CoCode, c1.CoName), concat_ws(' ', c2.CoCode, c2.CoName)) QryWho"
 	. ", concat_ws('-', if(EvMatchMode,f1.TfSetScore,f1.TfScore), if(EvMatchMode,f2.TfSetScore,f2.TfScore)) QryScore"
-	. ", '' Rank"
+	. ", '' as  `Rank`"
 	. ", GrPhase"
 	. ", f1.TfEvent"
 	. ", EvProgr"
@@ -59,7 +59,7 @@ $GridTeamTemplate="select EvFinalFirstPhase, fs1.FsLetter Target, fs2.FsLetter O
 	. " inner join Countries c2 on f1.TfTournament=c2.CoTournament and f2.TfTeam=c2.CoId "
 	. " left join FinSchedule fs1 on f1.TfTournament=fs1.FsTournament and f1.TfEvent=fs1.FsEvent and fs1.FsTeamEvent=1 and fs1.FsMatchNo=f1.TfMatchNo "
 	. " left join FinSchedule fs2 on f2.TfTournament=fs2.FsTournament and f2.TfEvent=fs2.FsEvent and fs2.FsTeamEvent=1 and fs2.FsMatchNo=f2.TfMatchNo "
-	. " inner join Events on f1.TfEvent=EvCode and f1.TfTournament=EvTournament and EvTeamEvent=1 "
+	. " inner join `Events` on f1.TfEvent=EvCode and f1.TfTournament=EvTournament and EvTeamEvent=1 "
 	. " inner join Grids on f1.TfMatchNo=GrMatchNo "
 
 	. "where"
@@ -68,11 +68,11 @@ $GridTeamTemplate="select EvFinalFirstPhase, fs1.FsLetter Target, fs2.FsLetter O
 	. " and f1.TfEvent='%s'"
 	. " and GrPhase=%s";
 
-$LstTemplate="Select substr(QuTargetNo,2) Target, EnName, EnFirstName
+$LstTemplate="Select CONCAT(QuTarget, QuLetter) Target, EnName, EnFirstName
 	from Qualifications
 	inner join Entries on EnId=QuId and EnTournament=$TourId
 	Where QuSession='%s'
-	order by QuTargetNo";
+	order by QuSession, QuTarget, QuLetter";
 
 // finds out what Feeds are to be served!
 $MyQuery="select * from BoinxSchedule
@@ -255,16 +255,16 @@ foreach($FeedItems as $Title=>$FeedData) {
 		$row->appendChild($a=$XmlDoc->createElement('score'));
 		$a->appendChild($XmlDoc->createCDATASection($items['score']));
 		$row->appendChild($a=$XmlDoc->createElement('country'));
-		$a->appendChild($XmlDoc->createCDATASection($items['country']));
+		$a->appendChild($XmlDoc->createCDATASection(($items['country']??'')));
 
 		$row->appendChild($a=$XmlDoc->createElement('flag'));
-		$fl=sprintf($FlagTpl, $items['country']);
+		$fl=sprintf($FlagTpl, ($items['country']??''));
 		if(file_exists($CFG->DOCUMENT_PATH . $fl)) {
 			$a->AppendChild($XmlDoc->createCDATASection($fotodir . $fl));
 		}
 
 		$row->appendChild($a=$XmlDoc->createElement('flagsvg'));
-		$fl=sprintf($FlagSvg, $items['country']);
+		$fl=sprintf($FlagSvg, ($items['country']??''));
 		if(file_exists($CFG->DOCUMENT_PATH . $fl)) {
 			$a->AppendChild($XmlDoc->createCDATASection($fotodir . $fl));
 		}

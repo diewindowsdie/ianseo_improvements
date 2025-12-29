@@ -227,7 +227,7 @@ if($ShowMiss and !empty($_GET['T'])) {
     list($FsDate, $FsTime)=explode('|', $_GET['T']);
     $cnt = 0;
     $tmpRow = '';
-    $Q=GetFinMatches_sql(" and fs1.FSScheduledDate='$FsDate' and fs1.FSScheduledTime='$FsTime' and f1.FinConfirmed=0", 0, ' target1');
+    $Q=GetFinMatches_sql(" and fs1.FSScheduledDate='$FsDate' and fs1.FSScheduledTime='$FsTime' and f1.FinConfirmed=0", 0, ' CAST(target1 as SIGNED)');
     while($r=safe_fetch($Q)) {
         if(!$r->familyName1 or !$r->familyName2) continue;
         $lnk=' onclick="location.href=\''.go_get('B', $r->match1.$_SESSION['BarCodeSeparator'].$r->teamEvent.$_SESSION['BarCodeSeparator'].$r->event).'\'"';

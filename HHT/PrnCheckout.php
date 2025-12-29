@@ -10,21 +10,6 @@ if(!isset($_REQUEST["Session"]) || !is_numeric($_REQUEST["Session"]) || !isset($
 if(!isset($isCompleteResultBook))
 	$pdf = new ResultPDF((get_text('StartlistSession','Tournament')));
 
-/*$MyQuery = "SELECT EnCode as Bib, EnName AS Name, EnFirstName AS FirstName, SUBSTRING(QuTargetNo,1,1) AS Session, SUBSTRING(QuTargetNo,2," . (TargetNoPadding+1) . ") AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode,EnAgeClass as AgeClass,  EnSubClass as SubClass, ClDescription, DivDescription, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, ";
-$MyQuery.= "QuD" . $_REQUEST["Distance"]. "Score AS Score, QuD" . $_REQUEST["Distance"]. "Gold as Gold, QuD" . $_REQUEST["Distance"]. "Xnine as Xnine,";
-$MyQuery.= "QuD5Score, QuD5Rank, QuD6Score, QuD6Rank, QuD7Score, QuD7Rank, QuD8Score, QuD8Rank, ";
-$MyQuery.= "ToType, TtGolds, TtXNine ";
-$MyQuery.= "FROM Tournament AS t ";
-$MyQuery.= "INNER JOIN Tournament*Type AS tt ON t.ToType=tt.TtId ";
-$MyQuery.= "INNER JOIN Entries AS e ON t.ToId=e.EnTournament ";
-$MyQuery.= "INNER JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament ";
-$MyQuery.= "INNER JOIN Qualifications AS q ON e.EnId=q.QuId ";
-$MyQuery.= "INNER JOIN Classes AS cl ON e.EnClass=cl.ClId AND ClTournament=" . StrSafe_DB($_SESSION['TourId']) . " ";
-$MyQuery.= "INNER JOIN Divisions AS d ON e.EnDivision=d.DivId AND DivTournament=" . StrSafe_DB($_SESSION['TourId']) . " ";
-$MyQuery.= "WHERE EnAthlete=1 AND ToId = " . StrSafe_DB($_SESSION['TourId']) . " ";
-$MyQuery.= "AND QuSession = " . StrSafe_DB($_REQUEST["Session"]) . " ";
-$MyQuery.= "ORDER BY QuTargetNo, CoCode, Name, CoName, FirstName ";*/
-
 $MyQuery = "SELECT EnCode as Bib, EnName AS Name, upper(EnFirstName) AS FirstName, SUBSTRING(QuTargetNo,1,1) AS Session, SUBSTRING(QuTargetNo,2," . (TargetNoPadding+1) . ") AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode,EnAgeClass as AgeClass,  EnSubClass as SubClass, ClDescription, DivDescription, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, ";
 $MyQuery.= "upper(right(QuTargetNo,1)) TargetLetter, QuD" . $_REQUEST["Distance"]. "Score AS Score, QuD" . $_REQUEST["Distance"]. "Gold as Gold, QuD" . $_REQUEST["Distance"]. "Xnine as Xnine,";
 $MyQuery.= "QuD5Score, QuD5Rank, QuD6Score, QuD6Rank, QuD7Score, QuD7Rank, QuD8Score, QuD8Rank, ";

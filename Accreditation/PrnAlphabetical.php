@@ -27,7 +27,7 @@ if(isset($_REQUEST["ArcherName"]) && preg_match("/^[-,0-9A-Z]*$/i",str_replace("
 	$TmpWhere = substr($TmpWhere,0,-3);
 }
 
-$MyQuery = "SELECT EnCode as Bib, EnName AS Name, left(EnFirstName,1) AS Initial, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, SUBSTRING(QuTargetNo,2) AS TargetNo, c.CoCode AS NationCode, c.CoNameComplete AS Nation, c2.CoNameComplete as Nation2, c3.CoNameComplete as Nation3, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, sc.ScDescription as SubclassDescription, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, IF(AEId IS NULL, 0, 1) as OpDone, EnPays, APPrice  ";
+$MyQuery = "SELECT EnCode as Bib, EnName AS Name, left(EnFirstName,1) AS Initial, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, CONCAT(QuTarget, QuLetter) AS TargetNo, c.CoCode AS NationCode, c.CoNameComplete AS Nation, c2.CoNameComplete as Nation2, c3.CoNameComplete as Nation3, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, sc.ScDescription as SubclassDescription, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, IF(AEId IS NULL, 0, 1) as OpDone, EnPays, APPrice  ";
 $MyQuery.= "FROM Entries AS e ";
 $MyQuery.= "LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament ";
 $MyQuery.= "LEFT JOIN Countries AS c2 ON e.EnCountry2=c2.CoId AND e.EnTournament=c2.CoTournament ";

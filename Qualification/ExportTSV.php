@@ -34,7 +34,7 @@ $Sql = "SELECT EnCode as Bib, ifnull(bib.EdExtra,'') as LocalBib, EnFirstName AS
 	left join ExtraData bib on bib.EdId=EnId and bib.EdType='Z'
 	left join ExtraData mail on mail.EdId=EnId and mail.EdType='E'
 	WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1
-	ORDER BY QuTargetNo, CoCode, EnName ";
+	ORDER BY QuSession, QuTarget, QuLetter, CoCode, EnName ";
 $q=safe_r_sql($Sql);
 	//echo $MyQuery;exit;
 
