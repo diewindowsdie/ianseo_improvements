@@ -326,8 +326,8 @@ if (safe_num_rows($Rs)>0) {
             }
 
             print '<a class="Link mr-5" href="javascript:ChangePhase(\'' . $PP . '\',' . $Sch. ');">' . get_text('PrecPhase') . '</a>'
-                //. '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="Link" href="javascript:ChangePhase(' . $NextPhase . ');">' . get_text('NextPhase') . '</a>'
-                . '<a class="Link mr-5" href="javascript:ChangePhase(\'' . $NP . '\',' . $Sch. ');">' . get_text('NextPhase') . '</a>'
+                //. '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="Link" href="javascript:ChangePhase(' . $NextPhase . ');">' . get_text('ShowNextPhase') . '</a>'
+                . '<a class="Link mr-5" href="javascript:ChangePhase(\'' . $NP . '\',' . $Sch. ');">' . get_text('ShowNextPhase') . '</a>'
                 . '<a class="Link mr-5" href="PrnTeam.php?Event='.$MyRow->TfEvent.'&IncBrackets=1&ShowTargetNo=1" target="Griglie">' . get_text('Brackets') . '</a>';
             if($_REQUEST['d_Phase']>0) {
                 print '<a class="Link mr-5" href="PDFScoreMatch.php?Event='.$MyRow->TfEvent.'&Phase='.$NextPhase.$QrCodeScorecards.'" target="Scores">' . get_text('NextMatchScores') . '</a>'
@@ -435,7 +435,7 @@ if (safe_num_rows($Rs)>0) {
 
     list($PP,$NP)=PrecNextPhaseForButton();
 
-    print '<a class="Link" href="ChangePhase(\'' . $PP . '\',' . $Sch. ');">' . get_text('PrecPhase') . '</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="Link" href="ChangePhase(\'' . $NP . '\',' . $Sch. ');">' . get_text('NextPhase') . '</a>';
+    print '<a class="Link" href="ChangePhase(\'' . $PP . '\',' . $Sch. ');">' . get_text('PrecPhase') . '</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="Link" href="ChangePhase(\'' . $NP . '\',' . $Sch. ');">' . get_text('ShowNextPhase') . '</a>';
     print '</td>';
     print '</tr>';
 }

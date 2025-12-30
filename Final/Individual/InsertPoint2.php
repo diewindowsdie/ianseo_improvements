@@ -343,7 +343,7 @@ if(!empty($_REQUEST['x_Session']) and $_REQUEST['x_Session']!=-1) {
                 }
 
 				print '<a class="Link mr-5" href="javascript:ChangePhase(\'' . $PP . '\',' .$Sch .');">' . get_text('PrecPhase') . '</a>
-				    <a class="Link mr-5" href="javascript:ChangePhase(\'' . $NP . '\',' .$Sch .');">' . get_text('NextPhase') . '</a>
+				    <a class="Link mr-5" href="javascript:ChangePhase(\'' . $NP . '\',' .$Sch .');">' . get_text('ShowNextPhase') . '</a>
 				    <a class="Link mr-5" href="PrnIndividual.php?Event='.$MyRow->FinEvent.'&IncBrackets=1&ShowTargetNo=1" target="Griglie">' . get_text('Brackets') . '</a>';
 				if($_REQUEST['d_Phase']>0) {
 					echo '<a class="Link mr-5" href="PDFScoreMatch.php?Event='.$MyRow->FinEvent.'&Phase='.$NextPhase.$QrCodeScorecards.'" target="Scores">' . get_text('NextMatchScores') . '</a>
@@ -444,10 +444,10 @@ if(!empty($_REQUEST['x_Session']) and $_REQUEST['x_Session']!=-1) {
 		print '<td colspan="' . (8-$Cols2Remove) . '">';
 		//$PrecPhase = ($_REQUEST['d_Phase']==0 ? 1 : ($_REQUEST['d_Phase']==32 ? 48 :$_REQUEST['d_Phase']*2));
 		//$NextPhase = ($_REQUEST['d_Phase']>1 ? ($_REQUEST['d_Phase']==48 ? 32 : ($_REQUEST['d_Phase']==24 ? 16 : $_REQUEST['d_Phase']/2)) : 0);
-		//print '<a class="Link" href="javascript:ChangePhase(' . $PrecPhase . ');">' . get_text('PrecPhase') . '</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="Link" href="javascript:ChangePhase(' . $NextPhase . ');">' . get_text('NextPhase') . '</a>';
+		//print '<a class="Link" href="javascript:ChangePhase(' . $PrecPhase . ');">' . get_text('PrecPhase') . '</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="Link" href="javascript:ChangePhase(' . $NextPhase . ');">' . get_text('ShowNextPhase') . '</a>';
 
 		list($PP,$NP)=PrecNextPhaseForButton();
-		print '<a class="Link" href="javascript:ChangePhase(\'' . $PP . '\',' . $Sch.');">' . get_text('PrecPhase') . '</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="Link" href="javascript:ChangePhase(\'' . $NP . '\','.$Sch.');">' . get_text('NextPhase') . '</a>';
+		print '<a class="Link" href="javascript:ChangePhase(\'' . $PP . '\',' . $Sch.');">' . get_text('PrecPhase') . '</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="Link" href="javascript:ChangePhase(\'' . $NP . '\','.$Sch.');">' . get_text('ShowNextPhase') . '</a>';
 		print '</td>';
 		print '</tr>';
 	}
