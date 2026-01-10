@@ -240,7 +240,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
 	$pdf->SetFont($pdf->FontStd,'B',10);
 	$pdf->SetXY($WhereX[$WhichScore],$WhereY[$WhichScore]);
 	$pdf->Cell($GoldW,$pdf->ScoreCellHeight,'',0,0,'C',0);
-	$pdf->Cell(2*$GoldW+2*$TotalW+$NumCol*$ArrowW,$pdf->ScoreCellHeight, $PhaseName,1,0,'C',1);
+	$pdf->Cell(2*$GoldW+2*$TotalW+$NumCol*$ArrowW,$pdf->ScoreCellHeight, $PhaseName,1,0,'R',1);
 	//Winner Checkbox
 	$pdf->SetXY($WhereX[$WhichScore],$WhereY[$WhichScore]);
 	$pdf->Cell(2*$GoldW,$pdf->ScoreCellHeight,'',0,0,'C',0);
@@ -254,7 +254,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
 		$pdf->SetLineWidth($tmpWidth);
 	}
 	$pdf->SetDefaultColor();
-	$pdf->Cell($GoldW+2*$TotalW+$NumCol*$ArrowW,$pdf->ScoreCellHeight, get_text('Winner'),0,1,'L',0);
+	$pdf->Cell($GoldW+2*$TotalW+$NumCol*$ArrowW,$pdf->ScoreCellHeight, get_text('Winner'),0,1,'L',0); //winner
 	$WhereY[$WhichScore]=$pdf->GetY();
 
 	// Row 2: Arrow numbers, totale, points, etc
