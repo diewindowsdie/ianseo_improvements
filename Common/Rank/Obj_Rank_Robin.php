@@ -258,7 +258,7 @@ class Obj_Rank_Robin extends Obj_Rank{
 				inner join Events on EvTournament=RrPartTournament and EvCode=RrPartEvent and EvTeamEvent=RrPartTeam and EvElimType=5
 			    inner join RoundRobinLevel on RrLevTournament=RrPartTournament and RrLevTeam=RrPartTeam and RrLevEvent=RrPartEvent and RrLevLevel=RrPartLevel
 				left join (
-				    select EnId, IndEvent, trim(concat_ws(' ', upper(EnFirstName), EnName)) as Entry, if(CoCode=CoName, CoCode, concat_ws('-', CoCode, CoName)) as EnCountry, EnTvFamilyName, EnTvGivenName, EnTvInitials 
+				    select EnId, IndEvent, trim(concat_ws(' ', upper(EnFirstName), EnName)) as Entry, if(CoCode=CoName, CoCode, CoName) as EnCountry, EnTvFamilyName, EnTvGivenName, EnTvInitials 
 					from Entries
 					inner join Individuals on IndTournament=EnTournament and IndId=EnId
 					inner join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0 
