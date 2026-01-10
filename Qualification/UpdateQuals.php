@@ -88,8 +88,9 @@ foreach ($_REQUEST as $Key => $Value) {
         }
     } else {
         if ($Value != 0) {
+            $Value = intval($Value);
             // distanza trattata
-            $Select = "SELECT QuD" . $Dist . "Score AS Score,QuD" . $Dist . "Gold AS Gold,QuD" . $Dist . "Xnine AS Xnine,
+            $Select = "SELECT QuD" . $Dist . "Score AS Score,QuD" . $Dist . "Gold AS Gold,QuD" . $Dist . "Xnine AS Xnine, TfT".$Dist." as Tgt, 
                     IF(TfGoldsChars" . $Dist . "='',IF(TfGoldsChars='',ToGoldsChars,TfGoldsChars),TfGoldsChars" . $Dist . ") AS TtGolds, IF(TfXNineChars" . $Dist . "='',IF(TfXNineChars='',ToXNineChars,TfXNineChars),TfXNineChars" . $Dist . ") AS TtXNine
                 FROM Qualifications
                 INNER JOIN Entries ON QuId=EnId
@@ -103,81 +104,43 @@ foreach ($_REQUEST as $Key => $Value) {
                 jsonout($JSON);
             }
             $Row = safe_fetch($RsGX);
+            $Tgt = GetGoodLettersFromTgtId(($Row->Tgt??1));
 
-            /*
-             * Il giochino funziona così:
-             * siano #G il numero di ori inserito nella casella, min($G) il valore del simbolo con meno valore negli ori,
-             * #X il numero di X inserito nella casella e min($X) il valore del simbolo con meno valore negli X allora
-             *
-             * il numero di ori è buono se
-             * 			[score - (#G x min($G))] > =0
-             *
-             * il numero delle X è buono se
-             * 			#X < #G,
-             * 			nel caso in cui i simboli delle X sono inclusi in quelli degli ori
-             *
-             * 			[score - (#G x min($G)) - (#X x min($X))] >= 0
-             * 			nel caso in cui i simboli non siano inclusi
-             *
-             */
 
-            $arrG = str_split($Row->TtGolds);
-            $arrX = str_split($Row->TtXNine);
+            $arrG = array_intersect(str_split($Row->TtGolds),$Tgt);
+            $arrX = array_intersect(str_split($Row->TtXNine),$Tgt);
 
-            $minG = 100;
-            $minX = 100;
-
-            // minimo dei gold
-            for ($i = 0; $i < count($arrG); ++$i) {
-                $tmp = ValutaArrowString($arrG[$i]);
-                if ($tmp < $minG) {
-                    $minG = $tmp;
+            //Check if arrays are completely included
+            $validValue=true;
+            if(substr($Cosa,-5)=='Xnine'){
+                $validValue = ($validValue AND ($Value*GetMinTargetValue($arrX)<=$Row->Score));
+                if($Row->Gold>0 AND count(array_intersect($arrX,$arrG))==count($arrX)) {
+                    $validValue = ($validValue AND $Value<=$Row->Gold);
+                } else if(count(array_intersect($arrX,$arrG))!=0 and count(array_intersect($arrX,$arrG))!=count($arrX)) {
+                    if($Value>=$Row->Gold) {
+                        $validValue = ($validValue and floor((intval($Row->Score) - ($Row->Gold * GetMinTargetValue($arrG))) / GetMinTargetValue($arrX)) - ($Value - $Row->Gold) >= 0);
+                    } else {
+                        $validValue = ($validValue AND $Value<=$Row->Gold);
+                    }
+                } else if(count(array_intersect($arrX,$arrG))==0) {
+                    $validValue = ($validValue AND intval($Row->Score)-($Row->Gold*GetMinTargetValue($arrG))-($Value*GetMinTargetValue($arrX))>=0);
+                }
+            } else if(substr($Cosa,-4)=='Gold') {
+                $validValue = ($validValue AND ($Value*GetMinTargetValue($arrG)<=$Row->Score));
+                if($Row->Xnine>0 AND count(array_intersect($arrG,$arrX))==count($arrG)) {
+                    $validValue = ($validValue AND $Value<=$Row->Xnine);
+                } else if(count(array_intersect($arrG,$arrX))!=0 and count(array_intersect($arrG,$arrX))!=count($arrG)) {
+                    if($Value>=$Row->Xnine) {
+                        $validValue = ($validValue and floor((intval($Row->Score) - ($Row->Xnine * GetMinTargetValue($arrX))) / GetMinTargetValue($arrG)) - ($Value - $Row->Xnine) >= 0);
+                    } else {
+                        $validValue = ($validValue AND $Value<=$Row->Xnine);
+                    }
+                } else if(count(array_intersect($arrG,$arrX))==0) {
+                    $validValue = ($validValue AND intval($Row->Score)-($Row->Xnine*GetMinTargetValue($arrX))-($Value*GetMinTargetValue($arrG))>=0);
                 }
             }
-
-            // minimo delle x
-            for ($i = 0; $i < count($arrX); ++$i) {
-                $tmp = ValutaArrowString($arrX[$i]);
-                if ($tmp < $minX) {
-                    $minX = $tmp;
-                }
-            }
-
-            if (strpos($Key, 'Gold') !== false) {
-                if (($Row->Score - ($Value * $minG)) < 0) {
-                    jsonOut($JSON);
-                }
-            } elseif (strpos($Key, 'Xnine') !== false) {
-                /*
-                 * Se l'intersezione delle colonne P delle x e degli ori non è vuota oppure non lo è
-                 * quella delle colonne N, allora le x sono incluse negli ori
-                 *
-                 */
-                $arrG_P = array();
-                $arrG_N = array();
-                for ($i = 0; $i < count($arrG); ++$i) {
-                    $arrG_P[] = DecodeFromLetter($arrG[$i]);
-                    $arrG_N[] = ValutaArrowString($arrG[$i]);
-                }
-
-                $arrX_P = array();
-                $arrX_N = array();
-                for ($i = 0; $i < count($arrX); ++$i) {
-                    $arrX_P[] = DecodeFromLetter($arrX[$i]);
-                    //$arrX_N[]=$LetterPoint[$arrX[$i]]['N'];
-                    $arrX_N[] = ValutaArrowString($arrX[$i]);
-                }
-
-                // inclusione
-                if (array_intersect($arrX_P, $arrG_P) !== array() || array_intersect($arrX_N, $arrG_N) !== array()) {
-                    if ($Value > $Row->Gold) {
-                        jsonOut($JSON);
-                    }
-                } else {
-                    if (($Row->Score - ($Row->Gold * $minG) - ($Value * $minX)) < 0) {
-                        jsonout($JSON);
-                    }
-                }
+            if(!$validValue) {
+                jsonOut($JSON);
             }
         }
     }

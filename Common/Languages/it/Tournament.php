@@ -599,6 +599,7 @@ $lang['IsDbVersionTooOld']='La versione del DB Infosystem è più vecchia di que
 $lang['IsGenericConfig']='Configurazione generica';
 $lang['IsParamWarning']='Setup InfoSystem!<br/>Usare con ESTREMA cautela!';
 $lang['IsSpecificConfig']='Elementi specifici della competizione';
+$lang['ItemsNo']='Numero di Elementi: {$a}';
 $lang['Judge']='Giudice di gara';
 $lang['JudgesAssigment']='Assegnazione dei Giudici di Gara';
 $lang['JudgesSelectionForm']='Modulo di selezione del giudice';

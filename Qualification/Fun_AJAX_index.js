@@ -52,14 +52,14 @@ function UpdateQuals(Field) {
 	}
 
 	$.getJSON(RootDir+"UpdateQuals.php", form, function(data) {
+		console.log(data.which)
 		if(data.error==0) {
 			$('#idScore_' + data.id).html(data.score);
 			$('#idGold_' + data.id).html(data.gold);
 			$('#idXNine_' + data.id).html(data.xnine);
-
-			SetStyle(data.which,'');
+			$('#'+Field).removeClass('error');
 		} else {
-			SetStyle(data.which,'error');
+			$('#'+Field).addClass('error');
 		}
 	});
 }

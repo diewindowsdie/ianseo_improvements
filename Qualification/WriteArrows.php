@@ -149,7 +149,7 @@ include('Common/Templates/head.php');
 
 			if (($Ip<=$RowTour->MaxArrows-1) AND ($Fp<=$RowTour->MaxArrows-1)) {
 
-				$TargetFilter = "AND QuSession=".StrSafe_DB($_REQUEST['x_Session'])." AND QuTarget >=" . intval($_REQUEST['x_From']) . " AND QuTarget<='" . $_REQUEST['x_Session'] . str_pad($_REQUEST['x_To'],TargetNoPadding,'0',STR_PAD_LEFT) . "Z' ";
+				$TargetFilter = "AND QuSession=".StrSafe_DB($_REQUEST['x_Session'])." AND QuTarget >=" . intval($_REQUEST['x_From']) . " AND QuTarget<='" . str_pad($_REQUEST['x_To'],TargetNoPadding,'0',STR_PAD_LEFT) . "Z' ";
 
 				$ScoreTH = '';	// header dello score
 				$ScoreTD = '';	// td dello score

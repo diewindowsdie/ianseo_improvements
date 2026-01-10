@@ -369,8 +369,8 @@ if(isset($_REQUEST["Event"]) && isset($_REQUEST["Session"]) && isset($_REQUEST["
 				}
 			}
 
-			if(!$Country) debug_svela($Group);
-			foreach($Entries[$Index][$Country] as $Archer) {
+			//if(!$Country) debug_svela($Group);
+			foreach(($Entries[$Index][$Country]??0) as $Archer) {
 				// if no place at all skips the loop
 				if(!$CurIndices) {
 					$NotAssigned[]=$Archer;

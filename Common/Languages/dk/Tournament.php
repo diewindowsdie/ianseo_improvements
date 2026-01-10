@@ -570,6 +570,7 @@ $lang['IsDbVersionTooOld']='InfoSystem Database Version er ældre end Ianseo';
 $lang['IsGenericConfig']='Generisk opsætning';
 $lang['IsParamWarning']='Infosystem opsætning!<br>Brug yderst varsomt';
 $lang['IsSpecificConfig']='Konkurrence specifikke dele';
+$lang['ItemsNo']='Antal enheder: {$a}';
 $lang['Judge']='Dommer';
 $lang['JudgesAssigment']='Dommer tildeling';
 $lang['JudgesSelectionForm']='Dommer udvælgelse formular';
