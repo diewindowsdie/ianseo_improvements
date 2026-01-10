@@ -285,9 +285,12 @@ A notification will be sent both to you and Ianseo Staff.<br/>
 If you don\'t remember your password you can reset it from $a';
 $lang['Sport80-ApiEnabled']='Sport 80 API Status';
 $lang['Sport80-CompUUID']='Sport 80 Competition UUID';
+$lang['Sport80-DeleteEntries']='Delete Entries';
 $lang['Sport80-DryRunEntries']='Check Entries Status - No Import';
 $lang['Sport80-ForceUpdate']='Force Synchronisation of all Entries';
-$lang['Sport80-LoadEntries']='Download and Update Entries';
+$lang['Sport80-LoadEntries']='Add/Update and Delete Entries';
+$lang['Sport80-skipSessionUpdate']='Do not update assigned sessions';
+$lang['Sport80-UpdateEntries']='Add/Update Entries';
 $lang['Start Ianseo']='Go to IANSEO!';
 $lang['Status']='Status';
 $lang['stdValue']='Value';

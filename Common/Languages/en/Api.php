@@ -46,6 +46,7 @@ $lang['ISK-AuthRequest']='Authorization Request';
 $lang['ISK-BadCompCode']='Incorrect Competition Code';
 $lang['ISK-CheckAlive']='Check Device';
 $lang['ISK-checkCompeting']='Only Competing Athletes';
+$lang['ISK-CheckDataFeatures']='Data Validation Features';
 $lang['ISK-checkGate']='Check Gate Flow (In/Out)';
 $lang['ISK-ConnectionStatus']='Connection Status';
 $lang['ISK-DeleteDevices']='Delete Devices';
@@ -67,6 +68,10 @@ $lang['ISK-enableTotals']='Enable Total View on devices';
 $lang['ISK-enableWIFIManagement']='Authorize App to manage device Wi-Fi';
 $lang['ISK-ExportDevices']='Export Devices';
 $lang['ISK-ForceConfirm']='Force device confirmation';
+$lang['ISK-ForceQRCodeScanning']='Mandatory QR Code scan';
+$lang['ISK-ForceQRCodeScanning-Help']='Allow configuration only via QR Code scan.<br>
+No manual selection of targets is allowed.<br>
+Mainly for remote-Online tournaments and to avoid scoring on different  targets';
 $lang['ISK-Gps']='GPS Location';
 $lang['ISK-gpsFrequency']='Update Frequency';
 $lang['ISK-hideTotals']='Hide totals';
@@ -120,6 +125,7 @@ $lang['ISK-StatusNoShoot']='Device can\'t score';
 $lang['ISK-StatusOK']='Device configuration OK';
 $lang['ISK-StatusReloading']='Configuration reloading';
 $lang['ISK-StatusWaitConfirm']='Awaiting device confirmation';
+$lang['ISK-takeScorecardPhoto']='Take Scorecards Pictures';
 $lang['ISK-TruncateTable']='Empty Temporary Table';
 $lang['ISK-TruncateTableAll']='Empty Temporary Table (complete)';
 $lang['ISK-UsePersonalDevices']='Use Personal Devices';

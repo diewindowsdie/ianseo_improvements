@@ -358,7 +358,7 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 			'dist' => $Data->distance,
 			'end' => 0,
 			'ses' => ($Data->IskDvAppVersion != ISK_NG_LITE_CODE ? $Data->IskDvSchedKey : substr($Data->key, 0,1)),
-			'target' => intval(substr($Data->key, -4, 3)),
+			'target' => intval(substr($Data->key, strpos($Data->key,'.')+1,-1)),
 			'group' => $r->IskDvGroup,
 			'type' => $Data->type,
 			'subtype' => $Data->subtype,
@@ -494,7 +494,7 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
 	$Filtre='';
 
 	if(!empty($Options['target'])) {
-		$Filtre=' AND substr(IskDtTargetNo, -4, 3)+0 = ' . intval($Options['target']);
+		$Filtre=' AND CAST(SUBSTR(IskDtTargetNo, POSITION('.' IN IskDtTargetNo)+1) AS SIGNED) = ' . intval($Options['target']);
 	}
 
 	switch($IskSequence['type']) {

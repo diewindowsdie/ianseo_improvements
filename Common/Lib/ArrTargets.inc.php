@@ -1043,7 +1043,9 @@ function GetTargetColors($TourId, $TrgName='') {
 
 		if ($row=safe_fetch($r)) {
 			$ret[]='A';	// lo zero lo metto sempre
-            $ret[]=$extraLetter['A'];
+            if($target==18) {
+                $ret[] = $extraLetter['A'];
+            }
             foreach (range('B','Z') as $letter) {
 				if ($row->{$letter . '_size'}!=0) {
                     $ret[]=$letter;
@@ -1168,7 +1170,7 @@ function GetMinTargetValue($TargetLetters) {
 	$ret=99999;
 
 	foreach($TargetLetters as $Letter) {
-		if($LetterPoint[$Letter]['N']>0 and $LetterPoint[$Letter]['N']<$ret) $ret=$LetterPoint[$Letter]['N'];
+		if($LetterPoint[$Letter]['N']>0 and $LetterPoint[$Letter]['N']<$ret) $ret=intval($LetterPoint[$Letter]['N']);
 	}
 
 	return $ret;

@@ -285,7 +285,6 @@ $lang['SpecialUpdatePassword']='Teniu una Instal·lació "avançada".<br/> Nomé
 $lang['Sport80-ApiEnabled']='Sport 80 API Status';
 $lang['Sport80-CompUUID']='Sport 80 Competition UUID';
 $lang['Sport80-DryRunEntries']='Comprova Estat Inscripcions – Sense Importar';
-$lang['Sport80-LoadEntries']='Descarrega i Actualitza Inscripcions';
 $lang['Start Ianseo']='Anar a IANSEO!';
 $lang['Status']='Estat';
 $lang['stdValue']='Valor';

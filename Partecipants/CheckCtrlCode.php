@@ -41,29 +41,27 @@ while($MyRow=safe_fetch($RsCl)) {
 }
 
 // get the Age classes based on the division selected
-$Select2 = "select distinct ClId, ClValidClass from Classes"
+$Select2 = "select distinct ClId from Classes"
 	. " inner join Divisions on DivTournament=ClTournament and DivAthlete=ClAthlete"
 	. ($Div ? " AND DivId='$Div'" : '')
 	. " where ClTournament={$_SESSION['TourId']}"
 	. " AND (ClDivisionsAllowed='' or find_in_set(DivId, ClDivisionsAllowed))"
 	. " AND ClSex in (-1, {$Sex})"
 	. ($Age ? " and (ClAthlete!='1' or (ClAgeFrom<=$Age and ClAgeTo>=$Age))" : '')
-	. " order by (ClAgeTo-ClAgeFrom) ASC, ClViewOrder, DivViewOrder ";
+	. " order by ClViewOrder, DivViewOrder ";
 $RsCl = safe_r_sql($Select2);
-$validClasses=array();
 while($MyRow=safe_fetch($RsCl)) {
-    if(!in_array($MyRow->ClId, $validClasses)) {
-        $JSON['age'][] = $MyRow->ClId;
-    }
-    $validClasses = array_merge($validClasses, explode(',', $MyRow->ClValidClass));
+	$JSON['age'][]=$MyRow->ClId;
 }
 
-if($JSON['age'] and !in_array($Clas, $JSON['age']) and $Clas!='') {
+if($JSON['age'] and !in_array($Clas, $JSON['age'])) {
 	$Clas=$JSON['age'][0];
+} else {
+    $Clas='';
 }
 
 // get the VALID classes based on the division and class selected
-$Select3 = "select distinct ClValidClass from Classes"
+$Select3 = "select distinct  ClValidClass from Classes"
 	. " inner join Divisions on DivTournament=ClTournament and DivAthlete=ClAthlete"
 	. ($Div ? " AND DivId='$Div'" : '')
 	. " where ClTournament={$_SESSION['TourId']}"

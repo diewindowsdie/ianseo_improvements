@@ -29,7 +29,13 @@ function ChangeSessionInfo_deferred(obj) {
     deferredObj.delete($(obj).attr('id'));
     $.getJSON('ManSessions_kiss-actions.php', {act:$(obj).attr('refValue'), session:$(obj).attr('refSession'), value: $(obj).val()}, function(data) {
         if(data.error==0) {
-            buildSessions(data.sessions);
+            $.each(data.sessions, (index, item) => {
+                if(item.Order == $(obj).attr('refSession')) {
+                    $(obj).val(item[($(obj).attr('refValue')=='t4s' ? 'Tar4Session' : 'Ath4Target')]);
+                    $(obj).attr('value',$(obj).val());
+                    $(obj).attr('oldVal',$(obj).val());
+                }
+            })
         } else {
             alert(data.msg);
             $(obj).val($(obj).attr('oldVal'));
