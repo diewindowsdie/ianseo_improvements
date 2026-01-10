@@ -359,6 +359,9 @@
 	{
 		$record=GetRows($id);
 		$record=$record[0];
+        if ($record['targetno'] == '0') {
+            $record['targetno'] = '';
+        }
 		$record['dob']=dateRenderer($record['dob'],get_text('DateFmt'));
 	}
 	else
@@ -369,7 +372,7 @@
 			'code' => '',
 			'status' => 0,
 			'session' => $ses!==null ? $ses : '',
-			'targetno' => $tar!==null ? $tar : '',
+			'targetno' => ($tar!==null && $tar != '0') ? $tar : '',
 			'firstname' => '',
 			'name' => '',
             'middlename' => '',
