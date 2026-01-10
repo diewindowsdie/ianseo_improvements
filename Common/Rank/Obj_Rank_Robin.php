@@ -728,7 +728,7 @@ class Obj_Rank_Robin extends Obj_Rank{
 				RrMatchRound as M1Round,
 				RrMatchMatchNo as M1MatchNo,
 				RrMatchTarget as M1Target,
-				RrMatchScheduledDate as M1ScheduledDate,
+				DATE_FORMAT(RrMatchScheduledDate, '" . get_text('DateFmtDB') . "') as M1ScheduledDate,
 				RrMatchScheduledTime as M1ScheduledTime,
 				RrMatchScheduledLength as M1ScheduledLength,
 				RrMatchAthlete as M1Athlete,
