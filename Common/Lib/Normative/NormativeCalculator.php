@@ -30,13 +30,16 @@ function calculateClassName($distances)
     return 'Provider' . $className;
 }
 
-function calcNormative($distances, $class, $division, $scoreByDistances)
+function calcNormative($distances, $class, $division, $scoreByDistances, $tourLocalizationRule)
 {
     $className = calculateClassName($distances);
     $fileName = $className . '.inc.php';
 
+    //российские нормативы сейчас лежат в папке FITA
+    $tourLocalizationRule = str_replace("default", "FITA", $tourLocalizationRule);
+
     try {
-        require_once('providers/' . $fileName);
+        require_once('Modules/Sets/' . $tourLocalizationRule . '/Normative/providers/' . $fileName);
 
         $provider = new $className();
         return $provider->calculateNormativeInternal($class, $division, $scoreByDistances);

@@ -35,7 +35,7 @@ class NormativeStatistics
                 $thisRowDistances[] = $row->{'Td' . $i};
                 $thisRowScore["dist_" . $i] = "0|" . $row->{'QuD' . $i . 'Score'} . "|0|0";
             }
-            $normative = calcNormative($thisRowDistances, $row->EnClass, $row->EnDivision, $thisRowScore);
+            $normative = calcNormative($thisRowDistances, $row->EnClass, $row->EnDivision, $thisRowScore, $_SESSION['TourLocRule']);
 
             if (!array_key_exists($normative["codeLetters"], $data[$row->EnClass])) {
                 $data[$row->EnClass][$normative["codeLetters"]] = 0;
