@@ -1556,6 +1556,7 @@ $lang['TvViewWIDTH']='Totals Column width (%)';
 $lang['TvViewX9']='View X/9 Column';
 $lang['Type']='Type';
 $lang['TypeList']='Type List';
+$lang['Type_2x18mRound']='2 x 18m Round';
 $lang['Type_2x70mRound']='2 x 70m/50m Round';
 $lang['Type_2xFITA']='2 x FITA';
 $lang['Type_36Arr70mRound']='36 Arrows Round';

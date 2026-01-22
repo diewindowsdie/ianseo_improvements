@@ -140,6 +140,7 @@ $lang['SetUkJunNationals']='Первенство среди Юниоров';
 $lang['SetUkNationals']='Национальный Чемпионат';
 $lang['SetYouthClass']='Юниоры, детские и юношеские классы';
 $lang['Setup-ARLEF']='Бельгийские правила соревнований (LEF Archery club)';
+$lang['Setup-BLR']='Беларусские правила соревнований';
 $lang['Setup-CA']='Канадские правила соревнований';
 $lang['Setup-CH']='Швейцарские правила соревнований';
 $lang['Setup-Default']='Правила соревнований World Archery';

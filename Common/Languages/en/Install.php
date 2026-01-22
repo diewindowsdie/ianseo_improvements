@@ -250,6 +250,7 @@ $lang['Setup-ARLEF']='LEF Archery Rules';
 $lang['Setup-AT']='Austrian Tournament Rules';
 $lang['Setup-AU']='Australian Tournament Rules - Archery Australia';
 $lang['Setup-BR']='Brazilian Tournament Rules';
+$lang['Setup-BLR']='Belarus Tournament Rules';
 $lang['Setup-CA']='Canadian Tournament Rules';
 $lang['Setup-CH']='Swiss Tournament Rules';
 $lang['Setup-Default']='World Archery Tournament Rules';
