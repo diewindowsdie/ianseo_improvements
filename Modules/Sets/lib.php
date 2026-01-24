@@ -245,6 +245,7 @@ function CreateEventNew($TourId, $Code, $Description, $Order, $Options) {
 		'EvIsPara' => 0,
 		'EvArrowPenalty' => 120,
 		'EvLoopPenalty' => 120,
+        'EvLockResults' => 0
 	);
 	foreach($Defaults as $def => $val) {
 		if(!isset($Options[$def])) {
@@ -265,7 +266,7 @@ function CreateEventNew($TourId, $Code, $Description, $Order, $Options) {
 	safe_w_sql("INSERT INTO Events set ". implode(',', $Query));
 }
 
-function InsertClassEvent($TourId, $Team, $Number, $Code, $Division, $Class, $SubClass='') {
+function InsertClassEvent($TourId, $Team, $Number, $Code, $Division, $Class, $SubClass='', $Extras=0) {
     $q1 = safe_r_SQL("SELECT EvCode FROM Events WHERE EvCode=".StrSafe_DB($Code)." AND EvTeamEvent='".($Team!=0 ? '1':'0')."' AND EvTournament={$TourId}");
 	$q2 = safe_r_SQL("SELECT ClId FROM Classes WHERE ClId=".StrSafe_DB($Class)." AND ClTournament={$TourId}");
 	$q3 = safe_r_SQL("SELECT DivId FROM Divisions WHERE DivId=".StrSafe_DB($Division)." AND DivTournament={$TourId}");
@@ -278,6 +279,7 @@ function InsertClassEvent($TourId, $Team, $Number, $Code, $Division, $Class, $Su
             . ", EcDivision=" . StrSafe_DB($Division)
             . ", EcClass=" . StrSafe_DB($Class)
             . ", EcSubClass=" . StrSafe_DB($SubClass)
+            . ", EcExtraAddons=" . intval($Extras)
         );
     }
 }

@@ -1,6 +1,5 @@
 $(function() {
     showWifiPart(true);
-    showGPSPart(true);
 });
 
 function showWifiPart(stayPut) {
@@ -24,6 +23,33 @@ function showGPSPart(stayPut) {
     if(!stayPut) {
         manageButtons();
     }
+}
+
+function socketConnected() {
+    if(isLive && typeof isFunctionAvailable !== 'undefined' && $.isFunction(isFunctionAvailable)) {
+        if(isFunctionAvailable('GPS')) {
+            $('.GPS').show();
+            showGPSPart(true);
+        }
+        if(isFunctionAvailable('Signatures')) {
+            $('.Signatures').show();
+        }
+        if(isFunctionAvailable('ScorecardPhoto')) {
+            $('.ScorePicture').show();
+        }
+    } else {
+        $('.GPS').hide();
+        $('.Signatures').hide();
+        $('.ScorePicture').hide();
+        showGPSPart(true);
+    }
+}
+
+function socketDisconnected() {
+    $('.GPS').hide();
+    $('.Signatures').hide();
+    $('.ScorePicture').hide();
+    showGPSPart(true);
 }
 
 function addWifiRow() {

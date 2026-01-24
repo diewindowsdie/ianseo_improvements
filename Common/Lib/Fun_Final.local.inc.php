@@ -590,10 +590,9 @@ require_once('Final/Fun_ChangePhase.inc.php');
 					Finals AS f1
 					INNER JOIN
 						Finals AS f2
-					ON f1.FinEvent=f2.FinEvent AND f1.FinMatchNo=IF((f1.FinMatchNo % 2)=0,f2.FinMatchNo-1,f2.FinMatchNo+1) AND f1.FinTournament=f2.FinTournament
-
+					ON f1.FinEvent=f2.FinEvent AND (f1.FinMatchNo % 2)=0 AND f1.FinMatchNo=(f2.FinMatchNo-1) AND f1.FinTournament=f2.FinTournament
 					INNER JOIN
-						Events AS ev1
+						`Events` AS ev1
 					ON f1.FinEvent=ev1.EvCode AND ev1.EvTeamEvent=0 AND ev1.EvTournament=" . StrSafe_DB($_SESSION['TourId']) . "
 
 					INNER JOIN
@@ -633,7 +632,7 @@ require_once('Final/Fun_ChangePhase.inc.php');
 					ON f2.FinMatchNo=fs2.FSMatchNo AND f2.FinEvent=fs2.FSEvent AND fs2.FSTeamEvent=0 AND f2.FinTournament=fs2.FSTournament
 
 				WHERE
-					(f1.FinTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND (f1.FinMatchNo % 2)=0
+					(f1.FinTournament=" . StrSafe_DB($_SESSION['TourId']) . " 
 					AND (e1.EnFirstName IS NOT NULL OR e2.EnFirstName IS NOT NULL)) "
 					. $OtherWhere . "
 				";

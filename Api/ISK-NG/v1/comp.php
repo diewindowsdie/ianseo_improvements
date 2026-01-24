@@ -88,12 +88,12 @@ while($r = safe_fetch($q)) {
 	foreach (explode(',',$r->Tgts) as $tgt) {
 		if($r->IsField3D and $tgt > $r->ToNumEnds) {
 			$row_array["sesstargets"][]=[
-				'id' => $tgt,
+				'id' => str_pad($tgt,TargetNoPadding,'0',STR_PAD_LEFT),
 				'name' => CheckBisTargets($tgt, $r->ToNumEnds),
 			];
 		} else {
 			$row_array["sesstargets"][]=[
-				'id' => $tgt,
+				'id' => str_pad($tgt,TargetNoPadding,'0',STR_PAD_LEFT),
 				'name' => $tgt,
 			];
 		}

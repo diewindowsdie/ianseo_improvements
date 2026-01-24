@@ -56,9 +56,9 @@ switch($_REQUEST['act']) {
         $JSON['btn']=get_text('CmdSet', 'Tournament');
         $Dist = intval($_REQUEST['d'] ?? 0);
         if($Dist>0) {
-            safe_w_sql("update Qualifications set QuIrmType=0, QuConfirm=QuConfirm & (255-" . pow(2, $Dist) . "), QuD{$Dist}Hits=length(trim(QuD{$Dist}Arrowstring)), QuHits=QuD1Hits+QuD2Hits+QuD3Hits+QuD4Hits+QuD5Hits+QuD6Hits+QuD7Hits+QuD8Hits where QuId=$EnId");
+            safe_w_sql("update Qualifications set QuIrmType=0, QuConfirm=QuConfirm & (255-" . pow(2, $Dist) . "), QuSigned=QuSigned & (255-" . pow(2, $Dist) . "), QuD{$Dist}Hits=length(trim(QuD{$Dist}Arrowstring)), QuHits=QuD1Hits+QuD2Hits+QuD3Hits+QuD4Hits+QuD5Hits+QuD6Hits+QuD7Hits+QuD8Hits where QuId=$EnId");
         } else {
-            safe_w_sql("update Qualifications set QuIrmType=0, QuConfirm=QuConfirm & (255-" . pow(2, $Dist) . ") where QuId=$EnId");
+            safe_w_sql("update Qualifications set QuIrmType=0, QuConfirm=QuConfirm & (255-" . pow(2, $Dist) . "), QuSigned=QuSigned & (255-" . pow(2, $Dist) . "), where QuId=$EnId");
         }
         safe_w_sql("update Individuals set IndIrmType=0 where IndId=$EnId");
 

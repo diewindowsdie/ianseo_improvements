@@ -12,7 +12,7 @@ function DrawQRCode_ISK_Lite(&$pdf, $X, $Y, $Session=0, $Distance=0, $Target='',
 
 function DrawQRCode_ISK_NG(TCPDF &$pdf, $X, $Y, $Session=0, $Distance=0, $Target='', $Phase='', $Stage='Q', $Individual=false, $DistName='', $small=false) {
 	global $CFG;
-	static 	$OptsU, $OptsC;
+	static 	$OptsU, $OptsC, $OptF;
 
 /*
 {"u":"http://192.168.0.100/","c":"RR1","st":"RI","s":"BM","t":"1|2|10", "d":"8"}
@@ -34,6 +34,7 @@ function DrawQRCode_ISK_NG(TCPDF &$pdf, $X, $Y, $Session=0, $Distance=0, $Target
 		$OptsU=getModuleParameter('ISK-NG', 'ServerUrl').$CFG->ROOT_DIR;
 		$OptsC=$_SESSION['TourCode'];
 	    $tmpPin = getModuleParameter('ISK-NG', 'ServerUrlPin');
+        $OptF=getModuleParameter('ISK-NG', 'ForceQRCodeScanning', '');
 	    if(!empty($tmpPin)) {
 		    $OptsC .= '|'.$tmpPin;
 	    }
@@ -45,10 +46,11 @@ function DrawQRCode_ISK_NG(TCPDF &$pdf, $X, $Y, $Session=0, $Distance=0, $Target
     if($Stage=="MI" || $Stage=="MT") {
         $Opts['t']=$Target;
     } else if($Target) {
-        $Opts['t'] = str_pad($Target, 3, '0', STR_PAD_LEFT);
+        $Opts['t'] = str_pad($Target, 4, '0', STR_PAD_LEFT);
     }
 	if($Phase) $Opts['p']=$Phase;
 	if($Stage) $Opts['st']=$Stage;
+    if(!empty($OptF)) $Opts['enforceQR'] = ($Opts['st']??0).'.'.($Opts['d']??0).'.'.($Opts['s']??0).'.'.($Opts['t']??0);
 
 	$text=json_encode($Opts);
 

@@ -33,6 +33,9 @@ if(NG_DEBUG_LOG) {
 
 try {
 	foreach (is_array($data) ? $data : array($data) as $req) {
+        if(!empty($req->extra)) {
+            $req->extra = json_decode($req->extra);
+        }
 		if(($req->tournament??'') and strpos($req->tournament,'|')!==false) {
 			$tmp=explode('|', $req->tournament, 2);
 			$req->tournament=$tmp[0];

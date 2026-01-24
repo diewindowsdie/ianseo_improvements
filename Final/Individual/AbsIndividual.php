@@ -246,6 +246,9 @@ if(count($EventCodes) != 0) {
                 $endRank = 1;
 	            $obj=getEventArrowsParams($Event,64, 0);
                 foreach ($section['items'] as $item) {
+                    if($item['rankBeforeSO']==0) {
+                        continue;
+                    }
                     if (($item['rankBeforeSO'] + $item['ct']) >= $section['meta']['firstQualified']) {
                         //Stop if Rank >QualifiedNo and no SO
                         if ($item['rank'] > ($section['meta']['qualifiedNo'] + $section['meta']['firstQualified'] - 1) AND $item['so'] == 0) {

@@ -6,8 +6,9 @@ if(empty($req->tocode) || (empty($req->sesstarget) && empty($req->matchid)) ) {
     return;
 }
 
-$q = safe_r_SQL("SELECT IskDvDevice, IskDvTournament, IskDvAppVersion FROM IskDevices WHERE `IskDvDevice`=".StrSafe_DB($req->device));
+$q = safe_r_SQL("SELECT IskDvDevice, IskDvTournament, IskDvAppVersion, IskDvExtra FROM IskDevices WHERE `IskDvDevice`=".StrSafe_DB($req->device));
 if(safe_num_rows($q) == 1) {
+    $dev = safe_fetch($q);
 	// check if the competition exists
 	if(!($TourId=getIdFromCode($req->tocode))) {
 		$Json['error'] = true;
@@ -28,15 +29,34 @@ if(safe_num_rows($q) == 1) {
 		return;
 	}
 
+    //Check if there is a enforced QR reading lock
+    $enforceQR = false;
+    if(!empty(getModuleParameter('ISK-NG', 'ForceQRCodeScanning', '', $dev->IskDvTournament))) {
+        if(empty($dev->IskDvExtra)) {
+            $enforceQR = '-.0.0.0';
+        } else {
+            $tmp = json_decode($dev->IskDvExtra, true);
+            $enforceQR = ($tmp['enforceQR'] ?? '-.0.0.0');
+        }
+    }
+
+
 	// at this point the device is requesting an existing competition that is set as "light" mode
 	// so we won't question anything and insert this device in the competition requested
 
 	// let's go through the different types
 	switch($req->type) {
 		case 'Q':
+            if($enforceQR!==false) {
+                list($tmpStage,$tmpDist,$tmpSess,$tmpTgt) = explode('.', $enforceQR);
+                if($tmpStage!='Q' OR $tmpSess!=substr($req->sesstarget, 0,-4) OR intval($tmpTgt)!=intval(substr($req->sesstarget, -4))) {
+                    $res = array('action' => 'handshake', 'error' => 2, 'device' => $req->device);
+                    break;
+                }
+            }
 			safe_w_sql("update IskDevices set 
-				IskDvSchedKey='Q".$r->ToNumDist.$req->sesstarget[0]."', 
-				IskDvTarget=".intval(substr($req->sesstarget, 1)).",
+				IskDvSchedKey='Q".$r->ToNumDist.substr($req->sesstarget, 0,-4)."', 
+				IskDvTarget=".intval(substr($req->sesstarget, -4)).",
 				IskDvTournament=$TourId,
 				IskDvGroup=0,
 				IskDvSetup='',
@@ -51,10 +71,10 @@ if(safe_num_rows($q) == 1) {
 				WHERE IskDvDevice = " .StrSafe_DB($req->device);
 			$q=safe_r_sql($SQL);
 			$res=getQrConfig(safe_fetch($q), false, [
-				'IskKey' => "Q".$r->ToNumDist.$req->sesstarget[0],
+				'IskKey' => "Q".$r->ToNumDist.substr($req->sesstarget, 0,-4),
 				'type' => "Q",
 				'subtype' => "",
-				'session' => $req->sesstarget[0],
+				'session' => substr($req->sesstarget, 0,-4),
 				'distance' => range(1, $r->ToNumDist),
 				'maxdist' => $r->ToNumDist]);
 			break;
@@ -65,6 +85,7 @@ if(safe_num_rows($q) == 1) {
 		case 'MT':
 		case 'RI':
 		case 'RT':
+
 			// get the info of the match
 			$items=explode('|', $req->matchid);
 			$team=intval($items[0]);
@@ -72,6 +93,14 @@ if(safe_num_rows($q) == 1) {
 			$subtype=$req->type[1];
 			$prefix=$subtype;
 			$matchno=intval(end($items));
+            //check if the enforced QR reading lock is set
+            if($enforceQR!==false) {
+                list($tmpStage,$tmpDist,$tmpSess,$tmpTgt) = explode('.', $enforceQR);
+                if($tmpStage!=$req->type OR $tmpSess!=$event OR intval($tmpDist)!=$matchno) {
+                    $res = array('action' => 'handshake', 'error' => 2, 'device' => $req->device);
+                    break;
+                }
+            }
 			if($req->type[0]=='R') {
 				$lev=intval($items[2]);
 				$grp=intval($items[3]);

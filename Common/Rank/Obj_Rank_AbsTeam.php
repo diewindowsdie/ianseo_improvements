@@ -301,17 +301,12 @@ require_once('Common/Lib/ArrTargets.inc.php');
 			$myEv='';
 			$myTeam='';
 
-			if (safe_num_rows($r)>0)
-			{
+			if (safe_num_rows($r)>0) {
 				$section=null;
 
-
-				while ($row=safe_fetch($r))
-				{
-					if ($myEv!=$row->TeEvent)
-					{
-						if ($myEv!='')
-						{
+				while ($row=safe_fetch($r)) {
+					if ($myEv!=$row->TeEvent) {
+						if ($myEv!='') {
 							foreach($section["meta"]["arrowsShot"] as $k => $v) {
 								if($v) $section["meta"]["sesArrows"][$k] = get_text('AfterXArrows', 'Common', $v);
 							}
@@ -404,8 +399,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 						}
 					}
 
-					if ($myTeam!=$row->CoId . $row->TeSubTeam . $row->TeEvent)
-					{
+					if ($myTeam!=$row->CoId . $row->TeSubTeam . $row->TeEvent) {
 						$tmpArr=array();
 						if(trim($row->TeTieBreak)) {
 							for($countArr=0; $countArr<strlen(trim($row->TeTieBreak)); $countArr = $countArr+$row->EvMaxTeamPerson) {

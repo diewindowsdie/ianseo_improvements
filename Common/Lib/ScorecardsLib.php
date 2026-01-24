@@ -1006,7 +1006,7 @@ function QualificationScorecards($Session, $FromTgt, $ToTgt, $IncludeEmpty=true,
             } else {
                 $Data->DefaultScore = array("Session" => $MyRow->Session, 'Arr0' => '', 'Golds' => $MyRow->Golds, 'XNine' => $MyRow->XNine,
                     'GoldsChars' => $MyRow->GoldsChars, 'XNineChars' => $MyRow->XNineChars,
-                    'NumEnds' . $MyRow->Session => $MyRow->{'NumEnds' . $MyRow->Session}, 'NumArrows' . $MyRow->Session => $MyRow->{'NumArrows' . $MyRow->Session},
+                    'NumEnds' . $MyRow->Session => ($MyRow->{'NumEnds' . $MyRow->Session}??$MyRow->NumEnds0), 'NumArrows' . $MyRow->Session => ($MyRow->{'NumArrows' . $MyRow->Session}??$MyRow->NumArrows0),
                 );
             }
 		}

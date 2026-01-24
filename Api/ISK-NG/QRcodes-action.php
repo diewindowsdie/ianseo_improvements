@@ -47,6 +47,7 @@ switch($_REQUEST['action']??'') {
 				$Setup['askTotals']=intval($_REQUEST['askTotals']??0);
                 $Setup['enableHaptics']=intval($_REQUEST['enableHaptics']??0);
 				$Setup['askSignature']=intval($_REQUEST['askSignature']??0);
+                $Setup['takeScorecardPhoto']=intval($_REQUEST['takeScorecardPhoto']??0);
                 if(preg_match("/^[0-9]{4}$/",$_REQUEST['settingsPinCode']??'')) {
                     $Setup['settingsPinCode']=$_REQUEST['settingsPinCode'];
                 } else {

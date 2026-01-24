@@ -355,7 +355,7 @@ if(!$archers){
         $T=$archer->QuSession;
         echo '<tr'.($archer->EnBib==$EnBib ? ' class="selected"' : '').'>';
         echo '<td class="Score">'.$archer->QuTarget.$archer->QuLetter.'</td>';
-        echo '<td class="Score">'.intval($D).'</td>';
+        echo '<td class="Score">'.($archer->IsSigned ? '<i class="fa-solid fa-signature mr-2"></i>':'').intval($D).'</td>';
         echo '<td>'.$archer->Firstname.'</td>';
         echo '<td>'.$archer->EnName.'</td>';
         echo '<td class="Center">'.$archer->EnDivision.' '.$archer->EnClass.'</td>';
@@ -413,6 +413,7 @@ if($ShowMiss) {
 			, upper(EnFirstName) AS FirstName
 			, QuSession AS Session
 			, CONCAT(QuTarget, QuLetter) AS TargetNo
+			, (QuSigned & ".pow(2, $D).") AS IsSigned
 			, CoCode AS NationCode, CoName AS Nation
 			, EnClass AS ClassCode, ClDescription
 			, EnDivision AS DivCode, DivDescription
@@ -434,13 +435,16 @@ if($ShowMiss) {
             $tgt=intval($r->TargetNo);
             $cnt++;
         }
+        if($r->IsSigned) {
+            $tgtClass .= ' signed';
+        }
         $tmpRow .= '<tr class="'.$tgtClass.'" '.
             (in_array($r->Session.'.'.$r->TargetNo, $tgtList) ? '' : 'onclick="sendTarget(\''.(empty($_GET['Targets']) ? $r->TargetNo : $tgt).'\')"').
-            '><td>'.$r->TargetNo.'</td><td>'.$r->DivCode.$r->ClassCode.'</td><td>'.$r->FirstName.' '.$r->Name.'</td></tr>';
+            '><td class="'.$tgtClass.'">'.$r->TargetNo.'</td><td class="'.$tgtClass.'">'.($r->IsSigned ? '<i class="fa-solid fa-signature"></i>':'').'</i></td><td>'.$r->DivCode.$r->ClassCode.'</td><td>'.$r->FirstName.' '.$r->Name.'</td></tr>';
     }
     echo '<div class="fixedHead">' . get_text('TotalMissingScorecars','Tournament',$cnt) . '</div>';
     echo '<div id="bcodeMissing"><table id="bcodeMissingTable">';
-    echo '<colgroup><col class="w-5"><col class="w-10"><col class="w-85 nowrap"></colgroup>';
+    echo '<colgroup><col class="w-5"><col class="w-5"><col class="w-10"><col class="w-85 nowrap"></colgroup>';
     echo '<tbody class="scrollBody">'.$tmpRow.'</tbody>';
     echo '</table></div>';
 }
@@ -492,9 +496,9 @@ function getScore($dist, $barcode, $strict=false, $Session=0) {
 		}
 		if(empty($bib) or empty($div) or empty($cls)) return;
 	}
-	$SQL="select QuSession, QuTarget, QuLetter, EnCode EnBib, EnId, EnName, upper(EnFirstname) Firstname, EnDivision, EnClass, QuScore tScore, QuGold tGold, QuXnine tXnine, IFNULL(if(DiScoringEnds=0, DiEnds, DiScoringEnds)*DiArrows,0) as expectedArrows, 
+	$SQL="select QuSession, QuTarget, QuLetter, EnCode EnBib, EnId, EnName, upper(EnFirstname) Firstname, EnDivision, EnClass, QuScore tScore, QuGold tGold, QuXnine tXnine, IFNULL(if(DiScoringEnds=0, DiEnds, DiScoringEnds)*DiArrows,0) as expectedArrows,  
 	    " . ($_SESSION['TourLocSubRule']=='NFAA3D-ReddingWestern' ? "QuD1Score Score1, QuD2Score Score2, QuD3Score Score3, QuD1Hits Hits1, QuD2Hits Hits2, QuD3Hits Hits3," : "") . "
-	    " . ($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits" : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits") . "
+	    " . ($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits, (QuSigned & ".pow(2, $dist).") AS IsSigned " : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits, 0 as IsSigned ") . "
 		from Qualifications 
 		inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']}
 		inner join Session on SesTournament=EnTournament and SesOrder=QuSession and SesType='Q'
@@ -510,7 +514,7 @@ function getScore($dist, $barcode, $strict=false, $Session=0) {
 	}
 	if(!$ret) {
 		$SQL="select QuSession, QuTarget, QuLetter, EnCode EnBib, EnId, EnName, upper(EnFirstname) Firstname, EnDivision, EnClass, QuScore tScore, QuGold tGold, QuXnine tXnine, IFNULL(if(DiScoringEnds=0, DiEnds, DiScoringEnds)*DiArrows,0) as expectedArrows, " .
-				($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits" : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits") . "
+				($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits, (QuSigned & ".pow(2, $dist).") AS IsSigned " : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits, 0 as IsSigned ") . "
 				from Qualifications 
 				inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} 
 				left join DistanceInformation on DiTournament=EnTournament AND DiSession=QuSession AND DiDistance={$dist} AND DiType='Q' ".
@@ -539,7 +543,7 @@ function getScore($dist, $barcode, $strict=false, $Session=0) {
 		if(empty($bib) or empty($div) or empty($cls)) return;
 
 		$SQL="select QuSession, QuTarget, QuLetter, EdExtra EnBib, EnId, EnName, upper(EnFirstname) Firstname, EnDivision, EnClass, QuScore tScore, QuGold tGold, QuXnine tXnine, IFNULL(if(DiScoringEnds=0, DiEnds, DiScoringEnds)*DiArrows,0) as expectedArrows, " .
-			($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits" : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits") . "
+			($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits, (QuSigned & ".pow(2, $dist).") AS IsSigned " : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits , 0 as IsSigned") . "
             from Qualifications 
             inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} 
             inner JOIN ExtraData ON EdType='Z' and EdId=EnId
@@ -550,7 +554,7 @@ function getScore($dist, $barcode, $strict=false, $Session=0) {
 		while($r=safe_fetch($q)) $ret["$r->EnBib"]=$r;
 		if(!$ret) {
 			$SQL="select QuSession, QuTarget, QuLetter, EdExtra EnBib, EnId, EnName, upper(EnFirstname) Firstname, EnDivision, EnClass, QuScore tScore, QuGold tGold, QuXnine tXnine, IFNULL(if(DiScoringEnds=0, DiEnds, DiScoringEnds)*DiArrows,0) as expectedArrows, " .
-				($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits" : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits") . "
+				($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits, (QuSigned & ".pow(2, $dist).") AS IsSigned " : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits, 0 as IsSigned ") . "
 				from Qualifications 
 				inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} 
                 inner JOIN ExtraData ON EdType='Z' and EdId=EnId

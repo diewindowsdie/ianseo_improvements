@@ -5,24 +5,34 @@
 	require_once('Common/Fun_FormatText.inc.php');
 	require_once('Qualification/Fun_Qualification.local.inc.php');
 
-	if(isset($_REQUEST['Event']) && preg_match("/^[A-Z\-\_0-9]+_[0,1]_[1,2,3]$/i", $_REQUEST['Event'])) {
-		list($tmpEvent,$tmpTeam,$tmpEventType) = explode('_', $_REQUEST['Event']);
-		$MyQuery = "UPDATE Events "
-			. "SET EvRunning=IF(EvRunning!=" . $tmpEventType . "," . $tmpEventType . ",0) "
-			. "WHERE EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvCode=" . StrSafe_DB($tmpEvent) . " AND EvTeamEvent=" . StrSafe_DB($tmpTeam);
-		safe_w_sql($MyQuery);
-        if(safe_w_affected_rows()) {
-            if($tmpTeam) {
-                MakeTeamsAbs(null, null, null);
-            } else {
-                Obj_RankFactory::create('Abs', array('tournament' => $_SESSION['TourId'], 'events' => $tmpEvent, 'dist' => 0))->calculate();
-                runJack("QRRankUpdate", $_SESSION['TourId'], array("Event"=>$tmpEvent, "Team"=>0, "TourId"=>$_SESSION['TourId']));
+	if(isset($_REQUEST['Event']) AND is_array($_REQUEST['Event'])) {
+        foreach($_REQUEST['Event'] as $Event) {
+            if (preg_match("/^[A-Z\-\_0-9]+_[0,1]_[1,2,3]$/i", $Event)) {
+                list($tmpEvent, $tmpTeam, $tmpEventType) = explode('_', $Event);
+                $MyQuery = "UPDATE Events "
+                        . "SET EvRunning=IF(EvRunning!=" . $tmpEventType . "," . $tmpEventType . ",0) "
+                        . "WHERE EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvCode=" . StrSafe_DB($tmpEvent) . " AND EvTeamEvent=" . StrSafe_DB($tmpTeam);
+                safe_w_sql($MyQuery);
+                if (safe_w_affected_rows()) {
+                    if ($tmpTeam) {
+                        MakeTeamsAbs(null, null, null);
+                    } else {
+                        Obj_RankFactory::create('Abs', array('tournament' => $_SESSION['TourId'], 'events' => $tmpEvent, 'dist' => 0))->calculate();
+                        runJack("QRRankUpdate", $_SESSION['TourId'], array("Event" => $tmpEvent, "Team" => 0, "TourId" => $_SESSION['TourId']));
+                    }
+                }
             }
         }
+        $uri_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        // Perform the redirect to the clean URL
+        header('Location: ' . $uri_path);
 	}
 
+    $IncludeJquery = true;
+    $IncludeFA = true;
 	$JS_SCRIPT=array(
 		'<script type="text/javascript" src="'.$CFG->ROOT_DIR.'Common/js/Fun_JS.inc.js"></script>',
+        '<script type="text/javascript" src="RunningEvent.js"></script>',
 		);
 
 	$PAGE_TITLE=get_text('RunningEvents','Tournament');
@@ -65,12 +75,11 @@ if(safe_num_rows($ResultRs))
 	echo '<tr>';
 	echo '<th class="w-35">' . get_text('EvName') . '</th>';
 	echo '<th class="w-20">' . get_text('PrintText','Tournament') . '</th>';
-	echo '<th class="w-15" colspan="2">' . get_text('QualRound') . '</th>';
+	echo '<th class="w-15" colspan="2">' . get_text('QualRound') . '<i id="cmdBulkAction" class="fa-solid fa-arrows-to-eye ml-3" ondblclick="bulkAction(\'Q\')"></i></th>';
 	echo '<th class="w-15" colspan="2">' . get_text('Eliminations_1') . '</th>';
 	echo '<th class="w-15" colspan="2">' . get_text('Eliminations_2') . '</th>';
 	echo '</tr>';
-	while($MyRow = safe_fetch($ResultRs))
-	{
+	while($MyRow = safe_fetch($ResultRs)) {
 		echo '<tr class="rowHover">';
 		echo '<td class="w-35"><b>' . $MyRow->EvCode . '</b> - ' . $MyRow->EvEventName .  ' (' . ($MyRow->EvTeamEvent==0 ? get_text('Individual') : get_text('Team'))  . ')</td>';
 		echo '<td class="w-20">' . $MyRow->PrintHeader . '</td>';
@@ -80,8 +89,10 @@ if(safe_num_rows($ResultRs))
 		else
 			echo '&nbsp;';
 		echo '</td>';
-		echo '<td class="w-10 Center' . ($MyRow->EvRunning == 1 ? ' yellow' : '') . '">';
-		echo '<a href="' . $_SERVER['PHP_SELF']. '?Event=' . $MyRow->EvCode . '_' . $MyRow->EvTeamEvent . '_1">';
+		echo '<td class="w-10 Center' . ($MyRow->EvRunning == 1 ? ' yellow' : '') . '" ' .
+            ((($ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_1"][0]==$ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_1"][1] AND $MyRow->EvRunning == 1) OR ($ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_1"][0]!=$ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_1"][1] AND $MyRow->EvRunning == 0)) ? 'refQ="'.$MyRow->EvCode . '_' . $MyRow->EvTeamEvent . '_1"' : '') .
+        '>';
+		echo '<a href="' . $_SERVER['PHP_SELF']. '?Event[]=' . $MyRow->EvCode . '_' . $MyRow->EvTeamEvent . '_1">';
 		if($MyRow->EvRunning == 1)
 			echo get_text('RunningEv','Tournament');
 		else
@@ -95,9 +106,8 @@ if(safe_num_rows($ResultRs))
 			echo '&nbsp;';
 		echo '</td>';
 		echo '<td class="w-10 Center' . ($MyRow->EvRunning == 2 ? ' yellow' : '') . '">';
-		if($MyRow->EvElim1)
-		{
-			echo '<a href="' . $_SERVER['PHP_SELF']. '?Event=' . $MyRow->EvCode . '_' . $MyRow->EvTeamEvent . '_2">';
+		if($MyRow->EvElim1) {
+			echo '<a href="' . $_SERVER['PHP_SELF']. '?Event[]=' . $MyRow->EvCode . '_' . $MyRow->EvTeamEvent . '_2">';
 			if($MyRow->EvRunning == 2)
 				echo get_text('RunningEv','Tournament');
 			else
@@ -116,7 +126,7 @@ if(safe_num_rows($ResultRs))
 		echo '<td class="w-10 Center' . ($MyRow->EvRunning == 3 ? ' yellow' : '') . '">';
 		if($MyRow->EvElim2)
 		{
-			echo '<a href="' . $_SERVER['PHP_SELF']. '?Event=' . $MyRow->EvCode . '_' . $MyRow->EvTeamEvent . '_3">';
+			echo '<a href="' . $_SERVER['PHP_SELF']. '?Event[]=' . $MyRow->EvCode . '_' . $MyRow->EvTeamEvent . '_3">';
 			if($MyRow->EvRunning == 3)
 				echo get_text('RunningEv','Tournament');
 			else

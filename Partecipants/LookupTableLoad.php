@@ -554,11 +554,11 @@ function DoLookupFlags($u, $OnlyMissing=false) {
         where CoTournament={$_SESSION['TourId']} 
           ".($OnlyMissing ? " AND (FlCode is null or FlSVG = '' or FlJPG = '') " : '')."
           AND CoId IN (
-            SELECT EnCountry from Entries WHERE EnTournament={$_SESSION['TourId']} AND EnIocCode='$u->LupIocCode'
+            SELECT EnCountry from Entries WHERE EnTournament={$_SESSION['TourId']} AND (EnIocCode='' OR EnIocCode='$u->LupIocCode')
             UNION 
-            SELECT EnCountry2 from Entries WHERE EnTournament={$_SESSION['TourId']} AND EnIocCode='$u->LupIocCode'
+            SELECT EnCountry2 from Entries WHERE EnTournament={$_SESSION['TourId']} AND (EnIocCode='' OR EnIocCode='$u->LupIocCode')
             UNION 
-            SELECT EnCountry3 from Entries WHERE EnTournament={$_SESSION['TourId']} AND EnIocCode='$u->LupIocCode'
+            SELECT EnCountry3 from Entries WHERE EnTournament={$_SESSION['TourId']} AND (EnIocCode='' OR EnIocCode='$u->LupIocCode')
             UNION
             SELECT TiCountry from TournamentInvolved WHERE TiTournament={$_SESSION['TourId']})
         order by CoCode");

@@ -90,6 +90,10 @@ td.socketOUTDATED {
     background-color: lightblue;
     color: black;
 }
+td.socketINVALID {
+    background-color: orangered;
+    color: white;
+}
 td.socketOFF {
     background-color: darkred;
     color: white;

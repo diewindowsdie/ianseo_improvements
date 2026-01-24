@@ -62,6 +62,7 @@ function readJsonData($Data) {
 			            "event" => "",
 			            "team" => 0,
 						"soClosest"=>'0',
+                        "signed"=>'0',
 						"ToId" => $Data->ToId,
 						"IskDvGroup" => $Data->IskDvGroup,
 						"IskDvTarget" => $Data->IskDvTarget,
@@ -72,6 +73,7 @@ function readJsonData($Data) {
                     foreach($archer->scoring as $distance) {
 						$item->distance=$distance->distance;
 						$item->arrowstring=$distance->arrowstring;
+                        $item->signed=($distance->signed??'0');
 						if(($Error=applyScore($item, $Data->ToId, 1, $UpdatedEntries))=='OK') {
                             $GlobalErrorFlag=false;
 						} else {
@@ -99,6 +101,7 @@ function readJsonData($Data) {
                 $Data->key=$Data->refKey;
 				$Data->subtype=($IskSequence['subtype']??'');
 				$Data->soClosest=(string) ($Data->soClosest??'0');
+                $Data->signed=(string) ($Data->signed??'0');
 				return applyScore($Data, $Data->ToId, 0);
 			}
 			break;
@@ -133,6 +136,7 @@ function readJsonData($Data) {
                         $item->soClosest=(string) ($distance->soClosest??'0');
 						$item->distance=$distance->distance;
 						$item->arrowstring=$distance->arrowstring;
+                        $item->signed=($distance->signed??'0');
 						if(($Error=applyScore($item, $Data->ToId))=='OK') {
                             $GlobalErrorFlag=false;
                         } else {
@@ -152,6 +156,7 @@ function readJsonData($Data) {
 				$Data->event=$bits[1];
 				$Data->team=$bits[0];
 				$Data->soClosest=(string) ($Data->soClosest??'0');
+                $Data->signed=(string) ($Data->signed??'0');
 				return applyScore($Data, $Data->ToId);
 			}
 			break;
@@ -223,7 +228,7 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 			// break;
 		case 'Q':
 			$SQL="select DiEnds, DiArrows, 1 as DiSO, QuD{$Data->distance}Arrowstring as Arrowstring, IskDvGroup, IskDvSchedKey, 
-					QuConfirm & ".pow(2, $Data->distance).">0 as StopScore, 0 as IsClosest,
+					QuConfirm & ".pow(2, $Data->distance)."!=0 as StopScore, 0 as IsClosest, QuSigned & ".pow(2, $Data->distance)."!=0 as IsSigned,
 			        concat_ws('|','Q', QuSession, DiDistance) as LockKey
 				from Entries
 				inner join Qualifications on EnId=QuId and CONCAT(QuSession, '.', QuTarget, QuLetter)='{$Data->refKey}'
@@ -254,13 +259,13 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 					$SQL="select @ArBit:=(EvMatchArrowsNo & GrBitPhase), 
 						if(@ArBit=0, EvFinArrows, EvElimArrows) DiArrows, if(@ArBit=0, EvFinEnds, EvElimEnds) DiEnds, if(@ArBit=0, EvFinSO, EvElimSO) DiSO, 
        					IskDvGroup, IskDvSchedKey, StopScore, concat_ws('|','I',GrPhase,EvCode) as LockKey,
-       					if($Data->matchno=FsMatchNo1, Closest1, Closest2) as IsClosest,
+       					if($Data->matchno=FsMatchNo1, Closest1, Closest2) as IsClosest, if($Data->matchno=FsMatchNo1, Signed1, Signed2) as IsSigned,
 						concat(rpad(if($Data->matchno=FsMatchNo1, Arrowstring1, Arrowstring2), if(@ArBit=0, EvFinEnds, EvElimEnds)*if(@ArBit=0, EvFinArrows, EvElimArrows), ' '), if($Data->matchno=FsMatchNo1, TieBreak1, TieBreak2)) Arrowstring, if($Data->matchno=FsMatchNo1, TieBreak1, TieBreak2) TieBreak
-					from (select FinConfirmed as StopScore, FinArrowstring Arrowstring1, FinTieBreak TieBreak1, FsTarget+0 Target1, substr(FsLetter, length(FsTarget)+1, 1) Letter1, FsLetter FsLetter1, FsMatchNo FsMatchNo1, FsEvent FsEvent1, FinWinLose as Win1, FinTbClosest as Closest1
+					from (select FinConfirmed as StopScore, FinArrowstring Arrowstring1, FinTieBreak TieBreak1, FsTarget+0 Target1, substr(FsLetter, length(FsTarget)+1, 1) Letter1, FsLetter FsLetter1, FsMatchNo FsMatchNo1, FsEvent FsEvent1, FinWinLose as Win1, FinTbClosest as Closest1, FinSigned as Signed1
 						from FinSchedule
 						inner join Finals on FsEvent=FinEvent and FinTournament=$ToId and FsMatchNo=FinMatchNo
 						where FSMatchNo%2=0 and FsTournament=$ToId and FsTarget>'' and FsEvent='$Data->event' and FsTeamEvent=0 and FsMatchNo=$match1) tgt1
-					inner join (select FinArrowstring Arrowstring2, FinTieBreak TieBreak2, FsTarget+0 Target2, substr(FsLetter, length(FsTarget)+1, 1) Letter2, FsLetter FsLetter2, FsMatchNo FsMatchNo2, FsEvent FsEvent2, FinWinLose as Win2, FinTbClosest as Closest2
+					inner join (select FinArrowstring Arrowstring2, FinTieBreak TieBreak2, FsTarget+0 Target2, substr(FsLetter, length(FsTarget)+1, 1) Letter2, FsLetter FsLetter2, FsMatchNo FsMatchNo2, FsEvent FsEvent2, FinWinLose as Win2, FinTbClosest as Closest2, FinSigned as Signed2
 						from FinSchedule
 						inner join Finals on FsEvent=FinEvent and FsTournament=FinTournament and FsMatchNo=FinMatchNo
 						where FsTournament=$ToId and FsTarget>'' and FsEvent='$Data->event' and FsTeamEvent=0 and FsMatchNo=$match2) tgt2
@@ -275,13 +280,13 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 					$SQL="select @ArBit:=(EvMatchArrowsNo & GrBitPhase), 
 						if(@ArBit=0, EvFinArrows, EvElimArrows) DiArrows, if(@ArBit=0, EvFinEnds, EvElimEnds) DiEnds, if(@ArBit=0, EvFinSO, EvElimSO) DiSO, 
        					IskDvGroup, IskDvSchedKey, StopScore, concat_ws('|','T',GrPhase,EvCode) as LockKey,
-       					if($Data->matchno=FsMatchNo1, Closest1, Closest2) as IsClosest,
+       					if($Data->matchno=FsMatchNo1, Closest1, Closest2) as IsClosest, if($Data->matchno=FsMatchNo1, Signed1, Signed2) as IsSigned,
 						concat(rpad(if($Data->matchno=FsMatchNo1, Arrowstring1, Arrowstring2), if(@ArBit=0, EvFinEnds, EvElimEnds)*if(@ArBit=0, EvFinArrows, EvElimArrows), ' '), if($Data->matchno=FsMatchNo1, TieBreak1, TieBreak2)) Arrowstring, if($Data->matchno=FsMatchNo1, TieBreak1, TieBreak2) TieBreak
 						from (select TfConfirmed as StopScore, 
 			            		TfArrowstring Arrowstring1, TfTieBreak TieBreak1,
 								FsTarget+0 Target1,
 								substr(FsLetter, length(FsTarget)+1, 1) Letter1,
-								FsLetter FsLetter1, FsMatchNo FsMatchNo1, FsEvent FsEvent1, TfWinLose as Win1, TfTbClosest as Closest1
+								FsLetter FsLetter1, FsMatchNo FsMatchNo1, FsEvent FsEvent1, TfWinLose as Win1, TfTbClosest as Closest1, TfSigned as Signed1
 							from FinSchedule
 							inner join TeamFinals on FsEvent=TfEvent and TfTournament=$ToId and FsMatchNo=TfMatchNo
 							where FsTournament=$ToId and FsTarget>'' and FsEvent='$Data->event' and FsTeamEvent=1 and FsMatchNo=$match1) tgt1
@@ -289,7 +294,7 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 			                	TfArrowstring Arrowstring2, TfTieBreak TieBreak2, 
 			                	FsTarget+0 Target2, 
 			                	substr(FsLetter, length(FsTarget)+1, 1) Letter2, 
-			                	FsLetter FsLetter2, FsMatchNo FsMatchNo2, FsEvent FsEvent2, TfWinLose as Win2, TfTbClosest as Closest2
+			                	FsLetter FsLetter2, FsMatchNo FsMatchNo2, FsEvent FsEvent2, TfWinLose as Win2, TfTbClosest as Closest2, TfSigned as Signed2
 							from FinSchedule
 							inner join TeamFinals on FsEvent=TfEvent and TfTournament=$ToId and FsMatchNo=TfMatchNo
 							where FsTournament=$ToId and FsTarget>'' and FsEvent='$Data->event' and FsTeamEvent=1 and FsMatchNo=$match2) tgt2
@@ -308,14 +313,14 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 					$m2=$m1+1;
 					$MainFilter="RrMatchTournament=$ToId and RrMatchEvent='$Data->event' and RrMatchTeam=$Data->team and RrMatchLevel=$Level and RrMatchGroup=$Group and RrMatchRound=$Round ";
 					$SQL="select IskDvGroup, IskDvSchedKey, StopScore, LockKey,
-							RrLevArrows as DiArrows, RrLevEnds as DiEnds, RrLevSO as DiSO,
-	                        concat(rpad(if($dm=FsMatchNo1, Arrowstring1, Arrowstring2), RrLevEnds*RrLevArrows, ' '), if($dm=FsMatchNo1, TieBreak1, TieBreak2)) Arrowstring, if($dm=FsMatchNo1, TieBreak1, TieBreak2) TieBreak
+							RrLevArrows as DiArrows, RrLevEnds as DiEnds, RrLevSO as DiSO, if($dm=FsMatchNo1, Closest1, Closest2) as IsClosest, if($dm=FsMatchNo1, Signed1, Signed2) as IsSigned,
+	                        concat(rpad(if($dm=FsMatchNo1, Arrowstring1, Arrowstring2), RrLevEnds*RrLevArrows, ' '), if($dm=FsMatchNo1, TieBreak1, TieBreak2)) Arrowstring, if($dm=FsMatchNo1, TieBreak1, TieBreak2)) Arrowstring
 						from (
 						    select RrMatchConfirmed as StopScore, concat_ws('|','R',RrMatchLevel, RrMatchGroup, RrMatchRound, RrMatchEvent) as LockKey,
 			                    RrMatchArrowstring Arrowstring1, RrMatchTiebreak TieBreak1,
 								RrMatchTarget+0 Target1,
 								'A' Letter1,
-								'A' FsLetter1, RrMatchMatchNo FsMatchNo1, RrMatchEvent FsEvent1, RrMatchWinLose as Win1, RrMatchTbClosest as Closest1
+								'A' FsLetter1, RrMatchMatchNo FsMatchNo1, RrMatchEvent FsEvent1, RrMatchWinLose as Win1, RrMatchTbClosest as Closest1, RrMatchSigned as Signed1
 							from RoundRobinMatches
 							where $MainFilter and RrMatchMatchNo=$m1
 						    ) tgt1
@@ -324,7 +329,7 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 						        RrMatchArrowstring Arrowstring2, RrMatchTiebreak TieBreak2, 
 			                    RrMatchTarget+0 Target2, 
 			                    'B' Letter2, 
-			                    'B' FsLetter2, RrMatchMatchNo FsMatchNo2, RrMatchEvent FsEvent2, RrMatchWinLose as Win2, RrMatchTbClosest as Closest2
+			                    'B' FsLetter2, RrMatchMatchNo FsMatchNo2, RrMatchEvent FsEvent2, RrMatchWinLose as Win2, RrMatchTbClosest as Closest2, RrMatchSigned as Signed2
 							from RoundRobinMatches
 							where $MainFilter and RrMatchMatchNo=$m2
 						    ) tgt2 on FsEvent1=FsEvent2 and FsMatchNo2=FsMatchNo1+1
@@ -401,6 +406,7 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 				$SQL = array ();
 				$SQL [] = "IskDtTournament=$ToId";
 				$SQL [] = "IskDtIsClosest=".intval($end==$maxNumEnd and $Data->soClosest);
+                $SQL [] = "IskDtIsSigned=".intval($Data->signed);
 				$SQL [] = "IskDtType=" . StrSafe_DB ( $Data->type );
 				$SQL [] = "IskDtTargetNo=" . StrSafe_DB ( $Data->key );
 				$SQL [] = "IskDtDistance=" . ($Data->distance);
@@ -416,7 +422,7 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 				if(isset($Data->team)) {
 					$SQL [] = "IskDtTeamInd=" . StrSafe_DB($Data->team);
 				}
-				if ($DbArrowstring != $IskArrowstring or ($end==$maxNumEnd and $r->IsClosest!=$Data->soClosest)) {
+				if ($DbArrowstring != $IskArrowstring or ($end==$maxNumEnd and ($r->IsClosest!=$Data->soClosest or $r->IsSigned!=$Data->signed))) {
 					$SQL [] = "IskDtArrowstring=" . StrSafe_DB ( $IskArrowstring );
 					$SQL [] = "IskDtUpdate=" . StrSafe_DB ( date ( 'Y-m-d H:i:s' ) );
 
@@ -448,7 +454,7 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 }
 
 function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
-	require_once(dirname(dirname(__FILE__)).'/config.php');
+	require_once(dirname(__FILE__, 2) .'/config.php');
 	require_once('Qualification/Fun_Qualification.local.inc.php');
 	require_once('Final/Fun_MatchTotal.inc.php');
 
@@ -494,7 +500,7 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
 	$Filtre='';
 
 	if(!empty($Options['target'])) {
-		$Filtre=' AND CAST(SUBSTR(IskDtTargetNo, POSITION('.' IN IskDtTargetNo)+1) AS SIGNED) = ' . intval($Options['target']);
+		$Filtre=' AND CAST(SUBSTR(IskDtTargetNo, POSITION(\'.\' IN IskDtTargetNo)+1) AS SIGNED) = ' . intval($Options['target']);
 	}
 
 	switch($IskSequence['type']) {
@@ -519,8 +525,8 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
                     IF(TfGoldsChars{$Options['dist']}='',IF(TfGoldsChars='',ToGoldsChars,TfGoldsChars),TfGoldsChars{$Options['dist']}) as GoldsChars, 
                     IF(TfXNineChars{$Options['dist']}='',IF(TfXNineChars='',ToXNineChars,TfXNineChars),TfXNineChars{$Options['dist']}) as XNineChars,
                     EnIndClEvent, EnTeamClEvent, EnIndFEvent, EnTeamFEvent+EnTeamMixEvent as EnTeamFinals,
-                    group_concat(concat_ws(':', IskDtEndNo, IskDtArrowstring) separator '|') as IskArrowstring,
-                    ToElabTeam!=127 as MakeTeams, ToLocRule, QuConfirm & ".pow(2, $Options['dist']).">0 as StopScore
+                    group_concat(concat_ws(':', IskDtEndNo, IskDtArrowstring) separator '|') as IskArrowstring, IskDtIsSigned,
+                    ToElabTeam!=127 as MakeTeams, ToLocRule, QuConfirm & ".pow(2, $Options['dist'])."!=0 as StopScore, QuSigned
                 FROM Qualifications
 				INNER JOIN Entries ON QuId=EnId and EnTournament={$CompId}
 				INNER JOIN Tournament ON ToId=EnTournament
@@ -561,11 +567,13 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
 				$Score=0;
 				$Gold=0;
 				$XNine=0;
+                $Signed=($r->QuSigned | ($r->IskDtIsSigned ? pow(2, $Options['dist']) : 0));
 				list($Score,$Gold,$XNine)=ValutaArrowStringGX($arrowString,$r->GoldsChars,$r->XNineChars);
+
 				$Hits=strlen(str_replace(' ', '', $arrowString));
 
 				$Update = "UPDATE Qualifications SET
-					QuD{$Options['dist']}Score={$Score}, QuD{$Options['dist']}Gold={$Gold}, QuD{$Options['dist']}Xnine={$XNine}, QuD{$Options['dist']}ArrowString='{$arrowString}', QuD{$Options['dist']}Hits={$Hits},
+					QuD{$Options['dist']}Score={$Score}, QuD{$Options['dist']}Gold={$Gold}, QuD{$Options['dist']}Xnine={$XNine}, QuD{$Options['dist']}ArrowString='{$arrowString}', QuD{$Options['dist']}Hits={$Hits}, QuSigned = {$Signed},
 					QuScore=QuD1Score+QuD2Score+QuD3Score+QuD4Score+QuD5Score+QuD6Score+QuD7Score+QuD8Score,
 					QuGold=QuD1Gold+QuD2Gold+QuD3Gold+QuD4Gold+QuD5Gold+QuD6Gold+QuD7Gold+QuD8Gold,
 					QuXnine=QuD1Xnine+QuD2Xnine+QuD3Xnine+QuD4Xnine+QuD5Xnine+QuD6Xnine+QuD7Xnine+QuD8Xnine,

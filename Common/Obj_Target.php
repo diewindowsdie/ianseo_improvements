@@ -149,7 +149,7 @@ class Obj_Target
 		foreach($this->TargetData['Arrows'] as $let => $Circle) {
 			if($Circle['size']>0) {
 				if($this->LancasterDot and $let=='N') {
-					$offsetY=$this->CenterY*0.275;
+					$offsetY=$this->Expand*$this->CenterY*0.275;
 				}
 				$Tgt[$Circle['size']]='<circle cx="'.$this->CenterX.'" cy="'.($this->CenterY+$offsetY).'" r="'.round($this->Expand*$Circle['size']*5, 2).'" stroke="#'.$Circle['lineColor'].'" stroke-width="1" fill="#'.$Circle['fillColor'].'" />';
 			}
