@@ -1,0 +1,55 @@
+name: Release on tag
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    if: github.ref_type == 'tag' && github.event.base_ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Prepare variables
+        id: vars
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          ZIP_NAME="${TAG_NAME}.zip"
+
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "zip=$ZIP_NAME" >> $GITHUB_OUTPUT
+
+          PREV_TAG=$(git tag --sort=-creatordate | grep -v "^$TAG_NAME$" | head -n 1 || true)
+          echo "prev_tag=$PREV_TAG" >> $GITHUB_OUTPUT
+
+      - name: Collect commits since previous release
+        run: |
+          if [ -z "${{ steps.vars.outputs.prev_tag }}" ]; then
+            git log --pretty=format:"* %s;" > release_notes.md
+          else
+            git log ${{ steps.vars.outputs.prev_tag }}..HEAD --pretty=format:"* %s;" > release_notes.md
+          fi
+
+      - name: Create zip archive (no hidden files)
+        run: |
+          zip -r "${{ steps.vars.outputs.zip }}" . \
+            -x ".*" \
+            -x "*/.*"
+
+      - name: Create GitHub Release with asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.vars.outputs.tag }}" \
+            "${{ steps.vars.outputs.zip }}" \
+            --title "${{ steps.vars.outputs.tag }}" \
+            --notes-file release_notes.md
