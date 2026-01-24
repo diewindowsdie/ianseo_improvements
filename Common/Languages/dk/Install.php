@@ -287,6 +287,7 @@ $lang['Sport80-DeleteEntries']='Slet indtastninger';
 $lang['Sport80-DryRunEntries']='Check status - ingen import';
 $lang['Sport80-ForceUpdate']='Tving synkronisering af alle indtastninger';
 $lang['Sport80-LoadEntries']='Tilføj/ret og slet indtastning';
+$lang['Sport80-skipSessionUpdate']='Opdater ikke tildelte sessioner';
 $lang['Sport80-UpdateEntries']='Tilføj/ret indtastning';
 $lang['Start Ianseo']='Gå til IANSEO!';
 $lang['Status']='Status';

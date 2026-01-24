@@ -39,7 +39,7 @@
                                 $q=safe_r_sql($Sql);
                                 while($r=safe_fetch($q)) {
                                     for ($n = $actDist + 1; $n <= $maxDist; $n++) {
-                                        safe_w_SQL("INSERT INTO `DistanceInformation` (`DiTournament`, `DiSession`, `DiDistance`, `DiEnds`, `DiArrows`, `DiType`) VALUES ({$_SESSION['TourId']}, $r->DiSession, $n, $r->e, $r->a, 'Q');");
+                                        safe_w_SQL("INSERT ignore INTO `DistanceInformation` (`DiTournament`, `DiSession`, `DiDistance`, `DiEnds`, `DiArrows`, `DiType`) VALUES ({$_SESSION['TourId']}, $r->DiSession, $n, $r->e, $r->a, 'Q');");
                                     }
                                 }
                             }

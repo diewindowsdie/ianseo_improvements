@@ -286,6 +286,7 @@ $lang['Sport80-DeleteEntries']='Elimina Iscritti';
 $lang['Sport80-DryRunEntries']='Controlla lo stato degli Iscritti - Nessuna importazione';
 $lang['Sport80-ForceUpdate']='Forza Sincronizzazione di tutti gli Iscritti';
 $lang['Sport80-LoadEntries']='Aggiungi/Aggiorna ed Elimina Iscritti';
+$lang['Sport80-skipSessionUpdate']='Non aggiornare i turni assegnati';
 $lang['Sport80-UpdateEntries']='Aggiungi/Aggiorna Iscritti';
 $lang['Start Ianseo']='Vai a I@NSEO';
 $lang['Status']='Stato';

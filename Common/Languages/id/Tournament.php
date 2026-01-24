@@ -570,6 +570,7 @@ $lang['IsDbVersionTooOld']='Versi Database InfoSystem lebih tua dibanding Ianseo
 $lang['IsGenericConfig']='Konfigurasi Umum';
 $lang['IsParamWarning']='Pengaturan InfoSystem!<br/>Gunakan dengan sangat hati-hati!';
 $lang['IsSpecificConfig']='Item';
+$lang['ItemsNo']='Jumlah Item: {$a}';
 $lang['Judge']='Wasit';
 $lang['JudgesAssigment']='Penugasan Wasit';
 $lang['JudgesSelectionForm']='Formulir Pemilihan Wasit';

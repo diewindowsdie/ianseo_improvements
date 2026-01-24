@@ -426,8 +426,13 @@ function changeEnd(gId) {
 function askTablet(gId) {
     let req2Device = [];
     curDevices.forEach((device) => {
-        if(device.group == gId && req2Device.map(object => object.device).indexOf(device.dev) == -1) {
-            req2Device.push({action: 'fetchall', device: Object.values(device.dev)[0]});
+        if(device.group == gId) {
+            $.each(device.dev, (devIndex, devItem) => {
+                if(req2Device.map(object => object.device).indexOf(devItem) == -1) {
+                    req2Device.push({action: 'fetchall', device: devItem});
+                }
+            })
+
         }
     });
     if(req2Device.length) {
@@ -834,6 +839,7 @@ function setDns(obj, archerID, doSet) {
                 }
                 $.get('Devices-action.php', form, (data2) => {
                     if (!data2.error && isLive) {
+                        notifyDevices(data2.json);
                         notifyControllers();
                     }
                 });
@@ -865,6 +871,7 @@ function setDnf(obj, archerID, doSet) {
                 }
                 $.get('Devices-action.php', form, (data2) => {
                     if (!data2.error && isLive) {
+                        notifyDevices(data2.json);
                         notifyControllers();
                     }
                 });

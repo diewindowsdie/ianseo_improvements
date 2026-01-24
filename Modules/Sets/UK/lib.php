@@ -9,9 +9,15 @@ STANDARD DEFINITIONS (Target TournaOpents)
 // these go here as it is a "global" definition, used or not
 $tourCollation = '';
 $tourDetIocCode = 'UK';
+
+if($_POST['TourReset'] =='on'){
+$UpdClasses = "UPDATE entries SET EnClass = REPLACE(EnClass, 'M', 'O'),EnAgeClass = REPLACE(EnAgeClass, 'M', 'O') WHERE EnTournament = $TourId AND (EnClass LIKE '%M%' OR EnAgeClass LIKE '%M%')";
+$run = safe_w_SQL($UpdClasses);
+}
+
 if(empty($SubRule)) $SubRule='1';
 
-function CreateStandardDivisions($TourId, $Type, $SubRule) {
+function CreateStandardDivisions($TourId, $Type, $subRuleName) {
 	$i=1;
     $optionDivs = array(
         'R'=>'Recurve',
@@ -21,10 +27,10 @@ function CreateStandardDivisions($TourId, $Type, $SubRule) {
     );
     if ($Type == 21) {
         $optionDivs = array('C' => 'Compound','R' => 'Recurve');
-    } else if (($Type!=40) && ($SubRule == 1) && ($Type !='FIELD') && ($Type != '3D')) {
+    } else if (($Type!=40) && ($subRuleName == 'SetUkNationals') && ($Type !='FIELD') && ($Type != '3D')) {
         $optionDivs = array('R'=>'Recurve','C'=>'Compound','L'=>'Longbow','B'=>'Barebow');
     }
-    else if (($Type!=40) && ($SubRule == 1) && $Type =='FIELD') {
+    else if (($Type!=40) && ($subRuleName == 'SetUK_Field') && $Type =='FIELD') {
         $optionDivs = array(
             'R'=>'Recurve',
             'C'=>'Compound',
@@ -37,7 +43,7 @@ function CreateStandardDivisions($TourId, $Type, $SubRule) {
             'T'=>'Traditional',
         );
     }
-    else if (($Type!=40) && ($SubRule == 1) && $Type =='3D') {
+    else if (($Type!=40) && ($SubRule == 'SetAllClass') && $Type =='3D') {
         $optionDivs = array(
             'R' => 'Recurve',
             'C' => 'Compound',
@@ -57,69 +63,69 @@ function CreateStandardDivisions($TourId, $Type, $SubRule) {
 
 }
 
-function CreateStandardClasses($TourId, $SubRule,$TourType) {
+function CreateStandardClasses($TourId, $subRuleName,$TourType) {
     $i=1;
 	switch($TourType) {
         case 40:
-            CreateClass($TourId, $i++, 21, 110, -1, 'O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open');
-            CreateClass($TourId, $i++, 21, 110, 1, 'W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women');
-            CreateClass($TourId, $i++, 18, 20, -1, 'U21O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open U21');
-            CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women U21');
-            CreateClass($TourId, $i++, 16, 17, -1, 'U18O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open U18');
-            CreateClass($TourId, $i++, 16, 17, 1, 'U18W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women U18');
-            CreateClass($TourId, $i++, 14, 15, -1, 'U16O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open U16');
-            CreateClass($TourId, $i++, 14, 15, 1, 'U16W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women U16');
-            CreateClass($TourId, $i++, 14, 14, -1, 'U15O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open U15');
-            CreateClass($TourId, $i++, 14, 14, 1, 'U15W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women U15');
-            CreateClass($TourId, $i++, 12, 13, -1, 'U14O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open U14');
-            CreateClass($TourId, $i++, 12, 13, 1, 'U14W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women U14');
-            CreateClass($TourId, $i++, 1, 12, -1, 'U12O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open U12');
-            CreateClass($TourId, $i++, 1, 12, 1, 'U12W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women U12');
-            CreateClass($TourId, $i++, 50, 110, -1, '50O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', '50+ Open');
-            CreateClass($TourId, $i++, 50, 110, 1, '50W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', '50+ Women');
+            CreateClass($TourId, $i++, 21, 49, -1, 'O', 'O', 'Open');
+            CreateClass($TourId, $i++, 21, 49, 1, 'W', 'W', 'Women');
+            CreateClass($TourId, $i++, 18, 20, -1, 'U21O', 'U21O,O', 'Open U21');
+            CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W,W', 'Women U21');
+            CreateClass($TourId, $i++, 16, 17, -1, 'U18O', 'U18O,U21O,O', 'Open U18');
+            CreateClass($TourId, $i++, 16, 17, 1, 'U18W', 'U21W,U18W,W', 'Women U18');
+            CreateClass($TourId, $i++, 14, 15, -1, 'U16O', 'U21O,U18O,U16O,O', 'Open U16');
+            CreateClass($TourId, $i++, 14, 15, 1, 'U16W', 'U21W,U18W,U16W,W', 'Women U16');
+            CreateClass($TourId, $i++, 14, 14, -1, 'U15O', 'U21O,U18O,U16O,U15O,O', 'Open U15');
+            CreateClass($TourId, $i++, 14, 14, 1, 'U15W', 'U21W,U18W,U16W,U15W,W', 'Women U15');
+            CreateClass($TourId, $i++, 12, 13, -1, 'U14O', 'U21O,U18O,U16O,U15O,U14O,O', 'Open U14');
+            CreateClass($TourId, $i++, 12, 13, 1, 'U14W', 'U21W,U18W,U16W,U15W,U14W,W', 'Women U14');
+            CreateClass($TourId, $i++, 1, 12, -1, 'U12O', 'U21O,U18O,U16O,U15O,U14O,U12O,O', 'Open U12');
+            CreateClass($TourId, $i++, 1, 12, 1, 'U12W', 'U21W,U18W,U16W,U15W,U14W,U12W,W', 'Women U12');
+            CreateClass($TourId, $i++, 50, 110, -1, '50O', '50O,O', '50+ Open');
+            CreateClass($TourId, $i++, 50, 110, 1, '50W', '50W,W', '50+ Women');
             break;
         case 10:
         case 12:
         default:
-		if (empty($SubRule)) {
-    		$SubRule = 3;
+		if (empty($subRuleName)) {
+    		$subRuleName = 'SetUK_Metric';
 			}
-            switch ($SubRule) {
-                case '1': // National Championships
+            switch ($subRuleName) {
+                case 'SetUkNationals': // National Championships
                     CreateClass($TourId, $i++, 1, 99, -1, 'O', 'O', 'Open');
                     CreateClass($TourId, $i++, 1, 99, 1, 'W', 'W', 'Women');
                     break;
-                case '2': // Junior National Championships
-                    CreateClass($TourId, $i++, 18, 20, -1, 'U21O', 'U21O,U18O,U16O,U15O,U14O,U12O', 'Open U21');
-                    CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W,U18W,U16W,U15W,U14W,U12W', 'Women U21');
-                    CreateClass($TourId, $i++, 16, 17, -1, 'U18O', 'U21O,U18O,U16O,U15O,U14O,U12O', 'Open U18');
-                    CreateClass($TourId, $i++, 16, 17, 1, 'U18W', 'U21W,U18W,U16W,U15W,U14W,U12W', 'Women U18');
-                    CreateClass($TourId, $i++, 14, 15, -1, 'U16O', 'U21O,U18O,U16O,U15O,U14O,U12O', 'Open U16');
-                    CreateClass($TourId, $i++, 14, 15, 1, 'U16W', 'U21W,U18W,U16W,U15W,U14W,U12W', 'Women U16');
-                    CreateClass($TourId, $i++, 14, 14, -1, 'U15O', 'U21O,U18O,U16O,U15O,U14O,U12O', 'Open U15');
-                    CreateClass($TourId, $i++, 14, 14, 1, 'U15W', 'U21W,U18W,U16W,U15W,U14W,U12W', 'Women U15');
-                    CreateClass($TourId, $i++, 12, 13, -1, 'U14O', 'U21O,U18O,U16O,U15O,U14O,U12O', 'Open U14');
-                    CreateClass($TourId, $i++, 12, 13, 1, 'U14W', 'U21W,U18W,U16W,U15W,U14W,U12W', 'Women U14');
-                    CreateClass($TourId, $i++, 1, 12, -1, 'U12O', 'U21O,U18O,U16O,U15O,U14O,U12O', 'Open U12');
-                    CreateClass($TourId, $i++, 1, 12, 1, 'U12W', 'U21W,U18W,U16W,U15W,U14W,U12W', 'Women U12');
+                case 'SetUkJunNationals': // Junior National Championships
+                    CreateClass($TourId, $i++, 18, 20, -1, 'U21O', 'U21O', 'Open U21');
+                    CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W', 'Women U21');
+                    CreateClass($TourId, $i++, 16, 17, -1, 'U18O', 'U18O', 'Open U18');
+                    CreateClass($TourId, $i++, 16, 17, 1, 'U18W', 'U18W', 'Women U18');
+                    CreateClass($TourId, $i++, 14, 15, -1, 'U16O', 'U16O', 'Open U16');
+                    CreateClass($TourId, $i++, 14, 15, 1, 'U16W', 'U16W', 'Women U16');
+                    CreateClass($TourId, $i++, 14, 14, -1, 'U15O', 'U15O', 'Open U15');
+                    CreateClass($TourId, $i++, 14, 14, 1, 'U15W', 'U15W', 'Women U15');
+                    CreateClass($TourId, $i++, 12, 13, -1, 'U14O', 'U14O', 'Open U14');
+                    CreateClass($TourId, $i++, 12, 13, 1, 'U14W', 'U14W', 'Women U14');
+                    CreateClass($TourId, $i++, 1, 12, -1, 'U12O', 'U12O', 'Open U12');
+                    CreateClass($TourId, $i++, 1, 12, 1, 'U12W', 'U12W', 'Women U12');
                     break;
-                case 3:
-                    CreateClass($TourId, $i++, 21, 110, -1, 'O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open');
-                    CreateClass($TourId, $i++, 21, 110, 1, 'W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women');
-                    CreateClass($TourId, $i++, 18, 20, -1, 'U21O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open U21');
-                    CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women U21');
-                    CreateClass($TourId, $i++, 16, 17, -1, 'U18O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open U18');
-                    CreateClass($TourId, $i++, 16, 17, 1, 'U18W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women U18');
-                    CreateClass($TourId, $i++, 14, 15, -1, 'U16O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open U16');
-                    CreateClass($TourId, $i++, 14, 15, 1, 'U16W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women U16');
-                    CreateClass($TourId, $i++, 14, 14, -1, 'U15O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open U15');
-                    CreateClass($TourId, $i++, 14, 14, 1, 'U15W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women U15');
-                    CreateClass($TourId, $i++, 12, 13, -1, 'U14O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open U14');
-                    CreateClass($TourId, $i++, 12, 13, 1, 'U14W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women U14');
-                    CreateClass($TourId, $i++, 1, 12, -1, 'U12O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', 'Open U12');
-                    CreateClass($TourId, $i++, 1, 12, 1, 'U12W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', 'Women U12');
-                    CreateClass($TourId, $i++, 50, 110, -1, '50O', 'U21O,U18O,U16O,U15O,U14O,U12O,50O,O', '50+ Open');
-                    CreateClass($TourId, $i++, 50, 110, 1, '50W', 'U21W,U18W,U16W,U15W,U14W,U12W,50W,W', '50+ Women');
+                case 'SetUK_Metric':
+                    CreateClass($TourId, $i++, 21, 49, -1, 'O', ',O', 'Open');
+                    CreateClass($TourId, $i++, 21, 49, 1, 'W', 'W', 'Women');
+                    CreateClass($TourId, $i++, 18, 20, -1, 'U21O', 'U21O,O', 'Open U21');
+                    CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W,W', 'Women U21');
+                    CreateClass($TourId, $i++, 16, 17, -1, 'U18O', 'U21O,U18O,O', 'Open U18');
+                    CreateClass($TourId, $i++, 16, 17, 1, 'U18W', 'U21W,U18W,W', 'Women U18');
+                    CreateClass($TourId, $i++, 14, 15, -1, 'U16O', 'U21O,U18O,U16O,O', 'Open U16');
+                    CreateClass($TourId, $i++, 14, 15, 1, 'U16W', 'U21W,U18W,U16W,W', 'Women U16');
+                    CreateClass($TourId, $i++, 14, 14, -1, 'U15O', 'U21O,U18O,U16O,U15O,O', 'Open U15');
+                    CreateClass($TourId, $i++, 14, 14, 1, 'U15W', 'U21W,U18W,U16W,U15W,W', 'Women U15');
+                    CreateClass($TourId, $i++, 12, 13, -1, 'U14O', 'U21O,U18O,U16O,U15O,U14O,O', 'Open U14');
+                    CreateClass($TourId, $i++, 12, 13, 1, 'U14W', 'U21W,U18W,U16W,U15W,U14W,W', 'Women U14');
+                    CreateClass($TourId, $i++, 1, 12, -1, 'U12O', 'U21O,U18O,U16O,U15O,U14O,U12O,O', 'Open U12');
+                    CreateClass($TourId, $i++, 1, 12, 1, 'U12W', 'U21W,U18W,U16W,U15W,U14W,U12W,W', 'Women U12');
+                    CreateClass($TourId, $i++, 50, 110, -1, '50O', '50O,O', '50+ Open');
+                    CreateClass($TourId, $i++, 50, 110, 1, '50W', '50W,W', '50+ Women');
                     break;
 
             }
@@ -129,14 +135,14 @@ function CreateStandardClasses($TourId, $SubRule,$TourType) {
 }
 
 
-function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
+function CreateStandardEvents($TourId, $subRuleName, $Outdoor=true,$TourType) {
 	$TargetR=($Outdoor?5:2);
 	$TargetC=($Outdoor?9:4);
 	$SetC=($Outdoor?0:1);
 	switch($TourType) {
         case 40:
-            switch ($SubRule) {
-                case 1:
+            switch ($subRuleName) {
+                case 'SetUK_YHB':
                     $M = "York";
                     $W = "Hereford";
                     $B1 = "Bristol 1";
@@ -145,7 +151,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = "Bristol 4";
                     $B5 = "Bristol 5";
                     break;
-                case 2:
+                case 'SetUK_WINDS':
                     $M = "St George";
                     $W = "Albion";
                     $B1 = "Albion";
@@ -154,7 +160,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = "Windsor 40";
                     $B5 = "Windsor 30";
                     break;
-                case 3:
+                case 'SetUK_AME':
                     $M = "American";
                     $W = $M;
                     $B1 = $M;
@@ -163,7 +169,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = $M;
                     $B5 = $M;
                     break;
-                case 4:
+                case 'SetUK_NATS':
                     $M = "New National";
                     $W = "Long National";
                     $B1 = "Long National";
@@ -172,7 +178,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = "National 40";
                     $B5 = "National 30";
                     break;
-                case 5:
+                case 'SetUK_WEST':
                     $M = "New Western";
                     $W = "Long Western";
                     $B1 = "Long Western";
@@ -181,7 +187,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = "Western 40";
                     $B5 = "Western 30";
                     break;
-                case 6:
+                case 'SetUK_WARS':
                     $M = "New Warwick";
                     $W = "Long Warwick";
                     $B1 = "Long Warwick";
@@ -190,7 +196,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = "Warwick 40";
                     $B5 = "Warwick 30";
                     break;
-                case 7:
+                case 'SetUK_STNIC':
                     $M = "St Nicholas";
                     $W = $M;
                     $B1 = $M;
@@ -199,7 +205,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = $M;
                     $B5 = $M;
                     break;
-                case 8:
+                case 'SetUK_ONT':
                     $M = "ontarget";
                     $W = $M;
                     $B1 = $M;
@@ -208,7 +214,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = $M;
                     $B5 = $M;
                     break;
-                case 9:
+                case 'SetUK_SHMET':
                     $M = "Short Metric";
                     $W = "Short Metric";
                     $B1 = "Short Metric 1";
@@ -217,7 +223,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = "Short Metric 4";
                     $B5 = "Short Metric 5";
                     break;
-                case 10:
+                case 'SetUK_LGMET':
                     $M = "Long Metric";
                     $W = "Long Metric";
                     $B1 = "Long Metric 1";
@@ -226,7 +232,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = "Long Metric 4";
                     $B5 = "Long Metric 5";
                     break;
-                case 11:
+                case 'SetUK_WRCS':
                     $M = "Worcester";
                     $W = $M;
                     $B1 = $M;
@@ -235,7 +241,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = $M;
                     $B5 = $M;
                     break;
-                case 12:
+                case 'SetUK_BR1':
                     $M = "Bray 1";
                     $W = $M;
                     $B1 = $M;
@@ -244,7 +250,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = $M;
                     $B5 = $M;
                     break;
-                case 13:
+                case 'SetUK_BR2':
                     $M = "Bray 2";
                     $W = $M;
                     $B1 = $M;
@@ -253,7 +259,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = $M;
                     $B5 = $M;
                     break;
-                case 14:
+                case 'SetUK_STFD':
                     $M = "Stafford";
                     $W = $M;
                     $B1 = $M;
@@ -262,7 +268,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     $B4 = $M;
                     $B5 = $M;
                     break;
-                case 15:
+                case 'SetUK_PMTH':
                     $M = "Portsmouth";
                     $W = $M;
                     $B1 = $M;
@@ -340,11 +346,11 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
             break;
 
         default:
-		if (empty($SubRule)) {
-    		$SubRule = 3;
+		if (empty($subRuleName)) {
+    		$subRuleName = 'SetUK_Metric';
 			}
-            switch ($SubRule) {
-                case 1:// National Championships
+            switch ($subRuleName) {
+                case 'SetUKNationals':// National Championships
                     $i = 1;
                     CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'RO', 'Recurve Open', 1, 240);
                     CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'RW', 'Recurve Women', 1, 240);
@@ -355,8 +361,8 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'BO', 'Barebow Open', 1, 240);
                     CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'BW', 'Barebow Women', 1, 240);
                     break;
-                case 2:
-                case 3:
+                case 'SetUKJunNationals':
+                case 'SetUK_Metric':
                     if ($TourType == 1) {
                         $appAdult='1440';
                         $app1 = 'Metric 1';
@@ -393,7 +399,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     }
 
                     $i=1;
-                    if($SubRule==2){
+                    if($subRuleName=='SetUkJunNationals'){
                         //if is Junior Champs, do not add Senior Categories
                     }
                     else{
@@ -454,7 +460,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
                     CreateEvent($TourId, $i++, 0, 0, 0, $TargetC, 5, 3, 1, 5, 3, 1, 'CU12W', $app5. ' - Compound Women Under 12', $SetC, 240);
                     CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'LU12W', $app5. ' - Longbow Women Under 12', 1, 240);
                     CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'BU12W', $app5. ' - Barebow Women Under 12', 1, 240);
-                    if($SubRule==2){
+                    if($subRuleName=='SetUkJunNationals'){
                         //if is Junior Champs, do not add 50+
                     }
                     else{
@@ -475,17 +481,17 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true,$TourType) {
             }
 }
 
-function InsertStandardEvents($TourId, $SubRule,$TourType){
+function InsertStandardEvents($TourId, $subRuleName,$TourType){
 
     switch ($TourType) {
         case 40:
             EventInserts($TourId);
             break;
         default:
-            switch($SubRule){
-                case 1:
-                case 2:
-                case 3:
+            switch($subRuleName){
+                case 'SetUkNationals':
+                case 'SetUkJunNationals':
+                case 'SetUK_Metric':
                    EventInserts($TourId);
                 break;
 

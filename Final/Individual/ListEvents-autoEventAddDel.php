@@ -21,10 +21,15 @@ if(isset($_REQUEST["checkEvents"])) {
     $JSON["Add"]=safe_num_rows($q);
     $JSON["Del"]=0;
     $JSON["DelList"]='';
-    $Sql = "SELECT Count(distinct EcCode) as DelNo, GROUP_CONCAT(EcCode SEPARATOR ', ') as DelList
+    $Sql = "SELECT Count(DISTINCT  EcCode) as DelNo, GROUP_CONCAT(DISTINCT EcCode ORDER BY EcCode SEPARATOR ', ') as DelList
         FROM EventClass
-        LEFT JOIN Entries ON EnClass=EcClass AND EnDivision=EcDivision AND EcTournament=EnTournament and EnIndFEvent=1
-        WHERE EcTournament=".StrSafe_DB($_SESSION['TourId'])." AND EcTeamEvent=0 AND EnId IS NULL";
+        WHERE EcTournament=".StrSafe_DB($_SESSION['TourId'])."  AND EcTeamEvent=0 AND EcCode NOT IN
+            (SELECT DISTINCT EcCode 
+            FROM EventClass
+            LEFT JOIN Entries ON EnClass = EcClass AND EnDivision = EcDivision AND EcTournament = EnTournament AND EnIndFEvent = 1
+            LEFT JOIN ExtraData ON EnId=EdId AND EdType='P'
+            WHERE
+            EcTournament = ".StrSafe_DB($_SESSION['TourId'])." AND  EcTeamEvent = 0 AND (IFNULL(EdExtra,0)&EcExtraAddons)=EcExtraAddons and EnId IS NOT NULL)";
     $q = safe_r_SQL($Sql);
     if($r=safe_fetch($q)) {
         $JSON["Del"] = intval($r->DelNo);
@@ -59,10 +64,15 @@ if(isset($_REQUEST["addEvents"]) AND intval($_REQUEST["addEvents"]) == safe_num_
 }
 
 if(isset($_REQUEST["delEvents"])) {
-    $Sql = "SELECT EcCode
+    $Sql = "SELECT DISTINCT EcCode
         FROM EventClass
-        LEFT JOIN Entries ON EnClass=EcClass AND EnDivision=EcDivision AND EcTournament=EnTournament
-        WHERE EcTournament=".StrSafe_DB($_SESSION['TourId'])." AND EcTeamEvent=0 AND EnId IS NULL";
+        WHERE EcTournament=".StrSafe_DB($_SESSION['TourId'])."  AND EcTeamEvent=0 AND EcCode NOT IN
+        (SELECT DISTINCT EcCode 
+        FROM EventClass
+        LEFT JOIN Entries ON EnClass = EcClass AND EnDivision = EcDivision AND EcTournament = EnTournament AND EnIndFEvent = 1
+        LEFT JOIN ExtraData ON EnId=EdId AND EdType='P'
+        WHERE
+        EcTournament = ".StrSafe_DB($_SESSION['TourId'])." AND  EcTeamEvent = 0 AND (IFNULL(EdExtra,0)&EcExtraAddons)=EcExtraAddons  and EnId IS NOT NULL)";
     $q=safe_r_SQL($Sql);
     if(intval($_REQUEST["delEvents"]) == safe_num_rows($q)) {
         require_once('Qualification/Fun_Qualification.local.inc.php');

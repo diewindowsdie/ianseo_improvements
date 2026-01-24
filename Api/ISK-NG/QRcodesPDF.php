@@ -87,6 +87,9 @@ if($_SESSION['UseApi']==ISK_NG_LIVE_CODE) {
 	if($QrCode['askSignature']) {
 	    $pdf->Cell(0, 0, get_text('ISK-askSignature','Api') . ': ' . get_text('AskSignature-'.$QrCode['askSignature'],'Api'), 0, 1, 'L');
 	}
+    if($QrCode['takeScorecardPhoto']) {
+        $pdf->Cell(0, 0, get_text('ISK-takeScorecardPhoto','Api'), 0, 1, 'L');
+    }
     if($QrCode['settingsPinCode']) {
         $pdf->Cell(0, 0, get_text('ISK-SettingsPIN','Api') . ': ' . $QrCode['settingsPinCode'], 0, 1, 'L');
     }

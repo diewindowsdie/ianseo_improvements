@@ -439,11 +439,11 @@ function tour_import($filename, $isString=false) {
 				if(is_array($field)) {
 					foreach($field as $ff) {
 						if(array_key_exists($ff,$record) && $record[$ff])
-							$Gara[$tab][$key][$ff]=$Countries[$record[$ff]];
+							$Gara[$tab][$key][$ff]=($Countries[$record[$ff]]??0);
 					}
 				} else {
 				    if(array_key_exists($field,$record) AND $record[$field] AND array_key_exists($record[$field],$Countries))
-						$Gara[$tab][$key][$field]=$Countries[$record[$field]];
+						$Gara[$tab][$key][$field]=($Countries[$record[$field]]??0);
 				}
 			}
 		}
@@ -513,7 +513,7 @@ function tour_import($filename, $isString=false) {
                 if(is_array($field)) {
                     foreach($field as $ff) {
                         if(array_key_exists($ff,$record) && $record[$ff]) {
-                            $Gara[$tab][$key][$ff] = $Entries[$record[$ff]];
+                            $Gara[$tab][$key][$ff] = ($Entries[$record[$ff]]??0);
                         }
                     }
                 } else {

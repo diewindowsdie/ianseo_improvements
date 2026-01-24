@@ -91,7 +91,6 @@ function CreateStandardClasses($TourId, $TourType, $SubRule) {
 					CreateClass($TourId, $i++, 60+$NextYearClass,100, 1, 'S3F', 'S3F,S2F,S1F', 'Senior 3 Femme', '1', 'BB,CO,CL'.($isTAEPara?',OPCL,FECL,OPCO,FECO,W1,CHCL,CRCL,CHCO,CRCO,HV1,HV2,HLCL,HLCO,SU1,SU2':''), '50W', '50W');
 					CreateClass($TourId, $i++, 60+$NextYearClass,100, 0, 'S3H', 'S3H,S2H,S1H', 'Senior 3 Homme', '1', 'BB,CO,CL'.($isTAEPara?',OPCL,FECL,OPCO,FECO,W1,CHCL,CRCL,CHCO,CRCO,HV1,HV2,HLCL,HLCO,SU1,SU2':''), '50M', '50M');
                     CreateClass($TourId, $i++, 1,127, -1, 'DEC', 'DEC', 'Découverte', '1', 'CL', '', '');
-                    CreateClass($TourId, $i++, 1,127, -1, 'DEB', 'DEB', 'Débutant', '1', 'CL', '', '');
 					break;
 				case '2':
 					// Championships Adults and Elite...
@@ -197,7 +196,6 @@ function CreateStandardClasses($TourId, $TourType, $SubRule) {
                     CreateClass($TourId, $i++, 60+$NextYearClass,127, 1, 'S3F', 'S3F,S2F,S1F', 'Senior 3 Femmes', '1', 'CL,CO'.($isTAEPara?',FECL,FECO,OPCL,OPCO,HV1,HV2,W1':''), '50W', '50W');
                     CreateClass($TourId, $i++, 60+$NextYearClass,127, 0, 'S3H', 'S3H,S2H,S1H', 'Senior 3 Hommes', '1', 'CL,CO'.($isTAEPara?',FECL,FECO,OPCL,OPCO,HV1,HV2,W1':''), '50M', '50M');
                     CreateClass($TourId, $i++, 1,127, -1, 'DEC', 'DEC', 'Découverte', '1', 'CL', '', '');
-                    CreateClass($TourId, $i++, 1,127, -1, 'DEB', 'DEB', 'Débutant', '1', 'CL', '', '');
                     CreateClass($TourId, $i++, 11+$NextYearClass, 12+$NextYearClass, 1, 'U13W', 'U13W,U15W', 'U13 Femmes National', '1', 'CL,CO'.($isTAEPara?',CHCL,CHCO,CRCL,CRCO,HLCL,HLCO,W1,OPCL,OPCO,FECL,FECO,SU1,SU2':''), '', '');
                     CreateClass($TourId, $i++, 11+$NextYearClass, 12+$NextYearClass, 0, 'U13M', 'U13M,U15M', 'U13 Hommes National', '1', 'CL,CO'.($isTAEPara?',CHCL,CHCO,CRCL,CRCO,HLCL,HLCO,W1,OPCL,OPCO,FECL,FECO,SU1,SU2':''), '', '');
                     CreateClass($TourId, $i++, 13+$NextYearClass, 14+$NextYearClass, 1, 'U15W', 'U15W,U18W', 'U15 Femmes National', '1', 'CL,CO,BB'.($isTAEPara?',CHCL,CHCO,CRCL,CRCO,HLCL,HLCO,W1,OPCL,OPCO,FECL,FECO,SU1,SU2':''), '', '');
@@ -314,7 +312,7 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=false) {
                         'U21HCL'=>['U21 Homme Arc Classique', 14, 5, 122, 70, 1],
                         'U21FCO'=>['U21 Femme Arc à Poulies', 4, 9, 80, 50, 0],
                         'U21HCO'=>['U21 Homme Arc à Poulies', 7, 9, 80, 50, 0],
-                        'DMJ'=>['Double Mixte Jeunes', 8, 5, 122, 60, 0],
+                        'DMJ'=>['Double Mixte Jeune', 8, 5, 122, 60, 1],
                     ];
 
                     foreach($Events as $EvCode=>$EvName) {
@@ -544,6 +542,12 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=false) {
                         'EvWaCategory'=>'',
                         'EvMedals'=>1,
                         'EvIsPara' => 0,
+                        'EvElimEnds' => 5,
+                        'EvElimArrows' => 3,
+                        'EvElimSO' => 1,
+                        'EvFinEnds' => 5,
+                        'EvFinArrows' => 3,
+                        'EvFinSO' => 1,
                     ];
                     // CL and CO have all their classes as events
 
@@ -608,7 +612,6 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=false) {
                         'NSFBB'=>['Scratch Femme Arc Nu National', 0, 5, 122, 50],
                         'NSHBB'=>['Scratch Homme Arc Nu National', 0, 5, 122, 50],
                         'NDEC'=>['Découverte', 0, 5, 122, 30],
-                        'NDEB'=>['Débutant', 0, 5, 122, 30],
                     ];
 
                     if($SubRule==14) {
@@ -663,6 +666,9 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=false) {
                     }
 
                     safe_w_SQL("update Events set EvMatchMode=1 where (EvEventName like '%Classique%' or EvEventName like '%Arc Nu%') and EvTournament={$_SESSION['TourId']}");
+                    // HV1 HV2
+                    safe_w_SQL("update Events set EvMatchMode=1 where (EVCode = 'HV1' or EvCode = 'HV2') and EvTournament={$_SESSION['TourId']}");
+
                     break;
 			}
 			break;
@@ -729,7 +735,6 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=false) {
                         'SFBB'=>['Scratch Femme Arc Nu', 0, 2, 40, 18, 1],
                         'SHBB'=>['Scratch Homme Arc Nu', 0, 2, 40, 18, 1],
                         'DEC'=>['Découverte', 0, 1, 80, 18, 1],
-                        'DEB'=>['Débutant', 0, 1, 80, 18, 1],
                     ];
                     if($SubRule==4) {
                         // Para Events
@@ -765,7 +770,7 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=false) {
                         $Options['EvTargetSize']=$EvName[3];
                         $Options['EvDistance']=$EvName[4];
                         $Options['EvMatchMode']=$EvName[5];
-                        $Options['EvIsPara']=$EvName[6];
+                        $Options['EvIsPara']=$EvName[6] ?? 0;
                         CreateEventNew($TourId, $EvCode, $EvName[0], $i++, $Options);
                     }
                     break;
@@ -1206,7 +1211,6 @@ function InsertStandardEvents($TourId, $TourType, $SubRule) {
                         'NSFBB'=>['BB'=>['U21W','S1W','S2W','S3W']],
                         'NSHBB'=>['BB'=>['U21M','S1M','S2M','S3M']],
                         'NDEC'=>['CL'=>['DEC']],
-                        'NDEB'=>['CL'=>['DEB']],
                     ];
 
                     if($SubRule==14) {
@@ -1233,7 +1237,7 @@ function InsertStandardEvents($TourId, $TourType, $SubRule) {
                         $Events['NFEHCO']=['FECO'=>['U21M','S1M','S2M','S3M']];
                         $Events['NCHFCL']=['CHCL'=>['U13W','U15W','U18W','U21W','S1W','S2W','S3W']];
                         $Events['NCHHCL']=['CHCL'=>['U13M','U15M','U18M','U21M','S1M','S2M','S3M']];
-                        $Events['NCHCO']=['CHCL'=>['U13W','U15W','U18W','U21W','S1W','S2W','S3W','U13M','U15M','U18M','U21M','S1M','S2M','S3M']];
+                        $Events['NCHCO']=['CHCO'=>['U13W','U15W','U18W','U21W','S1W','S2W','S3W','U13M','U15M','U18M','U21M','S1M','S2M','S3M']];
                         $Events['NCRFCL']=['CRCL'=>['U13W','U15W','U18W','U21W','S1W','S2W','S3W']];
                         $Events['NCRHCL']=['CRCL'=>['U13M','U15M','U18M','U21M','S1M','S2M','S3M']];
                         $Events['NCRCO']=['CHCO'=>['U13W','U15W','U18W','U21W','S1W','S2W','S3W','U13M','U15M','U18M','U21M','S1M','S2M','S3M']];
@@ -1325,7 +1329,6 @@ function InsertStandardEvents($TourId, $TourType, $SubRule) {
                         'SFBB'=>['BB'=>['U21F','S1F','S2F','S3F']],
                         'SHBB'=>['BB'=>['U21H','S1H','S2H','S3H']],
                         'DEC'=>['CL'=>['DEC']],
-                        'DEB'=>['CL'=>['DEB']],
                     ];
 
                     if($SubRule==4) {
@@ -1340,7 +1343,7 @@ function InsertStandardEvents($TourId, $TourType, $SubRule) {
                         $Events['FEHCO']=['FECO'=>['U21H','S1H','S2H','S3H']];
                         $Events['CHFCL']=['CHCL'=>['U13F','U15F','U18F','U21F','S1F','S2F','S3F']];
                         $Events['CHHCL']=['CHCL'=>['U13H','U15H','U18H','U21H','S1H','S2H','S3H']];
-                        $Events['CHCO']=['CHCL'=>['U13F','U15F','U18F','U21F','S1F','S2F','S3F','U13H','U15H','U18H','U21H','S1H','S2H','S3H']];
+                        $Events['CHCO']=['CHCO'=>['U13F','U15F','U18F','U21F','S1F','S2F','S3F','U13H','U15H','U18H','U21H','S1H','S2H','S3H']];
                         $Events['CRFCL']=['CRCL'=>['U13F','U15F','U18F','U21F','S1F','S2F','S3F']];
                         $Events['CRHCL']=['CRCL'=>['U13H','U15H','U18H','U21H','S1H','S2H','S3H']];
                         $Events['CRCO']=['CHCO'=>['U13F','U15F','U18F','U21F','S1F','S2F','S3F','U13H','U15H','U18H','U21H','S1H','S2H','S3H']];

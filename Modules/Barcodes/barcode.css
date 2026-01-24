@@ -35,7 +35,7 @@ body {
 
 .selected td {background-color:#d0d0d0; font-weight:bold}
 .TabellaScore {font-size:1.2em; width: 100%}
-.Score {padding: 0.2em 0.4em !important; text-align: right;}
+.Score {padding: 0.2em !important; text-align: right;}
 .ScoreBig {font-size:1.5em; font-weight: bold;}
 .Command {font-size: 1em; text-align: center;}
 .ArrError {font-size: 1.5em; color: white; background-color: #f00 !important; font-weight: bold;}
@@ -86,4 +86,8 @@ select, select option {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 50vw;
+}
+
+td.signed {
+    font-weight: bold;
 }

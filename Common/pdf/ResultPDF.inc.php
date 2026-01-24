@@ -635,17 +635,17 @@ class ResultPDF extends IanseoPdf {
 		}
 		// testastampa
 		if (strlen($section['printHeader'])) {
-			$this->Cell(190, 7.5, $section['printHeader'], 0, 1, 'R', 0);
+			$this->Cell(0, 7.5, $section['printHeader'], 0, 1, 'R', 0);
 		} else if(strlen($tmpHeader)!=0 && !$section['running'] && !$hideTempHeader) {
-			$this->Cell(190, 7.5, $tmpHeader, 0, 1, 'R', 0);
+			$this->Cell(0, 7.5, $tmpHeader, 0, 1, 'R', 0);
 		}
 
 		$this->SetFont($this->FontStd,'B',$this->FontSizeTitle);
-		$this->Cell(190, 6,  $section['descr'], 1, 1, 'C', 1);
+		$this->Cell(0, 6,  $section['descr'], 1, 1, 'C', 1);
 		if($follows) {
 			$this->SetXY(170,$this->GetY()-6);
 		   	$this->SetFont($this->FontStd,'',6);
-			$this->Cell(30, 6,  $this->Continue, 0, 1, 'R', 0);
+			$this->Cell(0, 6,  $this->Continue, 0, 1, 'R', 0);
 		}
 
 		$this->SetFont($this->FontStd,'B',$this->FontSizeHead);
@@ -656,29 +656,30 @@ class ResultPDF extends IanseoPdf {
         if (!$internationalProtocol) {
             $this->Cell(8, 4,  $section['fields']['athletes']['fields']['subclass'], 1, 0, 'C', 1);
         }
-		if($section['running'])
+		if($section['running']) {
 			$this->Cell(15, 4, $section['fields']['hits'], 1, 0, 'C', 1);
+        }
 		$this->Cell(20 - ($section['running'] ? 5 : 0), 4, $section['fields']['score'], 1, 0, 'C', 1);
 		$this->Cell(9, 4, $section['fields']['gold'], 1, 0, 'C', 1);
 		$this->Cell(9, 4, $section['fields']['xnine'], 1, 0, 'C', 1);
-		$this->Cell(9, 4, '', 1, 1, 'C', 1);
+		$this->Cell(0, 4, '', 1, 1, 'C', 1);
 		$this->SetFont($this->FontStd,'',1);
-		$this->Cell(190, 0.5,  '', 1, 1, 'C', 0);
+		$this->Cell(0, 0.5,  '', 1, 1, 'C', 0);
 	}
 
 	function writeGroupHeaderPrnShooOffTeamAbs($section,$follows=false) {
 		// testastampa
 		if (strlen($section['printHeader'])) {
 			$this->SetFont($this->FontStd,'B',$this->FontSizeTitle);
-			$this->Cell(190, 7.5,  $section['printHeader'], 0, 1, 'R', 0);
+			$this->Cell(0, 7.5,  $section['printHeader'], 0, 1, 'R', 0);
 		}
 
 		$this->SetFont($this->FontStd,'B',$this->FontSizeTitle);
-		$this->Cell(190, 6,  $section['descr'], 1, 1, 'C', 1);
+		$this->Cell(0, 6,  $section['descr'], 1, 1, 'C', 1);
 		if($follows) {
 			$this->SetXY(170,$this->GetY()-6);
 			$this->SetFont($this->FontStd,'',6);
-			$this->Cell(30, 6,  $this->Continue, 0, 1, 'R', 0);
+			$this->Cell(0, 6,  $this->Continue, 0, 1, 'R', 0);
 		}
 
 		$this->SetFont($this->FontStd,'B',$this->FontSizeHead);
@@ -690,13 +691,13 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(8, 4, $section['fields']['xnine'], 1, 0, 'C', 1);
 		$this->Cell(12, 4, '', 1, 1, 'C', 1);
 		$this->SetFont($this->FontStd,'',1);
-		$this->Cell(190, 0.5,  '', 1, 1, 'C', 0);
+		$this->Cell(0, 0.5,  '', 1, 1, 'C', 0);
 	}
 
 	function writeDataRowPrnTeamAbs($item, $endQualified, $running, $internationalProtocol = false) {
 		if($endQualified) {
 			$this->SetFont($this->FontStd,'',1);
-			$this->Cell(190, 1,  '', 1, 1, 'C', 1);
+			$this->Cell(0, 1,  '', 1, 1, 'C', 1);
 		}
 		$this->SetFont($this->FontStd,'B',$this->FontSizeLines);
 		$height=4*count($item['athletes']);
@@ -723,6 +724,10 @@ class ResultPDF extends IanseoPdf {
 
 		$txt='';
 		$fill=0;
+        if($this->PrintWeight and !empty($item['tieWeightDecoded'])) {
+            $txt=$item['tieWeightDecoded'];
+
+        }
 		if($item['so']>0) {
 			$txt=$this->ShotOffShort . (empty($item['tiebreakDecoded']) ? '': ' '.$item['tiebreakDecoded']);
 			$fill=1;
@@ -731,7 +736,7 @@ class ResultPDF extends IanseoPdf {
 			$fill=1;
 		}
 		$this->SetFont($this->FontStd,'',$this->FontSizeLines);
-		$this->Cell(9, $height,  $txt, 1, 0, 'L', $fill);
+		$this->Cell(0, $height,  $txt, 1, 0, 'L', $fill);
 
 		$this->SetXY($X,$Y);
 
@@ -739,9 +744,9 @@ class ResultPDF extends IanseoPdf {
 		foreach ($item['athletes'] as $a) {
 			$this->SetFont($this->FontStd,'',$this->FontSizeHead);
 			$this->Cell(51 - ($running ? 5 : 0) + ($internationalProtocol ? 8 : 0), 4,  $a['athlete'], 1, 0, 'L', 0);
-			$this->Cell(12, 4,  $a['birthdate'], 1, 0, 'C', 0);
+			$this->Cell(12, 4, $a['birthdate'], 1, 0, 'C', 0);
             if (!$internationalProtocol) {
-                $this->Cell(8, 4,  $a['subclassName'], 1, ($running ? 1 : 0), 'C', 0);
+                $this->Cell(8, 4, $a['subclassName'], 1, ($running ? 1 : 0), 'C', 0);
             }
 			$this->SetFont($this->FontFix,'',$this->FontSizeHead);
 			if(!$running) {

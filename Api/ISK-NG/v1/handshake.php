@@ -16,7 +16,7 @@ $res = array(
 	"error" => 1,				// 0 - no error, 1 - not allowed, 2 - unknown device
 	"socketid" => '',	// Value returned for Live comps, Lite/Pro have no value
 	"key" => "",	// Value returned for Pro/Live comps, Lite has no value
-    "ianseoVersion" => "20250605"
+    "ianseoVersion" => "20260101"
 );
 
 if(($req->iskType==ISK_NG_LITE_CODE or $req->iskType==ISK_NG_PRO_CODE) and !$req->tournament) {
@@ -42,7 +42,7 @@ if($req->tournament) {
 }
 
 $newDevice = false;
-$q = safe_r_SQL("SELECT IskDvDevice, IskDvAppVersion, IskDvCode, IskDvVersion, IskDvProActive, ToId, ToOptions 
+$q = safe_r_SQL("SELECT IskDvDevice, IskDvAppVersion, IskDvCode, IskDvVersion, IskDvProActive, IskDvExtra, ToId, ToOptions 
 	FROM IskDevices 
 	left join Tournament on ToId=IskDvTournament
 	WHERE `IskDvDevice`=".StrSafe_DB($req->uuid));
@@ -58,8 +58,8 @@ if(safe_num_rows($q) == 0) {
     $res['devCode']=$iskCode;
 
     safe_w_SQL("INSERT INTO IskDevices
-        (IskDvTournament, IskDvDevice, IskDvCode, IskDvVersion, IskDvAppVersion, IskDvProActive, IskDvLastSeen) VALUES
-        ({$tourId}, ".StrSafe_DB($req->uuid).", '{$iskCode}', ".StrSafe_DB($req->version??'').", {$req->iskType}, '" .($req->iskType == ISK_NG_LITE_CODE ? '1':'0'). "', '".date('Y-m-d H:i:s')."')");
+        (IskDvTournament, IskDvDevice, IskDvCode, IskDvVersion, IskDvAppVersion, IskDvProActive, IskDvExtra, IskDvLastSeen) VALUES
+        ({$tourId}, ".StrSafe_DB($req->uuid).", '{$iskCode}', ".StrSafe_DB($req->version??'').", {$req->iskType}, '" .($req->iskType == ISK_NG_LITE_CODE ? '1':'0'). "', '".((empty($req->extra) OR $req->iskType != ISK_NG_LITE_CODE) ? "" : json_encode($req->extra))."', '".date('Y-m-d H:i:s')."')");
 } else {
 	// device already exists, check what to do
 	$RESET=false;
@@ -73,8 +73,8 @@ if(safe_num_rows($q) == 0) {
 				// resets the device to the requested competition
 				$RESET=true;
 			}
-            if(/*$req->iskType == ISK_NG_LITE_CODE AND*/ ($r->IskDvProActive == 0 OR $r->IskDvAppVersion != $req->iskType OR $r->IskDvVersion != $req->version)) {
-                safe_w_sql("update IskDevices set IskDvProActive=1, IskDvVersion=".StrSafe_DB($req->version??'').", IskDvAppVersion={$req->iskType} where IskDvDevice=".StrSafe_DB($req->uuid));
+            if(/*$req->iskType == ISK_NG_LITE_CODE AND*/ ($r->IskDvProActive == 0 OR $r->IskDvAppVersion != $req->iskType OR $r->IskDvVersion != $req->version OR $r->IskDvExtra != ((empty($req->extra) OR $req->iskType != ISK_NG_LITE_CODE) ? "" : json_encode($req->extra)))) {
+                safe_w_sql("update IskDevices set IskDvProActive=1, IskDvVersion=".StrSafe_DB($req->version??'').", IskDvAppVersion={$req->iskType}, IskDvExtra='".((empty($req->extra) OR $req->iskType != ISK_NG_LITE_CODE) ? "" : json_encode($req->extra))."' where IskDvDevice=".StrSafe_DB($req->uuid));
             }
 			break;
 		case ISK_NG_LIVE_CODE:
@@ -115,8 +115,11 @@ if(safe_num_rows($q) == 0) {
 				// the app advertises itself as a lite so overwrite everything
 				$Fields.="IskDvGroup=0,
 					IskDvTarget='',
-					IskDvTargetReq='', ";
-			}
+					IskDvTargetReq='', 
+					IskDvExtra='".(empty($req->extra) ? "" : json_encode($req->extra))."' ,";
+			} else {
+                $Fields.="IskDvExtra='', ";
+            }
 			safe_w_sql("update IskDevices set 
 				" . $Fields . "
                 IskDvPersonal=0, 
@@ -127,7 +130,6 @@ if(safe_num_rows($q) == 0) {
 				IskDvProConnected=0,
 				IskDvSetup='',
 				IskDvRunningConf='',
-				IskDvUrlDownload='',
 				IskDvGps='',  IskDvLastSeen='".date('Y-m-d H:i:s')."',
 				IskDvVersion=".StrSafe_DB($req->version??'')."
 				where IskDvDevice=".StrSafe_DB($req->uuid));

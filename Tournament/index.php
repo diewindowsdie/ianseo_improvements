@@ -276,7 +276,7 @@ if (isset($_REQUEST['Command'])) {
                             // there has been a change in API, so we reset spurious settings
                             switch($UseAPI) {
                                 case 11:
-                                    resetModuleParameters('ISK-NG', ['Mode','ServerUrl', 'ServerUrlPin', 'Grouping']);
+                                    resetModuleParameters('ISK-NG', ['Mode','ServerUrl', 'ServerUrlPin',  'Grouping', 'ForceQRCodeScanning']);
                                     break;
                                 case 12:
                                     resetModuleParameters('ISK-NG', ['Mode','ServerUrl', 'ServerUrlPin', 'LicenseNumber', 'Grouping', 'UsePersonalDevices']);

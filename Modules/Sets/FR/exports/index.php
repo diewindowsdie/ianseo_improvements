@@ -85,6 +85,7 @@ if(!empty($_REQUEST['lev'])) {
 			ifnull(IndEvent,'-') as IndEvent, EnId, 
 			ucase(CoName) as CoName, CoCode, 
 			QuScore, QuSession, QuD1Score, QuD2Score, QuD3Score, QuD4Score, QuHits, QuGold, QuXnine, QuD1Arrowstring,
+			QuArrow,
 			MaxArrows, MaxDistance, MaxTargetFace, 
 			IndRank, QuClRank, IndRankFinal 
 		from Qualifications
@@ -189,17 +190,30 @@ if(!empty($_REQUEST['lev'])) {
 		$Archers[$r->IndEvent][$r->EnId][9] = $r->EnDivision;
 		$Archers[$r->IndEvent][$r->EnId][11] = $r->CoName;
 		$Archers[$r->IndEvent][$r->EnId][12] = $r->CoCode;
-		$Archers[$r->IndEvent][$r->EnId][13] = $r->QuScore;
 		$Archers[$r->IndEvent][$r->EnId][14] = 0;
-		$Archers[$r->IndEvent][$r->EnId][15] = $r->QuGold;
-		$Archers[$r->IndEvent][$r->EnId][16] = $r->QuXnine;
+		if('B' === $Discipline)
+		{
+			$Archers[$r->IndEvent][$r->EnId][13] = $r->QuArrow.str_pad($r->QuScore, 3, '0', STR_PAD_LEFT);
+			$Archers[$r->IndEvent][$r->EnId][15] = $r->QuXnine;
+			$Archers[$r->IndEvent][$r->EnId][16] = $r->QuGold;
+			$Archers[$r->IndEvent][$r->EnId][22] = $r->QuArrow;
+			$Archers[$r->IndEvent][$r->EnId][23] = $r->QuD1Score ? $r->QuD1Score : '';
+
+		}
+		else
+		{
+			$Archers[$r->IndEvent][$r->EnId][13] = $r->QuScore;
+			$Archers[$r->IndEvent][$r->EnId][15] = $r->QuGold;
+			$Archers[$r->IndEvent][$r->EnId][16] = $r->QuXnine;
+			$Archers[$r->IndEvent][$r->EnId][22] = $r->QuD1Score ? $r->QuD1Score : '';
+			$Archers[$r->IndEvent][$r->EnId][23] = $r->QuD2Score ? $r->QuD2Score : '';
+		}
+
 		$Archers[$r->IndEvent][$r->EnId][17] = $r->MaxDistance;
 		$Archers[$r->IndEvent][$r->EnId][18] = $r->MaxTargetFace;
 		$Archers[$r->IndEvent][$r->EnId][19] = date('d/m/Y', strtotime($COMP->ToWhenFrom));
 		$Archers[$r->IndEvent][$r->EnId][20] = str_replace(["\n","\r"], ' / ', trim($COMP->ToVenue));
 		$Archers[$r->IndEvent][$r->EnId][21] = $r->QuClRank;
-		$Archers[$r->IndEvent][$r->EnId][22] = $r->QuD1Score ? $r->QuD1Score : '';
-		$Archers[$r->IndEvent][$r->EnId][23] = $r->QuD2Score ? $r->QuD2Score : '';
 		$Archers[$r->IndEvent][$r->EnId][24] = $r->QuD3Score ? $r->QuD3Score : '';
 		$Archers[$r->IndEvent][$r->EnId][25] = $r->QuD4Score ? $r->QuD4Score : '';
 		$Archers[$r->IndEvent][$r->EnId][47] = $r->IndRankFinal;
@@ -337,12 +351,7 @@ echo '<tr>
 		<option value="">--</option>
 		<option value="S">Sélectif</option>
 		<option value="SP">Sélectif Para</option>
-		<option value="R">Régional</option>
-		<option value="D">Départemental</option>
-		<option value="N">National</option>
-		<option value="E">Europe</option>
-		<option value="M">Monde</option>
-		<option value="O">Jeux Olympiques</option>
+		<option value="N">Championnat de France</option>
 		</select></td>
 	</tr>';
 echo '</table>';

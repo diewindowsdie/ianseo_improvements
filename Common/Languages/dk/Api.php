@@ -123,6 +123,7 @@ $lang['ISK-StatusNoShoot']='Enhed kan ikke score';
 $lang['ISK-StatusOK']='Opsætning af enhed OK';
 $lang['ISK-StatusReloading']='Opsætning genindlæses';
 $lang['ISK-StatusWaitConfirm']='Venter på enheds bekræftelse';
+$lang['ISK-takeScorecardPhoto']='Tag billeder af skydesedler';
 $lang['ISK-TruncateTable']='Tøm midlertidig tabel';
 $lang['ISK-TruncateTableAll']='Tøm midlertidig tabel (fuldstændig)';
 $lang['ISK-UsePersonalDevices']='Brug personlige enheder';

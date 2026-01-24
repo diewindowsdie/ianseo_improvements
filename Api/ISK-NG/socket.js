@@ -2,6 +2,7 @@ let toSocket=0;
 let socket = null;
 let socketId = '';
 let toSocketUpdate = 0;
+let socketFunctions = [];
 const socketStatus = ['CONNECTING','CONNECTED','CLOSING','DISCONNECTED'];
 const BCastConnected = 1;
 const BCastDevicesInfo = 2;
@@ -10,7 +11,7 @@ const BCastResults = 8;
 const BCastResultsInfo = 16;
 const BCastPartialImport = 32;
 const BCastComplete = 255;
-const reqSocketVersion = "1.0.0";
+const reqSocketVersion = "1.1.0";
 
 $(function() {
     if(isLive) {
@@ -27,14 +28,14 @@ function initSocket() {
     try {
         socket = new WebSocket(SocketProtocol+"://"+SocketIP+':'+SocketPort+"/ngSocket");
         socket.onopen = (msg) => {
-            $('#ctrConnStatus').html(socketStatus[socket.readyState]).addClass('socketOUTDATED').removeClass('socketOFF socketON');
+            $('#ctrConnStatus').html(socketStatus[socket.readyState]).removeClass('socketOFF socketON socketINVALID').addClass('socketOUTDATED');
             $('#ctrMastersNo').html('0,&nbsp;');
             $('#ctrMasters').html('');
             sendPayload({action: "handshake", mode: "controller", tournament: tourCode});
         };
 
         socket.onclose = (msg) => {
-            $('#ctrConnStatus').html(socketStatus[socket.readyState]).removeClass('socketON socketOUTDATED').addClass('socketOFF');
+            $('#ctrConnStatus').html(socketStatus[socket.readyState]).removeClass('socketON socketOUTDATED socketINVALID').addClass('socketOFF');
             $('#ctrMastersNo').html('0,&nbsp;');
             $('#ctrMasters').html('');
             if(typeof connectedStatus !== 'undefined' && $.isFunction(connectedStatus)) {
@@ -42,10 +43,13 @@ function initSocket() {
             }
             socket.close();
             toSocket=setTimeout(initSocket, 5000);
+            if (typeof socketDisconnected !== 'undefined' && $.isFunction(socketDisconnected)) {
+                socketDisconnected();
+            }
         };
 
         socket.onerror = (msg) => {
-            $('#ctrConnStatus').html(socketStatus[socket.readyState]).removeClass('socketON socketOUTDATED').addClass('socketOFF');
+            $('#ctrConnStatus').html(socketStatus[socket.readyState]).removeClass('socketON socketOUTDATED socketINVALID').addClass('socketOFF');
             $('#ctrMastersNo').html('0,&nbsp;');
             $('#ctrMasters').html('');
             if(typeof connectedStatus !== 'undefined' && $.isFunction(connectedStatus)) {
@@ -53,6 +57,9 @@ function initSocket() {
             }
             socket.close();
             toSocket=setTimeout(initSocket, 5000);
+            if (typeof socketDisconnected !== 'undefined' && $.isFunction(socketDisconnected)) {
+                socketDisconnected();
+            }
         };
 
         socket.onmessage = (msg) => {
@@ -63,10 +70,17 @@ function initSocket() {
                     break;
                 case 'version':
                     clearTimeout(toSocketUpdate);
-                    if(data.version >= reqSocketVersion) {
-                        $('#ctrConnStatus').html(socketStatus[socket.readyState]).removeClass('socketOFF socketOUTDATED').addClass('socketON');
+                    socketFunctions = data.functions || [];
+                    if(data.validLicense===false) {
+                        $('#ctrConnStatus').html(data.statusLicense).removeClass('socketOFF socketOUTDATED socketON').addClass('socketINVALID');
+                        setTimeout(reqVersion, 60000);
+                    } else if(data.version >= reqSocketVersion) {
+                        $('#ctrConnStatus').html(socketStatus[socket.readyState]).removeClass('socketOFF socketOUTDATED socketINVALID').addClass('socketON');
                     } else {
                         $('#ctrConnStatus').html("Update Socket to version " + reqSocketVersion);
+                    }
+                    if (typeof socketConnected !== 'undefined' && $.isFunction(socketConnected)) {
+                        socketConnected();
                     }
                     break;
                 case 'socketBroadcast':
@@ -165,5 +179,8 @@ function changeMasterSocket(){
             initSocket();
         }
     }
+}
 
+function isFunctionAvailable(funcName) {
+    return socketFunctions.includes(funcName);
 }

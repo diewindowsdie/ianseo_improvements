@@ -5,10 +5,10 @@ require_once('Common/Lib/Fun_Modules.php');
 require_once('Common/Lib/CommonLib.php');
 require_once(__DIR__.'/config_defines.php');
 
-const reqAppVersion = '1.6.0';
+const reqAppVersion = '1.7.5';
 
 define('NG_DEBUG_LOG', ($CFG->DEBUG??false) and is_dir(__DIR__.'/log') and is_writable(__DIR__.'/log'));
-define('NG_DEBUG_LOGFILE', __DIR__.'/log/messages-'.date('Y-m-d').'.log');
+define('NG_DEBUG_LOGFILE', __DIR__.'/log/messages-'.date('Y-m-d').'.jsonl');
 
 function getSocketIp() {
     $ianseoSocketIp = getModuleParameter('ISK-NG', "IanseoSocketIP");
@@ -449,11 +449,23 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 		$f=array();
 		foreach($Specific as $SpecType=>$SpecCats) {
 			$tmp=explode('-', $SpecType);
-			$f[]="(IceCardNumber=".end($tmp)." and find_in_set(concat(EnDivision,EnClass), '$SpecCats'))";
+            $q=safe_r_SQL("SELECT IceCardNumber FROM `IdCardElements` WHERE `IceTournament` = $toId AND `IceType` LIKE '%AthQrCode%' AND IceCardNumber=".end($tmp));
+            if(safe_num_rows($q)>0) {
+                $f[]="(IceCardNumber=".end($tmp)." and find_in_set(concat(EnDivision,EnClass), '$SpecCats'))";
+            }
 		}
-		$ExtraSql="left join IdCardElements on IceTournament=EnTournament and IceType='AthQrCode' and IceCardType='A' and (".implode(' or ', $f).") ";
-		$ExtraField='coalesce(IceContent, EnCode)';
+        if(count($f)>0) {
+            $ExtraSql = "left join IdCardElements on IceTournament=EnTournament and IceType='AthQrCode' and IceCardType='A' and (" . implode(' or ', $f) . ") ";
+            $ExtraField = 'coalesce(IceContent, EnCode)';
+        }
 	}
+    if($ExtraSql=='') {
+        $q=safe_r_SQL("SELECT IceCardNumber, IceOrder, IceCardPage  FROM `IdCardElements` WHERE `IceTournament` = $toId AND `IceType` LIKE '%AthQrCode%' ORDER BY IceCardNumber, IceOrder, IceCardPage");
+        if($f=safe_fetch($q)) {
+            $ExtraSql="left join IdCardElements on IceTournament=EnTournament and IceType='AthQrCode' and IceCardType='A' and IceCardNumber=$f->IceCardNumber AND IceOrder=$f->IceOrder AND IceCardPage=$f->IceCardPage ";
+            $ExtraField='coalesce(IceContent, EnCode)';
+        }
+    }
 
 	switch($IskSequence['type']) {
         case 'Q':

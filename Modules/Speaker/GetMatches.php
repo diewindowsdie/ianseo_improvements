@@ -35,7 +35,7 @@ if (empty($_SESSION['TourId']) && (is_null($schedule) || is_null($team))) {
 checkFullACL(AclSpeaker, '', AclReadOnly, false);
 
 $otherWhere= "
-	AND fs1.FSTeamEvent=" . StrSafe_DB($team) . "
+	AND fs1.FSTeamEvent=" . intval($team) . "
 	AND (CONCAT(fs1.FSScheduledDate,' ',fs1.FSScheduledTime)=" . StrSafe_DB($schedule) . " OR CONCAT(fs2.FSScheduledDate,' ',fs2.FSScheduledTime)=" . StrSafe_DB($schedule) . ")
 ";
 

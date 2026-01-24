@@ -259,14 +259,15 @@ if($DataSource) {
                     $ImportResult['Refused'][]='<tr class="error"><td>Row ' . $Line  . ' incorrect, wrong number of fields<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
                     continue;
                 }
-                if(!preg_match('/^[0-9]{1}$/sim', $tmpString[2])) {
+                if(!preg_match('/^[0-9]{1,3}$/sim', $tmpString[2])) {
                     $ImportResult['Refused'][]='<tr class="error"><td>Row ' . $Line  . ' incorrect, Invalid Session reference<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
                     continue;
                 }
-                if(!preg_match('/^[0-9]+[A-Z]{1}$/sim', $tmpString[3])) {
+                if(!preg_match('/^[0-9]+[A-Z]{0,1}$/sim', $tmpString[3])) {
                     $ImportResult['Refused'][]='<tr class="error"><td>Row ' . $Line  . ' incorrect, Invalid target No. reference<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
                     continue;
                 }
+
                 // gets the EnIds of the archer with that EnCode
                 $Sql="SELECT EnId
                     FROM Entries
@@ -278,9 +279,13 @@ if($DataSource) {
                 $q=safe_r_SQL($Sql);
                 $tgt=intval(substr($tmpString[3],0,-1));
                 $letter=strtoupper(substr($tmpString[3],-1,1));
+                if($tmpString[2]==0 OR $tgt==0) {
+                    $tgt = 0;
+                    $letter='';
+                }
                 if(safe_num_rows($q)) {
                     while($r=safe_fetch($q)) {
-                        safe_w_sql("Update Qualifications SET QuSession={$tmpString[2]}, QuTarget={$tgt}, QuLetter='{$letter}',  WHERE QuId=$r->EnId");
+                        safe_w_sql("Update Qualifications SET QuSession={$tmpString[2]}, QuTarget={$tgt}, QuLetter='{$letter}'  WHERE QuId=$r->EnId");
                         $ImportResult['Inserted'][]='<tr><td>Inserted/updated</td><td>'.$tmpString[1].'</td><td>'.$tmpString[2].'</td><td>'.$tmpString[3].'</td></tr>';
                         $ImportResult['Imported']++;
                     }
@@ -584,6 +589,7 @@ if($DataSource) {
                         QuD{$Dist}Xnine=" . StrSafe_DB($XNine) . ",
                         QuD{$Dist}Hits=" . StrSafe_DB(strlen(str_replace(' ','', $ArrowString))) . ",
                         QuConfirm = QuConfirm & (255-".pow(2, $Dist) ."),
+                        QuSigned = QuSigned & (255-".pow(2, $Dist) ."),
                         QuScore=QuD1Score+QuD2Score+QuD3Score+QuD4Score+QuD5Score+QuD6Score+QuD7Score+QuD8Score,
                         QuGold=QuD1Gold+QuD2Gold+QuD3Gold+QuD4Gold+QuD5Gold+QuD6Gold+QuD7Gold+QuD8Gold,
                         QuXnine=QuD1Xnine+QuD2Xnine+QuD3Xnine+QuD4Xnine+QuD5Xnine+QuD6Xnine+QuD7Xnine+QuD8Xnine,

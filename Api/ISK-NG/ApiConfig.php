@@ -6,6 +6,7 @@ if(!empty($_REQUEST['api'])) {
 		$ISKServerUrl=getModuleParameter('ISK-NG', 'ServerUrl', '');
 		$ISKServerUrlPIN=getModuleParameter('ISK-NG', 'ServerUrlPin', '');
 		$ISKUsePersonalDevices=getModuleParameter('ISK-NG', 'UsePersonalDevices', '');
+        $ISKForceQRCodeScanning=getModuleParameter('ISK-NG', 'ForceQRCodeScanning', '');
 		$ConfigHtml = '<tr>'.
 			'<th class="TitleLeft w-25">'.get_text('ISK-ServerUrl','Api').'</th>'.
 			'<td class="w-75">'.
@@ -20,7 +21,18 @@ if(!empty($_REQUEST['api'])) {
 			get_text('ISK-ServerUrlPin','Help',$_SESSION["TourCode"].'|'.(empty($ISKServerUrlPIN) ? '____':$ISKServerUrlPIN)).
 			'</td>'.
 			'</tr>';
-		if ($_REQUEST['api'] === 'ng-pro') {
+        if ($_REQUEST['api'] !== 'ng-pro') {
+            $ConfigHtml .= '<tr>' .
+            '<th class="TitleLeft w-25">' . get_text('ISK-ForceQRCodeScanning', 'Api') . '</th>' .
+            '<td class="w-75">' .
+            '<select class="mr-2" name="Module[ISK-NG][ForceQRCodeScanning]">
+                <option value="0">' . get_text('No') . '</option>
+                <option value="1" ' . ($ISKForceQRCodeScanning ? 'selected="selected"' : '') . '>' . get_text('Yes') . '</option>
+            </select>' .
+            get_text('ISK-ForceQRCodeScanning-Help', 'Api') .
+            '</td>' .
+            '</tr>';
+        } else  {
 			$ISKLicenseNumber = getModuleParameter('ISK-NG', 'LicenseNumber', '');
 			$ConfigHtml .= '<tr>'.
                 '<th class="TitleLeft w-25">'.get_text('ISK-UsePersonalDevices','Api').'</th>'.

@@ -15,6 +15,10 @@ $sourceRankFrom=(isset($_REQUEST['sourceRankFrom']) ? $_REQUEST['sourceRankFrom'
 $sourceRankTo=(isset($_REQUEST['sourceRankTo']) ? $_REQUEST['sourceRankTo'] : 99999);
 $destFrom=(isset($_REQUEST['destFrom']) ? $_REQUEST['destFrom'] : null);
 $destTo=(isset($_REQUEST['destTo']) ? $_REQUEST['destTo'] : null);
+if(intval($destFrom??0)>intval($destTo??0)) {
+    [$destFrom, $destTo] = [$destTo, $destFrom];
+    [$sourceRankFrom, $sourceRankTo] = [$sourceRankTo, $sourceRankFrom];
+}
 
 $NumSession=0;
 $Row=null;

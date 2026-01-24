@@ -7,13 +7,13 @@ require_once(dirname(__FILE__).'/lib.php');
 require_once(dirname(dirname(__FILE__)).'/lib.php');
 
 // default Divisions
-CreateStandardDivisions($TourId, $TourType, $SubRule);
-if(($TourType==40) or (($TourType != 40)and($SubRule == 3))) {
+CreateStandardDivisions($TourId, $TourType, $subRuleName);
+if(($TourType==40) or (($TourType != 40)and($subRuleName == 'SetUK_Metric' ))) {
     CreateSubClass($TourId, 1, 'OD', 'Out of Division');
 }
 
-// default Classes
-CreateStandardClasses($TourId, $SubRule,$TourType);
+// default Classess
+CreateStandardClasses($TourId, $subRuleName,$TourType);
 
 //Set Defaults for the team creation code
 SetModuleParameter('SetUK', 'TeamMode', 0);
@@ -25,14 +25,13 @@ SetModuleParameter('SetUK', 'MixedComponent', 2);
 // default Distances
 
 if (empty($SubRule)) {
-    		$SubRule = 3;
+    		$subRuleName = 'SetUK_Metric';
 }
 switch($TourType) {
 	case 1:
 	case 4:
-
-		switch($SubRule) {
-			case '1':
+		switch($subRuleName) {
+			case 'SetUkNationals':
 				CreateDistanceNew($TourId, $TourType, '_O', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, '_W', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, '_U21O', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
@@ -42,11 +41,11 @@ switch($TourType) {
 				CreateDistanceNew($TourId, $TourType, '_50O', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, '_50W', array(array('60 m',60), array('50 m',50), array('40 m',40), array('30 m',30)));
 				break;
-			case '2':
+			case 'SetUkJunNationals':
 				CreateDistanceNew($TourId, $TourType, '_O', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, '_W', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
 				break;
-			case '3':
+			case 'SetUK_Metric':
 				CreateDistanceNew($TourId, $TourType, '_O', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, '_W', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, '_50O', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
@@ -66,8 +65,8 @@ switch($TourType) {
 		break;
     case 37:
 	
-        switch($SubRule) {
-            case '1':
+        switch($subRuleName) {
+            case 'SetUkNationals':
                 CreateDistanceNew($TourId, $TourType, '_M', array(array('70m-1',70), array('70m-2',70), array('70m-3',70), array('70m-4',70)));
                 CreateDistanceNew($TourId, $TourType, '_W', array(array('70m-1',70), array('70m-2',70), array('70m-3',70), array('70m-4',70)));
                 CreateDistanceNew($TourId, $TourType, '_U21O', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
@@ -77,11 +76,11 @@ switch($TourType) {
                 CreateDistanceNew($TourId, $TourType, '_50O', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
                 CreateDistanceNew($TourId, $TourType, '_50W', array(array('60 m',60), array('50 m',50), array('40 m',40), array('30 m',30)));
                 break;
-            case '2':
+            case 'SetUkJunNationals':
                 CreateDistanceNew($TourId, $TourType, '_O', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
                 CreateDistanceNew($TourId, $TourType, '_W', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
                 break;
-            case '3':
+            case 'SetUK_Metric':
                 foreach (array('R' => 'R', 'L' => 'L', 'B' => 'B', ) as $kDiv => $vDiv){
                     if ($vDiv == 'B') {
                         CreateDistanceNew($TourId, $TourType, $vDiv . 'W', array(array('50m-1',50), array('50m-2',50), array('50m-3',50), array('50m-4',50)));
@@ -137,8 +136,8 @@ switch($TourType) {
         break;
 
 	case 2:
-		switch($SubRule) {
-			case '1':
+		switch($subRuleName) {
+			case 'SetUkNationals':
 				CreateDistanceNew($TourId, $TourType, '_O', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30), array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, '_W', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30), array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, '_JO', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30), array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
@@ -148,11 +147,11 @@ switch($TourType) {
 				CreateDistanceNew($TourId, $TourType, '_MO', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30), array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, '_MW', array(array('60 m',60), array('50 m',50), array('40 m',40), array('30 m',30), array('60 m',60), array('50 m',50), array('40 m',40), array('30 m',30)));
 				break;
-			case '2':
+			case 'SetUkJunNationals':
 				CreateDistanceNew($TourId, $TourType, '_O', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30), array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, '_W', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30), array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
 				break;
-			case '3':
+			case 'SetUK_Metric':
 				CreateDistanceNew($TourId, $TourType, '_O', array(array('90m',90), array('70m',70), array('50m',50), array('30m',30), array('90m',90), array('70m',70), array('50m',50), array('30m',30)));
 				CreateDistanceNew($TourId, $TourType, '_W', array(array('70m',70), array('60m',60), array('50m',50), array('30m',30), array('70m',70), array('60m',60), array('50m',50), array('30m',30)));
 				CreateDistanceNew($TourId, $TourType, '_50O', array(array('70m',70), array('60m',60), array('50m',50), array('30m',30),array('70m',70), array('60m',60), array('50m',50), array('30m',30)));
@@ -171,8 +170,8 @@ switch($TourType) {
 		break;
 	case 18:
 		CreateDistanceNew($TourId, $TourType, 'C%', array(array('50m-1',50), array('50m-2',50), array('-',0), array('-',0)));
-		switch($SubRule) {
-			case '1':
+		switch($subRuleName) {
+			case 'SetUkNationals':
 				CreateDistanceNew($TourId, $TourType, 'RO', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, 'RW', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, 'RJO', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
@@ -182,11 +181,11 @@ switch($TourType) {
 				CreateDistanceNew($TourId, $TourType, 'RMO', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, 'RMW', array(array('60 m',60), array('50 m',50), array('40 m',40), array('30 m',30)));
 				break;
-			case '2':
+			case 'SetUkJunNationals':
 				CreateDistanceNew($TourId, $TourType, 'RO', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, 'RW', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
 				break;
-			case '3':
+			case 'SetUK_Metric':
 				CreateDistanceNew($TourId, $TourType, 'RO', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, 'RW', array(array('70 m',70), array('60 m',60), array('50 m',50), array('30 m',30)));
 				CreateDistanceNew($TourId, $TourType, 'RJO', array(array('90 m',90), array('70 m',70), array('50 m',50), array('30 m',30)));
@@ -201,15 +200,15 @@ switch($TourType) {
 		$d50=array(array('50m-1',50), array('50m-2',50));
 		$d40=array(array('40m-1',40), array('40m-2',40));
 		$d30=array(array('30m-1',30), array('30m-2',30));
-		switch($SubRule) {
-			case '1':
+		switch($subRuleName) {
+			case 'SetUkNationals':
                 CreateDistanceNew($TourId, $TourType, 'R%', $d70);
                 CreateDistanceNew($TourId, $TourType, 'C%', $d50);
                 CreateDistanceNew($TourId,$TourType,  'L%', $d70);
                 CreateDistanceNew($TourId,$TourType,  'B%', $d50);
 				break;
-			case '2':
-			case '3':
+			case 'SetUkJunNationals':
+			case 'SetUK_Metric':
             foreach (array('R' => 'R', 'L' => 'L', 'B' => 'B', ) as $kDiv => $vDiv){
 				if ($vDiv == 'B') {
 					CreateDistanceNew($TourId, $TourType, $vDiv . 'W',  $d50);
@@ -283,15 +282,15 @@ switch($TourType) {
 		}
 
 	case 6:
-		switch($SubRule){ //Switch on Junior indoors - if the Junior Nationals are selected, create as 20yds Portsmouth
-			case 1:
+		switch($subRuleName){ //Switch on Junior indoors - if the Junior Nationals are selected, create as 20yds Portsmouth
+			case 'SetUkNationals':
 				CreateDistanceNew($TourId, $TourType, '%', array(array('18m-1',18), array('18m-2',18)));
 				break;
-				case 2:
+				case 'SetUkJunNationals':
 				CreateDistanceNew($TourId, $TourType, '%', array(array('20y-1',18), array('20y-2',18)));
 				break;
 
-				case 3:
+				case 'SetUK_Metric':
 				CreateDistanceNew($TourId, $TourType, '%', array(array('18m-1',18), array('18m-2',18)));
 				break;
 		}
@@ -303,9 +302,9 @@ switch($TourType) {
 		CreateDistanceNew($TourId, $TourType, '%', array(array('25m-1',25), array('25m-2',25), array('18m-1',18), array('18m-2',18)));
 		break;
     case 40:
-     switch ($SubRule){
-         case 1:
-         case 2:
+     switch ($subRuleName){
+         case 'SetUK_WINDS':
+         case 'SetUK_YHB':
 			CreateDistanceNew($TourId, $TourType, '_O', array(array('100y',100), array('80y',80), array('60y',60)));
 			CreateDistanceNew($TourId, $TourType, '_W', array(array('80y',80), array('60y',60), array('50y',50)));
 		 	CreateDistanceNew($TourId, $TourType, '_50O', array(array('80y',80), array('60y',60), array('50y',50)));
@@ -320,12 +319,12 @@ switch($TourType) {
 			CreateDistanceNew($TourId, $TourType, '_U14%', array(array('40y',40), array('30y',30), array('20y',20)));
 			CreateDistanceNew($TourId, $TourType, '_U12%', array(array('30y',30), array('20y',20), array('10y',10)));
             break;
-         case 3:
+         case 'SetUK_AME':
              CreateDistanceNew($TourId, $TourType, '%', array(array('60y',60), array('50y',50), array('40y',40)));
              break;
-         case 4:
-         case 5:
-         case 6:
+         case 'SetUK_NATS':
+         case 'SetUK_WEST':
+         case 'SetUK_WARS':
              CreateDistanceNew($TourId, $TourType, '_O', array(array('100y',100), array('80y',80)));
              CreateDistanceNew($TourId, $TourType, '_W', array(array('80y',80), array('60y',60)));
 			 CreateDistanceNew($TourId, $TourType, '_50O',array(array('80y',80), array('60y',60)));
@@ -340,13 +339,13 @@ switch($TourType) {
              CreateDistanceNew($TourId, $TourType, '_U14%', array(array('40y',40), array('30y',30)));
              CreateDistanceNew($TourId, $TourType, '_U12%', array(array('30y',30), array('20y',20)));
              break;
-         case 7:
+         case 'SetUK_STNIC':
              CreateDistanceNew($TourId, $TourType, '_%', array(array('40y',40), array('30y',30)));
              break;
-         case 8:
+         case 'SetUK_ONT':
              CreateDistanceNew($TourId, $TourType, '_%', array(array('50y',50), array('50y',50), array('50y',50)));
              break;
-         case 9:
+         case 'SetUK_SHMET':
              CreateDistanceNew($TourId, $TourType, '_O', array(array('50m',50), array('30m',30)));
              CreateDistanceNew($TourId, $TourType, '_W', array(array('50m',50), array('30m',30)));
 			 CreateDistanceNew($TourId, $TourType, '_50O',array(array('50m',50), array('30m',30)));
@@ -361,7 +360,7 @@ switch($TourType) {
              CreateDistanceNew($TourId, $TourType, '_U14%', array(array('20m',20), array('10m',10)));
              CreateDistanceNew($TourId, $TourType, '_U12%', array(array('15m',15), array('10m',10)));
              break;
-         case 10:
+         case 'SetUK_LGMET':
              CreateDistanceNew($TourId, $TourType, '_O', array(array('90m',90), array('70m',70)));
              CreateDistanceNew($TourId, $TourType, '_W', array(array('70m',70), array('60m',60)));
 			 CreateDistanceNew($TourId, $TourType, '_50O',array(array('70m',70), array('60m',60)));
@@ -378,17 +377,17 @@ switch($TourType) {
              break;
          break;
 
-         case 11:
-         case 15:
+         case 'SetUK_WRCS':
+         case 'SetUK_PMTH':
              CreateDistanceNew($TourId, $TourType, '_%', array(array('20y-1',20), array('20y-2',20)));
              break;
-         case 12:
+         case 'SetUK_BR1':
              CreateDistanceNew($TourId, $TourType, '_%', array(array('20y',20)));
              break;
-         case 13:
+         case 'SetUK_BR2':
              CreateDistanceNew($TourId, $TourType, '_%', array(array('25y',25)));
              break;
-         case 14:
+         case 'SetUK_STFD':
              CreateDistanceNew($TourId, $TourType, '_%', array(array('30m-1',30), array('30m-2',30)));
              break;
      }
@@ -398,10 +397,10 @@ switch($TourType) {
 
 if($TourType<5 or $TourType==6 or 7 or 8 or 37 or $TourType==18 or $TourType==40) {
     // default Events
-    CreateStandardEvents($TourId, $SubRule, $TourType != 6,$TourType);
+    CreateStandardEvents($TourId, $subRuleName, $TourType != 6,$TourType);
 
     // Classes in Events
-    InsertStandardEvents($TourId, $SubRule, $TourType != 6,$TourType);
+    InsertStandardEvents($TourId, $subRuleName, $TourType != 6,$TourType);
 
     // Finals & TeamFinals
     CreateFinals($TourId);

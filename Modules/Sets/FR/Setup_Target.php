@@ -266,7 +266,7 @@ switch($TourType) {
 				CreateTargetFace($TourId, 1, 'Blason Complet 80', 'REG-(^CLU1[0-7])|(^COU1[0-7])|(^BBU1)|(^C[HR])|(^H)|(^SU)|(^(OPC[LO]|FEC[LO])U1)|(^W1.+[FH])', '1', 5, 80, 5, 80);
 				CreateTargetFace($TourId, 2, 'Blason Classique 122', 'REG-(^BBS)|(^BBU21)|(^CL(S|(U18)|(U21)))|(^OPCL(U2|S))|(^OPCO(U2|S).+[WM])|(^FECL(U2|S))|(^FECO(U2|S).+[WM])|(^W1.+[WM]|(^CO.+[WM]))', '1', 5, 122, 5, 122);
 				CreateTargetFace($TourId, 3, 'Blason Poulies 80', 'REG-(^CO((S.)|(U21)|(U18))[FH])|(^OPCO.+[FH])|(^FECO.+[FH])', '1',  9, 80, 9, 80);
-				CreateTargetFace($TourId, 4, 'Blason Débutant/Découverte', 'CLD%', '1',  1, 122, 1, 122);
+				CreateTargetFace($TourId, 4, 'Blason Découverte', 'CLD%', '1',  1, 122, 1, 122);
 				break;
 			default:
 				CreateTargetFace($TourId, 1, 'Blason Classique 80', 'REG-(^CLU1[0-7])|(^BBU)|(^C[HR]CL)|(^[FO]CLU)|(^S)|(^HV)|(^.J)', '1', 5, 80, 5, 80);
@@ -285,7 +285,7 @@ switch($TourType) {
 				CreateTargetFace($TourId, $TgtId++, 'Blason Unique 60cm', 'REG-(^CLU1[35])|(^BBU1)'.($SubRule==4 ? '|(^CH)|(^CR)|(^H)|(^OPC.U1)|(^FEC.U1)' : ''), '1', 1, 60, 1, 60);
 				CreateTargetFace($TourId, $TgtId++, 'Blason Unique 80cm', $SubRule==4 ? 'REG-(^CLU11)|(^SU)' : 'CLU11%', '1', 1, 80, 1, 80);
 				CreateTargetFace($TourId, $TgtId++, 'Trispot Poulie 6-10 40cm', $SubRule==4 ? 'REG-(^CO)|(^OPCOU2)|(^OPCOS)|(^FECOU2)|(^FECOS)' : 'CO%', '1', 4, 40, 4, 40);
-				CreateTargetFace($TourId, $TgtId++, 'Blason Débutant/Découverte', 'CLD%', '1',  1, 80, 1, 80);
+				CreateTargetFace($TourId, $TgtId++, 'Blason Découverte', 'CLD%', '1',  1, 80, 1, 80);
 
 				// optional target faces
 				CreateTargetFace($TourId, $TgtId++, 'Trispot Classique 6-10 40cm', 'REG-(^CLU18)|(^CLU21)|(^CLS)|(^BBS)|(^BBU2)'.($SubRule==4 ? '|(^OPCLS)|(^OPCLU2)|(^FECLS)|(^FECLU2)|(^W1)' : ''), '',  2, 40, 2, 40);

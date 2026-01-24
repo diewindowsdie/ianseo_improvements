@@ -570,6 +570,7 @@ $lang['IsDbVersionTooOld']='Versió dades Infosystem és més antiga que Ianseo'
 $lang['IsGenericConfig']='Configuració genèrica';
 $lang['IsParamWarning']='Configuració del sistema d\'informació!<br/>Utilitzeu amb extrema precaució!';
 $lang['IsSpecificConfig']='Elements específics competició';
+$lang['ItemsNo']='Nombre d’Elements: {$a}';
 $lang['Judge']='Jutge';
 $lang['JudgesAssigment']='Assignació Jutges';
 $lang['JudgesSelectionForm']='Formulari Selecció Jutge';

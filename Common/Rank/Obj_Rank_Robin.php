@@ -242,7 +242,8 @@ class Obj_Rank_Robin extends Obj_Rank{
 					ifnull(concat(DV2.DvMajVersion, '.', DV2.DvMinVersion) ,concat(DV1.DvMajVersion, '.', DV1.DvMinVersion)) as DocVersion,
 					date_format(ifnull(DV2.DvPrintDateTime, DV1.DvPrintDateTime), '%e %b %Y %H:%i UTC') as DocVersionDate,
 					ifnull(DV2.DvNotes, DV1.DvNotes) as DocNotes,  ceil(EvNumQualified/2)*2 as LastPhase, EvCodeParent,
-	                RrLevGroups*RrLevGroupArchers as QualifiedNo, RrLevName, RrLevSoSolved, RrLevTieBreakSystem, RrLevTieBreakSystem2, RrLevSO, RrLevArrows, RrLevEnds, RrLevGroupArchers, RrLevTieAllowed
+	                RrLevGroups*RrLevGroupArchers as QualifiedNo, RrLevName, RrLevSoSolved, RrLevTieBreakSystem, RrLevTieBreakSystem2, RrLevSO, RrLevArrows, RrLevEnds, RrLevGroupArchers, RrLevTieAllowed,
+	                TarId, TarDescr, EvDistance as Distance, EvTargetSize as TargetSize
 				from ((
 				    select 0 as LevelRank, RrPartIrmType, IrmType, RrPartDateTime, RrGrName, RrPartTeam, RrPartParticipant, RrPartSubTeam, RrPartEvent, RrPartTournament, RrPartLevel, RrPartGroup, RrPartPoints, RrPartTieBreaker, RrPartTieBreaker2, RrPartGroupRank, RrPartGroupRankBefSO, RrPartGroupTieBreak, RrPartGroupTbDecoded, RrPartGroupTbClosest, RrPartGroupTiesForCT, RrPartGroupTiesForSO
 					from RoundRobinParticipants
@@ -256,6 +257,7 @@ class Obj_Rank_Robin extends Obj_Rank{
 					where $PFilter and RrPartLevelRank>0 and RrPartParticipant>0
 					)) Participants
 				inner join Events on EvTournament=RrPartTournament and EvCode=RrPartEvent and EvTeamEvent=RrPartTeam and EvElimType=5
+			    INNER JOIN Targets ON EvFinalTargetType=TarId 
 			    inner join RoundRobinLevel on RrLevTournament=RrPartTournament and RrLevTeam=RrPartTeam and RrLevEvent=RrPartEvent and RrLevLevel=RrPartLevel
 				left join (
 				    select EnId, IndEvent, trim(concat_ws(' ', upper(EnFirstName), EnName)) as Entry, if(CoCode=CoName, CoCode, CoName) as EnCountry, EnTvFamilyName, EnTvGivenName, EnTvInitials 

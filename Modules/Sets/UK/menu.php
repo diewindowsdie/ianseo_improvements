@@ -4,8 +4,11 @@ if (!empty($on) && $_SESSION["TourLocRule"] == 'UK' && ($_SESSION["TourLocSubRul
   $ret['AGBR1'][] = 'Archery GB';
   $ret['AGBR1']['Teams'] = 'AGB Teams' . '|' . $CFG->ROOT_DIR . 'Modules/Sets/UK/TeamSetup.php';
 }
-if(!empty($_SESSION["TourCode"]) && strpos($_SESSION["TourCode"], "B2B") !== false) {
-  $ret['AGBR1'][] = 'Archery GB';
-  $ret['AGBR1']['Teams'] = 'Rond Robin Setup' . '|' . $CFG->ROOT_DIR . 'Modules/Sets/UK/RRSetup.php';
+if(ProgramRelease ==='TESTING'){
+    if(!empty($_SESSION["TourCode"]) && strpos($_SESSION["TourCode"], "B2B") !== false) {
+        $ret['AGBR1'][] = 'Archery GB';
+        $ret['AGBR1']['Teams'] = 'Round Robin Setup' . '|' . $CFG->ROOT_DIR . 'Modules/Sets/UK/RRSetup.php';
+    }
 }
+
 

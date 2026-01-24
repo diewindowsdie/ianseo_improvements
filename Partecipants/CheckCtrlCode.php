@@ -75,7 +75,7 @@ while($MyRow=safe_fetch($RsCl)) {
 	$JSON['clas']=array_merge($JSON['clas'], explode(',', $MyRow->ClValidClass));
 }
 
-$JSON['clas'] = array_unique($JSON['clas']);
+$JSON['clas'] = array_values(array_unique($JSON['clas']));
 
 $JSON['dob']= RevertDate($ctrlCode);
 
