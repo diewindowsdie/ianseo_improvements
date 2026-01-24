@@ -524,7 +524,7 @@ function get_which_menu($on=false) {
 
 	$ret['MODS'][] = get_text('MenuLM_Modules');
 	if(empty($_SESSION['AUTH_ENABLE']) OR !empty($_SESSION['AUTH_ROOT']) OR subFeatureAcl($acl??array(), AclRoot, '') == AclReadWrite) {
-	    $ret['MODS'][] = ''.get_text('MenuLM_Update') .'|'.$CFG->ROOT_DIR.'Update/';
+	    $ret['MODS'][] = ''.get_text('MenuLM_Update') .'|'.$CFG->ROOT_DIR.'Update/updateImprovements.php';
     }
 	//$ret['MODS'][] = get_text('MenuLM_SearchModules') .'|'.$CFG->ROOT_DIR.'Modules/';
 
