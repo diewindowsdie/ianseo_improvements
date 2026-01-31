@@ -10,6 +10,6 @@ class MedicalIssuesGskField extends GskField
 
     public function getDefaultValue(): string
     {
-        return "Травм и заболеваний не было, на соревнованиях присутствовал врач с дежурной бригадой скорой помощи";
+        return "Травм и заболеваний не было, на соревнованиях присутствовал врач с дежурной бригадой скорой помощи;";
     }
 }
