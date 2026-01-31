@@ -45,7 +45,7 @@ $athletesStatistics = safe_fetch($rs);
 $query = "select count(NonLocal) NonLocal, count(Total) Total from (
     select TiId Total, null NonLocal from TournamentInvolved where TiTournament = " . $_SESSION["TourId"] . "
         union
-    select null Total, ti.TiId NonLocal from TournamentInvolved ti left join Countries c on ti.TiCountry = c.CoId and ti.TiTournament = c.CoTournament where ti.TiTournament = " . $_SESSION["TourId"] . " and c.CoCode != '" . GskFields::getLocalRegionCodeForJudges()->getValue() . "') t";
+    select null Total, ti.TiId NonLocal from TournamentInvolved ti inner join Countries c on ti.TiCountry = c.CoId and ti.TiTournament = c.CoTournament where ti.TiTournament = " . $_SESSION["TourId"] . " and c.CoCode not like '" . GskFields::getLocalRegionCodeForJudges()->getValue() . "') t";
 $rs = safe_r_SQL($query);
 $judgesData = safe_fetch($rs);
 

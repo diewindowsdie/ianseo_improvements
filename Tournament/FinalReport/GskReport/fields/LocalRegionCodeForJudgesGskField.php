@@ -10,6 +10,6 @@ class LocalRegionCodeForJudgesGskField extends GskField
 
     public function getDefaultValue(): string
     {
-        return "";
+        return "%";
     }
 }
