@@ -28,7 +28,7 @@ if (!CheckTourSession() or !hasFullACL(AclParticipants, 'pEntries',  AclReadOnly
 // Get the Divisions allowed based on Age (if any restriction applies)
 // Age check not done if not an athlete
 $Select1 = "select distinct DivId from Classes"
-	. " inner join Divisions on DivTournament=ClTournament and DivAthlete=ClAthlete"
+	. " inner join Divisions on DivTournament=ClTournament"
 	. " where ClTournament={$_SESSION['TourId']}"
 	. " AND (ClDivisionsAllowed='' or find_in_set(DivId, ClDivisionsAllowed))"
 	. " AND ClSex in (-1, {$Sex})"
@@ -42,7 +42,7 @@ while($MyRow=safe_fetch($RsCl)) {
 
 // get the Age classes based on the division selected
 $Select2 = "select distinct ClId from Classes"
-	. " inner join Divisions on DivTournament=ClTournament and DivAthlete=ClAthlete"
+	. " inner join Divisions on DivTournament=ClTournament"
 	. ($Div ? " AND DivId='$Div'" : '')
 	. " where ClTournament={$_SESSION['TourId']}"
 	. " AND (ClDivisionsAllowed='' or find_in_set(DivId, ClDivisionsAllowed))"
@@ -62,7 +62,7 @@ if($JSON['age'] and !in_array($Clas, $JSON['age'])) {
 
 // get the VALID classes based on the division and class selected
 $Select3 = "select distinct  ClValidClass from Classes"
-	. " inner join Divisions on DivTournament=ClTournament and DivAthlete=ClAthlete"
+	. " inner join Divisions on DivTournament=ClTournament"
 	. ($Div ? " AND DivId='$Div'" : '')
 	. " where ClTournament={$_SESSION['TourId']}"
 	. " AND (ClDivisionsAllowed='' or find_in_set(DivId, ClDivisionsAllowed))"
