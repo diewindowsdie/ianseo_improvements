@@ -18,12 +18,13 @@ class NormativeStatistics
     {
         $data = array();
         $normativeTotals = array();
-        $query = "SELECT EnClass, EnDivision, Td1, Td2, Td3, Td4, Td5, Td6, Td7, Td8, QuD1Score, QuD2Score, QuD3Score, QuD4Score, QuD5Score, QuD6Score, QuD7Score, QuD8Score FROM Entries
-                    INNER JOIN Qualifications on EnId = QuId
-                    LEFT JOIN Classes ON EnClass = ClId AND ClTournament = EnTournament
-                    left join TournamentDistances on TdTournament = EnTournament and TdTournament and CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE TdClasses
-                    WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . "
-                    ORDER BY ClViewOrder";
+        $query = "SELECT e.EnClass, e.EnDivision, td.Td1, td.Td2, td.Td3, td.Td4, td.Td5, td.Td6, td.Td7, td.Td8, q.QuD1Score, q.QuD2Score, q.QuD3Score, q.QuD4Score, q.QuD5Score, q.QuD6Score, q.QuD7Score, q.QuD8Score FROM Entries e
+                    INNER JOIN Qualifications q on e.EnId = q.QuId
+                    inner join Divisions d on d.DivId = e.EnDivision and d.DivTournament = e.EnTournament
+                    inner join Classes cl ON e.EnClass = cl.ClId AND cl.ClTournament = e.EnTournament
+                    left join TournamentDistances td on td.TdTournament = e.EnTournament and td.TdTournament and CONCAT(TRIM(e.EnDivision),TRIM(e.EnClass)) LIKE td.TdClasses
+                    WHERE d.DivAthlete = 1 and cl.ClAthlete = 1 and e.EnTournament=" . StrSafe_DB($_SESSION['TourId']) . "
+                    ORDER BY cl.ClViewOrder";
         $rs = safe_r_SQL($query);
         while ($row = safe_fetch($rs)) {
             if (!array_key_exists($row->EnClass, $data)) {

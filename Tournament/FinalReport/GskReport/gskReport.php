@@ -27,13 +27,19 @@ $query = "select * from Tournament where ToId = " . $_SESSION["TourId"];
 $rs = safe_r_SQL($query);
 $tournamentData = safe_fetch($rs);
 
-//статистика по участникам по полу, и по регионам
+//статистика по спортсменам по полу, и по регионам - тут только спортсмены
 $query = "select count(Males) Males, count(Females) Females, count(*) Total, count(distinct EnCountry) RegionsCount from (
-    select Entries.EnId Males, null Females, EnCountry from Entries where EnSex = 0 and EnTournament = " . $_SESSION["TourId"] . "
+    select e.EnId Males, null Females, e.EnCountry from Entries e 
+        inner join Divisions d on e.EnDivision = d.DivId and d.DivTournament = e.EnTournament
+        inner join Classes cl on e.EnClass = cl.ClId and cl.ClTournament = e.EnTournament
+            where d.DivAthlete = 1 and cl.ClAthlete = 1 and e.EnSex = 0 and e.EnTournament = " . $_SESSION["TourId"] . "
         union
-        select null Males, Entries.EnId Females, EnCountry from Entries where EnSex = 1 and EnTournament = " . $_SESSION["TourId"] . ") t";
+        select null Males, e.EnId Females, e.EnCountry from Entries e 
+        inner join Divisions d on e.EnDivision = d.DivId and d.DivTournament = e.EnTournament
+        inner join Classes cl on e.EnClass = cl.ClId and cl.ClTournament = e.EnTournament
+            where d.DivAthlete = 1 and cl.ClAthlete = 1 and e.EnSex = 1 and e.EnTournament = " . $_SESSION["TourId"] . ") t";
 $rs = safe_r_SQL($query);
-$participantsStatistics = safe_fetch($rs);
+$athletesStatistics = safe_fetch($rs);
 
 //общая статистика по судьям
 $query = "select count(NonLocal) NonLocal, count(Total) Total from (
@@ -72,11 +78,17 @@ $chiefSecretary = safe_fetch($rs);
 //статистика по регионам
 $totalCoaches = 0;
 $query = "select CoCode, CoNameComplete, sum(coalesce(Males, 0)) Males, sum(coalesce(Females, 0)) Females from
-(select c.CoCode, c.CoNameComplete, count(e.EnId) Males, null Females from Entries e left join Countries c on c.CoId = e.EnCountry and c.CoTournament = e.EnTournament
-where e.EnTournament = " . $_SESSION["TourId"] . " and e.EnSex = 0 group by c.CoCode
+(select c.CoCode, c.CoNameComplete, count(e.EnId) Males, null Females from Entries e 
+    left join Countries c on c.CoId = e.EnCountry and c.CoTournament = e.EnTournament
+    inner join Divisions d on e.EnDivision = d.DivId and d.DivTournament = e.EnTournament
+    inner join Classes cl on e.EnClass = cl.ClId and cl.ClTournament = e.EnTournament
+        where d.DivAthlete = 1 and cl.ClAthlete = 1 and e.EnTournament = " . $_SESSION["TourId"] . " and e.EnSex = 0 group by c.CoCode
 union all
- select c.CoCode, c.CoNameComplete, null Males, count(e.EnId) Females from Entries e left join Countries c on c.CoId = e.EnCountry and c.CoTournament = e.EnTournament
- where e.EnTournament = " . $_SESSION["TourId"] . " and e.EnSex = 1 group by c.CoCode) t group by CoCode, CoNameComplete order by CoNameComplete";
+ select c.CoCode, c.CoNameComplete, null Males, count(e.EnId) Females from Entries e 
+    left join Countries c on c.CoId = e.EnCountry and c.CoTournament = e.EnTournament
+    inner join Divisions d on e.EnDivision = d.DivId and d.DivTournament = e.EnTournament
+    inner join Classes cl on e.EnClass = cl.ClId and cl.ClTournament = e.EnTournament
+        where d.DivAthlete = 1 and cl.ClAthlete = 1 and e.EnTournament = " . $_SESSION["TourId"] . " and e.EnSex = 1 group by c.CoCode) t group by CoCode, CoNameComplete order by CoNameComplete";
 $rs = safe_r_SQL($query);
 $participantsByRegion = array();
 while ($row = safe_fetch($rs)) {
@@ -88,7 +100,7 @@ while ($row = safe_fetch($rs)) {
     $totalCoaches += $participantsByRegion[$row->CoCode]["Coaches"];
 }
 
-$query = "select ClId, ClDescription from Classes where ClTournament = " . StrSafe_DB($_SESSION['TourId']);
+$query = "select ClId, ClDescription from Classes where ClAthlete = 1 and ClTournament = " . StrSafe_DB($_SESSION['TourId']);
 $rs = safe_r_SQL($query);
 $classes = array();
 while ($row = safe_fetch($rs)) {
@@ -104,13 +116,14 @@ while ($row = safe_fetch($rs)) {
 }
 
 //статистика по имеющимся разрядам
-$query = "SELECT EnClass, EnSubClass, ScId, count(*) as numArchers 
-    FROM Entries 
-    LEFT JOIN Classes ON EnClass=ClId AND ClTournament=EnTournament
-    LEFT JOIN SubClass ON EnSubClass=ScId AND ScTournament=EnTournament
-    WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " 
-    GROUP BY ClViewOrder, ScViewOrder, EnClass, EnSubClass 
-    ORDER BY ClViewOrder, ScViewOrder, EnClass, EnSubClass";
+$query = "SELECT e.EnClass, e.EnSubClass, s.ScId, count(*) as numArchers 
+    FROM Entries e
+        inner join Divisions d on d.DivId = e.EnDivision and d.DivTournament = e.EnTournament
+        inner join Classes cl ON e.EnClass=cl.ClId AND cl.ClTournament=e.EnTournament
+        LEFT JOIN SubClass s ON e.EnSubClass=s.ScId AND s.ScTournament=e.EnTournament
+    WHERE d.DivAthlete = 1 and cl.ClAthlete = 1 and e.EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " 
+    GROUP BY cl.ClViewOrder, s.ScViewOrder, e.EnClass, e.EnSubClass 
+    ORDER BY cl.ClViewOrder, s.ScViewOrder, e.EnClass, e.EnSubClass";
 $rs = safe_r_SQL($query);
 $subclassStatistics = array();
 while ($row = safe_fetch($rs)) {
@@ -128,9 +141,11 @@ function getParticipantsFromOrganisationCount($patterns) {
         $queryPart .= "c2.CoNameComplete rlike '" . $pattern . "' or c2.CoName rlike '" . $pattern . "' or c3.CoNameComplete rlike '" . $pattern . "' or c3.CoName rlike '" . $pattern . "'";
     }
     $query = "select count(*) Count from Entries e
-                         left join Countries c2 on c2.CoId = e.EnCountry2 and c2.CoTournament = e.EnTournament
-                         left join Countries c3 on c3.CoId = e.EnCountry3 and c3.CoTournament = e.EnTournament
-                where e.EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " and (" . $queryPart . ")";
+                inner join Divisions d on d.DivId = e.EnDivision and d.DivTournament = e.EnTournament
+                inner join Classes cl ON e.EnClass=cl.ClId AND cl.ClTournament=e.EnTournament
+                left join Countries c2 on c2.CoId = e.EnCountry2 and c2.CoTournament = e.EnTournament
+                left join Countries c3 on c3.CoId = e.EnCountry3 and c3.CoTournament = e.EnTournament
+                    where d.DivAthlete = 1 and cl.ClAthlete = 1 and e.EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " and (" . $queryPart . ")";
     return safe_fetch(safe_r_SQL($query))->Count;
 }
 
@@ -167,8 +182,8 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->writeHTMLCell(190, 7, null, null, "2. Место проведения: <b>" . $_SESSION['TourWhere'] . "</b>", 0, 1, 0, 1, 'L');
     $pdf->writeHTMLCell(190, 7, null, null, "3. Наименование спортивного сооружения: <b>" . $tournamentData->ToVenue . "</b>", 0, 1, 0, 1, 'L');
 
-    $pdf->writeHTMLCell(190, 5, null, null, "4. Всего участников соревнований: <b>" . $participantsStatistics->Total + $totalCoaches . "</b>, из <b>" . $participantsStatistics->RegionsCount . "</b> регион(ов);", 0, 1, 0, 1, 'L');
-    $pdf->writeHTMLCell(190, 5, 10, null, "Спортсменов <b>" . $participantsStatistics->Total . "</b> чел., в том числе <b>" . $participantsStatistics->Males . "</b> муж., <b>" . $participantsStatistics->Females . "</b> жен.", 0, 1, 0, 1, 'L');
+    $pdf->writeHTMLCell(190, 5, null, null, "4. Всего участников соревнований: <b>" . $athletesStatistics->Total + $totalCoaches . "</b>, из <b>" . $athletesStatistics->RegionsCount . "</b> регион(ов);", 0, 1, 0, 1, 'L');
+    $pdf->writeHTMLCell(190, 5, 10, null, "Спортсменов <b>" . $athletesStatistics->Total . "</b> чел., в том числе <b>" . $athletesStatistics->Males . "</b> муж., <b>" . $athletesStatistics->Females . "</b> жен.", 0, 1, 0, 1, 'L');
     $pdf->writeHTMLCell(190, 7, 10, null, "Представителей, тренеров <b>" . $totalCoaches . "</b> чел.", 0, 1, 0, 1, 'L');
     $pdf->writeHTMLCell(190, 5, null, null, "5. Количество судей: <b>" . $judgesData->Total . "</b>, в том числе иногородних: <b>" . $judgesData->NonLocal . "</b>" , 0, 1, 0, 1, 'L');
     $judgesDetails = "Уровень подготовки судей по судейским категориям: ";
@@ -213,11 +228,11 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     $pdf->Cell(10, 5, "", 1, 0, 'C');
     $pdf->Cell(65, 5, "Всего", 1, 0, 'L');
     $pdf->Cell(15, 5, "", 1, 0, 'C');
-    $pdf->Cell(20, 5, $participantsStatistics->Males, 1, 0, 'C');
-    $pdf->Cell(20, 5, $participantsStatistics->Females, 1, 0, 'C');
-    $pdf->Cell(20, 5, $participantsStatistics->Total, 1, 0, 'C');
+    $pdf->Cell(20, 5, $athletesStatistics->Males, 1, 0, 'C');
+    $pdf->Cell(20, 5, $athletesStatistics->Females, 1, 0, 'C');
+    $pdf->Cell(20, 5, $athletesStatistics->Total, 1, 0, 'C');
     $pdf->Cell(20, 5, $totalCoaches, 1, 0, 'C');
-    $pdf->Cell(20, 5, $participantsStatistics->Total + $totalCoaches, 1, 1, 'C');
+    $pdf->Cell(20, 5, $athletesStatistics->Total + $totalCoaches, 1, 1, 'C');
 
     if (!$pdf->SamePage(2+5+1+10+5*count($subclasses))) { //отступ от предыдущей таблицы + текст + отступ до таблицы + заголовок таблицы + 5 пунктов на каждый разряд
         $pdf->AddPage();
@@ -395,10 +410,10 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             <td style="text-align: left; padding-left: 40px; white-space: nowrap">Отчет о проведении</td><td class="w-100"><input class="w-100" type="text" id="title" name="<?php echo GskFields::getCompetitionTitle()->getParameterName(); ?>" value="<?php echo GskFields::getCompetitionTitle()->getValue(); ?>" onblur="updateField(this.name, this.value)"/></td><td style="white-space: nowrap"><div class="Button" onclick="<?php echo getResetInputJs(GskFields::getCompetitionTitle()); ?>">Вернуть стандартное значение</div></td>
         </tr>
         <tr>
-            <td colspan="3" style="text-align: left; padding-left: 40px">4. Всего участников соревнований: <span style="font-weight: bold" id="totalParticipants"><?php echo $participantsStatistics->Total + $totalCoaches; ?></span>, из <b><?php echo $participantsStatistics->RegionsCount; ?></b> региона(ов);</td>
+            <td colspan="3" style="text-align: left; padding-left: 40px">4. Всего участников соревнований: <span style="font-weight: bold" id="totalParticipants"><?php echo $athletesStatistics->Total + $totalCoaches; ?></span>, из <b><?php echo $athletesStatistics->RegionsCount; ?></b> региона(ов);</td>
         </tr>
         <tr>
-            <td colspan="3" style="text-align: left; padding-left: 40px">Спортсменов <span style="font-weight: bold" id="totalAthletes"><?php echo $participantsStatistics->Total; ?></span> чел., в том числе <b><?php echo $participantsStatistics->Males; ?></b> муж., <b><?php echo $participantsStatistics->Females; ?></b> жен.</td>
+            <td colspan="3" style="text-align: left; padding-left: 40px">Спортсменов <span style="font-weight: bold" id="totalAthletes"><?php echo $athletesStatistics->Total; ?></span> чел., в том числе <b><?php echo $athletesStatistics->Males; ?></b> муж., <b><?php echo $athletesStatistics->Females; ?></b> жен.</td>
         </tr>
         <tr>
             <td colspan="3" style="text-align: left; padding-left: 40px">Представителей, тренеров <span style="font-weight: bold" id="totalCoaches"><?php echo $totalCoaches; ?></span> чел.</td>
