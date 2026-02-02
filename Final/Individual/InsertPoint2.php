@@ -155,22 +155,26 @@
 		}
 
 	// Faccio i passaggi di fase
-		foreach($AllowedEvents as $event => $phase) {
-            //определим матчи
+        foreach ($AllowedEvents as $event => $phase) {
+            if (isset($_REQUEST["all2NextPhase"]) && $_REQUEST["all2NextPhase"] === "1") {
+                move2NextPhase($phase, $event);
+            } else {
+                //определим матчи
 
-            $options=array();
-            $options['tournament']=$_SESSION['TourId'];
-            $options['events']=$event . "@" . $phase;
-            $rank = Obj_RankFactory::create('GridInd', $options);
-            $rank->read();
+                $options = array();
+                $options['tournament'] = $_SESSION['TourId'];
+                $options['events'] = $event . "@" . $phase;
+                $rank = Obj_RankFactory::create('GridInd', $options);
+                $rank->read();
 
-            foreach(end(end($rank->getData()["sections"])["phases"])["items"] as $matchData) {
-                if ($matchData["winner"] || ($matchData["irm"] && $matchData["oppIrm"])) {
-                    move2NextPhase(null, $event, $matchData["matchNo"]);
-                }
+                foreach (end(end($rank->getData()["sections"])["phases"])["items"] as $matchData) {
+                    if ($matchData["winner"] || ($matchData["irm"] && $matchData["oppIrm"])) {
+                        move2NextPhase(null, $event, $matchData["matchNo"]);
+                    }
 
-                if ($matchData["oppWinner"] || ($matchData["irm"] && $matchData["oppIrm"])) {
-                    move2NextPhase(null, $event, $matchData["oppMatchNo"]);
+                    if ($matchData["oppWinner"] || ($matchData["irm"] && $matchData["oppIrm"])) {
+                        move2NextPhase(null, $event, $matchData["oppMatchNo"]);
+                    }
                 }
             }
         }
@@ -191,6 +195,7 @@
 ?>
 <form name="Frm" method="post" action="InsertPoint2.php">
 <input type="hidden" name="Command" value="">
+<input type="hidden" name="all2NextPhase" value="0"/>
 <?php
 
 $useSession=false;
@@ -438,7 +443,7 @@ if(!empty($_REQUEST['x_Session']) and $_REQUEST['x_Session']!=-1) {
 
 			$MyEvent=$MyRow->FinEvent;
 		}
-		print '<tr><td colspan="' . (8-$Cols2Remove) . '" class="Center"><input type="submit" value="' . get_text('SaveNextPhase') . '" onclick="document.Frm.Command.value=\'SAVE\'"></td></tr>';
+		print '<tr><td colspan="' . (8-$Cols2Remove) . '" class="Center"><input type="submit" value="' . get_text('SaveNextPhase') . '" onclick="document.Frm.Command.value=\'SAVE\'">&nbsp;<input class="red" type="button" value="Сохранить и перевести дальше всех" onclick="confirmAll2NextPhase()"></td></tr>';
 	} else {
 		print '<tr>';
 		print '<td colspan="' . (8-$Cols2Remove) . '">';

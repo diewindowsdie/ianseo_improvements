@@ -20,3 +20,11 @@ function CheckIRM(Field) {
 	}
 }
 
+
+function confirmAll2NextPhase() {
+	if (confirm("Перевести в следующий этап лидеров всех матчей, даже тех, где матчи еще не закончились?")) {
+		document.Frm.all2NextPhase.value = "1";
+		document.Frm.submit();
+	}
+}
+
