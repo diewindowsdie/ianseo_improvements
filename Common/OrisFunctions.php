@@ -1403,7 +1403,11 @@ function getStartListCategory($ORIS=false, $orderByTeam=0, $Events=array()) {
 
 	if(!empty($_REQUEST['TeamEvents'])) {
 		if(!is_array($_REQUEST['TeamEvents'])) {
-			$_REQUEST['TeamEvents']=array($_REQUEST['TeamEvents']);
+            if (str_contains($_REQUEST['TeamEvents'], ",")) {
+                $_REQUEST['TeamEvents']=explode(",", $_REQUEST['TeamEvents']);
+            } else {
+			    $_REQUEST['TeamEvents']=array($_REQUEST['TeamEvents']);
+            }
 		}
 		$Events=$_REQUEST['TeamEvents'];
 	}

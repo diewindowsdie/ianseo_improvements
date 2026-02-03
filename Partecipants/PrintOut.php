@@ -306,7 +306,8 @@ echo '<td width="20%" class="Center">
 				<option value="1">'.get_text('CountryCode').'</option>
 				<option value="2">'.get_text('Nation').'</option>
 			</select></div>
-			<div>'.get_text('DivisionClass').'&nbsp;&nbsp;&nbsp;<input name="ArcherCategories" type="text" size="20" maxlength="30"></div>
+			<div>'.get_text('DivisionClass').'&nbsp;&nbsp;&nbsp;<input name="ArcherCategories" type="text" size="20" maxlength="100"></div>
+			<div>'.get_text('EvCode').'&nbsp;&nbsp;&nbsp;<input name="TeamEvents" type="text" size="20" maxlength="100"></div>
 			<div>'.get_text('TargetType').'&nbsp;&nbsp<input name="tf" type="checkbox"></div>
 			<div><input type="submit" name="Submit" value="'.get_text('CmdOk').'"></div>
 		</form>
