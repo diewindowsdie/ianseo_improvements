@@ -4467,7 +4467,7 @@ Class Scheduler {
                                                                 inner join Session on SesOrder=QuSession and SesType='{$Item->Type}' and SesTournament={$this->TourId} $SesFilter
                                                                 left join TournamentDistances on concat(trim(EnDivision),trim(EnClass)) like TdClasses and EnTournament=TdTournament
                                                                 left join (select TfId, TarDescr, TfW{$u->DiDistance} as TarDim, TfTournament from TargetFaces inner join Targets on TfT{$u->DiDistance}=TarId) tf on TfTournament=EnTournament and TfId=EnTargetFace
-                                                                where EnTournament={$this->TourId} and cast(substr(QuTargetNo, 2) as unsigned) >= SesFirstTarget and cast(substr(QuTargetNo, 2) as unsigned) <= SesFirstTarget + SesTar4Session
+                                                                where EnTournament={$this->TourId} and QuTarget >= SesFirstTarget and QuTarget <= SesFirstTarget + SesTar4Session
                                                                 order by TargetNo, Distance desc, TargetNo, TarDescr, TarDim";
                                                             $v=safe_r_sql($Sql);
                                                             $k="";
