@@ -251,7 +251,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 					{$tmp} AS Arrows_Shot,
 					coalesce(RoundRobinQualified, IF(EvElim1=0 && EvElim2=0, EvNumQualified ,IF(EvElim1=0,EvElim2,EvElim1))) as QualifiedNo, EvFirstQualified, EvQualPrintHead as PrintHeader,
 					{$MyRank} AS `Rank`, " . (!empty($comparedTo) ? 'IFNULL(IopRank,0)' : '0') . " as OldRank, Qu{$dd}Score AS Score, Qu{$dd}Gold AS Gold,Qu{$dd}Xnine AS XNine, Qu{$dd}Hits AS Hits, 
-					IndIrmType, IrmType, IrmShowRank, IrmHideDetails, ";
+					coalesce(nullif(IndIrmType, 0), QuIrmType) IndIrmType, IrmType, IrmShowRank, IrmHideDetails, ";
 			$q.="IndRecordBitmap as RecBitLevel, EvIsPara, co.CoMaCode, co.CoCaCode, "; // records management
 
 			if(!empty($this->opts['runningDist']) && $this->opts['runningDist']>0) {
@@ -531,7 +531,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 						'bib' => $myRow->EnCode,
 						'localbib' => $myRow->LocalId,
 						'tvname' => $myRow->EnOdfShortname,
-						'birthdate' => $myRow->BirthDate ? DateTime::createFromFormat('Y-m-d', $myRow->BirthDate)->format($birthDateFormat) : '', //
+						'birthdate' => $myRow->BirthDate ? DateTime::createFromFormat('Y-m-d', $myRow->BirthDate)->format($birthDateFormat) : '',
 						'session' => $myRow->Session,
 						'sessionName' => $myRow->SesName,
 						'target' => $myRow->TargetNo,

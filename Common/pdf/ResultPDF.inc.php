@@ -379,6 +379,8 @@ class ResultPDF extends IanseoPdf {
 
 	function writeDataRowPrnIndividualAbs($item, $distSize, $addSize, $running, $distances, $double, $snapDistance, $border='TB', $internationalProtocol = false) {
 		$hasIRMStatus = !is_numeric($item['score']);
+        $isSoftIrm = ($item['irm'] != '0') && (trim($item['notes']) != '');
+        $noteColumnWidth = 10 + ($isSoftIrm ? 6 + 6 * ($this->ShowTens ? 1:2) : 0);
 		$this->SetFont($this->FontStd,'B',$this->FontSizeLines);
 		$this->Cell(8, 4 * ($double ? 2 : 1),  ($hasIRMStatus ? $item['score'] : $item['rank']), $border.'LR', 0, 'R', 0);
 		//Atleta
@@ -471,7 +473,7 @@ class ResultPDF extends IanseoPdf {
 				}
 			}
 			$this->SetFont($this->FontFix,'',$this->FontSizeLines);
-			if($this->ShowTens) {
+			if($this->ShowTens && !$isSoftIrm) {
 				if($snapDistance==0) {
 					$this->SetFont($this->FontFix,'',$this->FontSizeLines);
 					$this->Cell(6, 4 * ($double ? 2 : 1), $item['gold'], $border.'LR', 0, 'R', 0);
@@ -481,13 +483,15 @@ class ResultPDF extends IanseoPdf {
 				}
 			}
 			$this->SetFont($this->FontFix,'',$this->FontSizeLines);
-			if($snapDistance==0) {
-				$this->SetFont($this->FontFix,'',$this->FontSizeLines);
-				$this->Cell(6 * ($this->ShowTens ? 1:2), 4 * ($double ? 2 : 1), $item['xnine'],$border.'LR', 0, 'R', 0);
-			} else {
-				$this->SetFont($this->FontFix,'',$this->FontSizeHeadSmall);
-				$this->Cell(6 * ($this->ShowTens ? 1:2), 4 * ($double ? 2 : 1), str_pad($item['xnineSnap'],2," ", STR_PAD_LEFT) . ($item['xnine']==$item['xnineSnap'] ? "": "(". str_pad($item['xnine'],2," ", STR_PAD_LEFT). ")"), $border.'LR', 0, 'R', 0);
-			}
+            if (!$isSoftIrm) {
+                if ($snapDistance == 0) {
+                    $this->SetFont($this->FontFix, '', $this->FontSizeLines);
+                    $this->Cell(6 * ($this->ShowTens ? 1 : 2), 4 * ($double ? 2 : 1), $item['xnine'], $border . 'LR', 0, 'R', 0);
+                } else {
+                    $this->SetFont($this->FontFix, '', $this->FontSizeHeadSmall);
+                    $this->Cell(6 * ($this->ShowTens ? 1 : 2), 4 * ($double ? 2 : 1), str_pad($item['xnineSnap'], 2, " ", STR_PAD_LEFT) . ($item['xnine'] == $item['xnineSnap'] ? "" : "(" . str_pad($item['xnine'], 2, " ", STR_PAD_LEFT) . ")"), $border . 'LR', 0, 'R', 0);
+                }
+            }
 			if($running) {
 				$this->Cell(8, 4 * ($double ? 2 : 1),  $item['hits'], $border.'LR', 0, 'R', 0);
 				$this->SetFont($this->FontFix,'B',$this->FontSizeLines);
@@ -524,7 +528,7 @@ class ResultPDF extends IanseoPdf {
 						$tmpNote .= ' ' . $item['record'];
 					}
 				}
-				$this->Cell(10, 4 * ($double ? 2 : 1),  $tmpNote, $border.$LrBorder, ($internationalProtocol ? 1 : 0), $align, 0);
+				$this->Cell($noteColumnWidth, 4 * ($double ? 2 : 1),  $tmpNote, $border.$LrBorder, ($internationalProtocol ? 1 : 0), $align, 0);
 			}
             if (!$internationalProtocol) {
                 $this->SetFont($this->FontFix, 'B', 7);
