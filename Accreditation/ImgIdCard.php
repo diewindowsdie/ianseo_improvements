@@ -178,6 +178,14 @@ function draw_pip($r) {
 					case 'GAlone-FamCamel':   $Text=get_text('GAlone-FamCamel',   'BackNumbers'); break;
 				}
 			}
+        case 'DivisionClass':
+            if(!isset($Text)) {
+                switch ($r->IceContent) {
+                    case 'Division':$Text=get_text('Division', 'BackNumbers'); break;
+                    case 'Class':$Text=get_text('Class', 'BackNumbers'); break;
+                    case 'ClassGenitive': $Text=get_text('ClassGenitive', 'BackNumbers'); break;
+                }
+            }
 		case 'Club':
         case 'Club2':
         case 'Club3':

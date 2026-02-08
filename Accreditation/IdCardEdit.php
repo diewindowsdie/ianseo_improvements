@@ -273,6 +273,8 @@ if($CardType=='T' || $CardType == 'Z') {
     $Select.='<option value="AthQrCode">'.get_text('AthQrCode', 'BackNumbers').'</option>';
     // Athlete
     $Select.='<option value="Athlete">'.get_text('Athlete', 'BackNumbers').'</option>';
+    //дивизион и класс
+    $Select.='<option value="DivisionClass">'.get_text('DivisionClass', 'BackNumbers').'</option>';
 }
 // Picture
 if($CardType=='A') {

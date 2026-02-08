@@ -189,7 +189,7 @@ switch($CardType) {
 
 		break;
 	case 'Y': // Diploma Individual
-		$FIELDS.=", ToPrintLang, AwValue, EvCode, EvEventName, QuScore as `QRScore`, IndRank as `Rank`, IndRankFinal as RankFinal, if(QuSubClassRank>0, QuSubClassRank, IndRankFinal) as SubFinalRank, EvCode ExtraCode, (dextra.EdEmail is not null and dextra.EdEmail!='') as Printed, '' as TargetNo ";
+		$FIELDS.=", ToPrintLang, AwValue, EvCode, EvEventName, QuScore as `QRScore`, IndRank as `Rank`, IndRankFinal as RankFinal, if(QuSubClassRank>0, QuSubClassRank, IndRankFinal) as SubFinalRank, EvCode ExtraCode, (dextra.EdEmail is not null and dextra.EdEmail!='') as Printed, '' as TargetNo, DivDescription as Division, ClDescription as Class ";
 		$ExtraSql="INNER JOIN Individuals ON IndTournament=EnTournament AND EnId=IndId
 			INNER JOIN Events ON EvCode=IndEvent AND EvTeamEvent=0 AND EvTournament=EnTournament
 			LEFT JOIN ExtraData dextra on dextra.EdId=EnId and dextra.EdType='D' and dextra.EdEvent=EvCode
@@ -224,48 +224,6 @@ switch($CardType) {
 			$ExtraSql.=" inner join IdCards on IcTournament=EnTournament and IcType='$CardType' and (".implode(' or ', $f).") ";
 		}
 		break;
-//	case 'Z': // Diploma Teams
-		// needs to select all components of all teams...
-		// during printout missing values will be printed as "-"
-//		$FIELDS.=", ToPrintLang, AwValue, EvCode, EvEventName, if(Type&1, TeRank, '-') as `Rank`, if(Type&2 or TeRankFinal>=EvWinnerFinalRank+EvNumQualified, TeRankFinal,'-') as RankFinal, EvCode ExtraCode, (dextra.EdcEmail is not null and dextra.EdcEmail!='') as Printed, '' as TargetNo ";
-//		$ExtraSql="INNER JOIN (select TcCoId, TcSubTeam, TcEvent, TcId, sum(Type) as Type FROM
-//				(
-//				(select TcCoId, TcSubTeam, TcEvent, TcId, 1 as Type from TeamComponent where TcTournament in ($TourId) and TcFinEvent=1)
-//				union
-//				(select TfcCoId, TfcSubTeam, TfcEvent, TfcId, 2 as Type from TeamFinComponent where TfcTournament in ($TourId) )
-//				    ) joined
-//				    group BY
-//				    TcCoId, TcSubTeam, TcEvent, TcId) TeamComponents on TcId=EnId
-//			INNER JOIN Events ON EvCode=TcEvent AND EvTeamEvent=1 AND EvTournament=EnTournament
-//			INNER JOIN Teams ON TcCoId=TeCoId AND TcSubTeam=TeSubTeam AND TcEvent=TeEvent AND TeTournament=EnTournament AND TeFinEvent=1
-//			LEFT JOIN ExtraDataCountries dextra on dextra.EdcId=c.CoId and EdcSubTeam=TeSubTeam and dextra.EdcType='D' and dextra.EdcEvent=EvCode
-//			left join Awarded on AwEntry=EnId";
-//		$ExtraWhere="";
-//		$ExtraGroup='Group By EnId, EvCode';
-//		if(empty($SORT)) {
-//			$SORT='Printed, EvProgr, TeRankFinal, TeRank, EnFirstname, EnName';
-//		}
-//		if(!empty($_REQUEST['PrintNotPrinted']) and empty($BibNumber)) {
-//			$Where[] = " AND (dextra.EdcEmail is null or dextra.EdcEmail='') ";
-//		}
-//
-//		if(!empty($_REQUEST['TopRanked']) and ($TopRanked=intval($_REQUEST['TopRanked']))) {
-//			$Where[] = " AND TeRank between 1 and $TopRanked ";
-//		}
-//		if(!empty($_REQUEST['TopRankedFinal']) and ($TopRanked=intval($_REQUEST['TopRankedFinal']))) {
-//			$Where[] = " AND TeRankFinal between 1 and $TopRanked ";
-//		}
-//
-//		if(!empty($_REQUEST['Specifics'])) {
-//			$f=array();
-//			foreach($_REQUEST['Specifics'] as $ToId=>$specs) {
-//				foreach($specs as $k=>$v) {
-//					$f[]="(IcTournament=$ToId and IcNumber=$k and find_in_set(EvCode, '$v'))";
-//				}
-//			}
-//			$ExtraSql.=" inner join IdCards on IcTournament=EnTournament and IcType='$CardType' and (".implode(' or ', $f).") ";
-//		}
-//		break;
 }
 
 if(empty($SORT)) {

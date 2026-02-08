@@ -1,6 +1,35 @@
 <?php
 
 /**
+ * Склоняет переданную фразу в родительном падеже. Поддерживается ограниченный набор фраз, см. реализацию.
+ * @return string Фраза в родительном падеже, либо изначальная фраза, если склонение переданной фразы не поддерживается
+ */
+function genitiveCase($string): string {
+    $exploded = explode(" ", $string);
+    $result = $exploded[0];
+    if ($exploded[0] === "Мужчины") {
+        $result = "Мужчин";
+    } else if ($exploded[0] === "Женщины") {
+        $result = "Женщин";
+    } else if ($exploded[0] === "Юниоры") {
+        $result = "Юниоров";
+    } else if ($exploded[0] === "Юниорки") {
+        $result = "Юниорок";
+    } else if ($exploded[0] === "Девушки") {
+        $result = "Девушек";
+    } else if ($exploded[0] === "Юноши") {
+        $result = "Юношей";
+    } else if ($exploded[0] === "Мальчики") {
+        $result = "Мальчиков";
+    } else if ($exploded[0] === "Девочки") {
+        $result = "Девочек";
+    }
+
+    $exploded[0] = $result;
+    return implode(" ", $exploded);
+}
+
+/**
  * @return array of the pool phases as [phase] => [descriptionShort]
  */
 function getPoolMatchesPhases() {

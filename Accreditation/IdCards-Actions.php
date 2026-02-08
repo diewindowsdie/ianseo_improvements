@@ -102,6 +102,7 @@ switch($_REQUEST['act']) {
             case 'ExtraAddOns':
             case 'Category':
             case 'Athlete':
+            case 'DivisionClass':
             case 'Club':
             case 'Club2':
             case 'Club3':
@@ -615,6 +616,16 @@ function getFieldPos($r, $new=false) {
 					<option value="EvSubDescr"'  .($r->IceContent=='EvSubDescr'  ?' selected':'').'>'.get_text('EvSubDescr',   'BackNumbers').'</option>
 					</select>';
                 if(!$r->IceOptions) $Options['BackCat']=1;
+            }
+        case 'DivisionClass':
+            if(!isset($txt)) {
+                $txt = '<select onchange="UpdateRowContent(this)" name="DivisionClass">
+					<option value="">--</option>
+					<option value="Division"' . ($r->IceContent == 'Division' ? ' selected' : '') . '>' . get_text('Division', 'BackNumbers') . '</option>
+					<option value="Class"' . ($r->IceContent == 'Class' ? ' selected' : '') . '>' . get_text('Class', 'BackNumbers') . '</option>
+					<option value="ClassGenitive"' . ($r->IceContent == 'ClassGenitive' ? ' selected' : '') . '>' . get_text('ClassGenitive', 'BackNumbers') . '</option>
+					</select>';
+                if (!$r->IceOptions) $Options['BackCat'] = 1;
             }
         case 'ExtraAddOns':
             if(!isset($txt)) {

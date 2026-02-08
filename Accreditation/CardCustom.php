@@ -3,6 +3,7 @@
 require_once(dirname(dirname(__FILE__)) . "/vendor/autoload.php");
 
 use morphos\Russian\GeographicalNamesInflection;
+use morphos\Russian\Cases;
 
 require_once(dirname(dirname(__FILE__)) . '/config.php');
 require_once('Common/pdf/LabelPDF.inc.php');
@@ -473,6 +474,14 @@ while ($MyRow=safe_fetch($Rs)) {
                             case 'GAlone-FamCamel': $Text=array(substr($MyRow->GivCaps, 0, 1).'.'); break;
                         }
                     }
+                case 'DivisionClass':
+                    if(!isset($Text)) {
+                        switch ($Element->IceContent) {
+                            case 'Division':$Text=array($MyRow->Division); break;
+                            case 'Class':$Text=array($MyRow->Class); break;
+                            case 'ClassGenitive': $Text=array(genitiveCase($MyRow->Class)); break;
+                        }
+                    }
                 case 'Club':
                     if(!isset($Text)) {
                         switch($Element->IceContent) {
@@ -481,9 +490,9 @@ while ($MyRow=safe_fetch($Rs)) {
                             case 'NocCaps':$Text=array($MyRow->NationCode); break;
                             case 'ClubCamel':$Text=array($MyRow->Nation); break;
                             case 'ClubCaps':$Text=array($MyRow->NationCaps); break;
-                            case 'ClubCamelGenitive':$Text=array(GeographicalNamesInflection::getCase($MyRow->Nation, "родительный")); break;
+                            case 'ClubCamelGenitive':$Text=array(GeographicalNamesInflection::getCase($MyRow->Nation, Cases::GENITIVE)); break;
                             //morphos возвращает капс к обычном написанию, поэтому нужно обратно вернуть его вручную
-                            case 'ClubCapsGenitive':$Text=array(mb_strtoupper(GeographicalNamesInflection::getCase($MyRow->NationCaps, "родительный"))); break;
+                            case 'ClubCapsGenitive':$Text=array(mb_strtoupper(GeographicalNamesInflection::getCase($MyRow->NationCaps, Cases::GENITIVE))); break;
                         }
                     }
                 case 'Club2':
