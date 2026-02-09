@@ -557,19 +557,21 @@ function selectArrow(obj, noselect) {
     $('[id^="SvgEndR_SO_"]').hide();
     var so=$(obj).closest('tr').attr('so')=='1';
     var end=$(obj).closest('tr').attr('end');
+    var lSx=($('#swapOpponents').is(':checked')?'R':'L');
+    var lDx=($('#swapOpponents').is(':checked')?'L':'R');
     if($(obj).closest('td.Opponents').attr('id')=='ScorecardL') {
         $('#Target').toggleClass('TargetL', true);
         if(so) {
-            $('#SvgEndL_SO_'+end).show();
+            $('#SvgEnd'+lSx+'_SO_'+end).show();
         } else {
-            $('#SvgEndL_'+end).show();
+            $('#SvgEnd'+lSx+'_'+end).show();
         }
     } else {
         $('#Target').toggleClass('TargetR', true);
         if(so) {
-            $('#SvgEndR_SO_'+end).show();
+            $('#SvgEnd'+lDx+'_SO_'+end).show();
         } else {
-            $('#SvgEndR_'+end).show();
+            $('#SvgEnd'+lDx+'_'+end).show();
         }
     }
     if(obj.value && obj.value!='' && document.getElementById('svgLastArrow')) {

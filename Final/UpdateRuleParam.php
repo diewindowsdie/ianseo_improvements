@@ -87,6 +87,10 @@ switch($_REQUEST['fld']) {
         $SQL="update Events set EvLockResults=" . intval($_REQUEST['val']) . $Where;
         $RedoBrackets=true;
         break;
+    case 'qualbestofdistances':
+        $SQL="update Events set EvQualBestOfDistances=" . intval($_REQUEST['val']) . $Where;
+        $RedoBrackets=true;
+        break;
     case 'parentWinner':
 		$SQL="update Events set EvCodeParentWinnerBranch=" . intval($_REQUEST['val']) . $Where;
 		break;

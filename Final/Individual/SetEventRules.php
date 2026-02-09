@@ -210,6 +210,7 @@ if (safe_num_rows($RsEv)==1 and $RowEv=safe_fetch($RsEv)) {
 
     echo '<tr>';
     echo '<th>'.get_text('AfterDistance', 'Tournament').'</th>';
+    echo '<th>'.get_text('BestOfDistances', 'Tournament').'</th>';
     echo '<th>'.get_text('WaCategory', 'Tournament').'</th>';
     if(module_exists('Records')) {
         echo '<th>' . get_text('RecordCategory', 'Tournament') . '</th>';
@@ -223,6 +224,12 @@ if (safe_num_rows($RsEv)==1 and $RowEv=safe_fetch($RsEv)) {
         '<option value="0" '.($RowEv->EvLockResults==0 ? 'selected="selected"':'').'>' . get_text('Last','Tournament') . '</option>';
     for($n=1; $n<=$RowEv->ToNumDist; $n++) {
         echo '<option value="'.$n.'" '.($RowEv->EvLockResults==$n ? 'selected="selected"':'').'>' . $n . '</option>';
+    }
+    echo '</select></td>';
+    echo '<td class="Center"><select id="fld=qualbestofdistances&team=0&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)">'.
+        '<option value="0" '.($RowEv->EvQualBestOfDistances==0 ? 'selected="selected"':'').'>' . get_text('AllDistances','Tournament') . '</option>';
+    for($n=1; $n<=$RowEv->ToNumDist; $n++) {
+        echo '<option value="'.$n.'" '.($RowEv->EvQualBestOfDistances==$n ? 'selected="selected"':'').'>' . $n . '</option>';
     }
     echo '</select></td>';
     echo '<td class="Center"><input size="12" maxlength="10" type="text" value="'.$RowEv->EvWaCategory.'" id="fld=wacat&team=0&event='.$_REQUEST['EvCode'].'" onchange="UpdateData(this)"></td>';

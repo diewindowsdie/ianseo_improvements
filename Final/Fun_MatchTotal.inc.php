@@ -148,7 +148,10 @@ function UpdateArrowPosition($MatchNo, $EvCode, $TeamEvent, $ArrowIndex, $Positi
             foreach($Position as $k=>$v) {
                 if (!array_key_exists($k, $ArrowData[$ArrowIndex]) OR $ArrowData[$ArrowIndex][$k] != round(floatval($v),1)) {
                     $MatchUpdated = true;
-                    $ArrowData[$ArrowIndex][$k] = round(floatval($v),1);
+                    if($k!='R' or empty($ArrowData[$ArrowIndex][$k])) {
+                        // do not change the radius of the arrow if it exists!
+                        $ArrowData[$ArrowIndex][$k] = round(floatval($v),1);
+                    }
                 }
             }
         }

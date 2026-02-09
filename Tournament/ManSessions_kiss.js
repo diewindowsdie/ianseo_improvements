@@ -56,6 +56,7 @@ function buildSessions(sessions) {
     $.each(sessions, (index, item) => {
         tmpHtml += '<div class="sesInfo">'+
             '<div class="sesInfoHeader">'+item.Order+'</div>'+
+            '<div class="sesInfoSubHeader">'+(item.Name!='' ? item.Name : '&nbsp;') +'</div>'+
             '<div class="sesInfoBody">'+
                 '<div class="sesInfoDataRow"><span class="bold">'+Tar4Session+'</span><div class="w-100 inputBox"><input type="number" id="t4s_'+item.Order+'" refSession="'+item.Order+'" refValue="t4s"  min="1" max="9999" oldVal="'+item.Tar4Session+'" value="'+item.Tar4Session+'" onchange="ChangeSessionInfo(this)"></div></div>' +
                 '<hr class="w-95">'+

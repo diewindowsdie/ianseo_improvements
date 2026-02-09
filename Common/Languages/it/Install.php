@@ -84,6 +84,7 @@ $lang['NFAA3D-Standard']='NFAA 3D - 51 bersagli';
 $lang['NFAAField-3Dist']='Field, Hunter, Animal';
 $lang['NFAAField-5Dist']='2xField, 2xHunter, Animal';
 $lang['NFAAIndoor-Nationals']='Campionati Nazionali Indoor';
+$lang['NFAAIndoor-Sectional']='Sezionali';
 $lang['NFAAIndoor-WinterLeague6']='Winter League - 600 punti round';
 $lang['NFAAIndoor-WinterLeague9']='Winter League - 900 punti round';
 $lang['NoChanges']='Invariati';

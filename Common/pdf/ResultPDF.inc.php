@@ -573,8 +573,8 @@ class ResultPDF extends IanseoPdf {
 		$this->Cell(45 + $addSize, 4 * ($double ? 2 : 1),  $section['fields']['athlete'], 1, 0, 'L', 1);
 		if($this->PrintAgeClass) {
             $this->Cell(10, 4 * ($double ? 2 : 1), $section['fields']['class'], 1, 0, 'C', 1);
-            $this->Cell(51 + $addSize, 4 * ($double ? 2 : 1), $section['fields']['countryName'], 1, 0, 'L', 1);
         }
+        $this->Cell(51 + $addSize, 4 * ($double ? 2 : 1), $section['fields']['countryName'], 1, 0, 'L', 1);
 		if(!$double)
 		{
 			for($i=1; $i<=$distances;$i++)

@@ -86,6 +86,7 @@ $lang['NFAA3D-Standard']='NFAA 3D - 51 dianes';
 $lang['NFAAField-3Dist']='Field, Hunter, Animal	(NFAA)';
 $lang['NFAAField-5Dist']='2xField, 2xHunter, Animal	(NFAA)';
 $lang['NFAAIndoor-Nationals']='Indoor Nationals';
+$lang['NFAAIndoor-Sectional']='Selectius';
 $lang['NFAAIndoor-WinterLeague6']='Winter League - 600 score round';
 $lang['NFAAIndoor-WinterLeague9']='Winter League - 900 score round';
 $lang['NoChanges']='Sense canvis';

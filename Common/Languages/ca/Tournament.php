@@ -151,6 +151,7 @@ $lang['BadParams']='Paràmetres dolents!';
 $lang['Barcode']='Dimensió individual amb codi de barres ID';
 $lang['BarcodeCapture']='Captura de codis de barres';
 $lang['BarcodeMissing']='Imprimir codis de barres que falten';
+$lang['BestOfDistances']='Millor De # Distàncies';
 $lang['BF_Phase']='Final Bronze';
 $lang['BigNames']='Impressió de full sencer';
 $lang['Bill']='Rebut';

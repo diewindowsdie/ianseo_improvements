@@ -150,6 +150,8 @@ switch($_REQUEST['act']??'') {
                         $JSON['msg'] = get_text('StillEntriesInSession', 'Errors');
                     }
                 } else if($reqSession>GetNumQualSessions()) {
+                    $currentSessions = GetSessions('Q');
+                    $lastSession = $currentSessions[count($currentSessions)-1];
                     foreach(range(GetNumQualSessions()+1,$reqSession) as $ses) {
                         $x=insertSession(
                             $_SESSION['TourId'],
@@ -157,9 +159,9 @@ switch($_REQUEST['act']??'') {
                             'Q',
                             '',
                             null,
-                            0,
-                            0,
-                            1,
+                            $lastSession->SesTar4Session,
+                            $lastSession->SesAth4Target,
+                            $lastSession->SesFirstTarget,
                             0
                         );
                     }
@@ -169,6 +171,33 @@ switch($_REQUEST['act']??'') {
                     $JSON['error']=0;
                     $JSON['sessions'] = sessionList();
                 }
+                $tmpSesDist = array();
+                $tmpNumDist = 0;
+                $Sql = "SELECT `SesOrder`, `DiDistance`, `DiEnds`, `DiArrows`, `ToNumDist`, `SesTournament`
+                    from `Session`
+                    inner join `Tournament` on `ToId`=`SesTournament`
+                    inner join `DistanceInformation` on `SesTournament`=`DiTournament` and `SesOrder`=`DiSession` and SesType='Q'
+                    where `SesTournament`=".$_SESSION['TourId']." 
+                    order by `SesOrder`, `DiDistance`";
+                $q = safe_r_SQL($Sql);
+                while($r=safe_fetch($q)) {
+                    $tmpNumDist = $r->ToNumDist;
+                    $tmpSesDist[$r->SesOrder.'.'.$r->DiDistance] = $r;
+                }
+                foreach(GetSessions('Q') as $ses) {
+                    foreach(range(1,$tmpNumDist) as $dist) {
+                        if(!isset($tmpSesDist[$ses->SesOrder.'.'.$dist])) {
+                            safe_w_sql("insert ignore into DistanceInformation set
+                                DiTournament=" . $tmpSesDist[($ses->SesOrder-1).'.'.$dist]->SesTournament . ",
+                                DiSession=$ses->SesOrder,
+                                DiDistance=$dist,
+                                DiEnds=" . $tmpSesDist[($ses->SesOrder-1).'.'.$dist]->DiEnds . ",
+                                DiArrows=" . $tmpSesDist[($ses->SesOrder-1).'.'.$dist]->DiArrows . ",
+                                DiType='Q'");
+                        }
+                    }
+                }
+
             } else {
                 $JSON['msg'] = get_text('TooManySessions', 'Errors');
             }
@@ -190,6 +219,7 @@ function sessionList() {
     foreach ($sessions as $session) {
         $list[] = array(
             "Order"=>$session->SesOrder,
+            "Name"=>$session->SesName,
             "Tar4Session"=>$session->SesTar4Session,
             "Ath4Target"=>$session->SesAth4Target,
             "FirstTarget"=>$session->SesFirstTarget

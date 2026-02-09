@@ -11,21 +11,16 @@
     require_once('Common/Lib/ScorecardsLib.php');
 	checkFullACL(AclIndividuals, '', AclReadOnly);
 
-    $Options=[];
-    if(!empty($_REQUEST['Margins'])) {
-        $Options=[
-            'PrintLogo'=>false,
-            'print_header'=>false,
-            'print_footer'=>false,
-            'PrintJudgeNotes'=>false,
-        ];
-    }
 	$pdf = new ScorePDF(false);
 	$pdf->setBarcodeHeader(empty($_REQUEST['Barcode']) ? '10' : '70');
     $pdf->setPrintHeader(true);
     $pdf->setPrintFooter(true);
     $pdf->PrintFooterSerialNumber=true;
 	$pdf->ScoreCellHeight=9;
+    if(!empty($_REQUEST['Margins'])) {
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+    }
 
 	//error_reporting(E_ALL);
 

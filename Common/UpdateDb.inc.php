@@ -54,6 +54,12 @@ if($version<'2026-01-21 09:00:01') {
     db_save_version('2026-01-21 09:00:01');
 }
 
+if($version<'2026-02-08 16:34:01') {
+    safe_w_SQL("Alter table `Entries` add `EnMainInfoUpdate` datetime not null after `EnTimestamp`", false, array(1146, 1054, 1060));
+    safe_w_SQL("update `Entries` set `EnMainInfoUpdate`=`EnTimestamp`");
+    db_save_version('2026-02-08 16:34:01');
+}
+
 /*
 
 // TEMPLATE

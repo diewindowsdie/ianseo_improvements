@@ -47,7 +47,7 @@ if(!empty($_REQUEST['Specifics'])) {
 switch($CardType) {
 	case 'A': // Accreditation
 		if($_SESSION['AccreditationTourIds']) $TourId=$_SESSION['AccreditationTourIds'];
-		$FIELDS.=", (EnBadgePrinted is not null and EnBadgePrinted!=0) as Printed, '' ExtraCode, CONCAT(QuTarget, QuLetter) as TargetNo";
+		$FIELDS.=", (EnBadgePrinted is not null and EnBadgePrinted!=0) as Printed, '' ExtraCode, CONCAT(LPAD(QuTarget,".TargetNoPadding.",'0'), QuLetter) as TargetNo";
 		if(!empty($_REQUEST['PrintNotPrinted']) and empty($BibNumber)) {
 			// solo quelli non ancora stampati...
 			// EnBadgePrinted contiene data e ora della stampa del badge...
@@ -78,7 +78,7 @@ switch($CardType) {
 		}
 		break;
 	case 'Q': // Qualifications
-		$FIELDS.=", ToNumEnds as Ends, ToElabTeam, QuTarget as RealTarget, (QuBacknoPrinted is not null and QuBacknoPrinted!=0) as Printed, '' ExtraCode, CONCAT(QuTarget, QuLetter) as TargetNo";
+		$FIELDS.=", ToNumEnds as Ends, ToElabTeam, QuTarget as RealTarget, (QuBacknoPrinted is not null and QuBacknoPrinted!=0) as Printed, '' ExtraCode, CONCAT(LPAD(QuTarget,".TargetNoPadding.",'0'), QuLetter) as TargetNo";
 		if(!empty($_REQUEST['PrintNotPrinted']) and empty($BibNumber)) {
 			$Where[] = ' AND (QuBacknoPrinted is NULL or QuBacknoPrinted=0) ';
 		}

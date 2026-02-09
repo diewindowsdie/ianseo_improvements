@@ -105,6 +105,56 @@
 			$f=$this->safeFilter();
 			$filter=($f!==false ? $f : "");
 
+            //Handle EvLockResults/EvQualBestOfDistances Scoring Conditions
+            $Sql = "SELECT `EvCode`, `EvLockResults`, `EvQualBestOfDistances` from `Events` WHERE `EvTournament`={$this->tournament} AND (`EvLockResults`!=0 OR `EvQualBestOfDistances`!=0) AND `EvTeamEvent`=0 {$filter}";
+            $q=safe_r_sql($Sql);
+            while($r=safe_fetch($q)) {
+                if($r->EvQualBestOfDistances==0) {
+                    $tmp = array(array(), array(), array(), array());
+                    foreach (range(1, $r->EvLockResults) as $n) {
+                        $tmp[0][] = "QuD{$n}Score";
+                        $tmp[1][] = "QuD{$n}Hits";
+                        $tmp[2][] = "QuD{$n}Gold";
+                        $tmp[3][] = "QuD{$n}Xnine";
+
+                    }
+                    safe_w_SQL("Update Individuals inner join Qualifications on IndId=QuId SET " .
+                        "IndScore=(" . implode('+', $tmp[0]) . ")," .
+                        "IndHits=(" . implode('+', $tmp[1]) . ")," .
+                        "IndGold=(" . implode('+', $tmp[2]) . ")," .
+                        "IndXnine=(" . implode('+', $tmp[3]) . ") " .
+                        "WHERE IndTournament={$this->tournament} AND IndEvent='{$r->EvCode}'");
+                } else {
+                    $Sql = "SELECT ";
+                    foreach (range(1, ($r->EvLockResults ?: 8)) as $n) {
+                        $Sql .= "QuD{$n}Score, QuD{$n}Hits, QuD{$n}Gold, QuD{$n}Xnine, QuD{$n}Score*1000000+QuD{$n}Gold*1000+QuD{$n}Xnine as D{$n}Key, ";
+                    }
+                    $Sql .= "IndId
+                        FROM Individuals 
+                        INNER JOIN Qualifications on IndId=QuId
+                        WHERE IndTournament={$this->tournament} AND IndEvent='{$r->EvCode}'";
+                    $q2 = safe_r_sql($Sql);
+                    while($r2=safe_fetch($q2)) {
+                        $tmp=array();
+                        foreach (range(1, ($r->EvLockResults ?: 8)) as $n) {
+                            $tmp[$n] = $r2->{"D".$n."Key"};
+                        }
+                        arsort($tmp);
+                        $topArray = array_slice($tmp, 0, min($r->EvQualBestOfDistances,($r->EvLockResults ?: 8)), true);
+                        $totals = array(0, 0, 0, 0);
+                        foreach (array_keys($topArray) as $n) {
+                            $totals[0] +=  $r2->{"QuD".$n."Score"};
+                            $totals[1] +=  $r2->{"QuD".$n."Hits"};
+                            $totals[2] +=  $r2->{"QuD".$n."Gold"};
+                            $totals[3] +=  $r2->{"QuD".$n."Xnine"};
+                        }
+                        safe_w_SQL("Update `Individuals` inner join `Qualifications` on `IndId`=`QuId` SET 
+                            `IndScore`=$totals[0],`IndHits`=$totals[1], `IndGold`=$totals[2], `IndXnine`=$totals[3]
+                            WHERE `IndTournament`={$this->tournament} AND `IndEvent`='{$r->EvCode}' AND `IndId`='{$r2->IndId}'");
+                    }
+                }
+            }
+
 			// assign rank=0 if distance or total points=0, to prevent ranking to be retained when making tests
 			$sql='';
 			for($n=1; $n<=8; $n++) {
@@ -120,9 +170,9 @@
 			$q="SELECT IndId AS `athId`,IndEvent AS `EventCode`, IndRank as actualRank, EvFinalFirstPhase, EvElim1, EvElim2, EvElimType,
                 coalesce(RrQualified, IF(EvFinalFirstPhase=0,999999,IF(EvElimType=0, EvNumQualified, IF(EvElim1=0,EvElim2,EvElim1)))) as QualifiedNo, EvFirstQualified, ";
             if($this->opts['dist']==0) {
-                $q .= "IF(EvRunning=1,IFNULL(ROUND(QuScore/QuHits,3),0),QuScore) AS Score, 
-                IF(EvRunning=1,IFNULL(ROUND(QuGold/QuHits,3),0),QuGold) AS Gold,
-                IF(EvRunning=1,IFNULL(ROUND(QuXnine/QuHits,3),0),QuXnine) AS XNine,
+                $q .= "IF(EvRunning=1,IFNULL(ROUND(IF((EvLockResults OR EvQualBestOfDistances),IndScore,QuScore)/QuHits,3),0),IF((EvLockResults OR EvQualBestOfDistances),IndScore,QuScore)) AS Score, 
+                IF(EvRunning=1,IFNULL(ROUND(IF((EvLockResults OR EvQualBestOfDistances),IndGold,QuGold)/QuHits,3),0),IF((EvLockResults OR EvQualBestOfDistances),IndGold,QuGold)) AS Gold,
+                IF(EvRunning=1,IFNULL(ROUND(IF((EvLockResults OR EvQualBestOfDistances),IndXnine,QuXnine)/QuHits,3),0),IF((EvLockResults OR EvQualBestOfDistances),IndXnine,QuXnine)) AS XNine,
                 QuHits AS Hits ";
             } else {
                 $q .= "Qu{$dd}Score AS Score, Qu{$dd}Gold AS Gold, Qu{$dd}Xnine AS XNine, Qu{$dd}Hits AS Hits ";

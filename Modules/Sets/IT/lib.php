@@ -16,7 +16,7 @@ function CreateStandardDivisions($TourId, $Type=1, $SubRule=0) {
 	if($Type==11 or $Type==13) {
 		CreateDivision($TourId, $i++, 'AI', 'Arco Istintivo', 1, 'I', 'I');
 	} else {
-		CreateDivision($TourId, $i++, 'OL', 'Arco Olimpico', 1, 'R', 'R');
+		CreateDivision($TourId, $i++, 'OL', 'Arco Ricurvo', 1, 'R', 'R');
 	}
 	CreateDivision($TourId, $i++, 'CO', 'Arco Compound', 1, 'C', 'C');
 	if(!in_array($Type, array(1,2,4,18))) {
@@ -151,8 +151,8 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=true) {
 		case '1':
 		case '2':
 			$i=1;
-			CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLM',  'Assoluti Arco Olimpico Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLF',  'Assoluti Arco Olimpico Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+			CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLM',  'Assoluti Arco Ricurvo Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+			CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLF',  'Assoluti Arco Ricurvo Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
 			CreateEvent($TourId, $i++, 0, 0, 16, $TargetC, 5, 3, 1, 5, 3, 1, 'COM',  'Assoluti Arco Compound Maschile', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
 			CreateEvent($TourId, $i++, 0, 0, 16, $TargetC, 5, 3, 1, 5, 3, 1, 'COF',  'Assoluti Arco Compound Femminile', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
 			if(!$Outdoor OR $TourType == 3 OR $TourType == 37 OR $TourType ==39) {
@@ -166,22 +166,22 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=true) {
                 }
             }
 			if($Outdoor AND $SubRule==1) {
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLNM',  'Assoluti Arco Olimpico Allievi e Master Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRam);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLNF',  'Assoluti Arco Olimpico Allievi e Master Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRam);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLRM',  'Assoluti Arco Olimpico Ragazzi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRr);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLRF',  'Assoluti Arco Olimpico Ragazze Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRr);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLGM',  'Assoluti Arco Olimpico Giovanissimi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeRg, $DistanceRg);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLGF',  'Assoluti Arco Olimpico Giovanissime Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeRg, $DistanceRg);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLNM',  'Assoluti Arco Ricurvo Allievi e Master Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLNF',  'Assoluti Arco Ricurvo Allievi e Master Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLRM',  'Assoluti Arco Ricurvo Ragazzi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRr);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLRF',  'Assoluti Arco Ricurvo Ragazze Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRr);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLGM',  'Assoluti Arco Ricurvo Giovanissimi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeRg, $DistanceRg);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLGF',  'Assoluti Arco Ricurvo Giovanissime Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeRg, $DistanceRg);
                 CreateEvent($TourId, $i++, 0, 0, 16, $TargetC_RG, 5, 3, 1, 5, 3, 1, 'CORM',  'Assoluti Arco Compound Ragazzi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRr);
                 CreateEvent($TourId, $i++, 0, 0, 16, $TargetC_RG, 5, 3, 1, 5, 3, 1, 'CORF',  'Assoluti Arco Compound Ragazze Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRr);
                 CreateEvent($TourId, $i++, 0, 0, 16, $TargetC_RG, 5, 3, 1, 5, 3, 1, 'COGM',  'Assoluti Arco Compound Giovanissimi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeRg, $DistanceRg);
                 CreateEvent($TourId, $i++, 0, 0, 16, $TargetC_RG, 5, 3, 1, 5, 3, 1, 'COGF',  'Assoluti Arco Compound Giovanissime Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeRg, $DistanceRg);
 			}
 			$i=1;
-			CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLMT',  'Squadre Arco Olimpico Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLFT',  'Squadre Arco Olimpico Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
+			CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLMT',  'Squadre Arco Ricurvo Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
+			CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLFT',  'Squadre Arco Ricurvo Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
 			if($Outdoor) {
-				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLXT',  'Arco Olimpico Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLXT',  'Arco Ricurvo Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
 			}
 			CreateEvent($TourId, $i++, 1, 0, 4, $TargetC, 4, 6, 3, 4, 6, 3, 'COMT',  'Squadre Arco Compound Maschili', 0, 0, 0, 0, 0, '', '', $TargetSizeC, $DistanceC);
 			CreateEvent($TourId, $i++, 1, 0, 4, $TargetC, 4, 6, 3, 4, 6, 3, 'COFT',  'Squadre Arco Compound Femminili', 0, 0, 0, 0, 0, '', '', $TargetSizeC, $DistanceC);
@@ -204,28 +204,28 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=true) {
                 }
 			}
 			if($Outdoor AND $SubRule==1) {
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLNM',  'Squadre Arco Olimpico Allievi e Master Maschile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLNF',  'Squadre Arco Olimpico Allievi e Master Femminile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
-                CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLNX',  'Arco Olimpico Allievi e Master Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLRM',  'Squadre Arco Olimpico Ragazzi Maschile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRr);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLRF',  'Squadre Arco Olimpico Ragazze Femminile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRr);
-                CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLRX',  'Arco Olimpico Ragazzi Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRr);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLGM',  'Squadre Arco Olimpico Giovanissimi Maschile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRg);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLGF',  'Squadre Arco Olimpico Giovanissime Femminile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRg);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLNM',  'Squadre Arco Ricurvo Allievi e Master Maschile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLNF',  'Squadre Arco Ricurvo Allievi e Master Femminile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+                CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLNX',  'Arco Ricurvo Allievi e Master Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLRM',  'Squadre Arco Ricurvo Ragazzi Maschile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRr);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLRF',  'Squadre Arco Ricurvo Ragazze Femminile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRr);
+                CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLRX',  'Arco Ricurvo Ragazzi Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRr);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLGM',  'Squadre Arco Ricurvo Giovanissimi Maschile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRg);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLGF',  'Squadre Arco Ricurvo Giovanissime Femminile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRg);
                 CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLGX',  'Olimpico Giovanissime Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRg);
 			}
 			break;
 		case '3':
 			if($Outdoor) {
 				$i=1;
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLJM',  'Assoluti Arco Olimpico Junior Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLJF',  'Assoluti Arco Olimpico Junior Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLAM',  'Assoluti Arco Olimpico Allievi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRam);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLAF',  'Assoluti Arco Olimpico Allievi Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRam);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLRM',  'Assoluti Arco Olimpico Ragazzi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRr);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLRF',  'Assoluti Arco Olimpico Ragazzi Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRr);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLGM',  'Assoluti Arco Olimpico Giovanissimi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRg);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLGF',  'Assoluti Arco Olimpico Giovanissimi Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRg);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLJM',  'Assoluti Arco Ricurvo Junior Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLJF',  'Assoluti Arco Ricurvo Junior Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLAM',  'Assoluti Arco Ricurvo Allievi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLAF',  'Assoluti Arco Ricurvo Allievi Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLRM',  'Assoluti Arco Ricurvo Ragazzi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRr);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLRF',  'Assoluti Arco Ricurvo Ragazzi Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRr);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLGM',  'Assoluti Arco Ricurvo Giovanissimi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRg);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLGF',  'Assoluti Arco Ricurvo Giovanissimi Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRg);
                 CreateEvent($TourId, $i++, 0, 0, 16, $TargetC_RG, 5, 3, 1, 5, 3, 1, 'CORM',  'Assoluti Arco Compound Ragazzi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRr);
                 CreateEvent($TourId, $i++, 0, 0, 16, $TargetC_RG, 5, 3, 1, 5, 3, 1, 'CORF',  'Assoluti Arco Compound Ragazze Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRr);
                 CreateEvent($TourId, $i++, 0, 0, 16, $TargetC_RG, 5, 3, 1, 5, 3, 1, 'COGM',  'Assoluti Arco Compound Giovanissimi Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeRg, $DistanceRg);
@@ -250,18 +250,18 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=true) {
 					CreateEvent($TourId, $i++, 0, 0, 16, $TargetC, 5, 3, 1, 5, 3, 1, 'CORF',  'Assoluti Arco Compound Ragazzi Femminile', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
 				}
 				$i=1;
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLJM',  'Squadre Arco Olimpico Junior Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLJF',  'Squadre Arco Olimpico Junior Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLJX',  'Arco Olimpico Junior Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLAM',  'Squadre Arco Olimpico Allievi Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLAF',  'Squadre Arco Olimpico Allievi Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
-				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLAX',  'Arco Olimpico Allievi Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLRM',  'Squadre Arco Olimpico Ragazzi Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRr);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLRF',  'Squadre Arco Olimpico Ragazzi Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRr);
-				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLRX',  'Arco Olimpico Ragazzi Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRr);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLGM',  'Squadre Arco Olimpico Giovanissimi Maschile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRg);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLGF',  'Squadre Arco Olimpico Giovanissime Femminile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRg);
-				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLGX',  'Arco Olimpico Giovanissimi Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRg);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLJM',  'Squadre Arco Ricurvo Junior Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLJF',  'Squadre Arco Ricurvo Junior Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLJX',  'Arco Ricurvo Junior Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLAM',  'Squadre Arco Ricurvo Allievi Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLAF',  'Squadre Arco Ricurvo Allievi Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLAX',  'Arco Ricurvo Allievi Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLRM',  'Squadre Arco Ricurvo Ragazzi Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRr);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLRF',  'Squadre Arco Ricurvo Ragazzi Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRr);
+				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLRX',  'Arco Ricurvo Ragazzi Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRr);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLGM',  'Squadre Arco Ricurvo Giovanissimi Maschile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRg);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLGF',  'Squadre Arco Ricurvo Giovanissime Femminile', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRg);
+				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLGX',  'Arco Ricurvo Giovanissimi Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRg);
 				if($TourType==3 OR $TourType==18 OR $TourType==37 OR $TourType==39) {
 					CreateEvent($TourId, $i++, 1, 0, 4, $TargetC, 4, 6, 3, 4, 6, 3, 'COM',  'Squadre Arco Compound Maschili', 0, 0, 0, 0, 0, '', '', $TargetSizeC, $DistanceC);
 					CreateEvent($TourId, $i++, 1, 0, 4, $TargetC, 4, 6, 3, 4, 6, 3, 'COF',  'Squadre Arco Compound Femminili', 0, 0, 0, 0, 0, '', '', $TargetSizeC, $DistanceC);
@@ -290,15 +290,15 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=true) {
 				}
 			} else {
 				$i=1;
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLM',  'Assoluti Arco Olimpico Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLF',  'Assoluti Arco Olimpico Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLM',  'Assoluti Arco Ricurvo Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLF',  'Assoluti Arco Ricurvo Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
 				CreateEvent($TourId, $i++, 0, 0, 16, $TargetC, 5, 3, 1, 5, 3, 1, 'COM',  'Assoluti Arco Compound Maschile', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
 				CreateEvent($TourId, $i++, 0, 0, 16, $TargetC, 5, 3, 1, 5, 3, 1, 'COF',  'Assoluti Arco Compound Femminile', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
 				CreateEvent($TourId, $i++, 0, 0, 16, 1, 5, 3, 1, 5, 3, 1, 'ANM',  'Assoluti Arco Nudo Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
 				CreateEvent($TourId, $i++, 0, 0, 16, 1, 5, 3, 1, 5, 3, 1, 'ANF',  'Assoluti Arco Nudo Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
 				$i=1;
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLMT',  'Squadre Arco Olimpico Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLFT',  'Squadre Arco Olimpico Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLMT',  'Squadre Arco Ricurvo Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLFT',  'Squadre Arco Ricurvo Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
 				CreateEvent($TourId, $i++, 1, 0, 4, $TargetC, 4, 6, 3, 4, 6, 3, 'COMT',  'Squadre Arco Compound Maschili', 0, 0, 0, 0, 0, '', '', $TargetSizeC, $DistanceC);
 				CreateEvent($TourId, $i++, 1, 0, 4, $TargetC, 4, 6, 3, 4, 6, 3, 'COFT',  'Squadre Arco Compound Femminili', 0, 0, 0, 0, 0, '', '', $TargetSizeC, $DistanceC);
 				CreateEvent($TourId, $i++, 1, 0, 4, 1, 4, 6, 3, 4, 6, 3, 'ANMT',  'Squadre Arco Nudo Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
@@ -308,10 +308,10 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=true) {
 		case '4':
 			if($Outdoor) {
 				$i=1;
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLSM',  'Assoluti Arco Olimpico Senior Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLSF',  'Assoluti Arco Olimpico Senior Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLMM',  'Assoluti Arco Olimpico Master Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRam);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLMF',  'Assoluti Arco Olimpico Master Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLSM',  'Assoluti Arco Ricurvo Senior Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLSF',  'Assoluti Arco Ricurvo Senior Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLMM',  'Assoluti Arco Ricurvo Master Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLMF',  'Assoluti Arco Ricurvo Master Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceRam);
 				if($TourType==3 OR $TourType==18 OR $TourType==37 OR $TourType==39) {
 					CreateEvent($TourId, $i++, 0, 0, 16, $TargetC, 5, 3, 1, 5, 3, 1, 'COM',  'Assoluti Arco Compound Maschile', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
 					CreateEvent($TourId, $i++, 0, 0, 16, $TargetC, 5, 3, 1, 5, 3, 1, 'COF',  'Assoluti Arco Compound Femminile', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
@@ -326,12 +326,12 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=true) {
 					CreateEvent($TourId, $i++, 0, 0, 16, $TargetC, 5, 3, 1, 5, 3, 1, 'COMF',  'Assoluti Arco Compound Master Femminile', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
 				}
 				$i=1;
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLSM',  'Squadre Arco Olimpico Senior Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLSF',  'Squadre Arco Olimpico Senior Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLSX',  'Arco Olimpico Senior Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLMM',  'Squadre Arco Olimpico Master Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLMF',  'Squadre Arco Olimpico Master Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
-				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLMX',  'Arco Olimpico Master Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLSM',  'Squadre Arco Ricurvo Senior Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLSF',  'Squadre Arco Ricurvo Senior Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLSX',  'Arco Ricurvo Senior Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLMM',  'Squadre Arco Ricurvo Master Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLMF',  'Squadre Arco Ricurvo Master Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
+				CreateEvent($TourId, $i++, 1, 1, 4, $TargetR, 4, 4, 2, 4, 4, 2, 'OLMX',  'Arco Ricurvo Master Mixed Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceRam);
                 if($TourType==3 OR $TourType==18 OR $TourType==37 OR $TourType==39) {
 					CreateEvent($TourId, $i++, 1, 0, 4, $TargetC, 4, 6, 3, 4, 6, 3, 'COM',  'Squadre Arco Compound Maschili', 0, 0, 0, 0, 0, '', '', $TargetSizeC, $DistanceC);
 					CreateEvent($TourId, $i++, 1, 0, 4, $TargetC, 4, 6, 3, 4, 6, 3, 'COF',  'Squadre Arco Compound Femminili', 0, 0, 0, 0, 0, '', '', $TargetSizeC, $DistanceC);
@@ -351,15 +351,15 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=true) {
 				}
 			} else {
 				$i=1;
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLM',  'Assoluti Arco Olimpico Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLF',  'Assoluti Arco Olimpico Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLM',  'Assoluti Arco Ricurvo Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 0, 0, 16, $TargetR, 5, 3, 1, 5, 3, 1, 'OLF',  'Assoluti Arco Ricurvo Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
 				CreateEvent($TourId, $i++, 0, 0, 16, $TargetC, 5, 3, 1, 5, 3, 1, 'COM',  'Assoluti Arco Compound Maschile', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
 				CreateEvent($TourId, $i++, 0, 0, 16, $TargetC, 5, 3, 1, 5, 3, 1, 'COF',  'Assoluti Arco Compound Femminile', 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
 				CreateEvent($TourId, $i++, 0, 0, 16, 1, 5, 3, 1, 5, 3, 1, 'ANM',  'Assoluti Arco Nudo Maschile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
 				CreateEvent($TourId, $i++, 0, 0, 16, 1, 5, 3, 1, 5, 3, 1, 'ANF',  'Assoluti Arco Nudo Femminile', 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
 				$i=1;
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLMT',  'Squadre Arco Olimpico Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
-				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLFT',  'Squadre Arco Olimpico Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLMT',  'Squadre Arco Ricurvo Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
+				CreateEvent($TourId, $i++, 1, 0, 4, $TargetR, 4, 6, 3, 4, 6, 3, 'OLFT',  'Squadre Arco Ricurvo Femminili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
 				CreateEvent($TourId, $i++, 1, 0, 4, $TargetC, 4, 6, 3, 4, 6, 3, 'COMT',  'Squadre Arco Compound Maschili', 0, 0, 0, 0, 0, '', '', $TargetSizeC, $DistanceC);
 				CreateEvent($TourId, $i++, 1, 0, 4, $TargetC, 4, 6, 3, 4, 6, 3, 'COFT',  'Squadre Arco Compound Femminili', 0, 0, 0, 0, 0, '', '', $TargetSizeC, $DistanceC);
 				CreateEvent($TourId, $i++, 1, 0, 4, 1, 4, 6, 3, 4, 6, 3, 'ANMT',  'Squadre Arco Nudo Maschili', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
@@ -574,8 +574,8 @@ function CreateStandardFieldEvents($TourId, $SubRule) {
 		'SO' => 1
 	);
 	$i=1;
-	CreateEvent($TourId, $i++, 0, 0, 2, 6, 12, 3, 3, 4, 3, 3, 'OLM', 'Assoluti Arco Olimpico Maschile',  0, 0, 0, $Elim1, $Elim2);
-	CreateEvent($TourId, $i++, 0, 0, 2, 6, 12, 3, 3, 4, 3, 3, 'OLF', 'Assoluti Arco Olimpico Femminile', 0, 0, 0, $Elim1, $Elim2);
+	CreateEvent($TourId, $i++, 0, 0, 2, 6, 12, 3, 3, 4, 3, 3, 'OLM', 'Assoluti Arco Ricurvo Maschile',  0, 0, 0, $Elim1, $Elim2);
+	CreateEvent($TourId, $i++, 0, 0, 2, 6, 12, 3, 3, 4, 3, 3, 'OLF', 'Assoluti Arco Ricurvo Femminile', 0, 0, 0, $Elim1, $Elim2);
 	CreateEvent($TourId, $i++, 0, 0, 2, 6, 12, 3, 3, 4, 3, 3, 'COM', 'Assoluti Arco Compound Maschile',  0, 0, 0, $Elim1, $Elim2);
 	CreateEvent($TourId, $i++, 0, 0, 2, 6, 12, 3, 3, 4, 3, 3, 'COF', 'Assoluti Arco Compound Femminile', 0, 0, 0, $Elim1, $Elim2);
 	CreateEvent($TourId, $i++, 0, 0, 2, 6, 12, 3, 3, 4, 3, 3, 'ANM', 'Assoluti Arco Nudo Maschile',     0, 0, 0, $Elim1, $Elim2);
@@ -783,15 +783,16 @@ function CreateStandardStudClasses($TourId, $TourType) {
 
 function CreateStandardGdGClasses($TourId, $SubRule, $Field='') {
 	$i=1;
-    CreateClass($TourId, $i++, 8, 8, 0, 'GM', 'GM', 'Ragazzi 2017',1, 'OL');
-    CreateClass($TourId, $i++, 8, 8, 1, 'GF', 'GF', 'Ragazze 2017',1, 'OL');
-    CreateClass($TourId, $i++, 9, 11, 0, 'M0', 'M0', 'Ragazzi 2014-2015-2016',1, 'OL');
-    CreateClass($TourId, $i++, 9, 11, 1, 'F0', 'F0', 'Ragazze 2014-2015-2016',1, 'OL');
-    CreateClass($TourId, $i++, 12, 12, 0, 'M3', 'M3', 'Ragazzi 2013',1, 'OL');
-    CreateClass($TourId, $i++, 12, 12, 1, 'F3', 'F3', 'Ragazze 2013',1, 'OL');
-    CreateClass($TourId, $i++, 13, 13, 0, 'M4', 'M4', 'Ragazzi 2012',1, 'OL');
-    CreateClass($TourId, $i++, 13, 13, 1, 'F4', 'F4', 'Ragazze 2012',1, 'OL');
-    CreateClass($TourId, $i++, 12, 13, -1, 'X', 'X', 'Ragazzi/e 2012-2013',1, 'CO');
+    CreateClass($TourId, $i++, 8, 8, 0, 'GM', 'GM', 'Ragazzi 2018',1, 'OL');
+    CreateClass($TourId, $i++, 8, 8, 1, 'GF', 'GF', 'Ragazze 2018',1, 'OL');
+    CreateClass($TourId, $i++, 9, 11, 0, 'M0', 'M0', 'Ragazzi 2015-2016-2017',1, 'OL');
+    CreateClass($TourId, $i++, 9, 11, 1, 'F0', 'F0', 'Ragazze 2015-2016-2017',1, 'OL');
+    CreateClass($TourId, $i++, 12, 12, 0, 'M3', 'M3', 'Ragazzi 2014',1, 'OL');
+    CreateClass($TourId, $i++, 12, 12, 1, 'F3', 'F3', 'Ragazze 2014',1, 'OL');
+    CreateClass($TourId, $i++, 13, 13, 0, 'M4', 'M4', 'Ragazzi 2013',1, 'OL');
+    CreateClass($TourId, $i++, 13, 13, 1, 'F4', 'F4', 'Ragazze 2013',1, 'OL');
+    CreateClass($TourId, $i++, 9, 13, 0, 'M', 'M', 'Ragazzi 2013-2017',1, 'CO');
+    CreateClass($TourId, $i++, 9, 13, 1, 'F', 'F', 'Ragazze 2013-2017',1, 'CO');
 }
 
 function CreateStandardSperimClasses($TourId) {

@@ -1315,6 +1315,13 @@ function UpdateTournament($Gara) {
 		}
     }
 
+    if($Gara['Tournament']['ToDbVersion']<'2026-02-08 16:34:01') {
+        foreach($Gara['Entries'] as $k => &$r) {
+            $r['EnMainInfoUpdate']=$r['EnTimestamp'];
+        }
+        // procedura di aggiornamento della gara alla versione attuale del database
+    }
+
 	/*
 
 		if($Gara['Tournament']['ToDbVersion']<'YYYY-MM-DD HH:MM:SS') {
