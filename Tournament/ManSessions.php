@@ -297,7 +297,7 @@ echo '</tr>';
 $q=safe_r_sql("select e1.EvCode, e1.EvFinalFirstPhase, e1.EvTeamEvent, coalesce(e2.EvNumQualified/2,0) as EvSecondaryStartPhase
     from Events e1
     left join Events e2 on e2.EvTournament=e1.EvTournament and e2.EvTeamEvent=e1.EvTeamEvent and e2.EvCodeParent=e1.EvCode and e2.EvCodeParentWinnerBranch=1
-    where e1.EvTournament={$_SESSION['TourId']} and e1.EvElimType!=5
+    where e1.EvTournament={$_SESSION['TourId']} 
     order by e1.EvTeamEvent, e1.EvProgr");
 while($r=safe_fetch($q)) {
     $Events[$r->EvTeamEvent][$r->EvCode]='<input type="checkbox" class="EventCheck" id="ev_'.$r->EvTeamEvent.$r->EvCode.'" name="event['.$r->EvTeamEvent.$r->EvCode.']" value="1">'.$r->EvCode;

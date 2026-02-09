@@ -707,8 +707,10 @@ function move2NextPhaseTeam($Phase=NULL, $Event=NULL, $MatchNo=NULL, $TourId=0, 
 	$Confirmed=array();
     $movedCoaches=array();
 	$Select = "SELECT EvMatchMode as MatchMode, tf.TfEvent, tf.TfMatchNo as MatchNo, tf2.TfMatchNo as OppMatchNo, tf.TfTbClosest Closest, tf2.TfTbClosest OppClosest,
-            EvCheckGolds, EvCheckXNines, if(EvGoldsChars!='', EvGoldsChars, ToGoldsChars) as GoldChars, if(EvXNineChars!='', EvXNineChars, ToXNineChars) as XNineChars, 
-			tf.TfTeam AS Team, tf.TfSubteam AS SubTeam, tf2.TfTeam AS OppTeam, tf2.TfSubTeam AS OppSubTeam, tf.TfConfirmed as IsConfirmed, 
+            if(EvGoldsChars!='', EvGoldsChars, ToGoldsChars) as GoldChars, if(EvXNineChars!='', EvXNineChars, ToXNineChars) as XNineChars, 
+            EvCheckGolds, tf.TfGolds as Golds, tf2.TfGolds as OppGolds,
+            EvCheckXNines, tf.TfXNines as XNines, tf2.TfXNines as OppXNines,    
+            tf.TfTeam AS Team, tf.TfSubteam AS SubTeam, tf2.TfTeam AS OppTeam, tf2.TfSubTeam AS OppSubTeam, tf.TfConfirmed as IsConfirmed, 
 			@PhaseMatch:=(GrPhase & EvMatchArrowsNo), 
 			if(@PhaseMatch, EvElimEnds, EvFinEnds) FinEnds, if(@PhaseMatch, EvElimArrows, EvFinArrows) FinArrows, if(@PhaseMatch, EvElimSO, EvFinSO) FinSO,
 			IF(tf.TfDateTime>=tf2.TfDateTime, tf.TfDateTime, tf2.TfDateTime) AS DateTime,
@@ -807,10 +809,18 @@ function move2NextPhaseTeam($Phase=NULL, $Event=NULL, $MatchNo=NULL, $TourId=0, 
                     }
                 }
 
-                // Se uno dei due è diverso da ZERO e non sono uguali oppure se è a set e differiscono di più di un punto
+                // Scores are tied if they have the same value, or in set system if the difference is 1,
+                // and in case we check golds if they are the same
+                // and in case we check XNines if they are the same
+                $IsTie=(
+                    ($MyRow->Score == $MyRow->OppScore or ($MyRow->MatchMode!=0 and abs($MyRow->Score-$MyRow->OppScore)==1))
+                    and (!$MyRow->EvCheckGolds or $MyRow->Golds==$MyRow->OppGolds)
+                    and (!$MyRow->EvCheckXNines or $MyRow->XNines==$MyRow->OppXNines)
+                );
                 if(($MyRow->Score!= 0 or $MyRow->OppScore!=0)
-                    and (($MyRow->MatchMode==0 and $MyRow->Score != $MyRow->OppScore) or ($MyRow->MatchMode!=0 and abs($MyRow->Score-$MyRow->OppScore)>1))
-                    and $MyRow->IrmType==0 and $MyRow->OppIrmType==0) {
+                    and $MyRow->IrmType==0 and $MyRow->OppIrmType==0
+                    and !$IsTie
+                ) {
                     //Azzero entrambi i flag di shootoff
                     $SqlUpdate = "UPDATE TeamFinals SET TfTie=0, TfDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . " WHERE TfEvent=" . StrSafe_DB($MyRow->TfEvent) . " AND TfMatchNo IN (". StrSafe_DB($MyRow->MatchNo) . "," . StrSafe_DB($MyRow->OppMatchNo) . ") AND TfTournament=" . StrSafe_DB($TourId);
                     safe_w_sql($SqlUpdate);
@@ -821,7 +831,7 @@ function move2NextPhaseTeam($Phase=NULL, $Event=NULL, $MatchNo=NULL, $TourId=0, 
                 $MyRow->OppTbString=rtrim($MyRow->OppTbString);
                 $M1Len=strlen($MyRow->TbString);
                 $M2Len=strlen($MyRow->OppTbString);
-                if($MyRow->Score!=0 and $MyRow->Score == $MyRow->OppScore and $M1Len!=0 and $M1Len%$MyRow->FinSO==0 and $M1Len==$M2Len) {
+                if($MyRow->Score!=0 and $IsTie and $MyRow->Score == $MyRow->OppScore and $M1Len!=0 and $M1Len%$MyRow->FinSO==0 and $M1Len==$M2Len) {
                     $WinnerId=-1;
 
                     $XChar=($MyRow->EvCheckGolds ? $MyRow->GoldChars : ($MyRow->EvCheckXNines? $MyRow->XNineChars : null));
@@ -876,6 +886,8 @@ function move2NextPhaseTeam($Phase=NULL, $Event=NULL, $MatchNo=NULL, $TourId=0, 
 
 	$Select = "SELECT
 			tf.TfEvent AS Event, tf.TfMatchNo, tf2.TfMatchNo OppMatchNo,
+			EvCheckGolds, tf.TfGolds as Golds, tf2.TfGolds as OppGolds,
+			EvCheckXNines, tf.TfXNines as XNines, tf2.TfXNines as OppXNines,
 			GrPhase, tf.TfTeam AS Team,tf.TfSubTeam AS SubTeam, tf.TfCoach as Coach, tf2.TfTeam AS OppTeam,tf2.TfSubTeam AS OppSubTeam, tf2.TfCoach as OppCoach, 
 			IF(EvMatchMode=0,tf.TfScore,tf.TfSetScore) AS Score, tf.TfTie as Tie, IF(EvMatchMode=0,tf2.TfScore,tf2.TfSetScore) as OppScore, tf2.TfTie as OppTie,
 			IF(GrPhase>2, FLOOR(tf.TfMatchNo/2),FLOOR(tf.TfMatchNo/2)-2) AS NextMatchNo
@@ -921,7 +933,14 @@ function move2NextPhaseTeam($Phase=NULL, $Event=NULL, $MatchNo=NULL, $TourId=0, 
 			// Flag for winlose
 			$WinLose=-1;
 
-			if (intval($MyRow->Score)>intval($MyRow->OppScore) or $MyRow->Tie==2 or (intval($MyRow->Score)==intval($MyRow->OppScore) and intval($MyRow->Tie)>intval($MyRow->OppTie))) {
+            if (intval($MyRow->Score)>intval($MyRow->OppScore)
+                or $MyRow->Tie==2
+                or (intval($MyRow->Score)==intval($MyRow->OppScore) and (
+                        intval($MyRow->Tie)>intval($MyRow->OppTie)
+                        or ($MyRow->EvCheckGolds and intval($MyRow->Golds)>intval($MyRow->OppGolds))
+                        or ($MyRow->EvCheckGolds and $MyRow->EvCheckXNines and intval($MyRow->Golds)==intval($MyRow->OppGolds) and intval($MyRow->XNines)>intval($MyRow->OppXNines))
+                        or (!$MyRow->EvCheckGolds and $MyRow->EvCheckXNines and intval($MyRow->XNines)>intval($MyRow->OppXNines))
+                    ) ) ) {
 				$WinLose=$MyRow->TfMatchNo;
 				if ($MyRow->GrPhase>=2) {
 					$MyUpQuery = "UPDATE TeamFinals SET
@@ -962,7 +981,14 @@ function move2NextPhaseTeam($Phase=NULL, $Event=NULL, $MatchNo=NULL, $TourId=0, 
 						}
 					}
 				}
-			} elseif (intval($MyRow->Score)<intval($MyRow->OppScore) or $MyRow->OppTie==2 or (intval($MyRow->Score)==intval($MyRow->OppScore) and intval($MyRow->Tie)<intval($MyRow->OppTie))) {
+            } elseif (intval($MyRow->Score)<intval($MyRow->OppScore)
+                or $MyRow->OppTie==2
+                or (intval($MyRow->Score)==intval($MyRow->OppScore) and (
+                        intval($MyRow->Tie)<intval($MyRow->OppTie)
+                        or ($MyRow->EvCheckGolds and intval($MyRow->Golds)<intval($MyRow->OppGolds))
+                        or ($MyRow->EvCheckGolds and $MyRow->EvCheckXNines and intval($MyRow->Golds)==intval($MyRow->OppGolds) and intval($MyRow->XNines)<intval($MyRow->OppXNines))
+                        or (!$MyRow->EvCheckGolds and $MyRow->EvCheckXNines and intval($MyRow->XNines)<intval($MyRow->OppXNines))
+                    ) ) ) {
 				$WinLose=$MyRow->OppMatchNo;
 				if ($MyRow->GrPhase>=2) {
 					$MyUpQuery = "UPDATE TeamFinals SET

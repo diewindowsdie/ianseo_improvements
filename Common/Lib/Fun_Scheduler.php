@@ -35,7 +35,7 @@ Class Scheduler {
 	var $FopLocations=array();
 	var $FopSingleLocations=false;
 	var $FopIncludeUnscheduledDistances=false;
-	var $SplitLocations=false;
+	var $SplitLocations=true;
 	var $DaysToPrint=array();
 	var $LocationsToPrint=array();
 	var $LocationPrintOrder=0;
@@ -735,8 +735,8 @@ Class Scheduler {
 				$Date="RRMatchScheduledDate>='$this->FromDay'";
 			}
 			$SQL[]="select distinct
-                '' as SesGrouping,
-                0 as PrintingOrder,
+                coalesce(SesLocation,'') as SesGrouping,
+                {$this->LocationPrintOrder} as PrintingOrder,
                 concat_ws('-',group_concat(distinct RrMatchEvent order by EvProgr separator '-'), (RrMatchLevel*1000000)+(RrMatchGroup*10000)+(RrMatchRound*100), sum(RrMatchMatchNo)) as UID,
 				EvShootOff,
 				EvWinnerFinalRank as EvFirstRank,
@@ -768,9 +768,10 @@ Class Scheduler {
 			    inner join RoundRobinLevel on RrLevTournament=RrMatchTournament and RrLevTeam=RrMatchTeam and RrLevEvent=RrMatchEvent and RrLevLevel=RrMatchLevel
 				inner join Events on EvCode=RrMatchEvent and EvTeamEvent=RrMatchTeam and EvTournament=RrMatchTournament
 				left join FinWarmup on FwEvent=RrMatchEvent and FwTeamEvent=RrMatchTeam and FwTournament=RrMatchTournament and FwDay=RrMatchScheduledDate and FwMatchTime=RrMatchScheduledTime
+				left join Session on SesTournament=RrMatchTournament and SesType='F' and (SesEvents='' or find_in_set(concat(RrMatchTeam,RrMatchEvent), SesEvents)) and concat(RrMatchScheduledDate,' ',RrMatchScheduledTime) between SesDtStart and SesDtEnd
 				where RrMatchTournament=$this->TourId
 					and $Date and (RrMatchScheduledTime>0 or FwTime>0) 
-				group by RrMatchTeam, RrMatchScheduledDate, RrMatchScheduledTime, RrMatchLevel, RrMatchGroup, RrMatchRound, Locations, FwTime
+				group by coalesce(SesLocation,''), RrMatchTeam, RrMatchScheduledDate, RrMatchScheduledTime, RrMatchLevel, RrMatchGroup, RrMatchRound, Locations, FwTime
 				order by RrMatchTeam, RrMatchScheduledDate, RrMatchScheduledTime, RrMatchLevel, RrMatchGroup, RrMatchRound, OrderPhase, FwTime
 				";
 		}

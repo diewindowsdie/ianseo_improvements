@@ -27,7 +27,7 @@ while($r=safe_fetch($q)) {
 	$JSON['Entries'][]=array(
 		'id'=>$r->EnId,
 		'style' => $r->Printed?'green':'red',
-		'text' => ($r->FirstName.$r->Name ? "$r->FirstName $r->Name" : $r->Bib)." ($Event".(empty($_REQUEST['SortByTarget']) ? '' : " - $r->TargetNo").")",
+		'text' => ($r->FirstName.$r->Name ? "$r->FirstName $r->Name" : $r->Bib)." ($Event".(empty($_REQUEST['SortByTarget']) ? '' : " - " .ltrim($r->TargetNo,"0")).")",
 	);
 	if($r->Printed) {
 		$JSON['greens']++;

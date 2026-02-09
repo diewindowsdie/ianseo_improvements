@@ -12,7 +12,7 @@ require_once(dirname(__FILE__).'/lib.php');
 require_once(dirname(dirname(__FILE__)).'/lib.php');
 
 // default Divisions
-CreateDivision($TourId, 1, 'OL', 'Arco Olimpico', 1, 'R', 'R');
+CreateDivision($TourId, 1, 'OL', 'Arco Ricurvo', 1, 'R', 'R');
 CreateDivision($TourId, 2, 'CO', 'Arco Compound', 1, 'C', 'C');
 
 // default Classes
@@ -23,7 +23,7 @@ CreateDistanceNew($TourId, $TourType, '__G_', array(array('10m-1',10), array('10
 CreateDistanceNew($TourId, $TourType, '___0', array(array('15m-1',15), array('15m-2',15)));
 CreateDistanceNew($TourId, $TourType, '___3', array(array('20m-1',20), array('20m-2',20)));
 CreateDistanceNew($TourId, $TourType, '___4', array(array('20m-1',20), array('20m-2',20)));
-CreateDistanceNew($TourId, $TourType, 'COX', array(array('20m-1',20), array('20m-2',20)));
+CreateDistanceNew($TourId, $TourType, 'CO_', array(array('20m-1',20), array('20m-2',20)));
 
 
 // Default Target

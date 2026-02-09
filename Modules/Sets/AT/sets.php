@@ -14,7 +14,7 @@ foreach($AllowedTypes as $val) {
 }
 
 foreach($AllowedTypes as $val) {
-    if($val!=1 AND $val!=5) {
+    if($val!=1 AND $val!=2 AND $val!=5) {
         $SetType['AT']['rules']["$val"] = array(
             'SetAllClass',
             'SetOneClass'

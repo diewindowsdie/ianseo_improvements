@@ -221,7 +221,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 			elseif($this->opts['dist'])	{
 				$tmp='QuD'.$this->opts['dist'].'Hits';
 			} else {
-				$tmp='QuHits';
+				$tmp='IF((EvLockResults OR EvQualBestOfDistances),IndHits,QuHits)';
 			}
 
 			$MyRank="Ind{$dd}Rank";
@@ -233,8 +233,12 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 			if ($this->opts['dist']==0 && empty($this->opts['runningDist']))
 				$only4zero=", IndTiebreak, IndTbClosest, IndTbDecoded, (IndSO>0) as isSO, IFNULL(sqY.Quanti,1) AS `NumCT`,ABS(IndSO) AS RankBeforeSO ";
 
-			$q="
-				SELECT ".($this->Flighted ? "concat(EvCode,EnSubClass)" : "EvCode")." as EventKey,
+            $ScoringFields="IF((EvLockResults OR EvQualBestOfDistances),IndScore,QuScore) AS Score, IF((EvLockResults OR EvQualBestOfDistances),IndGold,QuGold) AS Gold, IF((EvLockResults OR EvQualBestOfDistances),IndXnine,QuXnine) AS XNine, IF((EvLockResults OR EvQualBestOfDistances),IndHits,QuHits) AS Hits";
+            if($dd) {
+                $ScoringFields="Qu{$dd}Score AS Score, Qu{$dd}Gold AS Gold,Qu{$dd}Xnine AS XNine, Qu{$dd}Hits AS Hits";
+            }
+
+			$q="SELECT ".($this->Flighted ? "concat(EvCode,EnSubClass)" : "EvCode")." as EventKey,
 					EnId, EnCode, ifnull(EdExtra, EnCode) as LocalId, if(EnDob=0, '', EnDob) as BirthDate, EnOdfShortname, EnSex, EnNameOrder, upper(EnIocCode) EnIocCode, EnName AS Name, EnFirstName AS FirstName, upper(EnFirstName) AS FirstNameUpper, EnMiddleName, QuSession as Session, SesName,
 					CONCAT(QuTarget, QuLetter) AS TargetNo, FlContAssoc,
 					EvProgr, ToNumEnds,ToNumDist,ToMaxDistScore,ToLocRule, FdiDetails,
@@ -246,11 +250,11 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 					QuD1Xnine, QuD2Xnine, QuD3Xnine, QuD4Xnine, QuD5Xnine, QuD6Xnine, QuD7Xnine, QuD8Xnine,
 					QuD1Arrowstring,QuD2Arrowstring,QuD3Arrowstring,QuD4Arrowstring,QuD5Arrowstring,QuD6Arrowstring,QuD7Arrowstring,QuD8Arrowstring,
 					QuScore, QuNotes, QuConfirm, QuArrow, IndNotes, (EvShootOff OR EvE1ShootOff OR EvE2ShootOff) as ShootOffSolved,
-					IF(EvRunning=1,IFNULL(ROUND(QuScore/QuHits,3),0),0) as RunningScore,
+					IF(EvRunning=1,IFNULL(ROUND(IF((EvLockResults OR EvQualBestOfDistances),IndScore/IndHits,QuScore/QuHits),3),0),0) as RunningScore,
 					EvCode,EvEventName,EvRunning, EvFinalFirstPhase, EvElim1, EvElim2, EvIsPara, coalesce(OdfTrOdfCode,'') as OdfUnitCode, EvOdfCode,
 					{$tmp} AS Arrows_Shot,
 					coalesce(RoundRobinQualified, IF(EvElim1=0 && EvElim2=0, EvNumQualified ,IF(EvElim1=0,EvElim2,EvElim1))) as QualifiedNo, EvFirstQualified, EvQualPrintHead as PrintHeader,
-					{$MyRank} AS `Rank`, " . (!empty($comparedTo) ? 'IFNULL(IopRank,0)' : '0') . " as OldRank, Qu{$dd}Score AS Score, Qu{$dd}Gold AS Gold,Qu{$dd}Xnine AS XNine, Qu{$dd}Hits AS Hits, 
+					{$MyRank} AS `Rank`, " . (!empty($comparedTo) ? 'IFNULL(IopRank,0)' : '0') . " as OldRank, $ScoringFields, 
 					coalesce(nullif(IndIrmType, 0), QuIrmType) IndIrmType, IrmType, IrmShowRank, IrmHideDetails, ";
 			$q.="IndRecordBitmap as RecBitLevel, EvIsPara, co.CoMaCode, co.CoCaCode, "; // records management
 

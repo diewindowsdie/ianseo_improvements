@@ -1,7 +1,7 @@
 <?php
 define('ProgramRelease', 'STABLE');
-define('ProgramBuild', 'rev 183 [improvements v5.3]');
-define("CurrentTag", "v5.3");
+define('ProgramBuild', 'rev 231 [improvements v5.4]');
+define("CurrentTag", "v5.4");
 define('MinTimeOut', '120');
 //Add the Timezone Check if not setup by system
 if(strlen(ini_get('date.timezone')))

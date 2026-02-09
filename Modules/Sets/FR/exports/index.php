@@ -18,24 +18,34 @@ if(!empty($_REQUEST['lev'])) {
 	// Version
 	$File[]=sprintf("VERSION : \t%s.%s.%s\t", defined('ProgramRelease') ? ProgramRelease : 'unknown', defined('ProgramVersion') ? ProgramVersion : 'unknown', defined('ProgramBuild') ? preg_replace('/\s/', '-', ProgramBuild) : 'unknown');
 
+	// get chairperson of judges
+	$Select="SELECT TiCode Judges
+		FROM TournamentInvolved
+		inner JOIN InvolvedType ON TiType=ItId
+		WHERE TiTournament={$_SESSION['TourId']} AND ItId = 5";
+	$JudgesResp=[];
+	$q=safe_r_sql($Select);
+	while($r=safe_fetch($q)) {
+		$JudgesResp[]=$r->Judges;
+	}
+
 	// get the judges
-	$Select="SELECT TiCode Judges 
+	$Select="SELECT TiCode Judges
 		FROM TournamentInvolved  
 		inner JOIN InvolvedType ON TiType=ItId 
-		WHERE TiTournament={$_SESSION['TourId']} AND (ItJudge>0 or ItDos>0)
+		WHERE TiTournament={$_SESSION['TourId']} AND (ItJudge>0 or ItDos>0) AND ItId != 5
 		order by ItDos, ItJudge";
-	$JudgesResp='';
 	$Judges=[];
 	$Coaches=[];
 	$q=safe_r_sql($Select);
 	while($r=safe_fetch($q)) {
-        if(empty($JudgesResp)) {
-            $JudgesResp=$r->Judges;
-        } else {
-		    $Judges[]=$r->Judges;
-        }
+		if(!count($JudgesResp)) {
+			$JudgesResp[]=$r->Judges;
+		} else {
+			$Judges[]=$r->Judges;
+		}
 	}
-	$File[]="RARBITRES\t{$JudgesResp}";
+	$File[]="RARBITRES\t".implode("\t", $JudgesResp);
 	$File[]="ARBITRES\t".implode("\t", $Judges);
 	$File[]="ENTRAINEURS\t".implode("\t", $Coaches);
 
@@ -81,7 +91,7 @@ if(!empty($_REQUEST['lev'])) {
         $Filter=" and DivIsPara=1";
         $_REQUEST['lev']='S';
     }
-	$q=safe_r_sql("select EnIocCode, EnCode, ucase(EnFirstName) as EnFirstName, ucase(EnName) as EnName, EnDivision, EnAgeClass, EnClass, EnSex, 
+	$q=safe_r_sql("select EnIocCode, ucase(EnCode) as EnCode, ucase(EnFirstName) as EnFirstName, ucase(EnName) as EnName, EnDivision, EnAgeClass, EnClass, EnSex,
 			ifnull(IndEvent,'-') as IndEvent, EnId, 
 			ucase(CoName) as CoName, CoCode, 
 			QuScore, QuSession, QuD1Score, QuD2Score, QuD3Score, QuD4Score, QuHits, QuGold, QuXnine, QuD1Arrowstring,
@@ -174,9 +184,18 @@ if(!empty($_REQUEST['lev'])) {
 
 		// Remove rank from archers shooting more than one session
 		if ($EnCodes["{$r->EnCode}-{$r->EnDivision}-{$r->EnClass}"] > 1) {
-			$r->QuClRank = null;
-			$r->IndRankFinal = null;
+			$r->IndRankFinal = 0;
 		}
+
+		// Remove rank from archers not shooting in events
+		if ('-' === $r->IndEvent) {
+			$r->IndRankFinal = 0;
+			// Put them also in other shoots
+			if (1 === $EnCodes["{$r->EnCode}-{$r->EnDivision}-{$r->EnClass}"]) {
+				$EnCodes["{$r->EnCode}-{$r->EnDivision}-{$r->EnClass}"]++;
+			}
+		}
+
         $Archers[$r->IndEvent][$r->EnId]=array_fill(0, 51, '');
 		$Archers[$r->IndEvent][$r->EnId][0] = $Discipline;
 		$Archers[$r->IndEvent][$r->EnId][1] = $_REQUEST['lev'];
@@ -191,6 +210,7 @@ if(!empty($_REQUEST['lev'])) {
 		$Archers[$r->IndEvent][$r->EnId][11] = $r->CoName;
 		$Archers[$r->IndEvent][$r->EnId][12] = $r->CoCode;
 		$Archers[$r->IndEvent][$r->EnId][14] = 0;
+
 		if('B' === $Discipline)
 		{
 			$Archers[$r->IndEvent][$r->EnId][13] = $r->QuArrow.str_pad($r->QuScore, 3, '0', STR_PAD_LEFT);
@@ -198,7 +218,6 @@ if(!empty($_REQUEST['lev'])) {
 			$Archers[$r->IndEvent][$r->EnId][16] = $r->QuGold;
 			$Archers[$r->IndEvent][$r->EnId][22] = $r->QuArrow;
 			$Archers[$r->IndEvent][$r->EnId][23] = $r->QuD1Score ? $r->QuD1Score : '';
-
 		}
 		else
 		{

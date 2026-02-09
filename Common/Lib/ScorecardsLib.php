@@ -188,7 +188,7 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 					// ATTENTION HERE: Landscape page!
 					$defScoreH-=25;
 					$quanti=count($pdf->QRCode)+($pdf->ScoreQrPersonal ? 1 : 0);
-					$QRCodeY=min($pdf->GetPageHeight(),$pdf->GetPageWidth()) - $pdf->getSideMargin() - 25 - ($pdf->PrintFullHeader ? 20 : $pdf->ArucoSize);
+					$QRCodeY=min($pdf->GetPageHeight(),$pdf->GetPageWidth()) - $pdf->getSideMargin() - 25 - ($pdf->PrintFullHeader ? 8:0) - $pdf->ArucoSize;
 					$QRCodeX=(max($pdf->GetPageWidth(), $pdf->GetPageHeight()) + 5 - (25*$quanti))/2;
 					break;
 				default:
@@ -418,7 +418,7 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
 			switch($Data->Ath4Target) {
                 case 1:
 				case 2:
-					$QRCodeY=$pdf->GetPageHeight() - $pdf->getSideMargin() - 25 - ($pdf->PrintFullHeader ? 20 : $pdf->ArucoSize);
+					$QRCodeY=$pdf->GetPageHeight() - $pdf->getSideMargin() - 25 - ($pdf->PrintFullHeader ? 8:0) - $pdf->ArucoSize;
 					$QRCodeX=($defScoreW + 5 - (25*$quanti))/2;
 					if($Options["TourField3D"]) {
 						//$defScoreH-=5;

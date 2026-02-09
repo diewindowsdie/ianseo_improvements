@@ -127,42 +127,74 @@ function UpdateShootFirst($Side, $End, $TourId) {
     $q=safe_r_SQL("(select 0 TeamEvent, FinMatchNo MatchNo, FinEvent Event, FinTiebreak as arrNo
 			from Finals
 			inner join Events on FinTournament=EvTournament and FinEvent=EvCode and EvTeamEvent=0
-			where FinTournament={$TourId} and FinLive=1
+			where FinTournament=$TourId and FinLive=1
 		) union (
 			select 1, TfMatchNo, TfEvent, TfTiebreak
 			from TeamFinals
 			inner join Events on TfTournament=EvTournament and TfEvent=EvCode and EvTeamEvent=1
-			where TfTournament={$TourId} and TfLive=1)
+			where TfTournament=$TourId and TfLive=1
+        ) union (
+            Select RrMatchTeam TeamEvent, RrMatchMatchNo+(RrMatchRound*100)+(RrMatchGroup*10000)+(RrMatchLevel*1000000) as MatchNo, RrMatchEvent Event, RrMatchTiebreak 
+            from RoundRobinMatches
+            inner join Events on EvTournament=RrMatchTournament and EvCode=RrMatchEvent and EvTeamEvent=RrMatchTeam
+            where RrMatchTournament=$TourId and RrMatchLive=1
+		)
 		order by MatchNo");
     if($r=safe_fetch($q)) {
-        $MatchNo = $r->MatchNo;
-        $MatchNoSet=$r->MatchNo+($Side-1);
-        $MatchNoClear=$MatchNoSet + ($MatchNoSet %2 ==0 ? 1:-1);
-        $event=$r->Event;
-        $TeamEvent=$r->TeamEvent;
-        $objParam=getEventArrowsParams($event,($MatchNo<=1 ? 0 : pow(2, intval(log($MatchNo, 2)))),$TeamEvent,$TourId);
-        $updateEnd=$End;
+        if($r->MatchNo<=256) {
+            $MatchNo = $r->MatchNo;
+            $MatchNoSet = $r->MatchNo + ($Side - 1);
+            $MatchNoClear = $MatchNoSet + ($MatchNoSet % 2 == 0 ? 1 : -1);
+            $event = $r->Event;
+            $TeamEvent = $r->TeamEvent;
+            $objParam = getEventArrowsParams($event, ($MatchNo <= 1 ? 0 : pow(2, intval(log($MatchNo, 2)))), $TeamEvent, $TourId);
+            $updateEnd = $End;
 
-        if(is_numeric($End)) {
-            $End = intval($End) - 1;
-            $updateEnd=$End;
-        } else {
-            $End = $objParam->ends + intval(strlen(trim($r->arrNo))/$objParam->so);
-            $updateEnd=$objParam->ends;
-        }
+            if (is_numeric($End)) {
+                $End = intval($End) - 1;
+                $updateEnd = $End;
+            } else {
+                $End = $objParam->ends + intval(strlen(trim($r->arrNo)) / $objParam->so);
+                $updateEnd = $objParam->ends;
+            }
 
 
-        $TabPrefix=($TeamEvent ? 'Tf' : 'Fin');
-        $Table=($TeamEvent ? 'Team' : '');
+            $TabPrefix = ($TeamEvent ? 'Tf' : 'Fin');
+            $Table = ($TeamEvent ? 'Team' : '');
 
-        safe_w_sql("UPDATE {$Table}Finals 
-			SET {$TabPrefix}ShootFirst=({$TabPrefix}ShootFirst | ".pow(2, $updateEnd).") 
+            safe_w_sql("UPDATE {$Table}Finals 
+			SET {$TabPrefix}ShootFirst=({$TabPrefix}ShootFirst | " . pow(2, $updateEnd) . ") 
 			WHERE {$TabPrefix}Tournament={$TourId} AND {$TabPrefix}Event='$event' AND {$TabPrefix}MatchNo={$MatchNoSet}");
 
-        safe_w_sql("UPDATE {$Table}Finals 
-			SET {$TabPrefix}ShootFirst=({$TabPrefix}ShootFirst & ~".pow(2, $updateEnd).") 
+            safe_w_sql("UPDATE {$Table}Finals 
+			SET {$TabPrefix}ShootFirst=({$TabPrefix}ShootFirst & ~" . pow(2, $updateEnd) . ") 
 			WHERE {$TabPrefix}Tournament={$TourId} and {$TabPrefix}Event='$event' and {$TabPrefix}MatchNo={$MatchNoClear}");
-        runJack("FinShootingFirst", $TourId, array("Event"=>$event, "Team"=>$TeamEvent, "MatchNo"=>$MatchNo, "End"=>$End, "TourId"=>$TourId));
+            runJack("FinShootingFirst", $TourId, array("Event" => $event, "Team" => $TeamEvent, "MatchNo" => $MatchNo, "End" => $End, "TourId" => $TourId));
+        } else {
+            require_once('../../Modules/RoundRobin/Lib.php');
+            $MatchNo=$r->MatchNo;
+            $MatchLevel=intval($MatchNo/1000000);
+            $MatchNo %= 1000000;
+            $MatchGroup=intval($MatchNo/10000);
+            $MatchNo %= 10000;
+            $MatchRound=intval($MatchNo/100);
+            $MatchNo %= 100;
+
+            $objParam=getRobinArrowsParams($r->TeamEvent, $r->Event, $MatchLevel, $TourId);
+            if (is_numeric($End)) {
+                $End = intval($End) - 1;
+            } else {
+                $End = $objParam->ends + intval(strlen(trim($r->arrNo)) / $objParam->so);
+            }
+            $MatchNoSet = $MatchNo + ($Side - 1);
+            $MatchNoClear = $MatchNoSet + ($MatchNoSet % 2 == 0 ? 1 : -1);
+
+            safe_w_SQL("update RoundRobinMatches set RrMatchShootFirst=(RrMatchShootFirst | ".pow(2, $End)."), RrMatchDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . "  
+			    where RrMatchTournament={$TourId} and RrMatchTeam=$r->TeamEvent and RrMatchEvent='{$r->Event}' and RrMatchLevel=$MatchLevel and RrMatchGroup=$MatchGroup and RrMatchRound=$MatchRound and RrMatchMatchNo=$MatchNoSet");
+            safe_w_SQL("update RoundRobinMatches set RrMatchShootFirst=(RrMatchShootFirst & ~".pow(2, $End)."), RrMatchDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . "  
+			    where RrMatchTournament={$TourId} and RrMatchTeam=$r->TeamEvent and RrMatchEvent='{$r->Event}' and RrMatchLevel=$MatchLevel and RrMatchGroup=$MatchGroup and RrMatchRound=$MatchRound and RrMatchMatchNo=$MatchNoClear");
+            runJack("FinShootingFirst", $TourId, array("Event" => $r->Event, "Team" => $r->TeamEvent, "MatchNo" => $r->MatchNo, "End" => $End, "TourId" => $TourId));
+        }
     }
 }
 

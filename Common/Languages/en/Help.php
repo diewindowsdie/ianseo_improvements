@@ -6,6 +6,10 @@ $lang['AutoCheckinConfirm']='If all the details are correct press CONFIRM CHECK-
 Otherwise press CANCEL and proceed to the accreditation desk';
 $lang['AutoCheckinSearch']='Scan the QR Code you received or type your name';
 $lang['AutoCHK-CanEdit']='Allow check-in operators to edit Names, E-Mails, Country/Club, etc';
+$lang['AutoCHK-CanEditCategory']='Edit Category';
+$lang['AutoCHK-CanEditEntry']='Edit Entry Details';
+$lang['AutoCHK-CanEditExtras']='Edit Extras';
+$lang['AutoCHK-CanEditTgt']='Edit Target Assignment';
 $lang['AutoCHK-Code']='List of Competitions, one per line<br> First competition code will be used as header in auto-checkin kiosks';
 $lang['AutoCHK-IP']='List of IP of auto check-in devices. One IP Address per line, matching one of the following formats:<br>
 Device IP<br>

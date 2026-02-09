@@ -5,6 +5,8 @@
  *
  *
  ********************************************/
+
+require_once('Lib/ArrTargets.inc.php');
 class Obj_Target
 {
 	protected $Sizes=array();
@@ -22,6 +24,7 @@ class Obj_Target
 	protected $CenterY=0;
 	protected $ArrowPos=array();
 	protected $LancasterDot=false;
+	protected $Offset=40;
 
 	public $Diameter=0;
 	public $TargetRadius=0;
@@ -96,11 +99,12 @@ class Obj_Target
 		die();
 	}
 
-	public function initSVG($TourId=0, $Event='', $Match=999, $Team=0) {
+	public function initSVG($TourId=0, $Event='', $Match=999, $Team=0, $Offset=40) {
 		// get Event and target
 		$this->TourId=$TourId ? $TourId : $_SESSION['TourId'];
 		$this->TargetData=GetMaxScores($Event, $Match, $Team, $this->TourId);
 		$this->LancasterDot=$this->TargetData['HasDot'];
+		$this->Offset=$Offset;
 
 		// calculate the ratio between the face global size and the actual face size
 		$this->Expand=$this->TargetData['FullSize']/$this->TargetData['MaxSize'];
@@ -108,17 +112,19 @@ class Obj_Target
 		// calculate the ratio between the viewport and the size of the target
 		$this->Ratio=$this->TargetData['FullSize']/$this->TargetData['TargetSize'];
 
-		$this->CenterX=$this->TargetData['FullSize']*5 + 40;
-		$this->CenterY=$this->TargetData['FullSize']*5 + 40;
+		$this->CenterX=$this->TargetData['FullSize']*5 + $this->Offset;
+		$this->CenterY=$this->TargetData['FullSize']*5 + $this->Offset;
 	}
 
-	public function setSVGHeader($id='', $event='') {
-		$this->Diameter=$this->TargetData['FullSize']*10 + 80;
+	public function setSVGHeader($id='', $event='', $Options='') {
+		$this->Diameter=$this->TargetData['FullSize']*10 + ($this->Offset*2);
 		$this->TargetRadius=$this->TargetData['TargetRadius'];
 		$this->SVGHeader='<?xml version="1.0" standalone="yes"?><svg class="SVGTarget" '
 			.($id ? ' id="'.$id.'" ' : '')
 			.($event ? ' '.$event.' ' : '')
-			.' convert="'.($this->Ratio*$this->Expand).'" realsize="'.($this->TargetData['TargetSize']*10/$this->Expand).'" viewbox="0 0 '.($this->Diameter).' '.($this->Diameter).'" height="'.$this->Diameter.'" width="'.$this->Diameter.'" xmlns="http://www.w3.org/2000/svg">';
+			.' centerX="'.($this->Diameter/2).'" centerY="'.($this->Diameter/2).'" convert="'.($this->Ratio*$this->Expand).'" realsize="'.($this->TargetData['TargetSize']*10/$this->Expand).'" viewbox="0 0 '.($this->Diameter).' '.($this->Diameter).'" '
+			.($Options ?: ' height="'.$this->Diameter.'" width="'.$this->Diameter.'"')
+			. ' xmlns="http://www.w3.org/2000/svg">';
 		$this->SVGHeader.='<defs>
     		<radialGradient id="gradArrow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
       			<stop offset="0%" style="stop-color:rgb(0,0,0);stop-opacity:0.7;" />
@@ -149,7 +155,7 @@ class Obj_Target
 		foreach($this->TargetData['Arrows'] as $let => $Circle) {
 			if($Circle['size']>0) {
 				if($this->LancasterDot and $let=='N') {
-					$offsetY=$this->Expand*$this->CenterY*0.275;
+					$offsetY=$this->Expand*(($this->CenterY-$this->Offset)*0.3);
 				}
 				$Tgt[$Circle['size']]='<circle cx="'.$this->CenterX.'" cy="'.($this->CenterY+$offsetY).'" r="'.round($this->Expand*$Circle['size']*5, 2).'" stroke="#'.$Circle['lineColor'].'" stroke-width="1" fill="#'.$Circle['fillColor'].'" />';
 			}
@@ -218,7 +224,7 @@ class Obj_Target
 						$ar['Y']=$ar['Y']*$R2/$R1;
 						$ar['R']=$newArRadius;
 					}
-					$tmp.='<circle class="svgArrow" id="'.$ArId.'" cx="'.round(($this->Ratio*$this->Expand*$ar['X'])+$this->CenterX, 2).'" cy="'.round($this->CenterY+($this->Ratio*$this->Expand*$ar['Y']), 2).'" r="'.($this->Ratio*$this->Expand*$ar['R']).'" fill="url(#gradArrow)" />';
+					$tmp.='<circle class="svgArrow '.($ar['Class']??'').'" id="'.$ArId.'" cx="'.round(($this->Ratio*$this->Expand*$ar['X'])+$this->CenterX, 2).'" cy="'.round($this->CenterY+($this->Ratio*$this->Expand*$ar['Y']), 2).'" r="'.($this->Ratio*$this->Expand*$ar['R']).'" '.(empty($ar['Class'])?'fill="url(#gradArrow)"':'').' />';
 				}
 			}
 
@@ -242,11 +248,11 @@ class Obj_Target
 		$this->SVGArrows.='<path '.($id ? 'id="'.$id.'" ' : '').' d="M '.$StartX.', '.($StartY-2*$R).' l -'.$R.',-' . (2*$R) . ' l '.(2*$R).',0 l -'.($R).','.(2*$R).' z M '.$StartX.', '.($StartY+2*$R).' l -'.$R.',' . (2*$R) . ' l '.(2*$R).',0 l -'.($R).',-'.(2*$R).' z M '.($StartX-2*$R).', '.($StartY).' l -'.(2*$R).',-' . ($R) . ' l 0,'.(2*$R).' l '.(2*$R).',-'.($R).' z M '.($StartX+2*$R).', '.($StartY).' l '.(2*$R).',-' . ($R) . ' l 0,'.(2*$R).' l -'.(2*$R).',-'.($R).' z" fill="#00ff00" stroke="#000000" opacity="0" stroke-width="2" />';
 	}
 
-	public function drawSVGArrowsGroups($GroupId='', $Arrows=array()) {
+	public function drawSVGArrowsGroups($GroupId='', $Arrows=array(), $JudgesView=true) {
 		$tmp='';
 		if($Arrows) {
 			// draws the arrows
-			$tmp.=$this->drawSVGArrows($Arrows, true, false, true);
+			$tmp.=$this->drawSVGArrows($Arrows, $JudgesView, false, true);
 		}
 		if($GroupId) {
 			$tmp='<g id="'.$GroupId.'">'.$tmp.'</g>';

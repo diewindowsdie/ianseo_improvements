@@ -2,7 +2,7 @@
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 CheckTourSession(true);
 checkFullACL(AclRobin, '', AclReadOnly);
-require_once('Common/pdf/ResultPDF.inc.php');
+require_once('Common/pdf/ScorePDF.inc.php');
 // require_once('Common/Lib/CommonLib.php');
 // require_once('Common/Globals.inc.php');
 // require_once('Common/Fun_DB.inc.php');
@@ -20,20 +20,19 @@ if($Team==-1) {
 	OutputError(get_text('ErrGenericError', 'Errors'));
 }
 
-$Options=[];
-if($_SESSION['TourLocRule']=='LANC') {
-    $Options=[
-        'PrintLogo'=>false,
-        'print_header'=>false,
-        'print_footer'=>false,
-    ];
-}
-
-$pdf = new ResultPDF(get_text('R-Session','Tournament'),false, '', true, $Options);
+$pdf = new ScorePDF(false);
 $pdf->setBarcodeHeader(empty($_REQUEST['Barcode']) ? '10' : '100');
+$pdf->setPrintHeader(true);
+$pdf->setPrintFooter(true);
+$pdf->PrintFooterSerialNumber=true;
 $pdf->ScoreCellHeight=9;
 $pdf->FillWithArrows=($_REQUEST['ScoreFilled']??0);
 $pdf->PrintFlags=($_REQUEST['ScoreFlags']??0);
+if(!empty($_REQUEST['Margins'])) {
+    $pdf->setPrintHeader(false);
+    $pdf->setPrintFooter(false);
+    $pdf->PrintFooterSerialNumber=false;
+}
 
 $MyQuery="";
 if (isset($_REQUEST['Blank'])) {
@@ -83,7 +82,6 @@ if (safe_num_rows($Rs)>0) {
 	$WhereX=NULL;
 	$WhereY=NULL;
 	$AtlheteName=NULL;
-	$FollowingRows=false;
 
     $BarCodeX=$pdf->BarcodeHeaderX;
     $BarCodeY=10;
@@ -132,7 +130,7 @@ if (safe_num_rows($Rs)>0) {
 $pdf->Output();
 
 function DrawScore(&$pdf, $MyRow, $Side='L') {
-	global $CFG, $defTotalW, $defGoldW, $defArrowTotW, $FollowingRows, $TrgOutdoor, $WhereStartX, $WhereStartY;
+	global $CFG, $defTotalW, $defGoldW, $defArrowTotW, $TrgOutdoor, $WhereStartX, $WhereStartY;
 	if(isset($_REQUEST['Blank'])) {
 		$MyRow->RrLevEnds=empty($_REQUEST['Rows'])?5:intval($_REQUEST['Rows']);
 		$MyRow->RrLevArrows = empty($_REQUEST['Cols'])?3:intval($_REQUEST['Cols']);
@@ -154,9 +152,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
         $Opponent='2';
 
         if($Side=='L') {
-            if($FollowingRows) {
-                $pdf->AddPage();
-            }
+            $pdf->AddPage();
             $Prefix='2';
             $Opponent='1';
         }
@@ -165,15 +161,12 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
         $Opponent='1';
 
         if($Side=='L') {
-            if($FollowingRows) {
-                $pdf->AddPage();
-            }
+            $pdf->AddPage();
             $Prefix='1';
             $Opponent='2';
         }
     }
 
-	$FollowingRows=true;
 	$WhichScore=($Side=='R');
 	$WhereX=$WhereStartX;
 	$WhereY=$WhereStartY;
@@ -352,7 +345,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
 		}
 		$pdf->ln();
 	}
-	if($MyRow->{"M{$Prefix}Tie"}==1) $SetTotal++;
+	if($MyRow->{"M{$Prefix}Tie"}==1) $SetTotal = intval($SetTotal) + 1;
 	//if($NumCol>$j) {
 	//	$pdf->Cell($ArrowW*($NumCol-$j),$pdf->ScoreCellHeight*3/4,'',0,0,'L',0);
 	//}

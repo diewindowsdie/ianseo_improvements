@@ -421,8 +421,7 @@ switch($TourType) {
 	case 6:
 		CreateTargetFace($TourId, $i++, '~Default', '%', '1', 1, 40, 1, 40);
 		CreateTargetFace($TourId, $i++, '~DefaultCO', 'REG-^CO[^G]', '1', 4, 40, 4, 40);
-		CreateTargetFace($TourId, $i++, '~Default G/VI', 'REG-^OLG|^ANG|^V', '1', 1, 60, 1, 60);
-		CreateTargetFace($TourId, $i++, '~Default G/VI', 'REG-^COG', '1', TGT_IND_1_small10, 60, TGT_IND_1_small10, 60);
+		CreateTargetFace($TourId, $i++, '~Default G/VI', 'REG-^OLG|^ANG|^COG|^V', '1', 1, 60, 1, 60);
 		CreateTargetFace($TourId, $i++, '~Default W1', 'REG-^W1', '1', 1, 40, 1, 40);
 		// optional target faces
 		CreateTargetFace($TourId, $i++, '~6-10', 'REG-^OL[AJMRS]', '',  2, 40, 2, 40);
@@ -430,8 +429,7 @@ switch($TourType) {
 	case 7:
 		CreateTargetFace($TourId, $i++, '~Default', '%', '1', 1, 60, 1, 60);
 		CreateTargetFace($TourId, $i++, '~DefaultCO', 'REG-^CO[^G]', '1', 4, 60, 4, 60);
-		CreateTargetFace($TourId, $i++, '~Default G/VI', 'REG-^OLG|^ANG|^V', '1', 1, 80, 1, 80);
-		CreateTargetFace($TourId, $i++, '~Default G/VI', 'REG-^COG', '1', TGT_IND_1_small10, 80, TGT_IND_1_small10, 80);
+		CreateTargetFace($TourId, $i++, '~Default G/VI', 'REG-^OLG|^ANG|^COG|^V', '1', 1, 80, 1, 80);
 		CreateTargetFace($TourId, $i++, '~Default W1', 'REG-^W1', '1', 1, 60, 1, 60);
 		// optional target faces
 		CreateTargetFace($TourId, $i++, '~6-10', 'REG-^OL[AJMRS]', '',  2, 60, 2, 60);
@@ -439,8 +437,7 @@ switch($TourType) {
 	case 8:
 		CreateTargetFace($TourId, $i++, '~Default', '%', '1', 1, 60, 1, 60, 1, 40, 1, 40);
 		CreateTargetFace($TourId, $i++, '~DefaultCO', 'REG-^CO[^G]', '1', 4, 60, 4, 60, 4, 40, 4, 40);
-		CreateTargetFace($TourId, $i++, '~Default G/VI', 'REG-^OLG|^ANG|^V', '1', 1, 80, 1, 80, 1, 60, 1, 60);
-		CreateTargetFace($TourId, $i++, '~Default G/VI', 'REG-^COG', '1', TGT_IND_1_small10, 80, TGT_IND_1_small10, 80,TGT_IND_1_small10, 60, TGT_IND_1_small10, 60);
+		CreateTargetFace($TourId, $i++, '~Default G/VI', 'REG-^OLG|^ANG|^COG|^V', '1', 1, 80, 1, 80, 1, 60, 1, 60);
 		CreateTargetFace($TourId, $i++, '~Default W1', 'REG-^W1', '1', 1, 60, 1, 60, 1, 40, 1, 40);
 		// optional target faces
 		CreateTargetFace($TourId, $i++, '~6-10', 'REG-^OL[AJMRS]', '',  2, 60, 2, 60,  2, 40, 2, 40);

@@ -444,6 +444,7 @@ $lang['MenuLM_Update']='Update Ianseo';
 $lang['MenuLM_UpdateWeb']='Live Update';
 $lang['MenuLM_Versioning']='Document Versioning';
 $lang['MenuLM_View Competition Info']='View Competition Info';
+$lang['MenuLM_Wallet']='Electronic Wallets';
 $lang['MenuLM_WaRecords']='Update WA Records';
 $lang['MF']='Master Women';
 $lang['MixedTeamEvent']='Mixed Team Event';

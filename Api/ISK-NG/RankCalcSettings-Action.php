@@ -44,7 +44,7 @@ if(!empty($_REQUEST['act'])) {
                     'FinIndCalc' => getModuleParameter('ISK-NG','CalcClDivInd',0, $_SESSION['TourId']),
                     'FinTeamCalc' => getModuleParameter('ISK-NG','CalcClDivInd',0, $_SESSION['TourId']),
                 );
-                $q = safe_r_SQL("SELECT DISTINCT LEFT(IskDtTargetNo,1) as dtSes, IskDtDistance as dtDist FROM IskData WHERE IskDtTournament={$_SESSION['TourId']} AND IskDtType='Q'");
+                $q = safe_r_SQL("SELECT DISTINCT CAST(SUBSTR(IskDtTargetNo, 1, POSITION('.' IN IskDtTargetNo)-1) AS SIGNED) as dtSes, IskDtDistance as dtDist FROM IskData WHERE IskDtTournament={$_SESSION['TourId']} AND IskDtType='Q'");
                 while($r=safe_fetch($q)) {
                     $Options['ses'] = $r->dtSes;
                     $Options['dist'] = $r->dtDist;

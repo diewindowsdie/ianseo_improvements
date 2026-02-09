@@ -314,7 +314,7 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 					$MainFilter="RrMatchTournament=$ToId and RrMatchEvent='$Data->event' and RrMatchTeam=$Data->team and RrMatchLevel=$Level and RrMatchGroup=$Group and RrMatchRound=$Round ";
 					$SQL="select IskDvGroup, IskDvSchedKey, StopScore, LockKey,
 							RrLevArrows as DiArrows, RrLevEnds as DiEnds, RrLevSO as DiSO, if($dm=FsMatchNo1, Closest1, Closest2) as IsClosest, if($dm=FsMatchNo1, Signed1, Signed2) as IsSigned,
-	                        concat(rpad(if($dm=FsMatchNo1, Arrowstring1, Arrowstring2), RrLevEnds*RrLevArrows, ' '), if($dm=FsMatchNo1, TieBreak1, TieBreak2)) Arrowstring, if($dm=FsMatchNo1, TieBreak1, TieBreak2)) Arrowstring
+	                        concat(rpad(if($dm=FsMatchNo1, Arrowstring1, Arrowstring2), RrLevEnds*RrLevArrows, ' '), if($dm=FsMatchNo1, TieBreak1, TieBreak2)) Arrowstring
 						from (
 						    select RrMatchConfirmed as StopScore, concat_ws('|','R',RrMatchLevel, RrMatchGroup, RrMatchRound, RrMatchEvent) as LockKey,
 			                    RrMatchArrowstring Arrowstring1, RrMatchTiebreak TieBreak1,
@@ -362,7 +362,7 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 			'TourId' => $ToId,
 			'dist' => $Data->distance,
 			'end' => 0,
-			'ses' => ($Data->IskDvAppVersion != ISK_NG_LITE_CODE ? $Data->IskDvSchedKey : substr($Data->key, 0,1)),
+			'ses' => ($Data->IskDvAppVersion != ISK_NG_LITE_CODE ? $Data->IskDvSchedKey : substr($Data->key, 0,strpos($Data->key,'.'))),
 			'target' => intval(substr($Data->key, strpos($Data->key,'.')+1,-1)),
 			'group' => $r->IskDvGroup,
 			'type' => $Data->type,
@@ -500,7 +500,7 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
 	$Filtre='';
 
 	if(!empty($Options['target'])) {
-		$Filtre=' AND CAST(SUBSTR(IskDtTargetNo, POSITION(\'.\' IN IskDtTargetNo)+1) AS SIGNED) = ' . intval($Options['target']);
+		$Filtre=' AND CAST(SUBSTR(IskDtTargetNo, POSITION("." IN IskDtTargetNo)+1) AS SIGNED) = ' . intval($Options['target']);
 	}
 
 	switch($IskSequence['type']) {

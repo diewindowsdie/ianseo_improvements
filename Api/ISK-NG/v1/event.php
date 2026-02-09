@@ -32,7 +32,7 @@ switch($req->type) {
 	    $SQL = "SELECT EvCode, EvEventName, EvFinalFirstPhase, EvElimType, RrLevEnds as EvElimEnds, RrLevArrows as EvElimArrows, RrLevSO as EvElimSO, RrLevEnds as EvFinEnds, RrLevArrows as EvFinArrows, RrLevSO as EvFinSO
 	    	FROM Events
 	    	inner join RoundRobinLevel on RrLevTournament=EvTournament and RrLevTeam=EvTeamEvent and RrLevEvent=EvCode and RrLevLevel=1
-	    	WHERE EvTournament=$CompId AND EvTeamEvent=".($req->type=='RI' ? '0' : '1')." AND EvFinalFirstPhase!=0
+	    	WHERE EvTournament=$CompId AND EvTeamEvent=".($req->type=='RI' ? '0' : '1')."
 	    	ORDER BY EvProgr";
         break;
     case 'E1':

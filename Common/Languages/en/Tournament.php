@@ -162,6 +162,7 @@ $lang['BadParams']='Bad Parameters!';
 $lang['Barcode']='Single dimension barcoded ID';
 $lang['BarcodeCapture']='Barcode Capture';
 $lang['BarcodeMissing']='Print Missing Barcodes';
+$lang['BestOfDistances']='Best Of # Distances';
 $lang['BF_Phase']='Bronze Final';
 $lang['BigNames']='Full page print';
 $lang['Bill']='Bill';

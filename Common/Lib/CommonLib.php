@@ -991,7 +991,7 @@ function getMatchLive($TourId) {
 	// gets the live match
 	$q=safe_r_SQL("("."Select '0' Team, FinEvent Event, FinMatchNo MatchNo, FinDateTime DateTime, 
             EvMaxTeamPerson, EvEventName, EvFinalFirstPhase, GrPhase, EvFinArrows, EvMatchMode, FSScheduledDate as ScheduledDate, FSScheduledTime as ScheduledTime,
-            cast(if(EvWinnerFinalRank>1, EvWinnerFinalRank*100 + GrPhase, 1+(1/(1+GrPhase))) as decimal(15,4)) as OrderBy
+            cast(if(EvWinnerFinalRank>1, EvWinnerFinalRank*100 + GrPhase, 1+(1/(1+GrPhase))) as decimal(15,4)) as OrderBy, EvFinalTargetType
 		from Finals use index (FinLive)
 		inner join Events on FinTournament=EvTournament and FinEvent=EvCode and EvTeamEvent=0
 		inner join Grids on FinMatchNo=GrMatchNo
@@ -1000,7 +1000,7 @@ function getMatchLive($TourId) {
 		) UNION (
 		Select '1' Team, TfEvent Event, TfMatchNo MatchNo, TfDateTime DateTime, 
 		    EvMaxTeamPerson, EvEventName, EvFinalFirstPhase, GrPhase, EvFinArrows, EvMatchMode, FSScheduledDate as ScheduledDate, FSScheduledTime as ScheduledTime,
-		    cast(if(EvWinnerFinalRank>1, EvWinnerFinalRank*100 + GrPhase, 1+(1/(1+GrPhase))) as decimal(15,4)) as OrderBy
+		    cast(if(EvWinnerFinalRank>1, EvWinnerFinalRank*100 + GrPhase, 1+(1/(1+GrPhase))) as decimal(15,4)) as OrderBy, EvFinalTargetType
 		from TeamFinals
 		inner join Events on TfTournament=EvTournament and TfEvent=EvCode and EvTeamEvent=1
 		inner join Grids on TfMatchNo=GrMatchNo
@@ -1009,7 +1009,7 @@ function getMatchLive($TourId) {
         ) UNION (
         Select RrMatchTeam Team, RrMatchEvent Event, RrMatchMatchNo+(RrMatchRound*100)+(RrMatchGroup*10000)+(RrMatchLevel*1000000) as MatchNo, RrMatchDateTime DateTime, 
             EvMaxTeamPerson, EvEventName, EvFinalFirstPhase, 0 GrPhase, EvFinArrows, EvMatchMode, RrMatchScheduledDate as ScheduledDate, RrMatchScheduledTime as ScheduledTime,
-            (RrMatchLevel*1000000)+(RrMatchGroup*10000)+(RrMatchRound*100) as OrderBy
+            (RrMatchLevel*1000000)+(RrMatchGroup*10000)+(RrMatchRound*100) as OrderBy, EvFinalTargetType
         from RoundRobinMatches
         inner join Events on EvTournament=RrMatchTournament and EvCode=RrMatchEvent and EvTeamEvent=RrMatchTeam
         where RrMatchLive=1 and RrMatchMatchNo%2=0 and RrMatchTournament=$TourId
@@ -1028,6 +1028,7 @@ function getMatchLive($TourId) {
             'StartDate'=>$r->ScheduledDate,
             'StartTime'=>$r->ScheduledTime,
             'OrderBy'=>$r->OrderBy,
+            'TargetType'=>$r->EvFinalTargetType,
             );
 	} else {
 		return false;

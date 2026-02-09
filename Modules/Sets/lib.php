@@ -245,7 +245,8 @@ function CreateEventNew($TourId, $Code, $Description, $Order, $Options) {
 		'EvIsPara' => 0,
 		'EvArrowPenalty' => 120,
 		'EvLoopPenalty' => 120,
-        'EvLockResults' => 0
+        'EvLockResults' => 0,
+        'EvQualBestOfDistances' => 0
 	);
 	foreach($Defaults as $def => $val) {
 		if(!isset($Options[$def])) {

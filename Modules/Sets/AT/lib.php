@@ -19,10 +19,10 @@ function CreateStandardDivisions($TourId, $Type='FITA', $SubRule) {
         'L'=>'Langbogen',
         'T'=>'Traditional',
         'B'=>'Blankbogen',
-        'W0'=>'W0',
-        'W1'=>'W1',
-        'RO'=>'Recurve Open',
-        'CO'=>'Compound Open',
+        'PW0'=>'Para W0',
+        'PW1'=>'Para W1',
+        'PR'=>'Para Recurve',
+        'PC'=>'Para Compound',
         'C'=>'Compound',
         'R'=>'Recurve'
     );
@@ -31,7 +31,7 @@ function CreateStandardDivisions($TourId, $Type='FITA', $SubRule) {
         $optionDivs = array('R' => 'Recurve', 'C' => 'Compound', 'B' => 'Blankbogen', 'L' => 'Langbogen', 'T' => 'Traditional');
     }
     foreach ($optionDivs as $k => $v){
-		CreateDivision($TourId, $i++, $k, $v, 1, ($k=='W1' ? 'W1' : substr($k,0,1)), ($k=='W1' ? 'W1' : substr($k,0,1)),($k=='W0' or $k=='W1' or $k=='RO' or $k=='CO'));
+		CreateDivision($TourId, $i++, $k, $v, 1, ($k=='PW1' ? 'PW1' : substr($k,0,1)), ($k=='PW1' ? 'PW1' : substr($k,0,1)),($k=='PW0' or $k=='PW1' or $k=='PR' or $k=='PC'));
 	}
 }
 
