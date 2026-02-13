@@ -2,6 +2,11 @@
 require_once("Final/Fun_ChangePhase.inc.php");
 
 //error_reporting(E_ALL);
+
+const winnerColorR = 235;
+const winnerColorG = 235;
+const winnerColorB = 235;
+
 $rankData=$PdfData->rankData;
 
 $ShowTargetNo = (isset($PdfData->ShowTargetNo) ? $PdfData->ShowTargetNo : true);
@@ -292,25 +297,44 @@ foreach($rankData['sections'] as $Event => $section) {
 			// Position
 			if($FirstPhase) {
 				$pdf->SetFont($pdf->FontStd,'B',6);
-				if($DrawMatch or $Match['saved']) $pdf->Cell($MisPos, $Cella, $Match['position'] ? $Match['position'] : '', ($Match['position']!=0 || $Match['oppTie']==2  ? 1 : 0), 0, 'C', 0);
+				$pdf->setFillColor(255, 255, 255);
+				if ($Match['winner']) {
+					$pdf->setFillColor(winnerColorR, winnerColorG, winnerColorB);
+				}
+				if($DrawMatch or $Match['saved']) $pdf->Cell($MisPos, $Cella, $Match['position'] ? $Match['position'] : '', ($Match['position']!=0 || $Match['oppTie']==2  ? 1 : 0), 0, 'C', 1);
 				$pdf->SetXY($LineXstart, $OrgY+$Cella);
-				if($DrawMatch or $Match['oppSaved']) $pdf->Cell($MisPos, $Cella, $Match['oppPosition'] ? $Match['oppPosition'] : '', ($Match['oppPosition']!=0 || $Match['tie']==2  ? 1 : 0), 0, 'C', 0);
+				$pdf->setFillColor(255, 255, 255);
+				if ($Match['oppWinner']) {
+					$pdf->setFillColor(winnerColorR, winnerColorG, winnerColorB);
+				}
+				if($DrawMatch or $Match['oppSaved']) $pdf->Cell($MisPos, $Cella, $Match['oppPosition'] ? $Match['oppPosition'] : '', ($Match['oppPosition']!=0 || $Match['tie']==2  ? 1 : 0), 0, 'C', 1);
 				$pdf->SetXY($LineXstart+$MisPos, $OrgY);
 			}
 
 			// Athlete
 			$MyX=$pdf->GetX();
 			$pdf->SetFont($pdf->FontStd,'',6);
+			$pdf->setFillColor(255, 255, 255);
+			if ($Match['winner']) {
+				$pdf->SetFont($pdf->FontStd,'B',6);
+				$pdf->setFillColor(winnerColorR, winnerColorG, winnerColorB);
+			}
 			if($DrawMatch or $Match['saved']) {
-				$pdf->Cell($MisName + ($PrintCountry ? 2 :1 ) * $AddSize, $Cella,  $FirstPhase ? $Match['athlete'] : $Match['familyName'] . ' ' . ($Match['givenName'] ? mb_substr($Match['givenName'],0,1, 'utf8') . '.' : '') , ($Match['position']!=0 || $Match['oppTie']==2 ? 1 : 0), 0, 'L', 0);
+				$pdf->Cell($MisName + ($PrintCountry ? 2 :1 ) * $AddSize, $Cella,  $FirstPhase ? $Match['athlete'] : $Match['familyName'] . ' ' . ($Match['givenName'] ? mb_substr($Match['givenName'],0,1, 'utf8') . '.' : '') , ($Match['position']!=0 || $Match['oppTie']==2 ? 1 : 0), 0, 'L', 1);
 			} else {
 				$pdf->SetFont($pdf->FontStd,'I',5.5);
 				$pdf->Cell($MisName + $MisTie + $MisScore, $Cella,  $rankData['meta']['saved'] , 0, 0, 'L', 0);
 				$pdf->SetFont('','');
 			}
 			$pdf->SetXY($MyX,$OrgY+$Cella);
+			$pdf->SetFont($pdf->FontStd,'',6);
+			$pdf->setFillColor(255, 255, 255);
+			if ($Match['oppWinner']) {
+				$pdf->SetFont($pdf->FontStd,'B',6);
+				$pdf->setFillColor(winnerColorR, winnerColorG, winnerColorB);
+			}
 			if($DrawMatch or $Match['oppSaved']) {
-				$pdf->Cell($MisName + ($PrintCountry ? 2 :1 ) * $AddSize, $Cella,  $FirstPhase ? $Match['oppAthlete'] : $Match['oppFamilyName'] . ' ' . ($Match['oppGivenName'] ? mb_substr($Match['oppGivenName'],0,1, 'utf8') . '.' : '') , ($Match['oppPosition']!=0 || $Match['tie']==2 ? 1 : 0), 0, 'L', 0);
+				$pdf->Cell($MisName + ($PrintCountry ? 2 :1 ) * $AddSize, $Cella,  $FirstPhase ? $Match['oppAthlete'] : $Match['oppFamilyName'] . ' ' . ($Match['oppGivenName'] ? mb_substr($Match['oppGivenName'],0,1, 'utf8') . '.' : '') , ($Match['oppPosition']!=0 || $Match['tie']==2 ? 1 : 0), 0, 'L', 1);
 			} else {
 				$pdf->SetFont($pdf->FontStd,'I',5.5);
 				$pdf->Cell($MisName + $MisTie + $MisScore, $Cella,  $rankData['meta']['saved'] , 0, 0, 'L', 0);
@@ -322,30 +346,54 @@ foreach($rankData['sections'] as $Event => $section) {
 			if($PrintCountry) {
 				$MyX=$pdf->GetX();
 				$pdf->SetFont($pdf->FontStd,'',5);
-				if($DrawMatch or $Match['saved']) $pdf->Cell($MisCountry, $Cella, ($Match['countryCode'] ?? ''), ($Match['position']!=0 || $Match['oppTie']==2 ? 1 : 0), 0, 'C', 0);	//Nazione
+				$pdf->setFillColor(255, 255, 255);
+				if ($Match['winner']) {
+					$pdf->SetFont($pdf->FontStd,'B',5);
+					$pdf->setFillColor(winnerColorR, winnerColorG, winnerColorB);
+				}
+				if($DrawMatch or $Match['saved']) $pdf->Cell($MisCountry, $Cella, ($Match['countryCode'] ?? ''), ($Match['position']!=0 || $Match['oppTie']==2 ? 1 : 0), 0, 'C', 1);	//Nazione
 				$pdf->SetXY($MyX,$OrgY+$Cella);
-				if($DrawMatch or $Match['oppSaved']) $pdf->Cell($MisCountry, $Cella, ($Match['oppCountryCode'] ?? ''), ($Match['oppPosition']!=0 || $Match['tie']==2 ? 1 : 0), 0, 'C', 0);	//Nazione
+				$pdf->SetFont($pdf->FontStd,'',5);
+				$pdf->setFillColor(255, 255, 255);
+				if ($Match['oppWinner']) {
+					$pdf->SetFont($pdf->FontStd,'B',5);
+					$pdf->setFillColor(winnerColorR, winnerColorG, winnerColorB);
+				}
+				if($DrawMatch or $Match['oppSaved']) $pdf->Cell($MisCountry, $Cella, ($Match['oppCountryCode'] ?? ''), ($Match['oppPosition']!=0 || $Match['tie']==2 ? 1 : 0), 0, 'C', 1);	//Nazione
 				$pdf->SetXY($MyX+$MisCountry,$OrgY);
 			}
 
 			// SCORE
 			$MyX=$pdf->GetX();
 			if($DrawMatch) {
-				$pdf->SetFont($pdf->FontStd,'',6);
+				$scoreFontWeight = '';
+				$pdf->setFillColor(255, 255, 255);
+				if ($Match['winner']) {
+					$scoreFontWeight = 'B';
+					$pdf->setFillColor(winnerColorR, winnerColorG, winnerColorB);
+				}
+				$pdf->SetFont($pdf->FontStd, $scoreFontWeight,6);
 				if($Match['tie']==2) {
-					$pdf->SetFont($pdf->FontStd,'',5);
-					$pdf->Cell($MisScore + $AddSize, $Cella, $PdfData->Bye, 1, 0, 'C', 0);	//Bye
+					$pdf->SetFont($pdf->FontStd, $scoreFontWeight,5);
+					$pdf->Cell($MisScore + $AddSize, $Cella, $PdfData->Bye, 1, 0, 'C', 1);	//Bye
 				} elseif($Match['tie'] || ($section['meta']['matchMode']=='1' ? $Match['setScore'] || $Match['oppSetScore'] : $Match['score'] || $Match['oppScore']) ) {
-					$pdf->Cell($MisScore + $AddSize, $Cella, $section['meta']['matchMode']=='1' ? $Match['setScore'] : $Match['score'], 1, 0, 'R', 0);	//Punteggio
+					$pdf->Cell($MisScore + $AddSize, $Cella, $section['meta']['matchMode']=='1' ? $Match['setScore'] : $Match['score'], 1, 0, 'R', 1);	//Punteggio
 				} else {
 					$pdf->Cell($MisScore + $AddSize, $Cella, '', ($Match['position']!=0 || $Match['oppTie']==2 ? 1 : 0), 0, 'R', 0);	//Niente
 				}
 				$pdf->SetXY($MyX,$OrgY+$Cella);
+				$scoreFontWeight = '';
+				$pdf->setFillColor(255, 255, 255);
+				if ($Match['oppWinner']) {
+					$scoreFontWeight = 'B';
+					$pdf->setFillColor(winnerColorR, winnerColorG, winnerColorB);
+				}
+				$pdf->SetFont($pdf->FontStd, $scoreFontWeight,6);
 				if($Match['oppTie']==2) {
-					$pdf->SetFont($pdf->FontStd,'',5);
-					$pdf->Cell($MisScore + $AddSize, $Cella, $PdfData->Bye, 1, 0, 'C', 0);	//Bye
+					$pdf->SetFont($pdf->FontStd, $scoreFontWeight,5);
+					$pdf->Cell($MisScore + $AddSize, $Cella, $PdfData->Bye, 1, 0, 'C', 1);	//Bye
 				} elseif($Match['oppTie'] || ($section['meta']['matchMode']=='1' ? $Match['setScore'] || $Match['oppSetScore'] : $Match['score'] || $Match['oppScore']) ) {
-					$pdf->Cell($MisScore + $AddSize, $Cella, $section['meta']['matchMode']=='1' ? $Match['oppSetScore'] : $Match['oppScore'], 1, 0, 'R', 0);	//Punteggio
+					$pdf->Cell($MisScore + $AddSize, $Cella, $section['meta']['matchMode']=='1' ? $Match['oppSetScore'] : $Match['oppScore'], 1, 0, 'R', 1);	//Punteggio
 				} else {
 					$pdf->Cell($MisScore + $AddSize, $Cella, '', ($Match['oppPosition']!=0 || $Match['tie']==2 ? 1 : 0), 0, 'R', 0);	//Niente
 				}
