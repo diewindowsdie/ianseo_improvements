@@ -8,6 +8,8 @@ const winnerColorB = 235;
 $ShowTargetNo = (isset($PdfData->ShowTargetNo) ? $PdfData->ShowTargetNo : true);
 $ShowSchedule = (isset($PdfData->ShowSchedule) ? $PdfData->ShowSchedule : true);
 $ShowSetArrows= (isset($PdfData->ShowSetArrows) ? $PdfData->ShowSetArrows : true);
+
+$pdf->SetDefaultColor();
 $pdf->pushMargins();
 
 $pdf->SetLineWidth(0.125);
@@ -66,7 +68,7 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
     $CellHeight=$Cella+($Componenti*$CellaNomi);
 
     $titleXPosition = $InitMargin + $MisPos + $MisName+$AddSize + $MisScore + 5;
-	$pdf->SetXY($titleXPosition,25+($PaginaUtile-(2*$section['meta']['firstPhase']*$CellHeight))/$section['meta']['firstPhase']/2);
+	$pdf->SetXY($titleXPosition,20+($PaginaUtile-(2*$section['meta']['firstPhase']*$CellHeight))/$section['meta']['firstPhase']/2);
 	$pdf->SetFont($pdf->FontStd,'B',12);
     $pdf->Cell($LarghezzaPagina - $titleXPosition + $InitMargin, $Cella , $section['meta']['eventName'],0,0,'R');
     if ($section['meta']['printHead']) {
@@ -77,6 +79,7 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 	}
 
 	foreach($section['phases'] as $Phase => $Items) {
+		$phaseTitleRendered = false;
 		if($Phase==1) {
 			$pdf->SetY($pdf->GetY()-(2*$CellHeight));						// Per la finalina riposiziono la griglia
 			$CellL -= (($MisName+$MisScore+$MisTie) + $CellHSp);
@@ -156,12 +159,15 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 				}
 			}
 
-			if($Phase<2) {
-				// if Medals write names
+			if(!$phaseTitleRendered) {
+				// Выводим название каждой фазы финалов один раз
+
 			   	$pdf->SetFont($pdf->FontStd,'B',7);
 				$pdf->SetXY($LineXstart, $OrgY-$Cella*1.7);
-				$pdf->Cell($MisName+$MisScore+$AddSize, $Cella, ($Match['matchNo']==0 ? $PdfData->Final : $PdfData->Bronze), 0, 1, 'C', 0);
+				$pdf->Cell($MisName+$MisScore+$AddSize, $Cella, $Items['meta']['phaseName'], 0, 1, 'C', 0);
 				$pdf->SetXY($LineXstart, $OrgY);
+
+				$phaseTitleRendered = true;
 			}
 
 			if($ShowSetArrows && ($Match["setPoints"] || $Match["oppSetPoints"])) {

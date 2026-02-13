@@ -5,6 +5,7 @@ require_once('Common/Lib/StatusesLegendProvider.php');
 
 $PdfData->LastUpdate=$PdfData->rankData['meta']['lastUpdate'];
 
+$pdf->SetDefaultColor();
 $pdf->setDocUpdate($PdfData->LastUpdate);
 $legendStatusProvider = new StatusLegendProvider($pdf);
 

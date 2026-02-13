@@ -7,12 +7,15 @@ const winnerColorR = 235;
 const winnerColorG = 235;
 const winnerColorB = 235;
 
+const initVerticalMargin = 25;
+
 $rankData=$PdfData->rankData;
 
 $ShowTargetNo = (isset($PdfData->ShowTargetNo) ? $PdfData->ShowTargetNo : true);
 $ShowSchedule = (isset($PdfData->ShowSchedule) ? $PdfData->ShowSchedule : true);
 $ShowSetArrows= (isset($PdfData->ShowSetArrows) ? $PdfData->ShowSetArrows : true);
 
+$pdf->SetDefaultColor();
 $pdf->pushMargins();
 
 $pdf->SetLineWidth(0.125);
@@ -89,7 +92,7 @@ foreach($rankData['sections'] as $Event => $section) {
 
 	//Spaziatura orizzontale delle celle
 
-	$pdf->SetXY($InitMargin,30);
+	$pdf->SetXY($InitMargin,initVerticalMargin);
 	$pdf->SetFont($pdf->FontStd,'B',10);
 	$pdf->Cell($LarghezzaPagina,$Cella , $section['meta']['eventName'],0,0,'R');
 	if ($section['meta']['printHead']) {
@@ -113,6 +116,7 @@ foreach($rankData['sections'] as $Event => $section) {
 	}
 
 	foreach($section['phases'] as $Phase => $Items) {
+		$phaseTitleRendered = false;
 		if($Phase==32) {
 			$CellL = $InitMargin;					// Setto il margine per queste colonne
 		}
@@ -122,7 +126,7 @@ foreach($rankData['sections'] as $Event => $section) {
 			$pdf->AddPage();
 			$FirstPhase=true;
 			$DateShown=false;
-			$pdf->SetXY($InitMargin,30);
+			$pdf->SetXY($InitMargin,initVerticalMargin);
 			$pdf->SetFont($pdf->FontStd,'B',10);
 			$pdf->Cell($LarghezzaPagina,$Cella ,$section['meta']['eventName'],0,0,'R');
 			if ($section['meta']['printHead']) {
@@ -158,6 +162,9 @@ foreach($rankData['sections'] as $Event => $section) {
 				$margins=$pdf->GetMargins();
 				$pdf->SetLeftMargin($margins['left'] + $pdf->GetPageWidth()/2 - $InitMargin);
 				$pdf->SetY(35+$OffsetY);
+
+				// 1/64 и 1/48 рисуется в два столбца, поэтому для второго столбца еще раз нарисуем название фазы финалов
+				$phaseTitleRendered = false;
 			}
 
 			if($Phase==1) {
@@ -194,12 +201,14 @@ foreach($rankData['sections'] as $Event => $section) {
 				continue;
 			}
 
-			if($Match['matchNo']==0 || $Match['matchNo']==2) {
-				// if Bronze or Gold writes the title
-				$pdf->SetXY($LineXstart, $OrgY-$Cella*2);
+			if(!$phaseTitleRendered) {
+				// Выводим название каждой фазы финалов один раз
+
+				$pdf->SetXY($LineXstart-1, $OrgY-$Cella*2);
 				$pdf->SetFont($pdf->FontStd,'B',7);
-				$pdf->Cell($MisName+($PrintCountry ? $MisCountry : 0)+$MisScore, $Cella, ($Match['matchNo']==0 ? $PdfData->Final : $PdfData->Bronze), 0, 1, 'C', 0);
+				$pdf->Cell($MisName+($PrintCountry ? $MisCountry : 0)+$MisScore, $Cella, $Items['meta']['phaseName'], 0, 1, 'C', 0);
 				$pdf->SetXY($LineXstart,$OrgY);
+				$phaseTitleRendered = true;
 			}
 
 			// Target Numbers

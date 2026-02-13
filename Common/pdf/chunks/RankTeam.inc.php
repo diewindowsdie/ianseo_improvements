@@ -2,6 +2,7 @@
 require_once('Common/Lib/TournamentOfficials.php');
 require_once('Common/Lib/StatusesLegendProvider.php');
 
+$pdf->SetDefaultColor();
 $pdf->setDocUpdate($PdfData->rankData['meta']['lastUpdate']);
 
 $legendStatusProvider = new StatusLegendProvider($pdf);
