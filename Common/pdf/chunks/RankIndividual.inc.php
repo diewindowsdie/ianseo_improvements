@@ -26,7 +26,9 @@ $athleteNameColumnLength = 0;
 foreach ($PdfData->rankData['sections'] as $section) {
     //сначала, найдем самые "большие" финалы и на их основе посчитаем, сколько у нас есть место под имя спортсмена плюс информацию о регионе
     $ElimCols=0;
-    if($section['meta']['elimType']!=5) {
+    //тип elimination 4 - это 3Д с 4 пулами, стандартные правила World Archery, у них на самом деле нет отборочного этапа
+    //5 - это раунд робин
+    if($section['meta']['elimType']!=5 && $section['meta']['elimType']!=4) {
         if($section['meta']['elim1']) $ElimCols++;
         if($section['meta']['elim2']) $ElimCols++;
     }
@@ -68,7 +70,9 @@ foreach($PdfData->rankData['sections'] as $section) {
     }
 
 	$ElimCols=0;
-	if($section['meta']['elimType']!=5) {
+    //тип elimination 4 - это 3Д с 4 пулами, стандартные правила World Archery, у них на самом деле нет отборочного этапа
+    //5 - это раунд робин
+	if($section['meta']['elimType']!=5 && $section['meta']['elimType']!=4) {
 		if($section['meta']['elim1']) $ElimCols++;
 		if($section['meta']['elim2']) $ElimCols++;
 	}
@@ -170,8 +174,17 @@ foreach($PdfData->rankData['sections'] as $section) {
                 }
 			}
 //Risultati  delle varie fasi
-			foreach($item['finals'] as $k=>$v)
+            //пробежимся по этапам, которые были в группе, а не которые были у спортсмена - для 3Д это важно
+            foreach($section['meta']['fields']['finals'] as $k=>$v)
 			{
+                if (!isset($item['finals'][$k])) {
+                    //если у спортсмена этапа нет - он либо уже вылетел раньше, либо это матч за золото и у них нет этапа "бронза" - код фазы "1"
+                    if ($k != 1) {
+                        $pdf->Cell(15, 4, '', 0, 0, 'L', 0);
+                    }
+                    continue;
+                }
+                $v = $item['finals'][$k];
 				if($v['tie']==2) {
                     $pdf->Cell(15, 4, $PdfData->Bye, 1, 0, 'L', 0);
                     $spaceUsed += 15;

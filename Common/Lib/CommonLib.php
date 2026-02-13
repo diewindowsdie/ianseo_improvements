@@ -73,11 +73,11 @@ function getPoolMatchesHeaders() {
  */
 function getPoolMatchesHeadersWA() {
 	$ret=array();
-	$ret['64']='Match 1';
-	$ret['32']='Match 2';
-	$ret['16']='Match 3';
-	$ret['8']='Match 4';
-	$ret['4']='AD/CB';
+	$ret['64']=get_text('64_3D_Phase');
+	$ret['32']=get_text('32_3D_Phase');
+	$ret['16']=get_text('16_3D_Phase');
+	$ret['8']=get_text('8_3D_Phase');
+	$ret['4']=get_text('4_3D_Phase');
 	return $ret;
 }
 

@@ -1,19 +1,27 @@
 <?php
 $lang['0_Phase']='Золото';
+$lang['0_3D_Phase']='Золото';
 $lang['0_PhaseNM']='Встреча за 1 и 2 места';
 $lang['12_Phase']='1/12';
 $lang['14_Phase']='1/14';
 $lang['16_Phase']='1/16';
+$lang['16_3D_Phase']='Матч 3';
 $lang['1_Phase']='Бронза';
+$lang['1_3D_Phase']='Бронза';
 $lang['1_PhaseNM']='Встреча за 3 и 4 места';
 $lang['24_Phase']='1/24';
 $lang['2_Phase']='1/2';
+$lang['2_3D_Phase']='1/2';
 $lang['32_Phase']='1/32';
+$lang['32_3D_Phase']='Матч 2';
 $lang['48_Phase']='1/48';
 $lang['4_Phase']='1/4';
+$lang['4_3D_Phase']='AD/CB';
 $lang['64_Phase']='1/64';
+$lang['64_3D_Phase']='Матч 1';
 $lang['7_Phase']='1/7';
 $lang['8_Phase']='1/8';
+$lang['8_3D_Phase']='Матч 4';
 $lang['AccreditationBoothSetup']='Установить "киоск" аккредитаций';
 $lang['Advanced']='Продвинутый';
 $lang['AdvancedMode']='Расширенный режим';
