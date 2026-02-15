@@ -923,18 +923,33 @@ function GetLockableSessions() {
 	group by QuSession, DiDistance";
 
 	// ELIMINATIONS
-	$SQL[]="select 
-       concat_ws('|','E', ElElimPhase, ElEventCode) as LockKey,
-       'E' as SesType,
-       concat(SesName, ' - ', ElEventCode) as Description,
-       1 as Distance,
-       0 as FirstPhase,
-       1 as Order1, ElElimPhase as Order2, EvProgr as Order3
-	from Eliminations
-	inner join Events on EvCode=ElEventCode and EvTeamEvent=0 and EvTournament=ElTournament
-	left join Session on SesTournament=ElTournament and SesType='E' and SesOrder=ElSession
-	where ElTournament={$_SESSION['TourId']}
-	group by ElEventCode, ElElimPhase";
+    //ввод результатов отборочного круга со смартфонов не работает, поэтому отключаем
+//	$SQL[]="select
+//       concat_ws('|','E', ElElimPhase, ElEventCode) as LockKey,
+//       'E' as SesType,
+//       concat(SesName, ' - ', ElEventCode) as Description,
+//       1 as Distance,
+//       0 as FirstPhase,
+//       1 as Order1, ElElimPhase as Order2, EvProgr as Order3
+//	from Eliminations
+//	inner join Events on EvCode=ElEventCode and EvTeamEvent=0 and EvTournament=ElTournament
+//	left join Session on SesTournament=ElTournament and SesType='E' and SesOrder=ElSession
+//	where ElTournament={$_SESSION['TourId']}
+//	group by ElEventCode, ElElimPhase";
+
+    // Individual matches - 3D WA 4 groups
+    $SQL[]="select 
+       concat_ws('|','I',GrPhase,FinEvent) as LockKey, 
+       'I' as SesType,
+       EvEventName as Description,
+       concat(GrPhase, '_3D') as Distance,
+       EvFinalFirstPhase as FirstPhase,
+       3 as Order1, EvProgr as Order2, 128-GrPhase as Order3
+	from Finals
+	inner join Events on EvCode=FinEvent and EvTeamEvent=0 and EvElimType = 4 and EvTournament=FinTournament and EvFinalFirstPhase>0
+	inner join Grids on GrMatchNo=FinMatchNo
+	where FinTournament={$_SESSION['TourId']}
+	group by GrPhase, FinEvent";
 
 	// Individual Matches
 	$SQL[]="select 
@@ -945,7 +960,7 @@ function GetLockableSessions() {
        EvFinalFirstPhase as FirstPhase,
        3 as Order1, EvProgr as Order2, 128-GrPhase as Order3
 	from Finals
-	inner join Events on EvCode=FinEvent and EvTeamEvent=0 and EvTournament=FinTournament and EvFinalFirstPhase>0
+	inner join Events on EvCode=FinEvent and EvTeamEvent=0 and EvElimType in (0, 1, 2) and EvTournament=FinTournament and EvFinalFirstPhase>0
 	inner join Grids on GrMatchNo=FinMatchNo
 	where FinTournament={$_SESSION['TourId']}
 	group by GrPhase, FinEvent";
