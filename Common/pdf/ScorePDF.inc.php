@@ -823,10 +823,7 @@ class ScorePDF extends IanseoPdf {
             $this->SetColors(true);
             $CellTmpWidth=$HeadWidth-($TargetTopBoxWidth)-$StrWidth-$FlagOffset-1;
             if(array_key_exists("Noc",$Data)) {
-                $str=$Data['CoCode'].' -';
-                $strW=$this->GetStringWidth($str);
-                $this->Cell($strW, $TopOffset/6, $str,'B',0,'L',0);
-                $this->Cell($CellTmpWidth-$strW, $TopOffset/6, ($Data['CoName'] ?? ''),'B',0,'L',0);
+                $this->Cell($CellTmpWidth, $TopOffset/6, ($Data['CoName'] ?? ''),'B',0,'L',0);
             } else {
                 $this->Cell($CellTmpWidth,$TopOffset/6, ' ','B',0,'L',0);
             }
