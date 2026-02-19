@@ -685,6 +685,10 @@ function CreateSessionScorecard($Session, $FromTgt=1, $ToTgt=999, $Options=array
                                     $pdf->AddPage($pdf->IsRedding?'L':'P');
                                     $Yscore = $defScoreY;
                             }
+                            //в том случае если первая карточка это не мишень A, C, E и т.д. (см. выше) - нужно добавить страницу
+                            if ($pdf->getPage() == 0) {
+                                $pdf->AddPage($pdf->IsRedding?'L':'P');
+                            }
 
                             $pdf->DrawScoreField($defScoreX, $Yscore, $defScoreW, $defScoreH, $CurDist, $Value, $Data->SesTar4Session, $Data->SesFirstTarget);
                             if($Yscore == $defScoreY2 and ($pdf->QRCode or $pdf->ScoreQrPersonal)) {
@@ -1060,7 +1064,7 @@ function GetElimScoreBySessionQuery($Session, $Phase, $FromTgt, $ToTgt) {
 		left JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament 
 		LEFT JOIN Session ON ElSession=SesOrder AND ElTournament=SesTournament AND SesType='E' 
 		WHERE ElTournament = {$_SESSION['TourId']} and ElElimPhase=" . intval($Phase)
-		. (!(empty($FromTgt) && empty($ToTgt)) ? " AND ElTargetNo>='" . str_pad($FromTgt,'3','0',STR_PAD_LEFT) . "A' AND ElTargetNo<='" . str_pad($ToTgt,'3','0',STR_PAD_LEFT) . "Z' " : "")
+		. (!(empty($FromTgt) && empty($ToTgt)) ? " AND ElTargetNo>='" . str_pad($FromTgt,'3','0',STR_PAD_LEFT) . (ctype_digit($FromTgt) ? 'A' : '') . "' AND ElTargetNo<='" . str_pad($ToTgt,'3','0',STR_PAD_LEFT) . (ctype_digit($FromTgt) ? 'Z' : '') . "' " : "")
 		. (!empty($Session) ? " AND ElSession=". ($Session) : "")
 		. ' ORDER BY ElSession, SesOrder, ElElimPhase, ElTargetNo ASC, EnFirstName, EnName, CoCode';
 
