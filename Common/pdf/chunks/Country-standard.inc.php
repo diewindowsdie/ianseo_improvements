@@ -26,7 +26,7 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 				$pdf->Cell($nationCell, 4, '', 'LTB', 0, 'L', 1);
 				$pdf->Cell($athleteCell + ($PdfData->InternationalProtocol ? $TgtCell : 0), 4, $PdfData->Data['Fields']['Athlete'], 'RTB', 0, 'L', 1);
                 $pdf->Cell($regionCell, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
-                $pdf->Cell($birthdayCell, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'L', 1);
+                $pdf->Cell($birthdayCell, 4, getBirthDateColumnTitle($PdfData->Data['Fields']['DOB']), 1, 0, 'L', 1);
 				if(!$PdfData->HideCols and !$TargetFace and !$PdfData->InternationalProtocol) {
 					$pdf->Cell($TgtCell, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
 				}
@@ -79,7 +79,7 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 //			$pdf->Cell($athleteCell + ($PdfData->InternationalProtocol ? $TgtCell : 0), 4,  $MyRow->Athlete . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
             $pdf->Cell($athleteCell + ($PdfData->InternationalProtocol ? $TgtCell : 0), 4, getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->MiddleName) . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
             $pdf->Cell($regionCell, 4, getFullCountryName(null, $MyRow->NationComplete2, $MyRow->NationComplete3), 1, 0, 'L', 0);
-            $pdf->Cell($birthdayCell, 4,  $MyRow->EnDob, 1, 0, 'L', 0);
+            $pdf->Cell($birthdayCell, 4, getAthleteBirthDateFormatted($MyRow->EnDob), 1, 0, 'C', 0);
 			if(!$PdfData->HideCols AND !$TargetFace and !$PdfData->InternationalProtocol) {
 				$pdf->Cell($TgtCell, 4,  ($MyRow->SubClassDescription), 1, 0, 'C', 0);
 			}

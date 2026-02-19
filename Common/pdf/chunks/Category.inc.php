@@ -24,7 +24,7 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 		$pdf->Cell(8, 4, '№', 1, 0, 'C', 1);
 		$pdf->Cell(($TargetFace ? 42 : 49) + ($PdfData->InternationalProtocol ? 8 : 0), 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
 		$pdf->Cell($TargetFace ? 56 : 68, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
-        $pdf->Cell(15, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'C', 1);
+        $pdf->Cell(15, 4, getBirthDateColumnTitle($PdfData->Data['Fields']['DOB']), 1, 0, 'C', 1);
         if (!$PdfData->InternationalProtocol) {
             $pdf->Cell(8, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
         }
@@ -67,7 +67,7 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 				$pdf->Cell(8, 4, '№', 1, 0, 'C', 1);
                 $pdf->Cell(($TargetFace ? 42 : 49) + ($PdfData->InternationalProtocol ? 8 : 0), 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
                 $pdf->Cell($TargetFace ? 56 : 68, 4, $PdfData->Data['Fields']['Nation'], 1, 0, 'L', 1);
-                $pdf->Cell(15, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'C', 1);
+                $pdf->Cell(15, 4, getBirthDateColumnTitle($PdfData->Data['Fields']['DOB']), 1, 0, 'C', 1);
                 if (!$PdfData->InternationalProtocol) {
                     $pdf->Cell(8, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
                 }
@@ -98,7 +98,7 @@ if (isset($PdfData->Data['Items']) && count($PdfData->Data['Items'])>0)
 		   	$pdf->SetFont($pdf->FontStd,'',7);
 			$pdf->Cell($TargetFace ? 56 : 68, 4,  getFullCountryName($MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3), 'RTB', 0, 'L', 0);
             $pdf->SetFont($pdf->FontStd,'',7);
-            $pdf->Cell(15, 4 * $secondaryTeam,  $MyRow->DOB, 1, 0, 'C', 0);
+            $pdf->Cell(15, 4 * $secondaryTeam,  getAthleteBirthDateFormatted($MyRow->DOB), 1, 0, 'C', 0);
             if (!$PdfData->InternationalProtocol) {
                 $pdf->Cell(8, 4 * $secondaryTeam, ($MyRow->SubClassDescription), 1, 0, 'C', 0);
             }

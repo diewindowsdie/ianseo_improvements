@@ -298,7 +298,6 @@ require_once('Common/Lib/ArrTargets.inc.php');
 			$this->data['meta']['title']=get_text('ResultSqAbs','Tournament');
 			$this->data['meta']['lastUpdate']='0000-00-00 00:00:00';
             $this->data["meta"]["InternationalProtocol"] = getModuleParameter("Tournament", "InternationalProtocol", false, $this->tournament);
-            $this->data["meta"]["HidePatronymicAndBirthDate"] = getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $this->tournament);
             $this->data['sections']=array();
 
 			$myEv='';
@@ -340,7 +339,6 @@ require_once('Common/Lib/ArrTargets.inc.php');
 									'div' => get_text('Division'),
 									'class' => get_text('Cl'),
                                     'birthdate' => get_text('DOB', 'Tournament'),
-                                    'birthyear' => get_text('BirthYear', 'Tournament'),
 									'ageclass' => get_text('AgeCl'),
 									'subclass' => get_text('SubCl','Tournament'),
 									'quscore' => get_text('TotaleScore')
@@ -462,14 +460,13 @@ require_once('Common/Lib/ArrTargets.inc.php');
 						$myTeam=$row->CoId . $row->TeSubTeam . $row->TeEvent;
 					}
 
-                    $birthDateFormat = $this->data["meta"]["HidePatronymicAndBirthDate"] ? 'Y' : 'd.m.Y';
 					if (!array_key_exists('components',$this->opts) || $this->opts['components'])
 					{
 						$athlete=array(
 							'id' => $row->EnId,
 							'bib' => $row->EnCode,
 							'localbib' => $row->LocalBib,
-                            'birthdate' => $row->EnDob ? DateTime::createFromFormat('Y-m-d', $row->EnDob)->format($birthDateFormat) : '',
+                            'birthdate' => $row->EnDob,
 							'countryCode' => $row->EnCoCode,
 							'session' => $row->Session,
 							'target' => $row->TargetNo,

@@ -784,7 +784,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
 			. ", GROUP_CONCAT(RankRanking) as Ranking"
 			. ", IF(EnCountry2=0,0,1) as secTeam "
-			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as EnDob ";
+			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, EnDob ";
 		$MyQuery .= "FROM Entries AS e ";
 		$MyQuery .= "inner JOIN Tournament ON ToId=EnTournament ";
 		$MyQuery .= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
@@ -861,7 +861,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
 			. ", GROUP_CONCAT(RankRanking) as Ranking"
 			. ", 2 as secTeam "
-			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as EnDob ";
+			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, EnDob ";
 		$MyQuery .= "FROM Entries AS e ";
 		$MyQuery .= "inner JOIN Tournament ON ToId=EnTournament ";
 		$MyQuery .= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
@@ -938,7 +938,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			. ", GROUP_CONCAT(EvCodeParent order by EvProgr SEPARATOR '')  as EvCodeParent"
 			. ", GROUP_CONCAT(RankRanking) as Ranking"
 			. ", 3 as secTeam "
-			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as EnDob ";
+			. ", TfName, EnTimestamp, PhPhoto is not null as HasPhoto, edmail.EdEmail, edmail.EdExtra, edbib.EdExtra as Bib2, EnDob ";
 		$MyQuery .= "FROM Entries AS e ";
 		$MyQuery .= "inner JOIN Tournament ON ToId=EnTournament ";
 		$MyQuery .= "LEFT JOIN Individuals ON IndId=EnId and IndTournament=EnTournament ";
@@ -1296,7 +1296,7 @@ function getStartListCategoryQuery($ORIS=false, $orderByTeam=0, $Events=array())
 			`EnTeamFEvent` as `TF`,
 			`EnTeamMixEvent` as `TM`,
 			`EvCode`,
-			DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DOB,
+			EnDob as DOB,
 			IFNULL(GROUP_CONCAT(`EvEventName` order by `EvProgr` SEPARATOR ', '),CONCAT('|',`DivDescription`, '| |', `ClDescription`)) as `EventName` ,
 			`TfName`,
 			`cNumber`, `EnTimestamp`,

@@ -596,6 +596,18 @@ function getFullAthleteName($surname, $firstName, $middleName) {
     return trim($surname) . ' ' . trim($firstName) . ($middleName && !$internationalProtocol && !$hideMiddleNameAndBirthDate ? ' ' . trim($middleName) : '');
 }
 
+function getAthleteBirthDateFormatted($birthDate) {
+    $hideMiddleNameAndBirthDate = getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $_SESSION['TourId']);
+    $birthDateFormat = $hideMiddleNameAndBirthDate ? 'Y' : 'd.m.Y';
+    return $birthDate ? DateTime::createFromFormat('Y-m-d', $birthDate)->format($birthDateFormat) : '';
+}
+
+function getBirthDateColumnTitle($original) {
+    $hideMiddleNameAndBirthDate = getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $_SESSION['TourId']);
+
+    return $hideMiddleNameAndBirthDate ? get_text('BirthYear', 'Tournament') : $original;
+}
+
 function get_flag_ianseo($r0, $r2=null, $r3=null, $h=0, $align='', $direct='') {
 	global $TourCode, $CFG;
     $r = '';
