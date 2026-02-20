@@ -154,7 +154,6 @@ $lang['BadgeStandard6']='Accredito piccolo (1/6 di A4/Letter)';
 $lang['BadgeStandard6-bis']='Mini Accredito (6) Vegas';
 $lang['BadgeType']='Tipo di Accredito';
 $lang['BadParams']='Parametri Errati!';
-$lang['Barcode']='ID come Codice a barra monodimensionale';
 $lang['BarcodeCapture']='Lettura Barcode';
 $lang['BarcodeMissing']='Stampa Codici a barre mancanti';
 $lang['BestOfDistances']='Il meglio di # Distanze';
@@ -950,7 +949,6 @@ $lang['Privacy-GDPR']='http://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CE
 $lang['Q-Session']='Sessioni di Qualificazione';
 $lang['QF_Phase']='Quarti di Finale';
 $lang['QR-Code']='QR-Code';
-$lang['QrCode']='QR-Code con dettagli arcieri';
 $lang['QualificationLoaded']='Dati qualificazione caricati per la sessione {$a}';
 $lang['QualSessionShort']='Sess. Qual.';
 $lang['R-Session']='Gironi all\'italiana';

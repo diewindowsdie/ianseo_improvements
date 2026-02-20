@@ -168,7 +168,7 @@ function CheckAccreditationCode($EnCode, $Options=array(), $OnlyTour=false) {
 
 					// check the cardtype matches the requested bib
 				if($Continue) {
-					$sql="select * from Entries where EnCode='$BibCode' and EnTournament=$TourId ".($CardsMatched ? "and concat(EnDivision,EnClass) in ('".str_replace(",", "','", $CardsMatched)."')" : "");
+					$sql="select * from Entries LEFT JOIN ExtraData zextra ON EnId=zextra.EdId and zextra.EdType='Z' where (EnCode = ".StrSafe_DB($BibCode)." or zextra.EdExtra = ".StrSafe_DB($BibCode).") and EnTournament=$TourId ".($CardsMatched ? "and concat(EnDivision,EnClass) in ('".str_replace(",", "','", $CardsMatched)."')" : "");
 					$d=safe_r_SQL($sql);
 
 					if(safe_num_rows($d) and $CheckCode==$EnCode and $ID=CheckBibIsOk($BibCode, $Where, $WAbib, $Country, $Division)) {
@@ -224,7 +224,12 @@ function getIceRegExpMatches($IceContent) {
 }
 
 function CheckBibIsOk($Bib, $Where, $WAbib = null, $Country=null, $Division=null, $Class=null) {
-	$Select = "SELECT EnId FROM Entries INNER JOIN Qualifications ON EnId=QuId inner join Countries on CoId=EnCountry WHERE EnCode=" . StrSafe_DB($Bib) . " AND $Where";
+	$Select = "SELECT EnId 
+        FROM Entries 
+        INNER JOIN Qualifications ON EnId=QuId 
+        inner join Countries on CoId=EnCountry
+        LEFT JOIN ExtraData zextra ON EnId=zextra.EdId and zextra.EdType='Z' 
+        WHERE (EnCode = ".StrSafe_DB($Bib)." or zextra.EdExtra = ".StrSafe_DB($Bib).") AND $Where";
 	if($Country) {
 		$Select.=' and CoCode='. StrSafe_DB($Country);
 	}

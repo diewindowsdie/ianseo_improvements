@@ -148,7 +148,6 @@ $lang['BadgeStandard6']='Lille ID-kort (1/6 side)';
 $lang['BadgeStandard6-bis']='Små ID-kort (6) Vegas';
 $lang['BadgeType']='ID-kort type';
 $lang['BadParams']='Dårlige parametre!';
-$lang['Barcode']='Enkel dimension stregkode ID';
 $lang['BarcodeCapture']='Stregkode opfanget';
 $lang['BarcodeMissing']='Udskriv manglende stregkoder';
 $lang['BF_Phase']='Bronze finale';
@@ -920,7 +919,6 @@ $lang['Privacy-GDPR']='http://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CE
 $lang['Q-Session']='Kvalifikation runder';
 $lang['QF_Phase']='1/4 finale';
 $lang['QR-Code']='QR-kode';
-$lang['QrCode']='QR code med skytte detaljer';
 $lang['QualificationLoaded']='Kvalifikation indlæst for tidsplan {$a}';
 $lang['QualSessionShort']='Kvalifikation session';
 $lang['R-Session']='Round robin';

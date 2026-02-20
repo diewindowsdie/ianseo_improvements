@@ -148,7 +148,6 @@ $lang['BadgeStandard6']='Lencana Kecil (1/6 dari A4/Letter)';
 $lang['BadgeStandard6-bis']='Lencana Kecil (6) Vegas';
 $lang['BadgeType']='Tipe Lencana';
 $lang['BadParams']='Parameter buruk!';
-$lang['Barcode']='ID barcode dimensi tunggal';
 $lang['BarcodeCapture']='Menangkap Barcode';
 $lang['BarcodeMissing']='Cetak Barcode yang Hilang';
 $lang['BF_Phase']='Final Perunggu';
@@ -920,7 +919,6 @@ $lang['Privacy-GDPR']='http://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CE
 $lang['Q-Session']='Babak Kualifikasi';
 $lang['QF_Phase']='Seperempat Final';
 $lang['QR-Code']='QR-Code';
-$lang['QrCode']='QRcode dengan detail pemanah';
 $lang['QualificationLoaded']='Data Kualifikasi dimuat untuk sesi {$a}';
 $lang['QualSessionShort']='Sesi Kualifikasi';
 $lang['R-Session']='Ronde Robin';

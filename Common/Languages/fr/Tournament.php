@@ -149,7 +149,6 @@ $lang['BadgeStandard6']='Petit badge  (6 par page)';
 $lang['BadgeStandard6-bis']='6 Petits badges (Format Vega)';
 $lang['BadgeType']='Type de badge';
 $lang['BadParams']='Paramètres incorrects!';
-$lang['Barcode']='ID code barre à une dimention';
 $lang['BarcodeCapture']='Capture du code-barre';
 $lang['BarcodeMissing']='Imprimer les codes barre manquants';
 $lang['BF_Phase']='Finale Bronze';
@@ -795,7 +794,6 @@ $lang['Privacy-GDPR']='http://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CE
 $lang['Q-Session']='Tours de qualifications';
 $lang['QF_Phase']='Quart de finale';
 $lang['QR-Code']='QR-Code';
-$lang['QrCode']='QR-Code avec détail de l\'archer';
 $lang['QualificationLoaded']='Données de qualifiquation charchées pour la session {$a}';
 $lang['QualSessionShort']='Départ Qual.';
 $lang['R-Session']='Matchs de Poules';

@@ -192,7 +192,7 @@ if (isset($_REQUEST['command'])) {
                                 //print $query . '<br><br>';
                                 $rs=safe_w_SQL($query);
                                 if(safe_w_affected_rows()) {
-                                    safe_w_sql("Update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId={$d['id']}");
+                                    safe_w_sql("Update Entries set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "' where EnId={$d['id']}");
                                     safe_w_sql("UPDATE Qualifications SET QuBacknoPrinted=0, QuTimestamp=QuTimestamp WHERE QuId='{$d['id']}'");
                                 }
 

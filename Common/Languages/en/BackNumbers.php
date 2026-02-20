@@ -17,15 +17,21 @@ $lang['AthCode']='Athlete Code (text)';
 $lang['Athlete']='Athlete Name';
 $lang['AthQrCode']='Athlete Code (QR code)';
 $lang['AutoCheckin']='Auto Check-In';
+$lang['AutoCHK-BowStorageExtra']='Bow Storage flag';
 $lang['AutoCHK-Camera']='Use Camera to read QR-Codes';
 $lang['AutoCHK-CanEdit']='Edit Entries';
 $lang['AutoCHK-Code']='Competition Codes';
 $lang['AutoCHK-Confirm']='Confirm Check-In';
+$lang['AutoCHK-FastLaneExtra']='Practice Fast Lane flag';
 $lang['AutoCHK-IP']='Auto Check-in Devices';
+$lang['AutoCHK-IPBowStorage']='Bow Storage Kiosk';
+$lang['AutoCHK-IPGoodiesDistribution']='Goodies Distribution Kiosk';
 $lang['AutoCHK-IPinfo']='Self Service Info Points';
 $lang['AutoCHK-IPnoMgm']='Self Service Kiosks';
+$lang['AutoCHK-IPPaidPractice']='Paid Practice Kiosk';
 $lang['AutoCHK-Names']='Checks also Given/Family names';
 $lang['AutoCHK-nobody']='Nobody with this Code is in the DB at the moment... PLEASE PROCEED TO THE DESK';
+$lang['AutoCHK-PaidPracticeExtra']='Paid Practice flag';
 $lang['AutoCHK-Print']='Show Print Dialog';
 $lang['BackCat']='Category Background';
 $lang['BackColor']='Background Colour';
@@ -68,6 +74,7 @@ $lang['BgImage']='Background Image';
 $lang['BibNumber']='Bib Number';
 $lang['BlackWhite']='Single colour border (use: Background Colour)';
 $lang['Bold']='Bold';
+$lang['BowStorage']='Bow Storage';
 $lang['Category']='Category';
 $lang['CharColor']='Char. Color';
 $lang['CharSize']='Character Size<br/>(Spacing Factor)';
@@ -176,7 +183,7 @@ $lang['PrintSpecificBadges']='Print Using Auto-matching Badges';
 $lang['PrintSyncResult']='$a Backnumbers have been set as printed!';
 $lang['Q-Badge']='Qualification Athlete Number';
 $lang['QrCodeFields']='<ul>
-<li><b>Blank: </b>a dash-separated string with Entry Code, Division and Class will be printed</li>
+<li><b>Blank: </b>a pipe-separated string with Entry Code, Country Code and Division will be printed</li>
 <li><b>{ENCODE}: </b>{ENCODE} will be translated into the Entry Code</li>
 <li><b>{COUNTRY}: </b>{COUNTRY} will be translated into the Country Code</li>
 <li><b>{DIVISION}: </b>{DIVISION} will be translated into the Division Code</li>

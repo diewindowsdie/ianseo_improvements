@@ -28,7 +28,7 @@
 	        $Where.=" AND QuTarget<= " . intval($_REQUEST['TgtTo']);
         }
 		safe_w_sql("update Entries inner join Qualifications on EnId=QuId
-			set EnTimestamp='".date('Y-m-d H:i:s')."'
+			set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "'
 			where QuTarget!=0 and $Where");
 		safe_w_sql("UPDATE Qualifications INNER JOIN Entries ON QuId=EnId
 			SET QuTarget=0, QuLetter='', QuBacknoPrinted=0
@@ -559,7 +559,7 @@ function ArcherAssign($Archer, $Target, $Country) {
 		$UpdateQry = "UPDATE Qualifications SET QuTimestamp=QuTimestamp, QuTarget=".intval($Target).", QuLetter='".strtoupper(substr($Target, -1))."' WHERE QuId = $Archer";
 		$RsUpd=safe_w_sql($UpdateQry);
 		if(safe_w_affected_rows()) {
-			safe_w_sql("Update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId=$Archer");
+			safe_w_sql("Update Entries set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "' where EnId=$Archer");
 			safe_w_sql("UPDATE Qualifications SET QuBacknoPrinted=0, QuTimestamp=QuTimestamp WHERE QuId = $Archer");
 		}
 	}

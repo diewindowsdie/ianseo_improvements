@@ -314,6 +314,7 @@ if (safe_num_rows($q)>0) {
 			'tPersonal' => $usePersonalDevices ? intval($r->IskDvPersonal) : -1,
 
             'tAppVersion' => $r->IskDvVersion,
+            'tAppScoring' => ($r->IskDvAppVersion>=ISK_NG_LITE_CODE),
             'tApp' => AppNames[$r->IskDvAppVersion],
             'tBattery' => intval($r->IskDvBattery),
             'tAuthReq' => intval($r->IskDvAuthRequest),

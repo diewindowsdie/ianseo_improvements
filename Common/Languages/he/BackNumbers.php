@@ -133,7 +133,6 @@ $lang['PrintBackNo']='הדפס מספרי גב';
 $lang['PrintHasPlastic']='כרטיסים לבעלי שרוך בלבד';
 $lang['PrintSpecificBadges']='הדפס באמצעות התאמת תגים אוטומטית';
 $lang['Q-Badge']='מספר גב מתחרה לשלב מוקדמות';
-$lang['QrCodeFields']='<ul> <li><b>ריק: </b>תודפס מחרוזת תווים מופרדת על-ידי מקפים שתכלול את קוד הרשומה, סוג הקשת וקבוצת הגיל</li> <li><b>{ENCODE}: </b>{ENCODE} יתורגם לקוד הרשומה</li> <li><b>{COUNTRY}: </b>{COUNTRY} יתורגם לקוד המדינה</li> <li><b>{DIVISION}: </b>{DIVISION} יתורגם לקוד סוג הקשת</li> <li><b>{CLASS}: </b>{CLASS} יתורגם לקוד קבוצת הגיל</li> <li><b>{TOURNAMENT}: </b>{TOURNAMENT} יתורגם לקוד התחרות</li> </ul>';
 $lang['QRScore']='תוצאת סבב מוקדמות';
 $lang['QualPosition']='מיקום מוקדמות';
 $lang['RandomImage']='תמונה אקראית';

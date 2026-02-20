@@ -21,14 +21,13 @@
 ?>
 <form name="Frm" method="GET" action="">
 <?php
-	$QueryString = $_SERVER['QUERY_STRING'];
-	$Arr = explode('&',$QueryString);
-	foreach ($Arr as $Key => $Value) {
-		list($ff,$vv)=explode('=',$Value);
-		if($ff!='Event') {
-		    print '<input type="hidden" name="' . $ff . '" value="' . $vv . '">';
-		}
-	}
+
+$_REQUEST['Ses'] = ($_REQUEST['Ses']??'*');
+foreach($_GET as $ff=>$vv){
+    if($ff!='Event') {
+        print '<input type="hidden" name="' . $ff . '" value="' . $vv . '">';
+    }
+}
 ?>
 <table class="Tabella">
 <tr><th class="Title" colspan="2"><?php print get_text('ManualTargetAssignment','Tournament');?></th></tr>

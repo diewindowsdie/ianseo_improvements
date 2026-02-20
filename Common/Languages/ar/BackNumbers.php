@@ -151,7 +151,6 @@ $lang['PrintHasPlastic']='حاملي بطاقات Lanyards فقط';
 $lang['PrintSpecificBadges']='الطباعة باستخدام الشارات المطابقة التلقائية';
 $lang['PrintSyncResult']='$a تم تعيين الأرقام الخلفية للطباعة!';
 $lang['Q-Badge']='رقم الرياضي فى الادوار التأهيلية';
-$lang['QrCodeFields']='<ul> <li><b>فارغ: </b>سيتم طباعة سلسلة مفصولة بواصلة مع رمز الإدخال والقسم والفئة</li> <li><b>{ENCODE}: </b>سيتم ترجمة {ENCODE} إلى رمز الإدخال</li> <li><b>{COUNTRY}: </b>سيتم ترجمة {COUNTRY} إلى رمز الدولة</li> <li><b>{DIVISION}: </b>سيتم ترجمة {DIVISION} إلى رمز القسم</li> <li><b>{CLASS}: </b>سيتم ترجمة {CLASS} إلى رمز الفئة</li> <li><b>{TOURNAMENT}: </b>سيتم ترجمة {TOURNAMENT} إلى رمز المنافسة</li> </ul>';
 $lang['QRScore']='نتيجة جولة التصفيات';
 $lang['QualPosition']='موضع جولة التأهيل';
 $lang['RandomImage']='صورة عشوائية';

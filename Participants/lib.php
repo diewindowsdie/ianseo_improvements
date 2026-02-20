@@ -18,6 +18,7 @@ function saveField($Field, $Value, $EnId, $ToId) {
 	}
 
 	$Updated=false; // needs to recalculate printed items
+	$UpdatedMain=false; // needs to recalculate printed items
 	$OldControl='';
 	if(in_array($Field, $ArrayRecalc)) {
 		list($indFEventOld, $teamFEventOld, $countryOld, $divOld, $clOld, $subClOld, $zeroOld)=Params4Recalc($EnId);
@@ -59,15 +60,18 @@ function saveField($Field, $Value, $EnId, $ToId) {
 			$Value=AdjustCaseTitle($Value);
 			safe_w_sql("update Entries set EnTimestamp=EnTimestamp, EnFirstName=".StrSafe_DB($Value)." where EnId=$EnId");
 			$Updated=safe_w_affected_rows();
+			$UpdatedMain=safe_w_affected_rows();
 			break;
 		case 'name':
 			$Value=AdjustCaseTitle($Value);
 			safe_w_sql("update Entries set EnTimestamp=EnTimestamp, EnName=".StrSafe_DB($Value)." where EnId=$EnId");
 			$Updated=safe_w_affected_rows();
+			$UpdatedMain=safe_w_affected_rows();
 			break;
 		case 'subclass':
 			safe_w_sql("update Entries set EnTimestamp=EnTimestamp, EnSubClass=".StrSafe_DB($Value)." where EnId=$EnId");
 			$Updated=safe_w_affected_rows();
+			$UpdatedMain=safe_w_affected_rows();
 			break;
 		case 'dob':
 			$Value=ConvertDateLoc($Value);
@@ -93,6 +97,7 @@ function saveField($Field, $Value, $EnId, $ToId) {
 			switch($Field) {
 				case 'country_code':
 					safe_w_sql("update Entries set EnTimestamp=EnTimestamp, EnCountry=$CoId where EnId=$EnId");
+			        $UpdatedMain=safe_w_affected_rows();
 					break;
 				case 'country_code2':
 					safe_w_sql("update Entries set EnTimestamp=EnTimestamp, EnCountry2=$CoId where EnId=$EnId");
@@ -112,6 +117,7 @@ function saveField($Field, $Value, $EnId, $ToId) {
 			switch($Field) {
 				case 'country_name':
 					safe_w_sql("update Countries inner join Entries on CoId=EnCountry and CoTournament=EnTournament set CoName=".StrSafe_DB($Value)." where EnId=$EnId");
+                    $UpdatedMain=safe_w_affected_rows();
 					break;
 				case 'country_name2':
 					safe_w_sql("update Countries inner join Entries on CoId=EnCountry2 and CoTournament=EnTournament set CoName=".StrSafe_DB($Value)." where EnId=$EnId");
@@ -125,6 +131,7 @@ function saveField($Field, $Value, $EnId, $ToId) {
 			// sets the code and updates the status of the archer from the LueTable if any...
 			safe_w_sql("update Entries set EnTimestamp=EnTimestamp, EnCode=".StrSafe_DB($Value)." where EnId=$EnId");
 			$Updated=safe_w_affected_rows();
+            $UpdatedMain=safe_w_affected_rows();
 
 			if($Updated) {
 				safe_w_sql("update Entries
@@ -141,6 +148,7 @@ function saveField($Field, $Value, $EnId, $ToId) {
 				$Letter=strtoupper(substr($Value, -1));
 				safe_w_sql("update Qualifications set QuTarget=$Target, QuLetter=".StrSafe_DB($Letter)." where QuId=$EnId");
 				$Updated=safe_w_affected_rows();
+                $UpdatedMain=safe_w_affected_rows();
 			}
 			break;
 		case 'session':
@@ -149,6 +157,7 @@ function saveField($Field, $Value, $EnId, $ToId) {
 			if($r=safe_fetch($q)) {
 				safe_w_sql("update Qualifications set QuSession=$Value where QuId=$EnId");
 				$Updated=safe_w_affected_rows();
+                $UpdatedMain=safe_w_affected_rows();
 			}
 			break;
 		case 'sex':
@@ -165,12 +174,14 @@ function saveField($Field, $Value, $EnId, $ToId) {
 			break;
 		case 'division':
 			safe_w_sql("update Entries set EnTimestamp=EnTimestamp, EnDivision=".StrSafe_DB($Value)." where EnId=$EnId");
+            $UpdatedMain=safe_w_affected_rows();
 			if($Updated=safe_w_affected_rows()) {
 				checkAndSetClasses($EnId);
 			}
 			break;
 		case 'class':
 			safe_w_sql("update Entries set EnTimestamp=EnTimestamp, EnClass=".StrSafe_DB($Value)." where EnId=$EnId");
+            $UpdatedMain=safe_w_affected_rows();
 			if($Updated=safe_w_affected_rows()) {
 				checkAndSetClasses($EnId);
 			}
@@ -189,7 +200,9 @@ function saveField($Field, $Value, $EnId, $ToId) {
 	// this is for the change of background
 	$JSON['newvalue']=safe_w_affected_rows();
 
-
+    if($UpdatedMain) {
+        safe_w_sql("update Entries set EnMainInfoUpdate='".date('Y-m-d H:i:s')."' where EnId={$EnId}");
+    }
 	if($Updated) {
 		// updates timestamps
 		if(in_array($Field, $ArrayLue)) {
@@ -277,6 +290,7 @@ function checkAndSetClasses($EnId) {
 	}
 	safe_w_sql("update Entries set EnTimestamp=EnTimestamp, EnAgeClass=".StrSafe_DB($Age).", EnClass=".StrSafe_DB($Shoot)." where EnId=$EnId");
 	if(safe_w_affected_rows()) {
+        safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='".date('Y-m-d H:i:s')."' where EnId={$EnId}");
 		$JSON['fields']['class']=$Age;
 		$JSON['fields']['ageclass']=$Shoot;
 	}

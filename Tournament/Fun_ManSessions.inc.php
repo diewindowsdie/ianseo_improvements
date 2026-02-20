@@ -161,6 +161,13 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
 		// IMPLICAZIONI
 			switch($SesType) {
 				case 'Q':
+                    // updates the main info for entries of that session
+                    if(safe_w_affected_rows()) {
+                        $Now=date('Y-m-d H:i:s');
+                        safe_w_sql("update Entries 
+                            inner join Qualifications on QuId=EnId and QuSession=$SesOrder
+                            set EnMainInfoUpdate='$Now' where EnTournament={$_SESSION['TourId']}");
+                    }
 					/*
 					 *  rigenero i paglioni per la sessione se i vecchi parametri son
 					 *  cambiati quando $regenerateTargets==false; se vale true rigenero sempre
@@ -178,6 +185,7 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
 							$ret='_error_';
 						}
 					}
+
 					break;
 				case 'E':
 					break;
@@ -213,6 +221,16 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
 				. "SesOrder=" . StrSafe_DB($SesOrder) . " ";
 
 		$rs=safe_w_sql($q);
+        if(safe_w_affected_rows()) {
+            switch($SesType) {
+                case 'Q':
+                    $Now=date('Y-m-d H:i:s');
+                    safe_w_sql("update Entries 
+                            inner join Qualifications on QuId=EnId and QuSession=$SesOrder
+                            set EnMainInfoUpdate='$Now' where EnTournament={$_SESSION['TourId']}");
+                    break;
+            }
+        }
 
 		if (!$rs)
 		{
@@ -402,7 +420,7 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
 			. " AND QuSession=" . StrSafe_DB($session)
 			. " AND QuTarget>" . StrSafe_DB($Target+1);
 		safe_w_sql("Update Entries inner join Qualifications on QuId=EnId
-			set EnTimestamp='".date('Y-m-d H:i:s')."'
+			set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "'
 			where (QuSession!=0 or QuTarget!=0) and $Where");
 		safe_w_sql("UPDATE Qualifications INNER JOIN Entries ON QuId=EnId
 			SET QuSession=0, QuTarget=0, QuLetter='', QuBacknoPrinted=0, QuTimestamp=QuTimestamp
@@ -564,12 +582,14 @@ function insertSession($SesTournament,$SesOrder,$SesType,$SesName,$SesLoc,$SesTa
 							 * subiranno l'update
 							 */
 								$Where="QuSession=" . $row->SesOrder . " AND EnTournament=" . StrSafe_DB($tour) . "";
-								safe_w_sql("update Entries inner join Qualifications on EnId=QuId
-									set EnTimestamp='".date('Y-m-d H:i:s')."'
-									where QuSession!=" . $newOrder . " and $Where");
-								safe_w_sql("UPDATE Qualifications INNER JOIN Entries ON QuId=EnId
+                                safe_w_sql("UPDATE Qualifications INNER JOIN Entries ON QuId=EnId
 									SET QuSession=" . $newOrder . ", QuBacknoPrinted=0, QuTimestamp=QuTimestamp
 									WHERE $Where");
+                                if(safe_w_affected_rows()) {
+                                    safe_w_sql("update Entries inner join Qualifications on EnId=QuId
+									set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "'
+									where QuSession!=" . $newOrder . " and $Where");
+                                }
 								break;
 							case 'E':
 								break;

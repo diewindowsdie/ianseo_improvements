@@ -109,7 +109,15 @@ if(!empty($_REQUEST['lev'])) {
 		where EnTournament={$_SESSION['TourId']}
 		order by EnFirstName, QuSession");
 	$EnCodes=array();
+	$EnCodeBySession = [];
 	while($r=safe_fetch($q)) {
+		if (isset($EnCodeBySession["{$r->EnCode}-{$r->QuSession}"])) {
+			// Remove archers if they appear multiple times in the same session (protection in case the organizer has created custom events)
+			continue;
+		} else {
+			$EnCodeBySession["{$r->EnCode}-{$r->QuSession}"] = true;
+		}
+
         if($r->EnClass[0]=='D') {
             // Découverte/Débutant do not go in the txt file
             continue;
@@ -119,10 +127,6 @@ if(!empty($_REQUEST['lev'])) {
 			// Do not send archer in the txt file if score is 0 and no arrows recorded
 			continue;
 		}
-
-
-		// check the age class
-        $AgeClass=substr($r->EnAgeClass,0,-1);
 
         // check the shooting class
         $Class=substr($r->EnClass,0,-1);
@@ -203,7 +207,7 @@ if(!empty($_REQUEST['lev'])) {
 		$Archers[$r->IndEvent][$r->EnId][3] = ($r->EnIocCode=='FRA' ? $r->EnCode : '999999');
 		$Archers[$r->IndEvent][$r->EnId][4] = $r->EnFirstName;
 		$Archers[$r->IndEvent][$r->EnId][5] = $r->EnName;
-		$Archers[$r->IndEvent][$r->EnId][6] = $AgeClass;
+		$Archers[$r->IndEvent][$r->EnId][6] = substr($r->EnAgeClass,0,-1);
 		$Archers[$r->IndEvent][$r->EnId][7] = $Class;
 		$Archers[$r->IndEvent][$r->EnId][8] = $r->EnSex ? 'F' : 'H';
 		$Archers[$r->IndEvent][$r->EnId][9] = $r->EnDivision;

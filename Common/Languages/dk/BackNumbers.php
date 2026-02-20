@@ -168,7 +168,6 @@ $lang['PrintHasPlastic']='Kun kort ned halssnore';
 $lang['PrintSpecificBadges']='Udskriv ved brug af Auto-matching labels';
 $lang['PrintSyncResult']='$a Registreringsnumre markeret som udskrevet!';
 $lang['Q-Badge']='Registreringsnumre, kvalifikation';
-$lang['QrCodeFields']='<ul> <li><b>Blank: </b>a dash-separated string with Entry Code, Division and Class will be printed</li> <li><b>{ENCODE}: </b>{ENCODE} will be translated into the Entry Code</li> <li><b>{COUNTRY}: </b>{COUNTRY} will be translated into the Country Code</li> <li><b>{DIVISION}: </b>{DIVISION} will be translated into the Division Code</li> <li><b>{CLASS}: </b>{CLASS} will be translated into the Class Code</li> <li><b>{TOURNAMENT}: </b>{TOURNAMENT} will be translated into the Competition Code</li> </ul>';
 $lang['QRScore']='Kvalifikationsrunden score';
 $lang['QualPosition']='Kvalifikations placering';
 $lang['RandomImage']='Tilfældigt billede';

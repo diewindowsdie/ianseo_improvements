@@ -90,16 +90,12 @@
 
 				// se la riga è stata aggiornata significa che la session è cambiata quindi annullo il target
 					if (safe_w_affected_rows()) {
-						safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId='{$id}'");
+						safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "' where EnId='{$id}'");
 						$query = "UPDATE Qualifications
 							SET QuTarget=0, QuLetter='', QuBacknoPrinted=0, QuTimestamp=QuTimestamp
 							WHERE QuId=" . StrSafe_DB($id) . " ";
 						$rs=safe_w_sql($query);
 						$resetTarget=1;
-						LogAccBoothQuerry("UPDATE Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where $EnSelect", $_SESSION['TourCode']);
-						LogAccBoothQuerry("UPDATE Qualifications
-							SET QuTarget=0, QuLetter='', QuBacknoPrinted=0, QuTimestamp=QuTimestamp
-							WHERE QuId=(select EnId from Entries where $EnSelect)", $_SESSION['TourCode']);
 					}
 				}
 			}

@@ -158,7 +158,6 @@ $lang['PrintHasPlastic']='Acreditacións para poseedores de cinta';
 $lang['PrintSpecificBadges']='Dorsal para a calificación';
 $lang['PrintSyncResult']='$a dorsais foron marcadas como impresas!';
 $lang['Q-Badge']='Dorsal para a calificación';
-$lang['QrCodeFields']='<ul> <li><b>En branco: </b, unha cadea separada por guións co código de entrada, división e clase será impresa</li> <li><b>{ENCODE}: </b>{ENCODE} será traducido ao código de entrada</li> <li><b>{COUNTRY}: </b>{COUNTRY} será traducido ao código do país</li> <li><b>{DIVISION}: </b>{DIVISION} será traducido ao código de división</li> <li><b>{CLASS}: </b>{CLASS} será traducido ao código de clase</li> <li';
 $lang['QRScore']='Puntuación da Serie de Calificación';
 $lang['QualPosition']='Posición na Calificación';
 $lang['RandomImage']='Imaxen aleatoria';

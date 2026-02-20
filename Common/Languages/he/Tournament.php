@@ -116,7 +116,6 @@ $lang['BadgeStandard6']='תג קטן (1/6 של A4/Letter)';
 $lang['BadgeStandard6-bis']='תג קטן (6) וגאס';
 $lang['BadgeType']='סוג תג';
 $lang['BadParams']='נתונים לא תקינים!';
-$lang['Barcode']='מזהה ברקוד חד-מימדי';
 $lang['BarcodeCapture']='צילום ברקוד';
 $lang['BarcodeMissing']='הדפס ברקודים חסרים';
 $lang['BF_Phase']='התמודדות גמר ארד';
@@ -690,7 +689,6 @@ $lang['Privacy-2']='יאנסאו מפרסמת נתוני תחרויות קשתו
 $lang['Privacy-GDPR']='http://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32016R0679';
 $lang['Q-Session']='סבב מוקדמות';
 $lang['QF_Phase']='רבע גמר';
-$lang['QrCode']='קוד QR עם פרטי הקשת';
 $lang['QualificationLoaded']='נתוני מוקדמות נטענו עבור מקצים של {$a}';
 $lang['QualSessionShort']='מקצה מוקדמות';
 $lang['R-Session']='Round Robin';

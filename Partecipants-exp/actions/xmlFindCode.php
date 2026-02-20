@@ -155,12 +155,8 @@
 		$query = "UPDATE Entries SET " . $upBody . ", EnTimestamp=EnTimestamp";
 		$rs=safe_w_sql($query." WHERE EnId=" . StrSafe_DB($id));
 		if(safe_w_affected_rows()) {
-			safe_w_sql("update Entries set EnBadgePrinted=0, EnTimestamp='".date('Y-m-d H:i:s')."' where EnId=$id");
+			safe_w_sql("update Entries set EnBadgePrinted=0, EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "' where EnId=$id");
 			safe_w_sql("update Qualifications set QuBacknoPrinted=0, QuTimestamp=QuTimestamp where QuId=$id");
-			LogAccBoothQuerry("update Entries set " . $upBody . ", EnBadgePrinted=0, EnTimestamp='".date('Y-m-d H:i:s')."' where $EnSelect");
-			LogAccBoothQuerry("update Qualifications set QuBacknoPrinted=0, QuTimestamp=QuTimestamp where QuId=(select EnId from Entries where $EnSelect)");
-		} else {
-			LogAccBoothQuerry("update Entries set " . $upBody . ", EnTimestamp=EnTimestamp where $EnSelect");
 		}
 
 		if($code!=$orgEnCode) {

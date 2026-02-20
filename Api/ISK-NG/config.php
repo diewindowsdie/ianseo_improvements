@@ -6,6 +6,7 @@ require_once('Common/Lib/CommonLib.php');
 require_once(__DIR__.'/config_defines.php');
 
 const reqAppVersion = '1.7.5';
+const reqGateVersion = '0.0.1';
 
 define('NG_DEBUG_LOG', ($CFG->DEBUG??false) and is_dir(__DIR__.'/log') and is_writable(__DIR__.'/log'));
 define('NG_DEBUG_LOGFILE', __DIR__.'/log/messages-'.date('Y-m-d').'.jsonl');

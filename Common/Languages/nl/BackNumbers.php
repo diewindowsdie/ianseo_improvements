@@ -134,7 +134,6 @@ $lang['PrintBackNo']='Rugnummer afdrukken';
 $lang['PrintHasPlastic']='Alleen kaarten voor Lanyards';
 $lang['PrintSpecificBadges']='Afdrukken Badges en automatisch koppelen';
 $lang['Q-Badge']='Kwalificatie nummers';
-$lang['QrCodeFields']='<ul> <li><b>Blank: </b>de toegangscode wordt afgedrukt</li> <li><b>tekst {ENCODE} andere tekst: </b>{ENCODE} wordt vertaald in de toegangscode</li> <li><b>tekst {COUNTRY} andere tekst: </b>{COUNTRY} wordt vertaald in de landcode</li> <li><b>tekst {DIVISION} andere tekst: </b>{DIVISION} wordt vertaald in de divisiecode</li> <li><b>tekst {CLASS} andere tekst: </b>{CLASS} wordt vertaald in de groeps code</li> <li><b>tekst {TOURNAMENT} andere tekst: </b>{TOURNAMENT} wordt vertaald in de competitie code</li> </ul>';
 $lang['RandomImage']='Willekeurig plaatje';
 $lang['Ranking']='Kwalificatie volgorde';
 $lang['ReadSeparator']='lees scheiding';

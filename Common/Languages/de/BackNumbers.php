@@ -149,7 +149,6 @@ $lang['PrintHasPlastic']='Karten von Inhabern von Bändeln';
 $lang['PrintSpecificBadges']='Drucken mit Nutzung von Auto-Marching Karten';
 $lang['PrintSyncResult']='$a Rückennummern wurden als gedruckt eingestellt!';
 $lang['Q-Badge']='Schützennummern in der Qualifikation';
-$lang['QrCodeFields']='<ul> <li><b>Leer: </b>Es wird eine durch Bindestriche getrennte Zeichenfolge mit Eintragscode, Division und Klasse gedruckt.</li> <li><b>{ENCODE}: </b>{ENCODE } wird in den Eintragscode übersetzt</li> <li><b>{COUNTRY}: </b>{COUNTRY} wird in den Ländercode übersetzt</li> <li><b>{DIVISION}: </b>{DIVISION} wird in den Divisionscode übersetzt</li> <li><b>{CLASS}: </b>{CLASS} wird in den Klassencode übersetzt</li> <li>< b>{TOURNAMENT}: </b>{TOURNAMENT} wird in den Wettbewerbscode übersetzt</li> </ul>';
 $lang['QRScore']='Ergebnis der Qualifikationsrunde';
 $lang['QualPosition']='Platzierung in der Qualifikationsrunde';
 $lang['RandomImage']='Zufälliges Bild';

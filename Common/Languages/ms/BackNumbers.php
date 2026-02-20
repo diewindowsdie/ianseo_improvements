@@ -168,7 +168,6 @@ $lang['PrintHasPlastic']='Kad pemegang Lanyards sahaja';
 $lang['PrintSpecificBadges']='Cetak Menggunakan Pemadanan Auto Lencana';
 $lang['PrintSyncResult']='$a Nomborbelakang disetkan telah dicetak!';
 $lang['Q-Badge']='Nombor Kelayakan Pemanah';
-$lang['QrCodeFields']='<ul> <li> <b> Blank: </ b> rentetan yang dipisahkan dengan kod Entry, Divisi dan Kelas akan dicetak </ li> <li> <b> {ENCODE}: </ b> {ENCODE } akan diterjemahkan ke dalam Kod Penyertaan </ li> <li> <b> {COUNTRY}: </ b> {COUNTRY} akan diterjemahkan ke dalam Kod Negara </ li> <li> <b> {DIVISION}: </ b> {DIVISION} akan diterjemahkan ke dalam Kod Divisyen </ li> <b> {CLASS}: </ b> {CLASS} akan diterjemahkan ke dalam Kod Kelas </ li> <li> b> {TOURNAMENT}: </ b> {TOURNAMENT} akan diterjemahkan ke dalam Kod Persaingan </ li> </ ul>';
 $lang['QRScore']='Markah Pusingan Kelayakan';
 $lang['QualPosition']='Kedudukan Kelayakan';
 $lang['RandomImage']='Gambar Rawak';

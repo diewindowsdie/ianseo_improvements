@@ -48,6 +48,8 @@ TtId TtType               TtDistance
 */
 
 
+use function mysql_xdevapi\getSession;
+
 define('TGT_IND_1_big10', 1);
 define('TGT_IND_6_big10', 2);
 define('TGT_IND_5_big10', 32);
@@ -365,40 +367,44 @@ function TargetFaceGoldsXnines($TourId, $Id, $Golds='', $Xnine='', $GoldsChars='
 
 function CreateDistanceInformation($TourId, $Distances, $Targets=0, $Athletes=4, $Session=1, $SesName='') {
 	require_once('Tournament/Fun_ManSessions.inc.php');
-	if($Targets) {
+    require_once('Common/Fun_Sessions.inc.php');
+    $actualSession = GetSessions('Q');
+	if(empty($actualSession[$Session-1]->SesTar4Session) and $Targets) {
 		insertSession($TourId, $Session, 'Q', $SesName, '', $Targets, $Athletes, 1, 0);
 	}
-	foreach($Distances as $Dist => $Infos) {
-		$tmp = [];
-        if($Infos['DiEnds']??'') {
-            foreach($Infos as $k=>$v) {
-                if(is_numeric($v)) {
-                    $tmp[] = "$k={$v}";
-                } else {
-                    $tmp[] = "$k=".StrSafe_DB($v);
+    foreach(range($Session, GetNumQualSessions()) as $Session) {
+        foreach($Distances as $Dist => $Infos) {
+            $tmp = [];
+            if ($Infos['DiEnds'] ?? '') {
+                foreach ($Infos as $k => $v) {
+                    if (is_numeric($v)) {
+                        $tmp[] = "$k={$v}";
+                    } else {
+                        $tmp[] = "$k=" . StrSafe_DB($v);
+                    }
+                }
+            } else {
+                switch (count($Infos)) {
+                    case 4:
+                        $tmp[] = "DiScoringOffset={$Infos[3]}";
+                    case 3:
+                        $tmp[] = "DiScoringEnds={$Infos[2]}";
+                    case 2:
+                        $tmp[] = "DiArrows={$Infos[1]}";
+                    case 1:
+                        $tmp[] = "DiEnds={$Infos[0]}";
                 }
             }
-        } else {
-            switch(count($Infos)) {
-                case 4:
-                    $tmp[] = "DiScoringOffset={$Infos[3]}";
-                case 3:
-                    $tmp[] = "DiScoringEnds={$Infos[2]}";
-                case 2:
-                    $tmp[] = "DiArrows={$Infos[1]}";
-                case 1:
-                    $tmp[] = "DiEnds={$Infos[0]}";
+            if ($tmp) {
+                $tmp[] = "DiTournament={$TourId}";
+                $tmp[] = "DiType='Q'";
+                $tmp[] = "DiSession={$Session}";
+                $tmp[] = "DiDistance=" . ($Dist + 1);
+                $set = implode(", ", $tmp);
+                $Sql = "INSERT INTO DistanceInformation set $set ON DUPLICATE KEY UPDATE $set";
+                safe_w_sql($Sql);
             }
         }
-		if($tmp) {
-            $tmp[] = "DiTournament={$TourId}";
-            $tmp[] = "DiType='Q'";
-            $tmp[] = "DiSession={$Session}";
-            $tmp[] = "DiDistance=".($Dist+1);
-            $set=implode(", ", $tmp);
-			$Sql = "INSERT INTO DistanceInformation set $set ON DUPLICATE KEY UPDATE $set";
-			safe_w_sql($Sql);
-		}
 	}
 }
 /*

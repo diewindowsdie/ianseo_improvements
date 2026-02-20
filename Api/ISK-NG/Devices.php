@@ -70,6 +70,7 @@ $JS_SCRIPT=array(
         'usePersonal' => ($UsePersonalDevices ? true : false),
         'tourCode' => $_SESSION["TourCode"],
         'reqAppVersion' => reqAppVersion,
+        'reqGateVersion' => reqGateVersion,
         'SocketIP'=>getSocketIp(),
         'SocketPort'=>getSocketPort(),
         "SocketProtocol"=>getSocketConnectionProtocol(),

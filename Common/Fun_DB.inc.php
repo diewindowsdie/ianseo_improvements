@@ -409,6 +409,7 @@ function assembleWhereCondition($fields, $values) {
 }
 
 function LogAccBoothQuerry($SQL, $ToCode='', $Type='QUERY') {
+    return '';
 	if(empty($_SESSION['AccBooth'])) return;
 
 	if(empty($ToCode)) $ToCode=$_SESSION['TourCode'];
@@ -416,6 +417,7 @@ function LogAccBoothQuerry($SQL, $ToCode='', $Type='QUERY') {
 }
 
 function GetAccBoothEnWhere($EnId, $Division=false, $Limit=false) {
+    return '';
 	if(empty($_SESSION['AccBooth'])) return '';
 
 	$q=safe_r_sql("select EnCode, EnIocCode, EnDivision from Entries where EnId=$EnId");

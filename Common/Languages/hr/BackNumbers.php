@@ -151,7 +151,6 @@ $lang['PrintHasPlastic']='Samo kartice vlasnika lanyardsa';
 $lang['PrintSpecificBadges']='Ispis pomoću znački za automatsko podudaranje';
 $lang['PrintSyncResult']='$a Pozadinski brojevi su ispisani!';
 $lang['Q-Badge']='Kvalifikacijski broj sportaša';
-$lang['QrCodeFields']='<ul> <li><b>Prazno: </b>ispisat će se niz odvojen crticom s šifrom unosa, odjelom i klasom</li> <li><b>{ENCODE}: </b>{ENCODE } bit će prevedeno u šifru unosa</li> <li><b>{COUNTRY}: </b>{COUNTRY} će biti prevedeno u šifru zemlje</li> <li><b>{DIVISION}: </b>{DIVISION} bit će preveden u šifru odjela</li> <li><b>{CLASS}: </b>{CLASS} će biti preveden u šifru klase</li> <li>< b>{TOURNAMENT}: </b>{TOURNAMENT} će biti preveden u Kodeks natjecanja</li> </ul>';
 $lang['QRScore']='Rezultat kvalifikacijske runde';
 $lang['QualPosition']='Kvalifikacijska pozicija';
 $lang['RandomImage']='Slučajna slika';
