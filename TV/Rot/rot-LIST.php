@@ -35,7 +35,7 @@ function rotList($TVsettings, $RULE) {
         left JOIN Countries c3 ON c3.CoId=EnCountry3 AND c3.CoTournament=EnTournament
         LEFT JOIN Classes ON EnClass=ClId AND EnTournament=ClTournament
         LEFT JOIN Session ON QuSession=SesOrder AND SesType='Q' AND EnTournament=SesTournament
-        LEFT JOIN Divisions ON EnDivision=DivId AND AtTournament=DivTournament
+        LEFT JOIN Divisions ON EnDivision=DivId AND EnTournament=DivTournament
         WHERE " . implode(' and ',$Filter) . "
         ORDER BY QuSession, QuTarget, QuLetter, c.CoCode, Name, c.CoNameComplete, FirstName ";
 	$Rs=safe_r_sql($Select);
