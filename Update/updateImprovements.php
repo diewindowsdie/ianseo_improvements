@@ -35,24 +35,41 @@ $apiResponse = file_get_contents("https://api.github.com/repos/diewindowsdie/ian
 $releases = json_decode($apiResponse, false);
 
 echo "<span id='main'>\n";
-if (!defined('CurrentTag') || $releases[0]->tag_name !== CurrentTag) {
+
+$usePreReleases = defined('UsePreReleases') ? UsePreReleases : false;
+
+//найдем самый последний релиз (или пре-релиз для случая live)
+$latestReleaseIndex = null;
+for ($i = 0; $i < count($releases); ++$i) {
+    if ($releases[$i]->prerelease == $usePreReleases) {
+        $latestReleaseIndex = $i;
+        break;
+    }
+}
+
+//найдем все релизы от текущего (если он известен) до последнего
+if (!defined('CurrentTag') || $latestReleaseIndex->tag_name !== CurrentTag) {
     //сначала попытаемся найти установленный релиз
-    $currentInstalledIndex = -1;
+    $currentReleaseIndex = -1;
     for ($i = 0; $i < count($releases); ++$i) {
         if ($releases[$i]->tag_name === CurrentTag) {
-            $currentInstalledIndex = $i;
+            $currentReleaseIndex = $i;
             break;
         }
     }
-    if ($currentInstalledIndex === -1) {
-        $currentInstalledIndex = 1;
+    //если мы ничего не нашли - мы не знаем какой релиз стоит сейчас и нужно дать возможность обновления только до последнего релиза (или пре-релиза)
+    if ($currentReleaseIndex === -1) {
+        $currentReleaseIndex = $latestReleaseIndex + 1;
     }
-    for ($i = 0; $i < $currentInstalledIndex; ++$i) {
-        echo "<span>Доступна новая версия: <b>" . $releases[$i]->tag_name . "</b>:<br/>";
-        echo nl2br($releases[$i]->body) . "<br/>";
-        if (is_writable($root)) {
-            echo "<div class='Button' onclick='update_improvements(\"" . $releases[$i]->assets[0]->browser_download_url . "\")'/>Обновить до версии " . $releases[$i]->tag_name . "</div>\n";
-            echo "<b>Размер файла для скачивания: " . round($releases[$i]->assets[0]->size / 1000000). " мб.</b><br/><br/>";
+    for ($i = 0; $i < $currentReleaseIndex; ++$i) {
+        //покажем все доступные релизы или пре-релизы
+        if ($releases[$i]->prerelease == $usePreReleases) {
+            echo "<span>Доступна новая версия: <b>" . $releases[$i]->tag_name . "</b>:<br/>";
+            echo nl2br($releases[$i]->body) . "<br/>";
+            if (is_writable($root)) {
+                echo "<div class='Button' onclick='update_improvements(\"" . $releases[$i]->assets[0]->browser_download_url . "\")'/>Обновить до версии " . $releases[$i]->tag_name . "</div>\n";
+                echo "<b>Размер файла для скачивания: " . round($releases[$i]->assets[0]->size / 1000000) . " мб.</b><br/><br/>";
+            }
         }
     }
 } else {
