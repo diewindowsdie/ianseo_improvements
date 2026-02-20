@@ -48,7 +48,7 @@ for ($i = 0; $i < count($releases); ++$i) {
 }
 
 //найдем все релизы от текущего (если он известен) до последнего
-if (!defined('CurrentTag') || $latestReleaseIndex->tag_name !== CurrentTag) {
+if (!defined('CurrentTag') || $releases[$latestReleaseIndex]->tag_name !== CurrentTag) {
     //сначала попытаемся найти установленный релиз
     $currentReleaseIndex = -1;
     for ($i = 0; $i < count($releases); ++$i) {

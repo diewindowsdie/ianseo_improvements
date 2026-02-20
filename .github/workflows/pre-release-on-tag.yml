@@ -1,0 +1,80 @@
+name: Live Pre-Release on tag
+
+on:
+  push:
+    tags:
+      - 'live_v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify tag is exactly on live HEAD
+        run: |
+          git fetch origin live
+
+          TAG_COMMIT=$(git rev-list -n 1 $GITHUB_REF)
+          LIVE_HEAD=$(git rev-parse origin/live)
+
+          echo "Tag commit: $TAG_COMMIT"
+          echo "Live HEAD:  $LIVE_HEAD"
+
+          if [ "$TAG_COMMIT" != "$LIVE_HEAD" ]; then
+            echo "Tag is not on the latest commit of live branch."
+            exit 1
+          fi
+
+      - name: Prepare variables
+        id: vars
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          ZIP_NAME="${TAG_NAME}.zip"
+
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "zip=$ZIP_NAME" >> $GITHUB_OUTPUT
+
+          # Получаем предыдущий live_v тег (если существует)
+          PREV_TAG=$(git tag -l "live_v*" --sort=-creatordate | grep -v "^$TAG_NAME$" | head -n 1 || true)
+
+          if [ -z "$PREV_TAG" ]; then
+            echo "No previous live tag found."
+          else
+            echo "Previous tag: $PREV_TAG" 
+          fi
+
+          echo "prev_tag=$PREV_TAG" >> $GITHUB_OUTPUT
+
+      - name: Collect commits since previous live release
+        run: |
+          if [ -z "${{ steps.vars.outputs.prev_tag }}" ]; then
+            echo "First live release — collecting full history"
+            git log --pretty=format:"* %s;" > release_notes.md
+          else
+            git log ${{ steps.vars.outputs.prev_tag }}..HEAD \
+              --pretty=format:"* %s;" > release_notes.md
+          fi
+
+      - name: Create zip archive (no hidden files)
+        run: |
+          zip -r "${{ steps.vars.outputs.zip }}" . \
+            -x ".*" \
+            -x "*/.*"
+
+      - name: Create GitHub Pre-Release with asset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.vars.outputs.tag }}" \
+            "${{ steps.vars.outputs.zip }}" \
+            --title "${{ steps.vars.outputs.tag }}" \
+            --notes-file release_notes.md \
+            --prerelease
