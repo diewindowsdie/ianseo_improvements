@@ -190,16 +190,16 @@ if (safe_num_rows($Rs)>0) {
             }
             $pdf->ScoreCellHeight=min(9, ($pdf->getPageHeight()- $pdf->ArucoSize-105-4.5*max(is_array($MyRow->EnId??'') ? count($MyRow->EnId) : 1, is_array($MyRow->OppEnId??'') ? count($MyRow->OppEnId) : 1))/(4+($MyRow->FinElimChooser ? $MyRow->EvElimEnds : $MyRow->EvFinEnds)));
         }
-        $NumUnits=15;
+        $NumUnits=18;
         if($MyRow->EvCheckGolds) {
             $NumUnits++;
         }
         if($MyRow->EvCheckXNines) {
             $NumUnits++;
         }
-        $defGoldW  = $ScoreWidth*(1/$NumUnits);
-        $defTotalW = $ScoreWidth*(3/$NumUnits);
-        $defArrowTotW = $ScoreWidth*(6/$NumUnits);
+        $defGoldW  = $ScoreWidth*(1/$NumUnits); //3x
+        $defTotalW = $ScoreWidth*(2.5/$NumUnits); //2x
+        $defArrowTotW = $ScoreWidth*(10/$NumUnits); //1x
 
         $AthL = array();
         $AthR = array();
@@ -287,9 +287,9 @@ function DrawScore(&$pdf, $MyRow, $Side='L', $Athletes=array()) {
 	}
 	$NumRow=$tmp->ends;
 	$NumCol=$tmp->arrows;
-	$ArrowW = round($defArrowTotW/$NumCol,1);
-	$TotalW=$defTotalW;
-	$GoldW=round($defGoldW,1);
+	$ArrowW = $defArrowTotW/$NumCol;
+	$GoldW = $defGoldW;
+    $TotalW= $defTotalW;
     $margins = $pdf->getMargins();
     $ScoreCellHeight= min(($pdf->GetPageHeight()-($pdf->ArucoSize ? $pdf->ArucoSize+5 :0) - $margins['bottom']-100)/($NumRow+6), $pdf->ScoreCellHeight);
 
@@ -546,7 +546,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L', $Athletes=array()) {
 	$pdf->SetXY($WhereX[$WhichScore],$WhereY[$WhichScore]+($ScoreCellHeight/4));
 	$pdf->SetFont($pdf->FontStd,'B',8);
 	$pdf->Cell($GoldW, $ScoreCellHeight * 3.5 +1, (get_text('TB')),1,0,'C',1);
-    $ShootOffW = min(15, $tmp->so<=$NumCol ? $ArrowW : ($ArrowW*$NumCol)/$tmp->so);
+    $ShootOffW = $tmp->so<=$NumCol ? $ArrowW : ($ArrowW*$NumCol)/$tmp->so;
     $ShootTotalW = min(20, ($tmp->so<$NumCol ? min(20,$NumCol-$tmp->so)*$ArrowW : $TotalW));
     $pdf->SetFont($pdf->FontStd,'',10);
 	$StartX=$pdf->getx();

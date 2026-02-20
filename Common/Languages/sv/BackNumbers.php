@@ -129,7 +129,6 @@ $lang['PosY']='Posistion(Y)';
 $lang['PrintBackNo']='Skrivt ut "startnummerlappar"';
 $lang['PrintSpecificBadges']='Print Using Auto-matching Badges';
 $lang['Q-Badge']='Startnummerlapp';
-$lang['QrCodeFields']='<ul> <li><b>Blank: </b> En "–" separerad sträng med, licensnummer, Skjutstil och klass skrivs ut.</li> <li><b>{ENCODE}: </b>{ENCODE} ger licensnummer</li> <li><b>{COUNTRY}: </b>{COUNTRY} ger Klubb-/lands- nummer/kod.</li> <li><b>{DIVISION}: </b>{DIVISION} ger Skjutstil</li> <li><b>{CLASS}: </b>{CLASS} ger Klass</li> <li><b>{TOURNAMENT}: </b>{TOURNAMENT} ger Tävlingskoden</li> </ul>';
 $lang['QualPosition']='Placering efter kval.';
 $lang['RandomImage']='Bild/foto';
 $lang['Ranking']='Ranking kvalomgång';

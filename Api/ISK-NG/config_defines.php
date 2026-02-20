@@ -1,12 +1,12 @@
 <?php
 
 define('AppNames', [
-	0=>'ISK Lite',
-	1=>'ISK pro',
-	2=>'ISK Live',
-	11=>'ISK NG lite',
+    1=>'Gate NG Live',
+    2=>'Gate NG',
+    11=>'ISK NG lite',
 	12=>'ISK NG Pro',
 	13=>'ISK NG Live',
+
 	]);
 
 // Constants
@@ -16,6 +16,8 @@ const ISK_NG_LIVE = 'ng-live';
 const ISK_NG_LITE_CODE = 11;
 const ISK_NG_PRO_CODE = 12;
 const ISK_NG_LIVE_CODE = 13;
+const GATE_NG_LIVE_CODE = 1;
+const GATE_NG_CODE = 2;
 const ISK_NG_MODULE_ID = 'ISK-NG';
 
 const TYPE_INDIVIDUAL = 'I';

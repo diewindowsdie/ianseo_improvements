@@ -39,9 +39,11 @@
 
 			// Timestampupdate
 			$TimestampUpdate=true;
+            $UpdateMainTimestamp=false;
 
 			switch($field) {
 				case 'division':
+                    $UpdateMainTimestamp=true;
 					$resetPrintBadge=true;
 					$query="SELECT EnDivision FROM Entries WHERE EnId=". StrSafe_DB($id). " AND EnDivision<>" . StrSafe_DB($value) . " " ;
 					$rs=safe_r_sql($query);
@@ -60,9 +62,11 @@
 				case 'name':
 					$value=AdjustCaseTitle($value);
 					$resetPrintBadge=true;
+                    $UpdateMainTimestamp=true;
 					break;
-				case 'EnOnlineId':
 				case 'EnIocCode':
+                    $UpdateMainTimestamp=true;
+				case 'EnOnlineId':
 				case 'EnBadgePrinted':
 				case 'EnWChair':
 				case 'EnSitting':
@@ -72,21 +76,24 @@
 					break;
 			}
 
-			$query = "UPDATE Entries
-				SET "
-					. $entriesMapping[$field] . "=" . StrSafe_DB($value) . " "
-					. ($resetPrintBadge ? ", EnBadgePrinted=0 " : "")
-					. ($TimestampUpdate ? '' : ", EnTimestamp=EnTimestamp ")
-				. " WHERE EnId=" . StrSafe_DB($id) . " ";
+			$query = "UPDATE Entries SET EnTimestamp=EnTimestamp, " . $entriesMapping[$field] . "=" . StrSafe_DB($value) . " WHERE EnId=" . StrSafe_DB($id) . " ";
 			$rs=safe_w_sql($query);
-			if($EnSelect=GetAccBoothEnWhere($id, true, true)) {
-				LogAccBoothQuerry("UPDATE Entries
-					SET "
-						. $entriesMapping[$field] . "=" . StrSafe_DB($value) . " "
-						. ($resetPrintBadge ? ", EnBadgePrinted=0 " : "")
-						. ($TimestampUpdate ? '' : ", EnTimestamp=EnTimestamp ")
-					. " WHERE $EnSelect");
-			}
+            if(safe_w_affected_rows()) {
+                $UpSql=[];
+                $now=date('Y-m-d H:i:s');
+                if($resetPrintBadge) {
+                    $UpSql[]="EnBadgePrinted=0";
+                }
+                if($TimestampUpdate) {
+                    $UpSql[]="EnTimestamp='{$now}'";
+                }
+                if($UpdateMainTimestamp) {
+                    $UpSql[]="EnMainInfoUpdate='{$now}'";
+                }
+                if($UpSql) {
+                    safe_w_sql("update Entries set ".implode(', ',$UpSql)." where EnId={$id}");
+                }
+            }
 
 			//print $query;exit;
 			if (!$rs) {

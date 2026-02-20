@@ -149,7 +149,6 @@ $lang['BadgeStandard6']='Acreditación pequena (1/6 de A4/Carta)';
 $lang['BadgeStandard6-bis']='Acreditación pequena (6) Vegas';
 $lang['BadgeType']='Tipo de acreditación';
 $lang['BadParams']='Parámetros incorrectos!';
-$lang['Barcode']='ID con código de barras unidimensional';
 $lang['BarcodeCapture']='Captura de código de barras';
 $lang['BarcodeMissing']='Imprimir códigos de barras faltantes';
 $lang['BF_Phase']='Final de bronce';
@@ -910,7 +909,6 @@ $lang['Privacy-GDPR']='http://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CE
 $lang['Q-Session']='Roldas de cualificación';
 $lang['QF_Phase']='Cuartos de final';
 $lang['QR-Code']='Código QR';
-$lang['QrCode']='Código QR con detalles do arqueiro';
 $lang['QualificationLoaded']='Datos de cualificación cargados para a sesión {$a}';
 $lang['QualSessionShort']='Ses. Cual.';
 $lang['R-Session']='Liga (Round Robin)';

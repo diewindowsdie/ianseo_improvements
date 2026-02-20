@@ -70,6 +70,7 @@ $JS_SCRIPT=array(
         'usePersonal' => ($UsePersonalDevices ? true : false),
         'tourCode' => $_SESSION["TourCode"],
         'reqAppVersion' => reqAppVersion,
+        'reqGateVersion' => reqGateVersion,
         'SocketIP'=>getModuleParameter('ISK-NG', 'SocketIP', gethostbyname($_SERVER['HTTP_HOST'])),
         'SocketPort'=>getModuleParameter('ISK-NG', 'SocketPort', '12346'),
         'scheduleOpts' => array_values($scheduleOpts),

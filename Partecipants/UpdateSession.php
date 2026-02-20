@@ -79,7 +79,7 @@ if (!IsBlocked(BIT_BLOCK_PARTICIPANT)) {
 
                 // se la sessione è cambiata, annullo il targetno
                     if (safe_w_affected_rows()==1) {
-                        safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId='{$Chiave}'");
+                        safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='".date('Y-m-d H:i:s')."' where EnId='{$Chiave}'");
                         $Update
                             = "UPDATE Qualifications SET "
                             . "QuTarget=0, QuLetter='', QuBacknoPrinted=0, QuTimestamp=QuTimestamp "

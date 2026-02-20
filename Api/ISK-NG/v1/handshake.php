@@ -1,7 +1,13 @@
 <?php
 // Verify required parameters
+$isScoring = true;
 $req->iskType=intval($req->iskType??0);
-$req->tournament=trim($req->tournament??'');
+if(!($req->iskType==GATE_NG_LIVE_CODE OR $req->iskType==GATE_NG_CODE)) {
+    $req->tournament = trim($req->tournament ?? '');
+} else {
+    $req->tournament = '';
+    $isScoring = false;
+}
 if(empty($req->uuid) or empty($req->version) or !$req->iskType) {
     $Json['error'] = true;
     $Json['errorMsg'] = 'Missing parameters for '.$req->action;
@@ -58,14 +64,18 @@ if(safe_num_rows($q) == 0) {
     $res['devCode']=$iskCode;
 
     safe_w_SQL("INSERT INTO IskDevices
-        (IskDvTournament, IskDvDevice, IskDvCode, IskDvVersion, IskDvAppVersion, IskDvProActive, IskDvExtra, IskDvLastSeen) VALUES
-        ({$tourId}, ".StrSafe_DB($req->uuid).", '{$iskCode}', ".StrSafe_DB($req->version??'').", {$req->iskType}, '" .($req->iskType == ISK_NG_LITE_CODE ? '1':'0'). "', '".((empty($req->extra) OR $req->iskType != ISK_NG_LITE_CODE) ? "" : json_encode($req->extra))."', '".date('Y-m-d H:i:s')."')");
+        (IskDvTournament, IskDvDevice, IskDvGroup, IskDvCode, IskDvVersion, IskDvAppVersion, IskDvProActive, IskDvExtra, IskDvLastSeen) VALUES
+        ({$tourId}, ".StrSafe_DB($req->uuid).", ".($isScoring ? 0 : -1). ", '{$iskCode}', ".StrSafe_DB($req->version??'').", {$req->iskType}, '" .($req->iskType == ISK_NG_LITE_CODE ? '1':'0'). "', '".((empty($req->extra) OR $req->iskType != ISK_NG_LITE_CODE) ? "" : json_encode($req->extra))."', '".date('Y-m-d H:i:s')."')");
 } else {
 	// device already exists, check what to do
 	$RESET=false;
 	$r=safe_fetch($q);
     $res['devCode']=$r->IskDvCode;
 	switch($req->iskType) {
+        case GATE_NG_CODE:
+        case GATE_NG_LIVE_CODE:
+            safe_w_sql("update IskDevices set IskDvGroup=-1, IskDvTournament=0 where IskDvDevice=".StrSafe_DB($req->uuid));
+            break;
 		case ISK_NG_LITE_CODE:
 		case ISK_NG_PRO_CODE:
 			// we already know the ISK mode matches the competition mode
@@ -150,7 +160,8 @@ switch($req->iskType) {
 		$res['key'] = getModuleParameter('ISK-NG', 'LicenseNumber', '', $tourId);
 		break;
 	case ISK_NG_LIVE_CODE:
-		$res['key'] = '2100-12-31';
+        $res['key'] = '2100-12-31';
+    case GATE_NG_LIVE_CODE:
 		$res['socketid'] = $req->uuid;
 		break;
 }

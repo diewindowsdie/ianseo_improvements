@@ -579,7 +579,6 @@ $lang['PrintText']='Текст заголовка';
 $lang['PrintTextTitle']='Заголовок для печати результатов';
 $lang['Q-Session']='Квалификационный раунд';
 $lang['QF_Phase']='Четвертьфинал';
-$lang['QrCode']='QR-код с данными спортсмена';
 $lang['QualSessionShort']='Квал-ция';
 $lang['RaiseFlag']='Поднять флаги';
 $lang['RankByDistance']='Ранг по дистанции';

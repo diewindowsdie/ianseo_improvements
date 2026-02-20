@@ -144,7 +144,6 @@ $lang['BadgeStandard6']='Identificación pequeña (1/6 de hoja A4)';
 $lang['BadgeStandard6-bis']='Identificación pequeña (6) Las Vegas';
 $lang['BadgeType']='Tipo de Identificación';
 $lang['BadParams']='¡Parámetros Incorrectos!';
-$lang['Barcode']='ID en código de barras unidimensional';
 $lang['BarcodeCapture']='Captura del código de barras';
 $lang['BarcodeMissing']='Imprimir Códigos de Barras faltantes';
 $lang['BF_Phase']='Final para el Bronce';
@@ -881,7 +880,6 @@ $lang['Privacy-GDPR']='http://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CE
 $lang['Q-Session']='Series de Calificación';
 $lang['QF_Phase']='Cuartos de Final';
 $lang['QR-Code']='Código-QR';
-$lang['QrCode']='Código Qr con los detalles de los arqueros';
 $lang['QualificationLoaded']='Datos de la calificación cargados para el turno {$a}';
 $lang['QualSessionShort']='Sesión de Calificación';
 $lang['R-Session']='Liguilla';

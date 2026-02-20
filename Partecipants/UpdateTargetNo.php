@@ -43,7 +43,7 @@ if (!IsBlocked(BIT_BLOCK_PARTICIPANT)) {
                             $Update = "UPDATE Qualifications SET QuTarget=".$TargetNo.", QuLetter='".$TargetLet."', QuTimestamp=QuTimestamp WHERE QuId=" . StrSafe_DB($Chiave);
                             $RsUp=safe_w_sql($Update);
                             if(safe_w_affected_rows()) {
-                                safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId='{$Chiave}'");
+                                safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "' where EnId='{$Chiave}'");
                                 safe_w_sql("UPDATE Qualifications SET QuBacknoPrinted=0, QuTimestamp=QuTimestamp WHERE QuId='{$Chiave}'");
                             }
                         } else {
@@ -56,7 +56,7 @@ if (!IsBlocked(BIT_BLOCK_PARTICIPANT)) {
                     $Update = "UPDATE Qualifications SET QuTarget=0, QuLetter='', QuBacknoPrinted=0, QuTimestamp=QuTimestamp WHERE QuId=" . StrSafe_DB($Chiave);
                     $RsUp=safe_w_sql($Update);
                     if(safe_w_affected_rows()) {
-                        safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId='{$Chiave}'");
+                        safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "' where EnId='{$Chiave}'");
                     }
                 } else {
                     $Errore = 1;

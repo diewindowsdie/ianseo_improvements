@@ -17,12 +17,15 @@ Device IP | Accreditation Printer Queue <br>
 Device IP | Accreditation Printer Queue | Name Tag Printer Queue<br>
 Printer Queue in form: Queue Name [ @ Printer Server ]<br>
 If no Printer Queue is defined, then the standard print dialog will show';
+$lang['AutoCHK-IPBowStorage']='List of IP of Bow Storage points. One IP Address per line';
+$lang['AutoCHK-IPGoodiesDistribution']='List of IP of Goodie Bags distribution points. One IP Address per line';
 $lang['AutoCHK-IPinfo']='List of IP of self info points. One IP Address per line';
 $lang['AutoCHK-IPnoMgm']='List of IP of self check-in kiosks. One IP Address per line, matching one of the following formats:<br>
 Device IP<br>
 Device IP | Accreditation Printer Queue <br>
 Device IP | Accreditation Printer Queue | Name Tag Printer Queue<br>
 Printer Queue in form: Queue Name [ @ Printer Server ]';
+$lang['AutoCHK-IPPaidPractice']='List of IP of Paid Practice points. One IP Address per line';
 $lang['AutoCHK-Print']='Automatically show print dialog';
 $lang['AutoImportSettings']='<b>Only for Expert Users</b><br>Changing the default behavior could result in inaccurate results.<br>
 It is important to recalculate all the ranks that have been setup as "manually" BEFORE sending to ianseo.net or printing results and in general before every distribution of any kind.';
@@ -57,6 +60,9 @@ $lang['FontStyle']='Style of the font in CSS';
 $lang['FontWeight']='Weight of the font in CSS';
 $lang['GetBarcodeSeparator']='After printing the barcodes reference sheet, read the «SEPARATOR» barcode in order to activate the correct reader items.';
 $lang['HomePage']='This is the page where you can select or create a tournament.';
+$lang['IfaaFlintIndoorHelp']='Cells with a red border show the sessions with archers of that category<br/>
+Click on the Session Headings will select all the categories already in that session</br>
+Select the destination session where the session will be merged.';
 $lang['ISK-LockedSessionHelp']='{$a} icons show if the app can score or not in that session.';
 $lang['ISK-ServerUrlPin']='<b>DO NOT SHARE THIS NUMBER</b><br>Use a PIN of your choice (4 Numeric Digits) to be used to access your competition.<br>
 Devices can score in your competition only reading the QR-Code printed by IANSEO.<br>

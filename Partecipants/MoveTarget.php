@@ -33,7 +33,7 @@ if (isset($_REQUEST['command'])) {
 				AND Qualifications.QuSession=" . StrSafe_DB($startSession) . "
 				AND QuTarget>=" . intval($sourceFrom) . " AND QuTarget<=" . intval($sourceTo);
 			safe_w_sql("Update Entries inner join Qualifications on EnId=QuId
-				set EnTimestamp='".date('Y-m-d H:i:s')."'
+				set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='".date('Y-m-d H:i:s')."'
 				where (QuSession!=" . StrSafe_DB($endSession) . " or QuTarget!=0) and $Where");
 			$query = "UPDATE Entries INNER JOIN Qualifications ON EnId=QuId
 				SET QuTimestamp=Qutimestamp,

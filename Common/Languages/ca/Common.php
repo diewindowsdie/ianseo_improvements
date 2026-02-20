@@ -437,6 +437,7 @@ $lang['MenuLM_Update']='Actualitzar Ianseo';
 $lang['MenuLM_UpdateWeb']='Actualitzar en directe';
 $lang['MenuLM_Versioning']='Document versió';
 $lang['MenuLM_View Competition Info']='Veure informació de la Competició';
+$lang['MenuLM_Wallet']='Moneders electrònics';
 $lang['MenuLM_WaRecords']='Actualitzar rècords WA';
 $lang['MF']='Veterans Dones';
 $lang['MixedTeamEvent']='Esdeveniment d\'equips mixtes';

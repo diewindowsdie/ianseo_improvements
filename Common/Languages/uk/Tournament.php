@@ -459,7 +459,6 @@ $lang['PrintScoreTeam']='Друк карток запису результаті
 $lang['PrintTextTitle']='Заголовок для друку результатів';
 $lang['Q-Session']='Кваліфікаційний раунд';
 $lang['QR-Code']='QR-код';
-$lang['QrCode']='QR-код з деталями спортсмена';
 $lang['QualSessionShort']='Квал. зміни';
 $lang['R-Session']='КРУГОВІ';
 $lang['RA-Session']='Ран арчері';

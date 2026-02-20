@@ -29,6 +29,7 @@ $ID=(empty($_REQUEST['id']) ? '0' : $_REQUEST['id']);
 $update=$ID;
 $resetPrintBadge=false;
 $UpdateTimestamp=true;
+$UpdateMainTimestamp=false;
 
 $SelectEnId='';
 if($ID and $_SESSION['AccBooth']) {
@@ -44,11 +45,13 @@ if($field) {
 		case 'subclass':
 			$FIELD='EnSubclass';
 			$Recalc=true;
+            $UpdateMainTimestamp=true;
 			break;
 		case 'division':
 			$FIELD='EnDivision';
 			$resetPrintBadge=true;
 			$Recalc=true;
+            $UpdateMainTimestamp=true;
 			break;
 		case 'ageclass':
 			$FIELD='EnAgeClass';
@@ -59,16 +62,19 @@ if($field) {
 			$FIELD='EnClass';
 			$resetPrintBadge=true;
 			$Recalc=true;
+            $UpdateMainTimestamp=true;
 			break;
 		case 'firstname':
 			$FIELD='EnFirstname';
 			$resetPrintBadge=true;
 			$value=AdjustCaseTitle($value);
+            $UpdateMainTimestamp=true;
 			break;
 		case 'name':
 			$FIELD='EnName';
 			$resetPrintBadge=true;
 			$value=AdjustCaseTitle($value);
+            $UpdateMainTimestamp=true;
 			break;
 		case 'tvname':
 			$FIELD='EnOdfShortname';
@@ -105,15 +111,9 @@ if($field) {
 				// update
 				safe_w_sql("insert into ExtraData set $FIELD=".StrSafe_DB($value).  ", EdId=$ID, EdType='E' on duplicate key update $FIELD=".StrSafe_DB($value).  "");
 				$up=safe_w_affected_rows();
-				if($SelectEnId) {
-					LogAccBoothQuerry("insert into ExtraData set $FIELD=".StrSafe_DB($value).  ", EdId=($SelectEnId), EdType='E' on duplicate key update $FIELD=".StrSafe_DB($value), $ENTRY->ToCode);
-				}
 				if($up) {
 					// updates the entry timestamp as well
 					safe_w_SQL("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId={$ID}");
-					if($SelectEnId) {
-						LogAccBoothQuerry("update Entries set EnTimestamp='" . date('Y-m-d H:i:s') . "' where EnId=($SelectEnId)");
-					}
 				}
 			}
 		}
@@ -172,16 +172,24 @@ if($field) {
 					list($indFEventOld,$teamFEventOld,$countryOld,$divOld,$clOld,$subClOld,$zeroOld)=$x;
 				}
 				// update
-				safe_w_sql("update Entries set $FIELD=".StrSafe_DB($value)
-					.  ($resetPrintBadge ? ", EnBadgePrinted=0" : "")
-					.  ($UpdateTimestamp ? '' : ", EnTimestamp=EnTimestamp")
+				safe_w_sql("update Entries set EnTimestamp=EnTimestamp, $FIELD=".StrSafe_DB($value)
 					. " where EnId=$ID");
-				if($SelectEnId) {
-					LogAccBoothQuerry("update Entries set $FIELD=".StrSafe_DB($value)
-						.  ($resetPrintBadge ? ", EnBadgePrinted=0" : "")
-						.  ($UpdateTimestamp ? '' : ", EnTimestamp=EnTimestamp")
-						. " where EnCode='$ENTRY->EnCode' and EnIocCode='$ENTRY->EnIocCode' and EnDivision='$ENTRY->EnDivision' and EnTournament=§TOCODETOID§", $ENTRY->ToCode);
-				}
+                if(safe_w_affected_rows()) {
+                    $UpSql=[];
+                    $now=date('Y-m-d H:i:s');
+                    if($resetPrintBadge) {
+                        $UpSql[]="EnBadgePrinted=0";
+                    }
+                    if($UpdateTimestamp) {
+                        $UpSql[]="EnTimestamp='{$now}'";
+                    }
+                    if($UpdateMainTimestamp) {
+                        $UpSql[]="EnMainInfoUpdate='{$now}'";
+                    }
+                    if($UpSql) {
+                        safe_w_sql("update Entries set ".implode(', ',$UpSql)." where EnId={$ID}");
+                    }
+                }
 
 				switch($field) {
 					case 'division':
@@ -215,11 +223,10 @@ if($field) {
 								// reset Shooting Class
 								$sql[]="EnClass=''";
 							}
-							safe_w_sql("update Entries set ".implode(',', $sql)." where EnId=$ID");
-
-							if($SelectEnId) {
-								LogAccBoothQuerry("update Entries set ".implode(',', $sql)." where EnCode='$ENTRY->EnCode' and EnIocCode='$ENTRY->EnIocCode' and EnDivision='$ENTRY->EnDivision' and EnTournament=§TOCODETOID§", $ENTRY->ToCode);
-							}
+							safe_w_sql("update Entries set EnTimestamp=EnTimestamp, ".implode(',', $sql)." where EnId={$ID}");
+                            if(safe_w_affected_rows()) {
+                                safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='".date('Y-m-d H:i:s')."' where EnId={$ID}");
+                            }
 						} else {
 							$Errore=1;
 						}
@@ -248,14 +255,9 @@ if($field) {
 				}
 			} else {
 				// insert a new one and gives alert back to the page
-				safe_w_sql("insert into Entries set EnTournament={$_SESSION['TourId']}, $FIELD=".StrSafe_DB($value)."");
+				safe_w_sql("insert into Entries set EnMainInfoUpdate='".date('Y-m-d H:i:s')."', EnTournament={$_SESSION['TourId']}, $FIELD=".StrSafe_DB($value)."");
 				$ID=safe_w_last_id();
 				safe_w_sql("insert into Qualifications set QuId=$ID".($session ? ", QuSession=$session" . ($targetno ? "QuTarget=".intval($targetno).", QuLetter='".strtoupper(substr($targetno, -1))."'" : '') : ''));
-
-				if($_SESSION['AccBooth']) {
-					LogAccBoothQuerry("insert into Entries set EnTournament=§TOCODETOID§, $FIELD=".StrSafe_DB($value), $_SESSION['TourCode']);
-					LogAccBoothQuerry("insert into Qualifications set QuId=($SelectEnId) ".($session ? ", QuSession=$session" . ($targetno ? "QuTarget=".intval($targetno).", QuLetter='".strtoupper(substr($targetno, -1))."'" : '') : ''), $_SESSION['TourCode']);
-				}
 			}
 			checkAgainstLUE($ID);
 		}

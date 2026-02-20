@@ -68,9 +68,6 @@
 
 						// estraggo l'ultimo id
 						$CoId=safe_w_last_id();
-
-						// we need to add this country...
-						LogAccBoothQuerry("insert ignore into Countries set CoCode=".StrSafe_DB($CoCode).", CoTournament=§TOCODETOID§", $_SESSION['TourCode']);
 					}
 
 					$EnCountries[$v]=$CoId;
@@ -80,9 +77,6 @@
 						. "CoName=" . StrSafe_DB($CoName) . " "
 						. "WHERE CoId=" . StrSafe_DB($CoId) . " AND CoTournament=" . StrSafe_DB($_SESSION['TourId']) . " ";
 					$Rs=safe_w_sql($Update);
-
-					// we need to update this country...
-					LogAccBoothQuerry("update Countries set CoName=" . StrSafe_DB($CoName) . " where CoCode=".StrSafe_DB($CoCode)." and CoTournament=§TOCODETOID§", $_SESSION['TourCode']);
 				}
 			}
 
@@ -194,10 +188,10 @@
 			$SelectEnId="select EnId from Entries where EnTournament=§TOCODETOID§ and EnCode='{$EnCode}' and EnIocCode='{$EnIocCode}' and EnDivision='{$EnDivision}' limit 1";
 
 			$Insert = "INSERT INTO Entries set
-					". ($id ? " EnId='{$id}', EnTimestamp=EnTimestamp, " : " EnTimestamp='{$Now}', ") ."
+					". ($id ? " EnId='{$id}', EnTimestamp=EnTimestamp, " : " EnTimestamp='{$Now}', EnMainInfoUpdate='{$Now}', ") ."
 					$Sql
 				ON DUPLICATE KEY UPDATE
-					EnTimestamp='{$Now}', $Sql"
+					EnTimestamp='{$Now}', EnMainInfoUpdate='{$Now}', $Sql"
 			;
 			$Rs=safe_w_sql(str_replace(array('§TOCODETOID§', '-Country-','-Country2-','-Country3-'), array(StrSafe_DB($_SESSION['TourId']), StrSafe_DB($EnCountries['']), StrSafe_DB($EnCountries['2']), StrSafe_DB($EnCountries['3'])), $Insert));
 
@@ -205,24 +199,9 @@
 			if ($id==0) {
 				$id=safe_w_last_id();
 				$NewAthlete=true;
-			}
-
-			if($NewAthlete) {
-				LogAccBoothQuerry(str_replace(array('-Country-','-Country2-','-Country3-'), array(
-						$EnCoCodes[''] ? "(select CoId from Countries where CoCode='{$EnCoCodes['']}' and CoTournament=§TOCODETOID§)" : 0,
-						$EnCoCodes['2'] ? "(select CoId from Countries where CoCode='{$EnCoCodes['2']}' and CoTournament=§TOCODETOID§)" : 0,
-						$EnCoCodes['3'] ? "(select CoId from Countries where CoCode='{$EnCoCodes['3']}' and CoTournament=§TOCODETOID§)" : 0,
-						), "INSERT INTO Entries set EnTimestamp='{$Now}', EnIocCode='{$EnIocCode}', EnWChair='$EnWChair', EnDoubleSpace='$EnDouble', $Sql"), $_SESSION['TourCode']);
-				LogAccBoothQuerry("insert into Qualifications set QuSession='0', QuId=($SelectEnId)", $_SESSION['TourCode']);
 			} else {
 				if(safe_w_affected_rows()) {
-					safe_w_sql("update Entries set EnTimestamp='{$Now}', EnBadgePrinted=0 where EnId=$id");
-					LogAccBoothQuerry(str_replace(array('-Country-','-Country2-','-Country3-'), array(
-							$EnCoCodes[''] ? "(select CoId from Countries where CoCode='{$EnCoCodes['']}' and CoTournament=§TOCODETOID§)" : 0,
-							$EnCoCodes['2'] ? "(select CoId from Countries where CoCode='{$EnCoCodes['2']}' and CoTournament=§TOCODETOID§)" : 0,
-							$EnCoCodes['3'] ? "(select CoId from Countries where CoCode='{$EnCoCodes['3']}' and CoTournament=§TOCODETOID§)" : 0,
-							), "update Entries set EnTimestamp={$Now}, EnBadgePrinted=0, EnWChair='$EnWChair', EnDoubleSpace='$EnDouble', $Sql
-								where EnTournament=§TOCODETOID§ and EnCode='{$EnCode}' and EnIocCode='{$EnIocCode}' and EnDivision='{$EnDivision}'"), $_SESSION['TourCode']);
+					safe_w_sql("update Entries set EnTimestamp='{$Now}', EnMainInfoUpdate='{$Now}', EnBadgePrinted=0 where EnId=$id");
 				}
 			}
 
@@ -232,26 +211,27 @@
 				EnWChair=" . StrSafe_DB($EnWChair) . ",
 				EnDoubleSpace=" . StrSafe_DB($EnDouble) . "
 				where EnId=$id");
+            if(safe_w_affected_rows()) {
+                safe_w_sql("update Entries set EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "' where EnId={$id}");
+            }
 
 			// deletes the email
 			safe_w_SQL("update ExtraData set EdEmail='' where EdId=$id and EdType='E'");
-			LogAccBoothQuerry("update ExtraData set EdEmail='' where EdId=($SelectEnId) and EdType='E'");
 			safe_w_sql("delete from ExtraData where EdEmail='' and EdId=$id and EdType='E' and EdExtra=''");
-			LogAccBoothQuerry("delete from ExtraData where EdEmail='' and EdId=($SelectEnId) and EdType='E' and EdExtra=''");
 
 			// updates the flights for Vegas... if any
 			safe_w_sql("update Vegas set VeSubClass=".StrSafe_DB(trim($_REQUEST['d_e_EnSubClass_']??''))." where VeId=$id");
-			LogAccBoothQuerry("update Vegas set VeSubClass=".StrSafe_DB(trim($_REQUEST['d_e_EnSubClass_']??''))." where VeId=($SelectEnId)");
+            if(safe_w_affected_rows()) {
+                safe_w_sql("update Entries set EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "' where EnId={$id}");
+            }
 
 			// if it is an email...
 			if(preg_match('/^[a-z0-9._#-]+@[a-z0-9._-]+$/sim', $_REQUEST['d_ed_EdEmail_'])) {
 				safe_w_sql("insert into ExtraData set EdId=$id, EdType='E', EdEmail=".StrSafe_DB($_REQUEST['d_ed_EdEmail_'])." on duplicate key update EdEmail=".StrSafe_DB($_REQUEST['d_ed_EdEmail_']));
 				$up=safe_w_affected_rows();
-				LogAccBoothQuerry("insert into ExtraData set EdId=($SelectEnId), EdType='E', EdEmail=".StrSafe_DB($_REQUEST['d_ed_EdEmail_'])." on duplicate key update EdEmail=".StrSafe_DB($_REQUEST['d_ed_EdEmail_']));
 				if($up) {
 				    // updates the entry timestamp as well
                     safe_w_SQL("update Entries set EnTimestamp='{$Now}' where EnId={$id}");
-                    LogAccBoothQuerry("update Entries set EnTimestamp='{$Now}' where EnId=($SelectEnId)");
                 }
 			}
 
@@ -276,11 +256,8 @@
 				. "WHERE  ";
 			$Rs=safe_w_sql($Update."QuId=" . StrSafe_DB($id));
 			if(safe_w_affected_rows()) {
-				LogAccBoothQuerry($Update." QuId=($SelectEnId)");
-				safe_w_sql("Update Entries set EnTimestamp='{$Now}' where EnId={$id}");
-				LogAccBoothQuerry("Update Entries set EnTimestamp='{$Now}' where EnId=($SelectEnId)");
+				safe_w_sql("Update Entries set EnTimestamp='{$Now}', EnMainInfoUpdate='{$Now}' where EnId={$id}");
 				safe_w_sql("update Qualifications SET QuBacknoPrinted=0, QuTimestamp=QuTimestamp where QuId={$id}");
-				LogAccBoothQuerry("update Qualifications SET QuBacknoPrinted=0, QuTimestamp=QuTimestamp where QuId=($SelectEnId)");
 			}
 
 			if ($recalc) {

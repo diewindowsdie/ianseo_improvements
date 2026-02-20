@@ -140,7 +140,6 @@ $lang['BadgeStandard6']='Lencana Kecil (1/6 dari A4/Surat)';
 $lang['BadgeStandard6-bis']='Lencana Kecil (6) Vegas';
 $lang['BadgeType']='Jenis Lencana';
 $lang['BadParams']='Parameter Tidak Betul!';
-$lang['Barcode']='ID kod bar dimensi tunggal';
 $lang['BarcodeCapture']='Menangkap kod bar';
 $lang['BarcodeMissing']='Cetak Kod Bar yang Hilang';
 $lang['BF_Phase']='Akhir Gangsa';

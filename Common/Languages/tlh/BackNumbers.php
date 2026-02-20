@@ -129,7 +129,6 @@ $lang['PrintBackNo']=' ';
 $lang['PrintHasPlastic']='    ';
 $lang['PrintSpecificBadges']='    ';
 $lang['Q-Badge']='  ';
-$lang['QrCodeFields']='<ul> <li><b>: </b>-   ,  </li> <li><b>{ENCODE}: </b>{ENCODE} </li> <li><b>{COUNTRY}: </b>{COUNTRY} </li> <li><b>{DIVISION}: </b>{DIVISION} </li> <li><b>{CLASS}: </b>{CLASS} </li> <li><b>{TOURNAMENT}: </b>{TOURNAMENT} </li> </ul>';
 $lang['RandomImage']='';
 $lang['Ranking']='';
 $lang['ReadSeparator']=' ';

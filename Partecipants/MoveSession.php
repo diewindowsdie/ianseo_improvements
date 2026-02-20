@@ -37,7 +37,7 @@
 
 		// query per cancellare i bersagli considerando il filtro un NON evento
 		safe_w_sql("update Entries inner join Qualifications on EnId=QuId
-				set EnTimestamp='".date('Y-m-d H:i:s')."'
+				set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='".date('Y-m-d H:i:s')."'
 				Where QuSession=" . StrSafe_DB($endSession) . " and $Where");
 		$query = "UPDATE Entries INNER JOIN Qualifications ON EnId=QuId
 			SET QuSession=" . StrSafe_DB($endSession) . ",

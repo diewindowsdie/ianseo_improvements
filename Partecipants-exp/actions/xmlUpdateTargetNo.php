@@ -27,15 +27,10 @@ if (!IsBlocked(BIT_BLOCK_PARTICIPANT)) {
     if (trim($target)=='') {
         $query = "UPDATE Qualifications SET QuTarget=0, QuLetter='', QuTimestamp=QuTimestamp WHERE QuId=" . StrSafe_DB($id);
 
-        if($EnSelect=GetAccBoothEnWhere($id, true, true)) {
-            LogAccBoothQuerry("UPDATE Qualifications SET QuTarget=0, QuLetter='', QuTimestamp=QuTimestamp WHERE QuId=(select EnId from Entries where $EnSelect)", $_SESSION['TourCode']);
-        }
         $rs=safe_w_sql($query);
         if(safe_w_affected_rows()) {
-            safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId='{$id}'");
+            safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "' where EnId='{$id}'");
             safe_w_sql("UPDATE Qualifications SET QuBacknoPrinted=0, QuTimestamp=QuTimestamp WHERE QuId='{$id}'");
-            LogAccBoothQuerry("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where $EnSelect", $_SESSION['TourCode']);
-            LogAccBoothQuerry("UPDATE Qualifications SET QuBacknoPrinted=0, QuTimestamp=QuTimestamp WHERE QuId=(select EnId from Entries where $EnSelect)", $_SESSION['TourCode']);
         }
         $error = 0;
     } else {
@@ -64,17 +59,10 @@ if (!IsBlocked(BIT_BLOCK_PARTICIPANT)) {
                     }
 
                     $query = "UPDATE Qualifications SET QuTarget=$targetNo, QuLetter=" . StrSafe_DB($targetLetter) . ", QuTimestamp=QuTimestamp WHERE QuId=" . StrSafe_DB($id);
-                    if($EnSelect=GetAccBoothEnWhere($id, true, true)) {
-                        LogAccBoothQuerry("UPDATE Qualifications
-                            SET QuTarget=$targetNo, QuLetter=" . StrSafe_DB($targetLetter) . ", QuTimestamp=QuTimestamp
-                            WHERE QuId=(select EnId from Entries where $EnSelect)", $_SESSION['TourCode']);
-                    }
                     $rs=safe_w_sql($query);
                     if(safe_w_affected_rows()) {
-                        safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where EnId='{$id}'");
+                        safe_w_sql("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "' where EnId='{$id}'");
                         safe_w_sql("UPDATE Qualifications SET QuBacknoPrinted=0, QuTimestamp=QuTimestamp WHERE QuId='{$id}'");
-                        LogAccBoothQuerry("update Entries set EnTimestamp='".date('Y-m-d H:i:s')."' where $EnSelect", $_SESSION['TourCode']);
-                        LogAccBoothQuerry("UPDATE Qualifications SET QuBacknoPrinted=0, QuTimestamp=QuTimestamp WHERE QuId=(select EnId from Entries where $EnSelect)", $_SESSION['TourCode']);
                     }
                 }
             }

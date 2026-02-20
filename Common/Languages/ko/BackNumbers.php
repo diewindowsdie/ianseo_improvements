@@ -17,13 +17,5 @@ $lang['BarCodeFields']='<ul>
   <li><b>{CLASS}: </b>{CLASS}는 클래스 코드로 변환됩니다.</li>
   <li><b>{TOURNAMENT}: </b>{TOURNAMENT}는 대회 코드로 변환됩니다.</li>
 </ul>';
-$lang['QrCodeFields']='<ul> 
- <li><b>공란: </b>입력 코드, 디비전, 클래스가 대시로 구분된 문자열이 출력됩니다.</li>
-  <li><b>{ENCODE}: </b>{ENCODE}는 입력 코드로 변환됩니다.</li>
-  <li><b>{COUNTRY}: </b>{COUNTRY}는 국가 코드로 변환됩니다.</li>
-  <li><b>{DIVISION}: </b>{DIVISION}은 디비전 코드로 변환됩니다.</li>
-  <li><b>{CLASS}: </b>{CLASS}는 클래스 코드로 변환됩니다.</li>
-  <li><b>{TOURNAMENT}: </b>{TOURNAMENT}는 대회 코드로 변환됩니다.</li>
-</ul>';
 $lang['SetAccreditationMatches']='이 뱃지는 다음 카테고리에 맞게 지정될 수 있습니다.';
 ?>

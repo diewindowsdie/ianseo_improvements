@@ -168,7 +168,6 @@ $lang['PrintHasPlastic']='Hanya pemegang Kartu Lanyard';
 $lang['PrintSpecificBadges']='Cetak Menggunakan Lencana Pencocokan Otomatis';
 $lang['PrintSyncResult']='$a Nomor Punggung telah diset untuk dicetak!';
 $lang['Q-Badge']='Nomor Kualifikasi Atlet';
-$lang['QrCodeFields']='<ul> <li><b>Kosong: </b>string yang dipisahkan tanda hubung dengan Kode Entri, Divisi, dan Kelas akan dicetak</li> <li><b>{ENCODE}: </b>{ENCODE } akan diterjemahkan ke dalam Kode Entri</li> <li><b>{COUNTRY}: </b>{COUNTRY} akan diterjemahkan ke dalam Kode Negara</li> <li><b>{DIVISION}: </b>{DIVISION} akan diterjemahkan ke dalam Kode Divisi</li> <li><b>{CLASS}: </b>{CLASS} akan diterjemahkan ke dalam Kode Kelas</li> <li>< b>{TOURNAMENT}: </b>{TOURNAMENT} akan diterjemahkan ke dalam Kode Kompetisi</li> </ul>';
 $lang['QRScore']='Skor Babak Kualifikasi';
 $lang['QualPosition']='Posisi Kualifikasi';
 $lang['RandomImage']='Gambar acak';

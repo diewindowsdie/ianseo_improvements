@@ -154,7 +154,7 @@ function devicesRenderer(data) {
                 }
                 //App Info
                 tmpRow.append('<td id="devApp_' + this.tDevice + '">' + this.tApp + '</td>');
-                tmpRow.append('<td id="devAppVersion_' + this.tDevice + '"' + (this.tAppVersion < reqAppVersion ? ' class="versionTooLow"' : '') + '>' + this.tAppVersion + '</td>');
+                tmpRow.append('<td id="devAppVersion_' + this.tDevice + '"' + (this.tAppVersion < (this.tAppScoring ? reqAppVersion : reqGateVersion) ? ' class="versionTooLow"' : '') + '>' + this.tAppVersion + '</td>');
                 //Device IDs
                 tmpRow.append('<td class="txtFixW Right" id="devCode_' + this.tDevice + '">' + this.tCode + '</td>');
                 tmpRow.append('<td class="txtFixW" id="devId_' + this.tDevice + '">' + this.tDevice + '</td>');

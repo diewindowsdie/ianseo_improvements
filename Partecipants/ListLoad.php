@@ -111,7 +111,11 @@ if($DataSource) {
 							if($Where=GetAccBoothEnWhere($r->EnId, true, true)) {
 								LogAccBoothQuerry("UPDATE Entries SET EnCountry = (select CoId from Countries where CoCode=".StrSafe_DB($tmpString[2])." and CoTournament=§TOCODETOID§) WHERE $Where");
 							}
-							safe_w_sql("UPDATE Entries SET EnCountry =".intval($CoId)." WHERE EnId=$r->EnId");
+							safe_w_sql("UPDATE Entries SET EnTimestamp=EnTimestamp, EnCountry =".intval($CoId)." WHERE EnId=$r->EnId");
+                            if(safe_w_affected_rows()) {
+                                $now=date('Y-m-d H:i:s');
+                                safe_w_sql("UPDATE Entries SET EnTimestamp='{$now}', EnMainInfoUpdate='{$now}' WHERE EnId=$r->EnId");
+                            }
 							$ImportResult['Inserted'][]='<tr><td>Inserted/updated</td><td>'.$tmpString[1].'</td><td>'.$tmpString[2].'</td></tr>';
 							$ImportResult['Imported']++;
 						}
@@ -284,6 +288,10 @@ if($DataSource) {
                 if(safe_num_rows($q)) {
                     while($r=safe_fetch($q)) {
                         safe_w_sql("Update Qualifications SET QuSession={$tmpString[2]}, QuTarget={$tgt}, QuLetter='{$letter}'  WHERE QuId=$r->EnId");
+                        if(safe_w_affected_rows()) {
+                            $now=date('Y-m-d H:i:s');
+                            safe_w_sql("update Entries set EnMainInfoUpdate='{$now}' where EnId={$r->EnId}");
+                        }
                         $ImportResult['Inserted'][]='<tr><td>Inserted/updated</td><td>'.$tmpString[1].'</td><td>'.$tmpString[2].'</td><td>'.$tmpString[3].'</td></tr>';
                         $ImportResult['Imported']++;
                     }
@@ -409,6 +417,10 @@ if($DataSource) {
 				if(safe_num_rows($q)) {
                     while($r=safe_fetch($q)) {
                         safe_w_sql("UPDATE Entries SET EnSubClass =".StrSafe_DB($tmpString[2])." WHERE EnId=$r->EnId");
+                        if(safe_w_affected_rows()) {
+                            $now=date('Y-m-d H:i:s');
+                            safe_w_sql("update Entries set EnMainInfoUpdate='{$now}' where EnId={$r->EnId}");
+                        }
                         $ImportResult['Inserted'][]='<tr><td>Inserted/updated</td><td>'.$tmpString[1].'</td><td>'.$tmpString[2].'</td></tr>';
                         $ImportResult['Imported']++;
                     }
@@ -943,8 +955,8 @@ if($DataSource) {
 						LogAccBoothQuerry("update Qualifications set QuSession='$Session2Save', QuTarget='$Target2Save', QuLetter='$Letter2Save', QuTimestamp=QuTimestamp where QuId=(select EnId from Entries where $Where)");
 						checkAgainstLUE($EnIdToUpdate);
 
-						safe_w_sql("Update Entries set EnBadgePrinted=0, EnTimestamp='".date('Y-m-d H:i:s')."' where EnId=$EnIdToUpdate");
-						LogAccBoothQuerry("update Entries set EnBadgePrinted=0, EnTimestamp='".date('Y-m-d H:i:s')."' where $Where");
+						safe_w_sql("Update Entries set EnBadgePrinted=0, EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='".date('Y-m-d H:i:s')."' where EnId=$EnIdToUpdate");
+						LogAccBoothQuerry("update Entries set EnBadgePrinted=0, EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='".date('Y-m-d H:i:s')."' where $Where");
 						if($Session2Save!=$r->QuSession) $tmpString[1]="<del>$r->QuSession</del><br/>$Session2Save";
 						if($Division2Save!=$r->EnDivision) $tmpString[2]="<del>$r->EnDivision</del><br/>$Division2Save";
 						if($Class2Save!=$r->EnClass) $tmpString[3]="<del>$r->EnClass</del><br/>$Class2Save";
@@ -1014,7 +1026,7 @@ if($DataSource) {
 			if(!$TeamUpdate) {
 				$EntrySQL.=", EnCountry=-Country-, EnCountry2=-Country2-, EnCountry3=-Country3- ";
 			}
-			$Insert = "INSERT INTO Entries set EnTimestamp='".date('Y-m-d H:i:s')."', $EntrySQL";
+			$Insert = "INSERT INTO Entries set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='".date('Y-m-d H:i:s')."', $EntrySQL";
 
 			LogAccBoothQuerry(str_replace(
 				array('-Country-','-Country2-','-Country3-'),

@@ -148,7 +148,6 @@ $lang['BadgeStandard6']='Kleine Badge (1/6 van een A4)';
 $lang['BadgeStandard6-bis']='Kleine badges (6) Vegas';
 $lang['BadgeType']='Badge soort';
 $lang['BadParams']='Foutieve parameters';
-$lang['Barcode']='1-dimensie barcode-id';
 $lang['BarcodeCapture']='Barcode vangen';
 $lang['BarcodeMissing']='Afdrukken ontbrekende barcode';
 $lang['BF_Phase']='Bronzen finale';

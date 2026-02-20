@@ -44,7 +44,7 @@ if (isset($_REQUEST['command']) and !IsBlocked(BIT_BLOCK_PARTICIPANT) and $filte
 		}
 		// query per cancellare i bersagli considerando il filtro un NON evento
 		safe_w_sql("Update Entries inner join Qualifications ON EnId=QuId
-			set EnTimestamp='".date('Y-m-d H:i:s')."'
+			set EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "'
 			where (".implode(' or ', $Fields).") and $Where");
 		$query = "UPDATE Entries INNER JOIN Qualifications ON EnId=QuId
 			SET QuTimestamp=QuTimestamp, QuBacknoPrinted=0, ".implode(', ', $Fields)." WHERE $Where";
@@ -68,7 +68,7 @@ if (isset($_REQUEST['command']) and !IsBlocked(BIT_BLOCK_PARTICIPANT) and $filte
 		safe_w_sql("UPDATE Entries 
             INNER JOIN Qualifications ON EnId=QuId AND EnIndFEvent=1 
             INNER JOIN EventClass ON EnDivision=EcDivision AND EnClass=EcClass AND EnTournament=EcTournament and if(EcSubClass='', true, EcSubClass=EnSubClass) AND EcTeamEvent=0
-			SET EnTimestamp='".date('Y-m-d H:i:s')."'
+			SET EnTimestamp='".date('Y-m-d H:i:s')."', EnMainInfoUpdate='" . date('Y-m-d H:i:s') . "'
 			WHERE (".implode(' or ', $Fields).") and $Where");
 		$query = "UPDATE Entries 
             INNER JOIN Qualifications ON EnId=QuId AND EnIndFEvent=1 

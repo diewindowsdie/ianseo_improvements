@@ -194,6 +194,7 @@ switch($_REQUEST['act']??'') {
                                 DiEnds=" . $tmpSesDist[($ses->SesOrder-1).'.'.$dist]->DiEnds . ",
                                 DiArrows=" . $tmpSesDist[($ses->SesOrder-1).'.'.$dist]->DiArrows . ",
                                 DiType='Q'");
+                            $tmpSesDist[$ses->SesOrder.'.'.$dist] = $tmpSesDist[($ses->SesOrder-1).'.'.$dist];
                         }
                     }
                 }

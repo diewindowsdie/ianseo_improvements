@@ -168,7 +168,6 @@ $lang['PrintHasPlastic']='Accrediti di chi ha già il cordino';
 $lang['PrintSpecificBadges']='Stampa utilizzando Accrediti vincolati alla Classe';
 $lang['PrintSyncResult']='$a I Pettorali sono stati impostati come stampati!';
 $lang['Q-Badge']='Pettorale Qualifica';
-$lang['QrCodeFields']='<ul> <li><b>Blank: </b>una sequenza separata dal trattino con Entry Code, Divisione e Classe sarà stampata</li> <li><b>{ENCODE}: </b>{ENCODE} sarà tradotto nel Entry Code</li> <li><b>{COUNTRY}: </b>{COUNTRY} sarà tradotto nel codice Paese</li> <li><b>{DIVISION}: </b>{DIVISION} sarà tradotto nella Divisione</li> <li><b>{CLASS}: </b>{CLASS} sarà tradotto nella Classe</li> <li><b>{TOURNAMENT}: </b>{TOURNAMENT} sarà tradotto nel Codice della Competizione</li> </ul>';
 $lang['QRScore']='Score Gara di Qualificazione';
 $lang['QualPosition']='Posizione di qualificazione';
 $lang['RandomImage']='Immagine Random';

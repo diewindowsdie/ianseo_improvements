@@ -257,6 +257,17 @@ function InsertSchedDate($Request, $Type='Q') {
 						DiOptions=''
 						");
 			}
+            if(safe_w_affected_rows() or safe_w_last_id()) {
+                // updates Entry main info affected by that change
+                $Now=date('Y-m-d H:i:s');
+                switch($Type) {
+                    case 'Q':
+                        safe_w_sql("update Entries 
+                            inner join Qualifications on QuId=EnId and QuSession=$Session
+                            set EnMainInfoUpdate='$Now' where EnTournament={$_SESSION['TourId']}");
+                        break;
+                }
+            }
 			$q=safe_r_SQL("select DiDay, DiStart, DiDuration, DiWarmStart, DiWarmDuration, DiOptions, DiTargets, DiShift
 				from DistanceInformation
 				where DiTournament={$_SESSION['TourId']} and DiDistance=$Dist and DiSession=$Session and DiType='$Type'");
@@ -322,6 +333,17 @@ function InsertSchedTime($Request, $Field='', $Type='Q') {
 				on duplicate key update
 					Di{$Field}Start='$Value'
 					");
+            if(!$Field and (safe_w_affected_rows() or safe_w_last_id())) {
+                // updates Entry main info affected by that change
+                $Now=date('Y-m-d H:i:s');
+                switch($Type) {
+                    case 'Q':
+                        safe_w_sql("update Entries 
+                            inner join Qualifications on QuId=EnId and QuSession=$Session
+                            set EnMainInfoUpdate='$Now' where EnTournament={$_SESSION['TourId']}");
+                        break;
+                }
+            }
 			$q=safe_r_SQL("select DiDay, DiStart, DiDuration, DiWarmStart, DiWarmDuration, DiOptions, DiTargets, DiShift
 				from DistanceInformation
 				where DiTournament={$_SESSION['TourId']} and DiDistance=$Dist and DiSession=$Session and DiType='$Type'");

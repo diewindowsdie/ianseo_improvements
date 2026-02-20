@@ -133,7 +133,6 @@ $lang['PrintBackNo']='Hátszámok nyomtatása';
 $lang['PrintHasPlastic']='Csak nyakba akasztó kártya';
 $lang['PrintSpecificBadges']='Nyomtatás a kártyák automatikus párosításával';
 $lang['Q-Badge']='Hátszám - rangsoroló';
-$lang['QrCodeFields']='<ul> <li><b>Üres: </b>Belépési kód, Kategória és Korosztály nyomtatása, kötőjelekkel elválasztva</li> <li><b>{BELÉPŐ KÓD}: </b>{BELÉPŐ KÓD} megjeleníti a belépő kódot</li> <li><b>{ORSZÁG}: </b>{ORSZÁG} megjeleníti az ország kódot</li> <li><b>{KATEGÓRIA}: </b>{KATEGÓRIA} Megjeleníti a kategória kódját</li> <li><b>{KOROSZTÁLY}: </b>{KOROSZTÁLY} Megjeleníti a korosztály kódját</li> <li><b>{Verseny}: </b>{VERSENY} Megjeleníti a verseny kódját</li> </ul>';
 $lang['QRScore']='Kvalifikációs forduló pontszáma';
 $lang['QualPosition']='Kvalifikációs helyezés';
 $lang['RandomImage']='Tetszőlges kép';

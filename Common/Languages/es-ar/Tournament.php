@@ -607,7 +607,6 @@ $lang['PrintTextTitle']='Encabezamiento para Impresión de Resultados';
 $lang['Q-Session']='Series de Clasificación';
 $lang['QF_Phase']='Cuartos de Final';
 $lang['QR-Code']='Código QR';
-$lang['QrCode']='Código QR con detalles del arquero';
 $lang['QualificationLoaded']='Datos de Clasificación Cargados para el turno {$a}';
 $lang['QualSessionShort']='Turno Clasif.';
 $lang['R-Session']='Todos contra Todos';
