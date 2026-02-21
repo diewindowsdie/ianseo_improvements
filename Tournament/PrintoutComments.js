@@ -56,6 +56,7 @@ function updateField(obj) {
 function renderList(data) {
     if(data.error==0) {
         $(data.data).each(function() {
+            $('#txtQH_'+this.id).val(this.QH).attr('oldValue',this.QH).removeClass('red');
             $('#txtQ_'+this.id).val(this.Q).attr('oldValue',this.Q).removeClass('red');
             $('#txtF_'+this.id).val(this.F).attr('oldValue',this.F).removeClass('red');
         });

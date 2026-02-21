@@ -35,12 +35,11 @@ function getClassName($class, $is3D=false): string {
 }
 
 /**
- * Локализованное название эвента. В случае если тип эвента поддерживается, состоит из локализованного названия дивизиона, класса и указанного в скобках названия упражнения из ЕВСК по стрельбе из лука.
+ * В случае если тип эвента поддерживается, вернет название упражнения из ЕВСК по стрельбе из лука (в скобках)
  * @param string $classWithDivision Код класса с указанием дивизиона
  * @param int $tournamentType Идентификатор типа соревнования. Определяет выбор названий упражнения.
- * @return string Построенное название дивизиона, если имеются данные для указанного типа соревнования, иначе null.
  */
-function getEventName($classWithDivision, $tournamentType): mixed {
+function getEventTitleSuffix(string $classWithDivision, $tournamentType): ?string {
     $eventDescriptions=array();
     switch ($tournamentType) {
         case 1:
@@ -81,18 +80,24 @@ function getEventName($classWithDivision, $tournamentType): mixed {
             $eventDescriptions['RU21W']='КЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['RU18M']='КЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['RU18W']='КЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['RU14M']='КЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['RU14W']='КЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['CM']='БЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['CW']='БЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['CU21M']='БЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['CU21W']='БЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['CU18M']='БЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['CU18W']='БЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['CU14M']='БЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['CU14W']='БЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['BM']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['BW']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['BU21M']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['BU21W']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['BU18M']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['BU18W']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['BU14M']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['BU14W']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
             break;
         case 13:
             //3d - два круга
@@ -103,11 +108,20 @@ function getEventName($classWithDivision, $tournamentType): mixed {
             break;
     }
     $division = substr($classWithDivision, 0, 1);
-    $eventNameWithoutClassAndDivision = $eventDescriptions[$classWithDivision] ?? $eventDescriptions[$division];
-    return isset($eventNameWithoutClassAndDivision)
-        ? getDivisionName($division) . ' ' . getClassName(substr($classWithDivision, 1)) . ' (' . $eventNameWithoutClassAndDivision . ')'
+    $eventSuffix = $eventDescriptions[$classWithDivision] ?? $eventDescriptions[$division];
+    return isset($eventSuffix)
+        ? '(' . $eventSuffix . ')'
         : null;
 }
+
+/**
+ * Построить локализованное название эвента вида "Дивизион Класс"
+ * @param string $classWithDivision Код класса с указанием дивизиона
+ */
+function getEventName(string $classWithDivision): ?string {
+    return getDivisionName($classWithDivision[0]) . ' ' . getClassName(substr($classWithDivision, 1));
+}
+
 
 function CreateStandardDivisions($TourId, $Type='FITA') {
 	$i=1;
@@ -221,18 +235,26 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
 			$i=1;
             // RECURVE
             if($SubRule==1) {
-                CreateEventNew($TourId, 'RM',  getEventName('RM', $TourType) ?? 'Recurve Men', $i++, $Options);
-                CreateEventNew($TourId, 'RW',  getEventName('RW', $TourType) ?? 'Recurve Women', $i++, $Options);
+                CreateEventNew($TourId, 'RM',  getEventName('RM') ?? 'Recurve Men', $i++, $Options);
+                setEventQualificationTableSuffix($TourId, $TourType,'RM');
+                CreateEventNew($TourId, 'RW',  getEventName('RW') ?? 'Recurve Women', $i++, $Options, );
+                setEventQualificationTableSuffix($TourId, $TourType,'RW');
             }
-			CreateEventNew($TourId, 'RU21M', getEventName('RU21M', $TourType) ?? 'Recurve Under 21 Men', $i++, $Options);
-			CreateEventNew($TourId, 'RU21W', getEventName('RU21W', $TourType) ?? 'Recurve Under 21 Women', $i++, $Options);
+			CreateEventNew($TourId, 'RU21M', getEventName('RU21M') ?? 'Recurve Under 21 Men', $i++, $Options);
+            setEventQualificationTableSuffix($TourId, $TourType,'RU21M');
+			CreateEventNew($TourId, 'RU21W', getEventName('RU21W') ?? 'Recurve Under 21 Women', $i++, $Options);
+            setEventQualificationTableSuffix($TourId, $TourType,'RU21W');
             $Options['EvDistance']=$DistanceRcm;
-            CreateEventNew($TourId, 'RU18M', getEventName('RU18M', $TourType) ?? 'Recurve Under 18 Men', $i++, $Options);
-            CreateEventNew($TourId, 'RU18W', getEventName('RU18W', $TourType) ?? 'Recurve Under 18 Women', $i++, $Options);
+            CreateEventNew($TourId, 'RU18M', getEventName('RU18M') ?? 'Recurve Under 18 Men', $i++, $Options);
+            setEventQualificationTableSuffix($TourId, $TourType,'RU18M');
+            CreateEventNew($TourId, 'RU18W', getEventName('RU18W') ?? 'Recurve Under 18 Women', $i++, $Options);
+            setEventQualificationTableSuffix($TourId, $TourType,'RU18W');
             if($allowU15) {
                 $Options['EvDistance']=$DistanceU15;
-                CreateEventNew($TourId, 'RU14M', getEventName('RU14M', $TourType) ?? 'Recurve Under 14 Men', $i++, $Options);
-                CreateEventNew($TourId, 'RU14W', getEventName('RU14W', $TourType) ?? 'Recurve Under 14 Women', $i++, $Options);
+                CreateEventNew($TourId, 'RU14M', getEventName('RU14M') ?? 'Recurve Under 14 Men', $i++, $Options);
+                setEventQualificationTableSuffix($TourId, $TourType,'RU14M');
+                CreateEventNew($TourId, 'RU14W', getEventName('RU14W') ?? 'Recurve Under 14 Women', $i++, $Options);
+                setEventQualificationTableSuffix($TourId, $TourType,'RU14W');
             }
             if($SubRule==1) {
                 $Options['EvDistance']=$DistanceRcm;
@@ -246,18 +268,26 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
             $Options['EvTargetSize']=$TargetSizeC;
             $Options['EvDistance']=$DistanceC;
             if($SubRule==1) {
-                CreateEventNew($TourId, 'CM',  getEventName('CM', $TourType) ?? 'Compound Men', $i++, $Options);
-                CreateEventNew($TourId, 'CW',  getEventName('CW', $TourType) ?? 'Compound Women', $i++, $Options);
+                CreateEventNew($TourId, 'CM',  getEventName('CM') ?? 'Compound Men', $i++, $Options);
+                setEventQualificationTableSuffix($TourId, $TourType,'CM');
+                CreateEventNew($TourId, 'CW',  getEventName('CW') ?? 'Compound Women', $i++, $Options);
+                setEventQualificationTableSuffix($TourId, $TourType,'CW');
             }
-            CreateEventNew($TourId, 'CU21M', getEventName('CU21M', $TourType) ?? 'Compound Under 21 Men', $i++, $Options);
-			CreateEventNew($TourId, 'CU21W', getEventName('CU21W', $TourType) ?? 'Compound Under 21 Women', $i++, $Options);
+            CreateEventNew($TourId, 'CU21M', getEventName('CU21M') ?? 'Compound Under 21 Men', $i++, $Options);
+            setEventQualificationTableSuffix($TourId, $TourType,'CU21M');
+			CreateEventNew($TourId, 'CU21W', getEventName('CU21W') ?? 'Compound Under 21 Women', $i++, $Options);
+            setEventQualificationTableSuffix($TourId, $TourType,'CU21W');
             $Options['EvDistance']=$DistanceCcm;
-			CreateEventNew($TourId, 'CU18M', getEventName('CU18M', $TourType) ?? 'Compound Under 18 Men', $i++, $Options);
-			CreateEventNew($TourId, 'CU18W', getEventName('CU18W', $TourType) ?? 'Compound Under 18 Women', $i++, $Options);
+			CreateEventNew($TourId, 'CU18M', getEventName('CU18M') ?? 'Compound Under 18 Men', $i++, $Options);
+            setEventQualificationTableSuffix($TourId, $TourType,'CU18M');
+			CreateEventNew($TourId, 'CU18W', getEventName('CU18W') ?? 'Compound Under 18 Women', $i++, $Options);
+            setEventQualificationTableSuffix($TourId, $TourType,'CU18W');
             if($allowU15) {
                 $Options['EvDistance']=$DistanceU15;
-                CreateEventNew($TourId, 'CU14M', getEventName('CU14M', $TourType) ?? 'Compound Under 14 Men', $i++, $Options);
-                CreateEventNew($TourId, 'CU14W', getEventName('CU14W', $TourType) ?? 'Compound Under 14 Women', $i++, $Options);
+                CreateEventNew($TourId, 'CU14M', getEventName('CU14M') ?? 'Compound Under 14 Men', $i++, $Options);
+                setEventQualificationTableSuffix($TourId, $TourType,'CU14M');
+                CreateEventNew($TourId, 'CU14W', getEventName('CU14W') ?? 'Compound Under 14 Women', $i++, $Options);
+                setEventQualificationTableSuffix($TourId, $TourType,'CU14W');
             }
             if($SubRule==1) {
                 $Options['EvDistance']=$DistanceC;
@@ -272,17 +302,25 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
                 $Options['EvTargetSize']=$TargetSizeB;
                 $Options['EvDistance']=$DistanceB;
                 if($SubRule==1) {
-                    CreateEventNew($TourId, 'BM', getEventName('BM', $TourType) ?? 'Barebow Men', $i++, $Options);
-                    CreateEventNew($TourId, 'BW', getEventName('BW', $TourType) ?? 'Barebow Women', $i++, $Options);
+                    CreateEventNew($TourId, 'BM', getEventName('BM') ?? 'Barebow Men', $i++, $Options);
+                    setEventQualificationTableSuffix($TourId, $TourType,'BM');
+                    CreateEventNew($TourId, 'BW', getEventName('BW') ?? 'Barebow Women', $i++, $Options);
+                    setEventQualificationTableSuffix($TourId, $TourType,'BW');
                 }
-                CreateEventNew($TourId,'BU21M', getEventName('BU21M', $TourType) ?? 'Barebow Under 21 Men', $i++, $Options);
-                CreateEventNew($TourId,'BU21W', getEventName('BU21W', $TourType) ?? 'Barebow Under 21 Women', $i++, $Options);
-                CreateEventNew($TourId,'BU18M', getEventName('BU18M', $TourType) ?? 'Barebow Under 18 Men', $i++, $Options);
-                CreateEventNew($TourId,'BU18W', getEventName('BU18W', $TourType) ?? 'Barebow Under 18 Women', $i++, $Options);
+                CreateEventNew($TourId,'BU21M', getEventName('BU21M') ?? 'Barebow Under 21 Men', $i++, $Options);
+                setEventQualificationTableSuffix($TourId, $TourType,'BU21M');
+                CreateEventNew($TourId,'BU21W', getEventName('BU21W') ?? 'Barebow Under 21 Women', $i++, $Options);
+                setEventQualificationTableSuffix($TourId, $TourType,'BU21W');
+                CreateEventNew($TourId,'BU18M', getEventName('BU18M') ?? 'Barebow Under 18 Men', $i++, $Options);
+                setEventQualificationTableSuffix($TourId, $TourType,'BU18M');
+                CreateEventNew($TourId,'BU18W', getEventName('BU18W') ?? 'Barebow Under 18 Women', $i++, $Options);
+                setEventQualificationTableSuffix($TourId, $TourType,'BU18W');
                 if($allowU15) {
                     $Options['EvDistance']=$DistanceU15B;
-                    CreateEventNew($TourId, 'BU14M', getEventName('BU14M', $TourType) ?? 'Barebow Under 14 Men', $i++, $Options);
-                    CreateEventNew($TourId, 'BU14W', getEventName('BU14W', $TourType) ?? 'Barebow Under 14 Women', $i++, $Options);
+                    CreateEventNew($TourId, 'BU14M', getEventName('BU14M') ?? 'Barebow Under 14 Men', $i++, $Options);
+                    setEventQualificationTableSuffix($TourId, $TourType,'BU14M');
+                    CreateEventNew($TourId, 'BU14W', getEventName('BU14W') ?? 'Barebow Under 14 Women', $i++, $Options);
+                    setEventQualificationTableSuffix($TourId, $TourType,'BU14W');
                 }
                 if($SubRule==1) {
                     $Options['EvDistance'] = $DistanceB;
@@ -462,13 +500,19 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
 		case '2':
 		case '5':
 			$i=1;
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RM',  getEventName('RM', $TourType) , 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RW',  getEventName('RW', $TourType) , 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CM',  getEventName('CM', $TourType) , 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CW',  getEventName('CW', $TourType) , 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RM',  getEventName('RM') , 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+            setEventQualificationTableSuffix($TourId, $TourType,'RM');
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RW',  getEventName('RW') , 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+            setEventQualificationTableSuffix($TourId, $TourType,'RW');
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CM',  getEventName('CM') , 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+            setEventQualificationTableSuffix($TourId, $TourType,'CM');
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CW',  getEventName('CW') , 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+            setEventQualificationTableSuffix($TourId, $TourType,'CW');
             if($allowBB) {
-                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BM', getEventName('BM', $TourType) , 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
-                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BW', getEventName('BW', $TourType) , 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BM', getEventName('BM') , 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                setEventQualificationTableSuffix($TourId, $TourType,'BM');
+                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BW', getEventName('BW') , 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                setEventQualificationTableSuffix($TourId, $TourType,'BW');
             }
             $i=1;
 			CreateEvent($TourId, $i++, 1, 0, $TeamFirstPhase, $TargetR, 4, 6, 3, 4, 6, 3, 'RM',  'Recurve Men Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
@@ -491,19 +535,31 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
         break;
 		case '3':
 			$i=1;
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RM',  getEventName('RM', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RW',  getEventName('RW', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RU21M', getEventName('RU21M', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RU21W', getEventName('RU21W', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CM',  getEventName('CM', $TourType), 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CW',  getEventName('CW', $TourType), 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CU21M', getEventName('CU21M', $TourType), 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
-			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CU21W', getEventName('CU21W', $TourType), 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RM',  getEventName('RM'), 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR); //обратить внимание на CreateEvent
+            setEventQualificationTableSuffix($TourId, $TourType,'RM');
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RW',  getEventName('RW'), 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+            setEventQualificationTableSuffix($TourId, $TourType,'RW');
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RU21M', getEventName('RU21M'), 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+            setEventQualificationTableSuffix($TourId, $TourType,'RU21M');
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetR, 5, 3, 1, 5, 3, 1, 'RU21W', getEventName('RU21W'), 1, 240, 240, 0, 0, '', '', $TargetSizeR, $DistanceR);
+            setEventQualificationTableSuffix($TourId, $TourType,'RU21W');
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CM',  getEventName('CM'), 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+            setEventQualificationTableSuffix($TourId, $TourType,'CM');
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CW',  getEventName('CW'), 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+            setEventQualificationTableSuffix($TourId, $TourType,'CW');
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CU21M', getEventName('CU21M'), 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+            setEventQualificationTableSuffix($TourId, $TourType,'CU21M');
+			CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetC, 5, 3, 1, 5, 3, 1, 'CU21W', getEventName('CU21W'), 0, 240, 240, 0, 0, '', '', $TargetSizeC, $DistanceC);
+            setEventQualificationTableSuffix($TourId, $TourType,'CU21W');
             if($allowBB) {
-                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BM', getEventName('BM', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
-                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BW', getEventName('BW', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
-                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BU21M', getEventName('BU21M', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
-                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BU21W', getEventName('BU21W', $TourType), 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BM', getEventName('BM'), 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                setEventQualificationTableSuffix($TourId, $TourType,'BM');
+                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BW', getEventName('BW'), 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                setEventQualificationTableSuffix($TourId, $TourType,'BW');
+                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BU21M', getEventName('BU21M'), 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                setEventQualificationTableSuffix($TourId, $TourType,'BU21M');
+                CreateEvent($TourId, $i++, 0, 0, $FirstPhase, $TargetB, 5, 3, 1, 5, 3, 1, 'BU21W', getEventName('BU21W'), 1, 240, 240, 0, 0, '', '', $TargetSizeB, $DistanceB);
+                setEventQualificationTableSuffix($TourId, $TourType,'BU21W');
             }
             $i=1;
 			CreateEvent($TourId, $i++, 1, 0, $TeamFirstPhase, $TargetR, 4, 6, 3, 4, 6, 3, 'RM',  'Recurve Men Team', 1, 0, 0, 0, 0, '', '', $TargetSizeR, $DistanceR);
