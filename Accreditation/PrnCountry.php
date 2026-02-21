@@ -35,7 +35,7 @@ if(isset($_REQUEST["CountryName"]) && preg_match("/^[-,0-9A-Z]*$/i",str_replace(
 $NoPhoto=(!empty($_REQUEST['NoPhoto']));
 
 
-$MyQuery = "SELECT EnCode as Bib, length(PhPhoto)>1 as HasPhoto, EnName AS Name, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, CONCAT(QuTarget, QuLetter)1 AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, if(AEId IS NULL, 0, 1) as OpDone, IF(NoMember=NoOpDone,1,0) as TeamComplete, EnPays, APPrice, DATE_FORMAT(EnDob,'" . get_text('DateFmtDB') . "') as DoB, sc.ScDescription as SubclassDescripton ";
+$MyQuery = "SELECT EnCode as Bib, length(PhPhoto)>1 as HasPhoto, EnName AS Name, upper(EnFirstName) AS FirstName, EnMiddleName, QuSession AS Session, CONCAT(QuTarget, QuLetter) AS TargetNo, CoCode AS NationCode, CoName AS Nation, EnClass AS ClassCode, EnDivision AS DivCode, EnAgeClass as AgeClass, EnSubClass as SubClass, EnStatus as Status, EnIndClEvent AS `IC`, EnTeamClEvent AS `TC`, EnIndFEvent AS `IF`, EnTeamFEvent as `TF`, EnTeamMixEvent as `TM`, if(AEId IS NULL, 0, 1) as OpDone, IF(NoMember=NoOpDone,1,0) as TeamComplete, EnPays, APPrice, EnDob as DoB, sc.ScDescription as SubclassDescripton ";
 $MyQuery.= "FROM Entries AS e ";
 $MyQuery.= "LEFT JOIN Photos ON e.EnId=PhEnId ";
 $MyQuery.= "LEFT JOIN Countries AS c ON e." . $countryField . "=c.CoId AND e.EnTournament=c.CoTournament ";
@@ -69,7 +69,7 @@ while($MyRow=safe_fetch($Rs)) {
         $pdf->Cell(7, 4,  (get_text('SessionShort','Tournament')), 1, 0, 'C', 1);
         $pdf->Cell(11, 4,  (get_text('Target')), 1, 0, 'C', 1);
         $pdf->Cell(51, 4,  (get_text('Athlete')), 1, 0, 'L', 1);
-        $pdf->Cell(12, 4,  (get_text('DOB','Tournament')), 1, 0, 'C', 1);
+        $pdf->Cell(12, 4,  getBirthDateColumnTitle(get_text('DOB','Tournament')), 1, 0, 'C', 1);
         $pdf->Cell(8, 4,  (get_text('SubCl','Tournament')), 1, 0, 'C', 1);
         $pdf->Cell(10, 4,  (get_text('Division')), 1, 0, 'C', 1);
         $pdf->Cell(10, 4,  (get_text('Cl')), 1, 0, 'C', 1);
@@ -113,7 +113,7 @@ while($MyRow=safe_fetch($Rs)) {
     $pdf->Cell( 4, 4, $MyRow->Session, 'RTB', 0, 'R', $MyRow->OpDone);
     $pdf->Cell(11, 4, $MyRow->TargetNo, 1, 0, 'R', $MyRow->OpDone);
     $pdf->Cell(51, 4, getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->EnMiddleName), 1, 0, 'L', $MyRow->OpDone);
-    $pdf->Cell(12, 4, $MyRow->DoB, 1, 0, 'R', $MyRow->OpDone);
+    $pdf->Cell(12, 4, getAthleteBirthDateFormatted($MyRow->DoB), 1, 0, 'C', $MyRow->OpDone);
     $pdf->Cell( 8, 4, $MyRow->SubclassDescripton, 1, 0, 'C', $MyRow->OpDone);
     $pdf->Cell(10, 4, $MyRow->DivCode, 1, 0, 'C', $MyRow->OpDone);
     $pdf->Cell(10, 4, $MyRow->ClassCode, 1, 0, 'C', $MyRow->OpDone);
