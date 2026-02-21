@@ -73,43 +73,67 @@ function CreateStandard3DEvents($TourId, $SubRule, $TourType) {
             );
 
             $i = 1;
-            CreateEventNew($TourId, 'CM', getEventName('CM', $TourType) ?? 'Compound Men', $i++, $SettingsInd);
-            CreateEventNew($TourId, 'CW', getEventName('CW', $TourType) ?? 'Compound Women', $i++, $SettingsInd);
+            CreateEventNew($TourId, 'CM', getEventName('CM') ?? 'Compound Men', $i++, $SettingsInd);
+            setEventQualificationTableSuffix($TourId, $TourType,'CM');
+            CreateEventNew($TourId, 'CW', getEventName('CW') ?? 'Compound Women', $i++, $SettingsInd);
+            setEventQualificationTableSuffix($TourId, $TourType,'CW');
             if ($SubRule == 1) {
-                CreateEventNew($TourId, 'CU21M', getEventName('CU21M', $TourType) ?? 'Compound Under 21 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'CU21W', getEventName('CU21W', $TourType) ?? 'Compound Under 21 Women', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'CU18M', getEventName('CU18M', $TourType) ?? 'Compound Cadet Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'CU18W', getEventName('CU18M', $TourType) ?? 'Compound Cadet Women', $i++, $SettingsInd);
+                CreateEventNew($TourId, 'CU21M', getEventName('CU21M') ?? 'Compound Under 21 Men', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'CU21M');
+                CreateEventNew($TourId, 'CU21W', getEventName('CU21W') ?? 'Compound Under 21 Women', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'CU21W');
+                CreateEventNew($TourId, 'CU18M', getEventName('CU18M') ?? 'Compound Cadet Men', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'CU18M');
+                CreateEventNew($TourId, 'CU18W', getEventName('CU18W') ?? 'Compound Cadet Women', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'CU18W');
                 CreateEventNew($TourId, 'C50M', 'Compound 50+ Men', $i++, $SettingsInd);
                 CreateEventNew($TourId, 'C50W', 'Compound 50+ Women', $i++, $SettingsInd);
             }
-            CreateEventNew($TourId, 'BM', getEventName('BM', $TourType) ?? 'Barebow Men', $i++, $SettingsInd);
-            CreateEventNew($TourId, 'BW', getEventName('BM', $TourType) ?? 'Barebow Women', $i++, $SettingsInd);
+            CreateEventNew($TourId, 'BM', getEventName('BM') ?? 'Barebow Men', $i++, $SettingsInd);
+            setEventQualificationTableSuffix($TourId, $TourType,'BM');
+            CreateEventNew($TourId, 'BW', getEventName('BW') ?? 'Barebow Women', $i++, $SettingsInd);
+            setEventQualificationTableSuffix($TourId, $TourType,'BW');
             if ($SubRule == 1) {
-                CreateEventNew($TourId, 'BU21M', getEventName('BU21M', $TourType) ?? 'Barebow Under 21 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'BU21W', getEventName('BU21W', $TourType) ?? 'Barebow Under 21 Women', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'BU18M', getEventName('BU18M', $TourType) ?? 'Barebow Under 18 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'BU18W', getEventName('BU18W', $TourType) ?? 'Barebow Under 18 Women', $i++, $SettingsInd);
+                CreateEventNew($TourId, 'BU21M', getEventName('BU21M') ?? 'Barebow Under 21 Men', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'BU21M');
+                CreateEventNew($TourId, 'BU21W', getEventName('BU21W') ?? 'Barebow Under 21 Women', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'BU21W');
+                CreateEventNew($TourId, 'BU18M', getEventName('BU18M') ?? 'Barebow Under 18 Men', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'BU18M');
+                CreateEventNew($TourId, 'BU18W', getEventName('BU18W') ?? 'Barebow Under 18 Women', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'BU18W');
                 CreateEventNew($TourId, 'B50M', 'Barebow 50+ Men', $i++, $SettingsInd);
                 CreateEventNew($TourId, 'B50W', 'Barebow 50+ Women', $i++, $SettingsInd);
             }
-            CreateEventNew($TourId, 'LM', getEventName('LM', $TourType) ?? 'Longbow Men', $i++, $SettingsInd);
-            CreateEventNew($TourId, 'LW', getEventName('LW', $TourType) ?? 'Longbow Women', $i++, $SettingsInd);
+            CreateEventNew($TourId, 'LM', getEventName('LM') ?? 'Longbow Men', $i++, $SettingsInd);
+            setEventQualificationTableSuffix($TourId, $TourType,'LM');
+            CreateEventNew($TourId, 'LW', getEventName('LW') ?? 'Longbow Women', $i++, $SettingsInd);
+            setEventQualificationTableSuffix($TourId, $TourType,'LW');
             if ($SubRule == 1) {
-                CreateEventNew($TourId, 'LU21M', getEventName('LU21M', $TourType) ?? 'Longbow Under 21 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'LU21W', getEventName('LU21W', $TourType) ?? 'Longbow Under 21 Women', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'LU18M', getEventName('LU18M', $TourType) ?? 'Longbow Under 18 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'LU18W', getEventName('LU18W', $TourType) ?? 'Longbow Under 18 Women', $i++, $SettingsInd);
+                CreateEventNew($TourId, 'LU21M', getEventName('LU21M') ?? 'Longbow Under 21 Men', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'LU21M');
+                CreateEventNew($TourId, 'LU21W', getEventName('LU21W') ?? 'Longbow Under 21 Women', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'LU21W');
+                CreateEventNew($TourId, 'LU18M', getEventName('LU18M') ?? 'Longbow Under 18 Men', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'LU18M');
+                CreateEventNew($TourId, 'LU18W', getEventName('LU18W') ?? 'Longbow Under 18 Women', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'LU18W');
                 CreateEventNew($TourId, 'L50M', 'Longbow 50+ Men', $i++, $SettingsInd);
                 CreateEventNew($TourId, 'L50W', 'Longbow 50+ Women', $i++, $SettingsInd);
             }
-            CreateEventNew($TourId, 'TM', getEventName('TM', $TourType) ?? 'Traditional Men', $i++, $SettingsInd);
-            CreateEventNew($TourId, 'TW', getEventName('TW', $TourType) ?? 'Traditional Women', $i++, $SettingsInd);
+            CreateEventNew($TourId, 'TM', getEventName('TM') ?? 'Traditional Men', $i++, $SettingsInd);
+            setEventQualificationTableSuffix($TourId, $TourType,'TM');
+            CreateEventNew($TourId, 'TW', getEventName('TW') ?? 'Traditional Women', $i++, $SettingsInd);
+            setEventQualificationTableSuffix($TourId, $TourType,'TW');
             if ($SubRule == 1) {
-                CreateEventNew($TourId, 'TU21M', getEventName('TU21M', $TourType) ?? 'Traditional Under 21 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'TU21W', getEventName('TU21W', $TourType) ?? 'Traditional Under 21 Women', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'TU18M', getEventName('TU18M', $TourType) ?? 'Traditional Under 18 Men', $i++, $SettingsInd);
-                CreateEventNew($TourId, 'TU18W', getEventName('TU18W', $TourType) ?? 'Traditional Under 18 Women', $i++, $SettingsInd);
+                CreateEventNew($TourId, 'TU21M', getEventName('TU21M') ?? 'Traditional Under 21 Men', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'TU21M');
+                CreateEventNew($TourId, 'TU21W', getEventName('TU21W') ?? 'Traditional Under 21 Women', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'TU21W');
+                CreateEventNew($TourId, 'TU18M', getEventName('TU18M') ?? 'Traditional Under 18 Men', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'TU18M');
+                CreateEventNew($TourId, 'TU18W', getEventName('TU18W') ?? 'Traditional Under 18 Women', $i++, $SettingsInd);
+                setEventQualificationTableSuffix($TourId, $TourType,'TU18W');
                 CreateEventNew($TourId, 'T50M', 'Traditional 50+ Men', $i++, $SettingsInd);
                 CreateEventNew($TourId, 'T50W', 'Traditional 50+ Women', $i++, $SettingsInd);
             }

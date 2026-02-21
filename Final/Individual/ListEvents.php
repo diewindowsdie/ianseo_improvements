@@ -250,6 +250,7 @@
 </tr>
 </tbody>
     <tfooter>
+<tr><td colspan="11" class="Bold Center" style="padding-top: 15px; padding-bottom: 15px">Названия спортивных дисциплин теперь находятся в разделе Распечатки - Заголовок для печати результатов.</td></tr>
 <tr><td colspan="11" class="Bold Center"><?= get_text('ChangeElimWarning') ?></td></tr>
 <tr><td colspan="11" class="Bold"><input type="button" value="<?php echo get_text('EventCreationCancellation','Tournament') ?>" onclick="autoEventAddDel()" ></td></tr>
 </tfooter>

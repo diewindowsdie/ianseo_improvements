@@ -195,6 +195,14 @@ function CreateEvent($TourId, $Order, $Team, $MixTeam, $FirstPhase, $TargetType,
 		);
 }
 
+function setEventQualificationTableSuffix($tourId, $tourType, $event): void
+{
+    $suffix = getEventTitleSuffix($event, $tourType);
+
+    $query = "update Events set EvQualTableHeader = " . StrSafe_DB($suffix) . " where EvCode = " . StrSafe_DB($event) . " and EvTournament = " . StrSafe_DB($tourId);
+    safe_w_SQL($query);
+}
+
 function CreateEventNew($TourId, $Code, $Description, $Order, $Options) {
 	global 	$tourDetGolds, $tourDetXNine, $tourDetGoldsChars, $tourDetXNineChars;
 

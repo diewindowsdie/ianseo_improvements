@@ -253,7 +253,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 					IF(EvRunning=1,IFNULL(ROUND(IF((EvLockResults OR EvQualBestOfDistances),IndScore/IndHits,QuScore/QuHits),3),0),0) as RunningScore,
 					EvCode,EvEventName,EvRunning, EvFinalFirstPhase, EvElim1, EvElim2, EvIsPara, coalesce(OdfTrOdfCode,'') as OdfUnitCode, EvOdfCode,
 					{$tmp} AS Arrows_Shot,
-					coalesce(RoundRobinQualified, IF(EvElim1=0 && EvElim2=0, EvNumQualified ,IF(EvElim1=0,EvElim2,EvElim1))) as QualifiedNo, EvFirstQualified, EvQualPrintHead as PrintHeader,
+					coalesce(RoundRobinQualified, IF(EvElim1=0 && EvElim2=0, EvNumQualified ,IF(EvElim1=0,EvElim2,EvElim1))) as QualifiedNo, EvFirstQualified, EvQualTableHeader, EvQualPrintHead as PrintHeader,
 					{$MyRank} AS `Rank`, " . (!empty($comparedTo) ? 'IFNULL(IopRank,0)' : '0') . " as OldRank, $ScoringFields, 
 					coalesce(nullif(IndIrmType, 0), QuIrmType) IndIrmType, IrmType, IrmShowRank, IrmHideDetails, ";
 			$q.="IndRecordBitmap as RecBitLevel, EvIsPara, co.CoMaCode, co.CoCaCode, "; // records management
@@ -476,6 +476,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 								'qualifiedNo' => $myRow->QualifiedNo,
                                 'firstQualified' => $myRow->EvFirstQualified,
 								'printHeader' => (!empty($this->opts['runningDist']) && $this->opts['runningDist']>0 ? get_text('AfterXDistance','Tournament',$this->opts['runningDist']) : ($this->opts['dist']>0 ? get_text('AtXDistance','Tournament',$this->opts['dist']): $myRow->PrintHeader)),
+                                'tableHeader' => $myRow->EvQualTableHeader,
 								'arrowsShot'=> array(),
 								'maxPersons' => 1,
 								'maxScore' => $myRow->ToMaxDistScore,

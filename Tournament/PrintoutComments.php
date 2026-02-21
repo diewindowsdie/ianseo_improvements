@@ -42,7 +42,12 @@ if(!empty($_REQUEST['action']) and preg_match("/^(list|set|bulk|session)$/i",$_R
         $ev ='';
         $isTeam = 0;
         list($what, $ev, $isTeam) = explode('_', $_REQUEST['key']);
-        $what = (substr($what,-1,1)=='Q' ? 'EvQualPrintHead' : 'EvFinalPrintHead');
+        $what = match (substr($what,3)) {
+            "QH" => "EvQualTableHeader",
+            "Q" => 'EvQualPrintHead',
+            "F" => 'EvFinalPrintHead'
+        };
+
         $value = StrSafe_DB($_REQUEST['value']);
         if($offShortcut != 0) {
             $value = "CONCAT('".($offShortcut==1 ? 'OFFICIAL':'Unofficial')." After ',(".$arrShortcut."*EvMaxTeamPerson),' Arrows')";
@@ -59,7 +64,12 @@ if(!empty($_REQUEST['action']) and preg_match("/^(list|set|bulk|session)$/i",$_R
             $ev ='';
             $isTeam = 0;
             list($what, $ev, $isTeam) = explode('_', $key);
-            $what = ($_REQUEST['what']=='Q' ? 'EvQualPrintHead' : 'EvFinalPrintHead');
+            $what = match ($_REQUEST['what']) {
+                "QH" => "EvQualTableHeader",
+                "Q" => 'EvQualPrintHead',
+                "F" => 'EvFinalPrintHead'
+            };
+
             $value = StrSafe_DB($_REQUEST['value']);
             if($offShortcut != 0) {
                 $value = "CONCAT('".($offShortcut==1 ? 'OFFICIAL':'Unofficial')." After ',(".$arrShortcut."*EvMaxTeamPerson),' Arrows')";
@@ -69,12 +79,12 @@ if(!empty($_REQUEST['action']) and preg_match("/^(list|set|bulk|session)$/i",$_R
         $JSON['error'] = 0;
     }
 
-    $Sql = "SELECT EvCode, EvTeamEvent, EvQualPrintHead, EvFinalPrintHead " .
+    $Sql = "SELECT EvCode, EvTeamEvent, EvQualTableHeader, EvQualPrintHead, EvFinalPrintHead " .
         "FROM Events " .
         "WHERE EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvCodeParent=''";
     $q=safe_r_SQL($Sql);
     while($r=safe_fetch($q)) {
-        $JSON['data'][] = array('id'=>$r->EvCode.'_'.$r->EvTeamEvent, 'Q'=>$r->EvQualPrintHead, 'F'=>$r->EvFinalPrintHead, );
+        $JSON['data'][] = array('id'=>$r->EvCode.'_'.$r->EvTeamEvent, 'Q'=>$r->EvQualPrintHead, 'F'=>$r->EvFinalPrintHead, 'QH'=>$r->EvQualTableHeader);
     }
     if(strtolower($_REQUEST['action']) == 'list') {
         $JSON['error'] = 0;
@@ -92,22 +102,23 @@ $JS_SCRIPT = array( phpVars2js(array(
 );
 include('Common/Templates/head.php');
 echo '<table class="Tabella">';
-echo '<tr><th class="Title" colspan="5">'.get_text('PrintTextTitle','Tournament').'</th></tr>';
-echo '<tr class="divider"><td colspan="5"></td></tr>';
+echo '<tr><th class="Title" colspan="6">'.get_text('PrintTextTitle','Tournament').'</th></tr>';
+echo '<tr class="divider"><td colspan="6"></td></tr>';
 echo '<tr>'.
     '<td colspan="3">'.get_text('PrintCommentTip', 'Tournament').'</td>'.
+    '<td class="txtContainer"><input type="text" id="txtQH"><input type="button" value="'.get_text('CmdSave').'" onclick="bulkSave(\'QH\')"></td>'.
     '<td class="txtContainer"><input type="text" id="txtQ"><input type="button" value="'.get_text('CmdSave').'" onclick="bulkSave(\'Q\')"></td>'.
     '<td class="txtContainer"><input type="text" id="txtF"><input type="button" value="'.get_text('CmdSave').'" onclick="bulkSave(\'F\')"></td>'.
     '</tr>';
 echo '<tr>'.
     '<th class="smallContainer"><input type="checkbox" id="chkBulk" onclick="chkBulkSelection()"></th>'.
-    '<td colspan="4"><select id="cmbSessions"><option value="---">'.get_text('Select', 'Tournament').'</option>';
+    '<td colspan="5"><select id="cmbSessions"><option value="---">'.get_text('Select', 'Tournament').'</option>';
     foreach (getApiScheduledSessions() as $s) {
         echo '<option value="'.$s->keyValue.'">'.$s->Description.'</option>';
     }
 echo '</select><input type="button" value="'.	get_text('SelectSession', 'Tournament').'" onclick="selectSession()"></td></tr>';
-echo '<tr class="divider"><td colspan="5"></td></tr>';
-$Sql = "SELECT EvCode, EvEventName, EvFinalFirstPhase, EvTeamEvent, EvQualPrintHead, EvFinalPrintHead " .
+echo '<tr class="divider"><td colspan="6"></td></tr>';
+$Sql = "SELECT EvCode, EvEventName, EvFinalFirstPhase, EvTeamEvent, EvQualTableHeader, EvQualPrintHead, EvFinalPrintHead " .
     "FROM Events " .
     "WHERE EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvCodeParent='' " .
     "ORDER BY EvTeamEvent ASC, EvProgr ASC, EvCode ";
@@ -115,14 +126,25 @@ $q=safe_r_SQL($Sql);
 $isTeam=-1;
 while ($r=safe_fetch($q)) {
     if($isTeam!=$r->EvTeamEvent) {
-        echo '<tr><th colspan="3">'.get_text('Event').'</th><th>Header Qualification</th><th>Header Finals</th></tr>';
+        echo '<tr><th colspan="3">' . get_text('Event') . '</th>';
+        if (!$r->EvTeamEvent) {
+            echo '<th>Название дисциплины для таблицы результатов квалификации</th>';
+        } else {
+            echo '<th></th>';
+        }
+        echo '<th>Header Qualification</th><th>Header Finals</th></tr>';
         $isTeam=$r->EvTeamEvent;
     }
     echo '<tr class="EventLine" id="ev_'.$r->EvCode.'_'.$r->EvTeamEvent.'">'.
         '<th class="smallContainer"><input type="checkbox" id="chkEv_'.$r->EvCode.'_'.$r->EvTeamEvent.'"></th>'.
         '<td class="evCodeContainer">'.$r->EvCode.'</td>'.
-        '<td class="evContainer">'.$r->EvEventName.'</td>'.
-        '<td class="txtContainer"><input type="text" id="txtQ_'.$r->EvCode.'_'.$r->EvTeamEvent.'" onchange="updateField(this)"></td>'.
+        '<td class="evContainer">'.$r->EvEventName.'</td>';
+    if (!$r->EvTeamEvent) {
+        echo '<td class="txtContainer"><input type="text" id="txtQH_' . $r->EvCode . '_' . $r->EvTeamEvent . '" onchange="updateField(this)"></td>';
+    } else {
+        echo '<td></td>';
+    }
+    echo '<td class="txtContainer"><input type="text" id="txtQ_'.$r->EvCode.'_'.$r->EvTeamEvent.'" onchange="updateField(this)"></td>'.
         '<td class="txtContainer"><input type="text" id="txtF_'.$r->EvCode.'_'.$r->EvTeamEvent.'" onchange="updateField(this)"></td>'.
         '</tr>';
 

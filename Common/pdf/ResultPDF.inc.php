@@ -566,7 +566,7 @@ class ResultPDF extends IanseoPdf {
 
 
 		$this->SetFont($this->FontStd,'B',$this->FontSizeTitle);
-		$this->Cell(0, 6,  $section['descr'], 1, 1, 'C', 1);
+		$this->Cell(0, 6,  $section['descr'] . ($section['tableHeader'] ? (' ' . $section['tableHeader']) : ''), 1, 1, 'C', 1);
 		if($follows)
 		{
 			$this->SetXY(170,$this->GetY()-6);
