@@ -301,7 +301,7 @@ $MyRowCounter = safe_fetch($Rs);
 			print '<td class="Center">' . $MyRow->TargetNo . '</td>';
 			print '<td>' . getFullAthleteName($MyRow->EnFirstName, $MyRow->EnName, $MyRow->EnMiddleName) . (!is_null($MyRow->AEOperation) ? ' <br><span class="Link" onclick="delAccr(' . $MyRow->EnId . ')">[' . $DelAccr . ']</a>':'') . '</td>';
             print '<td class="Center">' . $MyRow->BirthDate . '</td>';
-			print '<td>' . getFullCountryName($MyRow->CoNameComplete, $MyRow->CoNameComplete2, $MyRow->CoNameComplete3) . '</td>';
+			print '<td>' . getFullCountryName(REGION_ORIGIN_INTERFACE, $MyRow->CoNameComplete, $MyRow->CoNameComplete2, $MyRow->CoNameComplete3) . '</td>';
 			print '<td class="Center">' . $MyRow->EnDivision . '</td>';
 			print '<td class="Center">' . $MyRow->EnClass . '</td>';
 			print '<td class="Center">' . ($MyRow->EnIndClEvent=='1' ? get_text('Yes'): get_text('No')) . '</td>';

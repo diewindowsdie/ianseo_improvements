@@ -39,7 +39,7 @@ foreach ($PdfData->rankData['sections'] as $section) {
     //пробежимся по всем спортсменам и регионам и найдем самые длинные строки
     foreach($section['items'] as $item) {
         $averageAthleteNameLength += strlen($item['athlete']);
-        $averageRegionNameLength += strlen(getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']));
+        $averageRegionNameLength += strlen(getFullCountryName(REGION_ORIGIN_PRINTOUT, $item['countryName'], $item['countryName2'], $item['countryName3'])); //баг? считаем по строке с отчеством, выводим без отчества
     }
     $averageAthleteNameLength = $averageAthleteNameLength / count($section['items']);
     $averageRegionNameLength = $averageRegionNameLength / count($section['items']);
@@ -153,7 +153,7 @@ foreach($PdfData->rankData['sections'] as $section) {
             $previousPadding = $pdf->getCellPaddings();
             $pdf->setCellPaddings($previousPadding["L"] + 0.3, $previousPadding["T"], $previousPadding["R"] + 0.3, $previousPadding["B"]);
 			$pdf->Cell($athleteNameLength, 4, $item['athlete'], 'RBT', 0, 'L', 0);
-			$pdf->Cell(190-8-12-$athleteNameLength-12*$ElimCols-15*$NumPhases, 4, getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']), 'RTB', 0, 'L', 0);
+			$pdf->Cell(190-8-12-$athleteNameLength-12*$ElimCols-15*$NumPhases, 4, getFullCountryName(REGION_ORIGIN_PRINTOUT, $item['countryName'], $item['countryName2'], $item['countryName3']), 'RTB', 0, 'L', 0);
             $pdf->setCellPaddings($previousPadding["L"], $previousPadding["T"], $previousPadding["R"], $previousPadding["B"]);
             $spaceUsed = 190-12*$ElimCols-15*$NumPhases;
 			$pdf->SetFont($pdf->FontFix,'',7);

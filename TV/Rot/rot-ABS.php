@@ -239,7 +239,7 @@ function rotAbs($TVsettings, $RULE) {
 		$tmp.='<div class="Athlete">'.$archer['familynameUpper'].' '.($TVsettings->TVPNameComplete==0 ? FirstLetters($archer['givenname']) : $archer['givenname']).'</div>';
 		if($ViewTeams) {
 			if($TVsettings->TVPViewNationName) {
-				$tmp.='<div class="CountryDescr">' . getFullCountryName($archer['countryName'], $archer['countryName2'], $archer['countryName3']) . '</div>';
+				$tmp.='<div class="CountryDescr">' . getFullCountryName(REGION_ORIGIN_TRANSLATION, $archer['countryName'], $archer['countryName2'], $archer['countryName3']) . '</div>';
 			} else {
 				$tmp.='<div class="CountryDescr">' . $archer['countryCode'] . '</div>';
 			}

@@ -158,8 +158,8 @@ function rotFin($TVsettings, $RULE) {
 					$tmp2.='<div class="FlagDiv">'.get_flag_ianseo($item['oppCountryCode'], $item['oppCountryCode2'], $item['oppCountryCode3'], '', '', $IsCode).'</div>';
 				}
 				if($ViewTeams) {
-                    $tmp1.='<div class="CountryDescr">'.getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']).'</div>';
-                    $tmp2.='<div class="CountryDescr">'.getFullCountryName($item['oppCountryName'], $item['oppCountryName2'], $item['oppCountryName3']).'</div>';
+                    $tmp1.='<div class="CountryDescr">'.getFullCountryName(REGION_ORIGIN_TRANSLATION, $item['countryName'], $item['countryName2'], $item['countryName3']).'</div>';
+                    $tmp2.='<div class="CountryDescr">'.getFullCountryName(REGION_ORIGIN_TRANSLATION, $item['oppCountryName'], $item['oppCountryName2'], $item['oppCountryName3']).'</div>';
 				}
 
 				if($tmp1) $ret[] = '<div class="GridId"><div class="IdPanel">'.$tmp1.'</div><div class="IdScore"></div><div class="IdPanel">'.$tmp2.'</div></div>';
@@ -240,8 +240,8 @@ function rotFin($TVsettings, $RULE) {
 				$tmp2.='<div class="Athlete">'.$item['oppAthlete'].'</div>';
 
 				if($ViewTeams) {
-					$tmp1.='<div class="CountryDescr">'.getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']).'</div>';
-					$tmp2.='<div class="CountryDescr">'.getFullCountryName($item['oppCountryName'], $item['oppCountryName2'], $item['oppCountryName3']).'</div>';
+					$tmp1.='<div class="CountryDescr">'.getFullCountryName(REGION_ORIGIN_TRANSLATION, $item['countryName'], $item['countryName2'], $item['countryName3']).'</div>';
+					$tmp2.='<div class="CountryDescr">'.getFullCountryName(REGION_ORIGIN_TRANSLATION, $item['oppCountryName'], $item['oppCountryName2'], $item['oppCountryName3']).'</div>';
 				}
 
                 if($ViewSchedule) {

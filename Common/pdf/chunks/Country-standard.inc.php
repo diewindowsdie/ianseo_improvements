@@ -78,7 +78,7 @@ $pdf->setDocUpdate($PdfData->Timestamp ?? $PdfData->LastUpdate ?? '');
 		   	$pdf->SetFont($pdf->FontStd,'',7);
 //			$pdf->Cell($athleteCell + ($PdfData->InternationalProtocol ? $TgtCell : 0), 4,  $MyRow->Athlete . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
             $pdf->Cell($athleteCell + ($PdfData->InternationalProtocol ? $TgtCell : 0), 4, getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->MiddleName) . ($MyRow->EnSubTeam==0 ? "" : " (" . $MyRow->EnSubTeam . ")"), 1, 0, 'L', 0);
-            $pdf->Cell($regionCell, 4, getFullCountryName(null, $MyRow->NationComplete2, $MyRow->NationComplete3), 1, 0, 'L', 0);
+            $pdf->Cell($regionCell, 4, getFullCountryName(REGION_ORIGIN_PRINTOUT,null, $MyRow->NationComplete2, $MyRow->NationComplete3), 1, 0, 'L', 0); //todo почему тут null для первого?
             $pdf->Cell($birthdayCell, 4, getAthleteBirthDateFormatted($MyRow->EnDob), 1, 0, 'C', 0);
 			if(!$PdfData->HideCols AND !$TargetFace and !$PdfData->InternationalProtocol) {
 				$pdf->Cell($TgtCell, 4,  ($MyRow->SubClassDescription), 1, 0, 'C', 0);

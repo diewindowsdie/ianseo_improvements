@@ -186,7 +186,7 @@
             echo '<tr id="Row_' . $MyRow->EnId . '" class="data ' . ($CurRow++ % 2 ? ' OtherColor' : '') . '">'.
                     '<td>' . $MyRow->EnCode . '</td>'.
                     '<td>' . getFullAthleteName($MyRow->EnFirstName, $MyRow->EnName, $MyRow->EnMiddleName) . '</td>'.
-                    '<td>' . getFullCountryName($MyRow->CoNameComplete, $MyRow->CoNameComplete2, $MyRow->CoNameComplete3) . '</td>' .
+                    '<td>' . getFullCountryName(REGION_ORIGIN_INTERFACE, $MyRow->CoNameComplete, $MyRow->CoNameComplete2, $MyRow->CoNameComplete3) . '</td>' .
                     '<td class="Center">' . $MyRow->EnDivision . '</td>' .
                     '<td class="Center">' . $MyRow->EnClass . '</td>' .
                     '<td class="Center ckContainer" title="' . get_text('IndClEvent', 'Tournament') .'">' . $ChkIndCl . '</td>' .

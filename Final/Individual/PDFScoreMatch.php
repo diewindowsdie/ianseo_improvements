@@ -301,7 +301,7 @@ function DrawScore(&$pdf, $MyRow, $Side='L') {
    	$pdf->SetFont($pdf->FontStd,'',10);
 	$pdf->Cell(20,6,(get_text('Country')) . ': ', 'L', 0, 'L', 0);
 	$pdf->SetFont($pdf->FontStd,'B',10);
-    $pdf->Cell($ScoreWidth-20-$TotalW,6, getFullCountryName($MyRow->{$Prefix.'CountryCode'} ? $MyRow->{$Prefix.'CountryName'} : "", $MyRow->{$Prefix.'CountryName2'}, $MyRow->{$Prefix.'CountryName3'}), 0, 1, 'L', 0);
+    $pdf->Cell($ScoreWidth-20-$TotalW,6, getFullCountryName(REGION_ORIGIN_PRINTOUT,$MyRow->{$Prefix.'CountryCode'} ? $MyRow->{$Prefix.'CountryName'} : "", $MyRow->{$Prefix.'CountryName2'}, $MyRow->{$Prefix.'CountryName3'}), 0, 1, 'L', 0);
 	$pdf->SetFont($pdf->FontStd,'',10);
 	$pdf->Cell(20,6,(get_text('DivisionClass')) . ': ', 'LB', 0, 'L', 0);
 	$pdf->SetFont($pdf->FontStd,'B',10);

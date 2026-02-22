@@ -204,6 +204,7 @@ function get_which_menu($on=false) {
             $ret['PART']['SYNC'][] = get_text('MenuLM_ListLoad') . '|' . $CFG->ROOT_DIR . 'Partecipants/ListLoad.php';
             $ret['PART']['SYNC'][] = get_text('MenuLM_AthletesDiscrepancies') . '|' . $CFG->ROOT_DIR . 'Partecipants/Discrepancies.php';
             $ret['PART']['SYNC'][] = MENU_DIVIDER;
+            $ret['PART']['SYNC'][] = "Отображение Региона/Команды 1, 2 и 3". '|' . $CFG->ROOT_DIR . 'Partecipants/ChangeRegionsDisplay.php';
             $ret['PART']['SYNC'][] = get_text('MenuLM_ChangeNationsNames') . '|' . $CFG->ROOT_DIR . 'Partecipants/ChangeNationsNames.php';
             $ret['PART']['SYNC'][] = get_text('TourCountries', 'Tournament') . '|' . $CFG->ROOT_DIR . 'Tournament/Countries.php';
             $ret['PART'][] = MENU_DIVIDER;
