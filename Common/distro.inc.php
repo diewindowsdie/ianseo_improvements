@@ -1,7 +1,7 @@
 <?php
 define('ProgramRelease', 'STABLE');
-define('ProgramBuild', 'rev 254 [improvements LIVE v1.0]');
-define("CurrentTag", "live_v1.0");
+define('ProgramBuild', 'rev 254 [improvements LIVE v1.1]');
+define("CurrentTag", "live_v1.1");
 //pre-релизы собираются из ветки live - это lts ветка, предназначенная для проведения крупных соревнований, в нее попадают только критически важные обновления
 define("UsePreReleases", true);
 define('MinTimeOut', '120');
