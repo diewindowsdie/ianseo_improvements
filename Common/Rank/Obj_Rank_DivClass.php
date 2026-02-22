@@ -233,7 +233,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 					QuD1Gold, QuD2Gold, QuD3Gold, QuD4Gold, QuD5Gold, QuD6Gold, QuD7Gold, QuD8Gold,
 					QuD1Xnine, QuD2Xnine, QuD3Xnine, QuD4Xnine, QuD5Xnine, QuD6Xnine, QuD7Xnine, QuD8Xnine,
 					QuD1ArrowString, QuD2ArrowString, QuD3ArrowString, QuD4ArrowString, QuD5ArrowString, QuD6ArrowString, QuD7ArrowString, QuD8ArrowString,
-					{$tmp} AS Arrows_Shot, ToNumEnds, DiEnds, DiArrows, FdiDetails,
+					{$tmp} AS Arrows_Shot, ToNumEnds, DiEnds, DiArrows, FdiDetails, ToLocRule,
 					QuIrmType, IrmType, IrmShowRank, QuNotes, QuArrow,
 					{$MyRank} AS `Rank`, " . (!empty($comparedTo) ? 'IFNULL(QopClRank,0)' : '0') . " as OldRank, Qu{$dd}Score AS Score, Qu{$dd}Gold AS Gold,Qu{$dd}Xnine AS XNine, Qu{$dd}Hits AS Hits, ";
 
@@ -482,7 +482,7 @@ require_once('Common/Lib/Normative/NormativeCalculator.php');
 						$distFields["D{$n}Arrowstring"]=$myRow->{'QuD' . $n . 'ArrowString'} ;
 
 					}
-                    $item['normative'] = calcNormative($distances, $myRow->EnClass, $myRow->EnDivision, $distFields)["name"];
+                    $item['normative'] = calcNormative($distances, $myRow->EnClass, $myRow->EnDivision, $distFields, $myRow->ToLocRule)["name"];
 
 					$item=$item+$distFields;
 
