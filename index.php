@@ -30,10 +30,7 @@ echo checkPhpVersion(true);
     </th>
 </tr>
 
-<?php if (ProgramRelease!='HEAD' && CheckLastSWUpdate()) { ?>
-	<tr class="Divider"><td colspan="6"></td></tr>
-	<tr><td colspan="6" class="Bold Center"><?php print get_text('CheckUpdate','Common',$CFG->ROOT_DIR.'Update/');?></td></tr>
-<?php }
+<?php
 
 if(empty($_SESSION['TourCode']) and ProgramRelease!='HEAD') {
 	echo '<div class="WhatIanseoDoes">';
