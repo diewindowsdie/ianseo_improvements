@@ -582,10 +582,26 @@ function get_photo_ianseo($r, $h=0, $side=false, $Extra='', $force=false, $direc
 	return '<img src="'.$CFG->ROOT_DIR.$img.'" '.($h?' height="'.$h.'"':''). ($side ? ' align="left"' : '') . ' '.$Extra.'/>';
 }
 
-function getFullCountryName($countryName, $countryName2=null, $countryName3=null) {
-    $result = $countryName;
-    $result .= (($countryName2 != '' && $result != '') ? ', ' : '') . $countryName2;
-    $result .= (($countryName3 != '' && $result != '') ? ', ' : '') . $countryName3;
+const REGION_DISPLAY_MODULE_NAME = "RegionsDisplay";
+const REGION_ORIGIN_PRINTOUT = 'printout';
+const REGION_ORIGIN_TRANSLATION = 'translation';
+const REGION_ORIGIN_INTERFACE = 'interface';
+
+function getFullCountryName($origin, $countryName, $countryName2=null, $countryName3=null) {
+    $show1 = getModuleParameter(REGION_DISPLAY_MODULE_NAME, $origin . '_1', "1", $_SESSION['TourId']);
+    $show2 = getModuleParameter(REGION_DISPLAY_MODULE_NAME, $origin . '_2', "1", $_SESSION['TourId']);
+    $show3 = getModuleParameter(REGION_DISPLAY_MODULE_NAME, $origin . '_3', "1", $_SESSION['TourId']);
+
+    $result = '';
+    if ($show1) {
+        $result = $countryName;
+    }
+    if ($show2) {
+        $result .= (($countryName2 != '' && $result != '') ? ', ' : '') . $countryName2;
+    }
+    if ($show3) {
+        $result .= (($countryName3 != '' && $result != '') ? ', ' : '') . $countryName3;
+    }
 
     return $result;
 }

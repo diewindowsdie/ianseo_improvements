@@ -116,7 +116,7 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 		$temprow[]=substr($MyRow->TargetNo,-1,1);
 		$temprow[]= getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->MiddleName);
 		$temprow[]= ($MyRow->NationCode ?? '');
-        $temprow[]= getFullCountryName($MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3);
+        $temprow[]= getFullCountryName(REGION_ORIGIN_PRINTOUT, $MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3);
 		$temprow[]= ($MyRow->DOB ?? '');
 		$temprow[]= ($MyRow->SubClassDescription ?? '');
 		$temprow[]= $MyRow->DivDescription;

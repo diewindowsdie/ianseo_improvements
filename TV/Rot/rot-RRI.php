@@ -243,8 +243,8 @@ function rotRri($TVsettings, $RULE) {
 						$tmp2.='<div class="Athlete">'.$item['oppAthlete'].'</div>';
 
 						if($ViewTeams) {
-							$tmp1.='<div class="CountryDescr">'. getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']).'</div>';
-							$tmp2.='<div class="CountryDescr">'.getFullCountryName($item['oppCountryName'], $item['oppCountryName2'], $item['oppCountryName3']).'</div>';
+							$tmp1.='<div class="CountryDescr">'. getFullCountryName(REGION_ORIGIN_TRANSLATION, $item['countryName'], $item['countryName2'], $item['countryName3']).'</div>';
+							$tmp2.='<div class="CountryDescr">'.getFullCountryName(REGION_ORIGIN_TRANSLATION, $item['oppCountryName'], $item['oppCountryName2'], $item['oppCountryName3']).'</div>';
 						}
 
 						if($ViewEnds) {

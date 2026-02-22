@@ -106,7 +106,7 @@ while($MyRow=safe_fetch($Rs)) {
     $pdf->SetFont($pdf->FontStd,'B',7);
     $pdf->Cell(60, 4, getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->EnMiddleName), 1, 0, 'L', $MyRow->OpDone);
     $pdf->SetFont($pdf->FontStd,'',7);
-    $pdf->Cell(46+($payDetails ? 0:15), 4, getFullCountryName($MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3), 'RTB', 0, 'L', $MyRow->OpDone);
+    $pdf->Cell(46+($payDetails ? 0:15), 4, getFullCountryName(REGION_ORIGIN_PRINTOUT, $MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3), 'RTB', 0, 'L', $MyRow->OpDone);
     $pdf->Cell(7, 4,  ($MyRow->Session), 1, 0, 'R', $MyRow->OpDone);
     $pdf->Cell(10, 4,  ($MyRow->TargetNo), 1, 0, 'R', $MyRow->OpDone);
     $pdf->Cell(8, 4,  ($MyRow->SubclassDescription), 1, 0, 'C', $MyRow->OpDone);

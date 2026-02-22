@@ -93,7 +93,7 @@ function rotList($TVsettings, $RULE) {
 		}
 		$tmp.='<div class="Athlete">' . $MyRow->FirstName . ' ' . ($TVsettings->TVPNameComplete==0 ? FirstLetters($MyRow->Name) : $MyRow->Name) . '</div>';
 		if($ViewTeams) {
-			$tmp.= '<div class="CountryDescr">' . getFullCountryName($MyRow->Nation, $MyRow->Country2, $MyRow->Country3) . '</div>';
+			$tmp.= '<div class="CountryDescr">' . getFullCountryName(REGION_ORIGIN_TRANSLATION, $MyRow->Nation, $MyRow->Country2, $MyRow->Country3) . '</div>';
 		}
 		if($ViewCatCode) {
 			$tmp.= '<div class="CategoryCode">' . $MyRow->DivCode . $MyRow->ClassCode . '</div>';

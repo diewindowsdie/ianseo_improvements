@@ -392,7 +392,7 @@ class ResultPDF extends IanseoPdf {
         }
 		//Nazione
 		$this->SetFont($this->FontStd,'',$this->FontSizeHead);
-		$this->Cell(41 + $addSize + ($internationalProtocol ? 8 : 0), 4 * ($double ? 2 : 1), getFullCountryName($item['countryName'], $item['countryName2'], $item['countryName3']), $border.'L', 0, 'L', 0);
+		$this->Cell(41 + $addSize + ($internationalProtocol ? 8 : 0), 4 * ($double ? 2 : 1), getFullCountryName(REGION_ORIGIN_PRINTOUT, $item['countryName'], $item['countryName2'], $item['countryName3']), $border.'L', 0, 'L', 0);
 		$this->SetFont($this->FontFix,'',$this->FontSizeHead);
 		if (!$hasIRMStatus) {
 			if(!$double) {
