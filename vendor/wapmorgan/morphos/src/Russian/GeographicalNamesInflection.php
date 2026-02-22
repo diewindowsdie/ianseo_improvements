@@ -191,7 +191,6 @@ class GeographicalNamesInflection extends \morphos\BaseInflection implements Cas
     {
         $name = S::lower($name);
 
-        //print_r($name . "\n");
         // Проверка на неизменяемость
         if (in_array($name, static::$immutableNames, true)
             || (strpos($name, '-') !== false && S::stringContains($name, static::$immutableTriggerPrefixes))
