@@ -134,6 +134,16 @@ class S
             return implode('-', array_map([__CLASS__, __FUNCTION__], explode('-', $string)));
         }
 
+        //фикс для Республика Саха (Якутия)
+        if (strpos($string, '(') !== false) {
+            return implode('(', array_map([__CLASS__, __FUNCTION__], explode('(', $string)));
+        }
+
+        //фикс для Республика Марий Эл и Республика Северная Осетия - Алания
+        if (strpos($string, ' ') !== false) {
+            return implode(' ', array_map([__CLASS__, __FUNCTION__], explode(' ', $string)));
+        }
+
         return static::upper(static::slice($string, 0, 1)) . static::lower(static::slice($string, 1));
     }
 

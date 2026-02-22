@@ -22,6 +22,8 @@ class GeographicalNamesInflection extends \morphos\BaseInflection implements Cas
 
     /** @var string[] */
     protected static $delimiters = [
+        ' - ',
+        ' — ',
         ' ',
         '-на-',
         '-эль-',
@@ -53,6 +55,7 @@ class GeographicalNamesInflection extends \morphos\BaseInflection implements Cas
         // фикс для Марий Эл
         'марий',
         'эл',
+        'марий эл',
 
         // части
         'алма',
@@ -188,6 +191,7 @@ class GeographicalNamesInflection extends \morphos\BaseInflection implements Cas
     {
         $name = S::lower($name);
 
+        //print_r($name . "\n");
         // Проверка на неизменяемость
         if (in_array($name, static::$immutableNames, true)
             || (strpos($name, '-') !== false && S::stringContains($name, static::$immutableTriggerPrefixes))
@@ -244,7 +248,7 @@ class GeographicalNamesInflection extends \morphos\BaseInflection implements Cas
             $last_part = S::slice($name,
                 S::findLastPosition($name, ' ') + 1);
             // N область, N край
-            if (in_array($last_part, ['край', 'область', 'район', 'волость'], true)) {
+            if (in_array($last_part, ['край', 'область', 'район', 'волость', 'округ', 'автономный', 'автономная'], true)) {
                 $last_part_cases                  = NounDeclension::getCases($last_part);
                 $last_part_cases[Cases::LOCATIVE] = $last_part_cases[Cases::PREDLOJ];
                 return RussianCasesHelper::composeCasesFromWords(
