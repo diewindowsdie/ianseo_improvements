@@ -1,5 +1,17 @@
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+
+$currentSessionRankingIndividual = [];
+//если просят конкретное соревнование - сохраним $_SESSION, который перетирается на время выполнения скрипта
+//в OrisFunctions.php делается define языка распечаток на основании текущей сессии, поэтому нужно переопределить сессию до того как ее ктото попытается прочитать
+if (isset($_REQUEST['TourId'])) {
+    global $forceHidingFullNamesAndBirthdate;
+    $forceHidingFullNamesAndBirthdate = true;
+
+    $currentSessionRankingIndividual = $_SESSION;
+    CreateTourSession($_REQUEST['TourId']);
+}
+
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/Lib/Fun_PrintOuts.php');
@@ -7,10 +19,6 @@ require_once('Common/Lib/Obj_RankFactory.php');
 require_once('Common/OrisFunctions.php');
 require_once('Common/pdf/PdfChunkLoader.php');
 
-if (!isset($_SESSION['TourId']) && isset($_REQUEST['TourId']))
-{
-	CreateTourSession($_REQUEST['TourId']);
-}
 checkFullACL(AclIndividuals, '', AclReadOnly);
 
 $PdfData=getRankingIndividual();
@@ -20,9 +28,9 @@ if(!isset($isCompleteResultBook))
 
 require_once(PdfChunkLoader('RankIndividual.inc.php'));
 
-if (isset($_REQUEST['TourId']))
-{
-	EraseTourSession();
+//если просят конкретное соревнование - восстановим $_SESSION, который перетирается на время выполнения скрипта
+if (isset($_REQUEST['TourId'])) {
+    $_SESSION = $currentSessionRankingIndividual;
 }
 
 if(isset($__ExportPDF))

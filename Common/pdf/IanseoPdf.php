@@ -127,7 +127,7 @@ class IanseoPdf extends TCPDF {
 		$this->SetAutoPageBreak(true, ($this->ToPaths['ToBottom'] ? IanseoPdf::footerImageH:0) + IanseoPdf::bottomMargin);
 		$this->SetAuthor('https://www.ianseo.net');
 		$this->SetCreator('Software Design by Ianseo');
-		$this->SetTitle('IANSEO - Integrated Result System - Version ' . ProgramVersion . (defined('ProgramBuild') ? ' (' . ProgramBuild . ')' : '') . ' - Release '.ProgramRelease);
+		$this->SetTitle($DocTitolo . ': ' . $_SESSION['TourName']);
 		$this->SetFont($this->FontStd,'',8);
 		$this->SetLineWidth(0.1);
 		$this->pushMargins();

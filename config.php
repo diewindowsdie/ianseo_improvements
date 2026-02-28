@@ -124,3 +124,6 @@ if(!empty($CFG->ROOT_DIR) and dirname($_SERVER['PHP_SELF'])!=$CFG->ROOT_DIR.'Mod
 if($CFG->USERAUTH AND empty($SKIP_AUTH) AND is_file($CFG->DOCUMENT_PATH .'Modules/Authentication/AuthFunctions.php')) {
     include_once($CFG->DOCUMENT_PATH.'Modules/Authentication/AuthFunctions.php');
 }
+
+global $forceHidingFullNamesAndBirthdate;
+$forceHidingFullNamesAndBirthdate = false;

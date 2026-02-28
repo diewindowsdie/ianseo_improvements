@@ -1,5 +1,17 @@
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+
+$currentSessionBracketsTeam = [];
+//если просят конкретное соревнование - сохраним $_SESSION, который перетирается на время выполнения скрипта
+//в OrisFunctions.php делается define языка распечаток на основании текущей сессии, поэтому нужно переопределить сессию до того как ее ктото попытается прочитать
+if (isset($_REQUEST['TourId'])) {
+    global $forceHidingFullNamesAndBirthdate;
+    $forceHidingFullNamesAndBirthdate = true;
+
+    $currentSessionBracketsTeam = $_SESSION;
+    CreateTourSession($_REQUEST['TourId']);
+}
+
 include_once('Common/pdf/ResultPDF.inc.php');
 include_once('Common/Fun_FormatText.inc.php');
 include_once('Common/Lib/ArrTargets.inc.php');
@@ -40,7 +52,10 @@ if(!isset($isCompleteResultBook))
 
 require_once(PdfChunkLoader('BracketTeam.inc.php'));
 
-if (!empty($_REQUEST['TourId'])) EraseTourSession();
+//если просят конкретное соревнование - восстановим $_SESSION, который перетирается на время выполнения скрипта
+if (isset($_REQUEST['TourId'])) {
+    $_SESSION = $currentSessionBracketsTeam;
+}
 
 if(isset($__ExportPDF)) {
 	$__ExportPDF = $pdf->Output('','S');

@@ -1,5 +1,17 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
+
+$currentSessionWinners = [];
+//если просят конкретное соревнование - сохраним $_SESSION, который перетирается на время выполнения скрипта
+//в OrisFunctions.php делается define языка распечаток на основании текущей сессии, поэтому нужно переопределить сессию до того как ее ктото попытается прочитать
+if (isset($_REQUEST['TourId'])) {
+    global $forceHidingFullNamesAndBirthdate;
+    $forceHidingFullNamesAndBirthdate = true;
+
+    $currentSessionWinners = $_SESSION;
+    CreateTourSession($_REQUEST['TourId']);
+}
+
 require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/OrisFunctions.php');
@@ -13,6 +25,11 @@ if(!isset($isCompleteResultBook))
 	$pdf = new ResultPDF($PdfData->Description);
 
 require_once(PdfChunkLoader('MedalList.inc.php'));
+
+//если просят конкретное соревнование - восстановим $_SESSION, который перетирается на время выполнения скрипта
+if (isset($_REQUEST['TourId'])) {
+    $_SESSION = $currentSessionWinners;
+}
 
 if(!isset($isCompleteResultBook))
 {
