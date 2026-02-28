@@ -607,19 +607,25 @@ function getFullCountryName($origin, $countryName, $countryName2=null, $countryN
 }
 
 function getFullAthleteName($surname, $firstName, $middleName) {
+    global $forceHidingFullNamesAndBirthdate;
+
     $internationalProtocol = getModuleParameter("Tournament", "InternationalProtocol", false, $_SESSION['TourId']);
-    $hideMiddleNameAndBirthDate = getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $_SESSION['TourId']);
+    $hideMiddleNameAndBirthDate = getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $_SESSION['TourId']) || $forceHidingFullNamesAndBirthdate;
     return trim($surname) . ' ' . trim($firstName) . ($middleName && !$internationalProtocol && !$hideMiddleNameAndBirthDate ? ' ' . trim($middleName) : '');
 }
 
 function getAthleteBirthDateFormatted($birthDate) {
-    $hideMiddleNameAndBirthDate = getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $_SESSION['TourId']);
+    global $forceHidingFullNamesAndBirthdate;
+
+    $hideMiddleNameAndBirthDate = getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $_SESSION['TourId']) || $forceHidingFullNamesAndBirthdate;
     $birthDateFormat = $hideMiddleNameAndBirthDate ? 'Y' : 'd.m.Y';
     return $birthDate ? DateTime::createFromFormat('Y-m-d', $birthDate)->format($birthDateFormat) : '';
 }
 
 function getBirthDateColumnTitle($original) {
-    $hideMiddleNameAndBirthDate = getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $_SESSION['TourId']);
+    global $forceHidingFullNamesAndBirthdate;
+
+    $hideMiddleNameAndBirthDate = getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $_SESSION['TourId']) || $forceHidingFullNamesAndBirthdate;
 
     return $hideMiddleNameAndBirthDate ? get_text('BirthYear', 'Tournament') : $original;
 }

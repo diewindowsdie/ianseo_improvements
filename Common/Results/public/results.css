@@ -1,0 +1,102 @@
+table.competitionsList {
+    padding: 50px;
+    background: transparent;
+    border-spacing: 0 !important;
+}
+
+table.competitionDetails {
+    background: white !important;
+    border-spacing: 0 !important;
+    margin-top: 40px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table.competitionDetails td {
+    padding: 10px;
+}
+
+table.competitionDetails td.title {
+    padding: 20px 20px 0px;
+    vertical-align: top;
+    line-height: 1.5;
+}
+
+table.competitionDetails td.details {
+    padding: 40px;
+}
+
+span.competitionTitle {
+    margin: 5px;
+    font-size: 18pt;
+    font-weight: bold;
+}
+
+span.secondLevelTitle {
+    margin: 5px;
+    font-size: 12pt;
+}
+
+table.competitionsList tr.Divider td, table.competitionsList tr.Divider th {
+    margin-top: 20px;
+    height: 20px;
+    background: transparent
+}
+
+table.competitionsList tr th.Title {padding: 10px}
+
+.display-none {
+    display: none;
+}
+
+table.competitionsList tr th i {
+    padding: 10px 0 0 0;
+}
+
+i.l2, i.l3 {
+    margin-bottom: 5px;
+}
+
+table.competitionsList tr th.competitionTitle {
+    text-align: left;
+    padding: 10px 5px 0 5px;
+    margin: 0;
+    font-weight: bold;
+}
+
+table.competitionsList tr th.competitionLocation {
+    text-align: left;
+    padding: 3px 5px 10px 5px;
+    margin: 0;
+    font-weight: normal;
+}
+
+table.competitionsList tr td.competitionDetails {
+    padding: 10px 30px;
+}
+
+span.resultsGroupHeader {
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+div.results {
+    margin-left: 35px;
+    margin-top: 10px;
+}
+
+.top-offset {
+    margin-top: 100px;
+}
+
+a.link-l3, a.link-l4 {
+    margin-left: 5px;
+}
+
+a.link-l4 {
+    margin-left: 5px;
+}
+
+div.competitionDetailsLink {
+    margin: -10px 0px 10px -30px !important;
+}

@@ -67,6 +67,7 @@ $lang['ISK-LockedSessionHelp']='{$a} icons show if the app can score or not in t
 $lang['ISK-ServerUrlPin']='<b>DO NOT SHARE THIS NUMBER</b><br>Use a PIN of your choice (4 Numeric Digits) to be used to access your competition.<br>
 Devices can score in your competition only reading the QR-Code printed by IANSEO.<br>
 In case of manual input in Ianseo Scorekeeper LITE app, the Competition code to use is <b>{$a}</b>';
+$lang['OpenInNewTab']='Open in new tab';
 $lang['QrCodeLandscape']='a single or double "<" will draw a left arrow
 a single or double ">" will draw a right arrow
 a single or double "^" will draw an up arrow

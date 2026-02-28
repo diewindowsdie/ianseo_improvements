@@ -1,5 +1,17 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
+
+$currentSessionDetailedFinalsSchedule = [];
+//если просят конкретное соревнование - сохраним $_SESSION, который перетирается на время выполнения скрипта
+//в OrisFunctions.php делается define языка распечаток на основании текущей сессии, поэтому нужно переопределить сессию до того как ее ктото попытается прочитать
+if (isset($_REQUEST['TourId'])) {
+    global $forceHidingFullNamesAndBirthdate;
+    $forceHidingFullNamesAndBirthdate = true;
+
+    $currentSessionDetailedFinalsSchedule = $_SESSION;
+    CreateTourSession($_REQUEST['TourId']);
+}
+
 require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/Lib/Obj_RankFactory.php');
 checkFullACL(AclCompetition, 'cSchedule', AclReadOnly);
@@ -191,3 +203,8 @@ foreach($SessionMatches as $vSes => $items) {
 }
 
 $pdf->Output();
+
+//если просят конкретное соревнование - восстановим $_SESSION, который перетирается на время выполнения скрипта
+if (isset($_REQUEST['TourId'])) {
+    $_SESSION = $currentSessionDetailedFinalsSchedule;
+}
