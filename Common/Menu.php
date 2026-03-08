@@ -133,7 +133,12 @@ function get_which_menu($on=false) {
             $ret['COMP']['REPT'][] = get_text('MenuLM_CheckList') . '|' . $CFG->ROOT_DIR . 'Tournament/FinalReport/PDFCheckList.php|||PrintOut';
             $ret['COMP'][] = MENU_DIVIDER;
         }
+        $ret["COMP"]["PUBL"][] = "Публикация результатов";
+        $ret["COMP"]["PUBL"][] = "Опубликованные соревнования" . "|" . $CFG->ROOT_DIR . 'Common/Results/public/';
+        $ret["COMP"][] = MENU_DIVIDER;
         if (subFeatureAcl($acl,AclCompetition,'cExport') >= AclReadOnly) {
+            $ret["COMP"]["PUBL"][] = "Настройки публикации" . "|" . $CFG->ROOT_DIR . 'Common/Results/configure.php';
+
             $ret['COMP']['EXPT'][] = get_text('MenuLM_Export') . '|' . $CFG->ROOT_DIR . 'Tournament/TournamentExport.php?Complete=1';
             $ret['COMP']['EXPT'][] = get_text('Export2Fitarco', 'Tournament') . '|' . $CFG->ROOT_DIR . 'Tournament/Export2Fitarco.php';
             $ret['COMP']['EXPT'][] = get_text('MenuLM_Export Tournament') . '|' . $CFG->ROOT_DIR . 'Tournament/TournamentExport.php';
@@ -514,6 +519,9 @@ function get_which_menu($on=false) {
             $ret['COMP'][] = get_text('MenuLM_Import Tournament') . '|' . $CFG->ROOT_DIR . 'Tournament/TournamentImport.php';
         }
 		$ret['COMP'][] = MENU_DIVIDER;
+        $ret["COMP"]["PUBL"][] = "Публикация результатов";
+        $ret["COMP"]["PUBL"][] = "Опубликованные соревнования" . "|" . $CFG->ROOT_DIR . 'Common/Results/public/';
+        $ret["COMP"][] = MENU_DIVIDER;
 		$ret['COMP'][] = get_text('MenuLM_Select Language') .'|'.$CFG->ROOT_DIR.'Language/index.php';
 		if(substr(SelectLanguage(),0,2)!='en') $ret['COMP'][] = 'Select Language|'.$CFG->ROOT_DIR.'Language/index.php';
 

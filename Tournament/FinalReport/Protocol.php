@@ -1,5 +1,18 @@
 <?php
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+require_once dirname(__FILE__, 3) . "/Common/Results/lib.php";
+
+$currentSessionQualTeam = [];
+//если просят конкретное соревнование - сохраним $_SESSION, который перетирается на время выполнения скрипта
+//в OrisFunctions.php делается define языка распечаток на основании текущей сессии, поэтому нужно переопределить сессию до того как ее ктото попытается прочитать
+if (isset($_REQUEST['TourId'])) {
+    global $forceHidingFullNamesAndBirthdate;
+    $forceHidingFullNamesAndBirthdate = true;
+
+    $currentSessionQualTeam = $_SESSION;
+    CreateTourSession($_REQUEST['TourId']);
+}
+
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/pdf/ResultPDF.inc.php');
 require_once('Common/OrisFunctions.php');
@@ -9,16 +22,6 @@ checkACL(array(AclIndividuals, AclTeams, AclCompetition), AclReadOnly);
 function landscapePagesNeccesary() {
     return array_key_exists("country1", $_REQUEST) || array_key_exists("country2", $_REQUEST) || array_key_exists("country3", $_REQUEST);
 }
-
-const ModuleName = "Protocol";
-
-const Header1ParameterName = "StatHeader1";
-const Header2ParameterName = "StatHeader2";
-const Header3ParameterName = "StatHeader3";
-
-const Checked1ParameterName = "CheckedCountry1";
-const Checked2ParameterName = "CheckedCountry2";
-const Checked3ParameterName = "CheckedCountry3";
 
 $isInternationalProtocol = getModuleParameter("Tournament", "InternationalProtocol", false, $_SESSION['TourId']);
 
@@ -45,7 +48,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
 
     //медалисты в личке и командах
     $pdf->Titolo = get_text('MedallistsByEvent', 'Tournament');
-    include '../../Final/PDFMedalList.php';
+    require_once dirname(__FILE__, 3) . '/Final/PDFMedalList.php';
     //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
     if (!in_array(true, array(
             $pagesPresent["IndividualQualification"],
@@ -63,7 +66,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         $pdf->AddPage($pageOrientation);
         $pdf->Titolo = get_text('ResultIndAbs', 'Tournament');
         $hideTempHeader = true;
-        include '../../Qualification/PrnIndividualAbs.php';
+        require_once dirname(__FILE__, 3) . '/Qualification/PrnIndividualAbs.php';
         //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
         if (!in_array(true, array(
                 $pagesPresent["TeamQualification"],
@@ -81,7 +84,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         $pdf->AddPage($pageOrientation);
         $pdf->Titolo = get_text('ResultSqAbs', 'Tournament');
         $hideTempHeader = true;
-        include '../../Qualification/PrnTeamAbs.php';
+        require_once dirname(__FILE__, 3) . '/Qualification/PrnTeamAbs.php';
         //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
         if (!in_array(true, array(
                 $pagesPresent["IndividualBrackets"],
@@ -97,7 +100,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     if ($pagesPresent["IndividualBrackets"]) {
         $pdf->AddPage($pageOrientation);
         $pdf->Titolo = get_text('VersionBracketsInd', 'Tournament');
-        include '../../Final/Individual/PrnBracket.php';
+        require_once dirname(__FILE__, 3) . '/Final/Individual/PrnBracket.php';
         //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
         if (!in_array(true, array(
                 $pagesPresent["IndividualRankings"],
@@ -112,7 +115,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     if ($pagesPresent["IndividualRankings"]) {
         $pdf->AddPage($pageOrientation);
         $pdf->Titolo = get_text('RankingInd');
-        include '../../Final/Individual/PrnRanking.php';
+        require_once dirname(__FILE__, 3) . '/Final/Individual/PrnRanking.php';
         //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
         if (!in_array(true, array(
                 $pagesPresent["TeamBrackets"],
@@ -127,7 +130,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
         $pdf->AddPage($pageOrientation);
         //unset($_REQUEST["ShowSetArrows"]);
         $pdf->Titolo = get_text('VersionBracketsTeam', 'Tournament');
-        include '../../Final/Team/PrnBracket.php';
+        require_once dirname(__FILE__, 3) . '/Final/Team/PrnBracket.php';
         //проверим, что есть хотя бы один отчет после этого и до статистики по регионам, где нужна портретная ориентация страницы, и есть статистика по регионам
         if (!in_array(true, array(
                 $pagesPresent["TeamRankings"]
@@ -140,7 +143,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     if ($pagesPresent["TeamRankings"]) {
         $pdf->AddPage($pageOrientation);
         $pdf->Titolo = get_text('RankingSq');
-        include '../../Final/Team/PrnRanking.php';
+        require_once dirname(__FILE__, 3) . '/Final/Team/PrnRanking.php';
         //если есть хотя бы один отчет со статистикой по "регионам" - ставим альбомную ориентацию
         if (landscapePagesNeccesary()) {
             $pageOrientation = 'L';
@@ -150,63 +153,69 @@ if (array_key_exists("doPrint", $_REQUEST)) {
     //статистика по "регионам" по полю 1
     if (array_key_exists("country1", $_REQUEST)) {
         $pdf->AddPage($pageOrientation);
-        setModuleParameter(ModuleName, Checked1ParameterName, "1", $_SESSION['TourId']);
+        setModuleParameter(PROTOCOL_MODULE, Checked1ParameterName, "1", $_SESSION['TourId']);
         if ($_REQUEST["StatHeader1"] != "") {
-            setModuleParameter(ModuleName, Header1ParameterName, $_REQUEST["StatHeader1"], $_SESSION['TourId']);
+            setModuleParameter(PROTOCOL_MODULE, Header1ParameterName, $_REQUEST["StatHeader1"], $_SESSION['TourId']);
         }
         $_REQUEST["countryIndex"] = 1;
         $pdf->Titolo = get_text('Statistics', 'Tournament');
-        include '../../Partecipants/PrnStatCountry.php';
+        require dirname(__FILE__, 3) . '/Partecipants/PrnStatCountry.php';
         //если больше нет отчетов со статистикой по "регионам" - возвращаем портретную ориентацию
         if (!array_key_exists("country2", $_REQUEST) && !array_key_exists("country3", $_REQUEST)) {
             $pageOrientation = 'P';
         }
     } else {
-        setModuleParameter(ModuleName, Checked1ParameterName, "0", $_SESSION['TourId']);
+        setModuleParameter(PROTOCOL_MODULE, Checked1ParameterName, "0", $_SESSION['TourId']);
     }
 
     //статистика по "регионам" по полю 2
     if (array_key_exists("country2", $_REQUEST)) {
         $pdf->AddPage($pageOrientation);
-        setModuleParameter(ModuleName, Checked2ParameterName, "1", $_SESSION['TourId']);
+        setModuleParameter(PROTOCOL_MODULE, Checked2ParameterName, "1", $_SESSION['TourId']);
         if ($_REQUEST["StatHeader2"] != "") {
-            setModuleParameter(ModuleName, Header2ParameterName, $_REQUEST["StatHeader2"], $_SESSION['TourId']);
+            setModuleParameter(PROTOCOL_MODULE, Header2ParameterName, $_REQUEST["StatHeader2"], $_SESSION['TourId']);
         }
         $_REQUEST["countryIndex"] = 2;
         $pdf->Titolo = get_text('Statistics', 'Tournament');
-        include '../../Partecipants/PrnStatCountry.php';
+        require dirname(__FILE__, 3) . '/Partecipants/PrnStatCountry.php';
         //если больше нет отчетов со статистикой по "регионам" - возвращаем портретную ориентацию
         if (!array_key_exists("country3", $_REQUEST)) {
             $pageOrientation = 'P';
         }
     } else {
-        setModuleParameter(ModuleName, Checked2ParameterName, "0", $_SESSION['TourId']);
+        setModuleParameter(PROTOCOL_MODULE, Checked2ParameterName, "0", $_SESSION['TourId']);
     }
 
     //статистика по "регионам" по полю 3
     if (array_key_exists("country3", $_REQUEST)) {
         $pdf->AddPage($pageOrientation);
-        setModuleParameter(ModuleName, Checked3ParameterName, "1", $_SESSION['TourId']);
+        setModuleParameter(PROTOCOL_MODULE, Checked3ParameterName, "1", $_SESSION['TourId']);
         if ($_REQUEST["StatHeader3"] != "") {
-            setModuleParameter(ModuleName, Header3ParameterName, $_REQUEST["StatHeader3"], $_SESSION['TourId']);
+            setModuleParameter(PROTOCOL_MODULE, Header3ParameterName, $_REQUEST["StatHeader3"], $_SESSION['TourId']);
         }
         $_REQUEST["countryIndex"] = 3;
         $pdf->Titolo = get_text('Statistics', 'Tournament');
-        include '../../Partecipants/PrnStatCountry.php';
+        require dirname(__FILE__, 3) . '/Partecipants/PrnStatCountry.php';
         //других отчетов со статистикой уже точно больше не будет
         $pageOrientation = 'P';
     } else {
-        setModuleParameter(ModuleName, Checked3ParameterName, "0", $_SESSION['TourId']);
+        setModuleParameter(PROTOCOL_MODULE, Checked3ParameterName, "0", $_SESSION['TourId']);
     }
 
     //судьи
     if ($pagesPresent["Judges"]) {
         $pdf->AddPage($pageOrientation);
         $pdf->Titolo = get_text('StaffOnField', 'Tournament');
-        include '../../Tournament/PrnStaffField.php';
+        require dirname(__FILE__, 3) . '/Tournament/PrnStaffField.php';
     }
 
     $pdf->Output();
+
+    //если просят конкретное соревнование - восстановим $_SESSION, который перетирается на время выполнения скрипта
+    if (isset($_REQUEST['TourId'])) {
+        $_SESSION = $currentSessionQualTeam;
+    }
+
 } else {
     $IncludeFA = true;
     $IncludeJquery = true;
@@ -222,33 +231,33 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country1" id="country1"
-                        <?= getModuleParameter(ModuleName, Checked1ParameterName, "1", $_SESSION['TourId']) === "1" ? ' checked' : ''?> onchange="$('#StatHeader1').prop('disabled', !this.checked)"><label style="padding-left: 5px"
-                                                                                  for="country1">Включить отчет о
+                        <?= getModuleParameter(PROTOCOL_MODULE, Checked1ParameterName, "1", $_SESSION['TourId']) === "1" ? ' checked' : ''?>onchange="$('#StatHeader1').prop('disabled', !this.checked)"><label style="padding-left: 5px"
+                                                                                                                                                                                                                   for="country1">Включить отчет о
                         странах/регионах первого уровня</label></td>
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px">
                     Заголовок отчета о странах/регионах первого уровня. Например, "Субъекты РФ":<br/>
                     <input style="width: 500px; height: 25px" type="text" name="StatHeader1" id="StatHeader1"
-                           value="<?= getModuleParameter(ModuleName, Header1ParameterName, get_text('RegionsAndCountries', 'Tournament'), $_SESSION['TourId']) ?>" <?= getModuleParameter(ModuleName, Checked1ParameterName, "1", $_SESSION['TourId']) !== "1" ? ' disabled' : ''?>/>
+                           value="<?= getModuleParameter(PROTOCOL_MODULE, Header1ParameterName, get_text('RegionsAndCountries', 'Tournament'), $_SESSION['TourId']) ?>" <?= getModuleParameter(PROTOCOL_MODULE, Checked1ParameterName, "1", $_SESSION['TourId']) !== "1" ? ' disabled' : ''?>/>
                 </td>
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country2" id="country2"
-                        <?= getModuleParameter(ModuleName, Checked2ParameterName, "1", $_SESSION['TourId']) === "1"  ? ' checked' : ''?> onchange="$('#StatHeader2').prop('disabled', !this.checked)"><label style="padding-left: 5px"
-                                                                                  for="country2">Включить отчет о
+                        <?= getModuleParameter(PROTOCOL_MODULE, Checked2ParameterName, "1", $_SESSION['TourId']) === "1"  ? ' checked' : ''?>onchange="$('#StatHeader2').prop('disabled', !this.checked)"><label style="padding-left: 5px"
+                                                                                                                                                                                                                    for="country2">Включить отчет о
                         странах/регионах второго уровня</label></td>
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px">
                     Заголовок отчета о странах/регионах второго уровня. Например, "Спортивные школы":<br/>
                     <input style="width: 500px; height: 25px" type="text" name="StatHeader2" id="StatHeader2"
-                           value="<?= getModuleParameter(ModuleName, Header2ParameterName, get_text('RegionsAndCountries', 'Tournament'), $_SESSION['TourId']) ?>" <?= getModuleParameter(ModuleName, Checked2ParameterName, "1", $_SESSION['TourId']) !== "1" ? ' disabled' : ''?>/>
+                           value="<?= getModuleParameter(PROTOCOL_MODULE, Header2ParameterName, get_text('RegionsAndCountries', 'Tournament'), $_SESSION['TourId']) ?>" <?= getModuleParameter(PROTOCOL_MODULE, Checked2ParameterName, "1", $_SESSION['TourId']) !== "1" ? ' disabled' : ''?>/>
                 </td>
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country3" id="country3"
-                        <?= getModuleParameter(ModuleName, Checked3ParameterName, "0", $_SESSION['TourId']) === "1"  ? ' checked' : ''?> onchange="$('#StatHeader3').prop('disabled', !this.checked)"><label
+                        <?= getModuleParameter(PROTOCOL_MODULE, Checked3ParameterName, "0", $_SESSION['TourId']) === "1"  ? ' checked' : ''?>onchange="$('#StatHeader3').prop('disabled', !this.checked)"><label
                             style="padding-left: 5px" for="country3">Включить отчет о странах/регионах третьего
                         уровня</label></td>
             </tr>
@@ -256,7 +265,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
                 <td class="Left" style="padding-left: 20px; padding-top: 15px; padding-bottom: 15px">
                     Заголовок отчета о странах/регионах третьего уровня. Например, "Спортивные клубы" или "Команды":<br/>
                     <input style="width: 500px; height: 25px" type="text" name="StatHeader3" id="StatHeader3"
-                           value="<?= getModuleParameter(ModuleName, Header3ParameterName, get_text('RegionsAndCountries', 'Tournament'), $_SESSION['TourId']) ?>" <?= getModuleParameter(ModuleName, Checked3ParameterName, "0", $_SESSION['TourId']) !== "1" ? ' disabled' : ''?>/></td>
+                           value="<?= getModuleParameter(PROTOCOL_MODULE, Header3ParameterName, get_text('RegionsAndCountries', 'Tournament'), $_SESSION['TourId']) ?>" <?= getModuleParameter(PROTOCOL_MODULE, Checked3ParameterName, "0", $_SESSION['TourId']) !== "1" ? ' disabled' : ''?>/></td>
             </tr>
             <tr>
                 <th style="width: 10%; text-align: left; padding-left: 20px">Какие индивидуальные и командные события необходимо включить в протокол?

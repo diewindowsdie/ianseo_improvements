@@ -2,8 +2,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=<?php echo PageEncode ?>">
-<title><?php print ProgramName . ' ' . ProgramVersion . (defined('ProgramBuild') ? ' ('.ProgramBuild.')' : '');;?></title>
 <?php
+
+global $PAGE_TITLE;
+
+if (empty($PAGE_TITLE)) {
+    $PAGE_TITLE = ProgramName . ' ' . ProgramVersion . (defined('ProgramBuild') ? ' ('.ProgramBuild.')' : '');
+}
+echo '<title>' . $PAGE_TITLE . '</title>';
 
 $local_JS = array();
 if(empty($NOSTYLE)) {

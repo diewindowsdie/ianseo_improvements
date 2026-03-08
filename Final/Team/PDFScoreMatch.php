@@ -1,6 +1,18 @@
 <?php
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+
+$currentSessionFinalIndividualScorecards = [];
+//если просят конкретное соревнование - сохраним $_SESSION, который перетирается на время выполнения скрипта
+//в OrisFunctions.php делается define языка распечаток на основании текущей сессии, поэтому нужно переопределить сессию до того как ее ктото попытается прочитать
+if (isset($_REQUEST['TourId'])) {
+    global $forceHidingFullNamesAndBirthdate;
+    $forceHidingFullNamesAndBirthdate = true;
+
+    $currentSessionFinalIndividualScorecards = $_SESSION;
+    CreateTourSession($_REQUEST['TourId']);
+}
+
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/pdf/ScorePDF.inc.php');
 require_once('Common/Fun_FormatText.inc.php');
@@ -245,6 +257,11 @@ if (safe_num_rows($Rs)>0) {
     }
 //END OF DrawScore
     safe_free_result($Rs);
+}
+
+//если просят конкретное соревнование - восстановим $_SESSION, который перетирается на время выполнения скрипта
+if (isset($_REQUEST['TourId'])) {
+    $_SESSION = $currentSessionFinalIndividualScorecards;
 }
 
 $pdf->Output();

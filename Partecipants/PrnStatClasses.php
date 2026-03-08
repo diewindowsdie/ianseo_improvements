@@ -1,5 +1,17 @@
 <?php
 require_once(dirname(dirname(__FILE__)) . '/config.php');
+
+$currentSessionParticipantsByClassAndDivision = [];
+//если просят конкретное соревнование - сохраним $_SESSION, который перетирается на время выполнения скрипта
+//в OrisFunctions.php делается define языка распечаток на основании текущей сессии, поэтому нужно переопределить сессию до того как ее ктото попытается прочитать
+if (isset($_REQUEST['TourId'])) {
+    global $forceHidingFullNamesAndBirthdate;
+    $forceHidingFullNamesAndBirthdate = true;
+
+    $currentSessionParticipantsByClassAndDivision = $_SESSION;
+    CreateTourSession($_REQUEST['TourId']);
+}
+
 checkFullACL(AclParticipants, 'pEntries', AclReadOnly);
 require_once('Common/pdf/ResultPDF.inc.php');
 
@@ -260,6 +272,11 @@ if($Categories) {
     $pdf->SetFont($pdf->FontStd,'B',10);
     $pdf->Cell($Wsession - 8, 5, $tot[0]?: '', 'TLB', 0, 'R', 1);
     $pdf->Cell(8, 5,  $tot[1] ? '('.$tot[1].')' : '- ', 'TRB', 0, 'R', 1);
+}
+
+//если просят конкретное соревнование - восстановим $_SESSION, который перетирается на время выполнения скрипта
+if (isset($_REQUEST['TourId'])) {
+    $_SESSION = $currentSessionParticipantsByClassAndDivision;
 }
 
 if(!isset($isCompleteResultBook)) {
