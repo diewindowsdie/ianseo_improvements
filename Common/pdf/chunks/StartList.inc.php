@@ -64,7 +64,7 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 			$pdf->Cell(($TargetFace ? 38 : 44) + ($PdfData->InternationalProtocol ? 9 : 0), 4, $PdfData->Data['Fields']['Athlete'], 1, 0, 'L', 1);
 			$pdf->Cell($TargetFace ? 48 : 60, 4, $PdfData->Data['Fields']['NationCode'], 1, 0, 'L', 1);
 			if(!$pdf->HideCols) {
-				$pdf->Cell(12, 4, $PdfData->Data['Fields']['DOB'], 1, 0, 'C', 1);
+				$pdf->Cell(12, 4, getBirthDateColumnTitle($PdfData->Data['Fields']['DOB']), 1, 0, 'C', 1);
                 if (!$PdfData->InternationalProtocol) {
                     $pdf->Cell(9, 4, $PdfData->Data['Fields']['SubClass'], 1, 0, 'C', 1);
                 }
@@ -117,7 +117,7 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 		$temprow[]= getFullAthleteName($MyRow->FirstName, $MyRow->Name, $MyRow->MiddleName);
 		$temprow[]= ($MyRow->NationCode ?? '');
         $temprow[]= getFullCountryName(REGION_ORIGIN_PRINTOUT, $MyRow->Nation, $MyRow->Nation2, $MyRow->Nation3);
-		$temprow[]= ($MyRow->DOB ?? '');
+		$temprow[]= ($MyRow->DOB ? getAthleteBirthDateFormatted($MyRow->DOB) : '');
 		$temprow[]= ($MyRow->SubClassDescription ?? '');
 		$temprow[]= $MyRow->DivDescription;
 		$temprow[]= $MyRow->ClDescription;
