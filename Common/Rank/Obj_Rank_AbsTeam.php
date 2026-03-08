@@ -267,7 +267,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
                         where RrPartSourceLevel=0 and RrPartSourceGroup=0 and RrPartTournament={$this->tournament}
                         group by RrPartEvent, RrPartTeam
                         ) RoundRobinQualified on RrPartTeam=EvTeamEvent and RrPartEvent=EvCode and EvElimType=5
-				    left join ExtraData on EdId=EnId and EdType='Z'
+				    left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 				/* Contatori per CT (gialli)*/
 					LEFT JOIN (
 						SELECT TeEvent as sqyEvent,Count(*) as Quanti, TeSO as sqyRank, TeTournament as sqyTournament

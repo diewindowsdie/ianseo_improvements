@@ -858,7 +858,7 @@ while ($MyRow=safe_fetch($Rs)) {
                         $style['fgcolor']=array(0, 0, 0);
                         $pdf->setColor('text', 0, 0, 0);
                     }
-                    $txt=$MyRow->Bib.'-'.$MyRow->DivCode.'-'.$MyRow->ClassCode;
+                    $txt=$MyRow->Bib.'|'.$MyRow->NationCode.'|'.$MyRow->DivCode;
                     if($Element->IceContent) {
                         $replacements=array(
                             '{ENCODE}'=>$MyRow->Bib,

@@ -23,7 +23,7 @@ if(!empty($req->id)) {
 }
 
 if(empty($EnId)) {
-    $res = array('action' => 'gateverify', 'error' => 1, 'apiVersion' => $req->apiVersion, 'device' => $req->device);
+    $res = array('action' => 'gateverify', 'error' => 0, 'apiVersion' => $req->apiVersion, 'device' => $req->device);
     return;
 }
 
@@ -40,7 +40,7 @@ $qEntry = "select EnId, IFNULL(localbib.EdExtra,EnCode) as AthCode, QuSession, '
 		LEFT JOIN AccEntries ON AeId=EnId AND AEOperation=1
 		LEFT JOIN AccColors ON AcTournament=EnTournament AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE AcDivClass
 		LEFT JOIN ExtraData as caption ON caption.EdId=EnId and caption.EdType='C'
-		LEFT JOIN ExtraData as localbib ON localbib.EdId=EnId and localbib.EdType='Z'
+		LEFT JOIN ExtraData as localbib ON localbib.EdId=EnId and localbib.EdType='Z' and localbib.EdExtra!=''
 		LEFT JOIN ExtraData as extras ON extras.EdId=EnId and extras.EdType='P'
 		WHERE EnId=$EnId";
 $q=safe_r_sql($qEntry);

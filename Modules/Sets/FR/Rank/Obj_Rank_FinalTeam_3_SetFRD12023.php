@@ -141,7 +141,7 @@
 						INNER JOIN Events ON TeEvent=EvCode AND ToId=EvTournament AND EvTeamEvent=1
 						LEFT JOIN DocumentVersions DV1 on EvTournament=DV1.DvTournament AND DV1.DvFile = 'R-TEAM' and DV1.DvEvent=''
 						LEFT JOIN DocumentVersions DV2 on EvTournament=DV2.DvTournament AND DV2.DvFile = 'R-TEAM' and DV2.DvEvent=EvCode
-						left join ExtraData on EdId=EnId and EdType='Z'
+						left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 					WHERE
 						IF(EvFinalFirstPhase=0, TeRank, TeRankFinal)<=(EvFinalFirstPhase*2) AND ToId = {$this->tournament}
 						{$filter}
@@ -172,7 +172,7 @@
 						INNER JOIN Events ON TeEvent=EvCode AND ToId=EvTournament AND EvTeamEvent=1
 						LEFT JOIN DocumentVersions DV1 on EvTournament=DV1.DvTournament AND DV1.DvFile = 'R-TEAM' and DV1.DvEvent=''
 						LEFT JOIN DocumentVersions DV2 on EvTournament=DV2.DvTournament AND DV2.DvFile = 'R-TEAM' and DV2.DvEvent=EvCode
-						left join ExtraData on EdId=EnId and EdType='Z'
+						left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 					WHERE
 						IF(EvFinalFirstPhase=0, TeRank, TeRankFinal)>(EvFinalFirstPhase*2) AND ToId = {$this->tournament}
 						/*AND CONCAT(TeCoId,'_',TeSubTeam) NOT IN (SELECT DISTINCT CONCAT(TfTeam,'_',TfSubTeam) FROM TeamFinals WHERE TfTournament={$this->tournament})*/

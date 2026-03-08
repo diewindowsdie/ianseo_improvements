@@ -1,7 +1,7 @@
 <?php
-$lang['AddToWallet']='Add To Wallet';
+$lang['AddToWallet']='Tilføj til Wallet';
 $lang['CmdButtons']='Generate Buttons';
-$lang['CmdRandomID']='Random ID';
+$lang['CmdRandomID']='Tilfældigt ID';
 $lang['TakePictureLink']='Take Picture Link';
 $lang['WalletExplain']='Wallet integration relies on Infosystem updates.';
 $lang['WalletPassword']='Generate Encryption Phrase';

@@ -439,6 +439,7 @@ $lang['MenuLM_Update']='Aggiorna I@nseo';
 $lang['MenuLM_UpdateWeb']='Aggiornamento Live';
 $lang['MenuLM_Versioning']='Gestione Versione Stampe';
 $lang['MenuLM_View Competition Info']='Visualizza Dati Gara';
+$lang['MenuLM_Wallet']='Portafogli elettronici';
 $lang['MenuLM_WaRecords']='Aggiorna Record WA';
 $lang['MF']='Master Femminile';
 $lang['MixedTeamEvent']='Gara Squadre Miste';

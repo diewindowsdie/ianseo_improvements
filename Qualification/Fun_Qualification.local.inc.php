@@ -599,13 +599,13 @@ function MakeTeams($Societa, $Category, $ToId=0) {
 		elseif($TipoElaborazione==2)	// gare 3D
 		{
 			// Estraggo l'elenco delle persone
-			$Select = "SELECT EnTournament,EnId,IF(EnCountry2=0,EnCountry,EnCountry2) AS EnCountry, if(EnDivision='AI' OR EnDivision='OL' OR EnDivision='AN','AN',EnDivision) as Division, EnClass AS Sex, QuScore,QuGold,QuXnine,QuHits
+			$Select = "SELECT EnTournament,EnId,IF(EnCountry2=0,EnCountry,EnCountry2) AS EnCountry, EnDivision as Division, EnClass AS Sex, QuScore,QuGold,QuXnine,QuHits
 				FROM Entries 
 			    INNER JOIN Qualifications ON EnId=QuId and QuScore>0 
 				inner join IrmTypes on IrmId=QuIrmType and IrmShowRank=1
 				WHERE EnAthlete=1 AND EnTeamClEvent=1 AND EnStatus <= 1 AND QuScore>0 AND EnTournament = " . StrSafe_DB($ToId) . " "
 				. (!is_null($Societa) ? ' AND IF(EnCountry2=0,EnCountry,EnCountry2)=' . StrSafe_DB($Societa)   : '')
-				. "AND EnDivision IN ('AI','OL','CO','AN','LB')"
+				. "AND EnDivision IN ('AI','CO','AN','LB')"
 				. "ORDER BY IF(EnCountry2=0,EnCountry,EnCountry2), EnClass, QuScore DESC, QuGold DESC, QuXnine DESC, if(EnDivision='AI' OR EnDivision='OL' OR EnDivision='AN','AN',EnDivision), EnId ASC ";
 
 			$Rs=safe_r_sql($Select);
@@ -616,14 +616,14 @@ function MakeTeams($Societa, $Category, $ToId=0) {
 			$Peoples = -1;	// Contatore delle persone
 			$MyCountry = 0;
 			$MyEvent = '';
-			$Countries=array(0,0,0);
-			$Event=array(0,0,0);
-			$Aths = array(0,0,0);
-			$Scores = array(0,0,0);
-			$Golds = array(0,0,0);
-			$XNines = array(0,0,0);
-			$Hits = array(0,0,0);
-			$Divisions = array("LB" => false, "AN" => false, "CO" => false);
+			$Countries=array(0,0,0,0);
+			$Event=array(0,0,0,0);
+			$Aths = array(0,0,0,0);
+			$Scores = array(0,0,0,0);
+			$Golds = array(0,0,0,0);
+			$XNines = array(0,0,0,0);
+			$Hits = array(0,0,0,0);
+			$Divisions = array("LB" => false, "AI" => false, "AN" => false, "CO" => false);
 
 			//Ciclo per Scorrere l'elenco partecipanti
 			if (safe_num_rows($Rs)>0) {
@@ -631,14 +631,14 @@ function MakeTeams($Societa, $Category, $ToId=0) {
 					//Cambio di società
 					if ($MyCountry != $MyRow->EnCountry || $MyEvent != 'XX' . $MyRow->Sex) {
 						$Peoples=-1;			//N.B. inizializzo a -1 perchè qui si incrementa Sempre ad ogni persona, altrimenti sballa gli indici degli array di appoggio
-						$Countries=array(0,0,0);
-						$Event=array(0,0,0);
-						$Aths = array(0,0,0);
-						$Scores = array(0,0,0);
-						$Golds = array(0,0,0);
-						$XNines = array(0,0,0);
-						$Hits = array(0,0,0);
-						$Divisions = array("LB" => false, "AN" => false, "CO" => false);
+						$Countries=array(0,0,0,0);
+						$Event=array(0,0,0,0);
+						$Aths = array(0,0,0,0);
+						$Scores = array(0,0,0,0);
+						$Golds = array(0,0,0,0);
+						$XNines = array(0,0,0,0);
+						$Hits = array(0,0,0,0);
+						$Divisions = array("LB" => false, "AI" => false, "AN" => false, "CO" => false);
 						$MyCountry = $MyRow->EnCountry;
 						$MyEvent = 'XX' . $MyRow->Sex;
 					}
@@ -652,8 +652,8 @@ function MakeTeams($Societa, $Category, $ToId=0) {
 						$Golds[$Peoples]=$MyRow->QuGold;
 						$XNines[$Peoples]=$MyRow->QuXnine;
 						$Hits[$Peoples]=$MyRow->QuHits;
-						// se ho proprio 3 persone faccio la squadra
-						if ($Peoples==2) {
+						// se ho proprio 4 persone faccio la squadra
+						if ($Peoples==3) {
 							// Insert in Teams
 							$InsertT
 								= "INSERT INTO Teams (TeCoId,TeEvent,TeTournament,TeFinEvent,TeScore,TeGold,TeXNine,TeFinal,TeHits) "
@@ -662,17 +662,17 @@ function MakeTeams($Societa, $Category, $ToId=0) {
 								. StrSafe_DB($MyEvent) . ","
 								. StrSafe_DB($ToId) . ","
 								. "'0',"
-								. StrSafe_DB($Scores[0]+$Scores[1]+$Scores[2]) . ","
-								. StrSafe_DB($Golds[0]+$Golds[1]+$Golds[2]) . ","
-								. StrSafe_DB($XNines[0]+$XNines[1]+$XNines[2]) . ","
+								. StrSafe_DB($Scores[0]+$Scores[1]+$Scores[2]+$Scores[3]) . ","
+								. StrSafe_DB($Golds[0]+$Golds[1]+$Golds[2]+$Golds[3]) . ","
+								. StrSafe_DB($XNines[0]+$XNines[1]+$XNines[2]+$XNines[3]) . ","
 								. "'0',"
-								. StrSafe_DB($Hits[0]+$Hits[1]+$Hits[2]) . ""
+								. StrSafe_DB($Hits[0]+$Hits[1]+$Hits[2]+$Hits[3]) . ""
 								. ") ";
 							$RsT=safe_w_sql($InsertT);
-							$RsTC=array(NULL,NULL,NULL);
+							$RsTC=array(NULL,NULL,NULL,NULL);
 
 							// Insert in TeamComponent
-							for ($i=0;$i<=2;++$i) {
+							for ($i=0;$i<=3;++$i) {
 								$InsertTC
 									= "INSERT INTO TeamComponent (TcCoId,TcTournament,TcEvent,TcFinEvent,TcId,TcOrder) "
 									. "VALUES("
@@ -685,7 +685,7 @@ function MakeTeams($Societa, $Category, $ToId=0) {
 									. ") ";
 								$RsTC[$i]=safe_w_sql($InsertTC);
 							}
-							if (!$RsT || !$RsTC[0] || !$RsTC[1] || !$RsTC[2]) {
+							if (!$RsT || !$RsTC[0] || !$RsTC[1] || !$RsTC[2] || !$RsTC[3]) {
                                 $Errore = 1;
                             }
 						}

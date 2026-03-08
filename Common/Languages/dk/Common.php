@@ -437,6 +437,7 @@ $lang['MenuLM_Update']='Opdater Ianseo';
 $lang['MenuLM_UpdateWeb']='Live opdatering';
 $lang['MenuLM_Versioning']='Dokument versioner';
 $lang['MenuLM_View Competition Info']='Vis turneringsinfo';
+$lang['MenuLM_Wallet']='Electronic Wallets';
 $lang['MenuLM_WaRecords']='Opdater WA rekorder';
 $lang['MF']='Master Dame';
 $lang['MixedTeamEvent']='Mix hold';

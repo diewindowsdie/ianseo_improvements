@@ -445,7 +445,7 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 
 	//  check if there are specific accreditations
 	$ExtraSql='';
-	$ExtraField='EnCode';
+	$ExtraField='IFNULL(zextra.EdExtra,EnCode) ';
 	if($Specific=getModuleParameterLike('Accreditation', 'Matches-A-%', $toId)) {
 		$f=array();
 		foreach($Specific as $SpecType=>$SpecCats) {
@@ -457,14 +457,14 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 		}
         if(count($f)>0) {
             $ExtraSql = "left join IdCardElements on IceTournament=EnTournament and IceType='AthQrCode' and IceCardType='A' and (" . implode(' or ', $f) . ") ";
-            $ExtraField = 'coalesce(IceContent, EnCode)';
+            $ExtraField = 'coalesce(IceContent, zextra.EdExtra, EnCode)';
         }
 	}
     if($ExtraSql=='') {
         $q=safe_r_SQL("SELECT IceCardNumber, IceOrder, IceCardPage  FROM `IdCardElements` WHERE `IceTournament` = $toId AND `IceType` LIKE '%AthQrCode%' ORDER BY IceCardNumber, IceOrder, IceCardPage");
         if($f=safe_fetch($q)) {
             $ExtraSql="left join IdCardElements on IceTournament=EnTournament and IceType='AthQrCode' and IceCardType='A' and IceCardNumber=$f->IceCardNumber AND IceOrder=$f->IceOrder AND IceCardPage=$f->IceCardPage ";
-            $ExtraField='coalesce(IceContent, EnCode)';
+            $ExtraField='coalesce(IceContent, zextra.EdExtra, EnCode)';
         }
     }
 
@@ -498,7 +498,7 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 	        }
 
 	        // Prepare the select used to retrieve competitor information
-	        $SQL = "SELECT EnId, EnCode, EnName, ucase(EnFirstName) as EnFirstName, EnNameOrder, 
+	        $SQL = "SELECT EnId, IFNULL(zextra.EdExtra,EnCode) as EnCode, EnName, ucase(EnFirstName) as EnFirstName, EnNameOrder, 
 	                EnSex, EnDivision, DivDescription, EnClass, ClDescription,
 	                CoCode, CoName, CONCAT(QuSession, '.', QuTarget, QuLetter) as QuTargetKey, CONCAT(QuTarget, QuLetter) AS TargetNo, ToNumDist, ToCode,
 	                IF(TfGolds='',ToGolds,TfGolds) as Golds, IF(TfXnine='',ToXnine,TfXnine) as Xnine, SesName,
@@ -523,6 +523,7 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 				INNER JOIN `TournamentDistances` ON ToType=TdType and TdTournament=ToId AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE TdClasses
 				INNER JOIN `DistanceInformation` ON EnTournament=DiTournament and DiSession=QuSession and DiType='Q' and DiDistance in (".implode(',', $IskSequence['distance']).")
 				INNER JOIN `Session` on SesTournament=EnTournament and SesType='Q' and SesOrder=QuSession
+				LEFT JOIN ExtraData zextra ON EnId=zextra.EdId and zextra.EdType='Z' and zextra.EdExtra!=''
 				$ExtraSql
 				WHERE ToId=$toId AND EnAthlete=1 AND EnStatus <= 1 AND {$Filter}
 				GROUP BY QuSession, QuTarget, QuLetter

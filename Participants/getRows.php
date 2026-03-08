@@ -347,7 +347,7 @@ function GetRows($RowKey, $TourId, $OrderBy=null, $AllTargets=false, $ExtraWhere
 	$DefTargets=getTargets($TourId);
 
 	if ($OrderBy===null) {
-		$OrderBy= "QuSession ASC,QuTarget ASC, QuLetter ASC ";
+		$OrderBy= "QuSession ASC, QuTarget ASC, QuLetter ASC ";
 	}
 
 	$Errore = 0;
@@ -365,7 +365,7 @@ function GetRows($RowKey, $TourId, $OrderBy=null, $AllTargets=false, $ExtraWhere
 			LEFT JOIN Countries AS c3 ON e.EnCountry3=c3.CoId AND e.EnTournament=c3.CoTournament 
 			LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId 
 			LEFT JOIN ExtraData eextra ON eextra.EdType='E' and eextra.EdId=EnId 
-			LEFT JOIN ExtraData zextra ON zextra.EdType='Z' and zextra.EdId=EnId 
+			LEFT JOIN ExtraData zextra ON zextra.EdType='Z' and zextra.EdExtra!='' and zextra.EdId=EnId 
 			LEFT JOIN ExtraData cextra ON cextra.EdType='C' and cextra.EdId=EnId 
 			LEFT JOIN Photos ON PhEnId=EnId 
 			WHERE e.EnTournament in ({$TourId}) $ExtraWhere 
@@ -392,7 +392,7 @@ function GetRows($RowKey, $TourId, $OrderBy=null, $AllTargets=false, $ExtraWhere
 				LEFT JOIN Countries AS c3 ON e.EnCountry3=c3.CoId AND e.EnTournament=c3.CoTournament  
 				LEFT JOIN TargetFaces ON EnTournament=TfTournament AND EnTargetFace=TfId  
 				LEFT JOIN ExtraData eextra ON eextra.EdType='E' and eextra.EdId=EnId  
-				LEFT JOIN ExtraData zextra ON zextra.EdType='Z' and zextra.EdId=EnId  
+				LEFT JOIN ExtraData zextra ON zextra.EdType='Z' and zextra.EdExtra!='' and zextra.EdId=EnId  
 				LEFT JOIN ExtraData cextra ON cextra.EdType='C' and cextra.EdId=EnId  
 				WHERE e.EnTournament in ({$TourId}) $ExtraWhere  
 				ORDER BY " . $OrderBy . "  ) AS sq ON QuSession=FullTgtSession AND QuTarget=FullTgtTarget AND QuLetter=FullTgtLetter  
@@ -410,7 +410,7 @@ function GetRows($RowKey, $TourId, $OrderBy=null, $AllTargets=false, $ExtraWhere
 			LEFT JOIN Countries AS c2 ON EnCountry2=c2.CoId AND EnTournament=c2.CoTournament  
 			LEFT JOIN Countries AS c3 ON EnCountry3=c3.CoId AND EnTournament=c3.CoTournament  
 			LEFT JOIN ExtraData eextra ON eextra.EdType='E' and eextra.EdId=EnId  
-			LEFT JOIN ExtraData zextra ON zextra.EdType='Z' and zextra.EdId=EnId  
+			LEFT JOIN ExtraData zextra ON zextra.EdType='Z' and zextra.EdExtra!='' and zextra.EdId=EnId  
 			LEFT JOIN ExtraData cextra ON cextra.EdType='C' and cextra.EdId=EnId  
 			WHERE EnTournament in ({$TourId}) AND QuSession=0 $ExtraWhere )  
 			ORDER BY " . $OrderBy . " ";
@@ -438,8 +438,6 @@ function GetRows($RowKey, $TourId, $OrderBy=null, $AllTargets=false, $ExtraWhere
 					'tourcode' => $MyRow->ToCode,
 					'picture' => $MyRow->HasPhoto,
 					'tourid' => $MyRow->ToId,
-                    'session' => $MyRow->Session,
-					'targetno' => $MyRow->TargetNo,
 					'caption' => $MyRow->AccrCaption,
 					'key' => $MyRow->RowKey,
 					'id' => $MyRow->EnId,
@@ -448,7 +446,7 @@ function GetRows($RowKey, $TourId, $OrderBy=null, $AllTargets=false, $ExtraWhere
 					'locCode' => $MyRow->locBib,
 					'status' => $MyRow->EnStatus,
 					'session' => $MyRow->Session!=0 ? $MyRow->Session : '',
-					'targetno' => $MyRow->TargetNo,
+					'targetno' => $MyRow->TargetNo!=0 ? $MyRow->TargetNo : '',
 					'firstname' => stripslashes($MyRow->EnFirstName),
 					'name' => stripslashes($MyRow->EnName),
                     'middlename' => stripslashes($MyRow->EnMiddleName),

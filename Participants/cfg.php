@@ -31,15 +31,15 @@ $NegSort=array('asc' => 'desc', 'desc' => 'asc');
 
 switch($Sort) {
 	case 'sortPicture':
-		$OrderBy="PhPhoto is not null $SortOrder, `Session` ASC, `TargetNo` ASC ";
+		$OrderBy="PhPhoto is not null $SortOrder, `Session` ASC, `QuTarget` ASC, `QuLetter` ASC ";
 		$RowKey='concat(PhPhoto is not null, "-", QuSession, "-", QuTarget) as RowKey';
 		break;
 	case 'sortTour':
-		$OrderBy="ToCode $SortOrder, `Session` ASC, `TargetNo` ASC ";
+		$OrderBy="ToCode $SortOrder, `Session` ASC, `QuTarget` ASC, `QuLetter` ASC ";
 		$RowKey='concat(ToCode, "-", QuSession, "-", QuTarget) as RowKey';
 		break;
 	case 'sortTarget':
-		$OrderBy="ToCode, `Session` $SortOrder, `TargetNo` $SortOrder ";
+		$OrderBy="ToCode, `Session` $SortOrder, `QuTarget` $SortOrder, `QuLetter` $SortOrder ";
 		$RowKey='concat(ToCode, "-", QuSession, "-", QuTarget) as RowKey';
 		break;
 	case 'sortBib':
@@ -119,7 +119,7 @@ switch($Sort) {
 		$RowKey='concat(EnSubClass, "-", EnDivision, "-", EnClass) as RowKey';
 		break;
 	default:
-		$OrderBy="ToCode, `Session` ASC, `TargetNo` ASC ";
+		$OrderBy="ToCode, `Session` ASC, `QuTarget` ASC, `QuLetter` ASC ";
 		$RowKey='concat(ToCode, "-", QuSession, "-", QuTarget) as RowKey';
 }
 

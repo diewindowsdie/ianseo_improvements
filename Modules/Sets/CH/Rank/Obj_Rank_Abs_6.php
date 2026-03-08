@@ -250,7 +250,7 @@
 				        else EnCountry
                     end
                     AND EnTournament=CoTournament AND EnTournament={$this->tournament}
-				left join ExtraData on EdId=EnId and EdType='Z'
+				left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 				LEFT JOIN TournamentDistances ON ToType=TdType AND TdTournament=ToId AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE TdClasses
 				left join DistanceInformation on EnTournament=DiTournament and DiSession=1 and DiDistance=1 and DiType='Q' ";
 			if(!empty($comparedTo))

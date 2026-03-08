@@ -132,7 +132,7 @@ require_once('Common/Rank/Obj_Rank_GridInd.php');
 				. "left JOIN IrmTypes i2 ON i2.IrmId=IndIrmType "
 				. "left JOIN IrmTypes i3 ON i3.IrmId=IndIrmTypeFinal "
 				. "LEFT JOIN Entries a ON FinAthlete=EnId AND FinTournament=EnTournament "
-				. "LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' "
+				. "LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' and EdExtra!='' "
 				. "LEFT JOIN Qualifications ON QuId=EnId "
 				. "LEFT JOIN Countries ON CoId=
                     case EvTeamCreationMode 
@@ -208,7 +208,7 @@ require_once('Common/Rank/Obj_Rank_GridInd.php');
 				. "left JOIN IrmTypes i2 ON i2.IrmId=IndIrmType "
 				. "left JOIN IrmTypes i3 ON i3.IrmId=IndIrmTypeFinal "
 				. "LEFT JOIN Entries a ON FinAthlete=EnId AND FinTournament=EnTournament "
-				. "LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' "
+				. "LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' and EdExtra!='' "
 				. "LEFT JOIN Qualifications ON QuId=EnId "
 				. "LEFT JOIN Countries ON CoId=
 				    case EvTeamCreationMode 

@@ -717,7 +717,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 			LEFT JOIN Session on EnTournament=SesTournament and SesType='Q' and SesOrder=QuSession
 			LEFT JOIN Photos ON PhEnId=EnId
 			LEFT JOIN ExtraData edmail ON edmail.EdId=EnId and edmail.EdType='E'
-			LEFT JOIN ExtraData edbib ON edbib.EdId=EnId and edbib.EdType='Z'
+			LEFT JOIN ExtraData edbib ON edbib.EdId=EnId and edbib.EdType='Z' and edbib.EdExtra!=''
 			LEFT JOIN DocumentVersions on EnTournament=DvTournament AND DvFile = 'EN'
 			LEFT JOIN Rankings on EnTournament=RankTournament and RankEvent=IF(EvWaCategory!='',EvWaCategory,EvCode) and RankTeam=0 and EnCode=RankCode and ToIocCode='FITA' and EnIocCode in ('', 'FITA') and RankIocCode='FITA'
 			WHERE EnTournament = " . intval($_SESSION['TourId']);
@@ -791,7 +791,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		$MyQuery .= "left join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0  ";
 		$MyQuery .= "LEFT JOIN Photos ON e.EnId=PhEnId ";
 		$MyQuery .= "LEFT JOIN ExtraData as edmail ON edmail.EdId=EnId and edmail.EdType='E' ";
-		$MyQuery .= "LEFT JOIN ExtraData as edbib ON edbib.EdId=EnId and edbib.EdType='Z' ";
+        $MyQuery .= "LEFT JOIN ExtraData as edbib ON edbib.EdId=EnId and edbib.EdType='Z' and edbib.EdExtra!='' ";
 		$MyQuery .= "LEFT JOIN Countries AS c ON e.EnCountry=c.CoId AND e.EnTournament=c.CoTournament ";
 		$MyQuery .= "LEFT JOIN Countries AS co2 ON e.EnCountry2=co2.CoId AND e.EnTournament=co2.CoTournament ";
 		$MyQuery .= "LEFT JOIN Countries AS co3 ON e.EnCountry3=co3.CoId AND e.EnTournament=co3.CoTournament ";
@@ -868,7 +868,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		$MyQuery .= "left join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0   ";
 		$MyQuery .= "LEFT JOIN Photos ON e.EnId=PhEnId ";
 		$MyQuery .= "LEFT JOIN ExtraData as edmail ON edmail.EdId=EnId and edmail.EdType='E' ";
-		$MyQuery .= "LEFT JOIN ExtraData as edbib ON edbib.EdId=EnId and edbib.EdType='Z' ";
+        $MyQuery .= "LEFT JOIN ExtraData as edbib ON edbib.EdId=EnId and edbib.EdType='Z' and edbib.EdExtra!='' ";
 		$MyQuery .= "LEFT JOIN Countries AS c ON e.EnCountry2=c.CoId AND e.EnTournament=c.CoTournament ";
 		$MyQuery .= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
 		$MyQuery .= "LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament ";
@@ -945,7 +945,7 @@ function getStartListCountryQuery($ORIS=false, $Athletes=false, $orderByName=fal
 		$MyQuery .= "left join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0  ";
 		$MyQuery .= "LEFT JOIN Photos ON e.EnId=PhEnId ";
 		$MyQuery .= "LEFT JOIN ExtraData as edmail ON edmail.EdId=EnId and edmail.EdType='E' ";
-		$MyQuery .= "LEFT JOIN ExtraData as edbib ON edbib.EdId=EnId and edbib.EdType='Z' ";
+        $MyQuery .= "LEFT JOIN ExtraData as edbib ON edbib.EdId=EnId and edbib.EdType='Z' and edbib.EdExtra!='' ";
 		$MyQuery .= "LEFT JOIN Countries AS c ON e.EnCountry3=c.CoId AND e.EnTournament=c.CoTournament ";
 		$MyQuery .= "LEFT JOIN Qualifications AS q ON e.EnId=q.QuId ";
 		$MyQuery .= "LEFT JOIN Divisions ON TRIM(EnDivision)=TRIM(DivId) AND EnTournament=DivTournament ";

@@ -538,7 +538,7 @@ function getScore($dist, $barcode, $strict=false, $Session=0) {
 		$EnBib=$bib;
 
 		if(!$strict and !empty($_GET['Targets'])) {
-			$filter="(QuSession, QuTarget)IN(select QuSession, QuTarget from Qualifications inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} inner JOIN ExtraData ON EdType='Z' and EdId=EnId where $filter)";
+			$filter="(QuSession, QuTarget)IN(select QuSession, QuTarget from Qualifications inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} inner JOIN ExtraData ON EdType='Z' and EdExtra!='' and EdId=EnId where $filter)";
 		}
 		if(empty($bib) or empty($div) or empty($cls)) return;
 
@@ -546,7 +546,7 @@ function getScore($dist, $barcode, $strict=false, $Session=0) {
 			($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits, (QuSigned & ".pow(2, $dist).") AS IsSigned " : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits , 0 as IsSigned") . "
             from Qualifications 
             inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} 
-            inner JOIN ExtraData ON EdType='Z' and EdId=EnId
+            inner JOIN ExtraData ON EdType='Z' and EdExtra!='' and EdId=EnId
             left join DistanceInformation on DiTournament=EnTournament AND DiSession=QuSession AND DiDistance={$dist} AND DiType='Q'
             where $filter
             order by QuSession, QuTarget, QuLetter, EnDivision='$div' desc, EnClass='$cls' desc ";
@@ -557,7 +557,7 @@ function getScore($dist, $barcode, $strict=false, $Session=0) {
 				($dist ? "QuD{$dist}Score Score, QuD{$dist}Gold Gold, QuD{$dist}Xnine Xnine, QuD{$dist}Hits Hits, (QuSigned & ".pow(2, $dist).") AS IsSigned " : "QuScore Score, QuGold Gold, QuXnine Xnine, QuHits Hits, 0 as IsSigned ") . "
 				from Qualifications 
 				inner join Entries on EnId=QuId and EnTournament={$_SESSION['TourId']} 
-                inner JOIN ExtraData ON EdType='Z' and EdId=EnId
+                inner JOIN ExtraData ON EdType='Z' and EdExtra!='' and EdId=EnId
                 left join DistanceInformation on DiTournament=EnTournament AND DiSession=QuSession AND DiDistance={$dist} AND DiType='Q'
 				where $filter2
 				order by QuSession, QuTarget, QuLetter, EnDivision='$div' desc, EnClass='$cls' desc ";

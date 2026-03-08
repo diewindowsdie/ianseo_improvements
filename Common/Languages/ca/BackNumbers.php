@@ -67,7 +67,6 @@ $lang['BgImage']='Imatge de fons';
 $lang['BibNumber']='Nombre dorsal';
 $lang['BlackWhite']='Blanc i negre';
 $lang['Bold']='Negreta';
-$lang['BowStorage']='Guarda d’arcs';
 $lang['Category']='Categoria';
 $lang['CharColor']='Color lletres';
 $lang['CharSize']='Mida del caràcter<br/>(Factor d\'espaiat)';

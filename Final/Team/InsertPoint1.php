@@ -44,7 +44,7 @@
 	    ORDER BY EvProgr ASC ";
 	$Rs=safe_r_sql($Select);
 
-	print '<select name="d_Event[]" id="d_Event" multiple="multiple" onChange="ChangeEvent(1);">';
+	print '<select name="d_Event[]" id="d_Event" multiple="multiple" style="min-width: 20%; min-height: 12em" onChange="ChangeEvent(1);">';
 	if (safe_num_rows($Rs)>0)
 	{
 		while ($Row=safe_fetch($Rs))

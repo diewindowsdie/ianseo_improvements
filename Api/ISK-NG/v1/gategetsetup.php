@@ -3,7 +3,7 @@ require_once('Accreditation/Lib.php');
 
 $Options=GetParameter('AccessApp', false, array(), true);
 if(empty($Options)) {
-    $res = array('action' => 'gategetsetup', 'error' => 1, 'apiVersion' => $req->apiVersion, 'device' => $req->device);
+    $res = array('action' => 'gategetsetup', 'error' => 1, 'device' => $req->device);
     return;
 }
 
@@ -28,7 +28,11 @@ while ($r = safe_fetch($q)) {
     $RegExp = '^' . str_replace(array_keys($replacements), array_values($replacements), $RegExp) . '$';
     $RegArray = getIceRegExpMatches($r->IceContent);
     $RegArray['formula'] = $RegExp;
-    $RegArray['key'] = ['tocode','encode'];
+    $RegArray['key'] = array();
+    if($RegArray["tocode"] != -1) {
+        $RegArray['key'][] = 'tocode';
+    }
+    $RegArray['key'][] = 'encode';
     if($RegArray["country"] != -1) {
         $RegArray['key'][] = 'country';
     }
@@ -53,7 +57,6 @@ foreach(range(0,6) as $zone) {
 $res = array(
     'action' => 'gategetsetup',
     'error' => 0,
-    'apiVersion' => $req->apiVersion,
     'device' => $req->device,
     'lookupMode' => 0,
     'validated' => 0,
