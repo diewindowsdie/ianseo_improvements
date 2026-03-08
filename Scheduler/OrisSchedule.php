@@ -72,30 +72,35 @@ foreach($SessionMatches as $vSes => $items) {
                 $AthlBorder = 'LTR';
             }
 
-            if (!$i) {
-                if (!$pdf->samePage(3, CellH, '', false)
-                    or (!$pdf->samePage($NumItems, CellH, '', false))) {
+            if (!$i) { //первый item в сессии?
+                if (!$pdf->samePage(3 * CellH)
+                    or (!$pdf->samePage($NumItems * CellH))) {
                     // first item in a block... needs at least 3 rows to print the sessions data
                     // not able to split in 3+3
                     $ChangePage = true;
-                    if ($runningDay == $item["scheduledDate"]) $Continue = ' (Cont.)';
+                    if ($runningDay == $item["scheduledDate"]) $Continue = '<br />(' . get_text('Continue') . ')';
                 }
-            } elseif (($NumItems - $i == 4 and !$pdf->samePage(3, CellH, '', false))
-                or !$pdf->samePage(($isTeam and $PrintNames) ? $rankData["sections"][$eventCode]['meta']['maxTeamPerson'] : 1, CellH, '', false)) {
+            } elseif (($NumItems - $i == 4 and !$pdf->samePage(3 * CellH))
+                or !$pdf->samePage((($isTeam and $PrintNames) ? $rankData["sections"][$eventCode]['meta']['maxTeamPerson'] : 1) * CellH)) {
                 // needs to have room for printing the last 3 rows
                 $ChangePage = true;
-                $Continue = ' (Cont.)';
+                $Continue = '<br />(' . get_text('Continue') . ')';
             }
 
             if ($runningDay != $item["scheduledDate"]
                 or $ChangePage
                 or $OldLocation!=$r->SesLocation) {
                 // close the cell...
-//                if (!$FirstPage) $pdf->Line(IanseoPdf::sideMargin, $y1 = $pdf->GetY(), IanseoPdf::sideMargin + 25, $y1);
+                if (!$FirstPage) {
+                    if ($runningDay == $item["scheduledDate"]) {
+                        //закрываем ячейку в конце страницы
+                        $pdf->Line(IanseoPdf::sideMargin, $y1 = $pdf->GetY(), IanseoPdf::sideMargin + 30, $y1);
+                    }
+                    $pdf->AddPage();
 
-//                $pdf->AddPage();
+                    $pdf->SetXY(IanseoPdf::sideMargin, IanseoPdf::topMargin);
+                }
 
-//                $pdf->SetXY(IanseoPdf::sideMargin, IanseoPdf::topMargin);
                 $pdf->SetFont('', 'B');
                 $pdf->dy(2);
                 $pdf->Cell(30, CellH, get_text("Date", "Tournament") . "/" . get_text("Session"), 1, 0, 'L', 0);
@@ -187,7 +192,11 @@ foreach($SessionMatches as $vSes => $items) {
             $lastSes = $vSes;
         }
 	}
+    //закрываем ячейку в конце смены
     $pdf->Line($pdf->GetX(), $pdf->GetY(), $pdf->GetX()+30, $pdf->GetY());
+
+    //отодвинем следующую смену вниз. Если она попадет на новую страницу - это просто ни на что не повиляет
+    $pdf->setY($pdf->GetY() + 3);
 }
 
 $pdf->Output();
