@@ -37,10 +37,10 @@ $q=safe_r_sql("select e1.EvCode, e1.EvFinalFirstPhase, e1.EvTeamEvent, coalesce(
     where e1.EvTournament={$_SESSION['TourId']} and e1.EvElimType!=5
     order by e1.EvTeamEvent, e1.EvProgr");
 while($r=safe_fetch($q)) {
-	$Events[$r->EvTeamEvent][$r->EvCode]='<input type="checkbox" class="EventCheck" name="'.$r->EvTeamEvent.'" value="'.$r->EvCode.'">'.$r->EvCode;
+	$Events[$r->EvTeamEvent][$r->EvCode]='<label style="white-space: nowrap; display: inline-block"><input type="checkbox" class="EventCheck" name="'.$r->EvTeamEvent.'" value="'.$r->EvCode.'">'.$r->EvCode."</label>";
 	if($r->EvFinalFirstPhase and empty($Phases[$r->EvTeamEvent][$r->EvFinalFirstPhase])) {
 		for($n=valueFirstPhase($r->EvFinalFirstPhase); $n>=$r->EvSecondaryStartPhase; $n/=2) {
-			$Phases[$r->EvTeamEvent][$n]='<input type="checkbox" class="PhaseCheck" name="'.$r->EvTeamEvent.'" value="'.valueFirstPhase($n).'">'.get_text(namePhase($r->EvFinalFirstPhase,$n).'_Phase');
+			$Phases[$r->EvTeamEvent][$n]='<label style="white-space: nowrap; display: inline-block"><input type="checkbox" class="PhaseCheck" name="'.$r->EvTeamEvent.'" value="'.valueFirstPhase($n).'">'.get_text(namePhase($r->EvFinalFirstPhase,$n).'_Phase')."</label>";
 			if($n==0) break; // escape from this zoo :D
 			if($n==1) $n=0; // makes the gold medal match ;)
 		}
