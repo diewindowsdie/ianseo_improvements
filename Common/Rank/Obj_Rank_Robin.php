@@ -832,7 +832,7 @@ class Obj_Rank_Robin extends Obj_Rank{
                 end
                 AND CoTournament=EnTournament
 		    inner join Qualifications on QuId=EnId
-            LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z'
+            LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' and EdExtra!=''
             left join RoundRobinParticipants on RrPartTournament=EnTournament and RrPartSourceLevel=0 AND RrPartSourceGroup=0 and RrPartParticipant=EnId and RrPartEvent=IndEvent and RrPartTeam=0
 		    where EnTournament=$this->tournament
 		    ) en1 on En1Id=M1Athlete and M1Team=0 and En1Event=M1Event
@@ -853,7 +853,7 @@ class Obj_Rank_Robin extends Obj_Rank{
                 end
                 AND CoTournament=EnTournament
 		    inner join Qualifications on QuId=EnId
-            LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' 
+            LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' and EdExtra!='' 
             left join RoundRobinParticipants on RrPartTournament=EnTournament and RrPartSourceLevel=0 AND RrPartSourceGroup=0 and RrPartParticipant=EnId and RrPartEvent=IndEvent and RrPartTeam=0
 		    where EnTournament=$this->tournament
 		    ) en2 on En2Id=M2Athlete and M2Team=0 and En2Event=M1Event
@@ -877,13 +877,13 @@ class Obj_Rank_Robin extends Obj_Rank{
             select EnId as Coach1Id, ifnull(EdExtra,EnCode) Coach1Code, CoCode as Coach1Country, if(EnSex=0, 'M', 'F') as Coach1Gender, EnFirstName as Coach1FamName, EnName as Coach1GivName, concat(ucase(EnFirstName), ' ', EnName) as Coach1
             from Entries 
             inner join Countries on CoId=EnCountry and CoTournament=EnTournament
-            LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' 
+            LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' and EdExtra!='' 
             where EnTournament={$this->tournament}) Coach1 on Coach1Id=M1Coach
         LEFT JOIN (
             select EnId as Coach2Id, ifnull(EdExtra,EnCode) Coach2Code, CoCode as Coach2Country, if(EnSex=0, 'M', 'F') as Coach2Gender, EnFirstName as Coach2FamName, EnName as Coach2GivName, concat(ucase(EnFirstName), ' ', EnName) as Coach2
             from Entries 
             inner join Countries on CoId=EnCountry and CoTournament=EnTournament
-            LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' 
+            LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' and EdExtra!='' 
             where EnTournament={$this->tournament}) Coach2 on Coach2Id=M2Coach
         $EnIdFilter
 		order by ".($orderByTarget ? 'greatest(M1Target,M2Target), ' : '')."EvTeamEvent, EvProgr, M1Level, M1Group, M1Round, greatest(M1Target,M2Target)

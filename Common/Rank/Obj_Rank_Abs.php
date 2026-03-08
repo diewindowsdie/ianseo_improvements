@@ -301,7 +301,7 @@
 				    where RrPartSourceLevel=0 and RrPartSourceGroup=0 and RrPartTournament={$this->tournament}
 				    group by RrPartEvent, RrPartTeam
 				    ) RoundRobinQualified on RrPartTeam=EvTeamEvent and RrPartEvent=EvCode and EvElimType=5
-				left join ExtraData on EdId=EnId and EdType='Z'
+				left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 				LEFT JOIN DocumentVersions DV1 on EvTournament=DV1.DvTournament AND DV1.DvFile = 'QUAL-IND' and DV1.DvEvent=''
 				LEFT JOIN DocumentVersions DV2 on EvTournament=DV2.DvTournament AND DV2.DvFile = 'QUAL-IND' and DV2.DvEvent=EvCode
 				LEFT JOIN  (SELECT OdfTrOdfCode, OdfTrIanseo 

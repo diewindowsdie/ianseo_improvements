@@ -54,6 +54,7 @@ $lang['FieldPegRed']='Rød pinne';
 $lang['FieldPegWhite']='Hvit pinne';
 $lang['FieldPegYellow']='Gul pinne';
 $lang['File permission error']='Du må sjekke rettighetene på IANSEO installasjonsmappen: det bør være skrivbar for brukeren som kjører serveren eller global skrivbare.';
+$lang['GettingLanguagePacks']='Laster ned oversetting... Dette kan ta litt tid...';
 $lang['Host']='Vert';
 $lang['Install-0']='KRITISK FEIL';
 $lang['Install-0 Title']='GPL3 Lisensavtale';

@@ -84,6 +84,7 @@ $lang['NFAA3D-Standard']='NFAA 3D - 51 target';
 $lang['NFAAField-3Dist']='Lapangan, Pemburu, Hewan';
 $lang['NFAAField-5Dist']='2xField, 2xHunter, Hewan';
 $lang['NFAAIndoor-Nationals']='Kejuaraan Nasional Indoor';
+$lang['NFAAIndoor-Sectional']='Seksi';
 $lang['NFAAIndoor-WinterLeague6']='Liga Musim Dingin - Babak Skor 600';
 $lang['NFAAIndoor-WinterLeague9']='Liga Musim Dingin - Babak Skor 900';
 $lang['NoChanges']='Tidak berubah';

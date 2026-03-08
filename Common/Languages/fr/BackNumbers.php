@@ -39,7 +39,7 @@ $lang['BadgeComplete']='Tous les Badges';
 $lang['BadgeCreate']='Créer un nouveau Badge';
 $lang['BadgeCustom']='Badge personnalisé';
 $lang['BadgeDelete']='Supprimer un badge';
-$lang['BadgeDimention']='Dimensions du Badge';
+$lang['BadgeDimention']='Dimension du Badge (mm)';
 $lang['BadgeEdit']='Edition du Badge';
 $lang['BadgeEditPage1']='Editer le badge - Face avant (recto)';
 $lang['BadgeEditPage2']='Editer le badge - Face arrière (verso)';
@@ -150,7 +150,7 @@ $lang['Offest2nd']='Décalage du 2ème dossard (si nécessaire)';
 $lang['OneLine']='En Ligne';
 $lang['OnlyAthletes']='Athlètes uniquement';
 $lang['OpenPictureScreen']='Ouvrir un second ecran';
-$lang['PageDimension']='Dimension de la page';
+$lang['PageDimension']='Dimension de la page (mm)';
 $lang['PaperDimention']='Dimention du papier';
 $lang['PayoutLetters']='mille, cent cinquante-deux, ...';
 $lang['PayoutNumbers']='1000, 152, ...';
@@ -164,6 +164,14 @@ $lang['PrintBackNo']='Imprimer les dossards';
 $lang['PrintHasPlastic']='Uniquement les détenteurs de Cartes Lanyards';
 $lang['PrintSyncResult']='$a dossards ont été imprimés!';
 $lang['Q-Badge']='Qualification Athlète Numéro';
+$lang['QrCodeFields']='<ul>
+<li><b>Blank:</b> une chaîne de caractères séparée par des tirets avec le code d\'entrée, la division et la classe sera imprimée</li>
+<li><b>{ENCODE}:</b> {ENCODE} sera traduit par le code d\'entrée</li>
+<li><b>{COUNTRY}:</b> {COUNTRY} sera traduit par le code pays</li>
+<li><b>{DIVISION}:</b> {DIVISION} sera traduit par le code de division</li>
+<li><b>{CLASS}:</b> {CLASS} sera traduit par le code de la classe</li>
+<li><b>{TOURNAMENT}:</b> {TOURNAMENT} sera traduit par le code de la compétition</li>
+</ul>';
 $lang['QRScore']='Score des qualifications';
 $lang['QualPosition']='Classement des qualifications';
 $lang['RandomImage']='Image aléatoire';

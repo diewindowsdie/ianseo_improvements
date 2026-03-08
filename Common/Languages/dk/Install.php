@@ -85,6 +85,7 @@ $lang['NFAA3D-Standard']='NFAA 3D - 51 targets';
 $lang['NFAAField-3Dist']='Felt, jagt, dyr';
 $lang['NFAAField-5Dist']='2xFelt, 2xjagt, 2xdyr';
 $lang['NFAAIndoor-Nationals']='Indendørs mesterskab';
+$lang['NFAAIndoor-Sectional']='Sectionals';
 $lang['NFAAIndoor-WinterLeague6']='Vinter League - 600 runde';
 $lang['NFAAIndoor-WinterLeague9']='Vinter League - 900 runde';
 $lang['NoChanges']='Ingen ændringer';

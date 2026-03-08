@@ -67,7 +67,7 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 			$oldRank=-1;
 		}
 
-		if($oldRank!=$item['rank'] and (in_array($item['rank'], $section['meta']['jumpLines']) OR !$pdf->samePage(2)) and $item['rank']<=$section['meta']['lastQualified']) {
+		if($oldRank!=$item['rank'] and (($item['rank']==$section['meta']['lastQualified']+1) or (in_array($item['rank'], $section['meta']['jumpLines']) OR !$pdf->samePage(2)) and $item['rank']<=$section['meta']['lastQualified'])) {
             $pdf->printDataRow(array('','','','',''));
             $oldRank = -1;
 		}

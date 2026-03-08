@@ -60,6 +60,19 @@ if($version<'2026-02-08 16:34:01') {
     db_save_version('2026-02-08 16:34:01');
 }
 
+if($version<'2026-03-01 08:10:02') {
+    safe_w_SQL("INSERT INTO `LookUpPaths` (`LupIocCode`, `LupOrigin`, `LupPath`, `LupPhotoPath`, `LupFlagsPath`, `LupLastUpdate`, `LupRankingPath`, `LupClubNamesPath`, `LupRecordsPath`) 
+        VALUES ('NFAA', '', '', '', 'https://extranet.worldarchery.org/Api/GetFlags.php', NOW(), '', '%Modules/LookUpFunctions/LookupFitaClubNames.php', '')", false, array(1062));
+    safe_w_SQL("ALTER TABLE `Finals` ADD `FinAverageMatch` DECIMAL(6,3) NOT NULL AFTER `FinWinLose`, ADD `FinAverageTie` DECIMAL(6,3) NOT NULL AFTER `FinAverageMatch`", false, array(1146, 1054, 1060));
+    safe_w_SQL("ALTER TABLE `TeamFinals` ADD `TfAverageMatch` DECIMAL(6,3) NOT NULL AFTER `TfWinLose`, ADD `TfAverageTie` DECIMAL(6,3) NOT NULL AFTER `TfAverageMatch`", false, array(1146, 1054, 1060));
+    db_save_version('2026-03-01 08:10:02');
+}
+
+if($version<'2026-03-03 12:55:02') {
+    safe_w_SQL("REPLACE INTO `AccOperationType` (`AOTId`, `AOTDescr`, `AOTOrder`) VALUES (4, 'Goodies', '30'), (5, 'Meal', '40'), (6, 'Other', '50')", false, array(1062));
+    db_save_version('2026-03-03 12:55:02');
+}
+
 /*
 
 // TEMPLATE

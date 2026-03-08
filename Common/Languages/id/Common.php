@@ -438,6 +438,7 @@ $lang['MenuLM_Update']='Perbarui Ianseo';
 $lang['MenuLM_UpdateWeb']='Update Langsung';
 $lang['MenuLM_Versioning']='Pembuatan Versi Dokumen';
 $lang['MenuLM_View Competition Info']='Lihat Info Kompetisi';
+$lang['MenuLM_Wallet']='Dompet Elektronik';
 $lang['MenuLM_WaRecords']='Update Rekor WA';
 $lang['MF']='Master Wanita';
 $lang['MixedTeamEvent']='Event Tim Campuran';

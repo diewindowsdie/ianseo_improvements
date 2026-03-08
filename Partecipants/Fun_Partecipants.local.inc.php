@@ -125,7 +125,7 @@ function GetRows($Id=null,$OrderBy=null,$AllTargets=false)
 				'caption' => $MyRow->EnCaption,
 				'status' => $MyRow->EnStatus,
 				'session' => $MyRow->Session!=0 ? $MyRow->Session : '',
-				'targetno' => $MyRow->TargetNo,
+				'targetno' => $MyRow->TargetNo!=0 ? $MyRow->TargetNo : '',
 				'firstname' => stripslashes($MyRow->EnFirstName ?? ''),
 				'name' => stripslashes($MyRow->EnName ?? ''),
 				'tvname' => stripslashes($MyRow->EnOdfShortname ?? ''),

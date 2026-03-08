@@ -79,7 +79,7 @@ function UpdatePreOpen($TournamentID) {
 		safe_w_sql("update Scheduler
 			left join Session on SchTournament=SesTournament and SchSesOrder=SesOrder and SchSesType=SesType
 			set SchDay=date(SchDateStart), SchStart=time(SchDateStart), SchDuration=TIMESTAMPDIFF(MINUTE, SchDateStart, SchDateEnd), SchText=SchDescr, SchTitle=SesName
-			where SchTournament=$TournamentID");
+			where SchTournament=$TournamentID",false,array(1062));
 		$q=safe_r_sql("select * from Scheduler where SchTournament=$TournamentID and SchDay>0 and SchStart>0 order by SchDay, SchStart, SchOrder desc");
 		$oldKeys=array();
 		while($r=safe_fetch($q)) {
@@ -92,7 +92,7 @@ function UpdatePreOpen($TournamentID) {
 			$oldKeys[]=$key;
 			if(!$good) {
 				$SQL="update Scheduler set SchStart='".substr($key,-8)."' where SchDay='$r->SchDay' and SchStart='$r->SchStart' and SchDuration='$r->SchDuration' and SchSesOrder=$r->SchSesOrder and SchOrder=$r->SchOrder and SchSesType='$r->SchSesType' limit 1";
-				safe_w_sql($SQL);
+				safe_w_sql($SQL,false,array(1062));
 			}
 		}
 		to_save_version($TournamentID,'2014-04-01 00:00:00');

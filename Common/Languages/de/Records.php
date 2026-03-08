@@ -1,3 +1,34 @@
 <?php
+$lang['Assign']='Zuweisen';
+$lang['AssignPDF']='als PDFs schreiben';
+$lang['AvailableItems']='Verfügbare Einträge';
+$lang['BrokenRecord']='gebrochener Rekord';
+$lang['Categories']='Andere Kategorien';
+$lang['CreateRecords']='Neuen Rekord erstellen';
+$lang['DeleteSingleRecord']='Bitte bestätige, dass Du diesen Rekord löschen möchtest!';
+$lang['DialogDeleteText']='Bitte bestätige, dass Du diese Rekorde nicht mehr beobachten möchtest!';
+$lang['DownloadDate']='Downloaddatum';
+$lang['EditRecord']='Rekord ändern';
 $lang['Enabled']='Aktiviert';
+$lang['Events']='Andere Events';
+$lang['LastModified']='zuletzt geändert';
+$lang['MainCategory']='Hauptkategorie';
+$lang['NoRecordTypes']='Kein Rekord für diesen Wettkampftyp gefunden';
+$lang['NoSuchRecord']='Kein Rekord gefunden';
+$lang['RecordAreaCode']='Rekordcode';
+$lang['RecordHolder']='Rekordinhaber';
+$lang['RecordNewAreaError']='Fehlende Daten: Code, Name und Level müssen definiert sein!';
+$lang['RecordPlace']='Rekord Ort';
+$lang['ResetAllRecordsWarning']='Bitte bestätige, dass Du alle gebrochenen Rekorde des Wettkampfes zurücksetzen möchtest!';
+$lang['ResetRecords']='Alle gebrochenen Rekorde zurücksetzen';
+$lang['SelectRecordCategory']='Rekordkategorie auswählen';
+$lang['StandingRecord']='bestehender Rekord';
+$lang['TourRecordSetupHelp']='Es muss eine Internetverbindung aufgebaut sein, um einen bei der World Archery geführten Rekord zu aktualisieren / einzufügen.';
+$lang['UpdateSingleRecord']='Bitte bestätige, dass Du diesen Rekord aktualisieren möchtest!';
+$lang['WA-Distance']='World Archery Entfernung';
+$lang['WA-Rec-Class']='World Archery Altersklasse';
+$lang['WA-Rec-Division']='World Archery Bogenklasse';
+$lang['WA-Rec-IndEvent']='World Archery Einzel Event';
+$lang['WA-Rec-TeamEvent']='World Archery Mannschaft Event';
+$lang['WA-Target']='World Archery Auflage entsprechend';
 ?>

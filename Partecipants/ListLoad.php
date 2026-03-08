@@ -394,7 +394,11 @@ if($DataSource) {
                 $q = safe_r_SQL("select EnId from Entries where EnCode=" . StrSafe_DB($tmpString[1]) . " and EnTournament={$_SESSION['TourId']}");
                 if (safe_num_rows($q)) {
                     while ($r = safe_fetch($q)) {
-                        safe_w_sql("insert into ExtraData set EdId=$r->EnId, EdType='Z', EdExtra=" . StrSafe_DB($tmpString[2]) . " on duplicate key update EdExtra=" . StrSafe_DB($tmpString[2]) . "");
+                        if(!empty($tmpString[2])) {
+                            safe_w_sql("insert into ExtraData set EdId=$r->EnId, EdType='Z', EdExtra=" . StrSafe_DB($tmpString[2]) . " on duplicate key update EdExtra=" . StrSafe_DB($tmpString[2]) . "");
+                        } else {
+                            safe_w_sql("delete from ExtraData WHERE EdId=$r->EnId and EdType='Z'");
+                        }
                         $ImportResult['Inserted'][] = '<tr><td>Inserted/updated</td><td>' . $tmpString[1] . '</td><td>' . $tmpString[2] . '</td></tr>';
                         $ImportResult['Imported']++;
                     }

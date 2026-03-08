@@ -3,7 +3,7 @@ require_once('Accreditation/Lib.php');
 
 $Options=GetParameter('AccessApp', false, array(), true);
 if(empty($Options)) {
-    $res = array('action' => 'gateflags', 'error' => 1, 'apiVersion' => $req->apiVersion, 'device' => $req->device);
+    $res = array('action' => 'gateflags', 'error' => 1, 'device' => $req->device);
     return;
 }
 
@@ -26,7 +26,6 @@ while($r=safe_fetch($q)) {
 $res = array(
     'action' => 'gateflags',
     'error' => 0,
-    'apiVersion' => $req->apiVersion,
     'device' => $req->device,
-    'pictures' => $tmpList
+    'flags' => $tmpList
 );

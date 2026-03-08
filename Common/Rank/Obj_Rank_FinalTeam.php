@@ -143,7 +143,7 @@
 						INNER JOIN Events ON TeEvent=EvCode AND ToId=EvTournament AND EvTeamEvent=1
 						LEFT JOIN DocumentVersions DV1 on EvTournament=DV1.DvTournament AND DV1.DvFile = 'R-TEAM' and DV1.DvEvent=''
 						LEFT JOIN DocumentVersions DV2 on EvTournament=DV2.DvTournament AND DV2.DvFile = 'R-TEAM' and DV2.DvEvent=EvCode
-						left join ExtraData on EdId=EnId and EdType='Z'
+						left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 					WHERE
 						IF(EvFinalFirstPhase=0, TeRank, TeRankFinal)<=(EvFinalFirstPhase*2) AND TeScore != 0 AND ToId = {$this->tournament}
 						{$filter}
@@ -174,7 +174,7 @@
 						INNER JOIN Events ON TeEvent=EvCode AND ToId=EvTournament AND EvTeamEvent=1
 						LEFT JOIN DocumentVersions DV1 on EvTournament=DV1.DvTournament AND DV1.DvFile = 'R-TEAM' and DV1.DvEvent=''
 						LEFT JOIN DocumentVersions DV2 on EvTournament=DV2.DvTournament AND DV2.DvFile = 'R-TEAM' and DV2.DvEvent=EvCode
-						left join ExtraData on EdId=EnId and EdType='Z'
+						left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 					WHERE
 						IF(EvFinalFirstPhase=0, TeRank, TeRankFinal)>(EvFinalFirstPhase*2)  AND TeScore != 0 AND ToId = {$this->tournament}
 						/*AND CONCAT(TeCoId,'_',TeSubTeam) NOT IN (SELECT DISTINCT CONCAT(TfTeam,'_',TfSubTeam) FROM TeamFinals WHERE TfTournament={$this->tournament})*/
@@ -340,9 +340,9 @@
 					f1.TfEvent AS `event`,CONCAT(f1.TfTeam,'_',f1.TfSubTeam) AS `athlete`,f1.TfMatchNo AS `matchNo`,f1.TfScore AS `score`,f1.TfSetScore AS `setScore`,f1.TfSetPoints AS `setPoints`,f1.TfSetPointsByEnd AS `setPointsByEnd`,f1.TfTie AS `tie`,f1.TfArrowstring AS `arrowstring`,f1.TfTiebreak AS `tiebreak`,f1.TfTbClosest AS `closest`,f1.TfTbDecoded AS `decoded`,
 					CONCAT(f2.TfTeam,'_',f2.TfSubTeam) AS `oppAthlete`,f2.TfMatchNo AS `oppMatchNo`,f2.TfScore AS `oppScore`,f2.TfSetScore AS `oppSetScore`,f2.TfSetPoints AS `oppSetPoints`,f2.TfSetPointsByEnd AS `oppSetPointsByEnd`,f2.TfTie AS `oppTie`,f2.TfArrowstring AS `oppArrowstring`,f2.TfTiebreak AS `oppTiebreak`,f2.TfTbClosest AS `oppClosest`,f2.TfTbDecoded AS `oppDecoded`,
 					GrPhase, EvMaxTeamPerson, f1.TfNotes as Notes, f2.TfNotes as oppNotes, 
-			       f1.TfIrmType IrmType, f2.TfIrmType OppIrmType, i1.IrmType IrmText, i2.IrmType OppIrmText
-				FROM
-					Teams
+			        f1.TfIrmType IrmType, f2.TfIrmType OppIrmType, i1.IrmType IrmText, i2.IrmType OppIrmText,
+                    f1.TfAverageMatch AverageMatch, f2.TfAverageMatch oppAverageMatch, f1.TfAverageTie AverageTie, f2.TfAverageTie oppAverageTie
+					FROM Teams
 					INNER JOIN TeamFinals AS f1 ON TeTournament=f1.TfTournament AND TeEvent=f1.TfEvent AND CONCAT(TeCoId,'_',TeSubTeam)=CONCAT(f1.TfTeam,'_',f1.TfSubTeam)
 					INNER JOIN TeamFinals AS f2 ON f1.TfEvent=f2.TfEvent AND f1.TfMatchNo=IF((f1.TfMatchNo % 2)=0,f2.TfMatchNo-1,f2.TfMatchNo+1) AND f1.TfTournament=f2.TfTournament
 					INNER JOIN Grids ON f1.TfMatchNo=GrMatchNo
@@ -357,42 +357,32 @@
 			";
 
 			$rr=safe_r_sql($q);
-			if (safe_num_rows($rr)>0)
-			{
-				while ($row=safe_fetch($rr))
-				{
+			if (safe_num_rows($rr)>0) {
+				while ($row=safe_fetch($rr)) {
 					$arrowstring=array();
-					for ($i=0;$i<strlen($row->arrowstring);++$i)
-					{
-						if (trim($row->arrowstring[$i])!='')
-						{
+					for ($i=0;$i<strlen($row->arrowstring);++$i) {
+						if (trim($row->arrowstring[$i])!='') {
 							$arrowstring[]=DecodeFromLetter($row->arrowstring[$i]);
 						}
 					}
 
 					$tiebreak=array();
-					for ($i=0;$i<strlen($row->tiebreak);++$i)
-					{
-						if (trim($row->tiebreak[$i])!='')
-						{
+					for ($i=0;$i<strlen($row->tiebreak);++$i) {
+						if (trim($row->tiebreak[$i])!='') {
 							$tiebreak[]=DecodeFromLetter($row->tiebreak[$i]);
 						}
 					}
 
 					$oppArrowstring=array();
-					for ($i=0;$i<strlen($row->oppArrowstring);++$i)
-					{
-						if (trim($row->oppArrowstring[$i])!='')
-						{
+					for ($i=0;$i<strlen($row->oppArrowstring);++$i) {
+						if (trim($row->oppArrowstring[$i])!='') {
 							$oppArrowstring[]=DecodeFromLetter($row->oppArrowstring[$i]);
 						}
 					}
 
 					$oppTiebreak=array();
-					for ($i=0;$i<strlen($row->oppTiebreak);++$i)
-					{
-						if (trim($row->oppTiebreak[$i])!='')
-						{
+					for ($i=0;$i<strlen($row->oppTiebreak);++$i) {
+						if (trim($row->oppTiebreak[$i])!='') {
 							$oppTiebreak[]=DecodeFromLetter($row->oppTiebreak[$i]);
 						}
 					}
@@ -403,7 +393,9 @@
 							'setScore'=>$row->setScore,
 						 	'setPoints'=>$row->setPoints,
 						 	'setPointsByEnd'=>$row->setPointsByEnd,
-							'tie'=>$row->tie,
+                            'avgMatch'=>$row->AverageMatch,
+                            'avgTie'=>$row->AverageTie,
+                            'tie'=>$row->tie,
 							'arrowstring'=>implode('|',$arrowstring),
 						 	'tiebreak'=>implode('|',$tiebreak),
 						 	'tiebreakDecoded'=> $row->decoded,
@@ -416,7 +408,9 @@
 							'oppSetScore'=>$row->oppSetScore,
 						 	'oppSetPoints'=>$row->oppSetPoints,
 						 	'oppSetPointsByEnd'=>$row->oppSetPointsByEnd,
-							'oppTie'=>$row->oppTie,
+                            'oppAvgMatch'=>$row->oppAverageMatch,
+                            'oppAvgTie'=>$row->oppAverageTie,
+                            'oppTie'=>$row->oppTie,
 							'oppArrowstring'=>implode('|',$oppArrowstring),
 						 	'oppTiebreak'=>implode('|',$oppTiebreak),
 						 	'oppTiebreakDecoded'=>$row->oppDecoded,

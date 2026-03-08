@@ -72,7 +72,7 @@ class Obj_Rank_MedalList extends Obj_Rank
 					INNER JOIN Countries ON EnCountry=CoId AND EnTournament=CoTournament
 					INNER JOIN Divisions ON EnDivision=DivId AND EnTournament=DivTournament
 					INNER JOIN Classes ON EnClass=ClId AND EnTournament=ClTournament
-					left join ExtraData on EdId=EnId and EdType='Z'
+					left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 					WHERE EnTournament={$tourId} AND EnStatus<=1 AND QuClRank BETWEEN 1 AND 3
 					ORDER BY Progr ASC, EvCode ASC, `Rank` ASC, EnFirstName ASC, EnName ASC
 				)
@@ -110,7 +110,7 @@ class Obj_Rank_MedalList extends Obj_Rank
 					  ON DivTournament=ClTournament
 					  WHERE DivTournament={$tourId} AND DivAthlete AND ClAthlete
 					) as sq ON TeEvent=DivClass
-					left join ExtraData on EdId=EnId and EdType='Z'
+					left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 					WHERE TeTournament={$tourId} AND TeFinEvent=0 AND TeRank BETWEEN 1 AND 3
 					GROUP BY EvCode, EvName, indEvent, finEvent, hasFinals, Rank, CoCode, CoName
 					ORDER BY Progr ASC, EvCode ASC, `Rank` ASC, CoCode ASC, CoName ASC
@@ -143,7 +143,7 @@ class Obj_Rank_MedalList extends Obj_Rank
 						INNER JOIN Divisions ON EnDivision=DivId AND EnTournament=DivTournament
 						INNER JOIN Classes ON EnClass=ClId AND EnTournament=ClTournament
 						INNER JOIN Countries ON CoId=EnCountry AND CoTournament=EnTournament
-						left join ExtraData on EdId=EnId and EdType='Z'
+						left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 						where EnTournament={$tourId} AND DivAthlete AND ClAthlete) Entry ON IndId=EnId AND IndTournament=EnTournament
 					LEFT JOIN Qualifications ON EnId=QuId
 					LEFT JOIN Countries ON CoId=
@@ -192,7 +192,7 @@ class Obj_Rank_MedalList extends Obj_Rank
 						INNER JOIN Classes ON EnClass=ClId AND EnTournament=ClTournament
 						INNER JOIN Countries ON CoId=EnCountry AND CoTournament=EnTournament
 						inner JOIN Qualifications ON QuId=EnId
-						left join ExtraData on EdId=EnId and EdType='Z'
+						left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 						where EnTournament={$tourId} AND DivAthlete AND ClAthlete) as ef ON ef.EnId=TfcId AND ef.EnTournament=TfcTournament
 					LEFT JOIN TeamComponent ON TcCoId=TeCoId AND TcSubTeam=TeSubTeam AND TcTournament=TeTournament AND TcEvent=TeEvent AND TcFinEvent=TeFinEvent AND IF(EvFinalFirstPhase!=0, 0, 1)=1
 					LEFT JOIN Entries as eq ON eq.EnId=TcId AND eq.EnTournament=TcTournament

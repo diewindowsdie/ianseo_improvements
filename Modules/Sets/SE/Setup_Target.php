@@ -15,7 +15,7 @@ CreateStandardClasses($TourId, $SubRule, '', $TourType);
 // default Distances
 switch($TourType)
 {
-	case 1:     // WA FITA
+	case 1:     // WA FITA (1440-round)
 		CreateDistanceNew($TourId, $TourType, '_U13_', array(array('20m-1',20), array('20m-2',20), array('20m-3',20), array('20m-4',20)));
 		CreateDistanceNew($TourId, $TourType, 'BU15_', array(array('40m-1',40), array('30m-2',30), array('30m-3',30), array('20m-4',20)));
 		CreateDistanceNew($TourId, $TourType, 'LU15_', array(array('20m-1',40), array('20m-2',30), array('20m-3',30), array('20m-4',20)));
@@ -166,7 +166,7 @@ switch($TourType)
         CreateDistanceNew($TourId, $TourType, 'TU15_', array(array('20m-1',40), array('20m-2',30), array('20m-3',20)));
 
         CreateDistanceNew($TourId, $TourType, 'CU18_', array(array('60m-1',60), array('50m-2',50), array('40m-3',40)));
-        CreateDistanceNew($TourId, $TourType, 'RU18_', array(array('40m-1',40), array('30m-2',30), array('20m-3',20)));
+        CreateDistanceNew($TourId, $TourType, 'RU18_', array(array('60m-1',60), array('50m-2',50), array('40m-3',40)));
         CreateDistanceNew($TourId, $TourType, 'BU18_', array(array('40m-1',40), array('30m-2',30), array('20m-3',20)));
         CreateDistanceNew($TourId, $TourType, 'LU18_', array(array('40m-1',40), array('30m-2',30), array('20m-3',20)));
         CreateDistanceNew($TourId, $TourType, 'TU18_', array(array('40m-1',40), array('30m-2',30), array('20m-3',20)));
@@ -283,7 +283,7 @@ if($TourType==6 || $TourType==3 || $TourType==37 || $TourType==1) {
 $i=1;
 switch($TourType)
 {
-	case 1:  // Full FITA
+	case 1:  // Full FITA (1440-round)
 		CreateTargetFace($TourId, $i++, '10 ring 122cm', '_U13_', '1', 5, 122, 5, 122, 5, 122, 5, 122);
 		CreateTargetFace($TourId, $i++, '10 ring 122/80cm', 'REG-^[RBLT](U15|U18|U21|50|60)?[MW]', '1',  5, 122, 5, 122, 5, 80, 5, 80);
         CreateTargetFace($TourId, $i++, '10 ring 122/80cm', 'REG-^[RBLT]21', '1',  5, 122, 5, 122, 5, 80, 5, 80);

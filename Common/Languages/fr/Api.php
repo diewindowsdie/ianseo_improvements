@@ -46,6 +46,7 @@ $lang['ISK-AuthRequest']='Autorisation requise';
 $lang['ISK-BadCompCode']='Code de compétition incorrecte';
 $lang['ISK-CheckAlive']='Vérifiez le périphérique';
 $lang['ISK-checkCompeting']='Seulement les athlètes en compétition';
+$lang['ISK-CheckDataFeatures']='Fonctionnalités de validation des données';
 $lang['ISK-checkGate']='Contrôle des accès aux portes (in/out)';
 $lang['ISK-ConnectionStatus']='Etat de la connection';
 $lang['ISK-DeleteDevices']='Supprimer les dispositifs';
@@ -67,6 +68,10 @@ $lang['ISK-enableTotals']='Activer la vue du total sur les périphériques';
 $lang['ISK-enableWIFIManagement']='Autorise l\'application ISK à gérer le WiFi';
 $lang['ISK-ExportDevices']='Dispositifs d\'exportation';
 $lang['ISK-ForceConfirm']='Forcer la confirmation de l\'appareil';
+$lang['ISK-ForceQRCodeScanning']='Scan du QR-Code obligatoire';
+$lang['ISK-ForceQRCodeScanning-Help']='Autoriser la configuration uniquement via QR Code.
+<br> Aucune affectation manuelle des cibles n\'est autorisée.
+<br> Principalement pour les tournois en ligne à distance et pour éviter de marquer des points sur différentes cibles.';
 $lang['ISK-Gps']='Localisation GPS';
 $lang['ISK-gpsFrequency']='MàJ Fréquence';
 $lang['ISK-hideTotals']='Total caché';
@@ -120,6 +125,7 @@ $lang['ISK-StatusNoShoot']='Le périphérique ne peut marquer';
 $lang['ISK-StatusOK']='Configuration de l\'appareil OK';
 $lang['ISK-StatusReloading']='Recharge de la configuration';
 $lang['ISK-StatusWaitConfirm']='Attente de la confirmation de l\'appareil';
+$lang['ISK-takeScorecardPhoto']='Photo des feuilles de marques';
 $lang['ISK-TruncateTable']='Vider la table temporaire (autres sessions)';
 $lang['ISK-TruncateTableAll']='Vider la table temporaire (complet)';
 $lang['ISK-UsePersonalDevices']='Utilisation d\'appareils personnels';

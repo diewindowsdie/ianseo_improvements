@@ -44,7 +44,7 @@
 		. "ORDER BY EvProgr ASC ";
 	$Rs=safe_r_sql($Select);
 
-	print '<select name="d_Event[]" id="d_Event" multiple="multiple" onChange="ChangeEvent(0);">';
+	print '<select name="d_Event[]" id="d_Event" multiple="multiple" style="min-width: 20%; min-height: 12em" onChange="ChangeEvent(0);">';
 	//print '<option value="">' . get_text('AllEvents') . '</option>';
 	if (safe_num_rows($Rs)>0) {
 		while ($Row=safe_fetch($Rs)) {

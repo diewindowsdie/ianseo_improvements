@@ -218,6 +218,8 @@
 					. " FinSetScore SetScore,"
 					. " FinSetPoints SetPoints,"
 					. " FinSetPointsByEnd SetPointsByEnd,"
+					. " FinAverageMatch AverageMatch,"
+					. " FinAverageTie AverageTie,"
 					. " FinTie AS Tie,"
 					. " FinArrowstring ArrowString,"
 					. " FinTiebreak TieBreak,"
@@ -246,7 +248,7 @@
 					. "left JOIN IrmTypes i2 ON i2.IrmId=IndIrmType "
 					. "left JOIN IrmTypes i3 ON i3.IrmId=IndIrmTypeFinal "
 					. "LEFT JOIN Entries a ON FinAthlete=a.EnId AND FinTournament=a.EnTournament "
-					. "LEFT JOIN ExtraData ON EdId=a.EnId AND EdType='Z' "
+					. "LEFT JOIN ExtraData ON EdId=a.EnId AND EdType='Z' and EdExtra!='' "
 					. "LEFT JOIN Qualifications ON QuId=a.EnId "
 					. "LEFT JOIN Countries ON CoId=
                         case EvTeamCreationMode 
@@ -314,6 +316,8 @@
 					. " FinSetScore OppSetScore,"
 					. " FinSetPoints OppSetPoints,"
 					. " FinSetPointsByEnd OppSetPointsByEnd,"
+					. " FinAverageMatch OppAverageMatch,"
+					. " FinAverageTie OppAverageTie,"
 					. " FinTie AS OppTie,"
 					. " FinArrowstring OppArrowString,"
 					. " FinTiebreak OppTieBreak, "
@@ -339,7 +343,7 @@
 					. "left JOIN IrmTypes i2 ON i2.IrmId=IndIrmType "
 					. "left JOIN IrmTypes i3 ON i3.IrmId=IndIrmTypeFinal "
 					. "LEFT JOIN Entries a ON FinAthlete=a.EnId AND FinTournament=a.EnTournament "
-					. "LEFT JOIN ExtraData ON EdId=a.EnId AND EdType='Z' "
+					. "LEFT JOIN ExtraData ON EdId=a.EnId AND EdType='Z' and EdExtra!='' "
 					. "LEFT JOIN Qualifications ON QuId=a.EnId "
 					. "LEFT JOIN Countries ON CoId=
                         case EvTeamCreationMode 
@@ -375,13 +379,13 @@
                     select EnId as Coach1Id, ifnull(EdExtra,EnCode) Coach1Code, CoCode as Coach1Country, if(EnSex=0, 'M', 'F') as Coach1Gender, EnFirstName as Coach1FamName, EnName as Coach1GivName, concat(ucase(EnFirstName), ' ', EnName) as Coach1
                     from Entries 
                     inner join Countries on CoId=EnCountry and CoTournament=EnTournament
-                    LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' 
+                    LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' and EdExtra!='' 
                     where EnTournament={$this->tournament}) Coach1 on Coach1Id=CoachId
                 LEFT JOIN (
                     select EnId as Coach2Id, ifnull(EdExtra,EnCode) Coach2Code, CoCode as Coach2Country, if(EnSex=0, 'M', 'F') as Coach2Gender, EnFirstName as Coach2FamName, EnName as Coach2GivName, concat(ucase(EnFirstName), ' ', EnName) as Coach2
                     from Entries 
                     inner join Countries on CoId=EnCountry and CoTournament=EnTournament
-                    LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' 
+                    LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' and EdExtra!='' 
                     where EnTournament={$this->tournament}) Coach2 on Coach2Id=OppCoachId
                 left join (select EvCodeParent as ParentCode, ceil(EvNumQualified/2) as ParentQualified from Events where EvTournament={$this->tournament} and EvTeamEvent=0 and EvCodeParentWinnerBranch=1) subEvent on ParentCode=Event
                 
@@ -648,7 +652,9 @@
 					'setScore'=> $myRow->SetScore,
 				 	'setPoints'=> $myRow->SetPoints,
 				 	'setPointsByEnd'=> $myRow->SetPointsByEnd,
-				 	'notes'=> $myRow->Notes,
+                    'avgMatch'=>$myRow->AverageMatch,
+                    'avgTie'=>$myRow->AverageTie,
+                    'notes'=> $myRow->Notes,
 					'tie'=> $myRow->Tie,
 					'arrowstring'=> $myRow->ArrowString,
 				 	'tiebreak'=> $myRow->TieBreak,
@@ -714,7 +720,9 @@
 					'oppSetScore'=> $myRow->OppSetScore,
 				 	'oppSetPoints'=> $myRow->OppSetPoints,
 				 	'oppSetPointsByEnd'=> $myRow->OppSetPointsByEnd,
-				 	'oppNotes'=> $myRow->OppNotes,
+                    'oppAvgMatch'=>$myRow->OppAverageMatch,
+                    'oppAvgTie'=>$myRow->OppAverageTie,
+                    'oppNotes'=> $myRow->OppNotes,
 					'oppTie'=> $myRow->OppTie,
 					'oppArrowstring'=> $myRow->OppArrowString,
 				 	'oppTiebreak'=> $myRow->OppTieBreak,

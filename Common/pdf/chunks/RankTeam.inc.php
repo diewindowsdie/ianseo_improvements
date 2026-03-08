@@ -67,32 +67,15 @@ foreach($PdfData->rankData['sections'] as $section) {
 			$pdf->SetFont($pdf->FontFix,'',8);
 			$pdf->Cell(20, 4*$NumComponenti,  number_format($item['qualScore'],0,$PdfData->NumberDecimalSeparator,$PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['qualRank'],-2,2), 1, 0, 'R', 0);
 			//Risultati  delle varie fasi
-			foreach($item['finals'] as $k=>$v)
-			{
-				if($v['tie']==2)
-					$pdf->Cell(15, 4*$NumComponenti,  $PdfData->Bye, 1, 0, 'R', 0);
-				else
-				{
-					$pdf->SetFont($pdf->FontFix,'',8);
-					if($k==4 && $section['meta']['matchMode']!=0 && $item['rank']>=5)
-					{
-						$pdf->Cell(11, 4*$NumComponenti, '(' . $v['score'] . ')', 'LTB', 0, 'R', 0);
-						$pdf->Cell(4, 4*$NumComponenti, $v['setScore'], 'RTB', 0, 'R', 0);
-					}
-					else
-					{
-						$pdf->SetFont($pdf->FontFix,'',7);
-						$pdf->Cell(15 - (strlen($v['tiebreak'])>0 && $k<=1 ? 7 : 0), 4*$NumComponenti, ($section['meta']['matchMode']==0 ? $v['score'] : $v['setScore']) . ($k<=1 && $v['tie']==1 && strlen($v['tiebreak'])==0 ? '*' : ''), ($k<=1 && strlen($v['tiebreak'])>0 ? 'LTB' : 1), 0, 'R', 0);
-						if(strlen($v['tiebreak'])>0 && $k<=1)
-						{
-							$tmpTxt="";
-							$tmpArr=explode("|",$v['tiebreak']);
-							for($countArr=0; $countArr<count($tmpArr); $countArr+=$NumComponenti)
-								$tmpTxt .= array_sum(array_slice($tmpArr,$countArr,$NumComponenti)). ",";
-							$pdf->Cell(7, 4*$NumComponenti,  "T.".substr($tmpTxt,0,-1), 'RTB', 0, 'R', 0);
-						}
-					}
-				}
+            $cntPhases=0;
+			foreach($item['finals'] as $k=>$v) {
+                $cntPhases++;
+                if($v['tie']==2) {
+                    $pdf->Cell(15, 4*$NumComponenti, $PdfData->Bye, 1, 0, 'R', 0);
+                } else {
+                    $pdf->Cell(7, 4*$NumComponenti, (($cntPhases<count($item['finals']) or floatval($v['avgTie'])==0) ? '' : ($v['avgTie'] ? number_format($v['avgTie'],3) : str_replace('|', ',', $v['tiebreak']))), 'LTB', 0, 'R', 0);
+                    $pdf->Cell(8, 4*$NumComponenti, ($v['avgMatch']? number_format($v['avgMatch'],3, $pdf->NumberDecimalSeparator) : $v['score']), 'RTB', 0, 'R', 0);
+                }
 			}
 			$pdf->Cell(0.1, 4*$NumComponenti,'',0,1,'C',0);
 		}

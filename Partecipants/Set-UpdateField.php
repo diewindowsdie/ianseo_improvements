@@ -119,16 +119,24 @@ if($field) {
 		}
 	} elseif($field=='localCode') {
 		if($Errore) {
-			$q=safe_r_sql("select $FIELD WhichField from Entries left join ExtraData on EdType='Z' and EdId=EnId where EnId=$ID");
+			$q=safe_r_sql("select $FIELD WhichField from Entries left join ExtraData on EdType='Z' and EdExtra!='' and EdId=EnId where EnId=$ID");
 			if($r=safe_fetch($q)) $value=$r->WhichField;
 			else $value='';
 		} else {
 			if($ID) {
-				// update
-				safe_w_sql("insert into ExtraData set $FIELD=".StrSafe_DB($value).  ", EdId=$ID, EdType='Z' on duplicate key update $FIELD=".StrSafe_DB($value).  "");
-				if($SelectEnId) {
-					LogAccBoothQuerry("insert into ExtraData set $FIELD=".StrSafe_DB($value).  ", EdId=($SelectEnId), EdType='Z' on duplicate key update $FIELD=".StrSafe_DB($value), $ENTRY->ToCode);
-				}
+                if($value) {
+                    // update
+                    safe_w_sql("insert into ExtraData set $FIELD=" . StrSafe_DB($value) . ", EdId=$ID, EdType='Z' on duplicate key update $FIELD=" . StrSafe_DB($value) . "");
+                    if ($SelectEnId) {
+                        LogAccBoothQuerry("insert into ExtraData set $FIELD=" . StrSafe_DB($value) . ", EdId=($SelectEnId), EdType='Z' on duplicate key update $FIELD=" . StrSafe_DB($value), $ENTRY->ToCode);
+                    }
+                } else {
+                    safe_w_sql("delete from ExtraData WHERE EdId=$ID and EdType='Z'");
+                    if ($SelectEnId) {
+                        LogAccBoothQuerry("delete from ExtraData WHERE EdId=$ID and EdType='Z'", $ENTRY->ToCode);
+                    }
+                }
+                safe_w_sql("delete from ExtraData using ExtraData INNER JOIN Entries ON EnId=EdId WHERE EnTournament={$_SESSION['TourId']} and EdExtra='' and EdType='Z'");
 			}
 		}
 	} elseif($field=='caption') {

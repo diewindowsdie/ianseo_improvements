@@ -402,7 +402,7 @@ switch($_REQUEST['act']) {
 				    select EnId, EnTournament, EnCode, EnFirstName, EnName, EnSex, CoCode, CoName
 				    from Entries
 					inner join Countries on CoId=EnCountry and CoTournament=EnTournament
-		            left join ExtraData on EdId=EnId and EdType='Z'
+		            left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 				    where EnTournament={$_SESSION['TourId']}
 				) Entries on EnId=RarEntry and EnTournament=RarTournament
 				where RarTournament={$_SESSION['TourId']} and RarTeam=0 and RarEvent=".StrSafe_DB($Event)." and RarPhase=$Phase
@@ -418,7 +418,7 @@ switch($_REQUEST['act']) {
 	            inner join Events on EvTournament=EcTournament and EvCode=EcCode and EvTeamEvent=$Team and EvCode=".StrSafe_DB($Event)." and EvTeamEvent=(EcTeamEvent>0)
 	            left join RunArcheryParticipants on RapTournament=EnTournament and RapEntry=EnId and RapTeamEvent=EvTeamEvent and RapEvent=EvCode
 	            left join RunArcheryRank on RarTournament=EnTournament and RarEntry=EnId and RarSubTeam=0 and RarTeam=EvTeamEvent and RarEvent=EvCode and RarPhase=$Phase
-	            left join ExtraData on EdId=EnId and EdType='Z'
+	            left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 				where EnTournament={$_SESSION['TourId']} and EnIndFEvent=1
 				order by RapEntry is null, RarStartList=0, RarStartList, RarBib+0, RarBib";
 			}
@@ -741,7 +741,7 @@ function insertRunParticipant($Team, $Event, $Entry, $NumLaps, $SubTeam=0) {
 	        (RarTournament, RarEntry, RarSubTeam, RarTeam, RarEvent, RarPhase, RarBib, RarLastUpdate) 
 			select {$_SESSION['TourId']}, $Entry, 0, 0, '$Event', 0, coalesce(EdExtra,EnCode), now()
 			from Entries
-			left join ExtraData on EdId=EnId and EdType='Z'
+			left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 			where EnId=$Entry and EnTournament={$_SESSION['TourId']}");
 		for($i=1;$i<=$NumLaps; $i++) {
 			safe_w_sql("insert ignore into RunArchery 

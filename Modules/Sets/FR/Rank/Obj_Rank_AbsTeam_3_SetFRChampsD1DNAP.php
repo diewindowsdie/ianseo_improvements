@@ -233,7 +233,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 					INNER JOIN Qualifications ON EnId=QuId
 					INNER JOIN Divisions ON EnDivision=DivId AND EnTournament=DivTournament
 					INNER JOIN Classes ON EnClass=ClId AND EnTournament=ClTournament
-				    left join ExtraData on EdId=EnId and EdType='Z'
+				    left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 				/* Contatori per CT (gialli)*/
 					LEFT JOIN (
 						SELECT TeEvent as sqyEvent,Count(*) as Quanti, TeSO as sqyRank, TeTournament as sqyTournament
