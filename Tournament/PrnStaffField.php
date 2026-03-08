@@ -41,8 +41,6 @@ $rowHeight = 6;
 $fontSize = 9;
 //минимальное количество строк на следующей странице, если отчет не помещается на текущее количество страниц
 $numberOfJudgesOnNextPage = 3;
-//отступ перед блоком с подписями судей
-$marginBeforeSignatures = 10;
 //высота ячейки под текстовый заголовок
 $titleRowHeight = 10;
 
@@ -73,6 +71,7 @@ $pdf->SetFont($pdf->FontStd, 'B', $fontSize + 3);
 $pdf->Cell(190, $titleRowHeight, get_text('StaffOnField', 'Tournament'), 0, 1, 'C', 0, '', 1, false, 'T', 'T');
 
 $pdf->SetFont($pdf->FontStd, 'B', $fontSize);
+$pdf->setCellPaddings(1.5, 0, 1.5, 0);
 $pdf->Cell(8, $rowHeight, '№', 1, 0, 'L', 1);
 $nameHeader = 'Judge name';
 if (SelectLanguage() == 'ru') {
@@ -88,6 +87,7 @@ $pdf->Cell(40, $rowHeight, get_text('JudgeRegion', 'Tournament'), 1, 1, 'L', 1);
 
 $pdf->SetFont($pdf->FontStd, '', $fontSize);
 $index = 1;
+
 while ($judge = safe_fetch($resultSet)) {
     if (!$pdf->SamePage($rowHeight + 1)) {
         $pdf->AddPage();
@@ -101,7 +101,6 @@ while ($judge = safe_fetch($resultSet)) {
     $index++;
 }
 
-$pdf->SetY($pdf->GetY() + $marginBeforeSignatures - 5);
 TournamentOfficials::printOfficials($pdf);
 
 if (!isset($isCompleteResultBook)) {
