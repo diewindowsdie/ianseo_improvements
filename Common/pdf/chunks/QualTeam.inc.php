@@ -59,7 +59,7 @@ if(count($rankData['sections'])) {
 				$pdf->writeGroupHeaderPrnTeamAbs($meta,true, $hideTempHeader, $rankData["meta"]["InternationalProtocol"]);
 			}
 
-			$pdf->writeDataRowPrnTeamAbs($item, ($endQualified===false && $item['rank']>$meta['qualifiedNo']), $meta['running']);
+			$pdf->writeDataRowPrnTeamAbs($item, ($endQualified===false && $item['rank']>$meta['qualifiedNo']), $meta['running'], $rankData["meta"]["InternationalProtocol"]);
 
 			if($item['rank']>$meta['qualifiedNo'])
 				$endQualified = true;
