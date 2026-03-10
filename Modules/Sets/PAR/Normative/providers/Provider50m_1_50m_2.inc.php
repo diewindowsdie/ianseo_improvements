@@ -3,7 +3,7 @@ class Provider50m_1_50m_2 extends NormativeProvider
 {
     public function calcByTotalScore($class, $division, $score): array
     {
-        if (str_starts_with($division, 'C')) {
+        if (str_starts_with($division, 'PC')) {
             if (str_ends_with($class, 'M')) {
                 if ($score >= 670)
                     return Normative::Master;
