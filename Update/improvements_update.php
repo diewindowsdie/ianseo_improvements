@@ -18,6 +18,8 @@ require_once 'improvements/2025-10-14_update_module_parameter_name_length.php';
 require_once 'improvements/2025-11-03_judge_last_name_nullable.php';
 require_once 'improvements/2026-01-22_add_2x18m_BLR.php';
 require_once 'improvements/2026-02-21_add_second_qual_header.php';
+require_once 'improvements/2026-03-12_add_50_30_RUS.php';
+require_once 'improvements/2026-03-12_add_12_12_RUS.php';
 
 if ($log) fclose($log);
 ?>

@@ -1,5 +1,7 @@
 <?php
-class Provider60m_50m_40m_30m extends NormativeProvider {
+
+class Provider60m_50m_40m_30m extends NormativeProvider
+{
     public function calcByTotalScore($class, $division, $score): array
     {
         if (str_starts_with($class, 'U18W')) {
@@ -39,4 +41,5 @@ class Provider60m_50m_40m_30m extends NormativeProvider {
         return Normative::None;
     }
 }
+
 ?>
