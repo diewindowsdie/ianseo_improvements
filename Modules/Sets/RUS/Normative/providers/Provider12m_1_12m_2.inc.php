@@ -1,4 +1,5 @@
 <?php
+
 class Provider12m_1_12m_2 extends NormativeProvider
 {
     public function calcByTotalScore($class, $division, $score): array

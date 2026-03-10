@@ -266,6 +266,7 @@ $lang['Setup-NL']='Dutch Tournament Rules';
 $lang['Setup-NO']='Norwegian tournament (Norges Bueskytterforbund rules)';
 $lang['Setup-NZ']='New Zealand Tournament rules';
 $lang['Setup-PAR']='Paralimpic tournament (IPC rules)';
+$lang['Setup-RUS']='Russian Tournament Rules';
 $lang['Setup-SE']='Swedish Tournament Rules';
 $lang['Setup-Select']='Select the correct local rule';
 $lang['Setup-SI']='Slovenian Tournament Rules';
