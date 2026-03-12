@@ -254,12 +254,13 @@ function isAthleteTargetsAssigned($competition, $sessionId = null): bool
 
 function isQualificationsDataPresentForGroup($competition, $event): bool
 {
+    //нас интересует наличие пробоин или введённого результата
     $query = "select count(1) as StartedQuals
                 from EventClass ec
                 inner join Entries e
                     on e.EnTournament = ec.EcTournament and ec.EcDivision = e.EnDivision and ec.EcClass = e.EnClass
                 left join Qualifications q on e.EnId = q.QuId
-                where q.QuD1Arrowstring != ''
+                where (q.QuD1Arrowstring != '' || q.QuD1Score > 0)
                 and ec.EcTeamEvent = " . StrSafe_DB($event->EvTeamEvent) . "
                 and ec.EcTournament = " . StrSafe_DB($competition->ToId) . "
                 and ec.EcCode = " . StrSafe_DB($event->EvCode);
@@ -272,6 +273,7 @@ function isQualificationsDataPresentForGroup($competition, $event): bool
 
 function isQualificationsDataPresentForSession($competition, $sessionId): bool
 {
+    //тут нужно проверять именно наличие пробоин, потому что без них карточки записи будут пустые
     $query = "select count(1) as StartedQuals
                 from Entries e
                 left join Qualifications q on e.EnId = q.QuId
