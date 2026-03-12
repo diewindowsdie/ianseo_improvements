@@ -231,7 +231,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country1" id="country1"
-                        <?= getModuleParameter(PROTOCOL_MODULE, Checked1ParameterName, "1", $_SESSION['TourId']) === "1" ? ' checked' : ''?>onchange="$('#StatHeader1').prop('disabled', !this.checked)"><label style="padding-left: 5px"
+                        <?= getModuleParameter(PROTOCOL_MODULE, Checked1ParameterName, "0", $_SESSION['TourId']) === "1" ? ' checked="checked"' : ''?> onchange="$('#StatHeader1').prop('disabled', !this.checked)"><label style="padding-left: 5px"
                                                                                                                                                                                                                    for="country1">Включить отчет о
                         странах/регионах первого уровня</label></td>
             </tr>
@@ -244,7 +244,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country2" id="country2"
-                        <?= getModuleParameter(PROTOCOL_MODULE, Checked2ParameterName, "1", $_SESSION['TourId']) === "1"  ? ' checked' : ''?>onchange="$('#StatHeader2').prop('disabled', !this.checked)"><label style="padding-left: 5px"
+                        <?= getModuleParameter(PROTOCOL_MODULE, Checked2ParameterName, "0", $_SESSION['TourId']) === "1"  ? ' checked="checked"' : ''?> onchange="$('#StatHeader2').prop('disabled', !this.checked)"><label style="padding-left: 5px"
                                                                                                                                                                                                                     for="country2">Включить отчет о
                         странах/регионах второго уровня</label></td>
             </tr>
@@ -257,7 +257,7 @@ if (array_key_exists("doPrint", $_REQUEST)) {
             </tr>
             <tr>
                 <td class="Left" style="padding-left: 20px; padding-top: 15px"><input type="checkbox" name="country3" id="country3"
-                        <?= getModuleParameter(PROTOCOL_MODULE, Checked3ParameterName, "0", $_SESSION['TourId']) === "1"  ? ' checked' : ''?>onchange="$('#StatHeader3').prop('disabled', !this.checked)"><label
+                        <?= getModuleParameter(PROTOCOL_MODULE, Checked3ParameterName, "0", $_SESSION['TourId']) === "1"  ? ' checked="checked"' : ''?> onchange="$('#StatHeader3').prop('disabled', !this.checked)"><label
                             style="padding-left: 5px" for="country3">Включить отчет о странах/регионах третьего
                         уровня</label></td>
             </tr>
