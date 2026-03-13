@@ -144,6 +144,7 @@ $lang['DestinationSession']='To Session';
 $lang['Div']='Div.';
 $lang['Division']='Division';
 $lang['DivisionClass']='Category';
+$lang['DivSession']='Division and session';
 $lang['Elimination']='Eliminations';
 $lang['Eliminations']='Elim. Round';
 $lang['Eliminations_0']='No Elim.';

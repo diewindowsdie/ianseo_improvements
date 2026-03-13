@@ -117,6 +117,7 @@ $lang['DestinationSession']='в смену';
 $lang['Div']='Див.';
 $lang['Division']='Дивизион';
 $lang['DivisionClass']='Дивизион и класс';
+$lang['DivSession']='Дивизион и смена';
 $lang['Elimination']='Отборочный этап';
 $lang['Eliminations']='Отборочный раунд';
 $lang['Eliminations_0']='Нет Отбор. этапа';
