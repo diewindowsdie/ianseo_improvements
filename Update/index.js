@@ -1,15 +1,25 @@
 function update_improvements(url) {
     if (confirm("Будет произведено обновление IANSEO. Продолжить?")) {
+        showLoader();
         $("#main").html("<span>Начинаем процесс обновления...</span><br/><span>Скачиваем файл <b>" + url + "</b></span>");
         $.getJSON("improvementsDownload-action.php", {url: url}, function(response) {
             $("#main").html(response.msg);
             if (response.error === 0) {
                 $.getJSON("improvementsUnpack.php", {url: url}, function(secondResponse) {
                     $("#main").html(secondResponse.msg);
+                    hideLoader();
                 });
             }
         });
     }
+}
+
+function showLoader() {
+    $("#loaderModal").fadeIn(200);
+}
+
+function hideLoader() {
+    $("#loaderModal").fadeOut(200);
 }
 
 function doUpdate(force) {

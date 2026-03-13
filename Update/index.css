@@ -20,3 +20,34 @@
 #DialogUpdate div {
     margin:0.5em;
 }
+
+#loaderModal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0,0,0,0.5);
+
+    align-items: center;
+    justify-content: center;
+}
+
+.loader-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #000000;
+    background-color: #FFFFFF;
+    padding: 20px
+}
+
+.loader-text {
+    margin-bottom: 15px;
+    font-weight: 500;
+}
