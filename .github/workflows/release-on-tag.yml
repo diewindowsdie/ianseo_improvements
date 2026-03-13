@@ -22,14 +22,14 @@ jobs:
         run: |
           git fetch origin main
 
-          TAG_COMMIT=$(git rev-list -n 1 $GITHUB_REF)
+          TAG_COMMIT=$(git rev-list -n 1 "$GITHUB_REF")
           MAIN_HEAD=$(git rev-parse origin/main)
 
           echo "Tag commit:  $TAG_COMMIT"
           echo "Main HEAD:   $MAIN_HEAD"
 
           if [ "$TAG_COMMIT" != "$MAIN_HEAD" ]; then
-            echo "Tag is not on latest commit of main"
+            echo "Tag is not on the latest commit of main"
             exit 1
           fi
 
@@ -42,24 +42,34 @@ jobs:
           echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
           echo "zip=$ZIP_NAME" >> $GITHUB_OUTPUT
 
-          PREV_TAG=$(git tag --sort=-creatordate | grep -v "^$TAG_NAME$" | head -n 1 || true)
+          PREV_TAG=$(git tag --list "v*" --sort=-v:refname | grep -v "^$TAG_NAME$" | head -n 1 || true)
+
+          echo "Previous tag: $PREV_TAG"
           echo "prev_tag=$PREV_TAG" >> $GITHUB_OUTPUT
 
-      - name: Collect commits since previous release
+      - name: Generate release notes
         run: |
           if [ -z "${{ steps.vars.outputs.prev_tag }}" ]; then
-            git log --pretty=format:"* %s;" > release_notes.md
+            git log --no-merges --pretty=format:"* %s" > release_notes.md
           else
-            git log ${{ steps.vars.outputs.prev_tag }}..HEAD --pretty=format:"* %s;" > release_notes.md
+            git log ${{ steps.vars.outputs.prev_tag }}..HEAD \
+              --no-merges \
+              --pretty=format:"* %s" > release_notes.md
+          fi
+
+          if [ ! -s release_notes.md ]; then
+            echo "No release notes generated — skipping release."
+            exit 1
           fi
 
       - name: Create zip archive (no hidden files)
         run: |
           zip -r "${{ steps.vars.outputs.zip }}" . \
             -x ".*" \
-            -x "*/.*"
+            -x "*/.*" \
+            -x "release_notes.md"
 
-      - name: Create GitHub Release with asset
+      - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
