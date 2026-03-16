@@ -19,9 +19,8 @@ class NumberOfCoachesFromRegion extends GskField
     {
         $query = "select count(1) as Value from Entries e
                     inner join Countries c on e.EnCountry = c.CoId and e.EnTournament = c.CoTournament
-                    inner join Divisions d on e.EnDivision = d.DivId and e.EnTournament = d.DivTournament
-                    inner join Classes cl on e.EnClass = cl.ClId and e.EnTournament = cl.ClTournament
-                         
+                    left join Divisions d on e.EnDivision = d.DivId and e.EnTournament = d.DivTournament
+                    left join Classes cl on e.EnClass = cl.ClId and e.EnTournament = cl.ClTournament
                 where (d.DivAthlete = 0 or cl.ClAthlete = 0) and c.CoCode = '" . $this->regionId . "' and e.EnTournament = " . $_SESSION["TourId"];
         $rs = safe_r_SQL($query);
         return safe_fetch($rs)->Value ?? "0";
