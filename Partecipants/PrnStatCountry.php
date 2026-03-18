@@ -22,8 +22,8 @@ require_once('Common/pdf/PdfChunkLoader.php');
 // MUST BE called $PdfData
 
 $PdfData=($_REQUEST["countryIndex"]
-    ? getStatEntriesByCountries(false, false, $_REQUEST["countryIndex"])
-    : getStatEntriesByCountries()
+    ? getStatEntriesByCountries(false, $_REQUEST['AthletesOnly'] === "1", $_REQUEST["countryIndex"])
+    : getStatEntriesByCountries(false, $_REQUEST['AthletesOnly'] === "1")
 );
 
 if(!isset($isCompleteResultBook))

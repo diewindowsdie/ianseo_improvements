@@ -54,7 +54,8 @@ echo '</a></td>';
 	echo '<img src="../Common/Images/pdf.gif" alt="' . get_text('StatCountries','Tournament') . '" border="0"></a>&nbsp;&nbsp;&nbsp;';
 	echo '<a href="OrisStatCountry.php" class="Link" target="ORISPrintOut">';
 	echo '<img src="../Common/Images/pdfOris.gif" title="' . get_text('StdORIS','Tournament') . '"  alt="' . get_text('StdORIS','Tournament') . '" border="0"></a><br>';
-	echo '<a href="'.($_SESSION['ISORIS'] ? 'OrisStatCountry.php' : 'PrnStatCountry.php').'" class="Link" target="PrintOut">' . get_text('StatCountries','Tournament') . '</a>';
+	echo '<a href="'.($_SESSION['ISORIS'] ? 'OrisStatCountry.php' : 'PrnStatCountry.php').'" class="Link" target="PrintOut">' . get_text('StatCountries','Tournament') . '</a><br />';
+    echo '<a href="PrnStatCountry.php?AthletesOnly=1" class="Link" target="PrintOut">' . get_text('StatCountries','Tournament') . ' (только спортсмены)</a>';
 	echo '</td>';
 
 // Standing records

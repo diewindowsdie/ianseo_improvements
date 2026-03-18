@@ -122,6 +122,7 @@ switch ($_REQUEST["report"]) {
 
             $_REQUEST["countryIndex"] = $index;
             $_REQUEST["StatHeader" . $index] = getRegionStatisticsHeaderParameter($c, $index);
+            $_REQUEST["AthletesOnly"] = "1";
 
             require_once "../../../Partecipants/PrnStatCountry.php";
         }
