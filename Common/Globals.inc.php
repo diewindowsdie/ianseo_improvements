@@ -753,15 +753,13 @@ function getCodeFromId($id) {
  *
  * @return int: tipo del torneo se esiste; 0 altrimenti
  */
-function getTournamentType($TourId='')
-{
+function getTournamentType($TourId='') {
 	$ret=0;
 
 	$query
 		= "SELECT ToType FROM Tournament WHERE ToId=" . StrSafe_DB($TourId?$TourId:$_SESSION['TourId']) . " ";
 	$rs=safe_r_sql($query);
-	if (safe_num_rows($rs)==1)
-	{
+	if (safe_num_rows($rs)==1) {
 		$row=safe_fetch($rs);
 		$ret=$row->ToType;
 	}
@@ -774,18 +772,8 @@ function getTournamentType($TourId='')
  * @param int $Id: id del torneo
  * @return int
  */
-	function GetCategory($Id)
-	{
+	function GetCategory($Id) {
 		global $CFG;
-		/*$Query
-			= "SELECT TtCategory "
-			. "FROM "
-				. "Tournament*Type "
-				. "INNER JOIN "
-					. "Tournament "
-				. "ON TtId=ToType "
-			. "WHERE "
-				. "ToId=" . StrSafe_DB($Id) . " ";*/
 		$Query
 			= "SELECT ToCategory AS TtCategory "
 			. "FROM "
@@ -795,8 +783,7 @@ function getTournamentType($TourId='')
 		$Rs=safe_r_sql($Query);
 		$Cat=-1;
 
-		if ($Rs && safe_num_rows($Rs)==1)
-		{
+		if ($Rs && safe_num_rows($Rs)==1) {
 			$Row=safe_fetch($Rs);
 			$Cat=$Row->TtCategory;
 		}

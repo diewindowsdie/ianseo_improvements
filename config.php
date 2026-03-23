@@ -116,7 +116,7 @@ $_SESSION['debug'] = $ERROR_REPORT;
 // Autocheckin
 if(!empty($CFG->ROOT_DIR) and dirname($_SERVER['PHP_SELF'])!=$CFG->ROOT_DIR.'Modules/AutoCheckin' and $Code=GetParameter('AutoCHK-Code') and !empty($_SERVER['REMOTE_ADDR']) && in_array($_SERVER['REMOTE_ADDR'], explode(',', GetParameter('AutoCHK-IP')))) {
 	CreateTourSession(getIdFromCode($Code));
-	CD_redirect($CFG->ROOT_DIR.'Modules/AutoCheckin/AutoCheckin.php');
+	CD_redirect($CFG->ROOT_DIR.'Modules/AutoCheckin/index.php');
 	die();
 }
 

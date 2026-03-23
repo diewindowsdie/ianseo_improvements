@@ -2,6 +2,7 @@
 require_once('Common/Lib/Fun_Phases.inc.php');
 require_once('Common/Lib/Fun_DateTime.inc.php');
 require_once('Common/Lib/CommonLib.php');
+require_once('Common/Lib/Fun_Modules.php');
 
 error_reporting(E_ALL);
 

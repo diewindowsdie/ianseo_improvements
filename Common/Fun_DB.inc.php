@@ -57,7 +57,7 @@ function GetParameter($ParameterName, $InfoSystem=false, $default='', $encoded=f
 	if($InfoSystem) $TmpSql = "SELECT IsValue as ParValue FROM InfoSystem WHERE IsId=" . StrSafe_DB($ParameterName);
 	$Rs=safe_r_sql($TmpSql, false, true);
 	if($Rs and $TmpRow = safe_fetch($Rs)) {
-		return (($InfoSystem or $encoded) ? unserialize($TmpRow->ParValue) : $TmpRow->ParValue);
+		return (($InfoSystem or ($encoded and unserialize($TmpRow->ParValue)!==false)) ? unserialize($TmpRow->ParValue) : $TmpRow->ParValue);
 	}
 	if($default) {
 		SetParameter($ParameterName, $default, $encoded);

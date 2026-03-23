@@ -81,6 +81,7 @@ function tour_delete($TourId) {
 		"TeamFinComponent" => "TfcTournament",
         "TeamFinComponentLog" => "TfclTournament",
 		"TeamFinals" => "TfTournament",
+		"TeamQualificationDistances" => "TqdTournament",
 		"Teams" => "TeTournament",
 		"TourRecords" => "TrTournament",
 		"Tournament" => "ToId",
@@ -203,6 +204,7 @@ function tour_import($filename, $isString=false) {
 		'TeamDavis' => 'TeDa',
 		'TeamFinComponent' => 'Tfc',
         'TeamFinComponentLog' => 'Tfcl',
+		'TeamQualificationDistances' => 'Tqd',
 		'Teams' => 'Te',
 		'TournamentDistances' => 'Td',
 		'TournamentInvolved' => 'Ti',
@@ -228,6 +230,7 @@ function tour_import($filename, $isString=false) {
 		'TeamFinals' => 'TfTeam',
 		'TeamFinComponent' => 'TfcCoId',
         'TeamFinComponentLog' => 'TfclCoId',
+		'TeamQualificationDistances' => 'TqdCoId',
 		'Teams' => 'TeCoId',
 		'TournamentInvolved' => 'TiCountry',
 		);

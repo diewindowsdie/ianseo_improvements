@@ -55,8 +55,7 @@ $lang['FieldPegRed']='Rød pind';
 $lang['FieldPegWhite']='Hvid pind';
 $lang['FieldPegYellow']='Gul pind';
 $lang['File permission error']='Du skal checke alle tilladelser af IANSEO installations mapper: den skal ikke være skrivebeskyttet af brugeren.';
-$lang['FreeOnlineResults']='<b>Gratis online udgivelse</b>. Via nettet kan du vise verdenen hvad der sker under konkurrencen. Det er gratis, så hvorfor vente? Når turneringen først er oprettet, så bed om en turneringskode under menu punktet «{$a}».
-Bed venligst om koden så hurtigt som muligt, helst en uge før selve konkurrencen, så vi har tid til at validere den!';
+$lang['FreeOnlineResults']='<b>Gratis online resultater</b>, så alle kan følge stævnet via nettet. Når turneringen er oprettet, så få en kode under menu punktet «{$a}»,seneste 7 dage før konkurrencen.';
 $lang['GettingLanguagePacks']='Henter sprogpakker... Dette kan tage lidt tid...';
 $lang['Host']='Host';
 $lang['Install-0']='KRITISK FEJL';
@@ -183,7 +182,6 @@ $lang['SetFRChampsScratchR']='Mesterskabs Recurve Single Event';
 $lang['SetFRChampsTNJ']='Tournoi National Jeunes';
 $lang['SetFRChampsVet']='Championships Masters';
 $lang['SetFRCoupeFrance']='French Cup';
-$lang['SetFRD12023']='Championnat D1 / 2023';
 $lang['SetFRFinalsD2']='Finales France D2';
 $lang['SetFRFinDRD2']='Finales DR/D2';
 $lang['SetFrSelectif']='Selectif';
@@ -303,10 +301,12 @@ $lang['UpdatingModulesInfo']='Opdater modul information';
 $lang['UpgradeFinished']='Opdaterings processen er afsluttet. Du kan opdatere sprog på vilkårligt tidspunkt fra Vælg sprog siden';
 $lang['User']='Brugernavn';
 $lang['Value']='Værdi (indexed arrays items: key1::value1|key2::value2)';
-$lang['WhatIanseoDoes01']='<b>Følger World Archery</b> - Ianseo er altid opdateret i forhold til World Archery reglerne. Hvis der ønskes tilpasning for at følge nationale regler eller turneringsregler, så kontakt udviklerne som kan hjælpe med tilpasninger!';
+$lang['WhatIanseoDoes01']='<b>Følger altid World Archery reglerne</b>. Kontakt udviklerne hvis der ønskes tilpasninger.';
 $lang['WhatIanseoDoes02']='<b>Brug for hjælp?</B> Så send en email til $a, hvor du skriver direkte med udviklerne af Ianseo';
-$lang['WhatIanseoDoes03']='<b>Træning og kurser</b> Ianseo kan tilbyde at kurser hos jer på to niveauer: Uden og med Ianseo Scorekeeper NG app. Den første har til formål at kende alle aspekter af ianseo fra konkurrenceforberedelse og tidsplan til online offentliggørelse. Del to er rettet mod at erhverve al den specifikke viden til at køre en "pil for pil" konkurrence.';
-$lang['WhatIanseoDoes04']='<b>Doner</b> Ianseo er gratis og Open Source. Ved <t donere via $a hjælper du med at holde programmer og servere opdateret';
+$lang['WhatIanseoDoes03']='<b>Træning og kurser</b> Ianseo tilbyder  kurser hos jer både uden og med Ianseo Scorekeeper NG app.<br>
+Del 1: Kend ianseo fra forberedelse og tidsplan til online offentliggørelse.<br>
+Del 2: Kør en "pil for pil" konkurrence.';
+$lang['WhatIanseoDoes04']='<b>Doner</b> Ianseo er gratis og Open Source. Tryk på "Doner" knappen på $a!';
 $lang['WhatIanseoDoes05']='<b>Social Media:</b> Ianseo findes også på $a!';
 $lang['WhatIanseoDoesTitle']='Hvad kan Ianseo gøre for din turnering';
 $lang['Write connection failed']='Forbindelsen med serveren mislykkedes - enten har du ikke indtastet root kodeord eller også er login data ikke korrekt!';

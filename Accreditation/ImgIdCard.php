@@ -309,13 +309,26 @@ function draw_pip($r) {
 			$txt1=imagecreatefrompng($CFG->DOCUMENT_PATH.'Common/Images/edit-barcode.png');
 		case 'AthQrCode':
 			if(!isset($txt1)) $txt1=imagecreatefromjpeg($CFG->DOCUMENT_PATH.'Common/Images/qrcode.jpg');
+        case 'ImageUrl':
+            if(!isset($txt1)) $txt1=imagecreatefrompng($CFG->DOCUMENT_PATH.'Common/Images/image-url.png');
 		case 'Flag':
 			if(!isset($txt1)) $txt1=imagecreatefromjpeg($CFG->DOCUMENT_PATH.'Common/Images/Flag.jpg');
 		case 'AccessGraphics':
 			if(!isset($txt1)) $txt1=imagecreatefrompng($CFG->DOCUMENT_PATH.'Common/Images/AccessCodes.png');
 		case 'Accomodation':
 			if(!isset($txt1)) $txt1=imagecreatefrompng($CFG->DOCUMENT_PATH.'Common/Images/Accomodations.png');
-			imagecopyresampled($img, $txt1, intval(round($Options['X']*$Ratio)), intval(round($Options['Y']*$Ratio)), 0, 0, intval(round($Options['W']*$Ratio)), intval(round($Options['H']*$Ratio)), imagesx($txt1), imagesy($txt1));
+            if($Options['W']<0) {
+                $Options['W'] = 0;
+            }
+            if($Options['H']<0) {
+                $Options['H'] = 0;
+            }
+            if($Options['W']==0) {
+                $Options['W'] = imagesx($txt1)*$Options['H']/imagesy($txt1);
+            } else if($Options['H']==0) {
+                $Options['H'] = imagesy($txt1)*$Options['W']/imagesx($txt1);
+            }
+            imagecopyresampled($img, $txt1, intval(round($Options['X']*$Ratio)), intval(round($Options['Y']*$Ratio)), 0, 0, intval(round($Options['W']*$Ratio)), intval(round($Options['H']*$Ratio)), imagesx($txt1), imagesy($txt1));
 			break;
 		case 'HLine':
 			$color=imagecolorallocate($img, hexdec(substr($Options['Col'], 1, 2)), hexdec(substr($Options['Col'], 3, 2)), hexdec(substr($Options['Col'], 5, 2)));

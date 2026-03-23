@@ -169,7 +169,6 @@ $lang['SetFRChampsScratchR']='Championnat Scratch Classique';
 $lang['SetFRChampsTNJ']='Tournoi National Jeunes';
 $lang['SetFRChampsVet']='Championnat Vétérans';
 $lang['SetFRCoupeFrance']='Championnat de France Adulte';
-$lang['SetFRD12023']='Championnat D1';
 $lang['SetFRFinalsD2']='Finales France D2';
 $lang['SetFRFinDRD2']='Finales des DR';
 $lang['SetFrSelectif']='Sélectif';

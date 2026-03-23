@@ -22,7 +22,7 @@ if(empty($CardType)) $CardType='A';
 if(empty($CardNumber)) $CardNumber=0;
 
 if(empty($FIELDS)) {
-	$FIELDS="EnId, IFNULL(zextra.EdExtra,EnCode) as Bib, EnTournament, ToCode, ToName, ToWhere, ToWhenFrom, ToWhenTo, ToCategory,
+	$FIELDS="EnId, IFNULL(zextra.EdExtra,EnCode) as Bib, EnIocCode as EnIocCode, EnTournament, ToCode, ToName, ToWhere, ToWhenFrom, ToWhenTo, ToCategory,
 		EnName AS Name, upper(EnFirstName) AS FirstName, EnName as GivCamel, upper(EnName) as GivCaps, EnFirstName as FamCamel, upper(EnFirstName) AS FamCaps,
 		QuSession AS Session, SesName,QuSubClassRank as SubclassRank,
 		c.CoId, c.CoCode AS NationCode, c.CoName AS Nation, upper(c.CoName) as NationCaps, 

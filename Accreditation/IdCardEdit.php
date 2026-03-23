@@ -308,6 +308,8 @@ $Select.='<option value="Club3">'.get_text('Club3', 'BackNumbers').'</option>';
 $Select.='<option value="Flag">'.get_text('Flag', 'BackNumbers').'</option>';
 // Image
 $Select.='<option value="Image">'.get_text('Image', 'BackNumbers').'</option>';
+// Image
+$Select.='<option value="ImageUrl">'.get_text('ImageUrl', 'BackNumbers').'</option>';
 // ImageSvg
 $Select.='<option value="ImageSvg">'.get_text('ImageSvg', 'BackNumbers').'</option>';
 // RandomImage
