@@ -264,10 +264,15 @@ switch($TourType) {
 		CreateTargetFace($TourId, 1, '~Default', '%', '1',  5, 122, 5, 122, 5, 122);
 		break;
 	case 6:
-		CreateTargetFace($TourId, 1, '~Default', 'REG-^R|^B', '1', 2, 40, 2, 40);
+        //для всех классиков кроме U14 - дефолтная тройная
+		CreateTargetFace($TourId, 1, '~Default', 'REG-^R(?!U14).*$', '1', 2, 40, 2, 40);
+        //для всех блочников - дефолтная тройная блочная
 		CreateTargetFace($TourId, 2, '~DefaultCO', 'C%', '1', 4, 40, 4, 40);
 		// optional target faces
-		CreateTargetFace($TourId, 3, '~Option1', 'REG-^R|^B', '',  1, 40, 1, 40);
+        //для U14 и баребоу - дефолтная полная
+		CreateTargetFace($TourId, 3, '~Option1', 'REG-^RU14|^B', '1',  1, 40, 1, 40);
+        //альтернатива для всех классиков - полная мишень
+        CreateTargetFace($TourId, 4, '~Option2', 'R%', '',  1, 40, 1, 40);
 		break;
 	case 7:
 		CreateTargetFace($TourId, 1, '~Default', 'REG-^R|^B', '1', 2, 60, 2, 60);

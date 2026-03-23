@@ -80,16 +80,16 @@ function getEventTitleSuffix(string $classWithDivision, $tournamentType): ?strin
             $eventDescriptions['RU21W']='КЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['RU18M']='КЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['RU18W']='КЛ - 18 м (30+30 выстрелов) + финал';
-            $eventDescriptions['RU14M']='КЛ - 18 м (30+30 выстрелов) + финал';
-            $eventDescriptions['RU14W']='КЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['RU14M']='КЛ - 12 м (30+30 выстрелов)';
+            $eventDescriptions['RU14W']='КЛ - 12 м (30+30 выстрелов)';
             $eventDescriptions['CM']='БЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['CW']='БЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['CU21M']='БЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['CU21W']='БЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['CU18M']='БЛ - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['CU18W']='БЛ - 18 м (30+30 выстрелов) + финал';
-            $eventDescriptions['CU14M']='БЛ - 18 м (30+30 выстрелов) + финал';
-            $eventDescriptions['CU14W']='БЛ - 18 м (30+30 выстрелов) + финал';
+            $eventDescriptions['CU14M']='БЛ - 12 м (30+30 выстрелов)';
+            $eventDescriptions['CU14W']='БЛ - 12 м (30+30 выстрелов)';
             $eventDescriptions['BM']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['BW']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
             $eventDescriptions['BU21M']='КЛ - бесприцельный - 18 м (30+30 выстрелов) + финал';
@@ -270,6 +270,11 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
         'EvCheckGolds' => 0,
         'EvCheckXNines' => 0,
     ];
+    $OptionsForU14 = $Options;
+    if ($SubRule == "4") {
+        $OptionsForU14['EvFinalFirstPhase'] = 0;
+        $OptionsForU14['EvDistance']=$DistanceU15;
+    }
 	switch($SubRule) {
 		case '1':
 		case '4':
@@ -292,9 +297,10 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
             setEventQualificationTableSuffix($TourId, $TourType,'RU18W');
             if($allowU15) {
                 $Options['EvDistance']=$DistanceU15;
-                CreateEventNew($TourId, 'RU14M', getEventName('RU14M') ?? 'Recurve Under 14 Men', $i++, $Options);
+                //для соревнований на 18м в зале создаем эвенты финалов с другими настройками
+                CreateEventNew($TourId, 'RU14M', getEventName('RU14M') ?? 'Recurve Under 14 Men', $i++, $TourType == "6" ? $OptionsForU14 : $Options);
                 setEventQualificationTableSuffix($TourId, $TourType,'RU14M');
-                CreateEventNew($TourId, 'RU14W', getEventName('RU14W') ?? 'Recurve Under 14 Women', $i++, $Options);
+                CreateEventNew($TourId, 'RU14W', getEventName('RU14W') ?? 'Recurve Under 14 Women', $i++, $TourType == "6" ? $OptionsForU14 : $Options);
                 setEventQualificationTableSuffix($TourId, $TourType,'RU14W');
             }
             if($SubRule==1) {
@@ -325,9 +331,10 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
             setEventQualificationTableSuffix($TourId, $TourType,'CU18W');
             if($allowU15) {
                 $Options['EvDistance']=$DistanceU15;
-                CreateEventNew($TourId, 'CU14M', getEventName('CU14M') ?? 'Compound Under 14 Men', $i++, $Options);
+                //для соревнований на 18м в зале создаем эвенты финалов с другими настройками
+                CreateEventNew($TourId, 'CU14M', getEventName('CU14M') ?? 'Compound Under 14 Men', $i++, $TourType == "6" ? $OptionsForU14 : $Options);
                 setEventQualificationTableSuffix($TourId, $TourType,'CU14M');
-                CreateEventNew($TourId, 'CU14W', getEventName('CU14W') ?? 'Compound Under 14 Women', $i++, $Options);
+                CreateEventNew($TourId, 'CU14W', getEventName('CU14W') ?? 'Compound Under 14 Women', $i++, $TourType == "6" ? $OptionsForU14 : $Options);
                 setEventQualificationTableSuffix($TourId, $TourType,'CU14W');
             }
             if($SubRule==1) {
@@ -358,9 +365,10 @@ function CreateStandardEvents($TourId, $SubRule, $TourType) {
                 setEventQualificationTableSuffix($TourId, $TourType,'BU18W');
                 if($allowU15) {
                     $Options['EvDistance']=$DistanceU15B;
-                    CreateEventNew($TourId, 'BU14M', getEventName('BU14M') ?? 'Barebow Under 14 Men', $i++, $Options);
+                    //для соревнований на 18м в зале создаем эвенты финалов с другими настройками
+                    CreateEventNew($TourId, 'BU14M', getEventName('BU14M') ?? 'Barebow Under 14 Men', $i++, $TourType == "6" ? $OptionsForU14 : $Options);
                     setEventQualificationTableSuffix($TourId, $TourType,'BU14M');
-                    CreateEventNew($TourId, 'BU14W', getEventName('BU14W') ?? 'Barebow Under 14 Women', $i++, $Options);
+                    CreateEventNew($TourId, 'BU14W', getEventName('BU14W') ?? 'Barebow Under 14 Women', $i++, $TourType == "6" ? $OptionsForU14 : $Options);
                     setEventQualificationTableSuffix($TourId, $TourType,'BU14W');
                 }
                 if($SubRule==1) {
