@@ -106,7 +106,7 @@ function isIndividualWinnerIsKnown($competition, $event = null): bool
     //если мы хотим проверить для соревнования в целом - поищем такую группу, у которой есть финалы и определен их победитель
     if ($event === null) {
         $query = "select count(1) WinnerKnown from Finals f
-                    left join Events e on f.FinEvent = e.EvCode
+                    left join Events e on f.FinEvent = e.EvCode and e.EvTournament = f.FinTournament
                     where FinWinLose = 1
                     and e.EvFinalFirstPhase != '0'
                     and FinMatchNo in (0, 1)
@@ -120,7 +120,7 @@ function isIndividualWinnerIsKnown($competition, $event = null): bool
 
         //если мы не нашли такой группы - поищем такую группу, у которой финалов нет
         $query = "select count(1) WinnerKnown from Finals f
-                    left join Events e on f.FinEvent = e.EvCode
+                    left join Events e on f.FinEvent = e.EvCode and e.EvTournament = f.FinTournament
                     where e.EvFinalFirstPhase = '0'
                     and FinTournament = " . StrSafe_DB($competition->ToId);
         $resultSet = safe_r_SQL($query);
@@ -149,12 +149,12 @@ function isTeamWinnerIsKnown($competition, $event = null): bool
 {
     //если мы хотим проверить для соревнования в целом - поищем такую группу, у которой есть финалы и определен их победитель
     if ($event === null) {
-        $query = "select count(1) WinnerKnown from TeamFinals f
-                    left join Events e on f.FinEvent = e.EvCode
-                    where TfWinLose = 1
+        $query = "select count(1) WinnerKnown from TeamFinals tf
+                    left join Events e on tf.TfEvent = e.EvCode and tf.TfTournament = e.EvTournament
+                    where tf.TfWinLose = 1
                     and e.EvFinalFirstPhase != '0'
-                    and TfMatchNo in (0, 1)
-                    and TfTournament = " . StrSafe_DB($competition->ToId);
+                    and tf.TfMatchNo in (0, 1)
+                    and tf.TfTournament = " . StrSafe_DB($competition->ToId);
         $resultSet = safe_r_SQL($query);
         $data = safe_fetch($resultSet);
 
@@ -164,9 +164,9 @@ function isTeamWinnerIsKnown($competition, $event = null): bool
 
         //если мы не нашли такой группы - поищем такую группу, у которой финалов нет
         $query = "select count(1) WinnerKnown from TeamFinals tf
-                    left join Events e on tf.TfEvent = e.EvCode
+                    left join Events e on tf.TfEvent = e.EvCode and tf.TfTournament = e.EvTournament
                     where e.EvFinalFirstPhase = '0'
-                    and TfTournament = " . StrSafe_DB($competition->ToId);
+                    and tf.TfTournament = " . StrSafe_DB($competition->ToId);
         $resultSet = safe_r_SQL($query);
         $data = safe_fetch($resultSet);
 
@@ -543,7 +543,7 @@ function getCompetitionDetailsHtml($competition): string
     }
 
     //финалы
-    if (isIndividualBracketsBuilt($competition) || isTeamBracketsBuilt($competition) || isIndividualWinnerIsKnown($competition) || isTeamWinnerIsKnown($competition)) {
+    if (isAthleteTargetsAssigned($competition) && (isIndividualBracketsBuilt($competition) || isTeamBracketsBuilt($competition) || isIndividualWinnerIsKnown($competition) || isTeamWinnerIsKnown($competition))) {
         $result .= '<i id="toggleFinals_' . $competition->ToId . '" class="l2 fa-solid fa-caret-right" onclick="toggle(\'toggleFinals_\', \'finals_\', ' . $competition->ToId . ')"></i>
             <span class="resultsGroupHeader" onclick="toggle(\'toggleFinals_\', \'finals_\', ' . $competition->ToId . ')">' . getTextAtCompetitionLanguage('CompetitionResults', $competition) . '</span>';
         $result .= '<div class="results display-none" id="finals_' . $competition->ToId . '">';
