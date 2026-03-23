@@ -217,7 +217,7 @@ if($field) {
 								and ShootClass.ClTournament=EnTournament 
 								and (ShootClass.ClDivisionsAllowed='' or find_in_set(DivId, ShootClass.ClDivisionsAllowed)) 
 								and (ShootClass.ClSex=-1 or ShootClass.ClSex=EnSex)
-								and (EnDob=0 or year(ToWhenTo)-year(EnDob) between ShootClass.ClAgeFrom and ShootClass.ClAgeTo)
+								and (EnDob=0 or year(ToWhenTo)-year(EnDob) between ShootClass.ClAgeFrom and ShootClass.ClAgeTo or find_in_set(Enclass,AgeClass.ClValidClass))
 							where EnId=$ID";
 						$q=safe_r_sql($SQL);
 						if($r=safe_fetch($q)) {

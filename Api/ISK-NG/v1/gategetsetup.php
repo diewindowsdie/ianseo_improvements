@@ -12,7 +12,7 @@ $regexpList = array();
 $q=safe_r_sql("select IceContent, ToId, ToCode, ToName
     from IdCardElements 
     inner join Tournament on ToId=IceTournament 
-    where IceType IN ('AthQrCode','AthBarCode') and IceTournament in (".implode(',', array_keys($Options)).")");
+    where IceType='AthQrCode' and IceCardType='A' and IceTournament in (".implode(',', array_keys($Options)).")");
 while ($r = safe_fetch($q)) {
     $replacements = array(
         '\\{ENCODE\\}' => '(.+?)',

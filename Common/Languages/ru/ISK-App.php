@@ -21,6 +21,7 @@ $lang['MainWinner']='ПОБЕДИТЕЛЬ';
 $lang['ScorecardTarget']='Миш.';
 $lang['ScoringDeleteArrow']='Удалить попадание';
 $lang['ScoringDeleteEnd']='Очистить серию';
+$lang['ScoringDeleteEndConfirmMessage']='Вы действительно хотите удалить все стрелы в серии?';
 $lang['SettingsChooseValue']='Выберите значение';
 $lang['SettingsCompetitionType']='Тип соревнования';
 $lang['SettingsConnectionCategory']='Подключение';

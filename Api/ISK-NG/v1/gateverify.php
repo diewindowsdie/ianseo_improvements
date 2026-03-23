@@ -7,7 +7,7 @@ if(empty($Options)) {
     return;
 }
 
-$q=safe_r_sql("select IceContent, ToCode from IdCardElements inner join Tournament on ToId=IceTournament where IceType IN ('AthQrCode') and IceTournament in (".implode(',', array_keys($Options)).")");
+$q=safe_r_sql("select IceContent, ToCode from IdCardElements inner join Tournament on ToId=IceTournament where IceType='AthQrCode' and IceCardType='A' and IceTournament in (".implode(',', array_keys($Options)).")");
 $regexpList = array();
 while ($r = safe_fetch($q)) {
     $RegExp = preg_quote('{ENCODE}-{DIVISION}-{CLASS}', '/');
@@ -47,11 +47,11 @@ $q=safe_r_sql($qEntry);
 if($r=safe_fetch($q)) {
     $Template=array(
         'key' => '',
-        'enCode' => '',
-        'givName' => '',
-        'famName' => '',
-        'coCode' => '',
-        'coName' => '',
+        'entryCode' => '',
+        'givenName' => '',
+        'familyName' => '',
+        'countryCode' => '',
+        'countryName' => '',
         'caption' => '',
         'status' => '',
         'direction' => 0,
@@ -171,11 +171,11 @@ if($r=safe_fetch($q)) {
     if(array_key_exists($r->ToCode,$regexpList)) {
         $Template['key'] = $r->ToCode . '|' . $r->AthCode . ($regexpList[$r->ToCode]["country"] != -1 ? '|' . $r->CoCode : '') . ($regexpList[$r->ToCode]["division"] != -1 ? '|' . $r->DivId : '');
     }
-    $Template['enCode']=$r->AthCode;
-    $Template['famName']=$r->EnFirstName;
-    $Template['givName']=$r->EnName;
-    $Template['coCode']=$r->CoCode;
-    $Template['coName']=$r->CoName;
+    $Template['entryCode']=$r->AthCode;
+    $Template['familyName']=$r->EnFirstName;
+    $Template['givenName']=$r->EnName;
+    $Template['countryCode']=$r->CoCode;
+    $Template['countryName']=$r->CoName;
     $Template['caption']=$Caption;
     $Template['status']=$status;
     $Template['zones']=$zones;
@@ -183,8 +183,7 @@ if($r=safe_fetch($q)) {
 
 
 
-    $Template['hash'] = md5($Template['enCode'].$Template['famName'].$Template['givName'].$Template['coCode'].$Template['coName'].$Template['caption'].implode(',',$Template['zones']).$Template['extras']);
-    $tmpList[$Template['key']]=$Template;
+    $Template['hash'] = md5($Template['entryCode'].$Template['familyName'].$Template['givenName'].$Template['countryCode'].$Template['countryName'].$Template['caption'].implode(',',$Template['zones']).$Template['extras']);
 
 }
 
@@ -194,9 +193,7 @@ $res = array(
     'apiVersion' => $req->apiVersion,
     'device' => $req->device,
     'id' => $req->id,
-    'status' => 999,
-    'direction' => 999,
-    'participant' => array_values($tmpList)
+    'participant' => $Template
 );
 
 function CheckStatus($r, $EnId, $Options) {

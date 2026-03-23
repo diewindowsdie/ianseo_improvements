@@ -309,6 +309,7 @@ $lang['EventAccess']='Učešće takmičara na Pojedinačnim / Ekipnim etapama';
 $lang['EventCodeDeclared']='Internet kod etape';
 $lang['EventCreationCancellation']='Kreiraj i izbriši događaje na osnovu takmičara';
 $lang['EventDetails']='$a[0] Ruku po $a[1] strijela + $a[2] SO';
+$lang['EventDetailsShort']='$a[0] ruku po $a[1] strijele';
 $lang['Events']='Etape';
 $lang['EventType-6']='Shoot Off';
 $lang['EventWillNotRecreated']='(Ukoliko promijenite vrstu takmičenja kategorije/stilovi i sve podrazumijevane etape neće biti ponovno generisane)';

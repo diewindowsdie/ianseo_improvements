@@ -184,7 +184,6 @@ $lang['SetFRChampsScratchR']='Campionats Recorbat Esdeveniment Simple';
 $lang['SetFRChampsTNJ']='Campionat Nacional Menors (FFTA)';
 $lang['SetFRChampsVet']='Campionats Veterans';
 $lang['SetFRCoupeFrance']='Copa de França';
-$lang['SetFRD12023']='Campionat D1 / 2023';
 $lang['SetFRFinalsD2']='Finales France D2';
 $lang['SetFRFinDRD2']='Finals DR/D2 (FFTA)';
 $lang['SetFrSelectif']='Selectif';

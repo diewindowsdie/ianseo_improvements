@@ -7,8 +7,8 @@
 
 	if(isset($_REQUEST['Event']) AND is_array($_REQUEST['Event'])) {
         foreach($_REQUEST['Event'] as $Event) {
-            if (preg_match("/^[A-Z\-\_0-9]+_[0,1]_[1,2,3]$/i", $Event)) {
-                list($tmpEvent, $tmpTeam, $tmpEventType) = explode('_', $Event);
+            if (preg_match("/^[A-Z\-\_0-9]+|[0,1]|[1,2,3]$/i", $Event)) {
+                list($tmpEvent, $tmpTeam, $tmpEventType) = explode('|', $Event);
                 $MyQuery = "UPDATE Events "
                         . "SET EvRunning=IF(EvRunning!=" . $tmpEventType . "," . $tmpEventType . ",0) "
                         . "WHERE EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvCode=" . StrSafe_DB($tmpEvent) . " AND EvTeamEvent=" . StrSafe_DB($tmpTeam);
@@ -42,19 +42,19 @@
 <table class="Tabella" style="width: 100%; align: center;">
 <tr><th class="Title" colspan="8"><?php print get_text('RunningEvents','Tournament'); ?></th></tr>
 <?php
-$MyQuery ="(select IndEvent as Event, '0_1' as What, MIN(QuHits) as MinHits, MAX(QuHits) as MaxHits
+$MyQuery ="(select IndEvent as Event, '0|1' as What, MIN(QuHits) as MinHits, MAX(QuHits) as MaxHits
 	FROM Entries
 	INNER JOIN Qualifications ON EnId=QuId
 	INNER JOIN Individuals ON EnId=IndId
 	WHERE EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND IndRank!=0 AND IndIrmType=0
 	GROUP BY Event, What)
 	UNION ALL
-	(select TeEvent as Event, '1_1' as What, MIN(TeHits) as MinHits, MAX(TeHits) as MaxHits
+	(select TeEvent as Event, '1|1' as What, MIN(TeHits) as MinHits, MAX(TeHits) as MaxHits
 	FROM Teams
 	WHERE TeTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND TeFinEvent=1 AND TeRank!=0
 	GROUP BY Event, What)
 	UNION ALL
-	(select ElEventCode as Event, CONCAT('0_',ElElimPhase+2) as What, MIN(ElHits) as MinHits, MAX(ElHits) as MaxHits
+	(select ElEventCode as Event, CONCAT('0|',ElElimPhase+2) as What, MIN(ElHits) as MinHits, MAX(ElHits) as MaxHits
 	FROM Eliminations
 	WHERE ElTournament=" . StrSafe_DB($_SESSION['TourId']) . "  AND ElRank!=0
 	GROUP BY Event, What)
@@ -62,7 +62,7 @@ $MyQuery ="(select IndEvent as Event, '0_1' as What, MIN(QuHits) as MinHits, MAX
 $ResultRs = safe_r_sql($MyQuery);
 $ArrowNoArray=array();
 while($arrRow=safe_fetch($ResultRs))
-	$ArrowNoArray[$arrRow->Event . "_" . $arrRow->What] = array($arrRow->MinHits,$arrRow->MaxHits);
+	$ArrowNoArray[$arrRow->Event . "|" . $arrRow->What] = array($arrRow->MinHits,$arrRow->MaxHits);
 
 $MyQuery = "SELECT DISTINCT EvCode, EvTeamEvent, EvEventName, EvRunning, EvElim1, EvElim2, EvFinalPrintHead as PrintHeader "
 	. "FROM Events "
@@ -84,15 +84,16 @@ if(safe_num_rows($ResultRs))
 		echo '<td class="w-35"><b>' . $MyRow->EvCode . '</b> - ' . $MyRow->EvEventName .  ' (' . ($MyRow->EvTeamEvent==0 ? get_text('Individual') : get_text('Team'))  . ')</td>';
 		echo '<td class="w-20">' . $MyRow->PrintHeader . '</td>';
 		echo '<td class="w-5 Center' . ($MyRow->EvRunning == 1 ? ' yellow' : '') . '">';
-		if(!empty($ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_1"]))
-			echo $ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_1"][0] . ($ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_1"][0]!=$ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_1"][1] ? " - ". $ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_1"][1]:"");
+		if(!empty($ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|1"]))
+			echo $ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|1"][0] . ($ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|1"][0]!=$ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|1"][1] ? " - ". $ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|1"][1]:"");
 		else
 			echo '&nbsp;';
 		echo '</td>';
-		echo '<td class="w-10 Center' . ($MyRow->EvRunning == 1 ? ' yellow' : '') . '" ' .
-            ((($ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_1"][0]==$ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_1"][1] AND $MyRow->EvRunning == 1) OR ($ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_1"][0]!=$ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_1"][1] AND $MyRow->EvRunning == 0)) ? 'refQ="'.$MyRow->EvCode . '_' . $MyRow->EvTeamEvent . '_1"' : '') .
-        '>';
-		echo '<a href="' . $_SERVER['PHP_SELF']. '?Event[]=' . $MyRow->EvCode . '_' . $MyRow->EvTeamEvent . '_1">';
+		echo '<td class="w-10 Center' . ($MyRow->EvRunning == 1 ? ' yellow' : '') . '" ';
+        if(!empty($ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|1"]))
+            echo ((($ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|1"][0]==$ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|1"][1] AND $MyRow->EvRunning == 1) OR ($ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|1"][0]!=$ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|1"][1] AND $MyRow->EvRunning == 0)) ? 'refQ="'.$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . '|1"' : '');
+        echo '>';
+		echo '<a href="' . $_SERVER['PHP_SELF']. '?Event[]=' . $MyRow->EvCode . "|" . $MyRow->EvTeamEvent . '|1">';
 		if($MyRow->EvRunning == 1)
 			echo get_text('RunningEv','Tournament');
 		else
@@ -100,14 +101,14 @@ if(safe_num_rows($ResultRs))
  		echo '</a>';
 		echo '</td>';
 		echo '<td class="w-5 Center' . ($MyRow->EvRunning == 2 ? ' yellow' : '') . '">';
-		if(!empty($ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_2"]))
-			echo $ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_2"][0] . ($ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_2"][0]!=$ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_2"][1] ? " - ". $ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_2"][1]:"");
+		if(!empty($ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|2"]))
+			echo $ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|2"][0] . ($ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|2"][0]!=$ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|2"][1] ? " - ". $ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|2"][1]:"");
 		else
 			echo '&nbsp;';
 		echo '</td>';
 		echo '<td class="w-10 Center' . ($MyRow->EvRunning == 2 ? ' yellow' : '') . '">';
 		if($MyRow->EvElim1) {
-			echo '<a href="' . $_SERVER['PHP_SELF']. '?Event[]=' . $MyRow->EvCode . '_' . $MyRow->EvTeamEvent . '_2">';
+			echo '<a href="' . $_SERVER['PHP_SELF']. '?Event[]=' . $MyRow->EvCode . "|" . $MyRow->EvTeamEvent . '|2">';
 			if($MyRow->EvRunning == 2)
 				echo get_text('RunningEv','Tournament');
 			else
@@ -118,15 +119,15 @@ if(safe_num_rows($ResultRs))
 			echo '&nbsp;';
 		echo '</td>';
 		echo '<td class="w-5 Center' . ($MyRow->EvRunning == 3 ? ' yellow' : '') . '">';
-		if(!empty($ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_3"]))
-			echo $ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_3"][0] . ($ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_3"][0]!=$ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_3"][1] ? " - ". $ArrowNoArray[$MyRow->EvCode . "_" . $MyRow->EvTeamEvent . "_3"][1]:"");
+		if(!empty($ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|3"]))
+			echo $ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|3"][0] . ($ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|3"][0]!=$ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|3"][1] ? " - ". $ArrowNoArray[$MyRow->EvCode . "|" . $MyRow->EvTeamEvent . "|3"][1]:"");
 		else
 			echo '&nbsp;';
 		echo '</td>';
 		echo '<td class="w-10 Center' . ($MyRow->EvRunning == 3 ? ' yellow' : '') . '">';
 		if($MyRow->EvElim2)
 		{
-			echo '<a href="' . $_SERVER['PHP_SELF']. '?Event[]=' . $MyRow->EvCode . '_' . $MyRow->EvTeamEvent . '_3">';
+			echo '<a href="' . $_SERVER['PHP_SELF']. '?Event[]=' . $MyRow->EvCode . "|" . $MyRow->EvTeamEvent . '|3">';
 			if($MyRow->EvRunning == 3)
 				echo get_text('RunningEv','Tournament');
 			else

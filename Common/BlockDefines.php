@@ -90,7 +90,7 @@ if($CFG->USERAUTH) {
     define ('AuthModule', true);
 } else {
     define ('AuthModule', false);
-    function isAuthEnabled() {return array(0,1);}
+    function isAuthEnabled($ToCode='') {return array(0,1);}
     function authActualACL($authEnabled, &$acl) {}
     function authHasACL($authEnabled, $feature, $level, $toCode) {return null;}
     function authCheckACL($authEnabled, $checkCompAcl, $feature, $subFeature, $level, $toCode) {return null;}
@@ -145,14 +145,17 @@ function getBlocksToSet() {
 	return $ToSet;
 }
 
-function actualACL() {
+function actualACL($ToId=0) {
     global $listACL, $CFG;
     // in first installation no DB is configured!
     if(defined('EmptyDbName') and EmptyDbName) {
         return array_fill(0, count($listACL), AclReadWrite);
     }
+    if(!$ToId) {
+        $ToId = intval($_SESSION['TourId']??0);
+    }
 
-    $lockEnabled = getModuleParameter("ACL", "AclEnable", "00");
+    $lockEnabled = getModuleParameter("ACL", "AclEnable", "00", $ToId);
     list($authEnabled, $checkCompAcl) = isAuthEnabled();
     $ip = $_SERVER["REMOTE_ADDR"];
     if($ip == '127.0.0.1' OR $ip == '::1' OR in_array($ip,$CFG->ACLExcluded) OR ($lockEnabled[0] == "0" and $authEnabled == 0)) {
@@ -161,7 +164,7 @@ function actualACL() {
         $acl = array_fill(0, count($listACL), AclNoAccess);
         authActualACL($authEnabled, $acl);
         if($lockEnabled and $checkCompAcl) {
-            $Sql = "SELECT AclDtFeature, AclDtLevel FROM AclDetails WHERE AclDtTournament=" . intval($_SESSION['TourId']??0) . " AND AclDtIP='{$ip}'";
+            $Sql = "SELECT AclDtFeature, AclDtLevel FROM AclDetails WHERE AclDtTournament={$ToId} AND AclDtIP='{$ip}'";
             if((!isset($_SESSION['TourId']) or ($_SESSION['TourId']??0)<0) and !empty($_SESSION['AUTH_COMP'])) {
                 $AuthFilter = array();
                 $compList = array();
@@ -208,11 +211,11 @@ function checkACL($feature, $level, $redirect=true, $TourId=0) {
     return checkFullACL($feature, '', $level, $redirect, $TourId);
 }
 
-function hasFullACL($feature, $subFeature, $level, $TourId=0) {
-    return (checkFullACL($feature, $subFeature, $level, null, $TourId) >= $level);
+function hasFullACL($feature, $subFeature, $level, $TourId=0, $ip=null) {
+    return (checkFullACL($feature, $subFeature, $level, null, $TourId, $ip) >= $level);
 }
 
-function checkFullACL($feature, $subFeature, $level, $redirect=true, $TourId=0) {
+function checkFullACL($feature, $subFeature, $level, $redirect=true, $TourId=0, $ip=null) {
     global $INFO, $CFG;
     if(!is_array($feature)) {
         $feature = array($feature);
@@ -230,7 +233,7 @@ function checkFullACL($feature, $subFeature, $level, $redirect=true, $TourId=0) 
     if($lockEnabled[0] == "1") {
         $INFO->ACLEnabled = true;
     }
-    list($authEnabled, $checkCompAcl) = isAuthEnabled();
+    list($authEnabled, $checkCompAcl) = isAuthEnabled($TourCode);
     if($authEnabled == 1) {
         $INFO->ACLEnabled = true;
         $INFO->ACLAuthEnabled = true;
@@ -238,7 +241,9 @@ function checkFullACL($feature, $subFeature, $level, $redirect=true, $TourId=0) 
             $lockEnabled[0] = "1";
         }
     }
-    $ip = $_SERVER["REMOTE_ADDR"];
+    if(is_null($ip)) {
+        $ip = $_SERVER["REMOTE_ADDR"];
+    }
     if($ip == '127.0.0.1' OR $ip == '::1' OR in_array($ip,$CFG->ACLExcluded)) {
         return AclReadWrite;
     } else {

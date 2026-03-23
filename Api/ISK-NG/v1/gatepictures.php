@@ -9,7 +9,7 @@ if(empty($Options)) {
 
 // get all the accreditation QRcodes for this competition...
 $regexpList = array();
-$q=safe_r_sql("select IceContent, ToCode from IdCardElements inner join Tournament on ToId=IceTournament where IceType IN ('AthQrCode') and IceTournament in (".implode(',', array_keys($Options)).")");
+$q=safe_r_sql("select IceContent, ToCode from IdCardElements inner join Tournament on ToId=IceTournament where IceType='AthQrCode' and IceCardType='A' and IceTournament in (".implode(',', array_keys($Options)).")");
 while ($r = safe_fetch($q)) {
     $replacements = array(
         '\\{ENCODE\\}' => '(.+?)',

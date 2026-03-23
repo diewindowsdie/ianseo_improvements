@@ -182,7 +182,6 @@ $lang['SetFRChampsScratchR']='Event Tunggal Kejuaraan Recurve';
 $lang['SetFRChampsTNJ']='Tournoi National Jeunes';
 $lang['SetFRChampsVet']='Kejuaraan Master';
 $lang['SetFRCoupeFrance']='Piala Perancis';
-$lang['SetFRD12023']='Championnat D1 / 2023';
 $lang['SetFRFinalsD2']='Finales France D2';
 $lang['SetFRFinDRD2']='Final DR/D2';
 $lang['SetFrSelectif']='Selectif';
