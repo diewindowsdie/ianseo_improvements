@@ -175,8 +175,8 @@ foreach($PdfData->rankData['sections'] as $section) {
 			}
 //Risultati  delle varie fasi
             //пробежимся по этапам, которые были в группе, а не которые были у спортсмена - для 3Д это важно
-            foreach($section['meta']['fields']['finals'] as $k=>$v)
-			{
+            $cntPhases=0;
+            foreach($section['meta']['fields']['finals'] as $k=>$v) {
                 if (!isset($item['finals'][$k])) {
                     //если у спортсмена этапа нет - он либо уже вылетел раньше, либо это матч за золото и у них нет этапа "бронза" - код фазы "1"
                     if ($k != 1) {
@@ -185,31 +185,14 @@ foreach($PdfData->rankData['sections'] as $section) {
                     continue;
                 }
                 $v = $item['finals'][$k];
+                $cntPhases++;
 				if($v['tie']==2) {
-                    $pdf->Cell(15, 4, $PdfData->Bye, 1, 0, 'L', 0);
-                    $spaceUsed += 15;
-                }
-				else
-				{
-					if($k==4 && $section['meta']['matchMode']!=0 && $item['rank']>=5)
-					{
-                        $pdf->Cell(strlen($v['tiebreak'])>0 ? 8 : 15, 4, $v['setScore'] . '(' . $v['score'] . ')', (strlen($v['tiebreak'])>0 ? 'TB' : 'RTB'), 0, 'L', 0);
-                        $spaceUsed += strlen($v['tiebreak'])>0 ? 8 : 15;
-                        if(strlen($v['tiebreak'])>0) {
-                            $pdf->Cell(7, 4, get_text('ShotOffShort', 'Tournament') . ' ' . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RTB', 0, 'L', 0);
-                            $spaceUsed += 7;
-                        }
-					}
-					else
-					{
-						$pdf->Cell(15 - (strlen($v['tiebreak'])>0 ? 7 : 0), 4, ($section['meta']['matchMode']==0 ? $v['score'] : $v['setScore']) . ($v['tie']==1 && strlen($v['tiebreak'])==0 ? '*' : ''), (strlen($v['tiebreak'])>0 ? 'LTB' : 1), 0, 'L', 0);
-                        $spaceUsed += 15 - (strlen($v['tiebreak'])>0 ? 7 : 0);
-						if(strlen($v['tiebreak'])>0) {
-                            $pdf->Cell(7, 4, get_text('ShotOffShort', 'Tournament') . ' ' . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RTB', 0, 'L', 0);
-                            $spaceUsed += 7;
-                        }
-					}
+                    $pdf->Cell(15, 4, $PdfData->Bye, 1, 0, 'R', 0);
+                } else {
+                    $pdf->Cell(7, 4, (($cntPhases<count($item['finals']) or floatval($v['avgTie'])==0) ? '' : (get_text('ShotOffShort', 'Tournament') . ' ' . ($v['avgTie'] ? number_format($v['avgTie'],3) : str_replace('|', ',', $v['tiebreak'])))), 'LBT', 0, 'R', 0);
+                    $pdf->Cell(8, 4, ($v['avgMatch']? number_format($v['avgMatch'],3, $pdf->NumberDecimalSeparator) : $v['score']) , 'RBT', 0, 'R', 0);
 				}
+                $spaceUsed += 15;
 			}
             if ($isIRMStatus) {
                 $pdf->Cell(190 - $spaceUsed, 4, array_values($item['finals'])[count($item['finals']) - 1]['notes'], 1, 0, 'L', 0);
