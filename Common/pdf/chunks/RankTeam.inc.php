@@ -127,41 +127,23 @@ foreach($PdfData->rankData['sections'] as $section) {
                 continue;
             }
 			//Risultati  delle varie fasi
+            $paddings = $pdf->getCellPaddings();
+            $cntPhases=0;
 			foreach($item['finals'] as $k=>$v) {
+                $cntPhases++;
                 if ($v['tie'] == 2) {
-                    $pdf->Cell(15, 4 * $NumComponenti, $PdfData->Bye, 1, 0, 'L', 0);
-                    $spaceUsed += 15;
+                    $pdf->Cell(15, 4*$NumComponenti, $PdfData->Bye, 1, 0, 'R', 0);
                 } else {
-                    $pdf->SetFont($pdf->FontFix, '', 8);
-                    if ($k == 4 && $section['meta']['matchMode'] != 0 && $item['rank'] >= 5) {
-                        $tiebreakScore = false;
-                        if (strlen($v['tiebreak']) > 0) {
-                            $tiebreakScore = true;
-                            $previousX = $pdf->GetX();
-                            $previousY = $pdf->GetY();
-                            $pdf->SetXY($previousX, $previousY + 2 * $NumComponenti);
-
-                            $pdf->Cell(15, 2 * $NumComponenti, get_text('ShotOffShort', 'Tournament') . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RBL', 0, 'R', 0, '', 1, false, 'T', 'T');
-                            $pdf->SetXY($previousX, $previousY);
-                        }
-                        $pdf->Cell(15, $tiebreakScore ? 2 * $NumComponenti : 4 * $NumComponenti, $v['setScore'] . '(' . $v['score'] . ')', ($tiebreakScore ? 'RTL' : 1), 0, 'L', 0, '', 1, false, 'T', $tiebreakScore ? 'B' : 'C');
-                        $spaceUsed += 15;
-                    } else {
-                        $pdf->SetFont($pdf->FontFix, '', 7);
-                        $tiebreakScore = false;
-                        if (strlen($v['tiebreak']) > 0) {
-                            $tiebreakScore = true;
-                            $previousX = $pdf->GetX();
-                            $previousY = $pdf->GetY();
-                            $pdf->SetXY($previousX, $previousY + 2 * $NumComponenti);
-                            $pdf->Cell(15, 2 * $NumComponenti, get_text('ShotOffShort', 'Tournament') . str_replace('|', ',', $v['tiebreak']) . ($v['tie'] == 1 && $v['tiebreak'] == $v['oppTiebreak'] ? '+' : ''), 'RBL', 0, 'R', 0, '', 1, false, 'T', 'T');
-                            $pdf->SetXY($previousX, $previousY);
-                        }
-                        $pdf->Cell(15, $tiebreakScore ? 2 * $NumComponenti : 4 * $NumComponenti, ($section['meta']['matchMode'] == 0 ? $v['score'] : $v['setScore']) . ($k <= 1 && $v['tie'] == 1 && strlen($v['tiebreak']) == 0 ? '*' : ''), ($tiebreakScore ? 'RTL' : 1), 0, 'L', 0, '', 1, false, 'T', $tiebreakScore ? 'B' : 'C');
-                        $spaceUsed += 15;
-                    }
+                    $pdf->setCellPaddings($paddings["L"], $paddings["T"], $paddings["R"], $paddings["B"] + 0.5);
+                    $pdf->Cell(8, 4*$NumComponenti, (($cntPhases<count($item['finals']) or floatval($v['avgTie'])==0) ? '' : (get_text('ShotOffShort', 'Tournament') . ' ' . ($v['avgTie'] ? number_format($v['avgTie'],3) : str_replace('|', ',', $v['tiebreak'])))), '0', 0, 'L', 0, '', 1,false, 'T', 'B');
+                    $pdf->setCellPaddings($paddings["L"], $paddings["T"], $paddings["R"], $paddings["B"]);
+                    $pdf->setX($pdf->GetX() - 8);
+                    $pdf->Cell(15, 4*$NumComponenti, ($v['avgMatch']? number_format($v['avgMatch'],3, $pdf->NumberDecimalSeparator) : $v['score']), 1, 0, 'R', 0);
                 }
+                $spaceUsed += 15;
             }
+            $pdf->setCellPaddings($paddings["L"], $paddings["T"], $paddings["R"], $paddings["B"]);
+
             if ($isIRMStatus) {
                 $pdf->Cell(190 - $spaceUsed, 4*$NumComponenti, array_values($item['finals'])[count($item['finals']) - 1]['notes'], 1, 0, 'L', 0);
             }
