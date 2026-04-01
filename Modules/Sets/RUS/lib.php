@@ -226,7 +226,7 @@ function CreateStandardClasses($TourId, $SubRule, $Type='FITA') {
 }
 
 function CreateStandardEvents($TourId, $SubRule, $TourType) {
-    $Outdoor=($TourType!=6);
+    $Outdoor=(!in_array($TourType,array(6, 1002)));
     $allowBB=(in_array($TourType,array(3,6,7,8,37)));
     $allowU15=(in_array($TourType, [3,6,37]));
 	$TargetR=($Outdoor?5:2);
