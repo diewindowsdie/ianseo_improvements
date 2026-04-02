@@ -73,13 +73,7 @@ $pdf->Cell(190, $titleRowHeight, get_text('StaffOnField', 'Tournament'), 0, 1, '
 $pdf->SetFont($pdf->FontStd, 'B', $fontSize);
 $pdf->setCellPaddings(1.5, 0, 1.5, 0);
 $pdf->Cell(8, $rowHeight, '№', 1, 0, 'L', 1);
-$nameHeader = 'Judge name';
-if (SelectLanguage() == 'ru') {
-    $nameHeader = get_text('FamilyName', 'Tournament') . ', ' .
-        mb_strtolower(get_text('Name', 'Tournament')) . ', ' .
-        mb_strtolower(get_text('LastName', 'Tournament'));
-}
-$pdf->Cell(62, $rowHeight, $nameHeader, 1, 0, 'L', 1);
+$pdf->Cell(62, $rowHeight, get_text('JudgeName', 'Tournament'), 1, 0, 'L', 1);
 $pdf->Cell(55, $rowHeight, get_text('JudgeFunction', 'Tournament'), 1, 0, 'L', 1);
 $pdf->Cell(25, $rowHeight, get_text('JudgeAccreditation', 'Tournament'), 1, 0, 'L', 1);
 $pdf->Cell(40, $rowHeight, get_text('JudgeRegion', 'Tournament'), 1, 1, 'L', 1);

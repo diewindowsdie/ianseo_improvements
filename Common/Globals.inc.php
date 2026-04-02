@@ -171,13 +171,25 @@ function get_text($text, $module='Common', $a=null, $translate=false, $force=fal
 		$_LANG[$lingua][$module]=array();
 		if(!verbose){
 			// carica il fallback (inglese), se esistente!
+            //последний фоллбек - английский язык
 			if(file_exists($file=$CFG->LANGUAGE_PATH . "en/$module.php")) {
 				include($file);
 				$_LANG[$lingua][$module]=$lang;
 			}
 		}
 
-		if(file_exists($file=$CFG->LANGUAGE_PATH . "$lingua/$module.php")) {
+        //если переопределен фоллбек для языка - загрузим его
+        if (file_exists($file=$CFG->LANGUAGE_PATH . $lingua . "/fallback.php")) {
+            $fallbackLanguage = 'en';
+            include($file);
+            if(file_exists($file=$CFG->LANGUAGE_PATH . "$fallbackLanguage/$module.php")) {
+                include($file);
+                $_LANG[$lingua][$module]=array_merge($_LANG[$lingua][$module], $lang);
+            }
+        }
+
+        //и сам выбранный язык
+        if(file_exists($file=$CFG->LANGUAGE_PATH . "$lingua/$module.php")) {
 			include($file);
 			$_LANG[$lingua][$module]=array_merge($_LANG[$lingua][$module], $lang);
 		}

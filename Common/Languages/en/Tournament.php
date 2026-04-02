@@ -632,6 +632,7 @@ $lang['JudgeAccreditation_40']='СС3К';
 $lang['JudgeAccreditation_50']='ЮСС';
 $lang['JudgeAccreditation_60']='Б/К';
 $lang['JudgeFunction']='Function';
+$lang['JudgeName']='Judge name';
 $lang['JudgeRegion']='Region';
 $lang['JudgesSelectionForm']='Judge Selection Form';
 $lang['JudgesSelectionMatches']='Judges - Matches Assignment';

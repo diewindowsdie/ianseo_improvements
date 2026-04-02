@@ -402,6 +402,7 @@ $lang['JudgeAccreditation_40']='СС3К';
 $lang['JudgeAccreditation_50']='ЮСС';
 $lang['JudgeAccreditation_60']='Б/К';
 $lang['JudgeFunction']='Должность';
+$lang['JudgeName']='Фамилия, имя, отчество';
 $lang['JudgeRegion']='Субъект РФ';
 $lang['Jury']='Апелляционное жюри';
 $lang['KeyPress']='Применить Keypad';
