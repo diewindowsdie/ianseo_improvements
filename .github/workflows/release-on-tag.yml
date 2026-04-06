@@ -50,7 +50,7 @@ jobs:
       - name: Generate release notes
         run: |
           if [ -z "${{ steps.vars.outputs.prev_tag }}" ]; then
-            git log --no-merges --pretty=format:"* %s" > release_notes.md
+            git log --no-merges --pretty=format:"* %s;" > release_notes.md
           else
             git log ${{ steps.vars.outputs.prev_tag }}..HEAD \
               --no-merges \
