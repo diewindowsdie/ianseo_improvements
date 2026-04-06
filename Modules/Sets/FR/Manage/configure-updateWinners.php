@@ -2,13 +2,166 @@
 
 require_once(dirname(__FILE__) . '/config.php');
 
-$JSON=array('error'=>1, 'reload'=> 0);
+$JSON=array('error'=>1, 'reload'=> 0, 'msg'=>'');
 
 if(($_REQUEST['item']??'')!='ALLCLUBS' and (!isset($_REQUEST['pos']) or !isset($_REQUEST['cat']) or empty($_REQUEST['item']))) {
 	JsonOut($JSON);
 }
 
 switch($_REQUEST['item']) {
+    case 'GETCOMPETITIONS':
+        $JSON['data']=[];
+        $q=safe_r_SQL("select ToId, ToCode, ToName from Tournament where ToLocRule='{$_SESSION['TourLocRule']}' and ToId != {$_SESSION['TourId']} order by ToWhenTo desc");
+        while($r=safe_fetch($q)) {
+            $JSON['data'][]=[
+                'val'=>$r->ToId,
+                'txt'=>$r->ToCode . ' - ' . $r->ToName,
+            ];
+        }
+        $JSON['error']=0;
+        break;
+    case 'SETCOMPETITIONDISTANCE':
+        $Distance=intval($_REQUEST['day']);
+        $Comp=intval($_REQUEST['comp']);
+        $Bonus=getModuleParameter('FFTA', 'D1Bonus');
+        // load country IDs
+        $CountryCodes=[];
+        $q=safe_r_sql("select CoId, CoCode 
+            from Countries
+            where CoTournament={$_SESSION['TourId']}");
+        while($r=safe_fetch($q)) {
+            $CountryCodes[$r->CoCode]=$r->CoId;
+        }
+        // import the related entries of the competition
+        $SQL="select CoId2, Entries.*
+            from Entries
+            inner join Countries on CoTournament=EnTournament and CoId=EnCountry
+            inner join (select distinct CoId as CoId2, CoCode as CoCode2, EcDivision
+                from Countries
+                inner join Teams on TeCoId=CoId and TeFinEvent=1 and TeTournament=CoTournament
+                inner join EventClass on EcTournament=CoTournament and EcCode=TeEvent and EcTeamEvent=1  
+                where CoTournament={$_SESSION['TourId']}
+            ) comp on CoCode2=CoCode and EcDivision=EnDivision
+            left join (
+                select EnCode as EnCode2
+                from Entries
+                where EnTournament={$_SESSION['TourId']}
+            ) En2 on EnCode2=EnCode
+            where EnTournament=$Comp and EnCode2 is null";
+        $q=safe_r_SQL($SQL);
+        $Values=[];
+        while($r=safe_fetch($q)) {
+            safe_w_sql("insert into Entries set
+                EnTournament={$_SESSION['TourId']}, EnDivision='{$r->EnDivision}', EnClass='{$r->EnClass}', EnSubClass='{$r->EnSubClass}',
+                EnAgeClass='{$r->EnAgeClass}', EnCountry='{$r->CoId2}', EnIocCode='{$r->EnIocCode}',
+                EnCtrlCode='{$r->EnCtrlCode}', EnDob='{$r->EnDob}', EnCode='{$r->EnCode}', EnName='{$r->EnName}', EnFirstName='{$r->EnFirstName}',
+                EnAthlete='{$r->EnAthlete}', EnSex='{$r->EnSex}', EnClassified='{$r->EnClassified}', EnWChair='{$r->EnWChair}', EnSitting='{$r->EnSitting}',
+                EnIndClEvent='{$r->EnIndClEvent}', EnTeamClEvent='{$r->EnTeamClEvent}', EnIndFEvent='{$r->EnIndFEvent}', EnTeamFEvent='{$r->EnTeamFEvent}', EnTeamMixEvent='{$r->EnTeamMixEvent}',
+                EnDoubleSpace='{$r->EnDoubleSpace}', EnPays='{$r->EnPays}', EnStatus='{$r->EnStatus}', EnTargetFace='{$r->EnTargetFace}', EnLueTimeStamp='{$r->EnLueTimeStamp}',
+                EnLueFieldChanged='{$r->EnLueFieldChanged}', EnTimestamp='{$r->EnTimestamp}', EnMainInfoUpdate=0, EnNameOrder='{$r->EnNameOrder}',
+                EnOdfShortname='{$r->EnOdfShortname}', EnTvGivenName='{$r->EnTvGivenName}', EnTvFamilyName='{$r->EnTvFamilyName}', EnTvInitials='{$r->EnTvInitials}'");
+        }
+
+        // enter the team ranking
+        safe_w_SQL("delete from TeamQualificationDistances where TqdDistance=$Distance and TqdTournament={$_SESSION['TourId']}");
+        $RankedItems=[];
+        $RankedEvents=[];
+        // get the list of participants and eventual ranked teams
+        $q=safe_r_sql("select * from RoundRobinParticipants where RrPartTournament={$_SESSION['TourId']} and RrPartEvent in ('FCL','HCL','HCO','FCO') and RrPartTeam=1 and RrPartLevel=1");
+        while($r=safe_fetch($q)) {
+            $RankedItems[$r->RrPartEvent][$r->RrPartParticipant]=$r->RrPartGroupRank;
+        }
+        $SQL="select Teams.*, c2.CoId
+            from Teams
+            inner join Countries c1 on TeCoId=c1.CoId and TeTournament=c1.CoTournament
+            inner join Countries c2 on c2.CoCode=c1.CoCode and c2.CoTournament={$_SESSION['TourId']}
+            inner join Events on EvTournament=TeTournament and EvCode=TeEvent and EvWinnerFinalRank=1
+            where TeTournament=$Comp
+            order by TeEvent, TeRank";
+        $q=safe_r_SQL($SQL);
+        while($r=safe_fetch($q)) {
+            $BonusToTake=$Bonus['16'];
+            switch($r->TeEvent) {
+                case 'DRRH':
+                case 'HCL':
+                    $r->TeEvent='HCL';
+                    if(!isset($RankedItems[$r->TeEvent][$r->CoId])) {
+                        continue 2;
+                    }
+                    if($Distance==3) {
+                        $BonusToTake=$Bonus['8'];
+                        if($RankedItems[$r->TeEvent][$r->CoId]<=8) {
+                            $r->TeEvent='HCLof';
+                        } else {
+                            $r->TeEvent='HCLdn';
+                        }
+                    }
+                    break;
+                case 'DRRF':
+                case 'FCL':
+                    $r->TeEvent='FCL';
+                    if(!isset($RankedItems[$r->TeEvent][$r->CoId])) {
+                        continue 2;
+                    }
+                    if($Distance==3) {
+                        $BonusToTake=$Bonus['8'];
+                        if($RankedItems[$r->TeEvent][$r->CoId]<=8) {
+                            $r->TeEvent='FCLof';
+                        } else {
+                            $r->TeEvent='FCLdn';
+                        }
+                    }
+                    break;
+                case 'DRCH':
+                case 'HCO':
+                    $r->TeEvent='HCO';
+                    if(!isset($RankedItems[$r->TeEvent][$r->CoId])) {
+                        continue 2;
+                    }
+                    if($Distance==3) {
+                        $BonusToTake=$Bonus['8'];
+                        if($RankedItems[$r->TeEvent][$r->CoId]<=8) {
+                            $r->TeEvent='HCOof';
+                        } else {
+                            $r->TeEvent='HCOdn';
+                        }
+                    }
+                    break;
+                case 'DRCF':
+                case 'FCO':
+                    $r->TeEvent='FCO';
+                    if(!isset($RankedItems[$r->TeEvent][$r->CoId])) {
+                        continue 2;
+                    }
+                    $BonusToTake=$Bonus['8'];
+                    break;
+                default:
+                    continue 2;
+            }
+            $RankedEvents[$r->TeEvent]=($RankedEvents[$r->TeEvent]??0)+1;
+
+            $Bon=($BonusToTake[$RankedEvents[$r->TeEvent]]??0);
+            $sql="TqdCoId={$r->CoId}, TqdSubTeam={$r->TeSubTeam}, TqdEvent='{$r->TeEvent}', TqdTournament={$_SESSION['TourId']},
+                TqdDistance={$Distance}, TqdScore={$r->TeScore}, TqdBonus=$Bon,
+                TqdTie1={$r->TeGold}, TqdTie2={$r->TeXnine}, TqdTie3={$r->TeTieBreaker3}, TqdRank={$r->TeRank}, TqdTimeStamp='{$r->TeTimeStamp}'";
+            safe_w_sql("insert into TeamQualificationDistances set $sql on duplicate key update $sql");
+        }
+
+        // reassign the rank
+    require_once('Common/Lib/Obj_RankFactory.php');
+        $options=[
+            'tournament' => $_SESSION['TourId'],
+            'team' => 1,
+            'level' => 1,
+        ];
+        $q=safe_r_SQL("select EvCode from Events where EvTournament={$_SESSION['TourId']} and EvTeamEvent=1");
+        while($r=safe_fetch($q)) {
+            $options['event'] = $r->EvCode;
+            Obj_RankFactory::create('Robin', $options)->calculate();
+        }
+
+        $JSON['error']=0;
+        break;
 	case 'ALLONE':
 		setModuleParameter('FFTA', 'D1AllInOne', intval($_REQUEST['club']));
 		if($_REQUEST['club']) {
@@ -97,7 +250,6 @@ switch($_REQUEST['item']) {
 		if(isset($Bonus[$_REQUEST['cat']][$_REQUEST['pos']])) {
 			$Bonus[$_REQUEST['cat']][$_REQUEST['pos']]=intval($_REQUEST['club']);
 			setModuleParameter('FFTA', 'D1Bonus', $Bonus);
-
 			$JSON['error']=0;
 		}
 		break;
@@ -205,40 +357,60 @@ switch($_REQUEST['item']) {
 						$StartingDatetime=date('Y-m-d H:i:s', strtotime($StartingDatetime." +{$Duration} minutes"));
 					}
 					break;
-				case '3': // rounds 1-15 for FCL, HCL, HCO; rounds 1-7 of level 3 and 4 for FCO
-					for($i=1;$i<=12;$i++) {
-						$items=explode(' ', $StartingDatetime);
-						safe_w_sql("update RoundRobinMatches set RrMatchScheduledDate='{$items[0]}', RrMatchScheduledTime='$items[1]', RrMatchScheduledLength=$Duration
-                         	where RrMatchTournament={$_SESSION['TourId']} and RrMatchEvent!='FCO' and RrMatchTeam=1 and RrMatchLevel=2 and RrMatchGroup=1 and RrMatchRound=$i");
-						$StartingDatetime=date('Y-m-d H:i:s', strtotime($StartingDatetime." +{$Duration} minutes"));
-					}
-					$StartingDatetime=$TourDates['D'.$pos]['date'].' '.$TourDates['D'.$pos]['time'];
-					for($i=1;$i<=7;$i++) {
-						$items=explode(' ', $StartingDatetime);
-						safe_w_sql("update RoundRobinMatches set RrMatchScheduledDate='{$items[0]}', RrMatchScheduledTime='$items[1]', RrMatchScheduledLength=$Duration
+				case '3':
+                    if($_SESSION['TourLocSubRule']=='SetFRD12026') {
+                        // rounds 1-7 for FCLof/dn, HCLof/dn, HCOof/dn;
+                        for($i=1;$i<=7;$i++) {
+                            $items=explode(' ', $StartingDatetime);
+                            safe_w_sql("update RoundRobinMatches set RrMatchScheduledDate='{$items[0]}', RrMatchScheduledTime='$items[1]', RrMatchScheduledLength=$Duration
+                         	where RrMatchTournament={$_SESSION['TourId']} and length(RrMatchEvent)>3 and RrMatchTeam=1 and RrMatchLevel=1 and RrMatchGroup=1 and RrMatchRound=$i");
+                            $StartingDatetime=date('Y-m-d H:i:s', strtotime($StartingDatetime." +{$Duration} minutes"));
+                        }
+
+                        // rounds 1-7 of level 3 for FCO
+                        $StartingDatetime=$TourDates['D'.$pos]['date'].' '.$TourDates['D'.$pos]['time'];
+                        for($i=1;$i<=7;$i++) {
+                            $items=explode(' ', $StartingDatetime);
+                            safe_w_sql("update RoundRobinMatches set RrMatchScheduledDate='{$items[0]}', RrMatchScheduledTime='$items[1]', RrMatchScheduledLength=$Duration
                          	where RrMatchTournament={$_SESSION['TourId']} and RrMatchEvent='FCO' and RrMatchTeam=1 and RrMatchLevel=3 and RrMatchGroup=1 and RrMatchRound=$i");
-						$StartingDatetime=date('Y-m-d H:i:s', strtotime($StartingDatetime." +{$Duration} minutes"));
-					}
-					for($i=1;$i<=5;$i++) {
-						$items=explode(' ', $StartingDatetime);
-						safe_w_sql("update RoundRobinMatches set RrMatchScheduledDate='{$items[0]}', RrMatchScheduledTime='$items[1]', RrMatchScheduledLength=$Duration
-                         	where RrMatchTournament={$_SESSION['TourId']} and RrMatchEvent='FCO' and RrMatchTeam=1 and RrMatchLevel=4 and RrMatchGroup=1 and RrMatchRound=$i");
-						$StartingDatetime=date('Y-m-d H:i:s', strtotime($StartingDatetime." +{$Duration} minutes"));
-					}
-					$StartingDatetime=date('Y-m-d H:i:s', strtotime($TourDates['D'.$pos]['date'].' '.$TourDates['D'.$pos]['time']." +23 hours +30 minutes"));
-					for($i=13;$i<=15;$i++) {
-						$items=explode(' ', $StartingDatetime);
-						safe_w_sql("update RoundRobinMatches set RrMatchScheduledDate='{$items[0]}', RrMatchScheduledTime='$items[1]', RrMatchScheduledLength=$Duration
+                            $StartingDatetime=date('Y-m-d H:i:s', strtotime($StartingDatetime." +{$Duration} minutes"));
+                        }
+                    } else {
+                        // rounds 1-15 for FCL, HCL, HCO; rounds 1-7 of level 3 and 4 for FCO
+                        for($i=1;$i<=12;$i++) {
+                            $items=explode(' ', $StartingDatetime);
+                            safe_w_sql("update RoundRobinMatches set RrMatchScheduledDate='{$items[0]}', RrMatchScheduledTime='$items[1]', RrMatchScheduledLength=$Duration
                          	where RrMatchTournament={$_SESSION['TourId']} and RrMatchEvent!='FCO' and RrMatchTeam=1 and RrMatchLevel=2 and RrMatchGroup=1 and RrMatchRound=$i");
-						$StartingDatetime=date('Y-m-d H:i:s', strtotime($StartingDatetime." +{$Duration} minutes"));
-					}
-					$StartingDatetime=date('Y-m-d H:i:s', strtotime($TourDates['D'.$pos]['date'].' '.$TourDates['D'.$pos]['time']." +23 hours +30 minutes"));
-					for($i=6;$i<=7;$i++) {
-						$items=explode(' ', $StartingDatetime);
-						safe_w_sql("update RoundRobinMatches set RrMatchScheduledDate='{$items[0]}', RrMatchScheduledTime='$items[1]', RrMatchScheduledLength=$Duration
+                            $StartingDatetime=date('Y-m-d H:i:s', strtotime($StartingDatetime." +{$Duration} minutes"));
+                        }
+                        $StartingDatetime=$TourDates['D'.$pos]['date'].' '.$TourDates['D'.$pos]['time'];
+                        for($i=1;$i<=7;$i++) {
+                            $items=explode(' ', $StartingDatetime);
+                            safe_w_sql("update RoundRobinMatches set RrMatchScheduledDate='{$items[0]}', RrMatchScheduledTime='$items[1]', RrMatchScheduledLength=$Duration
+                         	where RrMatchTournament={$_SESSION['TourId']} and RrMatchEvent='FCO' and RrMatchTeam=1 and RrMatchLevel=3 and RrMatchGroup=1 and RrMatchRound=$i");
+                            $StartingDatetime=date('Y-m-d H:i:s', strtotime($StartingDatetime." +{$Duration} minutes"));
+                        }
+                        for($i=1;$i<=5;$i++) {
+                            $items=explode(' ', $StartingDatetime);
+                            safe_w_sql("update RoundRobinMatches set RrMatchScheduledDate='{$items[0]}', RrMatchScheduledTime='$items[1]', RrMatchScheduledLength=$Duration
                          	where RrMatchTournament={$_SESSION['TourId']} and RrMatchEvent='FCO' and RrMatchTeam=1 and RrMatchLevel=4 and RrMatchGroup=1 and RrMatchRound=$i");
-						$StartingDatetime=date('Y-m-d H:i:s', strtotime($StartingDatetime." +{$Duration} minutes"));
-					}
+                            $StartingDatetime=date('Y-m-d H:i:s', strtotime($StartingDatetime." +{$Duration} minutes"));
+                        }
+                        $StartingDatetime=date('Y-m-d H:i:s', strtotime($TourDates['D'.$pos]['date'].' '.$TourDates['D'.$pos]['time']." +23 hours +30 minutes"));
+                        for($i=13;$i<=15;$i++) {
+                            $items=explode(' ', $StartingDatetime);
+                            safe_w_sql("update RoundRobinMatches set RrMatchScheduledDate='{$items[0]}', RrMatchScheduledTime='$items[1]', RrMatchScheduledLength=$Duration
+                         	where RrMatchTournament={$_SESSION['TourId']} and RrMatchEvent!='FCO' and RrMatchTeam=1 and RrMatchLevel=2 and RrMatchGroup=1 and RrMatchRound=$i");
+                            $StartingDatetime=date('Y-m-d H:i:s', strtotime($StartingDatetime." +{$Duration} minutes"));
+                        }
+                        $StartingDatetime=date('Y-m-d H:i:s', strtotime($TourDates['D'.$pos]['date'].' '.$TourDates['D'.$pos]['time']." +23 hours +30 minutes"));
+                        for($i=6;$i<=7;$i++) {
+                            $items=explode(' ', $StartingDatetime);
+                            safe_w_sql("update RoundRobinMatches set RrMatchScheduledDate='{$items[0]}', RrMatchScheduledTime='$items[1]', RrMatchScheduledLength=$Duration
+                         	where RrMatchTournament={$_SESSION['TourId']} and RrMatchEvent='FCO' and RrMatchTeam=1 and RrMatchLevel=4 and RrMatchGroup=1 and RrMatchRound=$i");
+                            $StartingDatetime=date('Y-m-d H:i:s', strtotime($StartingDatetime." +{$Duration} minutes"));
+                        }
+                    }
 					break;
 			}
 		}
@@ -279,7 +451,7 @@ function assignFrTeam($team, $cat, $pos) {
 					TeRank=$pos,
 					TeEvent=".StrSafe_DB($cat)."");
 
-			if($_SESSION['TourLocSubRule']=='SetFRD12023') {
+			if($_SESSION['TourLocSubRule']=='SetFRD12023' or $_SESSION['TourLocSubRule']=='SetFRD12026') {
 				// insert this club in level 1!
 				safe_w_sql("update RoundRobinParticipants set RrPartParticipant=$r->CoId 
                 		where RrPartTournament={$_SESSION['TourId']} 

@@ -34,7 +34,16 @@ if(empty($JS_SCRIPT)) {
 
 $JS_SCRIPT = array_merge($local_JS, $JS_SCRIPT);
 
-foreach($JS_SCRIPT as $script) echo "$script\n";
+foreach($JS_SCRIPT as $script) {
+    if(preg_match('#(src|href)="(\.){0,1}/(.*?)(\.js|\.css)"#i',$script, $matches)) {
+        $file = ($matches[2] == '.' ? getcwd() : $_SERVER["DOCUMENT_ROOT"] ) . '/'. $matches[3] . $matches[4];
+        if(file_exists($file)){
+            $mtime = filemtime($file);
+            $script = str_replace($matches[4],  $matches[4].'?ts=' . $mtime, $script);
+        }
+    }
+    echo "$script\n";
+}
 
 ?>
 <body<?php echo (!empty($ONLOAD)?$ONLOAD:'') ?>>

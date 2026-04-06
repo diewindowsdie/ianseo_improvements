@@ -5,6 +5,7 @@ require_once('Common/Lib/CommonLib.php');
 
 CheckTourSession(true);
 $IncludeJquery = true;
+$IncludeFA = true;
 $JS_SCRIPT[]='<script src="./configure.js"></script>';
 $JS_SCRIPT[]=phpVars2js(array(
 	'MsgConfirm' => get_text('ConfirmDescr', 'Tournament'),
@@ -20,46 +21,55 @@ $Winners=array();
 $Ranking=array();
 $Teams=array();
 
-
 $q=safe_r_sql("select EvCode, EvNumQualified
 	from Events 
-	where EvTeamEvent=1 and EvTournament={$_SESSION['TourId']} and EvNumQualified!=4
+	where EvTeamEvent=1 and EvTournament={$_SESSION['TourId']} and EvNumQualified!=4 and length(EvCode)=3
 	order by EvProgr");
 while($r=safe_fetch($q)) {
 	foreach(range(1,$r->EvNumQualified) as $k) {
 		$Winners[$r->EvCode][$k]='';
-		$Bonus[$r->EvCode][$k]=0;
+		$Bonus[$r->EvNumQualified][$k]=0;
 		$Teams[$r->EvCode]=$r->EvNumQualified;
 	}
 }
 
-$SavedBonus=getModuleParameter('FFTA', 'D1Bonus', $Winners);
+$SavedBonus=getModuleParameter('FFTA', 'D1Bonus', $Bonus);
 $SavedWinners=getModuleParameter('FFTA', 'D1Winners', $Winners);
 $AllInOne=getModuleParameter('FFTA', 'D1AllInOne', 0);
 
 if(!$SavedBonus) {
-	$SavedBonus=$Winners;
+	$SavedBonus=$Bonus;
 }
 if(!$SavedWinners) {
 	$SavedWinners=$Winners;
 }
 setModuleParameter('FFTA', 'D1Bonus', $SavedBonus);
 setModuleParameter('FFTA', 'D1Winners', $SavedWinners);
+$Results=[];
+$q=safe_r_sql("select concat('D',`TqdDistance`) as `Distance`
+    from `TeamQualificationDistances`
+    where `TqdTournament`={$_SESSION['TourId']}
+    group by `TqdDistance`");
+while($r=safe_fetch($q)) {
+    $Results[$r->Distance]=$r->Distance;
+}
 
 echo '<table class="Tabella" style="margin:auto;width:auto;margin-bottom:1em">';
 
-if($_SESSION['TourLocSubRule']=='SetFRD12023') {
+if($_SESSION['TourLocSubRule']=='SetFRD12023' or $_SESSION['TourLocSubRule']=='SetFRD12026') {
 	$TourDates=getModuleParameter('FFTA', 'D1TourDates', ['D1' => [], 'D2' => [], 'D3' => []]);
 	echo '<tr><th></th>
 			<th>Date</th>
 			<th>Début</th>
 			<th>Lieu</th>
+			'.($_SESSION['TourLocSubRule']=='SetFRD12026' ? '<th>Résultats</th>' : '').'
 			</tr>';
 	for($i=1;$i<4;$i++) {
 		echo '<tr><th class="Title">'.get_text('FlightsDay','Tournament', $i).'</th>
 			<td><input type="date" pos="'.$i.'" cat="date" item="TOURDATE" onblur="confUpdate(this)" value="'.($TourDates['D'.$i]['date'] ?? '').'"></td>
 			<td><input type="text" pos="'.$i.'" cat="time" item="TOURDATE" onblur="confUpdate(this)" size="10" value="'.($TourDates['D'.$i]['time'] ?? '').'"></td>
 			<td><input type="text" pos="'.$i.'" cat="comp" item="TOURDATE" onblur="confUpdate(this)" size="30" value="'.($TourDates['D'.$i]['comp'] ?? '').'"></td>
+			'.($_SESSION['TourLocSubRule']=='SetFRD12026' ? '<td class="Center"><i class="fa fa-lg fa-upload '.(($Results['D'.$i]??'')?'text-success':'text-secondary').'" onclick="uploadResults(this)" ref="'.$i.'"></i></td>' : '').'
 			</tr>';
 	}
 
@@ -79,6 +89,11 @@ echo '<table class="Tabella" style="margin:auto;width:auto">';
 if($_SESSION['TourLocSubRule']=='SetFRD12023') {
 	echo '<tr>';
 	echo '<th class="Title"></th>';
+    echo '<th class="Title" colspan="4">Equipes en lice</th>';
+	echo '</tr>';
+
+	echo '<tr>';
+	echo '<th class="Title"></th>';
 	foreach($Teams as $Cat => $Rank) {
 		echo '<th class="Title">' . $Cat . '</th>';
 	}
@@ -89,6 +104,51 @@ if($_SESSION['TourLocSubRule']=='SetFRD12023') {
 		foreach($Teams as $Cat => $MaxRows) {
 			if($pos<=$MaxRows) {
 				echo '<td><input class="w-100" type="text" pos="'.$pos.'" cat="'.$Cat.'" item="CLUB" onblur="confUpdate(this)" value="'.(isset($SavedWinners[$Cat][$pos]) ? $SavedWinners[$Cat][$pos] : '').'" size="10"></td>';
+			} else {
+				echo '<td></td>';
+			}
+		}
+		echo '</tr>';
+	}
+	// list load of teams
+	echo '<tr><th class="Title"></th>';
+	foreach($Teams as $Cat => $MaxRows) {
+		echo '<td><textarea cat="'.$Cat.'" item="ALLCLUBS" onblur="confUpdate(this)" style="width:10em;height:15em;"></textarea></td>';
+	}
+	echo '</tr>';
+
+} elseif($_SESSION['TourLocSubRule']=='SetFRD12026') {
+	echo '<tr>';
+	echo '<th class="Title"></th>';
+    echo '<th class="Title" colspan="4">Equipes en lice</th>';
+    echo '<th class="Title" colspan="4">Pts Bonus</th>';
+	echo '</tr>';
+
+	echo '<tr>';
+	echo '<th class="Title"></th>';
+	foreach($Teams as $Cat => $Rank) {
+		echo '<th class="Title">' . $Cat . '</th>';
+	}
+
+	foreach(['16','8'] as $Cat) {
+		echo '<th class="Title">' . $Cat . '</th>';
+	}
+	echo '</tr>';
+
+    $TabIndex1=1;
+    $TabIndex2=57;
+	foreach(range(1, max($Teams)) as $pos) {
+		echo '<tr><th class="Title">'.$pos.'</th>';
+		foreach($Teams as $Cat => $MaxRows) {
+			if($pos<=$MaxRows) {
+				echo '<td><input tabindex="'.($TabIndex1++).'" class="w-100" type="text" pos="'.$pos.'" cat="'.$Cat.'" item="CLUB" onblur="confUpdate(this)" value="'.(isset($SavedWinners[$Cat][$pos]) ? $SavedWinners[$Cat][$pos] : '').'" size="10"></td>';
+			} else {
+				echo '<td></td>';
+			}
+		}
+		foreach(['16','8'] as $Cat) {
+			if($pos<=$Cat) {
+				echo '<td><input tabindex="'.($TabIndex2++).'" class="w-100" type="text" pos="'.$pos.'" cat="'.$Cat.'" item="BONUS" onblur="confUpdate(this)" value="'.($SavedBonus[$Cat][$pos]??'0').'" size="10"></td>';
 			} else {
 				echo '<td></td>';
 			}

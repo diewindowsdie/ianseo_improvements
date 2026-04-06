@@ -599,14 +599,14 @@ function MakeTeams($Societa, $Category, $ToId=0) {
 		elseif($TipoElaborazione==2)	// gare 3D
 		{
 			// Estraggo l'elenco delle persone
-			$Select = "SELECT EnTournament,EnId,IF(EnCountry2=0,EnCountry,EnCountry2) AS EnCountry, EnDivision as Division, EnClass AS Sex, QuScore,QuGold,QuXnine,QuHits
+			$Select = "SELECT EnTournament,EnId,IF(EnCountry2=0,EnCountry,EnCountry2) AS EnCountry, IF(((EnDivision='AI' OR EnDivision='AN') AND LEFT(EnClass,1)='J'),'AN',EnDivision) as Division, (LEFT(EnClass,1)='J') as Giovanile, EnClass AS Sex, QuScore,QuGold,QuXnine,QuHits
 				FROM Entries 
 			    INNER JOIN Qualifications ON EnId=QuId and QuScore>0 
 				inner join IrmTypes on IrmId=QuIrmType and IrmShowRank=1
 				WHERE EnAthlete=1 AND EnTeamClEvent=1 AND EnStatus <= 1 AND QuScore>0 AND EnTournament = " . StrSafe_DB($ToId) . " "
 				. (!is_null($Societa) ? ' AND IF(EnCountry2=0,EnCountry,EnCountry2)=' . StrSafe_DB($Societa)   : '')
 				. "AND EnDivision IN ('AI','CO','AN','LB')"
-				. "ORDER BY IF(EnCountry2=0,EnCountry,EnCountry2), EnClass, QuScore DESC, QuGold DESC, QuXnine DESC, if(EnDivision='AI' OR EnDivision='OL' OR EnDivision='AN','AN',EnDivision), EnId ASC ";
+				. "ORDER BY IF(EnCountry2=0,EnCountry,EnCountry2), EnClass, QuScore DESC, QuGold DESC, QuXnine DESC, IF(((EnDivision='AI' OR EnDivision='AN') AND LEFT(EnClass,1)='J'),'AN',EnDivision), EnId ASC ";
 
 			$Rs=safe_r_sql($Select);
 			if (!$Rs)
@@ -653,7 +653,7 @@ function MakeTeams($Societa, $Category, $ToId=0) {
 						$XNines[$Peoples]=$MyRow->QuXnine;
 						$Hits[$Peoples]=$MyRow->QuHits;
 						// se ho proprio 4 persone faccio la squadra
-						if ($Peoples==3) {
+						if ($Peoples==3 OR ($MyRow->Giovanile AND $Peoples==2)) {
 							// Insert in Teams
 							$InsertT
 								= "INSERT INTO Teams (TeCoId,TeEvent,TeTournament,TeFinEvent,TeScore,TeGold,TeXNine,TeFinal,TeHits) "

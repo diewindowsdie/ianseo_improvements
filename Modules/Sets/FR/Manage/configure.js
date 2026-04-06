@@ -62,3 +62,49 @@ function alertUpdate(obj) {
 		backgroundDismiss: true
 	})
 }
+
+function uploadResults(obj) {
+	var form={
+		item:'GETCOMPETITIONS',
+		cat:'',
+		pos:''};
+	$.getJSON('configure-updateWinners.php', form, function(data) {
+		var content='<select id="competition"><option value="0">---</option>';
+		$.each(data.data, function() {
+			content+='<option value="'+this.val+'">'+this.txt+'</option>'
+		})
+		content+='</select>';
+		$.confirm({
+			title:'',
+			content:content,
+			boxWidth:'33%',
+			useBootstrap:false,
+			buttons:{
+				cancel: {text:CmdCancel},
+				ok: {
+					text:CmdConfirm,
+					action:function() {
+						if($('#competition').val()=='0') {
+							return false;
+						}
+						form.item='SETCOMPETITIONDISTANCE';
+						form.day=$(obj).attr('ref');
+						form.comp=$('#competition').val();
+						$.getJSON('configure-updateWinners.php', form, function(data){
+							if(data.error==0) {
+								$(obj).addClass('text-success').removeClass('text-secondary');
+							} else if(data.msg>='') {
+								$.alert({
+									title:'',
+									content:data.msg,
+									boxWidth:'33%',
+									useBootstrap:false,
+								})
+							}
+						});
+					}
+				},
+			}
+		});
+	});
+}

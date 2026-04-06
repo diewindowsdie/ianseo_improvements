@@ -390,6 +390,9 @@ switch($TourType) {
          case 'SetUK_STFD':
              CreateDistanceNew($TourId, $TourType, '_%', array(array('30m-1',30), array('30m-2',30)));
              break;
+		 case 'SetUK_LNER':
+			 CreateDistanceNew($TourId, $TourType, '_%', array(array('50m',30), array('50y',30)));
+			 break;
      }
         break;
 
@@ -485,10 +488,14 @@ switch($TourType) {
         elseif($SubRule == 15){
             CreateTargetFace($TourId, 1, '~Default', '%', '1', 1, 60, 1, 60);
         }
+		elseif($SubRule == 16){
+			CreateTargetFace($TourId, 1, '~Default', '%', '1', 1, 122, 17, 122);
+		}
 }
 
 // create a first distance prototype
 CreateDistanceInformation($TourId, $DistanceInfoArray, 16);
+
 
 // Update Tour details
 $tourDetails=array(

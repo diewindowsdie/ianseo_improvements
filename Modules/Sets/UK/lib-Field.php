@@ -16,21 +16,21 @@ function CreateStandardFieldClasses($TourId, $SubRule) {
 	switch($SubRule) {
 		case '1':
 			CreateClass($TourId, 1, 21, 49, -1, 'O', 'O', 'Open');
-			CreateClass($TourId, 2, 21, 49, 1, 'W', 'W', 'Women');
+			CreateClass($TourId, 2, 21, 49, 1, 'W', 'W', 'Female');
 			CreateClass($TourId, 3, 18, 20, -1, 'U21O', 'U21O,O', 'Under 21 Open');
-			CreateClass($TourId, 4, 18, 20, 1, 'U21W', 'U21W,W', 'Under 21 Women');
+			CreateClass($TourId, 4, 18, 20, 1, 'U21W', 'U21W,W', 'Under 21 Female');
             CreateClass($TourId, 5, 16, 17, -1, 'U18O', 'U18O,U21O,O', 'Under 18 Open');
-            CreateClass($TourId, 6, 16, 17, 1, 'U18W', 'U18W,U21W,W', 'Under 18 Women');
+            CreateClass($TourId, 6, 16, 17, 1, 'U18W', 'U18W,U21W,W', 'Under 18 Female');
             CreateClass($TourId, 7, 15, 15, -1, 'U16O', 'U16O,U18O,U21O,O', 'Under 16 Open');
-            CreateClass($TourId, 8, 15, 15, 1, 'U16W', 'U16W,U18W,U21W,W', 'Under 16 Women');
+            CreateClass($TourId, 8, 15, 15, 1, 'U16W', 'U16W,U18W,U21W,W', 'Under 16 Female');
             CreateClass($TourId, 9, 14, 14, -1, 'U15O', 'U15O,U16O,U18O,U21O,O', 'Under 15 Open');
-            CreateClass($TourId, 10,14, 14, 1, 'U15W', 'U15W,U16W,U18W,U21W,W', 'Under 15 Women');
+            CreateClass($TourId, 10,14, 14, 1, 'U15W', 'U15W,U16W,U18W,U21W,W', 'Under 15 Female');
             CreateClass($TourId, 11,12, 13, -1, 'U14O', 'U14O,U15O,U16O,MU18O,U21O,O', 'Under 14 Open');
-            CreateClass($TourId, 12,12, 13, 1, 'U14W', 'U14W,U15W,U16W,U18W,U21W,W', 'Under 14 Women');
+            CreateClass($TourId, 12,12, 13, 1, 'U14W', 'U14W,U15W,U16W,U18W,U21W,W', 'Under 14 Female');
             CreateClass($TourId, 13, 1, 11, -1, 'U12O', 'U12O,U14O,U15O,U16O,U18O,U21O,O', 'Under 12 Open');
-            CreateClass($TourId, 14, 1, 11, 1, 'U12W', 'U12W,U14W,U15W,U16W,U18W,U21W,W', 'Under 12 Women');
+            CreateClass($TourId, 14, 1, 11, 1, 'U12W', 'U12W,U14W,U15W,U16W,U18W,U21W,W', 'Under 12 Female');
             CreateClass($TourId, 15, 50,100, -1, '50O', '50O,O', '50+ Open');
-            CreateClass($TourId, 16, 50,100, 1, '50W', '50W,W', '50+ Women');
+            CreateClass($TourId, 16, 50,100, 1, '50W', '50W,W', '50+ Female');
 
 			break;
 	}
@@ -80,55 +80,55 @@ function CreateStandardFieldEvents($TourId, $SubRule) {
             );
 			$i=1;
 			CreateEventNew($TourId,'RO', 'Recurve Open', $i++, $SettingsInd);
-			CreateEventNew($TourId,'RW', 'Recurve Women', $i++, $SettingsInd);
+			CreateEventNew($TourId,'RW', 'Recurve Female', $i++, $SettingsInd);
 			CreateEventNew($TourId,'RU21o', 'Recurve Under 21 Open',$i++, $SettingsInd);
-			CreateEventNew($TourId,'RU21W', 'Recurve Under 21 Women', $i++, $SettingsInd);
+			CreateEventNew($TourId,'RU21W', 'Recurve Under 21 Female', $i++, $SettingsInd);
 			if($SubRule==1) {
 				CreateEventNew($TourId,'RU18O', 'Recurve Under 18 Open', $i++, $SettingsInd);
-				CreateEventNew($TourId,'RU18W', 'Recurve Under 18 Women', $i++, $SettingsInd);
+				CreateEventNew($TourId,'RU18W', 'Recurve Under 18 Female', $i++, $SettingsInd);
 				CreateEventNew($TourId,'R50O', 'Recurve 50+ Open', $i++, $SettingsInd);
-				CreateEventNew($TourId,'R50W', 'Recurve 50+ Women', $i++, $SettingsInd);
+				CreateEventNew($TourId,'R50W', 'Recurve 50+ Female', $i++, $SettingsInd);
 			}
 			CreateEventNew($TourId,'CO', 'Compound Open', $i++, $SettingsInd);
-			CreateEventNew($TourId,'CW', 'Compound Women', $i++, $SettingsInd);
+			CreateEventNew($TourId,'CW', 'Compound Female', $i++, $SettingsInd);
 			CreateEventNew($TourId,'CU21O', 'Compound Under 21 Open', $i++, $SettingsInd);
-			CreateEventNew($TourId,'CU21W', 'Compound Under 21 Women',$i++, $SettingsInd);
+			CreateEventNew($TourId,'CU21W', 'Compound Under 21 Female',$i++, $SettingsInd);
 			if($SubRule==1) {
 				CreateEventNew($TourId,'CU18O', 'Compound Under 18 Open', $i++, $SettingsInd);
-				CreateEventNew($TourId,'CU18W', 'Compound Under 18 Women', $i++, $SettingsInd);
+				CreateEventNew($TourId,'CU18W', 'Compound Under 18 Female', $i++, $SettingsInd);
 				CreateEventNew($TourId,'C50O', 'Compound 50+ Open', $i++, $SettingsInd);
-				CreateEventNew($TourId,'C50W', 'Compound 50+ Women',$i++, $SettingsInd);
+				CreateEventNew($TourId,'C50W', 'Compound 50+ Female',$i++, $SettingsInd);
 			}
 			CreateEventNew($TourId,'BO', 'Barebow Open', $i++, $SettingsInd);
-			CreateEventNew($TourId,'BW', 'Barebow Women', $i++, $SettingsInd);
+			CreateEventNew($TourId,'BW', 'Barebow Female', $i++, $SettingsInd);
 			CreateEventNew($TourId,'BU21O', 'Barebow Under 21 Open', $i++, $SettingsInd);
-			CreateEventNew($TourId,'BU21W', 'Barebow Under 21 Women', $i++, $SettingsInd);
+			CreateEventNew($TourId,'BU21W', 'Barebow Under 21 Female', $i++, $SettingsInd);
 			if($SubRule==1) {
 				CreateEventNew($TourId,'BU18O', 'Barebow Under 18 Open', $i++, $SettingsInd);
-				CreateEventNew($TourId,'BU18W', 'Barebow Under 18 Women', $i++, $SettingsInd);
+				CreateEventNew($TourId,'BU18W', 'Barebow Under 18 Female', $i++, $SettingsInd);
 				CreateEventNew($TourId,'B50O', 'Barebow 50+ Open', $i++, $SettingsInd);
-				CreateEventNew($TourId,'B50W', 'Barebow 50+ Women', $i++, $SettingsInd);
+				CreateEventNew($TourId,'B50W', 'Barebow 50+ Female', $i++, $SettingsInd);
 			}
 			$i=1;
 			CreateEventNew($TourId, 'OT', 'Open Team', $i++, $SettingsTeam);
-			CreateEventNew($TourId, 'WT', 'Women Team', $i++, $SettingsTeam);
+			CreateEventNew($TourId, 'WT', 'Female Team', $i++, $SettingsTeam);
             CreateEventNew($TourId, 'RX', 'Recurve Mixed Team', $i++, $SettingsMixedTeam);
             CreateEventNew($TourId, 'CX', 'Compound Mixed Team', $i++, $SettingsMixedTeam);
             CreateEventNew($TourId, 'BX', 'Barebow Mixed Team', $i++, $SettingsMixedTeam);
 			CreateEventNew($TourId, 'OU21T','Open Under 21 Team', $i++, $SettingsTeam);
-			CreateEventNew($TourId, 'WU21T','Women Under 21 Team', $i++, $SettingsTeam);
+			CreateEventNew($TourId, 'WU21T','Female Under 21 Team', $i++, $SettingsTeam);
             CreateEventNew($TourId, 'RU21X', 'Recurve Under 21 Mixed Team', $i++, $SettingsMixedTeam);
             CreateEventNew($TourId, 'CU21X', 'Compound Under 21 Mixed Team', $i++, $SettingsMixedTeam);
             CreateEventNew($TourId, 'BU21X', 'Barebow Under 21 Mixed Team', $i++, $SettingsMixedTeam);
 
         if($SubRule==1) {
                 CreateEventNew($TourId, 'OU18T','Open Under 18 Team', $i++, $SettingsTeam);
-                CreateEventNew($TourId, 'WU18T','Women Under 18 Team', $i++, $SettingsTeam);
+                CreateEventNew($TourId, 'WU18T','Female Under 18 Team', $i++, $SettingsTeam);
                 CreateEventNew($TourId, 'RU18X', 'Recurve Under 18 Mixed Team', $i++, $SettingsMixedTeam);
                 CreateEventNew($TourId, 'CU18X', 'Compound Under 18 Mixed Team', $i++, $SettingsMixedTeam);
                 CreateEventNew($TourId, 'BU18X', 'Barebow Under 18 Mixed Team', $i++, $SettingsMixedTeam);
 				CreateEventNew($TourId, 'O50T','Open 50+ Team', $i++, $SettingsTeam);
-				CreateEventNew($TourId, 'W50T','Women 50+ Team', $i++, $SettingsTeam);
+				CreateEventNew($TourId, 'W50T','Female 50+ Team', $i++, $SettingsTeam);
                 CreateEventNew($TourId, 'R50X', 'Recurve 50+ Mixed Team', $i++, $SettingsMixedTeam);
                 CreateEventNew($TourId, 'C50X', 'Compound 50+ Mixed Team', $i++, $SettingsMixedTeam);
                 CreateEventNew($TourId, 'B50X', 'Barebow 50+ Mixed Team', $i++, $SettingsMixedTeam);

@@ -147,12 +147,9 @@ class ScorePDF extends IanseoPdf {
 		$NumEnd=$ArrowEnds[$Event][$CurDist]['ends'];
 		$NumArrow=$ArrowEnds[$Event][$CurDist]['arrows'];
 
-		if($NumArrow==6 and $NumEnd==6) {
+		if($NumArrow==6 and $NumEnd<=7) {
 			$NumArrow=3;
-			$NumEnd=12;
-		} elseif($NumArrow==6 and $NumEnd==5) {
-			$NumArrow=3;
-			$NumEnd=10;
+			$NumEnd=$NumEnd*2;
 		}
 		if($NumArrow==1 AND ($NumEnd%3)==0) {
 			$NumArrow=3;

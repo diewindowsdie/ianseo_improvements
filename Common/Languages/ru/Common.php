@@ -1,11 +1,11 @@
 <?php
 $lang['0_Phase']='Золото';
-$lang['0_PhaseNM']='Встреча за 1 и 2 места';
+$lang['0_PhaseNM']='Матч за 1 и 2 место';
 $lang['12_Phase']='1/12';
 $lang['14_Phase']='1/14';
 $lang['16_Phase']='1/16';
 $lang['1_Phase']='Бронза';
-$lang['1_PhaseNM']='Встреча за 3 и 4 места';
+$lang['1_PhaseNM']='Матч за 3 и 4 место';
 $lang['24_Phase']='1/24';
 $lang['2_Phase']='1/2';
 $lang['32_Phase']='1/32';

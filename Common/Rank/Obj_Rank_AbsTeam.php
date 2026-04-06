@@ -225,7 +225,7 @@ require_once('Common/Lib/ArrTargets.inc.php');
 					EnId,EnCode,ifnull(EdExtra,EnCode) as LocalBib, EnSex,EnNameOrder,EnFirstName,upper(EnFirstName) EnFirstNameUpper,EnName,EnClass,EnDivision,EnAgeClass,EnSubClass,EnCoCode,EnDob,
 					coalesce(RoundRobinQualified, EvNumQualified) AS QualifiedNo, EvFirstQualified, EvQualPrintHead,
 					QuSession AS Session, CONCAT(QuTarget, QuLetter) AS TargetNo,
-					TeHits AS Arrows_Shot, TeScore, TeRank, TeGold, TeXnine, 
+					TeHits AS Arrows_Shot, TeScore, TeRank, TeGold, TeXnine, EvLockResults,
 					IF(EvLockResults, QuD1Score+IF(EvLockResults<2,0,QuD2Score)+IF(EvLockResults<3,0,QuD3Score)+IF(EvLockResults<4,0,QuD4Score)+IF(EvLockResults<5,0,QuD5Score)+IF(EvLockResults<6,0,QuD6Score)+IF(EvLockResults<7,0,QuD7Score)+IF(EvLockResults<8,0,QuD8Score), QuScore) as QuScore, 
 					IF(EvLockResults, QuD1Gold +IF(EvLockResults<2,0,QuD2Gold) +IF(EvLockResults<3,0,QuD3Gold) +IF(EvLockResults<4,0,QuD4Gold) +IF(EvLockResults<5,0,QuD5Gold) +IF(EvLockResults<6,0,QuD6Gold) +IF(EvLockResults<7,0,QuD7Gold) +IF(EvLockResults<8,0,QuD8Gold),  QuGold)  as QuGold, 
                     IF(EvLockResults, QuD1Xnine+IF(EvLockResults<2,0,QuD2Xnine)+IF(EvLockResults<3,0,QuD3Xnine)+IF(EvLockResults<4,0,QuD4Xnine)+IF(EvLockResults<5,0,QuD5Xnine)+IF(EvLockResults<6,0,QuD6Xnine)+IF(EvLockResults<7,0,QuD7Xnine)+IF(EvLockResults<8,0,QuD8Xnine), QuXnine) as QuXnine, 
@@ -364,6 +364,9 @@ require_once('Common/Lib/ArrTargets.inc.php');
 								$distValid--;
 						}
 						$ConfirmStatus=pow(2, $distValid+2)-2;
+                        if($row->EvLockResults) {
+                            $distValid=$row->EvLockResults;
+                        }
 
 						$section=array(
 							'meta' => array(
@@ -377,6 +380,8 @@ require_once('Common/Lib/ArrTargets.inc.php');
 								'printHeader'=>$row->EvQualPrintHead,
 								'order' => $row->EvProgr,
 								'numDist' => $distValid,
+								'ends' => $distValid*$row->DiEnds,
+								'arr' => $row->DiArrows,
 								'maxPersons' => $row->EvMaxTeamPerson,
 								'maxScore' => $row->ToMaxDistScore*$row->EvMaxTeamPerson*$distValid,
 								'maxArrows' => ($row->DiEnds ? $row->DiEnds*$row->DiArrows : $row->ToNumEnds*3)*$row->EvMaxTeamPerson*$distValid,

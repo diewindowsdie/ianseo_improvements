@@ -76,6 +76,65 @@ switch($_REQUEST['action']??'') {
 		$JSON['cols']=$Round;
 		$JSON['rows']=count($Matches);
 		break;
+	case 'setTeam2026':
+		$SQL="select concat_ws('|', RrMatchLevel, RrMatchGroup, RrMatchRound, RrMatchMatchNo) as id, coalesce(CoName,'') as club, RrMatchRound as round, RrMatchMatchNo as matchno, RrMatchTarget as target, RrMatchScheduledDate as date, date_format(RrMatchScheduledTime, '%H:%i') as time, RrMatchScheduledLength as length, RrLevName as level 
+			from RoundRobinMatches
+			inner join RoundRobinLevel on RrLevTournament=RrMatchTournament and RrLevTeam=RrMatchTeam and RrLevEvent=RrMatchEvent and RrLevLevel=RrMatchLevel
+			inner join RoundRobinGrids on RrGridTournament=RrMatchTournament and RrGridTeam=RrMatchTeam and RrGridEvent=RrMatchEvent and RrGridLevel=RrMatchLevel and RrGridGroup=RrMatchGroup and RrGridRound=RrMatchRound and RrGridMatchno=RrMatchMatchNo
+			inner join RoundRobinParticipants on RrPartTournament=RrMatchTournament and RrPartTeam=RrMatchTeam and RrPartEvent=RrMatchEvent and RrPartLevel=RrMatchLevel and RrPartGroup=RrMatchGroup and RrPartDestItem=RrGridItem
+			left join (
+			    select TeEvent, TeCoId, TeSubTeam, CoName
+			    from Teams
+			    inner join Countries on CoId=TeCoId and CoTournament=TeTournament
+			    where TeEvent=".StrSafe_DB($Event)." and TeTournament={$_SESSION['TourId']} and TeFinEvent=1
+			) Teams on TeSubTeam=RrMatchSubTeam and TeCoId=RrMatchAthlete
+        	where RrMatchTournament={$_SESSION['TourId']} and RrMatchEvent=".StrSafe_DB($Event)."
+			";
+		switch($Day) {
+			case 'D1':
+				$SQL.=" and RrMatchRound<=7 and RrMatchLevel=1";
+				break;
+			case 'D2':
+				if($Event=='FCO') {
+					$SQL.=" and RrMatchLevel=2";
+				} else {
+					$SQL.=" and RrMatchRound>7 and RrMatchLevel=1";
+				}
+				break;
+			case 'D3':
+				if($Event=='FCO') {
+					$SQL.=" and RrMatchLevel>2";
+				} else {
+					$SQL.=" ";
+				}
+				break;
+		}
+		$SQL.=" order by RrMatchLevel, RrMatchRound, RrMatchMatchno";
+		$q=safe_r_sql($SQL);
+		$Round=0;
+		$Matches=[];
+		while($r=safe_fetch($q)) {
+			if($r->round!=$Round) {
+				if($Matches) {
+					$JSON['matches'][]=['round'=>get_text('RoundNum', 'RoundRobin', $Round), 'matches'=>$Matches];
+				}
+				$Round=$r->round;
+				$Matches=[];
+				$Match=[];
+			}
+			$r->target=ltrim($r->target,'0');
+			$Match[]=$r;
+			if($r->matchno%2) {
+				$Matches[]=$Match;
+				$Match=[];
+			}
+		}
+		if($Matches) {
+			$JSON['matches'][]=['round'=>get_text('RoundNum', 'RoundRobin', $Round), 'matches'=>$Matches];
+		}
+		$JSON['cols']=$Round;
+		$JSON['rows']=count($Matches);
+		break;
 	case 'setItem':
 		$Key=($_REQUEST['key']??'');
 		$Fld=($_REQUEST['fld']??'');

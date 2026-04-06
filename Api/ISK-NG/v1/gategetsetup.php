@@ -45,6 +45,10 @@ while ($r = safe_fetch($q)) {
     if (!in_array($RegArray, $regexpList)) {
         if(getModuleParameter("ExtraAddOns","AddOnsEnable","0", $r->ToId)) {
             $RegArray['addOns'] = (object) getModuleParameter("ExtraAddOns", "AddOnsList", array(),$r->ToId);
+            $RegArray['addOnsEnabled'] = [];
+            foreach(GetParameter('GateNG-Addons-' . $r->ToId, '', [], true) as $k) {
+                $RegArray['addOnsEnabled'][]=(string) $k;
+            }
         }
         $regexpList[$r->ToCode] = $RegArray;
     }
@@ -58,11 +62,14 @@ $res = array(
     'action' => 'gategetsetup',
     'error' => 0,
     'device' => $req->device,
-    'lookupMode' => 0,
-    'validated' => 0,
-    'checkGateFlow' => 0,
-    'competingOnly' => 0,
-    'showPictures' => 1,
-    'accessZones' => (object) $AccZones,
-    'competitions' => $regexpList
 );
+foreach(['lookupMode','validated', 'checkGateFlow', 'competingOnly', 'showPictures', 'showFlags', 'playSounds','enableHaptics'] as $k) {
+    $res[$k] = (int) GetParameter('GateNG-'.$k, '', 0);
+}
+
+$res['accessZones']=(object) $AccZones;
+$res['accessZonesEnabled']=[];
+foreach(getParameter('GateNG-ZonesEnabled', '', [0], true) as $k) {
+    $res['accessZonesEnabled'][]=(string) $k;
+};
+$res['competitions']=$regexpList;

@@ -151,7 +151,9 @@ function CreateStandardClasses($TourId, $TourType, $SubRule) {
                     break;
                 case 9: // Finales DR
                 case 10: // Championnats France Elite
+                case 12: // Finales D1 2023
                 case 16: // Finales D2
+                case 17: // Finales D1 2026
                     CreateClass($TourId, $i++, 15+$NextYearClass, 17+$NextYearClass, 1, 'U18F', 'U18F,U21F,S1F', 'U18 Femmes', '1', 'CL,CO', 'U18W', 'U18W');
                     CreateClass($TourId, $i++, 15+$NextYearClass, 17+$NextYearClass, 0, 'U18H', 'U18H,U21H,S1H', 'U18 Hommes', '1', 'CL,CO', 'U18M', 'U18M');
                     CreateClass($TourId, $i++, 18+$NextYearClass, 20+$NextYearClass, 1, 'U21F', 'U21F,S1F', 'U21 Femmes', '1', 'CL,CO', 'U21W', 'U21W');
@@ -477,7 +479,6 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=false) {
                         'EvXNineChars' => 'K',
                         'EvArrowPenalty' => 0,
                         'EvLoopPenalty' => 0,
-
                     ];
                     CreateEventNew($TourId, 'FCL', 'Equipe Arc Classique Femme', 1, $Options);
                     $Options['EvRecCategory']='RM';
@@ -524,6 +525,129 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=false) {
                         }
                         safe_w_SQL("insert ignore into RoundRobinParticipants (RrPartTournament, RrPartTeam, RrPartEvent, RrPartLevel, RrPartGroup, RrPartDestItem, RrPartSourceLevel, RrPartSourceGroup, RrPartSourceRank)
 							values ".implode(', ', $sqlPart));
+                    }
+
+                    // adjust Groups
+                    safe_w_sql("update RoundRobinGroup set RrGrTargetArchers=0 where RrGrTournament=$TourId");
+
+                    // creates all the grids and matches
+                    break;
+                case 17: // D1 2026 formula!
+                    $i=1;
+                    // start with FCL
+                    $Options=[
+                        'EvTeamEvent' => 1,
+                        'EvNumQualified'=>16,
+                        'EvFirstQualified'=>1,
+                        'EvFinalTargetType'=>5,
+                        'EvTargetSize'=>122,
+                        'EvDistance'=>70,
+                        'EvElimType'=>5,
+                        'EvElim1'=>1,
+                        'EvMatchMode'=>1,
+                        'EvElimEnds'=>4,
+                        'EvElimArrows'=>6,
+                        'EvElimSO'=>3,
+                        'EvFinEnds'=>4,
+                        'EvFinArrows'=>6,
+                        'EvFinSO'=>3,
+                        'EvRecCategory'=>'RW',
+                        'EvWaCategory'=>'RW',
+                        'EvTourRules'=>'SetFRD12026',
+                        'EvGolds' => '10+X',
+                        'EvXNine' => 'X',
+                        'EvGoldsChars' => 'KL',
+                        'EvXNineChars' => 'K',
+                        'EvArrowPenalty' => 0,
+                        'EvLoopPenalty' => 0,
+                        'EvFinalFirstPhase' => 0,
+                    ];
+                    CreateEventNew($TourId, 'FCL', 'Equipe Arc Classique Femme', 1, $Options);
+                    $Options['EvRecCategory']='RM';
+                    $Options['EvWaCategory']='RM';
+                    CreateEventNew($TourId, 'HCL', 'Equipe Arc Classique Homme', 2, $Options);
+
+                    $Options['EvNumQualified']=8;
+                    $Options['EvFinalFirstPhase']=2;
+                    CreateEventNew($TourId, 'HCLof', 'Equipe Arc Classique Homme - Play Off', 7, $Options);
+                    $Options['EvWinnerFinalRank']=9;
+                    $Options['EvMedals']=0;
+                    CreateEventNew($TourId, 'HCLdn', 'Equipe Arc Classique Homme - Play Down', 8, $Options);
+                    $Options['EvRecCategory']='RW';
+                    $Options['EvWaCategory']='RW';
+                    $Options['EvWinnerFinalRank']=1;
+                    $Options['EvMedals']=1;
+                    CreateEventNew($TourId, 'FCLof', 'Equipe Arc Classique Femme - Play Off', 5, $Options);
+                    $Options['EvWinnerFinalRank']=9;
+                    $Options['EvMedals']=0;
+                    CreateEventNew($TourId, 'FCLdn', 'Equipe Arc Classique Femme - Play Down', 6, $Options);
+
+                    $Options['EvFinalFirstPhase']=0;
+                    $Options['EvNumQualified']=16;
+                    $Options['EvWinnerFinalRank']=1;
+                    $Options['EvMedals']=1;
+                    $Options['EvMatchMode']=0;
+                    $Options['EvDistance']=50;
+                    $Options['EvFinalTargetType']=9;
+                    $Options['EvRecCategory']='CM';
+                    $Options['EvWaCategory']='CM';
+                    CreateEventNew($TourId, 'HCO', 'Equipe Arc à Poulies Homme', 4, $Options);
+                    $Options['EvNumQualified']=8;
+                    $Options['EvFinalFirstPhase']=2;
+                    CreateEventNew($TourId, 'HCOof', 'Equipe Arc à Poulies Homme - Play Off', 9, $Options);
+                    $Options['EvWinnerFinalRank']=9;
+                    $Options['EvMedals']=0;
+                    CreateEventNew($TourId, 'HCOdn', 'Equipe Arc à Poulies Homme - Play Down', 10, $Options);
+
+
+                    $Options['EvRecCategory']='CW';
+                    $Options['EvWaCategory']='CW';
+                    $Options['EvNumQualified']=8;
+                    $Options['EvElim1']=3;
+                    CreateEventNew($TourId, 'FCO', 'Equipe Arc à Poulies Femme', 3, $Options);
+
+                    // create all what is needed for round robin!
+                    require_once('Modules/RoundRobin/Lib.php');
+                    safe_w_sql("delete from RoundRobinGrids where RrGridTournament=$TourId");
+                    safe_w_sql("delete from RoundRobinGroup where RrGrTournament=$TourId");
+                    safe_w_sql("delete from RoundRobinLevel where RrLevTournament=$TourId");
+                    safe_w_sql("delete from RoundRobinMatches where RrMatchTournament=$TourId");
+                    safe_w_sql("delete from RoundRobinParticipants where RrPartTournament=$TourId");
+                    $SQL="insert into RoundRobinLevel set RrLevTournament=$TourId, RrLevTeam=1, RrLevEvent='%s',
+							RrLevLevel=%s, RrLevMatchMode=%s, RrLevBestRankMode=0, RrLevName='%s', RrLevGroups=1, RrLevGroupArchers=%s,
+							RrLevArrows=6, RrLevEnds=4, RrLevSO=3, RrLevTieAllowed=0, RrLevWinPoints=2, RrLevTiePoints=0, RrLevTieBreakSystem=%s";
+                    foreach([
+                        'FCL'=>[16,1,1,2],
+                        'HCL'=>[16,1,1,2],
+                        'HCO'=>[16,1,0,3],
+                        'FCO'=>[8,3,0,3],
+                        'FCLof'=>[8,1,1,2],
+                        'HCLof'=>[8,1,1,2],
+                        'HCOof'=>[8,1,0,3],
+                        'FCLdn'=>[8,1,1,2],
+                        'HCLdn'=>[8,1,1,2],
+                        'HCOdn'=>[8,1,0,3],
+                        ] as $Event=>$Items) {
+
+                        for($i=1;$i<=$Items[1];$i++) {
+                            // Levels
+                            safe_w_sql(sprintf($SQL, $Event, $i, $Items[2], $i%2 ? 'Aller'.($i>2?'-2':'') : 'Retour'.($i>2?'-2':''), $Items[0], $Items[3]));
+                            createRound(1, $Event, $i);
+
+                            // Participants selection update
+                            safe_w_SQL("update RoundRobinParticipants set RrPartSourceLevel=".($i-1).", RrPartSourceGroup=".($i==1 ? 0 : 1).", RrPartSourceRank=RrPartDestItem
+								where RrPartTournament=$TourId and RrPartTeam=1 and  RrPartEvent='$Event' and RrPartLevel=$i and RrPartGroup=1");
+                        }
+
+                        // Participants Brackets
+                        $sqlPart=array();
+                        if($Items[0]==8) {
+                            for($n=1;$n<=4;$n++) {
+                                $sqlPart[]="($TourId, 1, '$Event', 0, 0, $n, ".($i-1).", 1, $n)";
+                            }
+                            safe_w_SQL("insert ignore into RoundRobinParticipants (RrPartTournament, RrPartTeam, RrPartEvent, RrPartLevel, RrPartGroup, RrPartDestItem, RrPartSourceLevel, RrPartSourceGroup, RrPartSourceRank)
+							values ".implode(', ', $sqlPart));
+                        }
                     }
 
                     // adjust Groups
@@ -1129,6 +1253,7 @@ function InsertStandardEvents($TourId, $TourType, $SubRule) {
                     }
                     break;
                 case 12: // D1/DNAP... team events selection are as usual, indivudal no
+                case 17: // D1/DNAP... team events selection are as usual, indivudal no
                     InsertClassEvent($TourId, 1, 3, 'FCL', 'CL','U18F');
                     InsertClassEvent($TourId, 1, 3, 'FCL', 'CL','U21F');
                     InsertClassEvent($TourId, 1, 3, 'FCL', 'CL','S1F');

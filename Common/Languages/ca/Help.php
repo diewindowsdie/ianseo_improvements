@@ -10,13 +10,9 @@ $lang['AutoCHK-CanEditEntry']='Edita Detalls Inscripció';
 $lang['AutoCHK-CanEditExtras']='Edita Extres';
 $lang['AutoCHK-CanEditTgt']='Edita Assignació Dianes';
 $lang['AutoCHK-Code']='Llista de Competicions, una per línia<br> El primer codi de competició s\'utilitzarà com a capçalera a les terminals de verificació automàtica';
-$lang['AutoCHK-IP']='Llista d\'IP dels dispositius de registre automàtic. Una adreça IP per línia, que coincideix amb un dels formats següents:<br> IP Dispositiu<br> IP Dispositiu | Cua Impressora Acreditació <br> IP Dispositiu | Cua Impressora Acreditació | 
- Cua Impressora Nom Etiqueta<br> Cua Impressora en forma: Nom Cua [ @ Servidor Impressora ]<br> Si no hi ha cap Cua Impressora definida, es mostrarà diàleg impressió estàndard';
 $lang['AutoCHK-IPBowStorage']='Llista d’IP dels punts de guarda d’arcs. Una adreça IP per línia';
-$lang['AutoCHK-IPGoodiesDistribution']='Llista d’IP dels punts de distribució de bosses d’obsequis. Una adreça IP per línia';
 $lang['AutoCHK-IPinfo']='Llista d\'IP dels punts d\'autoinformació. Una adreça IP per línia';
 $lang['AutoCHK-IPnoMgm']='Llista d\'IP de terminals auto-verificació. Una Adreça IP per línia, que coincideix amb un dels formats següents:<br> IP Dispositiu<br> IP Dispositiu | Nom Cua Impressora<br> IP Dispositiu | Nom Cua Impressora | IP Servidor Impressió';
-$lang['AutoCHK-IPPaidPractice']='Llista d’IP dels punts de pràctica de pagament. Una adreça IP per línia';
 $lang['AutoCHK-Print']='Mostra el diàleg d\'impressió automàticament';
 $lang['AutoImportSettings']='<b>Només per a Usuaris Experts</b><br>Canviar el funcionament predeterminat podria provocar resultats inexactes.<br> És important tornar a calcular tots els rànquings que s\'han configurat com a "manualment" ABANS d\'enviar-los a ianseo.net o resultats d\'impressió i en general abans de qualsevol distribució de qualsevol tipus.';
 $lang['ChangeComponents']='<p>Per continuar amb un canvi de component, primer traieu l\'atleta que ja no forma part de l\'equip perquè es puguin activar les opcions de substitució.</p> &#9654&nbsp; Puntuacions incloses en el total de l\'equip a la ronda classificatòria<br>  &#9655&nbsp; Puntuació no inclosa en el total de l\'equip a la ronda classifictòria';
