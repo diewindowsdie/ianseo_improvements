@@ -16,13 +16,14 @@ if(!empty($on) AND $_SESSION["TourLocRule"]=='FR' AND subFeatureAcl($acl,AclComp
 	switch($_SESSION['TourLocSubRule']) {
 		case 'SetFRChampsD1DNAP':
 		case 'SetFRD12023':
+		case 'SetFRD12026':
 			$AllInOne=getModuleParameter('FFTA', 'D1AllInOne', 0);
 
 			$SubMenu=get_text($_SESSION['TourLocSubRule'], 'Install');
 			$tmp= array($SubMenu);
 	        $tmp[]=get_text('Setup', 'ISK'). '|' . $CFG->ROOT_DIR . 'Modules/Sets/FR/Manage/configure.php';
 	        $tmp[]=get_text('MenuLM_Target Assignment') . '|' . $CFG->ROOT_DIR . 'Modules/Sets/FR/Manage/';
-			if($_SESSION['TourLocSubRule']=='SetFRD12023') {
+			if($_SESSION['TourLocSubRule']=='SetFRD12023' or $_SESSION['TourLocSubRule']=='SetFRD12026') {
 				if (subFeatureAcl($acl,AclRobin,'') >= AclReadOnly) {
 					$tmp[]=get_text('ScorecardsTeams', 'Tournament') . '|' . $CFG->ROOT_DIR . 'Modules/RoundRobin/PrintScore.php?team=1';
 				}
@@ -44,7 +45,7 @@ if(!empty($on) AND $_SESSION["TourLocRule"]=='FR' AND subFeatureAcl($acl,AclComp
 				$ret['SetFRChampsD1DNAP']=$tmp;
 			}
 
-			if($_SESSION['TourLocSubRule']=='SetFRD12023') {
+			if($_SESSION['TourLocSubRule']=='SetFRD12023' or $_SESSION['TourLocSubRule']=='SetFRD12026') {
 				$ret['SetFRChampsD1DNAP'][] = MENU_DIVIDER;
 				if (subFeatureAcl($acl,AclRobin,'') == AclReadWrite) {
 					$tmp = get_text('DifferentEventSoManagementButton', 'RoundRobin') . '';

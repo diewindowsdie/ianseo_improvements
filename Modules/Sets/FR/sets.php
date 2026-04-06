@@ -26,6 +26,7 @@ $SetType['FR']['rules']["3"]["1"]='SetFRChampsTNJ';
 $SetType['FR']['rules']["3"]["8"]='SetFRFinDRD2';
 $SetType['FR']['rules']["3"]["15"]='SetFRFinalsD2';
 $SetType['FR']['rules']["3"]["11"]='SetFRD12023';
+$SetType['FR']['rules']["3"]["16"]='SetFRD12026';
 
 // 18m have championships
 $SetType['FR']['rules']["6"][0]='SetFrSelectif';

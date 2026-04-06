@@ -97,7 +97,12 @@ switch($SubRule) {
         $tourDetNumEnds = '10';
         $DistanceInfoArray = array(array(10, 3),array(10, 3));
         break;
-
+    case 16: //LNER
+        $tourDetMaxDistScore	= '500';
+        $tourDetNumDist = '2';
+        $tourDetNumEnds = '10';
+        $DistanceInfoArray = array(array(10, 5),array(10, 5));
+        break;
 
 
 
@@ -112,13 +117,15 @@ if($SubRule < 11){
         $tourDetGoldsChars		= 'BDFHJ';
         $tourDetXNineChars		= 'J';
     } else {//Set for OnTarget/Metric rounds
-        $tourDetGolds = '10+X';
-        $tourDetXNine = 'X';
-        $tourDetGoldsChars = 'KL';
-        $tourDetXNineChars = 'K';
+        $tourDetGolds = 'X';
+        $tourDetXNine = '10';
+        $tourDetGoldsChars = 'K';
+        $tourDetXNineChars = 'L';
     }
+
     $tourDetCategory		= '1'; // 0: Other, 1: Outdoor, 2: Indoor, 4:Field, 8:3D
 }
+
 else{
     if ($SubRule == 11){ //set for Worcester Rounds
         $tourDetGolds			= '5';
@@ -126,10 +133,10 @@ else{
         $tourDetGoldsChars		= 'F';
         $tourDetXNineChars		= 'Z';
     } else {
-        $tourDetGolds			= 'Hits';
-        $tourDetXNine			= 'Golds';
-        $tourDetGoldsChars		= 'BCDEFGHIJL';
-        $tourDetXNineChars		= 'L';
+        $tourDetGolds			= '10';
+        $tourDetXNine			= '9';
+        $tourDetGoldsChars		= 'L';
+        $tourDetXNineChars		= 'J';
     }
     $tourDetCategory		= '2'; // 0: Other, 1: Outdoor, 2: Indoor, 4:Field, 8:3D}
 }

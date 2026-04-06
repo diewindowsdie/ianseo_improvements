@@ -5,13 +5,6 @@ $lang['AutoCheckinConfirm']='Se todos os detalles son correctos, prema en CONFIR
 $lang['AutoCheckinSearch']='Escanea o código QR que recibiches ou escribe o teu nome';
 $lang['AutoCHK-CanEdit']='Permitir aos operadores de check-in editar nomes, correos electrónicos, país/club, etc.';
 $lang['AutoCHK-Code']='Lista de competicións, unha por liña. O primeiro código de competición usaranse como cabeceira nos quioscos de auto check-in';
-$lang['AutoCHK-IP']='Lista de IP dos dispositivos de auto check-in. Un enderezo IP por liña, seguindo un dos seguintes formatos:<br>
-
-IP do dispositivo<br>
-IP do dispositivo | Cola da impresora de acreditacións <br>
-IP do dispositivo | Cola da impresora de acreditacións | Cola da impresora de etiquetas de nome<br>
-A cola da impresora debe ter o seguinte formato: Nome da cola [ @ Servidor da impresora ]<br>
-Se non se define ningunha cola de impresión, aparecerá o diálogo de impresión estándar.';
 $lang['AutoCHK-IPinfo']='Lista de IP dos puntos de auto-información. Unha dirección IP por liña';
 $lang['AutoCHK-IPnoMgm']='Lista de IP dos quioscos de auto check-in. Unha dirección IP por liña, coincidindo cun dos seguintes formatos:
 <br>Dirección IP do dispositivo

@@ -1,6 +1,8 @@
 <?php
+$lang['ByClub']='Efter Land/Klubb';
+$lang['ByEvent']='Klassvis';
 $lang['ByName']='På namn';
-$lang['ByTarget']='På tavla';
+$lang['ByTarget']='Efter tavla';
 $lang['ClassDiv']='Tävlingsklass';
 $lang['DivClas']='Skjutstil & Klass';
 $lang['Eliminations']='Eliminering';

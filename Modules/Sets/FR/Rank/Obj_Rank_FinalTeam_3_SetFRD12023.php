@@ -97,11 +97,11 @@
 			}
 
 			if (array_key_exists('cutRank',$this->opts) && is_numeric($this->opts['cutRank']) && $this->opts['cutRank']>0)
-				$filter.= "AND IF(EvFinalFirstPhase=0, TeRank, TeRankFinal)<={$this->opts['cutRank']} ";
+				$filter.= "AND IF(EvFinalFirstPhase=0 and EvElimType!=5, TeRank, TeRankFinal)<={$this->opts['cutRank']} ";
 
 			$EnFilter  = (empty($this->opts['enid']) ? '' : " AND EnId=" . intval($this->opts['enid'])) ;
 			$EnFilter .= (empty($this->opts['coid']) ? '' : " AND EnCountry=" . intval($this->opts['coid'])) ;
-			$EnFilter .= (empty($this->opts['cutRank']) ? '' : " AND IF(EvFinalFirstPhase=0, TeRank, TeRankFinal)<=" . intval($this->opts['cutRank'])) ;
+			$EnFilter .= (empty($this->opts['cutRank']) ? '' : " AND IF(EvFinalFirstPhase=0 and EvElimType!=5, TeRank, TeRankFinal)<=" . intval($this->opts['cutRank'])) ;
 
 			$Order='';
 // 			if(empty($this->opts['alpha'])) $Order='personOrder ASC, ';
@@ -125,7 +125,7 @@
 						EvFinalPrintHead as PrintHeader,
 						EvFinalFirstPhase, EvMatchMode, EvMedals, EvCodeParent, EvMixedTeam,
 						EnId,EnCode, EnSex, EnNameOrder,EnFirstName,upper(EnFirstName) EnFirstNameUpper,EnName,tc.TfcOrder AS personOrder, IndIrm.IrmType as IndIrmType,
-						TeRank as QualRank, IF(EvFinalFirstPhase=0, TeRank, TeRankFinal) as FinalRank, TeScore, TeGold, TeXnine,
+						TeRank as QualRank, IF(EvFinalFirstPhase=0 and EvElimType!=5, TeRank, TeRankFinal) as FinalRank, TeScore, TeGold, TeXnine,
 						TeTimestamp,TeTimestampFinal,
 						ifnull(concat(DV2.DvMajVersion, '.', DV2.DvMinVersion) ,concat(DV1.DvMajVersion, '.', DV1.DvMinVersion)) as DocVersion,
 						date_format(ifnull(DV2.DvPrintDateTime, DV1.DvPrintDateTime), '%e %b %Y %H:%i UTC') as DocVersionDate,
@@ -143,7 +143,7 @@
 						LEFT JOIN DocumentVersions DV2 on EvTournament=DV2.DvTournament AND DV2.DvFile = 'R-TEAM' and DV2.DvEvent=EvCode
 						left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 					WHERE
-						IF(EvFinalFirstPhase=0, TeRank, TeRankFinal)<=(EvFinalFirstPhase*2) AND ToId = {$this->tournament}
+						IF(EvFinalFirstPhase=0 and EvElimType!=5, TeRank, TeRankFinal)<=(EvFinalFirstPhase*2) AND ToId = {$this->tournament}
 						{$filter}
 						{$EnFilter}
 
@@ -156,7 +156,7 @@
 						EvFinalPrintHead as PrintHeader,
 						EvFinalFirstPhase,EvMatchMode,EvMedals, EvCodeParent, EvMixedTeam,
 						EnId,EnCode, EnSex, EnNameOrder,EnFirstName,upper(EnFirstName) EnFirstNameUpper,EnName,tc.TcOrder, IndIrm.IrmType as IndIrmType,
-						TeRank as QualRank, IF(EvFinalFirstPhase=0, TeRank, TeRankFinal) as FinalRank, TeScore, TeGold, TeXnine,
+						TeRank as QualRank, IF(EvFinalFirstPhase=0 and EvElimType!=5, TeRank, TeRankFinal) as FinalRank, TeScore, TeGold, TeXnine,
 						TeTimestamp,TeTimestampFinal,
 						ifnull(concat(DV2.DvMajVersion, '.', DV2.DvMinVersion) ,concat(DV1.DvMajVersion, '.', DV1.DvMinVersion)) as DocVersion,
 						date_format(ifnull(DV2.DvPrintDateTime, DV1.DvPrintDateTime), '%e %b %Y %H:%i UTC') as DocVersionDate,
@@ -174,7 +174,7 @@
 						LEFT JOIN DocumentVersions DV2 on EvTournament=DV2.DvTournament AND DV2.DvFile = 'R-TEAM' and DV2.DvEvent=EvCode
 						left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 					WHERE
-						IF(EvFinalFirstPhase=0, TeRank, TeRankFinal)>(EvFinalFirstPhase*2) AND ToId = {$this->tournament}
+						IF(EvFinalFirstPhase=0 and EvElimType!=5, TeRank, TeRankFinal)>(EvFinalFirstPhase*2) AND ToId = {$this->tournament}
 						/*AND CONCAT(TeCoId,'_',TeSubTeam) NOT IN (SELECT DISTINCT CONCAT(TfTeam,'_',TfSubTeam) FROM TeamFinals WHERE TfTournament={$this->tournament})*/
 						{$filter}
 						{$EnFilter}

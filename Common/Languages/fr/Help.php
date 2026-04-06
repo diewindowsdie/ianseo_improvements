@@ -10,7 +10,6 @@ $lang['AutoCHK-CanEditEntry']='Editer l\'inscription d\'Archer';
 $lang['AutoCHK-CanEditExtras']='Editer le supplément';
 $lang['AutoCHK-CanEditTgt']='Editer l\'affectation de cible';
 $lang['AutoCHK-Code']='Liste des concours, un par ligne<br> Le premier code de concours sera utilisé comme en-tête dans les bornes d\'enregistrement automatique.';
-$lang['AutoCHK-IP']='Liste des IP des appareils d\'enregistrement automatique. Une adresse IP par ligne, correspondant à l\'un des formats suivants :<br> IP de l\'appareil<br> IP de l\'appareil | File d\'attente d\'imprimante d\'accréditation <br> IP du périphérique | File d\'attente d\'impression d\'accréditation | Étiquette de nom de file d\'attente d\'imprimante<br> File d\'attente d\'imprimante sous la forme : Nom de la file d\'attente [ @ Serveur d\'impression ]<br> Si aucune file d\'attente d\'imprimante n\'est définie, la boîte de dialogue d\'impression standard s\'affiche';
 $lang['AutoCHK-IPinfo']='Liste des IP des Bornes d\'auto-information. (Une adresse IP par ligne)';
 $lang['AutoCHK-IPnoMgm']='List of IP of self check-in kiosks. One IP Address per line, matching one of the following formats:<br> Device IP<br> Device IP | Accreditation Printer Queue <br> Device IP | Accreditation Printer Queue | Name Tag Printer Queue<br> Printer Queue in form: Queue Name [ @ Printer Server ]';
 $lang['AutoCHK-Print']='Impressions automatique';

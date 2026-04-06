@@ -224,10 +224,12 @@
 		 */
 			$q="
 				SELECT EvElimType, EvWinnerFinalRank, SubCodes, EvCodeParent, GrPhase, EvFinalFirstPhase, least(f.FinMatchNo,f2.FinMatchNo) as MatchNo,
-					if((EvMatchArrowsNo & GrBitPhase)=0, EvFinArrows*EvFinEnds, EvElimArrows*EvElimEnds) DiArrows,  
+					if((EvMatchArrowsNo & GrBitPhase)=0, EvFinArrows, EvElimArrows) DiEndArrows,
+					if((EvMatchArrowsNo & GrBitPhase)=0, EvFinArrows*EvFinEnds, EvElimArrows*EvElimEnds) DiArrows,
 				    f.FinAthlete AS AthId, i.IndRank as AthRank, f2.FinAthlete AS OppAthId, i2.IndRank as OppAthRank,
 					f.FinIrmType as IrmType, f2.FinIrmType as OppIrmType, f.FinWinLose as WinLose, f2.FinWinLose as OppWinLose,
-					f.FinArrowstring as Arrowstring, f2.FinArrowstring as OppArrowstring,f.FinTiebreak as Tiebreak, f2.FinTiebreak as OppTiebreak,
+					f.FinArrowstring as Arrowstring, f2.FinArrowstring as OppArrowstring, f.FinSetPoints as SetPoints, f2.FinSetPoints as OppSetPoints,
+					f.FinTiebreak as Tiebreak, f2.FinTiebreak as OppTiebreak,
 					f.FinScore AS Score,f.FinTie AS Tie, f2.FinScore AS OppScore,f2.FinTie as OppTie, f.FinMatchNo as RealMatchNo, f2.FinMatchNo as OppRealMatchNo
 				FROM
 					Finals AS f
@@ -274,9 +276,9 @@
 				}
 				if ($phase==0 || $phase==1) {
                     $avg = [
-                        round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: ($myRow->DiArrows ?: 1))), 3),
+                        round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->SetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->SetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
                         round((valutaArrowString($myRow->Tiebreak) / (strlen(trim($myRow->Tiebreak)) ?: 1)), 3),
-                        round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: ($myRow->DiArrows ?: 1))), 3),
+                        round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->OppSetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->OppSetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
                         round((valutaArrowString($myRow->OppTiebreak) / (strlen(trim($myRow->OppTiebreak)) ?: 1)), 3)
                     ];
                     safe_w_SQL("UPDATE Finals SET FinAverageMatch='{$avg[0]}', FinAverageTie='{$avg[1]}' WHERE FinTournament='{$this->tournament}' AND FinEvent='$EventToUse' AND FinMatchNo='{$myRow->RealMatchNo}'");
@@ -302,9 +304,9 @@
 				} elseif ($phase==2 or $myRow->SubCodes) {
                     while ($myRow) {
                         $avg = [
-                            round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: ($myRow->DiArrows ?: 1))), 3),
+                            round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->SetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->SetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
                             round((valutaArrowString($myRow->Tiebreak) / (strlen(trim($myRow->Tiebreak)) ?: 1)), 3),
-                            round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: ($myRow->DiArrows ?: 1))), 3),
+                            round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->OppSetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->OppSetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
                             round((valutaArrowString($myRow->OppTiebreak) / (strlen(trim($myRow->OppTiebreak)) ?: 1)), 3)
                         ];
                         safe_w_SQL("UPDATE Finals SET FinAverageMatch='{$avg[0]}', FinAverageTie='{$avg[1]}' WHERE FinTournament='{$this->tournament}' AND FinEvent='$EventToUse' AND FinMatchNo='{$myRow->RealMatchNo}'");
@@ -315,9 +317,9 @@
                     $lstMatches = array();
                     while ($myRow) {
                         $avg = [
-                            round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: ($myRow->DiArrows ?: 1))), 3),
+                            round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->SetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->SetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
                             round((valutaArrowString($myRow->Tiebreak) / (strlen(trim($myRow->Tiebreak)) ?: 1)), 3),
-                            round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: ($myRow->DiArrows ?: 1))), 3),
+                            round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->OppSetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->OppSetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
                             round((valutaArrowString($myRow->OppTiebreak) / (strlen(trim($myRow->OppTiebreak)) ?: 1)), 3)
                         ];
                         $lstMatches[$myRow->MatchNo] = $avg[0]*1000+($avg[1]/100);

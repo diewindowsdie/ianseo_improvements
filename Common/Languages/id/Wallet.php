@@ -1,4 +1,5 @@
 <?php
+$lang['AddToWallet']='Tambahkan ke Dompet';
 $lang['CmdButtons']='Hasilkan Tombol';
 $lang['CmdRandomID']='ID Acak';
 $lang['TakePictureLink']='Ambil Tautan Gambar';
