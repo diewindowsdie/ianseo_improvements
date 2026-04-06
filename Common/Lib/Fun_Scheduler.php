@@ -3960,7 +3960,10 @@ Class Scheduler {
                                                         $t=safe_r_sql($Sql);
                                                         $SesFilter='';
                                                         if($this->SesLocations) {
-                                                            $SesFilter=" and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).") and if(SesFirstTarget>0, QuTarget between SesFirstTarget and SesFirstTarget+SesTar4Session-1, true)";
+                                                            $SesFilter.=" and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).") and if(SesFirstTarget>0, QuTarget between SesFirstTarget and SesFirstTarget+SesTar4Session-1, true)";
+                                                        }
+                                                        if($Item->SesGrouping) {
+                                                            $SesFilter.=" and SesLocation in (".StrSafe_DB($Item->SesGrouping).") and if(SesFirstTarget>0, QuTarget between SesFirstTarget and SesFirstTarget+SesTar4Session-1, true)";
                                                         }
                                                         while($u=safe_fetch($t)) {
                                                             $Sql="select distinct SesAth4Target, QuTarget TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart from
@@ -3970,9 +3973,10 @@ Class Scheduler {
                                                                 inner join Session on SesOrder=QuSession and SesType='{$Item->Type}' and SesTournament={$this->TourId} $SesFilter
                                                                 left join TournamentDistances on concat(trim(EnDivision),trim(EnClass)) like TdClasses and EnTournament=TdTournament
                                                                 left join (select TfId, TarDescr, TfW{$u->DiDistance} as TarDim, TfTournament from TargetFaces inner join Targets on TfT{$u->DiDistance}=TarId) tf on TfTournament=EnTournament and TfId=EnTargetFace
-                                                                where EnTournament={$this->TourId}
+                                                                where EnTournament={$this->TourId}" . $SesFilter . "
                                                                 ".($this->TargetsInvolved ? ' HAVING '.sprintf($this->TargetsInvolved, 'TargetNo') : '')."
                                                                 order by TargetNo, Distance desc, TargetNo, TarDescr, TarDim";
+
                                                             $v=safe_r_sql($Sql);
                                                             $k="";
                                                             $first=true;
@@ -4141,6 +4145,7 @@ Class Scheduler {
                                                             AND FwDay='$Date' and FwTime='$Time'
                                                             and FwTargets!=''
                                                         ".($this->SesLocations ? " and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).")":'')."
+                                                        ".($Item->SesGrouping ? " and SesLocation in (".StrSafe_DB($Item->SesGrouping).")":'')."
                                                         GROUP BY FwEvent
                                                         ORDER BY FwTargets, FwEvent";
                                                     $t = safe_r_sql($MyQuery);
@@ -4244,6 +4249,7 @@ Class Scheduler {
                                                                 and FsTarget!=''
                                                                 AND GrPhase<=greatest(ifnull(PhId,0), ifnull(PhLevel,0), EvFinalFirstPhase)
                                                                 ".($this->SesLocations ? " and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).")":'')."
+                                                                ".($Item->SesGrouping ? " and SesLocation in (".StrSafe_DB($Item->SesGrouping).")":'')."
                                                             group by FsEvent, FsTarget, GrPhase
                                                             ".($this->TargetsInvolved ? ' HAVING '.sprintf($this->TargetsInvolved, 'FsTarget+0') : '')."
                                                             ORDER BY Warmup ASC, FSTarget ASC, FsEvent, FSMatchNo ASC";
@@ -4394,230 +4400,92 @@ Class Scheduler {
 
                                         $IsTitle=false;
 
-                                        if(empty($Done[$Date][$Time][$Item->Type][$Item->Distance])) {
-    // 										$Done[$Date][$Time][$Item->Type][$Item->Distance]=true;
-                                            $MaxTgt=0;
-                                            $rows=array();
-                                            switch($Item->Type) {
-                                                case 'Q':
-                                                    if($Item->Target) {
-                                                        // USES THIS ONE!!!
-                                                        foreach(explode(',', $Item->Target) as $Block) {
-                                                            $tmp= explode('@', $Block);
-                                                            $bl=new TargetButt();
-                                                            $Range=$tmp[0];
-                                                            $bl->Distance=$tmp[1];
-                                                            $DistanceMin=min($DistanceMin, $tmp[1]);
-                                                            $DistanceMax=max($DistanceMax, $tmp[1]);
+                                        $MaxTgt=0;
+                                        $rows=array();
+                                        switch($Item->Type) {
+                                            case 'Q':
+                                                if($Item->Target) {
+                                                    // USES THIS ONE!!!
+                                                    foreach(explode(',', $Item->Target) as $Block) {
+                                                        $tmp= explode('@', $Block);
+                                                        $bl=new TargetButt();
+                                                        $Range=$tmp[0];
+                                                        $bl->Distance=$tmp[1];
+                                                        $DistanceMin=min($DistanceMin, $tmp[1]);
+                                                        $DistanceMax=max($DistanceMax, $tmp[1]);
 
-                                                            if(!empty($tmp[2])) $bl->Event=$tmp[2];
-                                                            if(!empty($tmp[3])) $bl->Target=$tmp[3];
+                                                        if(!empty($tmp[2])) $bl->Event=$tmp[2];
+                                                        if(!empty($tmp[3])) $bl->Target=$tmp[3];
 
-                                                            // we need to rearrange the blocks depending ono the intersections of the selected Locations
-                                                            $Ranges=array();
-                                                            if(empty($this->LocationsToPrint)) {
-                                                                $tmp=explode('-', $Range);
-                                                                $Ranges[]=$tmp;
-                                                            } else {
-                                                                $tmp=explode('-', $Range);
+                                                        // we need to rearrange the blocks depending ono the intersections of the selected Locations
+                                                        $Ranges=array();
+                                                        if(empty($this->LocationsToPrint)) {
+                                                            $tmp=explode('-', $Range);
+                                                            $Ranges[]=$tmp;
+                                                        } else {
+                                                            $tmp=explode('-', $Range);
 
-                                                                foreach($this->LocationsToPrint as $i => $k2) {
-                                                                    if(count($tmp)>1) {
-                                                                        if($k2->Tg1 <= $tmp[1] and $k2->Tg2 >= $tmp[0]) {
-                                                                            // portion is inside the printed area
-                                                                            $Ranges[]=array(max($tmp[0], $k2->Tg1), min($tmp[1], $k2->Tg2));
-                                                                        }
-                                                                    } elseif($tmp[0]>=$k2->Tg1 and $tmp[0]<=$k2->Tg2) {
-                                                                        $Ranges[]=$tmp;
-                                                                    }
-                                                                }
-                                                            }
-
-                                                            foreach($Ranges as $tmp) {
-                                                                if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$tmp[0];
-                                                                if(!$FOP[$SesGroup][$Date]['min']) $FOP[$SesGroup][$Date]['min']=$tmp[0];
-                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $tmp[0]);
-                                                                $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $tmp[0]);
+                                                            foreach($this->LocationsToPrint as $i => $k2) {
                                                                 if(count($tmp)>1) {
-                                                                    $bl->Range=array($tmp[0], $tmp[1]);
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tmp[1]);
-                                                                    $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tmp[1]);
-                                                                } else {
-                                                                    $bl->Range=array($tmp[0],$tmp[0]);
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tmp[0]);
-                                                                    $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tmp[0]);
-                                                                }
-
-                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
-                                                                }
-                                                            }
-
-                                                        }
-                                                    } else {
-                                                        $SesFilter='';
-                                                        if($this->SesLocations) {
-                                                            $SesFilter=" and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).") and if(SesFirstTarget>0, QuTarget between SesFirstTarget and SesFirstTarget+SesTar4Session-1, true)";
-                                                        }
-                                                        $Sql="select * from DistanceInformation where DiTournament={$this->TourId} and DiDay='$Date' and DiWarmStart='$Time'";
-                                                        $t=safe_r_sql($Sql);
-                                                        while($u=safe_fetch($t)) {
-                                                            $Sql="select distinct SesAth4Target, QuTarget as TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart from
-                                                                Entries
-                                                                inner join Qualifications on EnId=QuId
-                                                                inner join DistanceInformation on QuSession=DiSession and DiTournament={$this->TourId} and DiDistance={$u->DiDistance} and DiDay='$Date' and DiWarmStart='$Time'
-                                                                inner join Session on SesOrder=QuSession and SesType='{$Item->Type}' and SesTournament={$this->TourId} $SesFilter
-                                                                left join TournamentDistances on concat(trim(EnDivision),trim(EnClass)) like TdClasses and EnTournament=TdTournament
-                                                                left join (select TfId, TarDescr, TfW{$u->DiDistance} as TarDim, TfTournament from TargetFaces inner join Targets on TfT{$u->DiDistance}=TarId) tf on TfTournament=EnTournament and TfId=EnTargetFace
-                                                                where EnTournament={$this->TourId} and QuTarget >= SesFirstTarget and QuTarget <= SesFirstTarget + SesTar4Session
-                                                                order by TargetNo, Distance desc, TargetNo, TarDescr, TarDim";
-                                                            $v=safe_r_sql($Sql);
-                                                            $k="";
-                                                            $first=true;
-                                                            while($w=safe_fetch($v)) {
-                                                                if(empty($bl) or $k!="{$w->TarDescr} {$w->TarDim} {$w->Distance}") {
-                                                                    if($k) {
-                                                                        if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
-                                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
-                                                                        }
+                                                                    if($k2->Tg1 <= $tmp[1] and $k2->Tg2 >= $tmp[0]) {
+                                                                        // portion is inside the printed area
+                                                                        $Ranges[]=array(max($tmp[0], $k2->Tg1), min($tmp[1], $k2->Tg2));
                                                                     }
-
-                                                                    $bl=new TargetButt();
-                                                                    $bl->Target=get_text($w->TarDescr)." $w->TarDim cm";
-                                                                    $bl->Distance=$w->Distance;
-                                                                    $DistanceMin=min($DistanceMin, $w->Distance);
-                                                                    $DistanceMax=max($DistanceMax, $w->Distance);
-
-                                                                    $bl->Event=get_text('WarmUp', 'Tournament');
-                                                                    $bl->ArcTarget=$w->SesAth4Target;
-                                                                    $bl->Range=array($w->TargetNo, $w->TargetNo);
-
-                                                                    if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$w->TargetNo;
-                                                                    if(!$FOP[$SesGroup][$Date]['min']) $FOP[$SesGroup][$Date]['min']=$w->TargetNo;
-                                                                } elseif($w->TargetNo == $bl->Range[1]+1) {
-                                                                    // sequence is OK
-                                                                    $bl->Range[1]=$w->TargetNo;
-                                                                } else {
-                                                                    // starts another block because there is a "hole" in the target sequence
-                                                                    if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
-                                                                        $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
-                                                                    }
-                                                                    $bl=new TargetButt();
-                                                                    $bl->Target=get_text($w->TarDescr)." $w->TarDim cm";
-                                                                    $bl->Distance=$w->Distance;
-                                                                    $DistanceMin=min($DistanceMin, $w->Distance);
-                                                                    $DistanceMax=max($DistanceMax, $w->Distance);
-
-                                                                    $bl->Event=get_text('WarmUp', 'Tournament');
-                                                                    $bl->ArcTarget=$w->SesAth4Target;
-                                                                    $bl->Range=array($w->TargetNo, $w->TargetNo);
-                                                                }
-                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $w->TargetNo);
-                                                                $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $w->TargetNo);
-                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $w->TargetNo);
-                                                                $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $w->TargetNo);
-
-                                                                $k="{$w->TarDescr} {$w->TarDim} {$w->Distance}";
-                                                            }
-                                                            if($k) {
-                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
-                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
+                                                                } elseif($tmp[0]>=$k2->Tg1 and $tmp[0]<=$k2->Tg2) {
+                                                                    $Ranges[]=$tmp;
                                                                 }
                                                             }
                                                         }
+
+                                                        foreach($Ranges as $tmp) {
+                                                            if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$tmp[0];
+                                                            if(!$FOP[$SesGroup][$Date]['min']) $FOP[$SesGroup][$Date]['min']=$tmp[0];
+                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $tmp[0]);
+                                                            $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $tmp[0]);
+                                                            if(count($tmp)>1) {
+                                                                $bl->Range=array($tmp[0], $tmp[1]);
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tmp[1]);
+                                                                $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tmp[1]);
+                                                            } else {
+                                                                $bl->Range=array($tmp[0],$tmp[0]);
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tmp[0]);
+                                                                $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tmp[0]);
+                                                            }
+
+                                                            if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
+                                                            }
+                                                        }
+
                                                     }
-                                                    break;
-                                                case 'I':
-                                                case 'T':
-
-                                                    // get the warmup targets first (will be overwritten by the real matches...
-                                                    $MyQuery = "SELECT distinct FwEvent, FwTeamEvent,
-                                                            FwTargets,
-                                                            FwOptions,
-                                                            UNIX_TIMESTAMP(FwDay) as SchDate,
-                                                            DATE_FORMAT(FwTime,'" . get_text('TimeFmt') . "') as SchTime,
-                                                            count(FsTarget) TargetsPerButt,
-                                                            FwDay,
-                                                            FwTime, EvDistance, TarDescr, EvTargetSize, EvMaxTeamPerson
-                                                        FROM FinWarmup
-                                                        INNER JOIN Events ON FwEvent=EvCode AND FwTeamEvent=EvTeamEvent AND FwTournament=EvTournament
-                                                        left join Targets on EvFinalTargetType=TarId
-                                                        left join FinSchedule on FSTournament = FwTournament and FwDay = FSScheduledDate and FwMatchTime= FSScheduledTime and FSEvent = FwEvent
-				                                        left join Session on SesTournament=FwTournament and SesType='F' and concat(FwDay,' ',FwMatchTime) between SesDtStart and SesDtEnd and if(SesEvents='', true, find_in_set(concat(EvTeamEvent,EvCode), SesEvents))
-                                                        WHERE FwTournament=" . StrSafe_DB($this->TourId) . "
-                                                            AND date_format(FwDay, '%Y-%m-%d')='$Date' and FwTime='$Time'
-                                                            and FwTargets!=''
-                                                        ".($this->SesLocations ? " and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).")":'')."
-                                                        group by FSTarget
-                                                        ORDER BY FSTarget";
-                                                    $t = safe_r_sql($MyQuery);
-
-                                                    $RowTgts=array();
+                                                } else {
+                                                    $SesFilter='';
+                                                    if($this->SesLocations) {
+                                                        $SesFilter.=" and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).") and if(SesFirstTarget>0, QuTarget between SesFirstTarget and SesFirstTarget+SesTar4Session-1, true)";
+                                                    }
+                                                    if ($this->FopSingleLocations) {
+                                                        $SesFilter.= " and SesLocation in (".StrSafe_DB($this->LocationsToPrint[0]->Loc).") and if(SesFirstTarget>0, QuTarget between SesFirstTarget and SesFirstTarget+SesTar4Session-1, true)";
+                                                    }
+                                                    if($Item->SesGrouping) {
+                                                        $SesFilter.=" and SesLocation in (".StrSafe_DB($Item->SesGrouping).") and if(SesFirstTarget>0, QuTarget between SesFirstTarget and SesFirstTarget+SesTar4Session-1, true)";
+                                                    }
+                                                    $Sql="select * from DistanceInformation where DiTournament={$this->TourId} and DiDay='$Date' and DiWarmStart='$Time'";
+                                                    $t=safe_r_sql($Sql);
                                                     while($u=safe_fetch($t)) {
-                                                        foreach(explode(',', $u->FwTargets) as $range) {
-                                                            $Ranges=array();
-                                                            if($this->LocationsToPrint) {
-                                                                $tmp=explode('-', $range);
-
-                                                                foreach($this->LocationsToPrint as $i => $k2) {
-                                                                    if(count($tmp)>1) {
-                                                                        if($k2->Tg1 <= $tmp[1] and $k2->Tg2 >= $tmp[0]) {
-                                                                            // portion is inside the printed area
-                                                                            $Ranges[]=array(max($tmp[0], $k2->Tg1), min($tmp[1], $k2->Tg2));
-                                                                        }
-                                                                    } elseif($tmp[0]>=$k2->Tg1 and $tmp[0]<=$k2->Tg2) {
-                                                                        $Ranges[]=$tmp;
-                                                                    }
-                                                                }
-                                                            } else {
-                                                                $Ranges[]=explode('-', $range);
-                                                            }
-
-                                                            foreach($Ranges as $tmp) {
-                                                                if(count($tmp)>1) {
-                                                                    foreach(range($tmp[0], $tmp[1]) as $tgt) {
-                                                                        $DistanceMin=min($DistanceMin, $u->EvDistance);
-                                                                        $DistanceMax=max($DistanceMax, $u->EvDistance);
-
-                                                                        $rows[$u->FwEvent][$tgt]['d']=$u->EvDistance;
-                                                                        $rows[$u->FwEvent][$tgt]['e']=$u->FwEvent;
-                                                                        $rows[$u->FwEvent][$tgt]['f']=get_text($u->TarDescr)." $u->EvTargetSize cm";
-                                                                        $rows[$u->FwEvent][$tgt]['ph']=get_text('WarmUp', 'Tournament');
-                                                                        $rows[$u->FwEvent][$tgt]['mp']=$u->EvMaxTeamPerson;
-                                                                        $rows[$u->FwEvent][$tgt]["TargetsPerButt"] = $u->FwTeamEvent == 0 ? $u->TargetsPerButt : 2;
-                                                                        if(empty($RowTgts[$tgt])) {
-                                                                            $rows[$u->FwEvent][$tgt]['l']=0;
-                                                                        } else {
-                                                                            $rows[$u->FwEvent][$tgt]['l']=1;
-                                                                        }
-                                                                        $RowTgts[$tgt]=1;
-                                                                    }
-                                                                } else {
-                                                                    $DistanceMin=min($DistanceMin, $u->EvDistance);
-                                                                    $DistanceMax=max($DistanceMax, $u->EvDistance);
-
-                                                                    $rows[$u->FwEvent][$tmp[0]]['d']=$u->EvDistance;
-                                                                    $rows[$u->FwEvent][$tmp[0]]['e']=$u->FwEvent;
-                                                                    $rows[$u->FwEvent][$tmp[0]]['f']=get_text($u->TarDescr)." $u->EvTargetSize cm";
-                                                                    $rows[$u->FwEvent][$tmp[0]]['ph']=get_text('WarmUp', 'Tournament');
-                                                                    $rows[$u->FwEvent][$tmp[0]]['mp']=$u->EvMaxTeamPerson;
-                                                                    if(empty($RowTgts[$tmp[0]])) {
-                                                                        $rows[$u->FwEvent][$tmp[0]]['l']=0;
-                                                                    } else {
-                                                                        $rows[$u->FwEvent][$tmp[0]]['l']=1;
-                                                                    }
-                                                                    $RowTgts[$tmp[0]]=1;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-
-
-                                                    $k='';
-                                                    foreach($rows as $Events => $tgts) {
-                                                        ksort($tgts);
-                                                        foreach($tgts as $tgt => $def) {
-                                                            if(empty($bl) or $k!="{$def['d']}-{$def['e']}") {
+                                                        $Sql="select distinct SesAth4Target, QuTarget as TargetNo, IFNULL(Td{$u->DiDistance},'.{$u->DiDistance}.') as Distance, TarDescr, TarDim, DiDay, DiStart, DiWarmStart from
+                                                            Entries
+                                                            inner join Qualifications on EnId=QuId
+                                                            inner join DistanceInformation on QuSession=DiSession and DiTournament={$this->TourId} and DiDistance={$u->DiDistance} and DiDay='$Date' and DiWarmStart='$Time'
+                                                            inner join Session on SesOrder=QuSession and SesType='{$Item->Type}' and SesTournament={$this->TourId} $SesFilter
+                                                            left join TournamentDistances on concat(trim(EnDivision),trim(EnClass)) like TdClasses and EnTournament=TdTournament
+                                                            left join (select TfId, TarDescr, TfW{$u->DiDistance} as TarDim, TfTournament from TargetFaces inner join Targets on TfT{$u->DiDistance}=TarId) tf on TfTournament=EnTournament and TfId=EnTargetFace
+                                                            where EnTournament={$this->TourId} and QuTarget >= SesFirstTarget and QuTarget <= SesFirstTarget + SesTar4Session" . $SesFilter . "
+                                                            order by TargetNo, Distance desc, TargetNo, TarDescr, TarDim";
+                                                        $v=safe_r_sql($Sql);
+                                                        $k="";
+                                                        $first=true;
+                                                        while($w=safe_fetch($v)) {
+                                                            if(empty($bl) or $k!="{$w->TarDescr} {$w->TarDim} {$w->Distance}") {
                                                                 if($k) {
                                                                     if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
                                                                         $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
@@ -4625,47 +4493,41 @@ Class Scheduler {
                                                                 }
 
                                                                 $bl=new TargetButt();
-                                                                $bl->Target=$def['f'];
-                                                                $bl->Event=$def['e'];
-                                                                $bl->Distance=$def['d'];
-                                                                $bl->ArcTarget = $def["TargetsPerButt"];
-                                                                $DistanceMin=min($DistanceMin, $def['d']);
-                                                                $DistanceMax=max($DistanceMax, $def['d']);
+                                                                $bl->Target=get_text($w->TarDescr)." $w->TarDim cm";
+                                                                $bl->Distance=$w->Distance;
+                                                                $DistanceMin=min($DistanceMin, $w->Distance);
+                                                                $DistanceMax=max($DistanceMax, $w->Distance);
 
-                                                                $bl->Range=array($tgt, $tgt);
-                                                                if(!empty($def['c'])) $bl->Colour=$def['c'];
-                                                                if(!empty($def['ph'])) $bl->Phase=$def['ph'];
-                                                                if(!empty($def['l'])) $bl->Line=$def['l'];
+                                                                $bl->Event=get_text('WarmUp', 'Tournament');
+                                                                $bl->ArcTarget=$w->SesAth4Target;
+                                                                $bl->Range=array($w->TargetNo, $w->TargetNo);
 
-                                                                if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$tgt;
-                                                                if(!$FOP[$SesGroup][$Date]['min']) $FOP[$SesGroup][$Date]['min']=$tgt;
-                                                            } elseif($tgt == $bl->Range[1]+1) {
+                                                                if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$w->TargetNo;
+                                                                if(!$FOP[$SesGroup][$Date]['min']) $FOP[$SesGroup][$Date]['min']=$w->TargetNo;
+                                                            } elseif($w->TargetNo == $bl->Range[1]+1) {
                                                                 // sequence is OK
-                                                                $bl->Range[1]=$tgt;
+                                                                $bl->Range[1]=$w->TargetNo;
                                                             } else {
                                                                 // starts another block because there is a "hole" in the target sequence
                                                                 if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
                                                                     $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
                                                                 }
                                                                 $bl=new TargetButt();
-                                                                $bl->Target=$def['f'];
-                                                                $bl->Event=$def['e'];
-                                                                $bl->Distance=$def['d'];
-                                                                $bl->ArcTarget = $def["TargetsPerButt"];
-                                                                $DistanceMin=min($DistanceMin, $def['d']);
-                                                                $DistanceMax=max($DistanceMax, $def['d']);
+                                                                $bl->Target=get_text($w->TarDescr)." $w->TarDim cm";
+                                                                $bl->Distance=$w->Distance;
+                                                                $DistanceMin=min($DistanceMin, $w->Distance);
+                                                                $DistanceMax=max($DistanceMax, $w->Distance);
 
-                                                                $bl->Range=array($tgt, $tgt);
-                                                                if(!empty($def['c'])) $bl->Colour=$def['c'];
-                                                                if(!empty($def['ph'])) $bl->Phase=$def['ph'];
-                                                                if(!empty($def['l'])) $bl->Line=$def['l'];
+                                                                $bl->Event=get_text('WarmUp', 'Tournament');
+                                                                $bl->ArcTarget=$w->SesAth4Target;
+                                                                $bl->Range=array($w->TargetNo, $w->TargetNo);
                                                             }
-                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $tgt);
-                                                            $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $tgt);
-                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tgt);
-                                                            $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tgt);
+                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $w->TargetNo);
+                                                            $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $w->TargetNo);
+                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $w->TargetNo);
+                                                            $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $w->TargetNo);
 
-                                                            $k="{$def['d']}-{$def['e']}";
+                                                            $k="{$w->TarDescr} {$w->TarDim} {$w->Distance}";
                                                         }
                                                         if($k) {
                                                             if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
@@ -4673,8 +4535,155 @@ Class Scheduler {
                                                             }
                                                         }
                                                     }
-                                                    break;
-                                            }
+                                                }
+                                                break;
+                                            case 'I':
+                                            case 'T':
+                                                // get the warmup targets first (will be overwritten by the real matches...
+                                                $MyQuery = "SELECT distinct FwEvent, FwTeamEvent,
+                                                        FwTargets,
+                                                        FwOptions,
+                                                        UNIX_TIMESTAMP(FwDay) as SchDate,
+                                                        DATE_FORMAT(FwTime,'" . get_text('TimeFmt') . "') as SchTime,
+                                                        count(FsTarget) TargetsPerButt,
+                                                        FwDay,
+                                                        FwTime, EvDistance, TarDescr, EvTargetSize, EvMaxTeamPerson
+                                                    FROM FinWarmup
+                                                    INNER JOIN Events ON FwEvent=EvCode AND FwTeamEvent=EvTeamEvent AND FwTournament=EvTournament
+                                                    left join Targets on EvFinalTargetType=TarId
+                                                    left join FinSchedule on FSTournament = FwTournament and FwDay = FSScheduledDate and FwMatchTime= FSScheduledTime and FSEvent = FwEvent
+			                                        left join Session on SesTournament=FwTournament and SesType='F' and concat(FwDay,' ',FwMatchTime) between SesDtStart and SesDtEnd and if(SesEvents='', true, find_in_set(concat(EvTeamEvent,EvCode), SesEvents))
+                                                    WHERE FwTournament=" . StrSafe_DB($this->TourId) . "
+                                                        AND date_format(FwDay, '%Y-%m-%d')='$Date' and FwTime='$Time'
+                                                        and FwTargets!=''
+                                                    ".($this->SesLocations ? " and SesLocation in (".implode(',', StrSafe_DB($this->SesLocations)).")":'')."
+                                                    ".($Item->SesGrouping ? " and SesLocation in (".StrSafe_DB($Item->SesGrouping).")":'')."
+                                                    group by FSTarget
+                                                    ORDER BY FSTarget";
+                                                $t = safe_r_sql($MyQuery);
+
+                                                $RowTgts=array();
+                                                while($u=safe_fetch($t)) {
+                                                    foreach(explode(',', $u->FwTargets) as $range) {
+                                                        $Ranges=array();
+                                                        if($this->LocationsToPrint) {
+                                                            $tmp=explode('-', $range);
+
+                                                            foreach($this->LocationsToPrint as $i => $k2) {
+                                                                if(count($tmp)>1) {
+                                                                    if($k2->Tg1 <= $tmp[1] and $k2->Tg2 >= $tmp[0]) {
+                                                                        // portion is inside the printed area
+                                                                        $Ranges[]=array(max($tmp[0], $k2->Tg1), min($tmp[1], $k2->Tg2));
+                                                                    }
+                                                                } elseif($tmp[0]>=$k2->Tg1 and $tmp[0]<=$k2->Tg2) {
+                                                                    $Ranges[]=$tmp;
+                                                                }
+                                                            }
+                                                        } else {
+                                                            $Ranges[]=explode('-', $range);
+                                                        }
+
+                                                        foreach($Ranges as $tmp) {
+                                                            if(count($tmp)>1) {
+                                                                foreach(range($tmp[0], $tmp[1]) as $tgt) {
+                                                                    $DistanceMin=min($DistanceMin, $u->EvDistance);
+                                                                    $DistanceMax=max($DistanceMax, $u->EvDistance);
+
+                                                                    $rows[$u->FwEvent][$tgt]['d']=$u->EvDistance;
+                                                                    $rows[$u->FwEvent][$tgt]['e']=$u->FwEvent;
+                                                                    $rows[$u->FwEvent][$tgt]['f']=get_text($u->TarDescr)." $u->EvTargetSize cm";
+                                                                    $rows[$u->FwEvent][$tgt]['ph']=get_text('WarmUp', 'Tournament');
+                                                                    $rows[$u->FwEvent][$tgt]['mp']=$u->EvMaxTeamPerson;
+                                                                    $rows[$u->FwEvent][$tgt]["TargetsPerButt"] = $u->FwTeamEvent == 0 ? $u->TargetsPerButt : 2;
+                                                                    if(empty($RowTgts[$tgt])) {
+                                                                        $rows[$u->FwEvent][$tgt]['l']=0;
+                                                                    } else {
+                                                                        $rows[$u->FwEvent][$tgt]['l']=1;
+                                                                    }
+                                                                    $RowTgts[$tgt]=1;
+                                                                }
+                                                            } else {
+                                                                $DistanceMin=min($DistanceMin, $u->EvDistance);
+                                                                $DistanceMax=max($DistanceMax, $u->EvDistance);
+
+                                                                $rows[$u->FwEvent][$tmp[0]]['d']=$u->EvDistance;
+                                                                $rows[$u->FwEvent][$tmp[0]]['e']=$u->FwEvent;
+                                                                $rows[$u->FwEvent][$tmp[0]]['f']=get_text($u->TarDescr)." $u->EvTargetSize cm";
+                                                                $rows[$u->FwEvent][$tmp[0]]['ph']=get_text('WarmUp', 'Tournament');
+                                                                $rows[$u->FwEvent][$tmp[0]]['mp']=$u->EvMaxTeamPerson;
+                                                                if(empty($RowTgts[$tmp[0]])) {
+                                                                    $rows[$u->FwEvent][$tmp[0]]['l']=0;
+                                                                } else {
+                                                                    $rows[$u->FwEvent][$tmp[0]]['l']=1;
+                                                                }
+                                                                $RowTgts[$tmp[0]]=1;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+
+                                                $k='';
+                                                foreach($rows as $Events => $tgts) {
+                                                    ksort($tgts);
+                                                    foreach($tgts as $tgt => $def) {
+                                                        if(empty($bl) or $k!="{$def['d']}-{$def['e']}") {
+                                                            if($k) {
+                                                                if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                    $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
+                                                                }
+                                                            }
+
+                                                            $bl=new TargetButt();
+                                                            $bl->Target=$def['f'];
+                                                            $bl->Event=$def['e'];
+                                                            $bl->Distance=$def['d'];
+                                                            $bl->ArcTarget = $def["TargetsPerButt"];
+                                                            $DistanceMin=min($DistanceMin, $def['d']);
+                                                            $DistanceMax=max($DistanceMax, $def['d']);
+
+                                                            $bl->Range=array($tgt, $tgt);
+                                                            if(!empty($def['c'])) $bl->Colour=$def['c'];
+                                                            if(!empty($def['ph'])) $bl->Phase=$def['ph'];
+                                                            if(!empty($def['l'])) $bl->Line=$def['l'];
+
+                                                            if(!$FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']) $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=$tgt;
+                                                            if(!$FOP[$SesGroup][$Date]['min']) $FOP[$SesGroup][$Date]['min']=$tgt;
+                                                        } elseif($tgt == $bl->Range[1]+1) {
+                                                            // sequence is OK
+                                                            $bl->Range[1]=$tgt;
+                                                        } else {
+                                                            // starts another block because there is a "hole" in the target sequence
+                                                            if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                                $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
+                                                            }
+                                                            $bl=new TargetButt();
+                                                            $bl->Target=$def['f'];
+                                                            $bl->Event=$def['e'];
+                                                            $bl->Distance=$def['d'];
+                                                            $bl->ArcTarget = $def["TargetsPerButt"];
+                                                            $DistanceMin=min($DistanceMin, $def['d']);
+                                                            $DistanceMax=max($DistanceMax, $def['d']);
+
+                                                            $bl->Range=array($tgt, $tgt);
+                                                            if(!empty($def['c'])) $bl->Colour=$def['c'];
+                                                            if(!empty($def['ph'])) $bl->Phase=$def['ph'];
+                                                            if(!empty($def['l'])) $bl->Line=$def['l'];
+                                                        }
+                                                        $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min']=min($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['min'], $tgt);
+                                                        $FOP[$SesGroup][$Date]['min']=min($FOP[$SesGroup][$Date]['min'], $tgt);
+                                                        $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max']=max($FOP[$SesGroup][$Date]['times'][$Time][$Distance]['max'], $tgt);
+                                                        $FOP[$SesGroup][$Date]['max']=max($FOP[$SesGroup][$Date]['max'], $tgt);
+
+                                                        $k="{$def['d']}-{$def['e']}";
+                                                    }
+                                                    if($k) {
+                                                        if(!in_array($bl, $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'])) {
+                                                            $FOP[$SesGroup][$Date]['times'][$Time][$Distance]['targets'][]=$bl;
+                                                        }
+                                                    }
+                                                }
+                                                break;
                                         }
                                     }
                                 }
@@ -4704,6 +4713,7 @@ Class Scheduler {
 
     $orientation = isset($_REQUEST["P"]) ? "P" : "L";
 
+    //output
 	foreach($FOP as $GroupSession => $Days) {
             foreach($Days as $Day => $Blocks) {
                 if(!$Blocks['min'] and !$Blocks['max']) continue;
