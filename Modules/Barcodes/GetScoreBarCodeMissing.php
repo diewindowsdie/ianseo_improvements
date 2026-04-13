@@ -17,7 +17,7 @@ switch($Type) {
 				, EnName AS Name
 				, upper(EnFirstName) AS FirstName
 				, QuSession AS Session
-				, SELECT(QuTarget, QuLetter) AS TargetNo
+				, CONCAT(QuTarget, QuLetter) AS TargetNo
 				, CoCode AS NationCode, CoName AS Nation
 				, EnClass AS ClassCode, ClDescription
 				, EnDivision AS DivCode, DivDescription

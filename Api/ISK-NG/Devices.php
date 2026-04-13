@@ -148,10 +148,10 @@ echo '<tbody id="bGroups"></tbody>';
 echo '<tr class="divider HideSelection"><td colspan="17"></td></tr>';
 echo '<tr class="HideSelection">'.
     '<th colspan="6" rowspan="2" class="deviceGroup">' . get_text('SelectedDevicesAction', 'Api') . '</th>'.
-    '<td colspan="9" class="Bold">'.get_text('SelectedMove2Group', 'Api').'<select class="mx-3" id="MoveToGroup">'.$tmpOptionsGrp.'</select><input class="iskButton" type="button" value="'.get_text('CmdGo', 'Tournament').'" onclick="MoveToGroup()"></td>'.
+    '<td colspan="9" class="Bold">'.get_text('SelectedMove2Group', 'Api').'<select class="mx-3" id="MoveToGroup">'.$tmpOptionsGrp.'</select><input class="iskButton" type="button" value="'.get_text('CmdExec', 'Tournament').'" onclick="MoveToGroup()"></td>'.
     '</tr>';
 echo '<tr class="HideSelection">'.
-    '<td colspan="9" class="Bold">'.get_text('SelectedReNumber', 'Api').'<input class="mx-3" id="RenumberFrom" size="3"><input class="iskButton" type="button" value="'.get_text('CmdGo', 'Tournament').'" onclick="AssignFrom()"></td>'.
+    '<td colspan="9" class="Bold">'.get_text('SelectedReNumber', 'Api').'<input class="mx-3" id="RenumberFrom" size="3"><input class="iskButton" type="button" value="'.get_text('CmdExec', 'Tournament').'" onclick="AssignFrom()"></td>'.
     '</tr>';
 echo '<tr class="divider"><td colspan="17"></td></tr>';
 

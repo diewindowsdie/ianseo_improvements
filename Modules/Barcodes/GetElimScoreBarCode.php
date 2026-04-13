@@ -226,7 +226,7 @@ while($r=safe_fetch($q)) echo '<option value="'.$r->SesOrder.'" '.(!empty($_GET[
 ?></select></td>
 </tr>
 	<tr>
-		<td class="Center" colspan="2"><input type="submit" value="<?php print get_text('CmdGo','Tournament');?>" id="Vai" onClick="javascript:SendBib();"></td>
+		<td class="Center" colspan="2"><input type="submit" value="<?php print get_text('Search','Tournament');?>" id="Vai" onClick="javascript:SendBib();"></td>
 		<td class="Center"><input type="button" value="<?php print get_text('BarcodeMissing','Tournament');?>" onClick="window.open('./GetScoreBarCodeMissing.php?S=E&D='+document.getElementById('Distance').value+'&T='+document.getElementById('Session').value);"></td>
 	</tr>
 

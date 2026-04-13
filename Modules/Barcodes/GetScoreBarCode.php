@@ -15,8 +15,7 @@ $tgtList = array();
 // Check the correct separator (as barcode reader may interpret «-» as a «'» !)
 //
 if(empty($_SESSION['BarCodeSeparator'])) {
-	require_once('./GetBarCodeSeparator.php');
-	die();
+    $_SESSION["BarCodeSeparator"] = "-";
 }
 
 $ShowMiss=(!empty($_GET['ShowMiss']));
@@ -274,10 +273,6 @@ include('Common/Templates/head.php');
 echo '<div id="bcodeContainer" class="bcodeContainer"><div class="bcodeOp"><form id="Frm" method="get" action="">
 <table class="Tabella2 w-100">
 <tr><th class="Title" colspan="6">'.get_text('CheckScorecards','Tournament').'</th></tr>
-<tr class="h-0">
-	<th colspan="5" class="w-60">' . get_text('BarcodeSeparator','BackNumbers') . ': <span style="font-size:150%">' . $_SESSION['BarCodeSeparator'] . '</span>' . '</th>
-	<th colspan="1" class="w-10"><a href="' . $_SERVER["PHP_SELF"]. '?BARCODESEPARATOR=1">' . get_text('ResetBarcodeSeparator','BackNumbers') . '</a></th>
-</tr>
 <tr>
     <th class="w-5">'.get_text('Targets','Tournament').'</th>
 	<th class="w-5">'.get_text('AutoEdits','Tournament').'</th>
@@ -312,7 +307,7 @@ while($r=safe_fetch($q)) {
 echo '</select></td>
 </tr>
 <tr>
-    <td class="Center" colspan="2"><input type="submit" value="'. get_text('CmdGo','Tournament').'" id="Vai" onClick="refreshForm();"></td>
+    <td class="Center" colspan="2"><input type="submit" value="'. get_text('Search','Tournament').'" id="Vai" onClick="refreshForm();"></td>
     <td class="Center"><input type="button" value="'.get_text('BarcodeMissing','Tournament').'" onClick="window.open(\'./GetScoreBarCodeMissing.php?S=Q&D=\'+document.getElementById(\'Distance\').value+\'&T=\'+document.getElementById(\'Session\').value);"></td>
 </tr>
 <tr>
@@ -358,7 +353,7 @@ if(!$archers){
         echo '<td class="Score">'.($archer->IsSigned ? '<i class="fa-solid fa-signature mr-2"></i>':'').intval($D).'</td>';
         echo '<td>'.$archer->Firstname.'</td>';
         echo '<td>'.$archer->EnName.'</td>';
-        echo '<td class="Center">'.$archer->EnDivision.' '.$archer->EnClass.'</td>';
+        echo '<td class="Center">'.$archer->EnDivision.$archer->EnClass.'</td>';
         if($_SESSION['TourLocSubRule']=='NFAA3D-ReddingWestern') {
             $Tot=$archer->Score1;
             $Col='<td class="Right">'.$archer->Score1.'</td>';
@@ -381,10 +376,10 @@ if(!$archers){
             echo '<td class="Score">'.$archer->tXnine.'</td>';
         }
         echo '<td class="Score '.((($archer->Hits OR $archer->expectedArrows) AND $archer->Hits != $archer->expectedArrows) ? 'ArrError': '').'">'.$archer->Hits.'</td>';
-        echo '<td class="Command Bold"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C' => $archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass)).'">CONFIRM</a></td>';
+        echo '<td class="Command Bold"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C' => $archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass)).'">' . get_text('ConfirmMatch', 'Tournament') . '</a></td>';
         if($D) {
-            echo '<td class="Command"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'EDIT')).'">Edit arrows</a>
-					<br/><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C' => 'EDIT2')).'">Edit totals</a>
+            echo '<td class="Command"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'EDIT')).'">' . get_text('ScorecardArrows', 'ISK-App') . '</a>
+					<br/><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C' => 'EDIT2')).'">' . get_text('Results', 'Tournament') . '</a>
 					</td>';
             echo '<td class="Command"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'REM10')).'">Remove 10</a>
 					<br/><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'REMXNINE')).'">Remove X/Nine</a>

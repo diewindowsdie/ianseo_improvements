@@ -118,7 +118,7 @@ echo '<div class="modal" tabindex="-1" role="dialog" id="SelectMatch">'.
                 '</div>'.
             '</div>'.
             '<div class="modal-footer">'.
-                '<button type="button" class="btn btn-primary" onclick="goToMatch()">'.get_text('CmdGo', 'Tournament').'</button>'.
+                '<button type="button" class="btn btn-primary" onclick="goToMatch()">'.get_text('CmdSet', 'Tournament').'</button>'.
                 '<button type="button" class="btn btn-secondary" data-dismiss="modal">'.get_text('Close').'</button>'.
             '</div>'.
         '</div>'.

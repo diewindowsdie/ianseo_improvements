@@ -183,7 +183,7 @@ $MyRowCounter = safe_fetch($Rs);
     <tr>
       <td class="Center" rowspan="3">
           <div>
-            <input type="text" name="bib" id="bib" tabindex="1">&nbsp;<input type="submit" name="Vai" value="<?php print get_text('CmdGo','Tournament');?>" id="Vai" onClick="javascript:SendBib();">
+            <input type="text" name="bib" id="bib" tabindex="1">&nbsp;<input type="submit" name="Vai" value="<?php print get_text('Search','Tournament');?>" id="Vai" onClick="javascript:SendBib();">
           </div>
           <div>&nbsp;</div>
           <div>

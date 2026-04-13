@@ -15,8 +15,7 @@ $Match='';
 // Check the correct separator (as barcode reader may interpret «-» as a «'» !)
 //
 if(empty($_SESSION['BarCodeSeparator'])) {
-	require_once('./GetBarCodeSeparator.php');
-	die();
+	$_SESSION["BarCodeSeparator"] = "-";
 }
 
 $ShowMiss=(!empty($_GET['ShowMiss']));
@@ -88,10 +87,6 @@ include('Common/Templates/head.php');
 echo '<div id="bcodeContainer" class="bcodeContainer"><div class="bcodeOp"><form id="Frm" method="get" action="">
 <table class="Tabella2 w-100">
 <tr><th class="Title" colspan="4">'.get_text('CheckScorecards','Tournament').'</th></tr>
-<tr class="h-0">
-	<th colspan="3" class="w-60">' . get_text('BarcodeSeparator','BackNumbers') . ': <span style="font-size:150%">' . $_SESSION['BarCodeSeparator'] . '</span>' . '</th>
-	<th colspan="1" class="w-10"><a href="' . $_SERVER["PHP_SELF"]. '?BARCODESEPARATOR=1">' . get_text('ResetBarcodeSeparator','BackNumbers') . '</a></th>
-</tr>
 <tr>
 	<th class="w-10">'.get_text('AutoEdits','Tournament').'</th>
 	<th class="w-10">'.get_text('ShowMissing','Tournament').'</th>
@@ -132,7 +127,7 @@ echo '<div id="bcodeContainer" class="bcodeContainer"><div class="bcodeOp"><form
         echo '<option value="'.$r->FSScheduledDate.'|'.$r->FSScheduledTime.'" '.(!empty($_GET['T']) && $_GET['T']==$r->FSScheduledDate.'|'.$r->FSScheduledTime ? ' selected="selected"' : '').'>'.get_text(($r->FSTeamEvent ? 'FinTeam' : 'FinInd'), 'HTT').': '.$r->Description.'</option>';
     }
     echo '</select></td></tr><tr>
-		<td class="Center" colspan="2"><input type="submit" value="'.get_text('CmdGo','Tournament').'" id="Vai" onClick="refreshForm();"></td>
+		<td class="Center" colspan="2"><input type="submit" value="'.get_text('Search','Tournament').'" id="Vai" onClick="refreshForm();"></td>
 		<td class="Center" colspan="2"><input type="button" value="'.get_text('BarcodeMissing','Tournament').'" onClick="window.open(\'./GetScoreBarCodeMissing.php?S=F&T=\'+document.getElementById(\'Session\').value);"></td>
 	</tr>';
 
@@ -211,9 +206,9 @@ if($Match) {
     echo '</td>';
     echo '</tr>';
     echo '<tr>';
-    echo '<td colspan="2" class="Command Bold"><a href="'.go_get(array('C'=>$_REQUEST['B'])).'">CONFIRM</a></td>';
+    echo '<td colspan="2" class="Command Bold"><a href="'.go_get(array('C'=>$_REQUEST['B'])).'">' . get_text('ConfirmMatch', 'Tournament') . '</a></td>';
     echo '<td>&nbsp;</td>';
-    echo '<td colspan="2" class="Command"><a href="'.go_get(array('C'=> 'EDIT')).'">Edit arrows</a>';
+    echo '<td colspan="2" class="Command"><a href="'.go_get(array('C'=> 'EDIT')).'">' . get_text('ScorecardArrows', 'ISK-App') . '</a>';
     echo '</td>';
     echo '</tr>';
     echo '</table></td></tr>';
