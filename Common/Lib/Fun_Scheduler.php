@@ -360,7 +360,8 @@ Class Scheduler {
 		if($this->LocationsToPrint) {
 			$tmp=array();
 			foreach($this->LocationsToPrint as $k) {
-				$tmp[]="Locations in ('', ".StrSafe_DB($k->Loc).")";
+                $tmp[]="Locations in (".StrSafe_DB($k->Loc).")";
+                $tmp[]="RowLocation in (".StrSafe_DB($k->Loc).")";
 				$tmpButts[]='%1$s between '. $k->Tg1 .' and '. $k->Tg2;
 			}
 			$tmpExtra[]='('.implode(' or ', $tmp).')';
