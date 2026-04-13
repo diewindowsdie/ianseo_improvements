@@ -60,15 +60,50 @@ if($version<'2026-02-08 16:34:01') {
     db_save_version('2026-02-08 16:34:01');
 }
 
+if($version<'2026-03-01 08:10:02') {
+    safe_w_SQL("INSERT INTO `LookUpPaths` (`LupIocCode`, `LupOrigin`, `LupPath`, `LupPhotoPath`, `LupFlagsPath`, `LupLastUpdate`, `LupRankingPath`, `LupClubNamesPath`, `LupRecordsPath`) 
+        VALUES ('NFAA', '', '', '', 'https://extranet.worldarchery.org/Api/GetFlags.php', NOW(), '', '%Modules/LookUpFunctions/LookupFitaClubNames.php', '')", false, array(1062));
+    safe_w_SQL("ALTER TABLE `Finals` ADD `FinAverageMatch` DECIMAL(6,3) NOT NULL AFTER `FinWinLose`, ADD `FinAverageTie` DECIMAL(6,3) NOT NULL AFTER `FinAverageMatch`", false, array(1146, 1054, 1060));
+    safe_w_SQL("ALTER TABLE `TeamFinals` ADD `TfAverageMatch` DECIMAL(6,3) NOT NULL AFTER `TfWinLose`, ADD `TfAverageTie` DECIMAL(6,3) NOT NULL AFTER `TfAverageMatch`", false, array(1146, 1054, 1060));
+    db_save_version('2026-03-01 08:10:02');
+}
+
+if($version<'2026-03-03 12:55:02') {
+    safe_w_SQL("REPLACE INTO `AccOperationType` (`AOTId`, `AOTDescr`, `AOTOrder`) VALUES (4, 'Goodies', '30'), (5, 'Meal', '40'), (6, 'Other', '50')", false, array(1062));
+    db_save_version('2026-03-03 12:55:02');
+}
+
+if($version<'2026-03-18 13:25:01') {
+    safe_w_sql("drop table if exists `TeamQualificationDistances`");
+    safe_w_sql("create table `TeamQualificationDistances` (
+        `TqdCoId` int not null,
+        `TqdSubTeam` tinyint not null,
+        `TqdEvent` varchar(10) not null,
+        `TqdTournament` int not null,
+        `TqdDistance` tinyint not null,
+        `TqdScore` smallint not null,
+        `TqdBonus` tinyint not null,
+        `TqdTie1` smallint not null,
+        `TqdTie2` smallint not null,
+        `TqdTie3` smallint not null,
+        `TqdTie4` smallint not null,
+        `TqdRank` smallint not null,
+        `TqdTimeStamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        primary key (`TqdCoId`, `TqdSubTeam`, `TqdEvent`, `TqdTournament`, `TqdDistance`),
+        index (`TqdEvent`, `TqdTournament`, `TqdRank`),
+        index (`TqdTournament`, `TqdEvent`, `TqdScore`, `TqdTie1`, `TqdTie2`, `TqdTie3`, `TqdTie4`))",false,array(1050));
+    db_save_version('2026-03-18 13:25:01');
+}
+
 /*
 
 // TEMPLATE
 IMPORTANT: InfoSystem related things MUST be changed in the lib.php file!!!
 REMEMBER TO CHANGE ALSO Common/Lib/UpdateTournament.inc.php!!!
 
-if($version<'2025-05-07 09:25:00') {
+if($version<'2026-03-18 09:25:00') {
     safe_w_sql("alter table RoundRobinMatches add index (RrMatchTournament, RrMatchTeam, RrMatchEvent)");
-	db_save_version('2025-05-07 09:25:00');
+	db_save_version('2026-03-18 09:25:00');
 }
 
 */

@@ -10,7 +10,7 @@ We need to get all matches based on the scheduler
 require_once(dirname(__FILE__) . '/config.php');
 require_once('Common/pdf/IanseoPdf.php');
 
-if($_SESSION['TourLocSubRule']=='SetFRD12023') {
+if($_SESSION['TourLocSubRule']=='SetFRD12023' or $_SESSION['TourLocSubRule']=='SetFRD12026') {
 	$TourDates=getModuleParameter('FFTA', 'D1TourDates');
 	$pdf=new IanseoPdf(get_text('StartListbyTarget', 'Tournament'), false);
 	$pdf->startPageGroup();

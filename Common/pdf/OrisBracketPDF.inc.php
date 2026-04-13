@@ -180,9 +180,11 @@ class OrisBracketPDF extends OrisPDF
 					$this->Cell(45,4, $Fin->FirstName.' '.$Fin->Name);
 					$this->Cell(10,4, $Fin->Country);
 					if($n>4) {
-						$this->Cell(8,4, $Fin->Score, '','','R');
-						if($Fin->ScoreMatch and $Fin->ScoreMatch!=$Fin->Score) {
-							$this->Cell(10,4, '('.$Fin->ScoreMatch.')');
+						$this->Cell(10,4, $Fin->AvgMatch ? number_format($Fin->AvgMatch,3,$this->NumberDecimalSeparator) : $Fin->Score, '','','R');
+                        if($Fin->AvgMatch AND $Fin->AvgTie!=0) {
+                            $this->Cell(8,4, number_format($Fin->AvgTie,3,$this->NumberDecimalSeparator));
+                        } else  if(!$Fin->AvgMatch and $Fin->ScoreMatch and $Fin->ScoreMatch!=$Fin->Score) {
+							$this->Cell(8,4, '('.$Fin->ScoreMatch.')');
 						}
 					}
 					$n++;
@@ -217,8 +219,8 @@ class OrisBracketPDF extends OrisPDF
 		$W=$this->getPageWidth()-$StartX-$this->getSideMargin();
 		$W1=$W*0.10;
 		$W2=$W*0.16;
-		$W4=$W*0.11;
-		$W5=$W*0.20;
+		$W4=$W*0.16;
+		$W5=$W*0.15;
 		$W3=$W-$W1-$W2-$W4-$W5;
 		$this->SetXY($StartX, $StartY);
 		$this->SetFont('','b');
@@ -236,12 +238,12 @@ class OrisBracketPDF extends OrisPDF
 					$this->Cell($W2,4, $Fin->Country);
 					$this->Cell($W3,4, $Fin->Team);
 					if($n>4) {
-						if($Fin->ScoreMatch and $Fin->ScoreMatch!=$Fin->Score) {
-							$this->Cell($W4,4, $Fin->Score, '','','R');
-							$this->Cell($W5,4, '('.$Fin->ScoreMatch.')');
-						} else {
-							$this->Cell($W4+$W5,4, $Fin->Score, '','','R');
-						}
+                        $this->Cell($W4,4, $Fin->AvgMatch ? number_format($Fin->AvgMatch,3,$this->NumberDecimalSeparator) : $Fin->Score, '','','R');
+                        if($Fin->AvgMatch AND $Fin->AvgTie!=0) {
+                            $this->Cell($W5,4, number_format($Fin->AvgTie,3,$this->NumberDecimalSeparator));
+                        } else  if(!$Fin->AvgMatch and $Fin->ScoreMatch and $Fin->ScoreMatch!=$Fin->Score) {
+                            $this->Cell($W5,4, '('.$Fin->ScoreMatch.')');
+                        }
 					}
 					$n++;
 				}

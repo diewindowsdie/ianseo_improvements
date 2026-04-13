@@ -10,6 +10,7 @@ $lang['AskSignature-1']='Skanēt loka šāvēja ID';
 $lang['AutoImport']='Importēt automātiski';
 $lang['CmdDelete']='Noņemt';
 $lang['CmdImport']='Importēt';
+$lang['ConnectionHttp']='HTTP';
 $lang['DataRefresh']='Atjaunināt datus';
 $lang['Desc-Let-B']='Sērija importēta';
 $lang['Desc-Let-C']='Šajā sērijā trūkst trāpījumu rezultātu';

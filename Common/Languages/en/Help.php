@@ -15,17 +15,24 @@ $lang['AutoCHK-IP']='List of IP of auto check-in devices. One IP Address per lin
 Device IP<br>
 Device IP | Accreditation Printer Queue <br>
 Device IP | Accreditation Printer Queue | Name Tag Printer Queue<br>
+Device IP | Accreditation Printer Queue | Name Tag Printer Queue | Card Printer Queue<br>
 Printer Queue in form: Queue Name [ @ Printer Server ]<br>
 If no Printer Queue is defined, then the standard print dialog will show';
 $lang['AutoCHK-IPBowStorage']='List of IP of Bow Storage points. One IP Address per line';
-$lang['AutoCHK-IPGoodiesDistribution']='List of IP of Goodie Bags distribution points. One IP Address per line';
+$lang['AutoCHK-IPGoodiesDistribution']='List of IP of Goodie Bags distribution points. One IP Address per line matching one of the following formats:<br>
+Device IP<br>
+Device IP | CompetitionCode<br>
+Add a Competition Code to limit IP operation on a specific tournament';
 $lang['AutoCHK-IPinfo']='List of IP of self info points. One IP Address per line';
 $lang['AutoCHK-IPnoMgm']='List of IP of self check-in kiosks. One IP Address per line, matching one of the following formats:<br>
 Device IP<br>
 Device IP | Accreditation Printer Queue <br>
 Device IP | Accreditation Printer Queue | Name Tag Printer Queue<br>
 Printer Queue in form: Queue Name [ @ Printer Server ]';
-$lang['AutoCHK-IPPaidPractice']='List of IP of Paid Practice points. One IP Address per line';
+$lang['AutoCHK-IPPaidPractice']='List of IP of Paid Practice points. One IP Address per line. One IP Address per line matching one of the following formats:<br>
+Device IP<br>
+Device IP|1 for Accepting only Fast Lane practice pass';
+$lang['AutoCHK-KioskEditPin']='4 Digit PIN for Edit data in edit-enabled devices';
 $lang['AutoCHK-Print']='Automatically show print dialog';
 $lang['AutoImportSettings']='<b>Only for Expert Users</b><br>Changing the default behavior could result in inaccurate results.<br>
 It is important to recalculate all the ranks that have been setup as "manually" BEFORE sending to ianseo.net or printing results and in general before every distribution of any kind.';

@@ -1,2 +1,2 @@
 <?php
-require_once(dirname(dirname(__FILE__)) . '/config.php');
+require_once(dirname(__FILE__, 2) . '/config.php');

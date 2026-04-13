@@ -1,7 +1,7 @@
 <?php
 $lang['API-AutoGroup']='Skapa flera grupper enligt ––––>';
 $lang['API-ConfirmDeleteRow']='Är du säker på att du vill ta bort denna rad?';
-$lang['API-DeviceGrouping']='Gruppera tavlor';
+$lang['API-DeviceGrouping']='Gruppera tavlor(enheter)';
 $lang['API-EnableDeviceGrouping']='Aktivera gruppering av tavlor, ställ in Ja <b>endast</b> när du grupperat tavlor.';
 $lang['API-Group']='Grupp';
 $lang['API-TargetGrouping']='Tavelgruppering (enheter)';
@@ -61,6 +61,10 @@ $lang['ISK-enableTotals']='Aktivera Total';
 $lang['ISK-enableWIFIManagement']='Tillåt appen att hantera Wi-Fi';
 $lang['ISK-ExportDevices']='Exportera enheter';
 $lang['ISK-ForceConfirm']='Tvinga enhetsinställningar';
+$lang['ISK-ForceQRCodeScanning']='Obligatorisk QR-kod skanning';
+$lang['ISK-ForceQRCodeScanning-Help']='Konfigurering endast med QR-kod.<br>
+Manuell inställning inte möjlig.<br>
+Användbart för distanstävlingar för att undvika felaktiga inställningar och poäng rapportering.';
 $lang['ISK-Gps']='GPS-position';
 $lang['ISK-gpsFrequency']='Uppdateringsfrekvens';
 $lang['ISK-hideTotals']='Göm totalen';

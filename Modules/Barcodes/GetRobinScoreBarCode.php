@@ -15,8 +15,7 @@ $Match='';
 // Check the correct separator (as barcode reader may interpret «-» as a «'» !)
 //
 if(empty($_SESSION['BarCodeSeparator'])) {
-	require_once('./GetBarCodeSeparator.php');
-	die();
+    $_SESSION["BarCodeSeparator"] = "-";
 }
 
 $ShowMiss=(!empty($_GET['ShowMiss']));
@@ -117,12 +116,6 @@ include('Common/Templates/head.php');
 	<tr>
 		<th class="Title" colspan="4"><?php print get_text('CheckScorecards','Tournament');?></th>
 	</tr>
-	<?php
-		echo '<tr>';
-		echo '<th colspan="3">' . get_text('BarcodeSeparator','BackNumbers') . ': <span style="font-size:150%">' . $_SESSION['BarCodeSeparator'] . '</span>' . '</th>';
-		echo '<th colspan="1"><a href="' . $_SERVER["PHP_SELF"]. '?BARCODESEPARATOR=1">' . get_text('ResetBarcodeSeparator','BackNumbers') . '</a></th>';
-		echo '</tr>';
-	?>
 	<tr>
 		<th><?php print get_text('AutoEdits','Tournament');?></th>
 		<th><?php print get_text('ShowMissing','Tournament');?></th>
@@ -156,7 +149,7 @@ if(!empty($_REQUEST['T'])) {
 ?></select></td>
 </tr>
 	<tr>
-		<td class="Center" colspan="2"><input type="submit" value="<?php print get_text('CmdGo','Tournament');?>" id="Vai" onClick="javascript:SendBib();"></td>
+		<td class="Center" colspan="2"><input type="submit" value="<?php print get_text('Search','Tournament');?>" id="Vai" onClick="javascript:SendBib();"></td>
 		<td class="Center" colspan="2"><input type="button" value="<?php print get_text('BarcodeMissing','Tournament');?>" onClick="window.open('./GetScoreBarCodeMissing.php?S=R&T='+document.getElementById('Session').value);"></td>
 	</tr>
 	<?php
@@ -245,9 +238,9 @@ if($Match) {
 	echo '</tr>';
 
 	echo '<tr>';
-		echo '<td colspan="2" align="center" style="font-size:80%"><b><a href="'.go_get(array('C'=>$_REQUEST['B'])).'">CONFIRM</a></b></td>';
+		echo '<td colspan="2" align="center" style="font-size:80%"><b><a href="'.go_get(array('C'=>$_REQUEST['B'])).'">' . get_text('ConfirmMatch', 'Tournament') . '</a></b></td>';
 		echo '<td>&nbsp;</td>';
-		echo '<td colspan="2" align="center" style="font-size:80%"><b><a href="'.go_get(array('C'=> 'EDIT')).'">Edit arrows</a>';
+		echo '<td colspan="2" align="center" style="font-size:80%"><b><a href="'.go_get(array('C'=> 'EDIT')).'">' . get_text('ScorecardArrows', 'ISK-App') . '</a>';
 // 		echo '<br/><a href="'.go_get(array('C' => 'EDIT2')).'">Edit totals</a></b>';
 		echo '</td>';
 		echo '</tr>';

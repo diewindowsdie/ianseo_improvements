@@ -120,7 +120,7 @@ foreach($PdfData->rankData['sections'] as $section) {
             $spaceUsed = 10 + 30+(15*(5-$NumPhases)) + 55;
 
 			$pdf->SetFont($pdf->FontFix,'',8);
-			$pdf->Cell(20, 4*$NumComponenti, is_numeric($item['qualScore']) ? number_format($item['qualScore'],0,$PdfData->NumberDecimalSeparator,$PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['qualRank'],-2,2) : '', 1, 0, 'R', 0);
+            $pdf->Cell(20, 4*$NumComponenti, is_numeric($item['qualScore']) ? number_format($item['qualScore'],0,$PdfData->NumberDecimalSeparator,$PdfData->NumberThousandsSeparator) . '-' . substr('00' . $item['qualRank'],-2,2) : '', 1, 0, 'R', 0);
             $spaceUsed += 20;
             if ($isIRMStatus && $item['qualNotes'] != '') {
                 $pdf->Cell(190 - $spaceUsed, 4*$NumComponenti, $item['qualNotes'], 1, 1, 'L', 0);

@@ -72,8 +72,8 @@ class Obj_Rank_TeamComponents extends Obj_Rank {
             INNER JOIN `Events` ON TfclEvent=EvCode AND TfclTournament=EvTournament AND EvTeamEvent=1
             LEFT JOIN DocumentVersions DV1 on TfclTournament=DV1.DvTournament AND DV1.DvFile = 'C-TEAM' and DV1.DvEvent=''
             LEFT JOIN DocumentVersions DV2 on TfclTournament=DV2.DvTournament AND DV2.DvFile = 'C-TEAM' and DV2.DvEvent=TfclEvent
-            left join ExtraData pred on pred.EdId=pr.EnId and pred.EdType='Z'
-            left join ExtraData nxed on nxed.EdId=nx.EnId and nxed.EdType='Z'
+            left join ExtraData pred on pred.EdId=pr.EnId and pred.EdType='Z' and pred.EdExtra!=''
+            left join ExtraData nxed on nxed.EdId=nx.EnId and nxed.EdType='Z' and nxed.EdExtra!=''
             WHERE ToId={$this->tournament} " . $filter . "
             ORDER BY EvProgr, TfclEvent, CoCode, TfclTimeStamp ASC, TfclOrder";
 

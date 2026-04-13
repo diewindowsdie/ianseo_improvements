@@ -33,6 +33,7 @@ $lang['OdfReceiverOn']='Prijemnik aktivan';
 $lang['OdfUploadFileText']='Molimo odaberite XML fajl za otpremanje...';
 $lang['Receiver']='Prijemnik';
 $lang['ScheduleDetails']='Detaljan status rasporeda';
+$lang['ScheduleExtraLinesHelp']='Samo sljedeće jedinice će biti poslate u DT_SCHEDULE poruci: $a';
 $lang['SendNewMessage']='Pošaljite novu poruku';
 $lang['SendOldMessage']='Ponovo pošalji';
 $lang['SendOldMessageHelp']='Ponovo pošalji označene poruke';

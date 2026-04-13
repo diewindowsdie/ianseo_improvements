@@ -82,7 +82,7 @@ function getLUEChanges($TourId) {
 		LueCode, LueFamilyName, LueName, LueSex, LueCtrlCode, LueCountry, LueStatus, EnLueFieldChanged, EnLueTimeStamp
 		FROM Entries
 		LEFT JOIN Countries on EnCountry=CoId and EnTournament=CoTournament
-		LEFT JOIN LookUpEntries on EnCode=LueCode and EnIocCode=LueIocCode
+		LEFT JOIN LookUpEntries on EnCode=LueCode and IF(EnIocCode='NFAA', 'FITA', EnIocCode)=LueIocCode
 		WHERE EnTournament = {$TourId} AND EnLueFieldChanged!=0
 		ORDER BY EnIocCode, EnFirstName, EnName";
 	$q=safe_r_SQL($Sql);

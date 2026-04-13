@@ -4,6 +4,10 @@ $lang['AutoCheckinAlreadyDone']='Već ste se prijavili<br>Ako treba da promijeni
 $lang['AutoCheckinConfirm']='Ako su svi podaci tačni, pritisnite POTVRDI PRIJAVU<br>U suprotnom pritisnite OTKAŽI i obratite se akreditacionom stolu';
 $lang['AutoCheckinSearch']='Očitajte QR kod koji ste primili ili unesite svoje ime';
 $lang['AutoCHK-CanEdit']='Dozvoli operaterima za prijavu da uređuju imena, email adrese, državu/klub itd.';
+$lang['AutoCHK-CanEditCategory']='Uredi kategoriju';
+$lang['AutoCHK-CanEditEntry']='Uredi detalje prijave';
+$lang['AutoCHK-CanEditExtras']='Uredi dodatne opcije';
+$lang['AutoCHK-CanEditTgt']='Uredi raspored po metama';
 $lang['AutoCHK-Code']='Lista takmičenja, jedno po liniji<br> Kod prvog takmičenja biće korišćen kao naslov na kioscima za automatsku prijavu';
 $lang['AutoCHK-IP']='Spisak IP adresa uređaja za automatsku prijavu. Jedna IP adresa po liniji, u jednom od sljedećih formata:<br>IP adresa uređaja<br>IP adresa uređaja | Red štampača za akreditacije<br>
 IP adresa uređaja | Red štampača za akreditacije | Red štampača za bedževe<br>Red štampača je u formatu: Naziv reda [ @ Server štampača ]<br>Ako red štampača nije definisan, prikazaće se standardni dijalog za štampanje.';

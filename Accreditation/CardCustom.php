@@ -254,6 +254,39 @@ while ($MyRow=safe_fetch($Rs)) {
                         $pdf->Image($im, $ElX, $ElY, floatval($Element->Options['W']), floatval($Element->Options['H']));
                     }
                     break;
+                case 'ImageUrl':
+                    $txt='';
+                    if($Element->IceContent) {
+                        $replacements=array(
+                            '{LOOKUPTABLE}'=>$MyRow->EnIocCode,
+                            '{ENCODE}'=>$MyRow->Bib,
+                            '{COUNTRY}'=>$MyRow->NationCode,
+                            '{DIVISION}'=>$MyRow->DivCode,
+                            '{CLASS}'=>$MyRow->ClassCode,
+                            '{TOURNAMENT}'=>$MyRow->ToCode,
+                        );
+                        $txt=str_replace(array_keys($replacements), array_values($replacements), $Element->IceContent);
+                    }
+                    if(($imageData = file_get_contents($txt))!==false) {
+                        $image = imagecreatefromstring($imageData);
+                        $srcW = imagesx($image);
+                        $srcH = imagesy($image);
+                        // 1. Normalize constraints (convert negative to positive)
+                        $maxW = abs($Element->Options['W']);
+                        $maxH = abs($Element->Options['H']);
+                        // 2. Calculate Ratios
+                        // If target is 0, we set ratio to a massive number so min() ignores it
+                        $ratioW = ($maxW == 0) ? PHP_INT_MAX : ($maxW / $srcW);
+                        $ratioH = ($maxH == 0) ? PHP_INT_MAX : ($maxH / $srcH);
+                        // 3. Determine the "Stricter" Scale Factor
+                        $scale = min($ratioW, $ratioH)*max($maxW,$maxH);
+                        // Safety check: if both were 0, don't scale at all
+                        if ($scale > 1) {
+                            $scale = 1;
+                        }
+                        $pdf->Image("@".$imageData, $ElX, $ElY, floatval(max(0,$Element->Options['W'])*$scale), floatval(max(0,$Element->Options['H'])*$scale));
+                    }
+                    break;
                 case 'WRankImage':
                     if(($Element->Options['WRank'] == 0 OR $Element->Options['WRank']>=$MyRow->WRank) AND !empty($MyRow->WRank)) {
                         if (file_exists($im = $CFG->DOCUMENT_PATH . 'TV/Photos/' . $CurrentCode . '-WRankImage-' . $FileExtra . '-' . $Element->IceOrder . '.jpg')) {
@@ -858,7 +891,7 @@ while ($MyRow=safe_fetch($Rs)) {
                         $style['fgcolor']=array(0, 0, 0);
                         $pdf->setColor('text', 0, 0, 0);
                     }
-                    $txt=$MyRow->Bib.'-'.$MyRow->DivCode.'-'.$MyRow->ClassCode;
+                    $txt=$MyRow->Bib.'|'.$MyRow->NationCode.'|'.$MyRow->DivCode;
                     if($Element->IceContent) {
                         $replacements=array(
                             '{ENCODE}'=>$MyRow->Bib,

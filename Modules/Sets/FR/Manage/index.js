@@ -90,6 +90,42 @@ function setTeams2023(obj) {
 		}
 	});
 }
+function setTeams2026(obj) {
+	let form={
+		action:'setTeam2026',
+		event:$('#Category').val(),
+		day:$('#MatchDays').val(),
+	};
+	$.getJSON('./index-action.php', form, function(data) {
+		if(data.error==0) {
+			let tabRows=$('#FillRounds');
+			tabRows.empty();
+			$.each(data.matches, function() {
+				let td='<table class="Tabella">' +
+					'<thead><tr><th colspan="3">'+this.round+'</th></tr></thead><tbody>';
+				$.each(this.matches, function() {
+					td+='<tr><td colspan="3" class="separator"></td></tr>' +
+						'<tr key="'+this[0].id+'">' +
+						'<th>'+this[0].club+'</th>' +
+						'<td><div><input type="text" class="tgt" ref="tgt" value="'+this[0].target+'" onchange="changeItem(this)"></div></td>' +
+						'<td rowspan="2">' +
+						'<div><input type="date" class="date" ref="date" value="'+this[0].date+'" onblur="changeItem(this)"></div>' +
+						'<div><input type="time" class="time" ref="time" value="'+this[0].time+'" onblur="changeItem(this)"></div>' +
+						'</td>' +
+						'</tr>' +
+						'<tr key="'+this[1].id+'">' +
+						'<th>'+this[1].club+'</th>' +
+						'<td><div><input type="text" class="tgt" ref="tgt" value="'+this[1].target+'" onchange="changeItem(this)"></div></td>' +
+						'</tr>';
+				});
+				td+='</tbody></table>';
+				tabRows.append('<div class="tabContainer">'+td+'</div>');
+			});
+		} else {
+			alert(data.msg);
+		}
+	});
+}
 
 function changeItem(obj) {
 	if((obj.type=='date' || obj.type=='time')) {

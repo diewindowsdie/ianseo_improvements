@@ -29,7 +29,7 @@ $q=safe_r_sql("select
     from Entries
     inner join Countries on CoId=EnCountry
     left join Qualifications on QuId=EnId
-    left join ExtraData on EdId=EnId and EdType='Z'
+    left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
     where EnTournament={$_SESSION['TourId']}
     order by EnFirstName, EnName");
 

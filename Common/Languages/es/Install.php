@@ -178,7 +178,6 @@ $lang['SetFRChampsScratchR']='Campeonato de Recurvo Evento ünico';
 $lang['SetFRChampsTNJ']='Torneo Nacional para Jóvenes';
 $lang['SetFRChampsVet']='Campeonato de Veteranos';
 $lang['SetFRCoupeFrance']='Copa de Francia';
-$lang['SetFRD12023']='Campeonato D1 / 2023';
 $lang['SetFRFinDRD2']='Finales DR/D2';
 $lang['SetFrSelectif']='Selectivo';
 $lang['SetFrSelectifPara']='Selectivo + para';

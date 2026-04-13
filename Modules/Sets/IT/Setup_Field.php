@@ -58,7 +58,7 @@ Picchetto Blu: Ragazzi Arco Ricurvo e Arco Compound.
 switch($TourType) {
 	case 9:
 		CreateTargetFace($TourId, 1, 'Picch. Giallo', 'REG-^(OLG|COG|AN[AGR]|LB|AI[MF])', '1', 6, 0);
-		CreateTargetFace($TourId, 2, 'Picch. Blu', 'REG-^(AN[^AGR]|OL[AR]|CO[AR]$)', '1', 6, 0);
+		CreateTargetFace($TourId, 2, 'Picch. Blu', 'REG-^(AN[^AGR]|OL[AR]|CO[AR])', '1', 6, 0);
 		CreateTargetFace($TourId, 3, 'Picch. Rosso', 'REG-^(OL[^AGR]|CO[^AGR])', '1', 6, 0);
 		break;
 	case 10:

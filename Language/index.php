@@ -98,7 +98,7 @@ include('Common/Templates/head.php');
 	{
 		print '<tr>' . "\n";
 		print '	<td width="4%" class="Center">'."\n";
-		print '		<a class="Link" href="index.php?SetLanguage=' . strtoupper($lang) . '"><img src="../Common/Languages/' . $lang . '/'.$lang.'.png" border="0"></a>'."\n";
+		print '		<a class="Link" href="index.php?SetLanguage=' . strtoupper($lang) . '"><img src="../Common/Languages/' . $lang . '/'.$lang.'.png" border="0" width="20"></a>'."\n";
 		print '	</td>'."\n";
 		print '	<td>'."\n";
 		print '		<a class="Link" href="index.php?SetLanguage=' . strtoupper($lang) . '">' . $langtext . '</a>'."\n";

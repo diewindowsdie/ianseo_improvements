@@ -112,14 +112,14 @@
 		 *  Tiro fuori gli scontri con i perdenti nei non Opp
 		 */
 			$q="
-				SELECT EvWinnerFinalRank, EvCodeParent, SubCodes, EvFinalFirstPhase,
-					tf.TfTeam AS TeamId,
-					tf.TfSubTeam AS SubTeam,
-					tf2.TfTeam AS OppTeamId,
-					tf2.TfSubTeam AS OppSubTeam,
-					IF(EvMatchMode=0,tf.TfScore,tf.TfSetScore) AS Score, tf.TfScore AS CumScore,tf.TfTie AS Tie,
-					IF(EvMatchMode=0,tf2.TfScore,tf2.TfSetScore) as OppScore, tf2.TfScore AS OppCumScore,tf2.TfTie as OppTie
-
+				SELECT EvWinnerFinalRank, EvCodeParent, SubCodes, EvFinalFirstPhase, least(tf.TfMatchNo,tf2.TfMatchNo) as MatchNo,
+                    if((EvMatchArrowsNo & GrBitPhase)=0, EvFinArrows, EvElimArrows) DiEndArrows,
+                    if((EvMatchArrowsNo & GrBitPhase)=0, EvFinArrows*EvFinEnds, EvElimArrows*EvElimEnds) DiArrows, 
+					tf.TfTeam AS TeamId, tf.TfSubTeam AS SubTeam, tf2.TfTeam AS OppTeamId, tf2.TfSubTeam AS OppSubTeam,
+					tf.TfIrmType as IrmType, tf2.TfIrmType as OppIrmType, tf.TfWinLose as WinLose, tf2.TfWinLose as OppWinLose,
+					tf.TfArrowstring as Arrowstring, tf2.TfArrowstring as OppArrowstring, tf.TfSetPoints as SetPoints, tf2.TfSetPoints as OppSetPoints,
+					tf.TfTiebreak as Tiebreak, tf2.TfTiebreak as OppTiebreak,
+					tf.TfScore AS Score,tf.TfTie AS Tie, tf2.TfScore AS OppScore, tf2.TfTie as OppTie, tf.TfMatchNo as RealMatchNo, tf2.TfMatchNo as OppRealMatchNo
 				FROM
 					TeamFinals AS tf
 					INNER JOIN TeamFinals AS tf2 ON tf.TfEvent=tf2.TfEvent AND tf.TfMatchNo=IF((tf.TfMatchNo % 2)=0,tf2.TfMatchNo-1,tf2.TfMatchNo+1) AND tf.TfTournament=tf2.TfTournament
@@ -130,8 +130,7 @@
 					tf.TfTournament={$this->tournament} AND tf.TfEvent='{$event}' AND GrPhase={$realphase}
 					AND (tf2.TfWinLose=1 or (tf.TfIrmType>0 and tf.TfIrmType<20 and tf2.TfIrmType>0 and tf2.TfIrmType<20))
 				ORDER BY
-					IF(EvMatchMode=0,tf.TfScore,tf.TfSetScore) DESC,tf.TfScore DESC
-			";
+					least(tf.TfMatchNo,tf2.TfMatchNo)";
 
 
 			$rs=safe_r_sql($q);
@@ -167,148 +166,73 @@
 					}
 
 					if ($phase==0 || $phase==1) {
-
-						$toWrite=array();
-
-						if ($phase==0)
-						{
+                        $avg = [
+                            round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->SetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->SetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
+                            round((valutaArrowString($myRow->Tiebreak) / (strlen(trim($myRow->Tiebreak)) ?: 1)), 3),
+                            round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->OppSetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->OppSetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
+                            round((valutaArrowString($myRow->OppTiebreak) / (strlen(trim($myRow->OppTiebreak)) ?: 1)), 3)
+                        ];
+                        safe_w_SQL("UPDATE TeamFinals SET TfAverageMatch='{$avg[0]}', TfAverageTie='{$avg[1]}' WHERE TfTournament='{$this->tournament}' AND TfEvent='$EventToUse' AND TfMatchNo='{$myRow->RealMatchNo}'");
+                        safe_w_SQL("UPDATE TeamFinals SET TfAverageMatch='{$avg[2]}', TfAverageTie='{$avg[3]}' WHERE TfTournament='{$this->tournament}' AND TfEvent='$EventToUse' AND TfMatchNo='{$myRow->OppRealMatchNo}'");
+                        $toWrite=array();
+						if ($phase==0) {
 						// vincente
 							$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->OppTeamId,'subteam'=>$myRow->OppSubTeam, 'rank'=>$myRow->EvWinnerFinalRank);
 						// perdente
 							$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->TeamId,'subteam'=>$myRow->SubTeam, 'rank'=>$myRow->EvWinnerFinalRank+1);
-						}
-						elseif ($phase==1)
-						{
+						} elseif ($phase==1) {
 						// vincente
 							$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->OppTeamId,'subteam'=>$myRow->OppSubTeam, 'rank'=>$myRow->EvWinnerFinalRank+2);
 						// perdente
 							$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->TeamId,'subteam'=>$myRow->SubTeam, 'rank'=>$myRow->EvWinnerFinalRank+3);
 						}
-						foreach ($toWrite as $values)
-						{
+						foreach ($toWrite as $values) {
 							$x=$this->writeRow($values['id'],$values['subteam'], $values['event'],$values['rank']);
 							if ($x===false)
 								return false;
 						}
-					}
-					elseif ($phase==2 or $myRow->SubCodes)
-					{
-					// non faccio nulla!
-					}
-					else
-					{
-					// qui posso avere tante righe
-						$pos=0;
-
-					/*
-					 *  per la fase 4 pos viene inizializzato al valore iniziale -1
-					 *  perchè poi nel ciclo come prima cosa ho un suo incremento dato che la if
-					 *  che decide se incrementare o no sarà vera. Per gli altri non ci sarà
-					 *  l'incremento così avrò sempre il valore iniziale (senza il -1)
-					 */
-						if($realphase==4) {
-							// dovendo partire dal fondo, recupero l'ultimo posto disponibile
-							$pos=max(4, 8-safe_num_rows($rs));
-						} elseif($realphase>4) {
-							$pos=numMatchesByPhase($phase)+SavedInPhase($phase)+1;
-						} else {
-							// no need to rerank
-							return false;
-						}
-						//switch ($phase)
-						//{
-						//	case 4:
-						//		break;
-						//	case 8:
-						//		$pos=9;
-						//		break;
-						//	case 16:
-						//		$pos=17;
-						//		break;
-						//	case 32: // (e 24)
-						//		$pos=33;
-						//		break;
-						//	case 48:
-						//		$pos=49;
-						//		break;
-						//	default:
-						//		return false;
-						//}
-
-						if ($phase==4)
-						{
-							$rank=$pos+1;
-						}
-						else
-						{
-							$rank=$pos;
-						}
-
-						$scoreOld=0;
-						$cumOld=0;
-
-						while ($myRow) {
-							if ($phase==4)
-							{
-								++$pos;
-								if (!($myRow->Score==$scoreOld && $myRow->CumScore==$cumOld))
-								{
-									$rank=$pos;
-								}
-							}
-
-							$scoreOld=$myRow->Score;
-							$cumOld=$myRow->CumScore;
-
-						// devo scrivere solo il perdente
-							$x=$this->writeRow($myRow->TeamId,$myRow->SubTeam,$event,$rank+$myRow->EvWinnerFinalRank-1);
-
-							if ($x===false) {
-								return false;
-							}
-
-							$myRow=safe_fetch($rs);
-						}
+					} elseif ($phase==2 or $myRow->SubCodes) {
+                        while ($myRow) {
+                            $avg = [
+                                round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->SetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->SetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
+                                round((valutaArrowString($myRow->Tiebreak) / (strlen(trim($myRow->Tiebreak)) ?: 1)), 3),
+                                round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->OppSetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->OppSetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
+                                round((valutaArrowString($myRow->OppTiebreak) / (strlen(trim($myRow->OppTiebreak)) ?: 1)), 3)
+                            ];
+                            safe_w_SQL("UPDATE TeamFinals SET TfAverageMatch='{$avg[0]}', TfAverageTie='{$avg[1]}' WHERE TfTournament='{$this->tournament}' AND TfEvent='$EventToUse' AND TfMatchNo='{$myRow->RealMatchNo}'");
+                            safe_w_SQL("UPDATE TeamFinals SET TfAverageMatch='{$avg[2]}', TfAverageTie='{$avg[3]}' WHERE TfTournament='{$this->tournament}' AND TfEvent='$EventToUse' AND TfMatchNo='{$myRow->OppRealMatchNo}'");
+                            $myRow = safe_fetch($rs);
+                        }
+					} else {
+                        $lstMatches = array();
+                        while ($myRow) {
+                            $avg = [
+                                round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->SetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->SetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
+                                round((valutaArrowString($myRow->Tiebreak) / (strlen(trim($myRow->Tiebreak)) ?: 1)), 3),
+                                round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->OppSetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->OppSetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
+                                round((valutaArrowString($myRow->OppTiebreak) / (strlen(trim($myRow->OppTiebreak)) ?: 1)), 3)
+                            ];
+                            $lstMatches[$myRow->MatchNo] = $avg[0]*1000+($avg[1]/100);
+                            $toWrite[$myRow->MatchNo]=array('event'=>$EventToUse,'id'=>$myRow->TeamId,'subteam'=>$myRow->SubTeam);
+                            safe_w_SQL("UPDATE TeamFinals SET TfAverageMatch='{$avg[0]}', TfAverageTie='{$avg[1]}' WHERE TfTournament='{$this->tournament}' AND TfEvent='$EventToUse' AND TfMatchNo='{$myRow->RealMatchNo}'");
+                            safe_w_SQL("UPDATE TeamFinals SET TfAverageMatch='{$avg[2]}', TfAverageTie='{$avg[3]}' WHERE TfTournament='{$this->tournament}' AND TfEvent='$EventToUse' AND TfMatchNo='{$myRow->OppRealMatchNo}'");
+                            $myRow=safe_fetch($rs);
+                        }
+                        arsort($lstMatches);
+                        $pos=numMatchesByPhase($phase)+SavedInPhase($phase)+1;
+                        $rank=$pos;
+                        $oldScore=-1;
+                        foreach ($lstMatches as $match=>$score) {
+                            if($oldScore!=$score) {
+                                $rank=$pos;
+                                $oldScore=$score;
+                            }
+                            $this->writeRow($toWrite[$match]['id'],$toWrite[$match]['subteam'], $toWrite[$match]['event'],$rank);
+                            $pos++;
+                        }
 					}
 				}
 
-
-				//if($FirstCycle) {
-				//	// get all ranked 0 with next matches already won...
-				//	$q="
-				//	SELECT distinct GrPhase
-				//
-				//	FROM TeamFinals AS tf
-				//	INNER JOIN Teams on TeCoId=tf.TfTeam and TeSubTeam=tf.TfSubTeam and TeTournament=tf.TfTournament and TeEvent=tf.TfEvent and TeRankFinal=0 and TeFinEvent=1
-				//	INNER JOIN Grids
-				//		ON tf.TfMatchNo=GrMatchNo
-				//	INNER JOIN TeamFinals AS tf2
-				//		ON tf.TfEvent=tf2.TfEvent AND tf.TfMatchNo=IF((tf.TfMatchNo % 2)=0,tf2.TfMatchNo-1,tf2.TfMatchNo+1) AND tf.TfTournament=tf2.TfTournament
-				//	INNER JOIN Events
-				//		ON tf.TfEvent=EvCode AND tf.TfTournament=EvTournament AND EvTeamEvent=1
-				//	LEFT JOIN
-				//		(select nm1.TfWinLose+nm2.TfWinLose Winner, nm1.TfMatchNo, nm1.TfEvent
-				//			from TeamFinals nm1
-				//			inner join TeamFinals nm2 on nm1.TfTournament=nm2.TfTournament and nm1.TfEvent=nm2.TfEvent and nm1.TfMatchNo=IF((nm1.TfMatchNo % 2)=0,nm2.TfMatchNo-1,nm2.TfMatchNo+1)
-				//			where nm1.TfTournament={$this->tournament} AND nm1.TfEvent='{$event}') NextMatch
-				//		on NextMatch.TfMatchNo=floor(tf.TfMatchNo/2) and NextMatch.TfEvent=tf.TfEvent
-				//
-				//	WHERE
-				//		tf.TfTournament={$this->tournament} AND tf.TfEvent='{$event}'
-				//	AND (
-				//		IF(EvMatchMode=0,tf.TfScore,tf.TfSetScore) < IF(EvMatchMode=0,tf2.TfScore,tf2.TfSetScore)
-				//		OR (IF(EvMatchMode=0,tf.TfScore,tf.TfSetScore)=IF(EvMatchMode=0,tf2.TfScore,tf2.TfSetScore) AND tf.TfTie < tf2.TfTie)
-				//		OR (tf.TfWinLose+tf2.TfWinLose=0 and NextMatch.Winner>0)
-				//		)
-				//	ORDER BY GrPhase desc,
-				//	IF(EvMatchMode=0,tf.TfScore,tf.TfSetScore) DESC,tf.TfScore DESC
-				//	";
-				//	$t=safe_r_sql($q);
-				//	while($u=safe_fetch($t)) {
-				//		//echo "<div>$event, $u->GrPhase</div>";
-				//		$this->calcFromPhase($event, $u->GrPhase, false);
-				//	}
-				//}
 			} else {
 				return false;
 			}

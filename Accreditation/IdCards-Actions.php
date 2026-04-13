@@ -108,6 +108,7 @@ switch($_REQUEST['act']) {
             case 'Club3':
             case 'AthQrCode':
             case 'AthBarCode':
+            case 'ImageUrl':
             case 'TgtSequence':
             case 'TeamComponents':
                 safe_w_sql("update IdCardElements set IceContent=".StrSafe_DB($_REQUEST[$_REQUEST['fldname']]??'')." where $IceFilter");
@@ -763,6 +764,11 @@ function getFieldPos($r, $new=false) {
             if(!isset($im)) $im='Common/Images/qrcode.jpg';
             if(!isset($txt)) {
                 $txt='<div '.($new?'':'style="float:Right;"').'><input type="text" onchange="UpdateRowContent(this)" name="AthQrCode" value="'.$r->IceContent.'" style="width:100%"><br/>'.get_text('QrCodeFields', 'BackNumbers').'</div>';
+            }
+        case 'ImageUrl':
+            if(!isset($im)) $im='Common/Images/image-url.png';
+            if(!isset($txt)) {
+                $txt='<div '.($new?'':'style="float:Right;"').'><input type="text" onchange="UpdateRowContent(this)" name="ImageUrl" value="'.$r->IceContent.'" style="width:100%"><br/>'.get_text('ImageUrlFields', 'BackNumbers').'</div>';
             }
         case 'Accomodation':
             if(!isset($txt)) $txt="";

@@ -176,8 +176,8 @@ function export_tournament($TourId, $Complete=false, $InfoSystem='') {
 		// Adds localized Flags
 		$Select
 			= "SELECT distinct Flags.* FROM Entries
-					inner join Countries on EnCountry=CoId
-					inner join Flags on CoCode=FlCode and FlTournament = {$TourId}
+					inner join Countries on (EnCountry = CoId or EnCountry2 = CoId or EnCountry3 = CoId)
+					inner join Flags on CoCode=FlCode and FlTournament = EnTournament
 					WHERE EnTournament={$TourId}
 					ORDER BY FlCode, FlTournament DESC";
 		$Rs=safe_r_sql($Select);

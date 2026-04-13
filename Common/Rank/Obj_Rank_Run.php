@@ -224,7 +224,7 @@ class Obj_Rank_Run extends Obj_Rank{
                     end
                     AND NOC.CoTournament={$this->tournament}
 			    inner join Classes on ClTournament=EnTournament and ClId=EnClass
-				left join ExtraData on EdId=EnId and EdType='Z'
+				left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 				INNER JOIN Tournament ON ToId=RarTournament
 				LEFT JOIN DocumentVersions on EvTournament=DvTournament AND DvFile = 'RUN-0' and DvEvent=RarEvent
 				LEFT JOIN Flags ON FlIocCode='FITA' and FlCode=CoCode and FlTournament=ToId
@@ -568,7 +568,7 @@ class Obj_Rank_Run extends Obj_Rank{
                     end
                     AND NOC.CoTournament={$this->tournament}
 			    inner join Classes on ClTournament=EnTournament and ClId=EnClass
-				left join ExtraData on EdId=EnId and EdType='Z'
+				left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 				INNER JOIN Tournament ON ToId=RarTournament
 				LEFT JOIN DocumentVersions on EvTournament=DvTournament AND DvFile = 'RUN-0' and DvEvent=RarEvent
 				LEFT JOIN Flags ON FlIocCode='FITA' and FlCode=CoCode and FlTournament=ToId

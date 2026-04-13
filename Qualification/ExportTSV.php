@@ -31,7 +31,7 @@ $Sql = "SELECT EnCode as Bib, ifnull(bib.EdExtra,'') as LocalBib, EnFirstName AS
 	INNER JOIN Entries ON QuId=EnId
 	INNER JOIN Countries ON EnCountry=CoId AND EnTournament=CoTournament
 	LEFT JOIN Individuals on IndId=EnId and IndTournament=EnTournament
-	left join ExtraData bib on bib.EdId=EnId and bib.EdType='Z'
+	left join ExtraData bib on bib.EdId=EnId and bib.EdType='Z' and bib.EdExtra!=''
 	left join ExtraData mail on mail.EdId=EnId and mail.EdType='E'
 	WHERE EnTournament = " . StrSafe_DB($_SESSION['TourId']) . " AND EnAthlete=1
 	ORDER BY QuSession, QuTarget, QuLetter, CoCode, EnName ";

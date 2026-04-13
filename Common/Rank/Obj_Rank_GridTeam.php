@@ -192,6 +192,8 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 				. " TfConfirmed Confirmed, "
 				. " TfSetPoints SetPoints, "
 				. " TfSetPointsByEnd SetPointsByEnd, "
+				. " TfAverageMatch AverageMatch, "
+				. " TfAverageTie AverageTie, "
                 . " fs1.FsLJudge as jLine, fs1.FsTJudge as jTarget, "
 				. " TfArrowstring Arrowstring, TfLive LiveFlag,"
 				. " if(@BitPhase & EvMatchMultipleMatches!=0 or @BitPhase & EvFinalAthTarget!=0, fs1.FsLetter, fs1.FsTarget) as Target,"
@@ -267,6 +269,8 @@ require_once('Common/Lib/Fun_PrintOuts.php');
                         coalesce(FinOdfTiming,'') as OppOdfTiming, "
 				. " TfSetPoints OppSetPoints, "
 				. " TfSetPointsByEnd OppSetPointsByEnd, "
+				. " TfAverageMatch OppAverageMatch, "
+				. " TfAverageTie OppAverageTie, "
 				. " TfArrowstring OppArrowstring, "
 				. " @BitPhase:=if(GrPhase=0, 1, pow(2, ceil(log2(GrPhase))+1)),"
 				. " if(@BitPhase & EvMatchMultipleMatches!=0 or @BitPhase & EvFinalAthTarget!=0, fs1.FsLetter, fs1.FsTarget) as OppTarget, "
@@ -306,13 +310,13 @@ require_once('Common/Lib/Fun_PrintOuts.php');
                     select EnId as Coach1Id, ifnull(EdExtra,EnCode) Coach1Code, CoCode as Coach1Country, if(EnSex=0, 'M', 'F') as Coach1Gender, EnFirstName as Coach1FamName, EnName as Coach1GivName, concat(ucase(EnFirstName), ' ', EnName) as Coach1
                     from Entries 
                     inner join Countries on CoId=EnCountry and CoTournament=EnTournament
-                    LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' 
+                    LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' and EdExtra!='' 
                     where EnTournament={$this->tournament}) Coach1 on Coach1Id=CoachId
                 LEFT JOIN (
                     select EnId as Coach2Id, ifnull(EdExtra,EnCode) Coach2Code, CoCode as Coach2Country, if(EnSex=0, 'M', 'F') as Coach2Gender, EnFirstName as Coach2FamName, EnName as Coach2GivName, concat(ucase(EnFirstName), ' ', EnName) as Coach2
                     from Entries 
                     inner join Countries on CoId=EnCountry and CoTournament=EnTournament
-                    LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' 
+                    LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' and EdExtra!='' 
                     where EnTournament={$this->tournament}) Coach2 on Coach2Id=OppCoachId
 				$ExtraFilter
                 ORDER BY ".($OrderByTarget ? 'Target, ' : '')."EvProgr ASC, event, Phase DESC, MatchNo ASC ";
@@ -333,7 +337,7 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 				INNER JOIN Entries ON TfcId=EnId AND TfcTournament=EnTournament
 				INNER JOIN Countries ON CoId=EnCountry AND CoTournament=EnTournament
 				INNER JOIN Teams ON TfcCoId=TeCoId AND TfcSubTeam=TeSubTeam AND TfcEvent=TeEvent AND TfcTournament=TeTournament AND TeFinEvent=1
-				left join ExtraData on EdId=EnId and EdType='Z'
+				left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 				WHERE TfcTournament = " . $this->tournament
 				. " " . (empty($this->opts['events']) ? '' : CleanEvents($this->opts['events'], 'TfcEvent'))
 				. " ORDER BY EvProgr, TfcEvent, TfcCoId, TfcSubTeam, EnSex desc, EnFirstName, TfcOrder ";
@@ -574,7 +578,9 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 					'setScore'=> $myRow->SetScore,
 				 	'setPoints'=> $myRow->SetPoints,
 				 	'setPointsByEnd'=> $myRow->SetPointsByEnd,
-				 	'notes'=> $myRow->Notes,
+                    'avgMatch'=> $myRow->AverageMatch,
+                    'avgTie'=> $myRow->AverageTie,
+                    'notes'=> $myRow->Notes,
 				 	'arrowstring'=> $myRow->Arrowstring,
 					'tie'=> $myRow->Tie,
 				 	'tiebreak'=> trim($myRow->TieBreak),
@@ -627,7 +633,9 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 					'oppSetScore'=> $myRow->OppSetScore,
 				 	'oppSetPoints'=> $myRow->OppSetPoints,
 				 	'oppSetPointsByEnd'=> $myRow->OppSetPointsByEnd,
-				 	'oppNotes'=> $myRow->OppNotes,
+                    'oppAvgMatch'=> $myRow->OppAverageMatch,
+                    'oppAvgTie'=> $myRow->OppAverageTie,
+                    'oppNotes'=> $myRow->OppNotes,
 				 	'oppArrowstring'=> $myRow->OppArrowstring,
 					'oppTie'=> $myRow->OppTie,
 				 	'oppTiebreak'=> trim($myRow->OppTieBreak),

@@ -186,9 +186,10 @@ function selectMain() {
                     row+='<tr><th colspan="'+numCols+'" class="Title">'+this.name+'</th></tr>';
                     row+=headers;
                     var numRows=this.rows.length;
+                    let eventHead='';
                     $.each(this.rows, function(rowIdx) {
                         if(event!=this.name) {
-                            // row+='<tr><th colspan="'+numCols+'" >'+this.name+'</th></tr>';
+                            row+='<tr><th colspan="'+numCols+'" >'+this.name+'</th></tr>';
                             event=this.name;
                         }
                         if(this.matchno>0 && this.matchno%2==0) {

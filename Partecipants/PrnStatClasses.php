@@ -62,7 +62,7 @@ while ($r = safe_fetch($q)) {
 safe_free_result($q);
 
 //Dettaglio per Classe/Divisione/Turno
-$WCode=15;
+$WCode=20;
 $tmpCnt=0;
 foreach($divTotals as $k) {
     foreach($k as $v) {
@@ -73,8 +73,11 @@ foreach($divTotals as $k) {
 }
 $WCell=min(20,(($pdf->getPageWidth()-20-$WCode)/($tmpCnt+2)));
 $pdf->SetFont($pdf->FontStd,'B',10);
+
+$pdf->Cell($pdf->getPageWidth() - 20, 6,  get_text('StatClasses','Tournament'), 0, 1, 'C', 0);
+
 $pdf->SetXY($pdf->GetX()+$WCode,$pdf->GetY()+5);
-$pdf->Cell($WCell*($tmpCnt+2), 6,  (get_text('StatClasses','Tournament')), 1, 1, 'C', 1);
+$pdf->Cell($WCell*$tmpCnt, 6, get_text('DivSession'), 1, 1, 'C', 1);
 $pdf->SetX($pdf->GetX()+$WCode);
 foreach($divTotals as $kDiv=>$tDiv) {
     $YORG = $pdf->GetY();
@@ -147,7 +150,9 @@ if(!$pdf->SamePage(11 + count($SesArray)*5)) {
     $YORG=$pdf->GetY()+5;
 }
 $pdf->SetFont($pdf->FontStd,'B',10);
-$pdf->SetXY($pdf->GetX()+$WCode+$WCategory, $YORG);
+$pdf->setY($YORG);
+$pdf->Cell($WCode, 6, get_text('Session'), 1, 0, 'C', 1);
+$pdf->SetXY($pdf->GetX()+$WCategory, $YORG);
 foreach($DivArray as $vDiv) {
     $pdf->Cell($totSize, 6,  $vDiv, 1, 0, 'C', 1);
 }
@@ -222,6 +227,8 @@ if($Categories) {
     $SesTot=[];
     $SesWheels=[];
     $pdf->SetFont($pdf->FontStd,'B',10);
+    $pdf->setX($pdf->GetX() + $WCode + $WCategory);
+    $pdf->Cell($Wsession * count($SesArray), 6, get_text('Session'), 1, 1, 'C', 1);
     $pdf->Cell($WCode, 6, '', 0, 0, 'L', 0);
     $pdf->Cell($WCategory, 6,  get_text('Description'), 1, 0, 'L', 1);
     foreach($SesArray as $Ses=>$sName) {

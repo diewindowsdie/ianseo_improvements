@@ -30,7 +30,7 @@ include('Common/Templates/head.php');
 		echo '<tr><td class="Center">' . $_GET['SEP'] . '</td></tr>';
 	}
 	echo '<tr>
-		<td class="Center" colspan="2"><input type="submit" value="' . get_text('CmdGo','Tournament') . '" id="Vai" onClick="javascript:SendBib();"></td>
+		<td class="Center" colspan="2"><input type="submit" value="' . get_text('Search','Tournament') . '" id="Vai" onClick="javascript:SendBib();"></td>
 		</tr>';
 	echo '<tr class="divider"><td colspan="2"></td></tr>
 		<tr><th colspan="2"><img src="beiter.png" width="80" hspace="10" alt="Beiter Logo" border="0"/><br>' . get_text('Credits-BeiterCredits', 'Install') . '</th></tr>';

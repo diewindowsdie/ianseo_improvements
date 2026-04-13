@@ -3,7 +3,7 @@ require_once('Accreditation/Lib.php');
 
 $Options=GetParameter('AccessApp', false, array(), true);
 if(empty($Options)) {
-    $res = array('action' => 'gategetsetup', 'error' => 1, 'apiVersion' => $req->apiVersion, 'device' => $req->device);
+    $res = array('action' => 'gategetsetup', 'error' => 1, 'device' => $req->device);
     return;
 }
 
@@ -12,7 +12,7 @@ $regexpList = array();
 $q=safe_r_sql("select IceContent, ToId, ToCode, ToName
     from IdCardElements 
     inner join Tournament on ToId=IceTournament 
-    where IceType IN ('AthQrCode','AthBarCode') and IceTournament in (".implode(',', array_keys($Options)).")");
+    where IceType='AthQrCode' and IceCardType='A' and IceTournament in (".implode(',', array_keys($Options)).")");
 while ($r = safe_fetch($q)) {
     $replacements = array(
         '\\{ENCODE\\}' => '(.+?)',
@@ -28,7 +28,11 @@ while ($r = safe_fetch($q)) {
     $RegExp = '^' . str_replace(array_keys($replacements), array_values($replacements), $RegExp) . '$';
     $RegArray = getIceRegExpMatches($r->IceContent);
     $RegArray['formula'] = $RegExp;
-    $RegArray['key'] = ['tocode','encode'];
+    $RegArray['key'] = array();
+    if($RegArray["tocode"] != -1) {
+        $RegArray['key'][] = 'tocode';
+    }
+    $RegArray['key'][] = 'encode';
     if($RegArray["country"] != -1) {
         $RegArray['key'][] = 'country';
     }
@@ -41,6 +45,10 @@ while ($r = safe_fetch($q)) {
     if (!in_array($RegArray, $regexpList)) {
         if(getModuleParameter("ExtraAddOns","AddOnsEnable","0", $r->ToId)) {
             $RegArray['addOns'] = (object) getModuleParameter("ExtraAddOns", "AddOnsList", array(),$r->ToId);
+            $RegArray['addOnsEnabled'] = [];
+            foreach(GetParameter('GateNG-Addons-' . $r->ToId, '', [], true) as $k) {
+                $RegArray['addOnsEnabled'][]=(string) $k;
+            }
         }
         $regexpList[$r->ToCode] = $RegArray;
     }
@@ -53,13 +61,15 @@ foreach(range(0,6) as $zone) {
 $res = array(
     'action' => 'gategetsetup',
     'error' => 0,
-    'apiVersion' => $req->apiVersion,
     'device' => $req->device,
-    'lookupMode' => 0,
-    'validated' => 0,
-    'checkGateFlow' => 0,
-    'competingOnly' => 0,
-    'showPictures' => 1,
-    'accessZones' => (object) $AccZones,
-    'competitions' => $regexpList
 );
+foreach(['lookupMode','validated', 'checkGateFlow', 'competingOnly', 'showPictures', 'showFlags', 'playSounds','enableHaptics'] as $k) {
+    $res[$k] = (int) GetParameter('GateNG-'.$k, '', 0);
+}
+
+$res['accessZones']=(object) $AccZones;
+$res['accessZonesEnabled']=[];
+foreach(getParameter('GateNG-ZonesEnabled', '', [0], true) as $k) {
+    $res['accessZonesEnabled'][]=(string) $k;
+};
+$res['competitions']=$regexpList;

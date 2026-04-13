@@ -22,6 +22,29 @@ $AllowedNullTargets=array(
     23,//Trg3DRedding
 	);
 
+function isRuleNotUniqueEnough($name, $isDefault, $classes = null, $existingId = null, $regexp = null) {
+    // check if we already have the same name or selector
+    // the selector uniqueness applies only if this is a default target!
+    $filter='';
+    if($isDefault) {
+        //если мы пытаемся добавить новое правило "по умолчанию" - мы должны проверить существование правил по умолчанию для класса/регекспа, а не просто правил для класса/регекспа
+        if($classes) {
+            $filter=" or (TfClasses=".StrSafe_DB($classes) . " and TfDefault = '1')";
+        } else {
+            $filter=" or (TfRegExp=".StrSafe_DB($regexp) . " and TfDefault = '1')";
+        }
+    }
+
+    $excludeCurrent = '';
+    if ($existingId != null) {
+        $excludeCurrent = 'and TfId != ' . StrSafe_DB($existingId);
+    }
+
+    $query = "select TfId from TargetFaces where TfTournament={$_SESSION['TourId']} {$excludeCurrent} and (TfName=" . StrSafe_DB($name) . " {$filter})";
+    $resultSet = safe_r_sql($query);
+    return safe_num_rows($resultSet) > 0;
+}
+
 switch($_REQUEST['act']) {
 	case 'list':
 		// do nothing, just fills in the data
@@ -35,18 +58,7 @@ switch($_REQUEST['act']) {
 		$cl=((empty($_REQUEST['cl']) or $RegExp) ? '' : $_REQUEST['cl']);
 		$TfName=$_REQUEST['TfName'];
 
-		// check if we already have the same name or selector
-        // the selector uniqueness applies only if this is a default target!
-        $filter='';
-        if(!empty($_REQUEST['isDefault'])) {
-            if($cl) {
-                $filter="or TfClasses=".StrSafe_DB($cl);
-            } else {
-                $filter="or TfRegExp=".StrSafe_DB($RegExp);
-            }
-        }
-		$q=safe_r_sql("select TfId from TargetFaces where TfTournament={$_SESSION['TourId']} and (TfName=".StrSafe_DB($TfName)." {$filter})");
-		if(safe_num_rows($q)) {
+		if(isRuleNotUniqueEnough($TfName, !empty($_REQUEST['isDefault']), $cl, null, $RegExp)) {
 			JsonOut($JSON);
 		}
 
@@ -175,6 +187,10 @@ switch($_REQUEST['act']) {
 					break;
 				case 'default':
 					$Value=intval($Value)?1:0;
+                    if (isRuleNotUniqueEnough($_REQUEST["name"], $Value === 1, $_REQUEST["filter"], $_REQUEST["row"])) {
+                        JsonOut($JSON);
+                    }
+
 					$SQL[]="TfDefault=$Value";
 					break;
 				case 'golds':

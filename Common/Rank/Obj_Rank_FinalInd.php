@@ -166,7 +166,7 @@
 				LEFT JOIN DocumentVersions DV2 on EvTournament=DV2.DvTournament AND DV2.DvFile = 'R-IND' and DV2.DvEvent=EvCode
 				LEFT JOIN Eliminations AS e1 ON IndId=e1.ElId AND IndTournament=e1.ElTournament AND IndEvent=e1.ElEventCode AND e1.ElElimPhase=0
 				LEFT JOIN Eliminations AS e2 ON IndId=e2.ElId AND IndTournament=e2.ElTournament AND IndEvent=e2.ElEventCode AND e2.ElElimPhase=1
-				left join ExtraData on EdId=EnId and EdType='Z'
+				left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
 				left join (select EvCodeParent as CodeParent, ceil(EvNumQualified/2) as StopPhase from Events where EvTeamEvent=0 and EvTournament={$this->tournament} and EvCodeParentWinnerBranch=1) as e2 on CodeParent=EvCode
 				WHERE
 					EnAthlete=1 AND EnIndFEvent=1 AND EnStatus <= 1  AND (QuScore != 0 OR IndRankFinal != 0) AND ToId = {$this->tournament}
@@ -376,9 +376,10 @@
 			$q="(
 				SELECT
 					EvElimType, f1.FinEvent AS `event`,f1.FinAthlete AS `athlete`,f1.FinMatchNo AS `matchNo`,f1.FinScore AS `score`,f1.FinSetScore AS `setScore`,f1.FinSetPoints AS `setPoints`,f1.FinSetPointsByEnd AS `setPointsByEnd`,f1.FinTie AS `tie`,f1.FinArrowstring AS `arrowstring`,f1.FinTiebreak AS `tiebreak`, f1.FinNotes as Notes,
-					f2.FinAthlete AS `oppAthlete`,f2.FinMatchNo AS `oppMatchNo`,f2.FinScore AS `oppScore`,f2.FinSetScore AS `oppSetScore`,f2.FinSetPoints AS `oppSetPoints`,f2.FinSetPointsByEnd AS `oppSetPointsByEnd`,f2.FinTie AS `oppTie`,f2.FinArrowstring AS `oppArrowstring`,f2.FinTiebreak AS `oppTiebreak`, f2.FinNotes as OppNotes,
+					f2.FinAthlete AS `oppAthlete`,f2.FinMatchNo AS `oppMatchNo`,f2.FinScore AS `oppScore`,f2.FinSetScore AS `oppSetScore`,f2.FinSetPoints AS `oppSetPoints`,f2.FinSetPointsByEnd AS `oppSetPointsByEnd`,f2.FinTie AS `oppTie`,f2.FinArrowstring AS `oppArrowstring`,f2.FinTiebreak AS `oppTiebreak`, f2.FinNotes as oppNotes,
 					GrPhase, EvProgr, IndRankFinal, IndIrmTypeFinal,
 					f1.FinIrmType IrmType, f2.FinIrmType OppIrmType, i1.IrmType IrmText, i2.IrmType OppIrmText, i1.IrmShowRank, i1.IrmHideDetails as HideDetails,
+					f1.FinAverageMatch AverageMatch, f2.FinAverageMatch oppAverageMatch, f1.FinAverageTie AverageTie, f2.FinAverageTie oppAverageTie,
 					@ArBit:=(EvMatchArrowsNo & pow(2, if(f1.FinMatchNo=0, 0, floor(LOG(2, f1.FinMatchNo))))),
 					if(@ArBit=0, EvFinArrows, EvElimArrows) Arrows, if(@ArBit=0, EvFinEnds, EvElimEnds) Ends, if(@ArBit=0, EvFinSO, EvElimSO) SO
 					FROM Finals AS f1
@@ -398,9 +399,10 @@
 				) union (
 				SELECT
 					EvElimType, f1.FinEvent AS `event`,f1.FinAthlete AS `athlete`,f1.FinMatchNo AS `matchNo`,f1.FinScore AS `score`,f1.FinSetScore AS `setScore`,f1.FinSetPoints AS `setPoints`,f1.FinSetPointsByEnd AS `setPointsByEnd`,f1.FinTie AS `tie`,f1.FinArrowstring AS `arrowstring`,f1.FinTiebreak AS `tiebreak`, f1.FinNotes as Notes,
-					f2.FinAthlete AS `oppAthlete`,f2.FinMatchNo AS `oppMatchNo`,f2.FinScore AS `oppScore`,f2.FinSetScore AS `oppSetScore`,f2.FinSetPoints AS `oppSetPoints`,f2.FinSetPointsByEnd AS `oppSetPointsByEnd`,f2.FinTie AS `oppTie`,f2.FinArrowstring AS `oppArrowstring`,f2.FinTiebreak AS `oppTiebreak`, f2.FinNotes as OppNotes,
+					f2.FinAthlete AS `oppAthlete`,f2.FinMatchNo AS `oppMatchNo`,f2.FinScore AS `oppScore`,f2.FinSetScore AS `oppSetScore`,f2.FinSetPoints AS `oppSetPoints`,f2.FinSetPointsByEnd AS `oppSetPointsByEnd`,f2.FinTie AS `oppTie`,f2.FinArrowstring AS `oppArrowstring`,f2.FinTiebreak AS `oppTiebreak`, f2.FinNotes as oppNotes,
 					GrPhase, EvProgr, IndRankFinal, IndIrmTypeFinal,
 					f1.FinIrmType IrmType, f2.FinIrmType OppIrmType, i1.IrmType IrmText, i2.IrmType OppIrmText, i1.IrmShowRank, i1.IrmHideDetails as HideDetails,
+					f1.FinAverageMatch AverageMatch, f2.FinAverageMatch oppAverageMatch, f1.FinAverageTie AverageTie, f2.FinAverageTie oppAverageTie,
 					@ArBit:=(EvMatchArrowsNo & pow(2, if(f1.FinMatchNo=0, 0, floor(LOG(2, f1.FinMatchNo))))),
 					if(@ArBit=0, EvFinArrows, EvElimArrows) Arrows, if(@ArBit=0, EvFinEnds, EvElimEnds) Ends, if(@ArBit=0, EvFinSO, EvElimSO) SO
 					FROM Finals AS f1
@@ -429,37 +431,29 @@
 					continue;
 				}
 				$arrowstring=array();
-				for ($i=0;$i<strlen($row->arrowstring);++$i)
-				{
-					if (trim($row->arrowstring[$i])!='')
-					{
+				for ($i=0;$i<strlen($row->arrowstring);++$i) {
+					if (trim($row->arrowstring[$i])!='') {
 						$arrowstring[]=DecodeFromLetter($row->arrowstring[$i]);
 					}
 				}
 
 				$tiebreak=array();
-				for ($i=0;$i<strlen($row->tiebreak);++$i)
-				{
-					if (trim($row->tiebreak[$i])!='')
-					{
+				for ($i=0;$i<strlen($row->tiebreak);++$i) {
+					if (trim($row->tiebreak[$i])!='') {
 						$tiebreak[]=DecodeFromLetter($row->tiebreak[$i]);
 					}
 				}
 
 				$oppArrowstring=array();
-				for ($i=0;$i<strlen($row->oppArrowstring);++$i)
-				{
-					if (trim($row->oppArrowstring[$i])!='')
-					{
+				for ($i=0;$i<strlen($row->oppArrowstring);++$i) {
+					if (trim($row->oppArrowstring[$i])!='') {
 						$oppArrowstring[]=DecodeFromLetter($row->oppArrowstring[$i]);
 					}
 				}
 
 				$oppTiebreak=array();
-				for ($i=0;$i<strlen($row->oppTiebreak);++$i)
-				{
-					if (trim($row->oppTiebreak[$i])!='')
-					{
+				for ($i=0;$i<strlen($row->oppTiebreak);++$i) {
+					if (trim($row->oppTiebreak[$i])!='') {
 						$oppTiebreak[]=DecodeFromLetter($row->oppTiebreak[$i]);
 					}
 				}
@@ -492,6 +486,8 @@
 						'setScore'=>$row->setScore,
 					    'setPoints'=>$row->setPoints,
 					    'setPointsByEnd'=>$row->setPointsByEnd,
+                        'avgMatch'=>$row->AverageMatch,
+                        'avgTie'=>$row->AverageTie,
 					    'notes'=>$row->Notes,
 						'tie'=>$row->tie,
 						'arrowstring'=>implode('|',$arrowstring),
@@ -504,7 +500,9 @@
 						'oppSetScore'=>$row->oppSetScore,
 					    'oppSetPoints'=>$row->oppSetPoints,
 					    'oppSetPointsByEnd'=>$row->oppSetPointsByEnd,
-					    'oppNotes'=>$row->OppNotes,
+                        'oppAvgMatch'=>$row->oppAverageMatch,
+                        'oppAvgTie'=>$row->oppAverageTie,
+					    'oppNotes'=>$row->oppNotes,
 						'oppTie'=>$row->oppTie,
 						'oppArrowstring'=>implode('|',$oppArrowstring),
 					    'oppTiebreak'=>implode('|',$oppTiebreak),

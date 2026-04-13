@@ -15,7 +15,7 @@
 global $CFG;
 
 define ("ProgramName","Ianseo");	// Nome del programma
-define ("ProgramVersion","2025-09-03"); // "Congratulations to Greg Easton, 10th President of World Archery - Change is the essential process of all existence. (Spock)"
+define ("ProgramVersion","2026-03-01"); // "By failing to prepare, you are preparing to fail. (Benjamin Franklin)"
 
 define ("TargetNoPadding",4);		// Padding del targetno
 
@@ -171,13 +171,25 @@ function get_text($text, $module='Common', $a=null, $translate=false, $force=fal
 		$_LANG[$lingua][$module]=array();
 		if(!verbose){
 			// carica il fallback (inglese), se esistente!
+            //последний фоллбек - английский язык
 			if(file_exists($file=$CFG->LANGUAGE_PATH . "en/$module.php")) {
 				include($file);
 				$_LANG[$lingua][$module]=$lang;
 			}
 		}
 
-		if(file_exists($file=$CFG->LANGUAGE_PATH . "$lingua/$module.php")) {
+        //если переопределен фоллбек для языка - загрузим его
+        if (file_exists($file=$CFG->LANGUAGE_PATH . $lingua . "/fallback.php")) {
+            $fallbackLanguage = 'en';
+            include($file);
+            if(file_exists($file=$CFG->LANGUAGE_PATH . "$fallbackLanguage/$module.php")) {
+                include($file);
+                $_LANG[$lingua][$module]=array_merge($_LANG[$lingua][$module], $lang);
+            }
+        }
+
+        //и сам выбранный язык
+        if(file_exists($file=$CFG->LANGUAGE_PATH . "$lingua/$module.php")) {
 			include($file);
 			$_LANG[$lingua][$module]=array_merge($_LANG[$lingua][$module], $lang);
 		}
@@ -753,15 +765,13 @@ function getCodeFromId($id) {
  *
  * @return int: tipo del torneo se esiste; 0 altrimenti
  */
-function getTournamentType($TourId='')
-{
+function getTournamentType($TourId='') {
 	$ret=0;
 
 	$query
 		= "SELECT ToType FROM Tournament WHERE ToId=" . StrSafe_DB($TourId?$TourId:$_SESSION['TourId']) . " ";
 	$rs=safe_r_sql($query);
-	if (safe_num_rows($rs)==1)
-	{
+	if (safe_num_rows($rs)==1) {
 		$row=safe_fetch($rs);
 		$ret=$row->ToType;
 	}
@@ -774,18 +784,8 @@ function getTournamentType($TourId='')
  * @param int $Id: id del torneo
  * @return int
  */
-	function GetCategory($Id)
-	{
+	function GetCategory($Id) {
 		global $CFG;
-		/*$Query
-			= "SELECT TtCategory "
-			. "FROM "
-				. "Tournament*Type "
-				. "INNER JOIN "
-					. "Tournament "
-				. "ON TtId=ToType "
-			. "WHERE "
-				. "ToId=" . StrSafe_DB($Id) . " ";*/
 		$Query
 			= "SELECT ToCategory AS TtCategory "
 			. "FROM "
@@ -795,8 +795,7 @@ function getTournamentType($TourId='')
 		$Rs=safe_r_sql($Query);
 		$Cat=-1;
 
-		if ($Rs && safe_num_rows($Rs)==1)
-		{
+		if ($Rs && safe_num_rows($Rs)==1) {
 			$Row=safe_fetch($Rs);
 			$Cat=$Row->TtCategory;
 		}

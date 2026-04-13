@@ -163,7 +163,6 @@ $lang['SetFRChampsScratchR']='Campionato Scratch Clásico';
 $lang['SetFRChampsTNJ']='Torneo Nacional Xuvenil';
 $lang['SetFRChampsVet']='Campionatos Veteranos';
 $lang['SetFRCoupeFrance']='Campionato de Francia Adultos';
-$lang['SetFRD12023']='Campionato D1';
 $lang['SetFRFinalsD2']='Finais Francia D2';
 $lang['SetFRFinDRD2']='Final dos DR';
 $lang['SetFrSelectif']='Selectivo';

@@ -28,7 +28,7 @@ if(!empty($_REQUEST['PrevWaId']) and !empty($_REQUEST['EnId']) and !empty($_REQU
 	require_once('Common/CheckPictures.php');
 	safe_w_sql("update Entries
 			inner join Tournament on EnTournament=ToId and ToId={$_SESSION['TourId']}
-			inner join LookUpEntries on LueIocCode=ToIocCode and LueCode=$WaId
+			inner join LookUpEntries on LueIocCode=IF(ToIocCode='NFAA', 'FITA', ToIocCode) and LueCode=$WaId
 			set EnCode=LueCode, EnName=LueName, EnFirstName=LueFamilyName, EnClassified=LueClassified
 			where EnId=$EnId");
 	$t=safe_r_sql("select EnFirstName, EnName, EnNameOrder from Entries where EnId={$EnId}");
@@ -166,7 +166,7 @@ if(empty($_REQUEST["Download"])
 			from Entries
 			inner join Countries on EnCountry=CoId
 			inner join Tournament on EnTournament=ToId
-			inner join LookUpEntries on ToIocCode=LueIocCode " . (empty($_REQUEST['CatWaId']) ? "and CoCode=LueCountry " : "") ." and ( (soundex(EnFirstName)=soundex(LueFamilyName) or soundex(EnName)=soundex(LueName)) or (soundex(EnFirstName)=soundex(LueName) or soundex(EnName)=soundex(LueFamilyName)))
+			inner join LookUpEntries on IF(ToIocCode='NFAA', 'FITA', ToIocCode)=LueIocCode " . (empty($_REQUEST['CatWaId']) ? "and IF(RIGHT(CoCode,3)='US-', 'USA', CoCode)=LueCountry " : "") ." and ( (soundex(EnFirstName)=soundex(LueFamilyName) or soundex(EnName)=soundex(LueName)) or (soundex(EnFirstName)=soundex(LueName) or soundex(EnName)=soundex(LueFamilyName)))
 			where left(EnCode, 1)='_'
 		    and EnTournament={$_SESSION['TourId']} " . (empty($_REQUEST['CatWaId']) ? "" : " and CONCAT(TRIM(EnDivision),TRIM(Enclass)) LIKE " . StrSafe_DB(str_replace("!","",$_REQUEST['CatWaId']))) . "
 			order by 

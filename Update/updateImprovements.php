@@ -17,6 +17,12 @@ $JS_SCRIPT=array(
 );
 
 include('Common/Templates/head.php');
+echo '<div id="loaderModal">
+    <div class="loader-box">
+        <h1 class="loader-text">Идет обновление IANSEO, пожалуйста подождите...</h1>
+        <img src="Loading_icon.gif" alt="Loading">
+    </div>
+</div>';
 
 $root = dirname($_SERVER["SCRIPT_FILENAME"]) . "/../";
 if (!is_writable($root)) {

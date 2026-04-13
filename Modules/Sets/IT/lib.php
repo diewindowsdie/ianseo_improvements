@@ -735,7 +735,7 @@ function InsertStandard3DEvents($TourId, $SubRule) {
 	InsertClassEvent($TourId, 1, 1, 'SQSM',  'CO',  'SM');
 	InsertClassEvent($TourId, 2, 1, 'SQSM',  'LB',  'SM');
 	InsertClassEvent($TourId, 3, 1, 'SQSM',  'AN',  'SM');
-	InsertClassEvent($TourId, 3, 1, 'SQSM',  'AI',  'SM');
+	InsertClassEvent($TourId, 4, 1, 'SQSM',  'AI',  'SM');
 	InsertClassEvent($TourId, 1, 1, 'SQJM',  'CO',  'JM');
 	InsertClassEvent($TourId, 2, 1, 'SQJM',  'LB',  'JM');
 	InsertClassEvent($TourId, 3, 1, 'SQJM',  'AN',  'JM');
@@ -743,7 +743,7 @@ function InsertStandard3DEvents($TourId, $SubRule) {
 	InsertClassEvent($TourId, 1, 1, 'SQSF',  'CO',  'SF');
 	InsertClassEvent($TourId, 2, 1, 'SQSF',  'LB',  'SF');
 	InsertClassEvent($TourId, 3, 1, 'SQSF',  'AN',  'SF');
-	InsertClassEvent($TourId, 3, 1, 'SQSF',  'AI',  'SF');
+	InsertClassEvent($TourId, 4, 1, 'SQSF',  'AI',  'SF');
 	InsertClassEvent($TourId, 1, 1, 'SQJF',  'CO',  'JF');
 	InsertClassEvent($TourId, 2, 1, 'SQJF',  'LB',  'JF');
 	InsertClassEvent($TourId, 3, 1, 'SQJF',  'AN',  'JF');

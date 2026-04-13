@@ -2,8 +2,12 @@
 $lang['AllFieldsMandatory']='Все поля обязательны для заполнения';
 $lang['Anomalies']='Аномалия';
 $lang['BackupTournaments']='Пожалуйста, не забудьте сохранить все свои соревнования перед обновлением или переустановкой ianseo!';
+$lang['BarCodeNotFound']='Данные не найдены: {$a}';
+$lang['BarCodeSession']='There could be an error in the settings: try setting a session.';
+$lang['BarCodeSettings']='Проверьте настройки в форме выше.';
 $lang['ClassFromToError']='"с" и "по" должны быть числовыми значениями';
 $lang['DirectoryNotWriteable']='Каталог $a не доступен для записи веб-сервером. Пожалуйста, измените его разрешения, для доступа записи любому.';
+$lang['EditLocked']='Редактирование невозможно: включена блокировка раздела';
 $lang['ErrCodeExists']='Код уже существует !';
 $lang['ErrCommitteeError']='Ошиб. код комитета (или описания)';
 $lang['ErrConnection']='Нет соединения на сервер $a';

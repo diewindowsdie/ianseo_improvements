@@ -20,12 +20,12 @@
 				and (ClDivisionsAllowed='' or find_in_set(DivId, ClDivisionsAllowed)) 
 				and (ClSex=-1 or ClSex=EnSex)
 				and (EnDob=0 or year(ToWhenTo)-year(EnDob) between ClAgeFrom and ClAgeTo)
-				and (EnDob=0 or find_in_set(EnAgeClass, ClValidClass))
+				and find_in_set(EnAgeClass, ClValidClass)
 			where EnId=$EnId";
         $rs=safe_r_SQL($query);
         $tmpClasses = array();
         while ($myRow=safe_fetch($rs)) {
-            $tmpClasses += explode(",",$myRow->ClValidClass);
+            $tmpClasses = array_merge($tmpClasses, explode(",",$myRow->ClValidClass));
         }
 
 		$query = "SELECT distinct ClId, ClDescription 

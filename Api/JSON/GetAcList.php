@@ -48,7 +48,7 @@ if(empty($Options)) {
 $JSON['error']=0;
 
 // get all the accreditation QRcodes for this competition...
-$q=safe_r_sql("select IceContent, ToCode from IdCardElements inner join Tournament on ToId=IceTournament where IceType IN ('AthQrCode','AthBarCode') and IceTournament in (".implode(',', array_keys($Options)).")");
+$q=safe_r_sql("select IceContent, ToCode from IdCardElements inner join Tournament on ToId=IceTournament where IceType='AthQrCode' and IceCardType='A' and IceTournament in (".implode(',', array_keys($Options)).")");
 while ($r = safe_fetch($q)) {
     $replacements = array(
         '\\{ENCODE\\}' => '(.+?)',

@@ -224,29 +224,26 @@
 		 */
 			$q="
 				SELECT EvElimType, EvWinnerFinalRank, SubCodes, EvCodeParent, GrPhase, EvFinalFirstPhase, least(f.FinMatchNo,f2.FinMatchNo) as MatchNo,
-					f.FinAthlete AS AthId, i.IndRank as AthRank,
-					f2.FinAthlete AS OppAthId, i2.IndRank as OppAthRank,
-					f.FinIrmType as IrmType, f2.FinIrmType as OppIrmType,
-					IF(EvMatchMode=0,f.FinScore,f.FinSetScore) AS Score, f.FinScore AS CumScore,f.FinTie AS Tie,
-					IF(EvMatchMode=0,f2.FinScore,f2.FinSetScore) as OppScore, f2.FinScore AS OppCumScore,f2.FinTie as OppTie
+					if((EvMatchArrowsNo & GrBitPhase)=0, EvFinArrows, EvElimArrows) DiEndArrows,
+					if((EvMatchArrowsNo & GrBitPhase)=0, EvFinArrows*EvFinEnds, EvElimArrows*EvElimEnds) DiArrows,
+				    f.FinAthlete AS AthId, i.IndRank as AthRank, f2.FinAthlete AS OppAthId, i2.IndRank as OppAthRank,
+					f.FinIrmType as IrmType, f2.FinIrmType as OppIrmType, f.FinWinLose as WinLose, f2.FinWinLose as OppWinLose,
+					f.FinArrowstring as Arrowstring, f2.FinArrowstring as OppArrowstring, f.FinSetPoints as SetPoints, f2.FinSetPoints as OppSetPoints,
+					f.FinTiebreak as Tiebreak, f2.FinTiebreak as OppTiebreak,
+					f.FinScore AS Score,f.FinTie AS Tie, f2.FinScore AS OppScore,f2.FinTie as OppTie, f.FinMatchNo as RealMatchNo, f2.FinMatchNo as OppRealMatchNo
 				FROM
 					Finals AS f
-
 					INNER JOIN Finals AS f2 ON f.FinEvent=f2.FinEvent AND f.FinMatchNo=IF((f.FinMatchNo % 2)=0,f2.FinMatchNo-1,f2.FinMatchNo+1) AND f.FinTournament=f2.FinTournament
 					left JOIN Individuals AS i ON i.IndId=f.FinAthlete AND i.IndTournament=f.FinTournament and i.IndEvent=f.FinEvent
 					left JOIN Individuals AS i2 ON i2.IndId=f2.FinAthlete AND i2.IndTournament=f2.FinTournament and i2.IndEvent=f2.FinEvent
-
 					INNER JOIN Grids ON f.FinMatchNo=GrMatchNo
-
 					INNER JOIN Events ON f.FinEvent=EvCode AND f.FinTournament=EvTournament AND EvTeamEvent=0
 					left join (select group_concat(DISTINCT concat(EvCode, '@', EvFinalFirstPhase)) SubCodes, EvCodeParent SubMainCode, EvFinalFirstPhase SubFirstPhase from Events where EvCodeParent!='' and EvTeamEvent=0 and EvTournament={$this->tournament} group by EvCodeParent, EvFinalFirstPhase) Secondary on SubMainCode=EvCode and SubFirstPhase=GrPhase/2
-
 				WHERE
 					f.FinTournament={$this->tournament} AND f.FinEvent='{$event}' AND GrPhase={$realphase}
 					AND (f2.FinWinLose=1 or (f.FinIrmType>0 and f.FinIrmType<20 and f2.FinIrmType>0 and f2.FinIrmType<20))
 				ORDER BY
-					IF(EvMatchMode=0,f.FinScore,f.FinSetScore) DESC,f.FinScore DESC
-			";
+					least(f.FinMatchNo,f2.FinMatchNo)";
 
 			$rs=safe_r_sql($q);
 
@@ -278,97 +275,71 @@
 					}
 				}
 				if ($phase==0 || $phase==1) {
-
-					$toWrite=array();
-
-					if ($phase==0)
-					{
+                    $avg = [
+                        round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->SetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->SetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
+                        round((valutaArrowString($myRow->Tiebreak) / (strlen(trim($myRow->Tiebreak)) ?: 1)), 3),
+                        round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->OppSetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->OppSetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
+                        round((valutaArrowString($myRow->OppTiebreak) / (strlen(trim($myRow->OppTiebreak)) ?: 1)), 3)
+                    ];
+                    safe_w_SQL("UPDATE Finals SET FinAverageMatch='{$avg[0]}', FinAverageTie='{$avg[1]}' WHERE FinTournament='{$this->tournament}' AND FinEvent='$EventToUse' AND FinMatchNo='{$myRow->RealMatchNo}'");
+                    safe_w_SQL("UPDATE Finals SET FinAverageMatch='{$avg[2]}', FinAverageTie='{$avg[3]}' WHERE FinTournament='{$this->tournament}' AND FinEvent='$EventToUse' AND FinMatchNo='{$myRow->OppRealMatchNo}'");
+                    $toWrite=array();
+					if ($phase==0) {
 					// vincente
 						$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->OppAthId,'rank'=>$myRow->EvWinnerFinalRank);
 					// perdente
 						$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->AthId,'rank'=>$myRow->EvWinnerFinalRank+1);
-					}
-					elseif ($phase==1)
-					{
+					} else if ($phase==1) {
 					// vincente
 						$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->OppAthId,'rank'=>$myRow->EvWinnerFinalRank+2);
 					// perdente
 						$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->AthId,'rank'=>$myRow->EvWinnerFinalRank+3);
 					}
 
-					foreach ($toWrite as $values)
-					{
+					foreach ($toWrite as $values) {
 						$x=$this->writeRow($values['id'],$values['event'],$values['rank']);
 						if ($x === false)
 							return false;
 					}
-				}
-				elseif ($phase==2 or $myRow->SubCodes)
-				{
-				// non faccio nulla!
-				}
-				else
-				{
-
-				// qui posso avere tante righe
-					$pos=0;
-
-				/*
-				 *  per la fase 4 pos viene inizializzato al valore iniziale -1
-				 *  perchè poi nel ciclo come prima cosa ho un suo incremento dato che la if
-				 *  che decide se incrementare o no sarà vera. Per gli altri non ci sarà
-				 *  l'incremento così avrò sempre il valore iniziale (senza il -1)
-				 */
-					if($realphase==4) {
-						// these are all ranked one by one
-						$MaxRank= ($myRow->EvElimType==3 or $myRow->EvElimType==4) ? 4 : 8;
-						$pos=max(4,$MaxRank-safe_num_rows($rs));		// dovendo partire dal fondo, recupero l'ultimo posto disponibile
-					} elseif($realphase>4) {
-						$pos=numMatchesByPhase($phase)+SavedInPhase($phase)+1;
-					} else {
-						// no need to rerank
-						return false;
-					}
-
-					if ($phase==4)
-					{
-						$rank=$pos+1;
-					}
-					else
-					{
-						$rank=$pos;
-					}
-
-					$scoreOld=0;
-					$cumOld=0;
-
-					while ($myRow) {
-						if ($phase==4) {
-							++$pos;
-							if (!($myRow->Score==$scoreOld && $myRow->CumScore==$cumOld)) {
-								$rank=$pos;
-							}
-							if($myRow->IrmType==15) {
-								$rank=8;
-							}
-						}
-
-						$scoreOld=$myRow->Score;
-						$cumOld=$myRow->CumScore;
-
-						// Only the loser needs to be ranked
-						if(($myRow->EvElimType==3 or $myRow->EvElimType==4) and $myRow->GrPhase>$myRow->EvFinalFirstPhase and $myRow->MatchNo>=8) {
-							// needs to get his final rank, based on the matchno
-							if($myRow->EvElimType==3) {
-								$rank=getPoolLooserRank($myRow->MatchNo);
-							} else {
-								$rank=getPoolLooserRankWA($myRow->MatchNo);
-							}
-						}
-						$this->writeRow($myRow->AthId,$event,$rank+$myRow->EvWinnerFinalRank-1);
-
-						$myRow=safe_fetch($rs);
-					}
+				} elseif ($phase==2 or $myRow->SubCodes) {
+                    while ($myRow) {
+                        $avg = [
+                            round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->SetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->SetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
+                            round((valutaArrowString($myRow->Tiebreak) / (strlen(trim($myRow->Tiebreak)) ?: 1)), 3),
+                            round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->OppSetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->OppSetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
+                            round((valutaArrowString($myRow->OppTiebreak) / (strlen(trim($myRow->OppTiebreak)) ?: 1)), 3)
+                        ];
+                        safe_w_SQL("UPDATE Finals SET FinAverageMatch='{$avg[0]}', FinAverageTie='{$avg[1]}' WHERE FinTournament='{$this->tournament}' AND FinEvent='$EventToUse' AND FinMatchNo='{$myRow->RealMatchNo}'");
+                        safe_w_SQL("UPDATE Finals SET FinAverageMatch='{$avg[2]}', FinAverageTie='{$avg[3]}' WHERE FinTournament='{$this->tournament}' AND FinEvent='$EventToUse' AND FinMatchNo='{$myRow->OppRealMatchNo}'");
+                        $myRow = safe_fetch($rs);
+                    }
+                } else {
+                    $lstMatches = array();
+                    while ($myRow) {
+                        $avg = [
+                            round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->SetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->SetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
+                            round((valutaArrowString($myRow->Tiebreak) / (strlen(trim($myRow->Tiebreak)) ?: 1)), 3),
+                            round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->OppSetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->OppSetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
+                            round((valutaArrowString($myRow->OppTiebreak) / (strlen(trim($myRow->OppTiebreak)) ?: 1)), 3)
+                        ];
+                        $lstMatches[$myRow->MatchNo] = $avg[0]*1000+($avg[1]/100);
+                        $toWrite[$myRow->MatchNo]=array('event'=>$EventToUse,'id'=>$myRow->AthId);
+                        safe_w_SQL("UPDATE Finals SET FinAverageMatch='{$avg[0]}', FinAverageTie='{$avg[1]}' WHERE FinTournament='{$this->tournament}' AND FinEvent='$EventToUse' AND FinMatchNo='{$myRow->RealMatchNo}'");
+                        safe_w_SQL("UPDATE Finals SET FinAverageMatch='{$avg[2]}', FinAverageTie='{$avg[3]}' WHERE FinTournament='{$this->tournament}' AND FinEvent='$EventToUse' AND FinMatchNo='{$myRow->OppRealMatchNo}'");
+                        $myRow=safe_fetch($rs);
+                    }
+                    arsort($lstMatches);
+                    $pos=numMatchesByPhase($phase)+SavedInPhase($phase)+1;
+                    $rank=$pos;
+                    $oldScore=-1;
+                    foreach ($lstMatches as $match=>$score) {
+                        if($oldScore!=$score) {
+                            $rank=$pos;
+                            $oldScore=$score;
+                        }
+                        $this->writeRow($toWrite[$match]['id'],$toWrite[$match]['event'],$rank);
+                        $pos++;
+                    }
 				}
 			} else {
 				return false;
@@ -394,17 +365,12 @@
 	 * (non-PHPdoc)
 	 * @see ianseo/Common/Rank/Obj_Rank#calculate()
 	 */
-		public function calculate()
-		{
-			if (count($this->opts['eventsC'])>0)
-			{
-				foreach ($this->opts['eventsC'] as $c)
-				{
+		public function calculate() {
+			if (count($this->opts['eventsC'])>0) {
+				foreach ($this->opts['eventsC'] as $c) {
 					list($event,$phase)=explode('@',$c);
-
 					$x=true;
-					switch ($phase)
-					{
+					switch ($phase) {
 						case -3:
 							$x=$this->calcFromAbs($event);
 							break;
@@ -419,17 +385,14 @@
 						 * Qui devo ciclare a partire dalla fase passata fino agli ori.
 						 * Il primo errore mi fa terminare il metodo con false
 						 */
-							foreach (getPhasesId() as $p)
-							{
+							foreach (getPhasesId() as $p) {
 							// se sono in una fase > di quella passata ignoro
-								if ($p>$phase)
-								{
+								if ($p>$phase) {
 									continue;
 								}
 								$x=$this->calcFromPhase($event,$p);
 
-								if ($x===false)
-								{
+								if ($x===false) {
 									return false;
 								}
 							}
@@ -440,7 +403,6 @@
 						return false;
 				}
 			}
-
 			return true;
 		}
 

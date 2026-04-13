@@ -22,7 +22,7 @@ if(empty($CardType)) $CardType='A';
 if(empty($CardNumber)) $CardNumber=0;
 
 if(empty($FIELDS)) {
-	$FIELDS="EnId, IFNULL(zextra.EdExtra,EnCode) as Bib, EnTournament, ToCode, ToName, ToWhere, ToWhenFrom, ToWhenTo, ToCategory,
+	$FIELDS="EnId, IFNULL(zextra.EdExtra,EnCode) as Bib, EnIocCode as EnIocCode, EnTournament, ToCode, ToName, ToWhere, ToWhenFrom, ToWhenTo, ToCategory,
 		EnName AS Name, upper(EnFirstName) AS FirstName, EnName as GivCamel, upper(EnName) as GivCaps, EnFirstName as FamCamel, upper(EnFirstName) AS FamCaps,
 		QuSession AS Session, SesName,QuSubClassRank as SubclassRank,
 		c.CoId, c.CoCode AS NationCode, c.CoName AS Nation, upper(c.CoName) as NationCaps, 
@@ -356,7 +356,7 @@ $MyQuery = "SELECT $FIELDS, QuSession as ABCDSes, QuTarget as ABCDTgt, QuLetter 
 	LEFT JOIN Photos AS ph ON e.EnId=ph.PhEnId
 	LEFT JOIN ExtraData cextra ON e.EnId=cextra.EdId and cextra.EdType='C'
 	LEFT JOIN ExtraData aextra ON e.EnId=aextra.EdId and aextra.EdType='A'
-	LEFT JOIN ExtraData zextra ON e.EnId=zextra.EdId and zextra.EdType='Z'
+	LEFT JOIN ExtraData zextra ON e.EnId=zextra.EdId and zextra.EdType='Z' and zextra.EdExtra!=''
     LEFT JOIN ExtraData pextra ON e.EnId=pextra.EdId and pextra.EdType='P'
     LEFT JOIN Rankings on EnTournament=RankTournament and RankEvent=IF(EvWaCategory!='',EvWaCategory,EvCode) and RankTeam=0 and EnCode=RankCode and ToIocCode='FITA' and EnIocCode in ('', 'FITA') and RankIocCode='FITA'
 	WHERE EnTournament in ($TourId)

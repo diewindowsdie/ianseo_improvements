@@ -7,7 +7,7 @@ if(empty($Options)) {
     return;
 }
 
-$q=safe_r_sql("select IceContent, ToCode from IdCardElements inner join Tournament on ToId=IceTournament where IceType IN ('AthQrCode') and IceTournament in (".implode(',', array_keys($Options)).")");
+$q=safe_r_sql("select IceContent, ToCode from IdCardElements inner join Tournament on ToId=IceTournament where IceType='AthQrCode' and IceCardType='A' and IceTournament in (".implode(',', array_keys($Options)).")");
 $regexpList = array();
 while ($r = safe_fetch($q)) {
     $RegExp = preg_quote('{ENCODE}-{DIVISION}-{CLASS}', '/');
@@ -23,7 +23,7 @@ if(!empty($req->id)) {
 }
 
 if(empty($EnId)) {
-    $res = array('action' => 'gateverify', 'error' => 1, 'apiVersion' => $req->apiVersion, 'device' => $req->device);
+    $res = array('action' => 'gateverify', 'error' => 0, 'apiVersion' => $req->apiVersion, 'device' => $req->device);
     return;
 }
 
@@ -40,25 +40,27 @@ $qEntry = "select EnId, IFNULL(localbib.EdExtra,EnCode) as AthCode, QuSession, '
 		LEFT JOIN AccEntries ON AeId=EnId AND AEOperation=1
 		LEFT JOIN AccColors ON AcTournament=EnTournament AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE AcDivClass
 		LEFT JOIN ExtraData as caption ON caption.EdId=EnId and caption.EdType='C'
-		LEFT JOIN ExtraData as localbib ON localbib.EdId=EnId and localbib.EdType='Z'
+		LEFT JOIN ExtraData as localbib ON localbib.EdId=EnId and localbib.EdType='Z' and localbib.EdExtra!=''
 		LEFT JOIN ExtraData as extras ON extras.EdId=EnId and extras.EdType='P'
 		WHERE EnId=$EnId";
 $q=safe_r_sql($qEntry);
+$Template=array(
+    'key' => '',
+    'entryCode' => '',
+    'givenName' => '',
+    'familyName' => '',
+    'countryCode' => '',
+    'countryName' => '',
+    'caption' => '',
+    'picture' => '',
+    'flag' => '',
+    'status' => '',
+    'direction' => 0,
+    'zones' => array(),
+    'extras' => 0,
+    'hash' => ''
+);
 if($r=safe_fetch($q)) {
-    $Template=array(
-        'key' => '',
-        'enCode' => '',
-        'givName' => '',
-        'famName' => '',
-        'coCode' => '',
-        'coName' => '',
-        'caption' => '',
-        'status' => '',
-        'direction' => 0,
-        'zones' => array(),
-        'extras' => 0,
-        'hash' => ''
-    );
     $zones=array();
     if($r->AcArea0) $zones[]='0'.($r->AcAreaStar ? '*' : '');
     if($r->AcArea1) $zones[]='1'.($r->AcAreaStar ? '*' : '');
@@ -80,7 +82,7 @@ if($r=safe_fetch($q)) {
                 // if yes completely swap the accreditatoion
                 // select the extradata of the other competition
                 $t=safe_r_sql("select EdExtra, CoCode
-					from ExtraData 
+					from ExtraData
 					inner join Entries on EnId=EdId and EnTournament in (".implode(', ', array_keys($Options)).")
 					inner join Countries on CoId=EnCountry
 					where EdType='Z' and EdId=$EnId");
@@ -92,8 +94,8 @@ if($r=safe_fetch($q)) {
                         // this is a coach upgrade
                         $IsCoach=1;
                         $TmpCoCode = $bits[1];
-                        $t=safe_r_sql("select EnId, EnCode, 0 QuSession, '' as ScheduledSession, ToId, ToCode, EnName, EnFirstName, CoId as EnCountry, CoCode, CoName, AeId is not null as Accredited, 
-							AcArea0, AcArea1, AcArea2, AcArea3, AcArea4, AcArea5, AcArea6, AcArea7, AcAreaStar, EdExtra as EnCaption, 
+                        $t=safe_r_sql("select EnId, EnCode, 0 QuSession, '' as ScheduledSession, ToId, ToCode, EnName, EnFirstName, CoId as EnCountry, CoCode, CoName, AeId is not null as Accredited,
+							AcArea0, AcArea1, AcArea2, AcArea3, AcArea4, AcArea5, AcArea6, AcArea7, AcAreaStar, EdExtra as EnCaption,
 							0 AS  AcIsAthlete, DivDescription, ClDescription, DivId
 							from Entries
 							inner join Qualifications on QuId=EnId
@@ -109,8 +111,8 @@ if($r=safe_fetch($q)) {
                     } else {
                         // normal upgrade linked to somebody
                         $IsCoach=0;
-                        $t=safe_r_sql("select EnId, EnCode, QuSession, '' as ScheduledSession, ToId, ToCode, EnName, EnFirstName, CoId as EnCountry, CoCode, CoName, AeId is not null as Accredited, 
-							AcArea0, AcArea1, AcArea2, AcArea3, AcArea4, AcArea5, AcArea6, AcArea7, AcAreaStar, EdExtra as EnCaption, 
+                        $t=safe_r_sql("select EnId, EnCode, QuSession, '' as ScheduledSession, ToId, ToCode, EnName, EnFirstName, CoId as EnCountry, CoCode, CoName, AeId is not null as Accredited,
+							AcArea0, AcArea1, AcArea2, AcArea3, AcArea4, AcArea5, AcArea6, AcArea7, AcAreaStar, EdExtra as EnCaption,
 							0 AS  AcIsAthlete, DivDescription, ClDescription, DivId
 							from Entries
 							inner join Qualifications on QuId=EnId
@@ -171,21 +173,33 @@ if($r=safe_fetch($q)) {
     if(array_key_exists($r->ToCode,$regexpList)) {
         $Template['key'] = $r->ToCode . '|' . $r->AthCode . ($regexpList[$r->ToCode]["country"] != -1 ? '|' . $r->CoCode : '') . ($regexpList[$r->ToCode]["division"] != -1 ? '|' . $r->DivId : '');
     }
-    $Template['enCode']=$r->AthCode;
-    $Template['famName']=$r->EnFirstName;
-    $Template['givName']=$r->EnName;
-    $Template['coCode']=$r->CoCode;
-    $Template['coName']=$r->CoName;
+    $Template['entryCode']=$r->AthCode;
+    $Template['familyName']=$r->EnFirstName;
+    $Template['givenName']=$r->EnName;
+    $Template['countryCode']=$r->CoCode;
+    $Template['countryName']=$r->CoName;
     $Template['caption']=$Caption;
     $Template['status']=$status;
     $Template['zones']=$zones;
     $Template['extras']=intval($r->AthExtras);
 
+    if($req->pic??0) {
+        if(file_exists($im=$CFG->DOCUMENT_PATH.'TV/Photos/'.$r->ToCode.'-En-'.$r->EnId.'.jpg')) {
+            $Template['picture']='data:image/jpeg;base64,'.base64_encode(file_get_contents($im));
+//        } else {
+//            $Template['picture']='data:image/jpeg;base64,'.base64_encode(file_get_contents($CFG->DOCUMENT_PATH.'Common/Images/Photo.jpg'));
+        }
+    }
+    if($req->flag??0) {
+//        if(file_exists($im=$CFG->DOCUMENT_PATH.'TV/Photos/'.$r->ToCode.'-FlSvg-'.$r->CoCode.'.svg')) {
+//            $Template['flag']='data:image/svg+xml;base64,'.base64_encode(file_get_contents($im));
+//        } else
+        if(file_exists($im=$CFG->DOCUMENT_PATH.'TV/Photos/'.$r->ToCode.'-Fl-'.$r->CoCode.'.jpg')) {
+            $Template['flag']='data:image/jpeg;base64,'.base64_encode(file_get_contents($im));
+        }
+    }
 
-
-    $Template['hash'] = md5($Template['enCode'].$Template['famName'].$Template['givName'].$Template['coCode'].$Template['coName'].$Template['caption'].implode(',',$Template['zones']).$Template['extras']);
-    $tmpList[$Template['key']]=$Template;
-
+    $Template['hash'] = md5($Template['entryCode'].$Template['familyName'].$Template['givenName'].$Template['countryCode'].$Template['countryName'].$Template['caption'].implode(',',$Template['zones']).$Template['extras']);
 }
 
 $res = array(
@@ -194,9 +208,7 @@ $res = array(
     'apiVersion' => $req->apiVersion,
     'device' => $req->device,
     'id' => $req->id,
-    'status' => 999,
-    'direction' => 999,
-    'participant' => array_values($tmpList)
+    'participant' => $Template
 );
 
 function CheckStatus($r, $EnId, $Options) {

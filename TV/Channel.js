@@ -5,15 +5,15 @@ $(document).ready(function() {
 });
 
 function checkChannel() {
-	$.getJSON(rootPath + "TV/ChannelCheck.php?id="+Channel,
-		function(data) {
-			if(data.error==0) {
-				if(data.reload) {
+	$.getJSON(rootPath + "TV/ChannelCheck.php?id=" + Channel)
+		.done(function(data) {
+			if (data.error == 0) {
+				if (data.reload) {
 					$('.TvoChannel').fadeOut(function() {
 						location.reload();
 					});
-
 				}
+
 				$.each(data.pages, function(i,item) {
 					if(item != Pages[i]) {
 						// page content changed...
@@ -24,9 +24,14 @@ function checkChannel() {
 							$('#channel-'+i).fadeIn();
 						});
 					}
-				})
+				});
 			}
-
+		})
+		.fail(function(xhr, status, error) {
+			console.log("Channel check error:", status, error);
+		})
+		.always(function() {
+			//call again even in case of network/server fails etc, to auto-up when the error is gone
 			setTimeout(checkChannel, 3000);
 		});
 }

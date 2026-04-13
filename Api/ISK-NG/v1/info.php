@@ -39,9 +39,9 @@ if(safe_num_rows($q) == 1 AND $r=safe_fetch($q)) {
         foreach ($checkQr as $k=>$v) {
             if($v != '') {
                 if(array_key_exists($k, $curQrCode) and is_array($curQrCode[$k])) {
-                    $isSame = $isSame AND (array_diff($curQrCode[$k],((array) $req->data->settings->{$v})) === array_diff(((array) $req->data->settings->{$v}),$curQrCode[$k]) AND count($curQrCode[$k])==count(((array) $req->data->settings->{$v})));
+                    $isSame = ($isSame AND (array_diff($curQrCode[$k],((array) $req->data->settings->{$v})) === array_diff(((array) $req->data->settings->{$v}),$curQrCode[$k]) AND count($curQrCode[$k])==count(((array) $req->data->settings->{$v}))));
                 } else if(array_key_exists($k, $curQrCode)){
-                    $isSame = $isSame AND ($curQrCode[$k] == $req->data->settings->{$v});
+                    $isSame = ($isSame AND ($curQrCode[$k] == $req->data->settings->{$v}));
                 }
             }
         }
