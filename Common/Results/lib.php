@@ -333,7 +333,7 @@ function findCompetitionByCode($code)
     global $CFG;
 
     $codeSafe = preg_replace('/[^a-z0-9_.-]+/sim', '', $code);
-    $competitionQuery = "SELECT ToId,ToPrintLang,ToComDescr,ToName,ToWhere,ToVenue,DATE_FORMAT(ToWhenFrom,'" . get_text('DateFmtDB') . "') AS DtFrom, "
+    $competitionQuery = "SELECT ToId,ToCode,ToPrintLang,ToComDescr,ToName,ToWhere,ToVenue,DATE_FORMAT(ToWhenFrom,'" . get_text('DateFmtDB') . "') AS DtFrom, "
         . "DATE_FORMAT(ToWhenTo,'" . get_text('DateFmtDB') . "') AS DtTo "
         . "FROM Tournament where ToCode = " . StrSafe_DB($code);
     $competitionResultSet = safe_r_SQL($competitionQuery);
@@ -411,57 +411,57 @@ function getCompetitionDetailsHtml($competition): string
 
     $result = '<span class="competitionResults">';
 
-    $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=s&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('IntSCHED', $competition, 'ODF') . '</a><br /><br />';
+    $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=s&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('IntSCHED', $competition, 'ODF') . '</a><br /><br />';
     if (isAthleteOrTeamInBronzeOrGoldFinals($competition)) {
-        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=fs&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('FinalScheduleDetailed', $competition, 'Tournament') . '</a><br /><br />';
+        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=fs&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('FinalScheduleDetailed', $competition, 'Tournament') . '</a><br /><br />';
     }
 
     //отчеты статистики
     if (isAnyAthletesInCompetition($competition)) {
-        $result .= '<i id="toggleStatistics_' . $competition->ToId . '" class="l2 fa-solid fa-caret-right" onclick="toggle(\'toggleStatistics_\', \'statistics_\', ' . $competition->ToId . ')"></i>
-                <span class="resultsGroupHeader" onclick="toggle(\'toggleStatistics_\', \'statistics_\', ' . $competition->ToId . ')">' . getTextAtCompetitionLanguage('Statistics', $competition, 'Tournament') . '</span>';
-        $result .= '<div class="results display-none" id="statistics_' . $competition->ToId . '">';
+        $result .= '<i id="toggleStatistics_' . $competition->ToCode . '" class="l2 fa-solid fa-caret-right" onclick="toggle(\'toggleStatistics_\', \'statistics_\', \'' . $competition->ToCode . '\')"></i>
+                <span class="resultsGroupHeader" onclick="toggle(\'toggleStatistics_\', \'statistics_\', \'' . $competition->ToCode . '\')">' . getTextAtCompetitionLanguage('Statistics', $competition, 'Tournament') . '</span>';
+        $result .= '<div class="results display-none" id="statistics_' . $competition->ToCode . '">';
 
         //статистика - регионы/команды
         $first = true;
         if (getModuleParameter(PROTOCOL_MODULE, Checked1ParameterName, "0", $competition->ToId) === "1") {
-            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=r1&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('StatisticsWithComment', $competition, 'Tournament', getRegionStatisticsHeaderParameter($competition, 1)) . '</a>';
+            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=r1&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('StatisticsWithComment', $competition, 'Tournament', getRegionStatisticsHeaderParameter($competition, 1)) . '</a>';
             $first = false;
         }
         if (getModuleParameter(PROTOCOL_MODULE, Checked2ParameterName, "0", $competition->ToId) === "1") {
             if (!$first) {
                 $result .= "&nbsp;&nbsp;";
             }
-            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=r2&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('StatisticsWithComment', $competition, 'Tournament', getRegionStatisticsHeaderParameter($competition, 2)) . '</a>';
+            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=r2&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('StatisticsWithComment', $competition, 'Tournament', getRegionStatisticsHeaderParameter($competition, 2)) . '</a>';
             $first = false;
         }
         if (getModuleParameter(PROTOCOL_MODULE, Checked3ParameterName, "0", $competition->ToId) === "1") {
             if (!$first) {
                 $result .= "&nbsp;&nbsp;";
             }
-            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=r3&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('StatisticsWithComment', $competition, 'Tournament', getRegionStatisticsHeaderParameter($competition, 3)) . '</a>';
+            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=r3&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('StatisticsWithComment', $competition, 'Tournament', getRegionStatisticsHeaderParameter($competition, 3)) . '</a>';
         }
         $result .= '<br />';
         //Статистика (Квалификация и Финалы)
-        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=sacd&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('StatEvents', $competition, 'Tournament') . '</a><br />';
+        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=sacd&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('StatEvents', $competition, 'Tournament') . '</a><br />';
         //статистика участников по классу и дивизиону
-        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=sacd&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('StatClasses', $competition, 'Tournament') . '</a><br /><br />';
+        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=sacd&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('StatClasses', $competition, 'Tournament') . '</a><br /><br />';
 
         //список спортсменов по регионам
-        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=sar&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('StartlistCountry', $competition, 'Tournament') . '</a><br /><br />';
+        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=sar&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('StartlistCountry', $competition, 'Tournament') . '</a><br /><br />';
 
         //список спортсменов по категориям
-        $result .= '<i id="toggleAthletesByCategory_' . $competition->ToId . '" class="l3 fa-solid fa-caret-right" onclick="toggle(\'toggleAthletesByCategory_\', \'athletesByCategory_\', ' . $competition->ToId . ')"></i>
-                <span class="resultsGroupHeader" onclick="toggle(\'toggleAthletesByCategory_\', \'athletesByCategory_\', ' . $competition->ToId . ')">' . getTextAtCompetitionLanguage('StartlistCategory', $competition, 'Tournament') . '</span>';
-        $result .= '<div class="results display-none" id="athletesByCategory_' . $competition->ToId . '">';
+        $result .= '<i id="toggleAthletesByCategory_' . $competition->ToCode . '" class="l3 fa-solid fa-caret-right" onclick="toggle(\'toggleAthletesByCategory_\', \'athletesByCategory_\', \'' . $competition->ToCode . '\')"></i>
+                <span class="resultsGroupHeader" onclick="toggle(\'toggleAthletesByCategory_\', \'athletesByCategory_\', \'' . $competition->ToCode . '\')">' . getTextAtCompetitionLanguage('StartlistCategory', $competition, 'Tournament') . '</span>';
+        $result .= '<div class="results display-none" id="athletesByCategory_' . $competition->ToCode . '">';
 
-        $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=sac&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('StartlistCategory', $competition, 'Tournament') . ' (' . getTextAtCompetitionLanguage('AllCategories', $competition, 'Common') . ')</a><br />';
+        $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=sac&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('StartlistCategory', $competition, 'Tournament') . ' (' . getTextAtCompetitionLanguage('AllCategories', $competition, 'Common') . ')</a><br />';
 
         $result .= '<br /><b>' . getTextAtCompetitionLanguage('ByCategory', $competition, 'Tournament') . ':</b><br />';
 
         foreach ($events as $event) {
             if ($event->EvTeamEvent === "0") {
-                $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=sac&id=' . $competition->ToId . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
+                $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=sac&id=' . $competition->ToCode . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
             }
         }
 
@@ -472,9 +472,9 @@ function getCompetitionDetailsHtml($competition): string
 
     //квалификация
     if (isAthleteTargetsAssigned($competition)) {
-        $result .= '<i id="toggleQualification_' . $competition->ToId . '" class="l2 fa-solid fa-caret-right" onclick="toggle(\'toggleQualification_\', \'qualResults_\', ' . $competition->ToId . ')"></i>
-                <span class="resultsGroupHeader" onclick="toggle(\'toggleQualification_\', \'qualResults_\', ' . $competition->ToId . ')">' . getTextAtCompetitionLanguage('QualRound', $competition) . '</span>';
-        $result .= '<div class="results display-none" id="qualResults_' . $competition->ToId . '">';
+        $result .= '<i id="toggleQualification_' . $competition->ToCode . '" class="l2 fa-solid fa-caret-right" onclick="toggle(\'toggleQualification_\', \'qualResults_\', \'' . $competition->ToCode . '\')"></i>
+                <span class="resultsGroupHeader" onclick="toggle(\'toggleQualification_\', \'qualResults_\', \'' . $competition->ToCode . '\')">' . getTextAtCompetitionLanguage('QualRound', $competition) . '</span>';
+        $result .= '<div class="results display-none" id="qualResults_' . $competition->ToCode . '">';
 
         $targetsAssignedFor = array();
         foreach ($qualificationSessions as $session) {
@@ -485,12 +485,12 @@ function getCompetitionDetailsHtml($competition): string
 
         //если хоть у кого-то есть назначенная мишень - покажем жеребьевку
         if (count($targetsAssignedFor) > 0) {
-            $result .= '<i id="toggleQualDraw_' . $competition->ToId . '" class="l3 fa-solid fa-caret-right" onclick="toggle(\'toggleQualDraw_\', \'qualDraw_\', ' . $competition->ToId . ')"></i>
-                <span class="resultsGroupHeader" onclick="toggle(\'toggleQualDraw_\', \'qualDraw_\', ' . $competition->ToId . ')">' . getTextAtCompetitionLanguage('DrawResults', $competition, 'Tournament') . '</span>';
-            $result .= '<div class="results display-none" id="qualDraw_' . $competition->ToId . '">';
+            $result .= '<i id="toggleQualDraw_' . $competition->ToCode . '" class="l3 fa-solid fa-caret-right" onclick="toggle(\'toggleQualDraw_\', \'qualDraw_\', \'' . $competition->ToCode . '\')"></i>
+                <span class="resultsGroupHeader" onclick="toggle(\'toggleQualDraw_\', \'qualDraw_\', \'' . $competition->ToCode . '\')">' . getTextAtCompetitionLanguage('DrawResults', $competition, 'Tournament') . '</span>';
+            $result .= '<div class="results display-none" id="qualDraw_' . $competition->ToCode . '">';
 
             foreach ($targetsAssignedFor as $session) {
-                $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=d&id=' . $competition->ToId . '&session=' . $session->SesOrder . '">' . getTextAtCompetitionLanguage('Session', $competition) . ' ' . $session->SesOrder . ': ' . htmlspecialchars($session->SesName) . '</a></br>';
+                $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=d&id=' . $competition->ToCode . '&session=' . $session->SesOrder . '">' . getTextAtCompetitionLanguage('Session', $competition) . ' ' . $session->SesOrder . ': ' . htmlspecialchars($session->SesName) . '</a></br>';
             }
 
             $result .= '</div><br /><br />';
@@ -504,18 +504,18 @@ function getCompetitionDetailsHtml($competition): string
             }
         }
         if (count($qualStartedFor) > 0) {
-            $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=qI&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('ResultIndAbs', $competition, 'Tournament') . '</a><br />';
+            $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=qI&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('ResultIndAbs', $competition, 'Tournament') . '</a><br />';
             if ($competitionHasTeamEvents) {
-                $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=qT&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('ResultSqAbs', $competition, 'Tournament') . '</a><br />';
+                $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=qT&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('ResultSqAbs', $competition, 'Tournament') . '</a><br />';
             }
 
             $result .= '<br /><b>' . getTextAtCompetitionLanguage('ByCategory', $competition, 'Tournament') . ':</b><br />';
 
             foreach ($qualStartedFor as $event) {
                 if ($event->EvTeamEvent === "0") {
-                    $result .= '<a target="_blank" class="link-l3" href="' . getPdfPrefix() . 'getPdf.php?report=qI&id=' . $competition->ToId . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
+                    $result .= '<a target="_blank" class="link-l3" href="' . getPdfPrefix() . 'getPdf.php?report=qI&id=' . $competition->ToCode . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
                 } else {
-                    $result .= '<a target="_blank" class="link-l3" href="' . getPdfPrefix() . 'getPdf.php?report=qT&id=' . $competition->ToId . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
+                    $result .= '<a target="_blank" class="link-l3" href="' . getPdfPrefix() . 'getPdf.php?report=qT&id=' . $competition->ToCode . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
                 }
             }
 
@@ -532,12 +532,12 @@ function getCompetitionDetailsHtml($competition): string
                 }
 
                 if (count($qualStartedForSession) > 0) {
-                    $result .= '<i id="toggleQualScorecards_' . $competition->ToId . '" class="l3 fa-solid fa-caret-right" onclick="toggle(\'toggleQualScorecards_\', \'qualScorecards_\', ' . $competition->ToId . ')"></i>
-                <span class="resultsGroupHeader" onclick="toggle(\'toggleQualScorecards_\', \'qualScorecards_\', ' . $competition->ToId . ')">' . getTextAtCompetitionLanguage('Scorecards', $competition, 'Tournament') . '</span>';
-                    $result .= '<div class="results display-none" id="qualScorecards_' . $competition->ToId . '">';
+                    $result .= '<i id="toggleQualScorecards_' . $competition->ToCode . '" class="l3 fa-solid fa-caret-right" onclick="toggle(\'toggleQualScorecards_\', \'qualScorecards_\', \'' . $competition->ToCode . '\')"></i>
+                <span class="resultsGroupHeader" onclick="toggle(\'toggleQualScorecards_\', \'qualScorecards_\', \'' . $competition->ToCode . '\')">' . getTextAtCompetitionLanguage('Scorecards', $competition, 'Tournament') . '</span>';
+                    $result .= '<div class="results display-none" id="qualScorecards_' . $competition->ToCode . '">';
 
                     foreach ($qualStartedForSession as $session) {
-                        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=qcI&id=' . $competition->ToId . '&session=' . $session->SesOrder . '">' . getTextAtCompetitionLanguage('Session', $competition) . ' ' . $session->SesOrder . ': ' . htmlspecialchars($session->SesName) . '</a></br>';
+                        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=qcI&id=' . $competition->ToCode . '&session=' . $session->SesOrder . '">' . getTextAtCompetitionLanguage('Session', $competition) . ' ' . $session->SesOrder . ': ' . htmlspecialchars($session->SesName) . '</a></br>';
                     }
 
                     $result .= '</div><br />';
@@ -550,41 +550,41 @@ function getCompetitionDetailsHtml($competition): string
 
     //финалы
     if (isAthleteTargetsAssigned($competition) && (isIndividualBracketsBuilt($competition) || isTeamBracketsBuilt($competition) || isIndividualWinnerIsKnown($competition) || isTeamWinnerIsKnown($competition))) {
-        $result .= '<i id="toggleFinals_' . $competition->ToId . '" class="l2 fa-solid fa-caret-right" onclick="toggle(\'toggleFinals_\', \'finals_\', ' . $competition->ToId . ')"></i>
-            <span class="resultsGroupHeader" onclick="toggle(\'toggleFinals_\', \'finals_\', ' . $competition->ToId . ')">' . getTextAtCompetitionLanguage('CompetitionResults', $competition) . '</span>';
-        $result .= '<div class="results display-none" id="finals_' . $competition->ToId . '">';
+        $result .= '<i id="toggleFinals_' . $competition->ToCode . '" class="l2 fa-solid fa-caret-right" onclick="toggle(\'toggleFinals_\', \'finals_\', \'' . $competition->ToCode . '\')"></i>
+            <span class="resultsGroupHeader" onclick="toggle(\'toggleFinals_\', \'finals_\', \'' . $competition->ToCode . '\')">' . getTextAtCompetitionLanguage('CompetitionResults', $competition) . '</span>';
+        $result .= '<div class="results display-none" id="finals_' . $competition->ToCode . '">';
 
         //в финалах - список победителей
         if (isAllWinnersAreKnown($competition, $events)) {
-            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=p&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('Protocol', $competition, 'Common') . '</a><br />';
+            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=p&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('Protocol', $competition, 'Common') . '</a><br />';
             $pdfUrl = getModuleParameter(RESULTS_PUBLICATION_MODULE_NAME, PROTOCOL_PDF_PARAM_NAME, "", $competition->ToId);
             if (trim($pdfUrl) !== "") {
                 $result .= '<a target="_blank" class="link-l4" href="' . trim($pdfUrl) . '">' . getTextAtCompetitionLanguage('ProtocolWithSignatures', $competition, 'Common') . '</a><br />';
             }
             $result .= '<br />';
-            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=w&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('MedalList', $competition, 'Common') . '</a><br />';
-            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=m&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('MedalStanding', $competition, 'Common') . '</a><br /><br />';
+            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=w&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('MedalList', $competition, 'Common') . '</a><br />';
+            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=m&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('MedalStanding', $competition, 'Common') . '</a><br /><br />';
         }
 
         //в финалах - сетки
         if (isIndividualBracketsBuilt($competition) || isTeamBracketsBuilt($competition)) {
-            $result .= '<i id="toggleBrackets_' . $competition->ToId . '" class="l3 fa-solid fa-caret-right" onclick="toggle(\'toggleBrackets_\', \'brackets_\', ' . $competition->ToId . ')"></i>
-            <span class="resultsGroupHeader" onclick="toggle(\'toggleBrackets_\', \'brackets_\', ' . $competition->ToId . ')">' . getTextAtCompetitionLanguage('Brackets', $competition) . ' </span>';
-            $result .= '<div class="results display-none" id="brackets_' . $competition->ToId . '">';
-            $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=bI&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('VersionBracketsInd', $competition, 'Tournament') . '</a><br />';
+            $result .= '<i id="toggleBrackets_' . $competition->ToCode . '" class="l3 fa-solid fa-caret-right" onclick="toggle(\'toggleBrackets_\', \'brackets_\', \'' . $competition->ToCode . '\')"></i>
+            <span class="resultsGroupHeader" onclick="toggle(\'toggleBrackets_\', \'brackets_\', \'' . $competition->ToCode . '\')">' . getTextAtCompetitionLanguage('Brackets', $competition) . ' </span>';
+            $result .= '<div class="results display-none" id="brackets_' . $competition->ToCode . '">';
+            $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=bI&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('VersionBracketsInd', $competition, 'Tournament') . '</a><br />';
             if ($competitionHasTeamEvents) {
-                $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=bT&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('VersionBracketsTeam', $competition, 'Tournament') . '</a><br />';
+                $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=bT&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('VersionBracketsTeam', $competition, 'Tournament') . '</a><br />';
             }
 
             $result .= '<br /><b>' . getTextAtCompetitionLanguage('ByCategory', $competition, 'Tournament') . ':</b><br />';
             foreach ($events as $event) {
                 if ($event->EvTeamEvent === "0") {
                     if (isIndividualBracketsBuilt($competition, $event)) {
-                        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=bI&id=' . $competition->ToId . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
+                        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=bI&id=' . $competition->ToCode . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
                     }
                 } else {
                     if (isTeamBracketsBuilt($competition, $event)) {
-                        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=bT&id=' . $competition->ToId . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
+                        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=bT&id=' . $competition->ToCode . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
                     }
                 }
             }
@@ -594,23 +594,23 @@ function getCompetitionDetailsHtml($competition): string
 
         //в финалах - лесенки
         if (isIndividualWinnerIsKnown($competition) || isTeamWinnerIsKnown($competition)) {
-            $result .= '<i id="toggleRankings_' . $competition->ToId . '" class="l3 fa-solid fa-caret-right" onclick="toggle(\'toggleRankings_\', \'rankings_\', ' . $competition->ToId . ')"></i>
-                <span class="resultsGroupHeader" onclick="toggle(\'toggleRankings_\', \'rankings_\', ' . $competition->ToId . ')">' . getTextAtCompetitionLanguage('FinalRankings', $competition, 'Tournament') . '</span>';
-            $result .= '<div class="results display-none" id="rankings_' . $competition->ToId . '">';
-            $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=rI&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('FinalRankInd', $competition, 'Tournament') . '</a><br />';
+            $result .= '<i id="toggleRankings_' . $competition->ToCode . '" class="l3 fa-solid fa-caret-right" onclick="toggle(\'toggleRankings_\', \'rankings_\', \'' . $competition->ToCode . '\')"></i>
+                <span class="resultsGroupHeader" onclick="toggle(\'toggleRankings_\', \'rankings_\', \'' . $competition->ToCode . '\')">' . getTextAtCompetitionLanguage('FinalRankings', $competition, 'Tournament') . '</span>';
+            $result .= '<div class="results display-none" id="rankings_' . $competition->ToCode . '">';
+            $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=rI&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('FinalRankInd', $competition, 'Tournament') . '</a><br />';
             if ($competitionHasTeamEvents) {
-                $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=rT&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('FinalRankTeams', $competition, 'Tournament') . '</a><br />';
+                $result .= '<a target="_blank" href="' . getPdfPrefix() . 'getPdf.php?report=rT&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('FinalRankTeams', $competition, 'Tournament') . '</a><br />';
             }
 
             $result .= '<br /><b>' . getTextAtCompetitionLanguage('ByCategory', $competition, 'Tournament') . ':</b><br />';
             foreach ($events as $event) {
                 if ($event->EvTeamEvent === "0") {
                     if (isIndividualWinnerIsKnown($competition, $event)) {
-                        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=rI&id=' . $competition->ToId . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
+                        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=rI&id=' . $competition->ToCode . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
                     }
                 } else {
                     if (isTeamWinnerIsKnown($competition, $event)) {
-                        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=rT&id=' . $competition->ToId . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
+                        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=rT&id=' . $competition->ToCode . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
                     }
                 }
             }
@@ -621,18 +621,18 @@ function getCompetitionDetailsHtml($competition): string
         //карточки записи - финалы
         if (getModuleParameter(RESULTS_PUBLICATION_MODULE_NAME, PUBLISH_SCORECARDS_PARAM_NAME, "1", $_REQUEST["id"]) === "1") {
             if (isAnyAthleteStartedFinals($competition) || isAnyTeamStartedFinals($competition)) {
-                $result .= '<i id="toggleFinalIndScorecards_' . $competition->ToId . '" class="l3 fa-solid fa-caret-right" onclick="toggle(\'toggleFinalIndScorecards_\', \'finalIndScorecards_\', ' . $competition->ToId . ')"></i>
-                <span class="resultsGroupHeader" onclick="toggle(\'toggleFinalIndScorecards_\', \'finalIndScorecards_\', ' . $competition->ToId . ')">' . getTextAtCompetitionLanguage('Scorecards', $competition, 'Tournament') . '</span>';
-                $result .= '<div class="results display-none" id="finalIndScorecards_' . $competition->ToId . '">';
+                $result .= '<i id="toggleFinalIndScorecards_' . $competition->ToCode . '" class="l3 fa-solid fa-caret-right" onclick="toggle(\'toggleFinalIndScorecards_\', \'finalIndScorecards_\', \'' . $competition->ToCode . '\')"></i>
+                <span class="resultsGroupHeader" onclick="toggle(\'toggleFinalIndScorecards_\', \'finalIndScorecards_\', \'' . $competition->ToCode . '\')">' . getTextAtCompetitionLanguage('Scorecards', $competition, 'Tournament') . '</span>';
+                $result .= '<div class="results display-none" id="finalIndScorecards_' . $competition->ToCode . '">';
 
                 foreach ($events as $event) {
                     if ($event->EvTeamEvent === "0") {
                         if (isAnyAthleteStartedFinals($competition, $event)) {
-                            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=fcI&id=' . $competition->ToId . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
+                            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=fcI&id=' . $competition->ToCode . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
                         }
                     } else {
                         if (isAnyTeamStartedFinals($competition, $event)) {
-                            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=fcT&id=' . $competition->ToId . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
+                            $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=fcT&id=' . $competition->ToCode . '&event=' . $event->EvCode . '">' . htmlspecialchars($event->EvEventName) . '</a></br>';
                         }
                     }
                 }
@@ -647,7 +647,7 @@ function getCompetitionDetailsHtml($competition): string
     //судьи
     if (isAnyJudgeInCompetition($competition)) {
         $result .= "<br />";
-        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=j&id=' . $competition->ToId . '">' . getTextAtCompetitionLanguage('CompetitionOfficials', $competition, 'Tournament') . '</a><br />';
+        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=j&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('CompetitionOfficials', $competition, 'Tournament') . '</a><br />';
     }
 
     $result .= "</span>";
