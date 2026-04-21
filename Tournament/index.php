@@ -755,7 +755,7 @@ echo '<select name="xx_ToUseHHT">
                     print "checked=\"checked\"";
                 }
             } ?>/>
-            <label for="hidePatronymicAndBirthDate">Скрывать отчества и полные даты рождения спортсменов</label>
+            <label for="hidePatronymicAndBirthDate">Скрывать отчества и полные даты рождения спортсменов<br /><b>Данная настройка не влияет на отчества и полные даты рождений на странице опубликованных результатов!</b></label>
         </td>
     </tr>
     <?php

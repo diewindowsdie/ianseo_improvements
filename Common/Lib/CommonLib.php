@@ -606,26 +606,28 @@ function getFullCountryName($origin, $countryName, $countryName2=null, $countryN
     return $result;
 }
 
-function getFullAthleteName($surname, $firstName, $middleName) {
-    global $forceHidingFullNamesAndBirthdate;
+function isFullNameAndBirthdayHidden() {
+    global $requestedForPublicReport;
 
+    return $requestedForPublicReport
+        ? isFullNameAndBirthDateHiddenInReports($_SESSION['TourId'])
+        : getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $_SESSION['TourId']);
+}
+
+function getFullAthleteName($surname, $firstName, $middleName) {
     $internationalProtocol = getModuleParameter("Tournament", "InternationalProtocol", false, $_SESSION['TourId']);
-    $hideMiddleNameAndBirthDate = getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $_SESSION['TourId']) || $forceHidingFullNamesAndBirthdate;
+    $hideMiddleNameAndBirthDate = isFullNameAndBirthdayHidden();
     return trim($surname) . ' ' . trim($firstName) . ($middleName && !$internationalProtocol && !$hideMiddleNameAndBirthDate ? ' ' . trim($middleName) : '');
 }
 
 function getAthleteBirthDateFormatted($birthDate) {
-    global $forceHidingFullNamesAndBirthdate;
-
-    $hideMiddleNameAndBirthDate = getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $_SESSION['TourId']) || $forceHidingFullNamesAndBirthdate;
+    $hideMiddleNameAndBirthDate = isFullNameAndBirthdayHidden();
     $birthDateFormat = $hideMiddleNameAndBirthDate ? 'Y' : 'd.m.Y';
     return $birthDate ? DateTime::createFromFormat('Y-m-d', $birthDate)->format($birthDateFormat) : '';
 }
 
 function getBirthDateColumnTitle($original) {
-    global $forceHidingFullNamesAndBirthdate;
-
-    $hideMiddleNameAndBirthDate = getModuleParameter("Tournament", "HidePatronymicAndBirthDate", false, $_SESSION['TourId']) || $forceHidingFullNamesAndBirthdate;
+    $hideMiddleNameAndBirthDate = isFullNameAndBirthdayHidden();
 
     return $hideMiddleNameAndBirthDate ? get_text('BirthYear', 'Tournament') : $original;
 }
