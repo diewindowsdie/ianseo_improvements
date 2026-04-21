@@ -23,6 +23,7 @@ echo '
         <table class="Tabella w-40" style="margin: 20px">
             <tr><th colspan="2" style="padding: 10px">Настройки публикации результатов соревнования:</th></tr>
             <tr><td><input type="checkbox" id="' . COMPETITION_HIDDEN_PARAM_NAME . '"' . (getModuleParameter(RESULTS_PUBLICATION_MODULE_NAME, COMPETITION_HIDDEN_PARAM_NAME, "0", $_SESSION['TourId']) === "0" ? ' checked="checked"' : '') . ' onchange="toggleResultsCheckbox(this, true)"></td><td>Публиковать результаты этого соревнования</td></tr>
+            <tr><td><input type="checkbox" id="' . HIDE_FULL_NAME_AND_BIRTHDAY_FOR_REPORTS_PARAM_NAME . '"' . (isFullNameAndBirthDateHiddenInReports($_SESSION['TourId']) === "1" ? ' checked="checked"' : '') . ' onchange="toggleResultsCheckbox(this, false)"></td><td>Скрывать полные имена и даты рождения спортсменов в опубликованных результатах</td></tr>
             <tr><th colspan="2" style="padding: 5px"><span style="font-weight: normal">Укажите индивидуальные и командные события, результаты которых <b>должны быть</b> опубликованы (квалификация и результаты):</span></th></tr>';
 
 foreach (getCompetitionEvents($_SESSION['TourId'], true) as $event) {

@@ -6,8 +6,8 @@ $currentSessionQualTeam = [];
 //если просят конкретное соревнование - сохраним $_SESSION, который перетирается на время выполнения скрипта
 //в OrisFunctions.php делается define языка распечаток на основании текущей сессии, поэтому нужно переопределить сессию до того как ее ктото попытается прочитать
 if (isset($_REQUEST['TourId'])) {
-    global $forceHidingFullNamesAndBirthdate;
-    $forceHidingFullNamesAndBirthdate = true;
+    global $requestedForPublicReport;
+    $requestedForPublicReport = true;
 
     $currentSessionQualTeam = $_SESSION;
     CreateTourSession($_REQUEST['TourId']);

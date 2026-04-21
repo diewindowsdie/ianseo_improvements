@@ -6,6 +6,7 @@ const COMPETITION_EVENT_HIDDEN_PARAM_NAME_PREFIX = "eventHidden_";
 const SHOW_FINAL_SESSIONS_IN_SCHEDULE_PARAM_NAME = "showSessionsInSchedule";
 const PROTOCOL_PDF_PARAM_NAME = "ProtocolPdf";
 const PUBLISH_SCORECARDS_PARAM_NAME = "PublishScorecards";
+const HIDE_FULL_NAME_AND_BIRTHDAY_FOR_REPORTS_PARAM_NAME = "hideFullNameAndBirthdayForReports";
 
 const PROTOCOL_MODULE = "Protocol";
 const STAT_HEADER_PARAM_NAME_PREFIX = "StatHeader";
@@ -23,6 +24,11 @@ function exitNotFound()
 {
     http_response_code(404);
     exit('Not Found');
+}
+
+function isFullNameAndBirthDateHiddenInReports($competitionId) {
+    global $CFG;
+    return getModuleParameter(RESULTS_PUBLICATION_MODULE_NAME, HIDE_FULL_NAME_AND_BIRTHDAY_FOR_REPORTS_PARAM_NAME, $CFG->HIDE_FULL_NAME_AND_BIRTHDAY_FOR_REPORTS ?? "1", $competitionId);
 }
 
 function getRegionStatisticsHeaderParameter($competition, $index) {

@@ -125,5 +125,5 @@ if($CFG->USERAUTH AND empty($SKIP_AUTH) AND is_file($CFG->DOCUMENT_PATH .'Module
     include_once($CFG->DOCUMENT_PATH.'Modules/Authentication/AuthFunctions.php');
 }
 
-global $forceHidingFullNamesAndBirthdate;
-$forceHidingFullNamesAndBirthdate = false;
+global $requestedForPublicReport;
+$requestedForPublicReport = false;
