@@ -39,7 +39,7 @@ foreach ($PdfData->rankData['sections'] as $section) {
     //пробежимся по всем спортсменам и регионам и найдем самые длинные строки
     foreach($section['items'] as $item) {
         $averageAthleteNameLength += strlen($item['athlete']);
-        $averageRegionNameLength += strlen(getFullCountryName(REGION_ORIGIN_PRINTOUT, $item['countryName'], $item['countryName2'], $item['countryName3'])); //баг? считаем по строке с отчеством, выводим без отчества
+        $averageRegionNameLength += strlen(getFullCountryName(REGION_ORIGIN_PRINTOUT, $item['countryName'], $item['countryName2'], $item['countryName3']));
     }
     $averageAthleteNameLength = $averageAthleteNameLength / count($section['items']);
     $averageRegionNameLength = $averageRegionNameLength / count($section['items']);
@@ -194,7 +194,7 @@ foreach($PdfData->rankData['sections'] as $section) {
                         continue;
                     }
                     if ($k > $athleteLastPhase) {
-                        $pdf->Cell(15, 4, $k, 0, 0, 'L', 1);
+                        $pdf->Cell(15, 4, '', 0, 0, 'L', 0);
                     }
                 } else {
                     $v = $item['finals'][$k];
