@@ -120,6 +120,7 @@ function updateComboMatches(selectedMatch) {
 
 function toggleTarget() {
     $('#Target').toggleClass('Hidden', $('#spotTarget:checked').length==0);
+    $('#ClickMovesNextDiv').toggleClass('d-none', !$('#spotTarget:checked').length);
     buildScorecard();
 }
 
@@ -636,7 +637,7 @@ function addPoint (id) {
     }
 }
 
-function moveToNextPhase(obj) {
+function moveToNextPhase(obj = null, verbose=true) {
     var spType = ($('#spotType').val()=='Team' ? '1' : '0');
     var spEvent = $('#spotCode').val();
     var spMatch = $('#spotMatch').val();
@@ -644,7 +645,9 @@ function moveToNextPhase(obj) {
     $.getJSON(WebDir + 'Final/Spotting-nextPhase.php?event='+spEvent+'&team='+spType+'&matchno='+spMatch+(obj ? '&pool='+obj : ''), function(data) {
         if(data.error==0) {
             updateComboMatches(spMatch);
-            alert(data.msg);
+            if(verbose) {
+                alert(data.msg);
+            }
         } else {
             alert(data.msg);
         }
@@ -816,6 +819,41 @@ function toggleKeypress() {
                 is_solitary: true,
             });
         });
+
+        // A to Set/Reset Alternate Shooting
+        var keys=['A', 'a',];
+        $.each(keys, function() {
+            allCombos.push({
+                keys:this.toString(),
+                on_keydown: function() {$('#MatchAlternate').click();},
+                is_solitary: true,
+            });
+        });
+
+        // V to set/Unset Live
+        var keys=['V', 'v',];
+        $.each(keys, function() {
+            allCombos.push({
+                keys:this.toString(),
+                on_keydown: function() {setLive();},
+                is_solitary: true,
+            });
+        });
+
+        // P to move to next phase
+        var keys=['P', 'p',];
+        $.each(keys, function() {
+            allCombos.push({
+                keys:this.toString(),
+                on_keydown: function() {
+                    if(!$('#moveWinner').is(':disabled')) {
+                        moveToNextPhase(null, false);
+                    }
+                },
+                is_solitary: true,
+            });
+        });
+
 
         // all the keys inserting values
         var keys={

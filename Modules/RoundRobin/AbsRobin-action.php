@@ -539,8 +539,10 @@ switch($_REQUEST['act']) {
 									where RrPartLevel=0 and RrPartGroup=0 and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent));
                                 // must fill in the TeamFinComponent table too
                                 $now = getToday('now', 'Y-m-d H:i:s');
-                                safe_w_sql("delete from TeamFinComponent where TfcTournament={$_SESSION['TourId']} and TfcEvent=".StrSafe_DB($soEvent));
-                                safe_w_SQL("INSERT INTO TeamFinComponent (TfcCoId, TfcSubTeam, TfcTournament, TfcEvent, TfcId, TfcOrder, TfcTimeStamp) 
+                                if($_SESSION['TourLocSubRule']!='SetFRD12026') {
+                                    safe_w_sql("delete from TeamFinComponent where TfcTournament={$_SESSION['TourId']} and TfcEvent=".StrSafe_DB($soEvent));
+                                }
+                                safe_w_SQL("INSERT ignore INTO TeamFinComponent (TfcCoId, TfcSubTeam, TfcTournament, TfcEvent, TfcId, TfcOrder, TfcTimeStamp) 
                                     SELECT TcCoId, TcSubTeam, TcTournament, TcEvent, TcId, TcOrder, '{$now}'
                                     FROM TeamComponent 
                                     inner join (select TfTeam, TfSubTeam from TeamFinals where TfTournament={$_SESSION['TourId']} and TfEvent=".StrSafe_DB($soEvent)." group by TfTeam,TfSubTeam) Tf on TfTeam=TcCoId and TfSubTeam=TcSubTeam
@@ -553,7 +555,7 @@ switch($_REQUEST['act']) {
 									inner join (
 									    select RrPartGroupRank as SrcRank, RrPartParticipant as SrcPart, RrPartSubTeam as SrcSubteam, RrPartLevel srcLevel, RrPartGroup srcGroup
 									    from RoundRobinParticipants 
-									    where RrPartLevel=$soLevel and RrPartGroup=$soGroup and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent)."
+									    where /* RrPartLevel=$soLevel and RrPartGroup=$soGroup and */ RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent)."
 									    ) sqy on SrcRank=RrPartSourceRank and SrcLevel=RrPartSourceLevel and SrcGroup=RrPartSourceGroup
 									set RrPartParticipant=SrcPart, RrPartSubTeam=SrcSubteam, FinAthlete=SrcPart
 									where RrPartLevel=0 and RrPartGroup=0 and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent));
@@ -569,14 +571,16 @@ switch($_REQUEST['act']) {
 									inner join (
 									    select RrPartLevelRank as SrcRank, RrPartParticipant as SrcPart, RrPartSubTeam as SrcSubteam, RrPartLevel srcLevel, 0 srcGroup
 									    from RoundRobinParticipants 
-									    where RrPartLevel=$soLevel and RrPartLevelRank>0 and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent)."
+									    where /* RrPartLevel=$soLevel and */ RrPartLevelRank>0 and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent)."
 									    ) sqy on SrcRank=RrPartSourceRank and SrcLevel=RrPartSourceLevel and SrcGroup=RrPartSourceGroup
 									set RrPartParticipant=SrcPart, RrPartSubTeam=SrcSubteam, TfTeam=SrcPart, TfSubTeam=SrcSubTeam
 									where RrPartLevel=0 and RrPartGroup=0 and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent));
                                 // must fill in the TeamFinComponent table too
                                 $now = getToday('now', 'Y-m-d H:i:s');
-                                safe_w_sql("delete from TeamFinComponent where TfcTournament={$_SESSION['TourId']} and TfcEvent=".StrSafe_DB($soEvent));
-                                safe_w_SQL("INSERT INTO TeamFinComponent (TfcCoId, TfcSubTeam, TfcTournament, TfcEvent, TfcId, TfcOrder, TfcTimeStamp) 
+                                if($_SESSION['TourLocSubRule']!='SetFRD12026') {
+                                    safe_w_sql("delete from TeamFinComponent where TfcTournament={$_SESSION['TourId']} and TfcEvent=".StrSafe_DB($soEvent));
+                                }
+                                safe_w_SQL("INSERT ignore INTO TeamFinComponent (TfcCoId, TfcSubTeam, TfcTournament, TfcEvent, TfcId, TfcOrder, TfcTimeStamp) 
                                     SELECT TcCoId, TcSubTeam, TcTournament, TcEvent, TcId, TcOrder, '{$now}'
                                     FROM TeamComponent 
                                     inner join (select TfTeam, TfSubTeam from TeamFinals where TfTournament={$_SESSION['TourId']} and TfEvent=".StrSafe_DB($soEvent)." group by TfTeam,TfSubTeam) Tf on TfTeam=TcCoId and TfSubTeam=TcSubTeam
@@ -610,13 +614,23 @@ switch($_REQUEST['act']) {
 							safe_w_sql("update RoundRobinParticipants 
 								inner join RoundRobinGrids on RrGridTournament=RrPartTournament and RrGridEvent=RrPartEvent and RrGridTeam=RrPartTeam and RrGridLevel=RrPartLevel and RrGridGroup=RrPartGroup and RrGridItem=RrPartDestItem
 								inner join RoundRobinMatches on RrMatchTournament=RrGridTournament and RrMatchTeam=RrGridTeam and RrMatchEvent=RrGridEvent and RrMatchLevel=RrGridLevel and RrMatchGroup=RrGridGroup and RrMatchRound=RrGridRound and RrMatchMatchNo=RrGridMatchno
-								inner join (
-								    select RrPartGroupRank as SrcRank, RrPartParticipant as SrcPart, RrPartSubTeam as SrcSubteam
+								left join (
+								    select RrPartGroupRank as SrcRank, RrPartParticipant as SrcPart, RrPartSubTeam as SrcSubteam, RrPartLevel as SrcLevel, RrPartGroup as SrcGroup
 								    from RoundRobinParticipants 
 								    where RrPartLevel=$soLevel and RrPartGroup=$soGroup and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent)."
-								    ) sqy on SrcRank=RrPartSourceRank
-								set RrPartParticipant=SrcPart, RrPartSubTeam=SrcSubteam, RrMatchAthlete=SrcPart, RrMatchSubTeam=SrcSubteam
-								where RrPartSourceLevel=$soLevel and RrPartSourceGroup=$soGroup and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent));
+								    ) sqy on SrcRank=RrPartSourceRank and SrcLevel=RrPartSourceLevel and SrcGroup=RrPartSourceGroup
+                                left join (
+                                    select IndRank, IndId
+                                    from Individuals
+                                    where IndTournament={$_SESSION['TourId']} and IndEvent=".StrSafe_DB($soEvent)."
+                                ) sqi on RrPartTeam=0 and IndRank=RrPartSourceRank and RrPartSourceLevel=0 and RrPartSourceGroup=0
+                                left join (
+                                    select TeRank, TeCoId, TeSubTeam
+                                    from Teams
+                                    where TeTournament={$_SESSION['TourId']} and TeEvent=".StrSafe_DB($soEvent)."
+                                ) sqt on RrPartTeam=1 and TeRank=RrPartSourceRank and RrPartSourceLevel=0 and RrPartSourceGroup=0
+								set RrPartParticipant=coalesce(SrcPart, TeCoId, IndId), RrPartSubTeam=coalesce(SrcSubteam,TeSubTeam,0), RrMatchAthlete=coalesce(SrcPart, TeCoId, IndId), RrMatchSubTeam=coalesce(SrcSubteam,TeSubTeam,0)
+								where RrPartLevel=".($soLevel+1)." and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent));
 
 							// updates the SO status of the group
 							safe_w_sql("UPDATE RoundRobinGroup SET RrGrSoSolved=1 WHERE RrGrTournament={$_SESSION['TourId']} and RrGrTeam=$Team and RrGrLevel=$soLevel and RrGrGroup=$soGroup and RrGrEvent=" . StrSafe_DB($soEvent));
@@ -624,13 +638,23 @@ switch($_REQUEST['act']) {
 							safe_w_sql("update RoundRobinParticipants 
 								inner join RoundRobinGrids on RrGridTournament=RrPartTournament and RrGridEvent=RrPartEvent and RrGridTeam=RrPartTeam and RrGridLevel=RrPartLevel and RrGridGroup=RrPartGroup and RrGridItem=RrPartDestItem
 								inner join RoundRobinMatches on RrMatchTournament=RrGridTournament and RrMatchTeam=RrGridTeam and RrMatchEvent=RrGridEvent and RrMatchLevel=RrGridLevel and RrMatchGroup=RrGridGroup and RrMatchRound=RrGridRound and RrMatchMatchNo=RrGridMatchno
-								inner join (
-								    select RrPartLevelRank as SrcRank, RrPartParticipant as SrcPart, RrPartSubTeam as SrcSubteam
+								left join (
+								    select RrPartLevelRank as SrcRank, RrPartParticipant as SrcPart, RrPartSubTeam as SrcSubteam, RrPartLevel as SrcLevel, RrPartGroup as SrcGroup
 								    from RoundRobinParticipants 
 								    where RrPartLevel=$soLevel and RrPartLevelRank>0 and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent)."
-								    ) sqy on SrcRank=RrPartSourceRank
+								    ) sqy on SrcRank=RrPartSourceRank and SrcLevel=RrPartSourceLevel and SrcGroup=RrPartSourceGroup
+                                left join (
+                                    select IndRank, IndId
+                                    from Individuals
+                                    where IndTournament={$_SESSION['TourId']} and IndEvent=".StrSafe_DB($soEvent)."
+                                ) sqi on RrPartTeam=0 and IndRank=RrPartSourceRank and RrPartSourceLevel=0 and RrPartSourceGroup=0
+                                left join (
+                                    select TeRank, TeCoId, TeSubTeam
+                                    from Teams
+                                    where TeTournament={$_SESSION['TourId']} and TeEvent=".StrSafe_DB($soEvent)."
+                                ) sqt on RrPartTeam=1 and TeRank=RrPartSourceRank and RrPartSourceLevel=0 and RrPartSourceGroup=0
 								set RrPartParticipant=SrcPart, RrPartSubTeam=SrcSubteam, RrMatchAthlete=SrcPart, RrMatchSubTeam=SrcSubteam
-								where RrPartSourceLevel=$soLevel and RrPartSourceGroup=$soGroup and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent));
+								where RrPartSourceLevel=".($soLevel+1)." and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent));
 
 							// select the "losers" and updates the "final rank" status
 
@@ -1217,33 +1241,42 @@ switch($_REQUEST['act']) {
                 }
 
                 // New D1 2026 rules: create the Shoot-off and shoot-down events!
-                if($_SESSION['TourLocSubRule']=='SetFRD12026' and in_array($Event, ['FCL', 'HCL', 'HCO']) and $Level==1 and $R) {
-                    // put the top 8 in $Event+'of' and the lower 8 in $Event+'dn'
-                    $SQL="select * from RoundRobinParticipants where RrPartTournament={$_SESSION['TourId']} and RrPartTeam=1 and RrPartEvent=".StrSafe_DB($Event)." and RrPartLevel=1 and RrPartGroup=1";
-                    $q=safe_r_sql($SQL);
-                    while($r=safe_fetch($q)) {
-                        if($r->RrPartGroupRank>8) {
-                            $rank=$r->RrPartGroupRank-8;
-                            $ev=$Event.'dn';
-                        } else {
-                            $rank=$r->RrPartGroupRank;
-                            $ev=$Event.'of';
+                if($_SESSION['TourLocSubRule']=='SetFRD12026' and $R) {
+                    if(in_array($Event, ['FCL', 'HCL', 'HCO']) and $Level==1) {
+                        // put the top 8 in $Event+'of' and the lower 8 in $Event+'dn'
+                        $SQL="select * from RoundRobinParticipants where RrPartTournament={$_SESSION['TourId']} and RrPartTeam=1 and RrPartEvent=".StrSafe_DB($Event)." and RrPartLevel=1 and RrPartGroup=1";
+                        $q=safe_r_sql($SQL);
+                        while($r=safe_fetch($q)) {
+                            if($r->RrPartGroupRank>8) {
+                                $rank=$r->RrPartGroupRank-8;
+                                $ev=$Event.'dn';
+                            } else {
+                                $rank=$r->RrPartGroupRank;
+                                $ev=$Event.'of';
+                            }
+                            $updSql="update RoundRobinParticipants 
+                                inner join RoundRobinGrids on RrGridTournament=RrPartTournament and RrGridEvent=RrPartEvent and RrGridTeam=RrPartTeam and RrGridLevel=RrPartLevel and RrGridGroup=RrPartGroup and RrGridItem=RrPartDestItem
+                                inner join RoundRobinMatches on RrMatchTournament=RrGridTournament and RrMatchTeam=RrGridTeam and RrMatchEvent=RrGridEvent and RrMatchLevel=RrGridLevel and RrMatchGroup=RrGridGroup and RrMatchRound=RrGridRound and RrMatchMatchNo=RrGridMatchno
+                                set RrPartParticipant=$r->RrPartParticipant, RrPartSubTeam=$r->RrPartSubTeam, RrMatchAthlete=$r->RrPartParticipant, RrMatchSubTeam=$r->RrPartSubTeam
+                                where RrPartSourceRank={$rank} and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=1 and RrPartEvent=".StrSafe_DB($ev)." and RrPartSourceLevel=0 and RrPartSourceGroup=0";
+                            safe_w_sql($updSql);
                         }
-                        $updSql="update RoundRobinParticipants 
-                            inner join RoundRobinGrids on RrGridTournament=RrPartTournament and RrGridEvent=RrPartEvent and RrGridTeam=RrPartTeam and RrGridLevel=RrPartLevel and RrGridGroup=RrPartGroup and RrGridItem=RrPartDestItem
-                            inner join RoundRobinMatches on RrMatchTournament=RrGridTournament and RrMatchTeam=RrGridTeam and RrMatchEvent=RrGridEvent and RrMatchLevel=RrGridLevel and RrMatchGroup=RrGridGroup and RrMatchRound=RrGridRound and RrMatchMatchNo=RrGridMatchno
-                            set RrPartParticipant=$r->RrPartParticipant, RrPartSubTeam=$r->RrPartSubTeam, RrMatchAthlete=$r->RrPartParticipant, RrMatchSubTeam=$r->RrPartSubTeam
-                            where RrPartSourceRank={$rank} and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=1 and RrPartEvent=".StrSafe_DB($ev)." and RrPartSourceLevel=0 and RrPartSourceGroup=0";
-                        safe_w_sql($updSql);
+                        // copy related teams and components to the new event
+                        safe_w_sql("insert ignore into Teams (TeCoId, TeSubTeam, TeEvent, TeTournament, TeFinEvent)
+                            select RrPartParticipant, RrPartSubTeam, RrPartEvent, RrPartTournament, 1 
+                            from RoundRobinParticipants 
+                            where RrPartTournament={$_SESSION['TourId']} and RrPartEvent in ('{$Event}Of','{$Event}dn')");
+                        // components
+                        safe_w_sql("insert ignore into TeamFinComponent (TfcCoId, TfcSubTeam, TfcTournament, TfcEvent, TfcId, TfcOrder) 
+                            select TfcCoId, TfcSubTeam, TfcTournament, TeEvent, TfcId, TfcOrder
+                            from TeamFinComponent
+                            inner join Teams on TeTournament=TfcTournament and left(TeEvent,3)=TfcEvent and TeCoId=TfcCoId and length(TeEvent!=3)
+                            where TfcTournament={$_SESSION['TourId']} and TfcEvent='{$Event}'");
+
+                        // set both of and dn SO as OK
+                        safe_w_sql("update Events set EvE1ShootOff=1 where EvTournament={$_SESSION['TourId']} and EvCode=".StrSafe_DB($Event.'of')." and EvTeamEvent=1");
+                        safe_w_sql("update Events set EvE1ShootOff=1 where EvTournament={$_SESSION['TourId']} and EvCode=".StrSafe_DB($Event.'dn')." and EvTeamEvent=1");
                     }
-                    // copy related teams and components to the new event
-                    safe_w_sql("insert ignore into Teams (TeCoId, TeSubTeam, TeEvent, TeTournament, TeFinEvent)
-                        select RrPartParticipant, RrPartSubTeam, RrPartEvent, RrPartTournament, 1 
-                        from RoundRobinParticipants 
-                        where RrPartTournament={$_SESSION['TourId']} and RrPartEvent in ('{$Event}Of','{$Event}dn')");
-                    // set both of and dn SO as OK
-                    safe_w_sql("update Events set EvE1ShootOff=1 where EvTournament={$_SESSION['TourId']} and EvCode=".StrSafe_DB($Event.'of')." and EvTeamEvent=1");
-                    safe_w_sql("update Events set EvE1ShootOff=1 where EvTournament={$_SESSION['TourId']} and EvCode=".StrSafe_DB($Event.'dn')." and EvTeamEvent=1");
                 }
 
                 set_qual_session_flags();

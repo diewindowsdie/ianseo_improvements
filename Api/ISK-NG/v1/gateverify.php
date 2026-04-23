@@ -54,7 +54,7 @@ $Template=array(
     'caption' => '',
     'picture' => '',
     'flag' => '',
-    'status' => '',
+    'status' => 0,
     'direction' => 0,
     'zones' => array(),
     'extras' => 0,
@@ -77,7 +77,7 @@ if($r=safe_fetch($q)) {
         if(!empty($Options[$r->ToId])) {
             // we have sessions so check if session=0 and is not athlete... it is a coach
             $status = CheckStatus($r, $EnId, $Options);
-            /*if($status!=2) {
+            if($status!=2) {
                 // check if this upgrade is linked to someone else's bib in another competition?
                 // if yes completely swap the accreditatoion
                 // select the extradata of the other competition
@@ -150,7 +150,7 @@ if($r=safe_fetch($q)) {
                         }
                     }
                 }
-            }*/
+            }
         }
     }
 
@@ -179,7 +179,7 @@ if($r=safe_fetch($q)) {
     $Template['countryCode']=$r->CoCode;
     $Template['countryName']=$r->CoName;
     $Template['caption']=$Caption;
-    $Template['status']=$status;
+    $Template['status']=(int) $status;
     $Template['zones']=$zones;
     $Template['extras']=intval($r->AthExtras);
 
@@ -232,13 +232,13 @@ function CheckStatus($r, $EnId, $Options) {
 			INNER JOIN Events ON EvTournament=ElTournament and EvCode=ElEventCode and EvTeamEvent=0 and EvElim1>0
 			WHERE EnCountry=$r->EnCountry and ElElimPhase=1
 			) UNION ALL (
-			SELECT DISTINCT CONCAT('I', FSScheduledDate, FSScheduledTime) AS keyValue, '' as Bye
+			SELECT DISTINCT CONCAT('I', FSScheduledDate, FSScheduledTime) AS keyValue, FinTie as Bye
 			FROM Finals
 			inner join Entries on EnId=FinAthlete
 			inner join FinSchedule on FSEvent=FinEvent and FSTeamEvent=0 and FsTournament=FinTournament and FsMatchNo=FinMatchNo
 			WHERE EnCountry=$r->EnCountry
 			) UNION ALL (
-			SELECT DISTINCT CONCAT('T', FSScheduledDate, FSScheduledTime) AS keyValue, '' as Bye
+			SELECT DISTINCT CONCAT('T', FSScheduledDate, FSScheduledTime) AS keyValue, TfTie as Bye
 			FROM TeamFinComponent
 			inner join Entries on EnId=TfcId
 			inner join TeamFinals on TfTeam=TfcCoId and TfSubTeam=TfcSubTeam and TfTournament=TfcTournament and TfEvent=TfcEvent
@@ -276,13 +276,13 @@ function CheckStatus($r, $EnId, $Options) {
     }
 
     $t=safe_r_sql($SQL);
-    $status='2';
+    $status=2;
     while($u=safe_fetch($t)) {
         if(in_array($u->keyValue, $Options[$r->ToId])) {
-            $status='1';
+            $status=1;
             break;
         } elseif(in_array(strtolower($u->keyValue), $Options[$r->ToId]) and $u->Bye!=2) {
-            $status='1';
+            $status=1;
             break;
         }
     }

@@ -5,7 +5,7 @@ $ShowSchedule = (isset($PdfData->ShowSchedule) ? $PdfData->ShowSchedule : true);
 $ShowSetArrows= (isset($PdfData->ShowSetArrows) ? $PdfData->ShowSetArrows : true);
 
 $arrayTitles = array("1/12\nElimin. Round§","1/8\nElimin. Round§", "1/4\nElimin. Round§", "Semifinals§", "Finals§");
-$titArray = array("R. Round\nRank/Score§",'',"NOC","Name");
+$titArray = array("Seed/QR§",'',"NOC","Name");
 $misArray = array(array(7.5, 8.5), 9, 9,26);
 
 

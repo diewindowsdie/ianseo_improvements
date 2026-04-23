@@ -22,6 +22,15 @@ if (safe_num_rows($RsTour)==1){
 
 $IncludeJquery = true;
 $JS_SCRIPT=array(
+	'<script type="text/javascript">function SelectSession_JSON(obj) {
+    $.getJSON("'.$CFG->ROOT_DIR.'Qualification/SelectSession.php?Ses="+$(obj).val(), function(data) {
+        if (data.error==0) {
+            $("#x_From").val(data.min);
+            $("#x_To").val(data.max);
+            $("#x_Coalesce_div").html(data.coalesce);
+        }
+    });
+}</script>',
 	phpVars2js(array('MsgAreYouSure' => get_text('MsgAreYouSure'), "nDist"=> $RowTour->TtNumDist)),
 	'<style>#x_Coalesce_div {display:inline-block;margin-left:2em;vertical-align:middle;text-align: left;}#x_Coalesce_div div {font-size:0.8em}</style>'
 	);
@@ -79,7 +88,7 @@ if($RowTour != NULL)
 	echo '<tr>';
 	echo '<td colspan="2" align="Center"><br>';
 	echo '<input type="hidden" name="chk_BlockAutoSave" id="chk_BlockAutoSave" value="1">';
-	echo get_text('Session') . '&nbsp;<select name="x_Session" id="x_Session">';
+	echo get_text('Session') . '&nbsp;<select name="x_Session" id="x_Session" onchange="SelectSession_JSON(this)">';
 	echo '<option value="-1">---</option>';
 	foreach ($sessions as $s) {
 		echo '<option value="' . $s->SesOrder . '"' . (isset($_REQUEST['x_Session']) && $_REQUEST['x_Session']==$s->SesOrder ? ' selected' : '') . '>' . $s->Descr . '</option>';

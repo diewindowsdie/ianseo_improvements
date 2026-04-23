@@ -576,7 +576,7 @@ if($DataSource) {
                     INNER JOIN Tournament on ToId=EnTournament
                     LEFT JOIN DistanceInformation on DiTournament=EnTournament and QuSession=DiSession and DiDistance={$Dist} and DiType='Q'
                     LEFT JOIN TargetFaces ON TfTournament=EnTournament and EnTargetFace=TfId
-                    WHERE EnCode={$tmpString[1]} AND EnTournament={$_SESSION['TourId']}";
+                    WHERE EnCode='{$tmpString[1]}' AND EnTournament={$_SESSION['TourId']}";
                 $q=safe_r_sql($Sql);
                 if($r=safe_fetch($q)) {
                     $doRecalcQualRank[]=($r->EnDivision.'|'.$r->EnClass.'|'.$Dist);

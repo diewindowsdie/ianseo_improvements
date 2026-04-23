@@ -1068,7 +1068,7 @@ function GetTargetColors($TourId, $TrgName='') {
         global $extraLetter;
 		$ret=array();
 
-		$q="SELECT * FROM Targets where TarId=$target";
+		$q="SELECT * FROM Targets where TarId='{$target}'";
 		$r=safe_r_SQL($q);
 
 		if ($row=safe_fetch($r)) {

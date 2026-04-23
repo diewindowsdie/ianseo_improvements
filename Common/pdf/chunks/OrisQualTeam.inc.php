@@ -136,4 +136,3 @@ if(count($rankData['sections'])) {
 }
 
 $pdf->Records=array();
-?>

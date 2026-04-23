@@ -389,6 +389,9 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 			if(($NumSO=ceil((strlen($Data->arrowstring) - ($r->DiEnds * $r->DiArrows)) / $r->DiSO)) > 0) {
 				$maxNumEnd += $NumSO;
 			}
+            if(strlen(trim($Data->arrowstring))<($r->DiEnds * $r->DiArrows)) {
+                $maxNumEnd = intval(strlen(trim($Data->arrowstring))/$r->DiArrows)-1;
+            }
 		}
 		$Errors=[];
 
@@ -779,7 +782,7 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
 
 				$SQL="SELECT if(EvGoldsChars='', ToGoldsChars, EvGoldsChars) as GoldsChars, if(EvXNineChars='', ToXNineChars, EvXNineChars) as XNineChars, FSEvent, FSMatchNo, FSTeamEvent, {$tblHead}Arrowstring as Arrowstring, {$tblHead}Tiebreak as TieBreak, {$tblHead}TbClosest as TbClosest, {$tblHead}TbDecoded as TbDecoded, GrPhase, 
        				group_concat(concat_ws(':', IskDtEndNo, IskDtArrowstring) separator '|') as IskArrowstring, max(IskDtIsClosest) as IskClosest,
-       				{$tblHead}Confirmed as StopScore
+       				{$tblHead}Confirmed as StopScore, {$tblHead}Signed as Signed, IskDtIsSigned
 					FROM FinSchedule
                     inner join Events on EvTournament=FSTournament and EvTeamEvent=FSTeamEvent and EvCode=FSEvent
                     inner join Tournament on ToId=FSTournament
@@ -805,7 +808,8 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
                         continue;
                     }
 					$obj=getEventArrowsParams($r->FSEvent,$r->GrPhase,$r->FSTeamEvent,$CompId);
-					$r->so=$obj->so; // will be used later on in UpdateNgArrowString()
+                    $r->Signed = ($r->Signed | $r->IskDtIsSigned);
+                    $r->so=$obj->so; // will be used later on in UpdateNgArrowString()
                     $r->startArrow = 10000;
                     $r->endArrow = 0;
 					foreach(explode('|', $r->IskArrowstring) as $IskEnds) {
@@ -1111,7 +1115,8 @@ function UpdateNgArrowString($r, $ToId=0, &$CHANGES=false) {
         SET {$TablePrefix}Arrowstring=" . StrSafe_DB($r->Arrowstring) . ", 
         	{$TablePrefix}Golds=".intval($Golds).",
         	{$TablePrefix}XNines=".intval($XNine).",
-        	{$TablePrefix}DateTime={$TablePrefix}DateTime
+        	{$TablePrefix}DateTime={$TablePrefix}DateTime,
+        	{$TablePrefix}Signed=$r->Signed
 		WHERE $Filter AND {$TablePrefix}MatchNo=$r->FSMatchNo";
 	safe_w_sql($query);
 	if(safe_w_affected_rows()) {

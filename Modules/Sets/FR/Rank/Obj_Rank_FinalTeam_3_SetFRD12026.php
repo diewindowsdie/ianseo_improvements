@@ -117,6 +117,7 @@
 
 		 */
 			/* parte delle finali */
+            // TeRank is actually the rank after the last match of the level
 			$q="
 				(
 					SELECT 1,
@@ -125,7 +126,7 @@
 						EvFinalPrintHead as PrintHeader,
 						EvFinalFirstPhase, EvMatchMode, EvMedals, EvCodeParent, EvMixedTeam,
 						EnId,EnCode, EnSex, EnNameOrder,EnFirstName,upper(EnFirstName) EnFirstNameUpper,EnName,tc.TfcOrder AS personOrder, IndIrm.IrmType as IndIrmType,
-						TeRank as QualRank, IF(EvFinalFirstPhase=0 and EvElimType!=5, TeRank, TeRankFinal) as FinalRank, TeScore, TeGold, TeXnine,
+						RrPartGroupRank as QualRank, IF(EvFinalFirstPhase=0 and EvElimType!=5, TeRank, TeRankFinal) as FinalRank, TeScore, TeGold, TeXnine,
 						TeTimestamp,TeTimestampFinal,
 						ifnull(concat(DV2.DvMajVersion, '.', DV2.DvMinVersion) ,concat(DV1.DvMajVersion, '.', DV1.DvMinVersion)) as DocVersion,
 						date_format(ifnull(DV2.DvPrintDateTime, DV1.DvPrintDateTime), '%e %b %Y %H:%i UTC') as DocVersionDate,
@@ -136,10 +137,11 @@
 						INNER JOIN Teams ON ToId=TeTournament AND TeFinEvent=1
 						INNER JOIN IrmTypes TeIrm ON TeIrm.IrmId=greatest(TeIrmTypeFinal, TeIrmType)
 						INNER JOIN Countries ON TeCoId=CoId AND TeTournament=CoTournament
+						INNER JOIN Events ON TeEvent=EvCode AND ToId=EvTournament AND EvTeamEvent=1
+						left join RoundRobinParticipants on RrPartTournament=ToId and RrPartTeam=1 and RrPartEvent=EvCode and RrPartLevel=EvElim1 and RrPartGroup=1 and RrPartParticipant=TeCoId and RrPartSubTeam=TeSubTeam
 						left JOIN TeamFinComponent AS tc ON Teams.TeCoId=tc.TfcCoId AND Teams.TeSubTeam=tc.TfcSubTeam AND  Teams.TeEvent=tc.TfcEvent AND Teams.TeTournament=tc.TfcTournament AND Teams.TeFinEvent=1
 						left JOIN IrmTypes IndIrm ON IndIrm.IrmId=TfcIrmType
 						left JOIN (select Entries.*, CoCode as EnNOC from Entries inner join Countries on CoId=EnCountry and CoTournament=EnTournament) e ON TfcId=EnId
-						INNER JOIN Events ON TeEvent=EvCode AND ToId=EvTournament AND EvTeamEvent=1
 						LEFT JOIN DocumentVersions DV1 on EvTournament=DV1.DvTournament AND DV1.DvFile = 'R-TEAM' and DV1.DvEvent=''
 						LEFT JOIN DocumentVersions DV2 on EvTournament=DV2.DvTournament AND DV2.DvFile = 'R-TEAM' and DV2.DvEvent=EvCode
 						left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''
@@ -161,8 +163,8 @@
 						EvProgr,TeEvent,EvEventName,EvMaxTeamPerson, EvNumQualified, EvFirstQualified,
 						EvFinalPrintHead as PrintHeader,
 						EvFinalFirstPhase,EvMatchMode,EvMedals, EvCodeParent, EvMixedTeam,
-						EnId,EnCode, EnSex, EnNameOrder,EnFirstName,upper(EnFirstName) EnFirstNameUpper,EnName,tc.TcOrder, IndIrm.IrmType as IndIrmType,
-						TeRank as QualRank, IF(EvFinalFirstPhase=0 and EvElimType!=5, TeRank, TeRankFinal) as FinalRank, TeScore, TeGold, TeXnine,
+						EnId,EnCode, EnSex, EnNameOrder,EnFirstName,upper(EnFirstName) EnFirstNameUpper,EnName,tc.TfcOrder, IndIrm.IrmType as IndIrmType,
+						RrPartGroupRank as QualRank, IF(EvFinalFirstPhase=0 and EvElimType!=5, TeRank, TeRankFinal) as FinalRank, TeScore, TeGold, TeXnine,
 						TeTimestamp,TeTimestampFinal,
 						ifnull(concat(DV2.DvMajVersion, '.', DV2.DvMinVersion) ,concat(DV1.DvMajVersion, '.', DV1.DvMinVersion)) as DocVersion,
 						date_format(ifnull(DV2.DvPrintDateTime, DV1.DvPrintDateTime), '%e %b %Y %H:%i UTC') as DocVersionDate,
@@ -173,10 +175,11 @@
 						INNER JOIN Teams ON ToId=TeTournament AND TeFinEvent=1
 						INNER JOIN IrmTypes TeIrm ON TeIrm.IrmId=greatest(TeIrmType,TeIrmTypeFinal)
 						INNER JOIN Countries ON TeCoId=CoId AND TeTournament=CoTournament
-						left JOIN TeamComponent AS tc ON Teams.TeCoId=tc.TcCoId AND Teams.TeSubTeam=tc.TcSubTeam AND  Teams.TeEvent=tc.TcEvent AND Teams.TeTournament=tc.TcTournament AND Teams.TeFinEvent=tc.TcFinEvent AND Teams.TeFinEvent=1
-						left JOIN IrmTypes IndIrm ON IndIrm.IrmId=TcIrmType
-						left JOIN (select Entries.*, CoCode as EnNOC from Entries inner join Countries on CoId=EnCountry) e ON TcId=EnId
 						INNER JOIN Events ON TeEvent=EvCode AND ToId=EvTournament AND EvTeamEvent=1
+						left join RoundRobinParticipants on RrPartTournament=ToId and RrPartTeam=1 and RrPartEvent=EvCode and RrPartLevel=EvElim1 and RrPartGroup=1 and RrPartParticipant=TeCoId and RrPartSubTeam=TeSubTeam
+						left JOIN TeamFinComponent AS tc ON Teams.TeCoId=tc.TfcCoId AND Teams.TeSubTeam=tc.TfcSubTeam AND  Teams.TeEvent=tc.TfcEvent AND Teams.TeTournament=tc.TfcTournament AND Teams.TeFinEvent=1
+						left JOIN IrmTypes IndIrm ON IndIrm.IrmId=TfcIrmType
+						left JOIN (select Entries.*, CoCode as EnNOC from Entries inner join Countries on CoId=EnCountry) e ON TfcId=EnId
 						LEFT JOIN DocumentVersions DV1 on EvTournament=DV1.DvTournament AND DV1.DvFile = 'R-TEAM' and DV1.DvEvent=''
 						LEFT JOIN DocumentVersions DV2 on EvTournament=DV2.DvTournament AND DV2.DvFile = 'R-TEAM' and DV2.DvEvent=EvCode
 						left join ExtraData on EdId=EnId and EdType='Z' and EdExtra!=''

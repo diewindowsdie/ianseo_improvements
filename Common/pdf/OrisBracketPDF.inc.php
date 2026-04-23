@@ -161,32 +161,31 @@ class OrisBracketPDF extends OrisPDF
 	}
 
 	function PrintFinalists() {
-		if(count($this->Finalists)==0) {
+        if(count($this->Finalists)==0 OR !isset($this->Finalists[1]) OR !isset($this->Finalists[2])) {
 			return;
 		}
-		$this->SetXY(110, 170);
+		$this->SetXY(125, 170);
 		$this->SetFont('','b');
 		$this->Cell(0,0, $this->FinalRank);
 		$this->SetFont('','');
-		$this->Rect(109,169,$this->getPageWidth()-119, min(8, $this->MaxFinalists)*4 + 6);
+		$this->Rect(124,169,$this->getPageWidth()-134, min(8, $this->MaxFinalists)*4 + 6);
 		$Striked=false;
 		for($n=1;$n<=min(8,$this->MaxFinalists);$n++) {
 			if(isset($this->Finalists[$n])) {
 				$Striked=true;
-
 				foreach($this->Finalists[$n] as $Fin) {
-					$this->SetxY(110, 170+$n*4);
+					$this->SetxY(125, 170+$n*4);
 					$this->Cell(10,4, $Fin->ShowRank ? $Fin->FinRank : $Fin->IrmText, '','','R');
-					$this->Cell(45,4, $Fin->FirstName.' '.$Fin->Name);
+					$this->Cell(55,4, $Fin->FirstName.' '.$Fin->Name);
 					$this->Cell(10,4, $Fin->Country);
-					if($n>4) {
+	/*				if($n>4) {
 						$this->Cell(10,4, $Fin->AvgMatch ? number_format($Fin->AvgMatch,3,$this->NumberDecimalSeparator) : $Fin->Score, '','','R');
                         if($Fin->AvgMatch AND $Fin->AvgTie!=0) {
                             $this->Cell(8,4, number_format($Fin->AvgTie,3,$this->NumberDecimalSeparator));
                         } else  if(!$Fin->AvgMatch and $Fin->ScoreMatch and $Fin->ScoreMatch!=$Fin->Score) {
 							$this->Cell(8,4, '('.$Fin->ScoreMatch.')');
 						}
-					}
+					}*/
 					$n++;
 				}
 				$n--;
@@ -199,7 +198,7 @@ class OrisBracketPDF extends OrisPDF
 	}
 
 	function PrintFinalistsTeam($Top) {
-		if(count($this->Finalists)==0) {
+		if(count($this->Finalists)==0 OR !isset($this->Finalists[1]) OR !isset($this->Finalists[2])) {
 			return;
 		}
 		if($Top) {
@@ -219,8 +218,8 @@ class OrisBracketPDF extends OrisPDF
 		$W=$this->getPageWidth()-$StartX-$this->getSideMargin();
 		$W1=$W*0.10;
 		$W2=$W*0.16;
-		$W4=$W*0.16;
-		$W5=$W*0.15;
+		$W4=$W*0.16*0;
+		$W5=$W*0.15*0;
 		$W3=$W-$W1-$W2-$W4-$W5;
 		$this->SetXY($StartX, $StartY);
 		$this->SetFont('','b');
@@ -237,14 +236,14 @@ class OrisBracketPDF extends OrisPDF
 					$this->Cell($W1,4, $Fin->ShowRank ? $Fin->FinRank : $Fin->IrmText, '','','R');
 					$this->Cell($W2,4, $Fin->Country);
 					$this->Cell($W3,4, $Fin->Team);
-					if($n>4) {
+/*					if($n>4) {
                         $this->Cell($W4,4, $Fin->AvgMatch ? number_format($Fin->AvgMatch,3,$this->NumberDecimalSeparator) : $Fin->Score, '','','R');
                         if($Fin->AvgMatch AND $Fin->AvgTie!=0) {
                             $this->Cell($W5,4, number_format($Fin->AvgTie,3,$this->NumberDecimalSeparator));
                         } else  if(!$Fin->AvgMatch and $Fin->ScoreMatch and $Fin->ScoreMatch!=$Fin->Score) {
                             $this->Cell($W5,4, '('.$Fin->ScoreMatch.')');
                         }
-					}
+					}*/
 					$n++;
 				}
 				$n--;

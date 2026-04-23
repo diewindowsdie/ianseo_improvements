@@ -269,13 +269,13 @@ if($CardType=='T' || $CardType == 'Z') {
     $Select.='<option value="AthCode">'.get_text('AthCode', 'BackNumbers').'</option>';
     // numero tessera in barcode/Qrcode
     $Select.='<option value="AthBarCode">'.get_text('AthBarCode', 'BackNumbers').'</option>';
-    // numero tessera in barcode/Qrcode
-    $Select.='<option value="AthQrCode">'.get_text('AthQrCode', 'BackNumbers').'</option>';
     // Athlete
     $Select.='<option value="Athlete">'.get_text('Athlete', 'BackNumbers').'</option>';
     //дивизион и класс
     $Select.='<option value="DivisionClass">'.get_text('DivisionClass', 'BackNumbers').'</option>';
 }
+// numero tessera in barcode/Qrcode
+$Select.='<option value="AthQrCode">'.get_text('AthQrCode', 'BackNumbers').'</option>';
 // Picture
 if($CardType=='A') {
     $Select.='<option value="Picture">'.get_text('Picture', 'BackNumbers').'</option>';

@@ -748,7 +748,7 @@ Class Scheduler {
 				'R' Type,
 				RrMatchScheduledDate Day,
 				concat_ws('|', RrLevName, RrMatchLevel, RrGrName, RrMatchGroup, RrMatchRound) Session,
-				RrMatchRound Distance,
+				/*RrMatchRound*/ 0 as Distance,
 				EvDistance as RealDistance,
 				EvMedals as Medal,
 				if(RrMatchScheduledTime=0, '', date_format(RrMatchScheduledTime, '%H:%i')) Start,

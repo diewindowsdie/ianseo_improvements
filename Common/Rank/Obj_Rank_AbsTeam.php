@@ -486,9 +486,9 @@ require_once('Common/Lib/ArrTargets.inc.php');
 							'ageclass' => $row->EnAgeClass,
 							'subclass' => $row->EnSubClass,
                             'subclassName' => $row->ScDescription,
-							'quscore' => $row->QuIrmType ? $row->IrmType : $row->QuScore,
-							'qugolds' => $row->QuIrmType ? '' : $row->QuGold,
-							'quxnine' => $row->QuIrmType ? '' : $row->QuXnine,
+                            'quscore' => $row->QuIrmType>=10 ? $row->IrmType : $row->QuScore,
+                            'qugolds' => $row->QuIrmType>=10 ? '' : $row->QuGold,
+                            'quxnine' => $row->QuIrmType>=10 ? '' : $row->QuXnine,
 							'scoreConfirmed' => $row->QuConfirm==$ConfirmStatus,
 							'arrowString' => $row->DetailedArrows,
 						);

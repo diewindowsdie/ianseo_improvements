@@ -155,6 +155,9 @@ if(count($rankData['sections'])) {
 				} else if($item['rank'] < $section['meta']['qualifiedNo']+$section['meta']['firstQualified'] AND ($item['ct']??0)>1) {
 					$tmpNote .=  $pdf->CoinTossShort;
 				}
+                if($item['irm']==5){
+                    $tmpNote .= $item['irmText'];
+                }
 				if($item['notes']) {
 					$tmpNote .= ' ' . $item['notes'];
 				}

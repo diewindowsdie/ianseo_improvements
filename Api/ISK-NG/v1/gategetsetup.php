@@ -39,6 +39,9 @@ while ($r = safe_fetch($q)) {
     if($RegArray["division"] != -1) {
         $RegArray['key'][] = 'division';
     }
+    if($RegArray["class"] != -1) {
+        $RegArray['key'][] = 'class';
+    }
 
     $RegArray['keyseparator'] = '|';
     $RegArray['competition'] = $r->ToCode;

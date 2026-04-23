@@ -508,3 +508,4 @@ div.Center  {text-align: center; margin-left: auto; margin-right: auto}
 }
 .text-right {text-align: right;}
 .hidden {display: none;}
+.monospace {font-family: monospace;}
