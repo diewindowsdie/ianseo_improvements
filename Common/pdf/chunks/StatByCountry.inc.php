@@ -17,7 +17,7 @@ $marginBeforeSignatures = 8;
 //высота ячейки под разделитель
 $separatorRowHeight = 0.5;
 //количество стран
-$numberOfCountries = count($PdfData->Data['Items']);
+$numberOfCountries = is_array($PdfData->Data['Items']) ? count($PdfData->Data['Items']) : 0;
 //высота строк с заголовком таблицы и строкой с дивизионами
 $divisionAndTableHeaderRowHeight = 6;
 //общая высота заголовка таблицы
