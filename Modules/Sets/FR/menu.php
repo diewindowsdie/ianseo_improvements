@@ -120,4 +120,11 @@ if(!empty($on) AND $_SESSION["TourLocRule"]=='FR' AND subFeatureAcl($acl,AclComp
             }
 		break;
 	}
+
+	if(isset($_SESSION['TourLocSubRule']) AND $_SESSION['TourLocSubRule']=='SetFrBeursault') {
+		if (isset($ret['QUAL']['SCOR'])) {
+			array_splice($ret['QUAL']['SCOR'], 1, 0, 'Tableau spécial Beursault' .'|'.$CFG->ROOT_DIR.'Modules/Sets/FR/Modules/Bslt/index.php');
+		}
+	}
+
 }

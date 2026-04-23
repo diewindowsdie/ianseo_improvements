@@ -12,7 +12,7 @@ $tmpObj->Name='';
 $tmpObj->Country='';
 
 $PhaseTitles=array("1/48\nElimin. Round§", "1/24\nElimin. Round§", "1/16\nElimin. Round§", "1/8\nElimin. Round§", "Quarterfinals§", "Semifinals§", "Finals§");
-$titArray = array("R. Round\nRank/Score§",'',"Name","NOC\nCode");
+$titArray = array("Seed/QR§",'',"Name","NOC\nCode");
 $misArray = array(array(7.5, 8.5), 9, 35, 13);
 
 $FreePageWidth=$pdf->getPageWidth()-20-array_reduce($misArray, function($a,$b) {return $a + (is_array($b) ? array_sum($b) : $b);});

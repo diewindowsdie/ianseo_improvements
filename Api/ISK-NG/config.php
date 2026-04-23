@@ -731,7 +731,7 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 					} else {
 						$MainFilter="FsTournament=$toId and FsTarget>'' and FsTeamEvent=0 and FsScheduledDate='$Date' and FsScheduledTime='$Time'";
 					}
-					$SQL="select EvDistance, EvFinalTargetType, EvCode, EvTeamEvent, EvMatchMode, EvEventName, GrPhase, EvFinalFirstPhase, 
+					$SQL="select EvDistance, EvFinalTargetType, EvCode, EvTeamEvent, EvMatchMode, EvEventName, GrPhase, EvFinalFirstPhase, ToCode, 
                             EvCheckGolds as CheckGolds, EvCheckXNines as CheckXNines,
        						if(EvGolds!='', EvGolds, ToGolds) as GoldLabel, 
        						if(EvXNine!='', EvXNine, ToXNine) as XNineLabel, 
@@ -742,24 +742,28 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 							tgt1.*, tgt2.*,
 							if(GrPhase1 & EvMatchArrowsNo, EvElimArrows, EvFinArrows) Arrows, if(GrPhase1 & EvMatchArrowsNo, EvElimEnds, EvFinEnds) Ends, if(GrPhase1 & EvMatchArrowsNo, EvElimSO, EvFinSO) SO
 						from (select concat(date_format(FSScheduledDate, '%e %b'), ' ', date_format(FSScheduledTime, '%H:%i')) as Scheduled, GrBitPhase as GrPhase1, 
-				            	EnCode EnCode1, CoCode CoCode1, CoName Country1, concat(ucase(EnFirstName), ' ', EnName) Athlete1, FinAthlete Entry1, 
+				            	EnCode EnCode1, CoCode CoCode1, CoName Country1, concat(ucase(EnFirstName), ' ', EnName) Athlete1, FinAthlete Entry1, EnDivision as EnDivision1, EnClass as EnClass1, 
 				            	FinArrowstring Arrowstring1, FinTieBreak TieBreak1, FsTarget+0 Target1, substr(FsLetter, length(FsTarget)+1, 1) Letter1, 
-				            	FsLetter FsLetter1, FsMatchNo FsMatchNo1, FsEvent FsEvent1, FinWinLose as Win1, FinTbClosest as Closest1
+				            	FsLetter FsLetter1, FsMatchNo FsMatchNo1, FsEvent FsEvent1, FinWinLose as Win1, FinTbClosest as Closest1, $ExtraField as QrCode1
 							from FinSchedule
 							inner join Grids on FsMatchNo=GrMatchno
 							inner join Finals on FsEvent=FinEvent and FinTournament=$toId and FsMatchNo=FinMatchNo
 							inner join Entries on EnId=FinAthlete
 							inner join Countries on CoId=EnCountry
+							LEFT JOIN ExtraData zextra ON EnId=zextra.EdId and zextra.EdType='Z' and zextra.EdExtra!=''
+				            $ExtraSql
 							where $MainFilter and FsMatchNo%2=0) tgt1
 						inner join (select 
-			                	EnCode EnCode2, CoCode CoCode2, CoName Country2, concat(ucase(EnFirstName), ' ', EnName) Athlete2, FinAthlete Entry2, 
+			                	EnCode EnCode2, CoCode CoCode2, CoName Country2, concat(ucase(EnFirstName), ' ', EnName) Athlete2, FinAthlete Entry2, EnDivision as EnDivision2, EnClass as EnClass2,
 			                	FinArrowstring Arrowstring2, FinTieBreak TieBreak2, FsTarget+0 Target2, substr(FsLetter, length(FsTarget)+1, 1) Letter2, 
-			                	FsLetter FsLetter2, FsMatchNo FsMatchNo2, FsEvent FsEvent2, FinWinLose as Win2, FinTbClosest as Closest2
+			                	FsLetter FsLetter2, FsMatchNo FsMatchNo2, FsEvent FsEvent2, FinWinLose as Win2, FinTbClosest as Closest2, $ExtraField as QrCode2
 							from FinSchedule
 							inner join Grids on FsMatchNo=GrMatchno
 							inner join Finals on FsEvent=FinEvent and FsTournament=FinTournament and FsMatchNo=FinMatchNo
 							inner join Entries on EnId=FinAthlete
 							inner join Countries on CoId=EnCountry
+							LEFT JOIN ExtraData zextra ON EnId=zextra.EdId and zextra.EdType='Z' and zextra.EdExtra!=''
+				            $ExtraSql
 							where $MainFilter) tgt2
 							on FsEvent1=FsEvent2 and FsMatchNo2=FsMatchNo1+1
 						inner join Events on FsEvent1=EvCode and EvTeamEvent=0 and EvTournament=$toId
@@ -784,7 +788,7 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 					}
 
 					if($Team) {
-						$SQL="select EvDistance, EvFinalTargetType, EvCode, EvTeamEvent, RrLevMatchMode as EvMatchMode, EvEventName, 999 GrPhase, EvFinalFirstPhase, RrLevName, RrGrName, RrMatchRound,
+						$SQL="select EvDistance, EvFinalTargetType, EvCode, EvTeamEvent, RrLevMatchMode as EvMatchMode, EvEventName, 999 GrPhase, EvFinalFirstPhase, RrLevName, RrGrName, RrMatchRound, ToCode,
        						concat('L',RrMatchLevel,'G',RrMatchGroup,'R',RrMatchRound) as PhaseCode, concat_ws(' ', RrLevName, RrGrName) as PhaseName,
                             RrLevCheckGolds as CheckGolds, RrLevCheckXNines as CheckXNines,
        						if(EvGolds!='', EvGolds, ToGolds) as GoldLabel, 
@@ -796,13 +800,15 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 						from (
 						    select CoCode EnCode1, CoCode CoCode1, CoName Country1, CoName Athlete1, RrMatchAthlete Entry1, RrMatchArrowstring Arrowstring1, RrMatchTiebreak TieBreak1, RrMatchTarget+0 Target1, right(RrMatchTarget, 1) Letter1, RrMatchTarget FsLetter1, RrMatchMatchNo+(RrMatchRound*100)+(RrMatchGroup*10000)+(RrMatchLevel*1000000) FsMatchNo1, RrMatchEvent FsEvent1, RrMatchWinLose as Win1,
 					           	RrMatchLevel, RrMatchGroup, RrMatchRound, concat(date_format(RrMatchScheduledDate, '%e %b'), ' ', date_format(RrMatchScheduledTime, '%H:%i')) as Scheduled,
-								concat_ws('|', RrMatchTeam, RrMatchEvent, RrMatchLevel, RrMatchGroup, RrMatchRound, RrMatchMatchNo) as refKey1
+								concat_ws('|', RrMatchTeam, RrMatchEvent, RrMatchLevel, RrMatchGroup, RrMatchRound, RrMatchMatchNo) as refKey1,
+								'' as EnDivision1, '' as EnClass1, '' as QrCode1
 							from RoundRobinMatches
 							left join Countries on CoId=RrMatchAthlete
 							where $MainFilter and RrMatchMatchNo % 2=0) tgt1
 						inner join (
 						    select CoCode EnCode2, CoCode CoCode2, CoName Country2, CoName Athlete2, RrMatchAthlete Entry2, RrMatchArrowstring Arrowstring2, RrMatchTiebreak TieBreak2, RrMatchTarget+0 Target2, right(RrMatchTarget, 1) Letter2, RrMatchTarget FsLetter2, RrMatchMatchNo+(RrMatchRound*100)+(RrMatchGroup*10000)+(RrMatchLevel*1000000) FsMatchNo2, RrMatchEvent FsEvent2, RrMatchWinLose as Win2,
-								concat_ws('|', RrMatchTeam, RrMatchEvent, RrMatchLevel, RrMatchGroup, RrMatchRound, RrMatchMatchNo) as refKey2
+								concat_ws('|', RrMatchTeam, RrMatchEvent, RrMatchLevel, RrMatchGroup, RrMatchRound, RrMatchMatchNo) as refKey2,
+								'' as EnDivision2, '' as EnClass2, '' as QrCode2
 							from RoundRobinMatches
 							left join Countries on CoId=RrMatchAthlete
 							where $MainFilter and RrMatchMatchNo % 2=1) tgt2
@@ -814,7 +820,7 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 						where $Filter
 						order by greatest(FsLetter1, FsLetter2)";
 					} else {
-						$SQL="select EvDistance, EvFinalTargetType, EvCode, EvTeamEvent, RrLevMatchMode as EvMatchMode, EvEventName, 999 GrPhase, EvFinalFirstPhase, RrLevName, RrGrName, RrMatchRound,
+						$SQL="select EvDistance, EvFinalTargetType, EvCode, EvTeamEvent, RrLevMatchMode as EvMatchMode, EvEventName, 999 GrPhase, EvFinalFirstPhase, RrLevName, RrGrName, RrMatchRound, ToCode,
        						concat('L',RrMatchLevel,'G',RrMatchGroup,'R',RrMatchRound) as PhaseCode, concat_ws(' ', RrLevName, RrGrName) as PhaseName,
                             RrLevCheckGolds as CheckGolds, RrLevCheckXNines as CheckXNines,
                             if(EvGolds!='', EvGolds, ToGolds) as GoldLabel, 
@@ -826,14 +832,16 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 						from (
 						    select EnCode EnCode1, CoCode CoCode1, CoName Country1, concat(ucase(EnFirstName), ' ', EnName) Athlete1, RrMatchAthlete Entry1, RrMatchArrowstring Arrowstring1, RrMatchTiebreak TieBreak1, RrMatchTarget+0 Target1, right(RrMatchTarget, 1) Letter1, RrMatchTarget FsLetter1, RrMatchMatchNo+(RrMatchRound*100)+(RrMatchGroup*10000)+(RrMatchLevel*1000000) FsMatchNo1, RrMatchEvent FsEvent1, RrMatchWinLose as Win1,
 					           	RrMatchLevel, RrMatchGroup, RrMatchRound, concat(date_format(RrMatchScheduledDate, '%e %b'), ' ', date_format(RrMatchScheduledTime, '%H:%i')) as Scheduled,
-								concat_ws('|', RrMatchTeam, RrMatchEvent, RrMatchLevel, RrMatchGroup, RrMatchRound, RrMatchMatchNo) as refKey1
+								concat_ws('|', RrMatchTeam, RrMatchEvent, RrMatchLevel, RrMatchGroup, RrMatchRound, RrMatchMatchNo) as refKey1,
+								'' as EnDivision1, '' as EnClass1, '' as QrCode1
 							from RoundRobinMatches
 							left join Entries on EnId=RrMatchAthlete
 							left join Countries on CoId=EnCountry
 							where $MainFilter and RrMatchMatchNo % 2=0) tgt1
 						inner join (
 						    select EnCode EnCode2, CoCode CoCode2, CoName Country2, concat(ucase(EnFirstName), ' ', EnName) Athlete2, RrMatchAthlete Entry2, RrMatchArrowstring Arrowstring2, RrMatchTiebreak TieBreak2, RrMatchTarget+0 Target2, right(RrMatchTarget, 1) Letter2, RrMatchTarget FsLetter2, RrMatchMatchNo+(RrMatchRound*100)+(RrMatchGroup*10000)+(RrMatchLevel*1000000) FsMatchNo2, RrMatchEvent FsEvent2, RrMatchWinLose as Win2,
-								concat_ws('|', RrMatchTeam, RrMatchEvent, RrMatchLevel, RrMatchGroup, RrMatchRound, RrMatchMatchNo) as refKey2
+								concat_ws('|', RrMatchTeam, RrMatchEvent, RrMatchLevel, RrMatchGroup, RrMatchRound, RrMatchMatchNo) as refKey2,
+								'' as EnDivision2, '' as EnClass2, '' as QrCode2
 							from RoundRobinMatches
 							left join Entries on EnId=RrMatchAthlete
 							left join Countries on CoId=EnCountry
@@ -857,7 +865,7 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 					} else {
 						$MainFilter="FsTournament=$toId and FsTarget>'' and FsTeamEvent=1 and FsScheduledDate='$Date' and FsScheduledTime='$Time'";
 					}
-					$SQL="select EvDistance, EvFinalTargetType, EvCode, EvTeamEvent, EvMatchMode, EvEventName, GrPhase, EvFinalFirstPhase,
+					$SQL="select EvDistance, EvFinalTargetType, EvCode, EvTeamEvent, EvMatchMode, EvEventName, GrPhase, EvFinalFirstPhase, ToCode,
                             EvCheckGolds as CheckGolds, EvCheckXNines as CheckXNines,
                             if(EvGolds!='', EvGolds, ToGolds) as GoldLabel, 
        						if(EvXNine!='', EvXNine, ToXNine) as XNineLabel, 
@@ -868,9 +876,9 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 							tgt1.*, tgt2.*,
 							if(GrPhase1 & EvMatchArrowsNo, EvElimArrows, EvFinArrows) Arrows, if(GrPhase1 & EvMatchArrowsNo, EvElimEnds, EvFinEnds) Ends, if(GrPhase1 & EvMatchArrowsNo, EvElimSO, EvFinSO) SO
 						from (select concat(date_format(FSScheduledDate, '%e %b'), ' ', date_format(FSScheduledTime, '%H:%i')) as Scheduled, GrPhase as GrPhase1,
-				            	CoCode EnCode1, CoCode CoCode1, CoName Country1, CoName Athlete1, '' Entry1, TfArrowstring Arrowstring1, TfTieBreak TieBreak1, 
+				            	CoCode EnCode1, CoCode CoCode1, CoName Country1, CoName Athlete1, '' Entry1, TfArrowstring Arrowstring1, TfTieBreak TieBreak1, TfEvent as EnDivision1, '' as EnClass1,
 								FsTarget+0 Target1, substr(FsLetter, length(FsTarget)+1, 1) Letter1,
-								FsLetter FsLetter1, FsMatchNo FsMatchNo1, FsEvent FsEvent1, TfWinLose as Win1, TfTbClosest as Closest1
+								FsLetter FsLetter1, FsMatchNo FsMatchNo1, FsEvent FsEvent1, TfWinLose as Win1, TfTbClosest as Closest1, '{COUNTRY}|{DIVISION}|{TOURNAMENT}' as QrCode1
 							from FinSchedule
 							inner join Grids on FsMatchNo=GrMatchno
 							inner join TeamFinals on FsEvent=TfEvent and TfTournament=$toId and FsMatchNo=TfMatchNo
@@ -878,9 +886,9 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 							inner join Countries on CoId=TeCoId
 							where $MainFilter and FsMatchNo%2=0) tgt1
 						inner join (select 
-			                	CoCode EnCode2, CoCode CoCode2, CoName Country2, CoName Athlete2, '' Entry2, TfArrowstring Arrowstring2, TfTieBreak TieBreak2, 
+			                	CoCode EnCode2, CoCode CoCode2, CoName Country2, CoName Athlete2, '' Entry2, TfArrowstring Arrowstring2, TfTieBreak TieBreak2, TfEvent as EnDivision2, '' as EnClass2,
 			                	FsTarget+0 Target2, substr(FsLetter, length(FsTarget)+1, 1) Letter2, 
-			                	FsLetter FsLetter2, FsMatchNo FsMatchNo2, FsEvent FsEvent2, TfWinLose as Win2, TfTbClosest as Closest2
+			                	FsLetter FsLetter2, FsMatchNo FsMatchNo2, FsEvent FsEvent2, TfWinLose as Win2, TfTbClosest as Closest2, '{COUNTRY}|{DIVISION}|{TOURNAMENT}' as QrCode2
 							from FinSchedule
 							inner join Grids on FsMatchNo=GrMatchno
 							inner join TeamFinals on FsEvent=TfEvent and TfTournament=$toId and FsMatchNo=TfMatchNo
@@ -916,6 +924,13 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 					$EventName = get_text(namePhase($r->EvFinalFirstPhase,$r->GrPhase).'_Phase') . ' - '  . $r->EvEventName;
 				}
 
+                $replacements=array(
+                    '{ENCODE}'=>$r->EnCode1,
+                    '{COUNTRY}'=>$r->CoCode1,
+                    '{DIVISION}'=>$r->EnDivision1,
+                    '{CLASS}'=>$r->EnClass1,
+                    '{TOURNAMENT}'=>$r->ToCode,
+                );
 		        // LEFT archer
 		        $row_array=array();
 		        $row_array["refKey"] = $r->refKey1;
@@ -929,6 +944,7 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 		        $row_array['matchmode'] = $r->EvMatchMode;
 		        $row_array['checkGolds'] = (bool) $r->CheckGolds;
 		        $row_array['checkXnines'] = (bool) $r->CheckXNines;
+                $row_array["qrCode"] = str_replace(array_keys($replacements), array_values($replacements), $r->QrCode1);
 
 		        $row_array["scoring"] = [[
 			        "distance" => "1",
@@ -953,6 +969,13 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 		        $json_array['archers'][$r->refKey1]=$row_array;
 
 		        // RIGHT archer
+                $replacements=array(
+                    '{ENCODE}'=>$r->EnCode2,
+                    '{COUNTRY}'=>$r->CoCode2,
+                    '{DIVISION}'=>$r->EnDivision2,
+                    '{CLASS}'=>$r->EnClass2,
+                    '{TOURNAMENT}'=>$r->ToCode,
+                );
 		        $row_array=array();
 		        $row_array["refKey"] = $r->refKey2;
 		        $row_array["encode"] = $r->EnCode2;
@@ -965,6 +988,7 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 		        $row_array['matchmode'] = $r->EvMatchMode;
                 $row_array['checkGolds'] = (bool) $r->CheckGolds;
                 $row_array['checkXnines'] = (bool) $r->CheckXNines;
+                $row_array["qrCode"] = str_replace(array_keys($replacements), array_values($replacements), $r->QrCode2);
 
 		        $row_array["scoring"] = [[
 			        "distance" => "1",

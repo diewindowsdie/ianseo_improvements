@@ -1,5 +1,7 @@
 <?php
+$lang['1_PhaseNM']='3/4위 결정전';
 $lang['AccreditationBoothSetup']='AD인증 부스 셋업';
+$lang['IB']='직관적 활';
 $lang['MenuLMPrintedBadgesFlag']='"AD인증카드 출력됨" 표시 업데이트';
 $lang['MenuLM_Accreditation']='AD인증(출입통제)';
 $lang['MenuLM_Accreditation colors management']='AD인증 색상 관리';

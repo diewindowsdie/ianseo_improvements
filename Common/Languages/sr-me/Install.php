@@ -114,6 +114,7 @@ $lang['Set3D20+20']='20+20 meta - 2 distance';
 $lang['Set3D24']='24 mete - 1 distanca';
 $lang['Set3D24+24']='24+24 meta - 2 distance';
 $lang['SetAduClass']='Samo kategorije za odrasle';
+$lang['SetAllClass']='Sve kategorije';
 $lang['SetChampionship']='Prvenstvo';
 $lang['SetCompound50m']='Složeni luk – 50 m';
 $lang['SetCompound70m']='Složeni luk – 70 m';

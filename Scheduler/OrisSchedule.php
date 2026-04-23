@@ -104,16 +104,10 @@ foreach($SessionMatches as $vSes => $items) {
                 $pdf->Cell(30, CellH, "Event", 1, 0, 'L', 0);
                 $pdf->Cell(9, CellH, "Round", 1, 0, 'L', 0);
 
-                $pdf->Cell(10, CellH / 2, "R.R.", 'TLR', 0, 'C', 0);
-                $pdf->SetXY($pdf->GetX() - 10, $pdf->GetY() + CellH / 2);
-                $pdf->Cell(10, CellH / 2, "Rank", 'BLR', 0, 'C', 0);
-                $pdf->SetXY($pdf->GetX(), $pdf->GetY() - CellH / 2);
+                $pdf->Cell(10, CellH, "Seed", '1', 0, 'C', 0);
                 $pdf->Cell(45, CellH, "Participant 1", 1, 0, 'L', 0);
 
-                $pdf->Cell(10, CellH / 2, "R.R.", 'TLR', 0, 'C', 0);
-                $pdf->SetXY($pdf->GetX() - 10, $pdf->GetY() + CellH / 2);
-                $pdf->Cell(10, CellH / 2, "Rank", 'BLR', 0, 'C', 0);
-                $pdf->SetXY($pdf->GetX(), $pdf->GetY() - CellH / 2);
+                $pdf->Cell(10, CellH, "Seed", '1', 0, 'C', 0);
                 $pdf->Cell(45, CellH, "Participant 2", 1, 1, 'L', 0);
                 $pdf->SetFont('', '');
                 if ($runningDay != $item["scheduledDate"]) {

@@ -33,33 +33,49 @@ switch($_REQUEST['item']) {
             $CountryCodes[$r->CoCode]=$r->CoId;
         }
         // import the related entries of the competition
-        $SQL="select CoId2, Entries.*
+        $SQL="select CoId2, EcCode, Entries.*
             from Entries
             inner join Countries on CoTournament=EnTournament and CoId=EnCountry
-            inner join (select distinct CoId as CoId2, CoCode as CoCode2, EcDivision
+            inner join (select distinct CoId as CoId2, CoCode as CoCode2
                 from Countries
-                inner join Teams on TeCoId=CoId and TeFinEvent=1 and TeTournament=CoTournament
-                inner join EventClass on EcTournament=CoTournament and EcCode=TeEvent and EcTeamEvent=1  
                 where CoTournament={$_SESSION['TourId']}
-            ) comp on CoCode2=CoCode and EcDivision=EnDivision
+            ) comp on CoCode2=CoCode
+            inner join EventClass on EcTournament={$_SESSION['TourId']} and EcTeamEvent=1 and EcClass=EnClass and EcDivision=EnDivision
             left join (
-                select EnCode as EnCode2
+                select EnCode as EnCode2, EnDivision as EnDiv2
                 from Entries
                 where EnTournament={$_SESSION['TourId']}
-            ) En2 on EnCode2=EnCode
-            where EnTournament=$Comp and EnCode2 is null";
+            ) En2 on EnCode2=EnCode and EnDiv2=EnDivision
+            where EnTournament=$Comp and EnTeamFEvent=1 and EnCode2 is null
+            order by EnFirstName, EnName";
         $q=safe_r_SQL($SQL);
         $Values=[];
         while($r=safe_fetch($q)) {
             safe_w_sql("insert into Entries set
                 EnTournament={$_SESSION['TourId']}, EnDivision='{$r->EnDivision}', EnClass='{$r->EnClass}', EnSubClass='{$r->EnSubClass}',
                 EnAgeClass='{$r->EnAgeClass}', EnCountry='{$r->CoId2}', EnIocCode='{$r->EnIocCode}',
-                EnCtrlCode='{$r->EnCtrlCode}', EnDob='{$r->EnDob}', EnCode='{$r->EnCode}', EnName='{$r->EnName}', EnFirstName='{$r->EnFirstName}',
+                EnCtrlCode='{$r->EnCtrlCode}', EnDob='{$r->EnDob}', EnCode='{$r->EnCode}', EnName=".StrSafe_DB($r->EnName).", EnFirstName=".StrSafe_DB($r->EnFirstName).",
                 EnAthlete='{$r->EnAthlete}', EnSex='{$r->EnSex}', EnClassified='{$r->EnClassified}', EnWChair='{$r->EnWChair}', EnSitting='{$r->EnSitting}',
                 EnIndClEvent='{$r->EnIndClEvent}', EnTeamClEvent='{$r->EnTeamClEvent}', EnIndFEvent='{$r->EnIndFEvent}', EnTeamFEvent='{$r->EnTeamFEvent}', EnTeamMixEvent='{$r->EnTeamMixEvent}',
                 EnDoubleSpace='{$r->EnDoubleSpace}', EnPays='{$r->EnPays}', EnStatus='{$r->EnStatus}', EnTargetFace='{$r->EnTargetFace}', EnLueTimeStamp='{$r->EnLueTimeStamp}',
                 EnLueFieldChanged='{$r->EnLueFieldChanged}', EnTimestamp='{$r->EnTimestamp}', EnMainInfoUpdate=0, EnNameOrder='{$r->EnNameOrder}',
-                EnOdfShortname='{$r->EnOdfShortname}', EnTvGivenName='{$r->EnTvGivenName}', EnTvFamilyName='{$r->EnTvFamilyName}', EnTvInitials='{$r->EnTvInitials}'");
+                EnOdfShortname=".StrSafe_DB($r->EnOdfShortname).", EnTvGivenName=".StrSafe_DB($r->EnTvGivenName).", EnTvFamilyName=".StrSafe_DB($r->EnTvFamilyName).", EnTvInitials='{$r->EnTvInitials}'");
+        }
+
+        // updates the teamfincomponent
+        $SQL="select EnCountry, EnId, EcCode 
+            from Entries
+            inner join EventClass on EcTournament=EnTournament and EcTeamEvent=1 and EcClass=EnClass and EcDivision=EnDivision
+            where EnTournament={$_SESSION['TourId']}";
+        $OldCode='';
+        $q=safe_r_SQL($SQL);
+        while($r=safe_fetch($q)) {
+            if($OldCode!="{$r->EnCountry}-{$r->EnId}") {
+                $OldCode="{$r->EnCountry}-{$r->EnId}";
+                $Order=1 + 10*($Distance-1);
+            }
+            safe_w_sql("insert ignore into TeamFinComponent set TfcCoId=$r->EnCountry, TfcSubTeam=0, TfcTournament={$_SESSION['TourId']}, TfcEvent='$r->EcCode', TfcId=$r->EnId, TfcOrder=$Order");
+            $Order++;
         }
 
         // enter the team ranking
@@ -83,6 +99,7 @@ switch($_REQUEST['item']) {
             $BonusToTake=$Bonus['16'];
             switch($r->TeEvent) {
                 case 'DRRH':
+                case 'D1HCL':
                 case 'HCL':
                     $r->TeEvent='HCL';
                     if(!isset($RankedItems[$r->TeEvent][$r->CoId])) {
@@ -98,6 +115,7 @@ switch($_REQUEST['item']) {
                     }
                     break;
                 case 'DRRF':
+                case 'D1FCL':
                 case 'FCL':
                     $r->TeEvent='FCL';
                     if(!isset($RankedItems[$r->TeEvent][$r->CoId])) {
@@ -114,6 +132,7 @@ switch($_REQUEST['item']) {
                     break;
                 case 'DRCH':
                 case 'HCO':
+                case 'D1HCO':
                     $r->TeEvent='HCO';
                     if(!isset($RankedItems[$r->TeEvent][$r->CoId])) {
                         continue 2;
@@ -129,6 +148,7 @@ switch($_REQUEST['item']) {
                     break;
                 case 'DRCF':
                 case 'FCO':
+                case 'D1FCO':
                     $r->TeEvent='FCO';
                     if(!isset($RankedItems[$r->TeEvent][$r->CoId])) {
                         continue 2;
@@ -143,12 +163,12 @@ switch($_REQUEST['item']) {
             $Bon=($BonusToTake[$RankedEvents[$r->TeEvent]]??0);
             $sql="TqdCoId={$r->CoId}, TqdSubTeam={$r->TeSubTeam}, TqdEvent='{$r->TeEvent}', TqdTournament={$_SESSION['TourId']},
                 TqdDistance={$Distance}, TqdScore={$r->TeScore}, TqdBonus=$Bon,
-                TqdTie1={$r->TeGold}, TqdTie2={$r->TeXnine}, TqdTie3={$r->TeTieBreaker3}, TqdRank={$r->TeRank}, TqdTimeStamp='{$r->TeTimeStamp}'";
+                TqdTie1={$r->TeGold}, TqdTie2={$r->TeXnine}, TqdTie3={$r->TeTieBreaker3}, TqdRank={$RankedEvents[$r->TeEvent]}, TqdTimeStamp='{$r->TeTimeStamp}'";
             safe_w_sql("insert into TeamQualificationDistances set $sql on duplicate key update $sql");
         }
 
         // reassign the rank
-    require_once('Common/Lib/Obj_RankFactory.php');
+        require_once('Common/Lib/Obj_RankFactory.php');
         $options=[
             'tournament' => $_SESSION['TourId'],
             'team' => 1,

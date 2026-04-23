@@ -121,7 +121,6 @@ $lang['BadgeStandard6']='Маленький бейдж (6шт на А4, книж
 $lang['BadgeStandard6-bis']='Маленький бейдж (6шт) Vegas';
 $lang['BadgeType']='Тип бейджа';
 $lang['BadParams']='Неверные Параметры!';
-$lang['BarcodeCapture']='Захват штрих-кода';
 $lang['BF_Phase']='Бронзовый финал';
 $lang['BigNames']='Печать полной страницы';
 $lang['Bill']='Счет';

@@ -64,6 +64,9 @@ if(!empty($_REQUEST['lev'])) {
 			if($COMP->ToWhenFrom>='2019-01-01') {
                 $Discipline= $_REQUEST['lev']=='SP' ? 'H' : 'T';
 			}
+			if($COMP->ToTypeSubRule=='SetFrBeursault') {
+				$Discipline='B';
+			}
 			break;
 		case 2:
             $Discipline= $_REQUEST['lev']=='SP' ? 'I' : 'S';

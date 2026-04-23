@@ -1,4 +1,5 @@
 <?php
+$lang['AddToWallet']='zum Wallet hinzufügen';
 $lang['CmdButtons']='Button erzeugen';
 $lang['CmdRandomID']='Zufalls-ID';
 $lang['TakePictureLink']='Bildaufnahme Link';

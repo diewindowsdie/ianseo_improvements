@@ -163,7 +163,7 @@ if($Match) {
 
     // Opponent 1
     echo '<td colspan="2" class="'.$Win1.'">';
-    echo '<div class="matchHighlight"><div>'.$Match->name1.'</div></div>';
+    echo '<div class="matchHighlight"><div>'.$Match->name1.($Match->signed1 ? '<i class="fa-solid fa-signature ml-2"></i>':'').'</div></div>';
     echo '<div class="matchHighlight"><div>'.get_text('Score', 'Tournament').'</div><div class="Score"> '.$Score1.'</div></div>';
     if($Match->matchMode) {
         echo '<div class="matchHighlight"><div>'.get_text('SetPoints', 'Tournament').'</div>';
@@ -189,7 +189,7 @@ if($Match) {
 
     // Opponent 2
     echo '<td colspan="2" class="'.$Win2.'">';
-    echo '<div class="matchHighlight"><div>'.$Match->name2.'</div></div>';
+    echo '<div class="matchHighlight"><div>'.$Match->name2.($Match->signed2 ? '<i class="fa-solid fa-signature ml-2"></i>':'').'</div></div>';
     echo '<div class="matchHighlight"><div>'.get_text('Score', 'Tournament').'</div><div class="Score"> '.$Score2.'</div></div>';
     if($Match->matchMode) {
         echo '<div class="matchHighlight"><div>'.get_text('SetPoints', 'Tournament').'</div>';
@@ -234,7 +234,10 @@ if($ShowMiss and !empty($_GET['T'])) {
         if($r->win1 or $r->win2) {
             $lnk.=' style="font-weight:bold;"';
         }
-        $tmpRow .= '<tr'.$lnk.'><td>'.ltrim($r->target1,'0').($r->target1!=$r->target2 ? '-'.ltrim($r->target2,'0') : '').'</td><td nowrap="nowrap">'.$r->familyName1.'</td><td nowrap="nowrap">'.$r->familyName2.'</td></tr>';
+        $tmpRow .= '<tr'.$lnk.'>
+            <td>'.ltrim($r->target1,'0').($r->target1!=$r->target2 ? '-'.ltrim($r->target2,'0') : '').(($r->signed1 AND $r->signed2)  ? '<i class="fa-solid fa-signature ml-2"></i>':'').'</td>
+            <td nowrap="nowrap">'.$r->familyName1.'</td>
+            <td nowrap="nowrap">'.$r->familyName2.'</td></tr>';
         $cnt++;
     }
     $Q=GetFinMatches_sql(" and fs1.FSScheduledDate='$FsDate' and fs1.FSScheduledTime='$FsTime' and tf1.TfConfirmed=0", 1, ' target1');
@@ -244,7 +247,7 @@ if($ShowMiss and !empty($_GET['T'])) {
         if($r->win1 or $r->win2) {
             $lnk.=' style="font-weight:bold;"';
         }
-        $tmpRow .= '<tr'.$lnk.'><td nowrap="nowrap">'.ltrim($r->target1,'0').($r->target1!=$r->target2 ? '-'.ltrim($r->target2,'0') : '').'</td><td nowrap="nowrap">'.$r->familyName1.'</td><td nowrap="nowrap">'.$r->familyName2.'</td></tr>';
+        $tmpRow .= '<tr'.$lnk.'><td nowrap="nowrap">'.ltrim($r->target1,'0').($r->target1!=$r->target2 ? '-'.ltrim($r->target2,'0') : '').(($r->signed1 AND $r->signed2)  ? '<i class="fa-solid fa-signature ml-2"></i>':'').'</td><td nowrap="nowrap">'.$r->familyName1.'</td><td nowrap="nowrap">'.$r->familyName2.'</td></tr>';
         $cnt++;
     }
 

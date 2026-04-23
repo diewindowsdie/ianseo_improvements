@@ -7,4 +7,6 @@ $lang['Cert-Level3']='고급 과정';
 $lang['Cert-Level4']='마스터 과정';
 $lang['Cert-Level5']='Ianseo 멤버';
 $lang['CertificateManagement']='증명서 관리';
+$lang['GenerateFile']='파일 생성';
+$lang['GenerateFileRyngDyng']='Ryngdyng 명령순서 생성';
 ?>

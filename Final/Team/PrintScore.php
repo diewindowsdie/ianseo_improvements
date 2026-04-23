@@ -166,7 +166,7 @@ echo '<td class="Center w-50"><div class="Center">';
         echo '<input name="ScoreQrPersonal" type="checkbox" checked value="1" >&nbsp;' . get_text('UsePersonalDevices-Print','Api') . '<br>';
     }
     if(module_exists("ExtendedORIS")) {
-        echo '<input name="TeamComponents" type="checkbox" value="1">&nbsp;' . get_text('ViewTeamComponents', 'Tournament');
+        echo '<input name="TeamComponents" type="checkbox" checked value="1">&nbsp;' . get_text('ViewTeamComponents', 'Tournament');
     }
     echo '</td>';
     echo '</tr>';

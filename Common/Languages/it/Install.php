@@ -236,6 +236,7 @@ $lang['SetUK_BR1']='Round Inglese-Bray 1';
 $lang['SetUK_BR2']='Round Inglese-Bray 2';
 $lang['SetUK_Field']='Archery GB Campo';
 $lang['SetUK_LGMET']='Lunga metrica';
+$lang['SetUK_LNER']='Fase LNER';
 $lang['SetUK_Metric']='Turni metrici';
 $lang['SetUK_NATS']='Cittadini';
 $lang['SetUK_ONT']='sul bersaglio';

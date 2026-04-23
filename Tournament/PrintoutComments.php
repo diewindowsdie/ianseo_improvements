@@ -39,9 +39,10 @@ if(!empty($_REQUEST['action']) and preg_match("/^(list|set|bulk|session)$/i",$_R
     if (strtolower($_REQUEST['action']) == 'set' AND !empty($_REQUEST['key'])) {
         $offShortcut = (strpos($_REQUEST['value'],'||!')===0 ? 1 : (strpos($_REQUEST['value'],'||')===0 ? -1 : 0));
         $arrShortcut = ($offShortcut == 0  ? 0 : intval(substr($_REQUEST['value'],($offShortcut==1 ? 3:2))));
-        $ev ='';
-        $isTeam = 0;
-        list($what, $ev, $isTeam) = explode('_', $_REQUEST['key']);
+        $parts = explode('_', $_REQUEST['key']);
+        $isTeam = array_pop($parts);
+        $what = array_shift($parts);
+        $ev = implode('_', $parts);
         $what = (substr($what,-1,1)=='Q' ? 'EvQualPrintHead' : 'EvFinalPrintHead');
         $value = StrSafe_DB($_REQUEST['value']);
         if($offShortcut != 0) {
@@ -56,9 +57,10 @@ if(!empty($_REQUEST['action']) and preg_match("/^(list|set|bulk|session)$/i",$_R
         $offShortcut = (strpos($_REQUEST['value'],'||!')===0 ? 1 : (strpos($_REQUEST['value'],'||')===0 ? -1 : 0));
         $arrShortcut = ($offShortcut == 0  ? 0 : intval(substr($_REQUEST['value'],($offShortcut==1 ? 3:2))));
         foreach (explode('|',$_REQUEST['key']) as $key) {
-            $ev ='';
-            $isTeam = 0;
-            list($what, $ev, $isTeam) = explode('_', $key);
+            $parts = explode('_', $key);
+            $isTeam = array_pop($parts);
+            $what = array_shift($parts);
+            $ev = implode('_', $parts);
             $what = ($_REQUEST['what']=='Q' ? 'EvQualPrintHead' : 'EvFinalPrintHead');
             $value = StrSafe_DB($_REQUEST['value']);
             if($offShortcut != 0) {

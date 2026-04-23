@@ -572,23 +572,26 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=false) {
                     CreateEventNew($TourId, 'HCLof', 'Equipe Arc Classique Homme - Play Off', 7, $Options);
                     $Options['EvWinnerFinalRank']=9;
                     $Options['EvMedals']=0;
+                    $Options['EvFinalFirstPhase']=0;
                     CreateEventNew($TourId, 'HCLdn', 'Equipe Arc Classique Homme - Play Down', 8, $Options);
                     $Options['EvRecCategory']='RW';
                     $Options['EvWaCategory']='RW';
                     $Options['EvWinnerFinalRank']=1;
                     $Options['EvMedals']=1;
+                    $Options['EvFinalFirstPhase']=2;
                     CreateEventNew($TourId, 'FCLof', 'Equipe Arc Classique Femme - Play Off', 5, $Options);
                     $Options['EvWinnerFinalRank']=9;
                     $Options['EvMedals']=0;
+                    $Options['EvFinalFirstPhase']=0;
                     CreateEventNew($TourId, 'FCLdn', 'Equipe Arc Classique Femme - Play Down', 6, $Options);
 
-                    $Options['EvFinalFirstPhase']=0;
                     $Options['EvNumQualified']=16;
                     $Options['EvWinnerFinalRank']=1;
                     $Options['EvMedals']=1;
                     $Options['EvMatchMode']=0;
                     $Options['EvDistance']=50;
                     $Options['EvFinalTargetType']=9;
+                    $Options['EvTargetSize']=80;
                     $Options['EvRecCategory']='CM';
                     $Options['EvWaCategory']='CM';
                     CreateEventNew($TourId, 'HCO', 'Equipe Arc à Poulies Homme', 4, $Options);
@@ -597,13 +600,17 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=false) {
                     CreateEventNew($TourId, 'HCOof', 'Equipe Arc à Poulies Homme - Play Off', 9, $Options);
                     $Options['EvWinnerFinalRank']=9;
                     $Options['EvMedals']=0;
+                    $Options['EvFinalFirstPhase']=0;
                     CreateEventNew($TourId, 'HCOdn', 'Equipe Arc à Poulies Homme - Play Down', 10, $Options);
 
 
+                    $Options['EvWinnerFinalRank']=1;
                     $Options['EvRecCategory']='CW';
                     $Options['EvWaCategory']='CW';
                     $Options['EvNumQualified']=8;
                     $Options['EvElim1']=3;
+                    $Options['EvMedals']=1;
+                    $Options['EvFinalFirstPhase']=2;
                     CreateEventNew($TourId, 'FCO', 'Equipe Arc à Poulies Femme', 3, $Options);
 
                     // create all what is needed for round robin!
@@ -641,7 +648,7 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=false) {
 
                         // Participants Brackets
                         $sqlPart=array();
-                        if($Items[0]==8) {
+                        if($Items[0]==8 and substr($Event,-2)!='dn') {
                             for($n=1;$n<=4;$n++) {
                                 $sqlPart[]="($TourId, 1, '$Event', 0, 0, $n, ".($i-1).", 1, $n)";
                             }
@@ -1050,22 +1057,22 @@ function CreateStandardEvents($TourId, $TourType, $SubRule, $Outdoor=false) {
                 'U18HCL'=>['U18 Homme Arc Classique', 50],
                 'U18FCO'=>['U18 Femme Arc à Poulies', 50],
                 'U18HCO'=>['U18 Homme Arc à Poulies', 50],
-                'U21FCL'=>['U18 Femme Arc Classique', 50],
-                'U21HCL'=>['U18 Homme Arc Classique', 50],
-                'U21FCO'=>['U18 Femme Arc à Poulies', 50],
-                'U21HCO'=>['U18 Homme Arc à Poulies', 50],
-                'US1FCL'=>['U18 Femme Arc Classique', 50],
-                'US1HCL'=>['U18 Homme Arc Classique', 50],
-                'US1FCO'=>['U18 Femme Arc à Poulies', 50],
-                'US1HCO'=>['U18 Homme Arc à Poulies', 50],
-                'US2FCL'=>['U18 Femme Arc Classique', 50],
-                'US2HCL'=>['U18 Homme Arc Classique', 50],
-                'US2FCO'=>['U18 Femme Arc à Poulies', 50],
-                'US2HCO'=>['U18 Homme Arc à Poulies', 50],
-                'US3FCL'=>['U18 Femme Arc Classique', 50],
-                'US3HCL'=>['U18 Homme Arc Classique', 50],
-                'US3FCO'=>['U18 Femme Arc à Poulies', 50],
-                'US3HCO'=>['U18 Homme Arc à Poulies', 50],
+                'U21FCL'=>['U21 Femme Arc Classique', 50],
+                'U21HCL'=>['U21 Homme Arc Classique', 50],
+                'U21FCO'=>['U21 Femme Arc à Poulies', 50],
+                'U21HCO'=>['U21 Homme Arc à Poulies', 50],
+                'S1FCL'=>['Senior 1 Femme Arc Classique', 50],
+                'S1HCL'=>['Senior 1 Homme Arc Classique', 50],
+                'S1FCO'=>['Senior 1 Femme Arc à Poulies', 50],
+                'S1HCO'=>['Senior 1 Homme Arc à Poulies', 50],
+                'S2FCL'=>['Senior 2 Femme Arc Classique', 50],
+                'S2HCL'=>['Senior 2 Homme Arc Classique', 50],
+                'S2FCO'=>['Senior 2 Femme Arc à Poulies', 50],
+                'S2HCO'=>['Senior 2 Homme Arc à Poulies', 50],
+                'S3FCL'=>['Senior 3 Femme Arc Classique', 50],
+                'S3HCL'=>['Senior 3 Homme Arc Classique', 50],
+                'S3FCO'=>['Senior 3 Femme Arc à Poulies', 50],
+                'S3HCO'=>['Senior 3 Homme Arc à Poulies', 50],
                 'SFBB'=>['Senior Femme Arc Nu', 50],
                 'SHBB'=>['Senior Homme Arc Nu', 50],
                 'SFAD'=>['Senior Femme Arc Droit', 50],
@@ -1600,18 +1607,18 @@ function InsertStandardEvents($TourId, $TourType, $SubRule) {
                 'U21HCL'=>['CL'=>['U21H']],
                 'U21FCO'=>['CO'=>['U21F']],
                 'U21HCO'=>['CO'=>['U21H']],
-                'US1FCL'=>['CL'=>['S1F']],
-                'US1HCL'=>['CL'=>['S1H']],
-                'US1FCO'=>['CO'=>['S1F']],
-                'US1HCO'=>['CO'=>['S1H']],
-                'US2FCL'=>['CL'=>['S2F']],
-                'US2HCL'=>['CL'=>['S2H']],
-                'US2FCO'=>['CO'=>['S2F']],
-                'US2HCO'=>['CO'=>['S2H']],
-                'US3FCL'=>['CL'=>['S3F']],
-                'US3HCL'=>['CL'=>['S3H']],
-                'US3FCO'=>['CO'=>['S3F']],
-                'US3HCO'=>['CO'=>['S3H']],
+                'S1FCL'=>['CL'=>['S1F']],
+                'S1HCL'=>['CL'=>['S1H']],
+                'S1FCO'=>['CO'=>['S1F']],
+                'S1HCO'=>['CO'=>['S1H']],
+                'S2FCL'=>['CL'=>['S2F']],
+                'S2HCL'=>['CL'=>['S2H']],
+                'S2FCO'=>['CO'=>['S2F']],
+                'S2HCO'=>['CO'=>['S2H']],
+                'S3FCL'=>['CL'=>['S3F']],
+                'S3HCL'=>['CL'=>['S3H']],
+                'S3FCO'=>['CO'=>['S3F']],
+                'S3HCO'=>['CO'=>['S3H']],
                 'SFBB'=>['BB'=>['U18F','U21F','S1F','S2F','S3F']],
                 'SHBB'=>['BB'=>['U18H','U21H','S1H','S2H','S3H']],
                 'SFAD'=>['AD'=>['U18F','U21F','S1F','S2F','S3F']],

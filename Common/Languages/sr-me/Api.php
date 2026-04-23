@@ -68,6 +68,7 @@ $lang['ISK-enableTotals']='Omogući prikaz ukupnog rezultata na uređajima';
 $lang['ISK-enableWIFIManagement']='Ovlastite aplikaciju da upravlja Wi‑Fi uređajem';
 $lang['ISK-ExportDevices']='Izvezi uređaje';
 $lang['ISK-ForceConfirm']='Zahtijevaj potvrdu uređaja';
+$lang['ISK-ForceQRCodeScanning']='Obavezno skeniranje QR koda';
 $lang['ISK-Gps']='GPS Lokacija';
 $lang['ISK-gpsFrequency']='Učestalost ažuriranja';
 $lang['ISK-hideTotals']='Sakrij ukupne rezultate';
