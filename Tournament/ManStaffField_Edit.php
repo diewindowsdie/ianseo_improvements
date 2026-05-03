@@ -114,7 +114,7 @@ $q=safe_r_sql("SELECT *
     LEFT JOIN InvolvedType ON TiType=ItId
     left join Countries on CoId=TiCountry and CoTournament=TiTournament
     WHERE TiTournament={$_SESSION['TourId']}
-    ORDER BY TiIsSigningProtocols desc, ItId IS NOT NULL, ItJudge=0, ItJudge, ItDoS=0, ItDoS, ItJury=0, ItJury, ItOc, TiAccreditation asc, TiName, TiGivenName");
+    ORDER BY TiIsSigningProtocols desc, ItId IS NOT NULL, ItOrder, TiAccreditation asc, TiName, TiGivenName");
 
 if($CanEdit) {
 	while($r=safe_fetch($q)) {
