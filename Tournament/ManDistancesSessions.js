@@ -12,10 +12,10 @@ function LoadDistanceSessions() {
 
 function buildDistanceSessions(sessions) {
 	let tmpHtml = ''
-	$.each(sessions, (index, item) => {
+	$.each(sessions, function (index, item) {
 		tmpHtml += '<tr><th class="Title" colspan="11">' + (item.Name ? item.Order + ': ' + item.Name : Session + ': ' +item.Order) +'</th></tr>'+
 			headerDistanceSession;
-		$.each(item.Distances, (iDist, itemDist) => {
+		$.each(item.Distances, function(iDist, itemDist) {
 			tmpHtml += '<tr>'+
 				'<th>.' + iDist + '.</th>' +
 				'<td class="Center"><input size="4" maxlength="3" type="text" name="end['+item.Order+']['+iDist+']" onchange="ChangeInfo(this)" value="'+itemDist.Ends+'"></td>'+

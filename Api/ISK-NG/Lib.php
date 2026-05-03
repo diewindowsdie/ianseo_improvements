@@ -390,7 +390,7 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 				$maxNumEnd += $NumSO;
 			}
             if(strlen(trim($Data->arrowstring))<($r->DiEnds * $r->DiArrows)) {
-                $maxNumEnd = intval(strlen(trim($Data->arrowstring))/$r->DiArrows)-1;
+                $maxNumEnd = max(0,ceil(strlen(rtrim($Data->arrowstring))/$r->DiArrows)-1);
             }
 		}
 		$Errors=[];

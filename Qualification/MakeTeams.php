@@ -8,7 +8,7 @@ require_once('Qualification/Fun_Qualification.local.inc.php');
 
 $JSON=[
     'error'=>1,
-    'msg'=>get_text('Error','Errors'),
+    'msg'=>get_text('Error'),
 ];
 
 if(!hasFullACL(AclQualification, '', AclReadWrite) or IsBlocked(BIT_BLOCK_QUAL)) {

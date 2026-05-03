@@ -144,6 +144,7 @@ $lang['MenuLM_Manual Assignment']='Manuálne rozlosovanie';
 $lang['MenuLM_Modules']='Modul';
 $lang['MenuLM_MoveSession']='Vymeniť už pridelenú skupinu';
 $lang['MenuLM_MoveTarget']='Upraviť pridelenie na Terčovnici';
+$lang['MenuLM_New']='Nová';
 $lang['MenuLM_NewBacknumbers']='Číslo strelca';
 $lang['MenuLM_Open']='Otvoriť';
 $lang['MenuLM_Partecipant List']='Zoznam Účastníkov';
