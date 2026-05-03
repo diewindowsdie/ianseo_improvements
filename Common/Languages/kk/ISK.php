@@ -24,6 +24,7 @@ $lang['ScoreHelp']='Көмек';
 $lang['Session']='Ауысым';
 $lang['StageE1']='1-ші Іріктеу Кезеңі';
 $lang['StageE2']='2-ші Іріктеу Кезеңі';
+$lang['Target']='Нысана #';
 $lang['UpdateLang']='Тілдерді Жаңарту';
 $lang['Winner']='Жеңімпаз';
 $lang['Yes']='Иә';

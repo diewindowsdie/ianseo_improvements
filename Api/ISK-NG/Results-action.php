@@ -990,6 +990,9 @@ if(!empty($_REQUEST['status']) AND is_array($_REQUEST['status']??[])) {
 					        foreach (explode(',', $r->{'TempTable'.($idx+1)}) as $tVal) {
 						        list($k, $v) = explode('#', $tVal);
 						        $k = intval($k)-1;
+                                if($k<0) {
+                                    continue;
+                                }
 						        if (strlen(str_replace(' ', '', $v)) == ($k<$r->DiEnds ? $r->DiArrows:$r->DiSO)) {
 							        $item['letters'][$l]['t'][$k] = 1;
 						        } else if (strlen(str_replace(' ', '', $v)) != 0) {

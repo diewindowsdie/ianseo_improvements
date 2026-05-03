@@ -672,9 +672,9 @@ function MakeTeams($Societa, $Category, $ToId=0) {
 							$RsTC=array(NULL,NULL,NULL,NULL);
 
 							// Insert in TeamComponent
-							for ($i=0;$i<=3;++$i) {
+							for ($i=0;$i<=$Peoples;++$i) {
 								$InsertTC
-									= "INSERT INTO TeamComponent (TcCoId,TcTournament,TcEvent,TcFinEvent,TcId,TcOrder) "
+									= "INSERT  INTO TeamComponent (TcCoId,TcTournament,TcEvent,TcFinEvent,TcId,TcOrder) "
 									. "VALUES("
 									. StrSafe_DB($Countries[$i]) . ","
 									. StrSafe_DB($ToId) . ","
@@ -685,7 +685,7 @@ function MakeTeams($Societa, $Category, $ToId=0) {
 									. ") ";
 								$RsTC[$i]=safe_w_sql($InsertTC);
 							}
-							if (!$RsT || !$RsTC[0] || !$RsTC[1] || !$RsTC[2] || !$RsTC[3]) {
+							if (!$RsT || !$RsTC[0] || !$RsTC[1] || !$RsTC[2] || (!$MyRow->Giovanile and !$RsTC[3])) {
                                 $Errore = 1;
                             }
 						}

@@ -95,10 +95,12 @@ foreach($rankData['sections'] as $Event => $section) {
 		$pdf->SetFont($pdf->FontStd,'B',7);
 		$pdf->cell($BlockLen+$MisPos+$MisCountry-$MisTie, 0, $section['meta']['phaseNames'][$section['meta']['firstPhase']], '', 0, 'C');
 
-		foreach(range(PhaseLog(min(32, $section['meta']['firstPhase']))-1, 1, -1) as $col) {
-			$pdf->cell($CellHSp+$MisTie, 0, '');
-			$pdf->cell($BlockLen-$MisTie, 0, $section['meta']['phaseNames'][namePhase($section['meta']['firstPhase'], pow(2,$col))], '', 0, 'C');
-		}
+        if($section['meta']['firstPhase']>2) {
+            foreach(range(PhaseLog(min(32, $section['meta']['firstPhase']))-1, 1, -1) as $col) {
+                $pdf->cell($CellHSp+$MisTie, 0, '');
+                $pdf->cell($BlockLen-$MisTie, 0, $section['meta']['phaseNames'][namePhase($section['meta']['firstPhase'], pow(2,$col))], '', 0, 'C');
+            }
+        }
 		$pdf->ln();
 
         $rowPosition = -1;

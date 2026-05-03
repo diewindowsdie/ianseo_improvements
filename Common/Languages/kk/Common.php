@@ -42,6 +42,7 @@ $lang['Country']='Ел';
 $lang['Country2']='Ел 2';
 $lang['CountryCode']='Ел Коды';
 $lang['CW']='Кадет Қыздар';
+$lang['DateFmt']='d-m-Y';
 $lang['DateFmtDB']='%к-%а-%Ж';
 $lang['DateFmtDBshort']='%к-%а';
 $lang['DateTimeViewFmt']='кк-аа-жжжж @ сс:мм';
