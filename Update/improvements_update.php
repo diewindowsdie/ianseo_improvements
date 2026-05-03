@@ -20,6 +20,7 @@ require_once 'improvements/2026-01-22_add_2x18m_BLR.php';
 require_once 'improvements/2026-02-21_add_second_qual_header.php';
 require_once 'improvements/2026-03-12_add_50_30_RUS.php';
 require_once 'improvements/2026-03-12_add_12_12_RUS.php';
+require_once 'improvements/2026-05-03_add_judges_fixed_order.php';
 
 if ($log) fclose($log);
 ?>
