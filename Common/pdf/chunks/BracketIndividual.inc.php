@@ -281,7 +281,7 @@ foreach($rankData['sections'] as $Event => $section) {
 			}
 
 			if($ShowSetArrows
-				&& (!$FirstPhase or $section['meta']['firstPhase']<32)
+				&& (!$FirstPhase or $section['meta']['firstPhase']<24)
 				&& ($Match['setPoints'] || $Match['oppSetPoints'])
 				&& $DrawMatch
 				) {
