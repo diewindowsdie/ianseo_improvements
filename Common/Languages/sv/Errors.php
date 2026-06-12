@@ -2,6 +2,7 @@
 $lang['AllFieldsMandatory']='Alla fält måste vara ifyllda.';
 $lang['Anomalies']='Avvikelser';
 $lang['BackupTournaments']='Kom ihåg att exportera dina tävlingar innan du uppdaterar ianseo.';
+$lang['CategoresNotDefined']='Saknade klass-inställningar';
 $lang['ClassFromToError']='Från och till får bara innehålla siffror';
 $lang['DiameterMandatory']='Tapetens/målets diameter måste vara ifyllt.';
 $lang['EndsArrowsMisMatch']='$a som har fel inställningar för serier/pilar';

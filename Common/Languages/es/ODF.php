@@ -21,6 +21,7 @@ $lang['EndpointURL']='URL del Destino final (Receptor)';
 $lang['GoodMorning']='BUENOS DIAS';
 $lang['GoodNight']='BUENAS NOCHES';
 $lang['HeaderValues']='Valores de la cabecera';
+$lang['Help-SCHED-Unscheduled']='Cuando el estado está vacío, el estado predeterminado "NO PROGRAMADO" para las coincidencias de encuentros se obtiene eliminando el número de diana.';
 $lang['IntBRACK']='Elementos de la Parrilla ODF';
 $lang['IntCONN']='Conexión (DT_LOCAL_XX)';
 $lang['IntEVENT']='Nombre del Evento';

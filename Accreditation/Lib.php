@@ -116,8 +116,27 @@ function CheckAccreditationCode($EnCode, $Options=array(), $OnlyTour=false) {
             }
 
 			$iceContent=getIceRegExpMatches($r->IceContent);
-
-			$RegExp=str_replace(array('\\{ENCODE\\}', '\\{COUNTRY\\}','\\{DIVISION\\}','\\{CLASS\\}', '\\{TOURNAMENT\\}'), '(.+?)', $RegExp);
+			//$RegExp=str_replace(array('\\{ENCODE\\}', '\\{COUNTRY\\}','\\{DIVISION\\}','\\{CLASS\\}', '\\{TOURNAMENT\\}'), '(.+?)', $RegExp);
+            $RegExp=str_replace(array('\\{ENCODE\\}', '\\{COUNTRY\\}'), '(.+?)', $RegExp);
+            if(strpos($RegExp,'{TOURNAMENT\\}')) {
+                $RegExp=str_replace(array('\\{TOURNAMENT\\}'), '('.getCodeFromId($TourId).')', $RegExp);
+            }
+            if(strpos($RegExp,'{DIVISION\\}')) {
+                $tmpRegExp = array();
+                $qRegExp = safe_r_SQL("select DivId from Divisions where DivTournament=$TourId");
+                while ($rRegExp = safe_fetch($qRegExp)) {
+                    $tmpRegExp[] = $rRegExp->DivId;
+                }
+                $RegExp=str_replace(array('\\{DIVISION\\}'), '('.implode('|', $tmpRegExp).')', $RegExp);
+            }
+            if(strpos($RegExp,'{CLASS\\}')) {
+                $tmpRegExp = array();
+                $qRegExp = safe_r_SQL("select ClId from Classes where ClTournament=$TourId");
+                while ($rRegExp = safe_fetch($qRegExp)) {
+                    $tmpRegExp[] = $rRegExp->ClId;
+                }
+                $RegExp = str_replace(array('\\{CLASS\\}'), '(' . implode('|', $tmpRegExp) . ')', $RegExp);
+            }
 			unset($Matches);
 
 			preg_match('/^'.$RegExp.'$/', $bib, $Matches);

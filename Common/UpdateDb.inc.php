@@ -95,15 +95,57 @@ if($version<'2026-03-18 13:25:01') {
     db_save_version('2026-03-18 13:25:01');
 }
 
+if($version<'2026-04-03 08:00:01') {
+    safe_w_sql("REPLACE INTO `InvolvedType` (`ItId`, `ItDescription`, `ItJudge`, `ItDoS`, `ItJury`, `ItOC`) VALUES
+        (13, 'TecDelegate', 0, 0, 0, 1),
+        (18, 'CompManager', 0, 0, 0, 2),
+        (17, 'MedOfficer', 0, 0, 0, 3),
+        (23, 'HeadClassifier', 0, 0, 0, 4),
+        (24, 'Classifier', 0, 0, 0, 5),
+        (19, 'ResVerifier', 0, 0, 0, 6),
+        (10, 'ResultResp', 0, 0, 0, 7),
+        (9, 'FieldResp', 0, 0, 0, 8),
+        (3, 'OrgResponsible', 0, 0, 0, 9),
+        (12, 'MediaResp', 0, 0, 0, 10),
+        (14, 'SportPres', 0, 0, 0, 11),
+        (15, 'Announcer', 0, 0, 0, 12),
+        (11, 'LogisticResp', 0, 0, 0, 13),
+        (16, 'ADOfficer', 0, 0, 0, 14),
+        (5, 'ChairmanJudge', 1, 0, 0, 0),
+        (20, 'ChairmanJudgeDeputy', 2, 0, 0, 0),
+        (1, 'Judge', 3, 0, 0, 0),
+        (25, 'JudgeNTO', 4, 0, 0, 0),
+        (21, 'RaceOfficer', 5, 0, 0, 0),
+        (22, 'Spotter', 6, 0, 0, 0)",false,array());
+
+    safe_w_sql("ALTER TABLE `IskData` 
+        CHANGE `IskDtArrowstring` `IskDtArrowstring` VARCHAR(32) NOT NULL,
+        ADD `IskDtTeamArchers` VARCHAR(32) NOT NULL AFTER `IskDtArrowstring`",false,array(1146, 1054, 1060));
+    db_save_version('2026-04-03 08:00:01');
+}
+
+if($version<'2026-05-13 09:27:00') {
+    safe_w_sql("update LookUpPaths set LupFlagsPath='https://extranet.worldarchery.sport/Api/GetFlags.php', LupLastUpdate=now() where LupFlagsPath like '%extranet.worldarchery.org/Api/GetFlags.php'");
+	db_save_version('2026-05-13 09:27:00');
+}
+
+if($version<'2026-06-17 19:20:01') {
+    safe_w_sql("DELETE FROM `IrmTypes` WHERE `IrmId` = 7");
+    safe_w_sql("UPDATE `Individuals` set `IndIrmType`=5 where `IndIrmType`=7");
+    safe_w_sql("UPDATE `Individuals` set `IndIrmTypeFinal`=5 where `IndIrmTypeFinal`=7");
+    db_save_version('2026-06-17 19:20:01');
+}
+
+
 /*
 
 // TEMPLATE
 IMPORTANT: InfoSystem related things MUST be changed in the lib.php file!!!
 REMEMBER TO CHANGE ALSO Common/Lib/UpdateTournament.inc.php!!!
 
-if($version<'2026-03-18 09:25:00') {
+if($version<'2026-05-13 09:25:00') {
     safe_w_sql("alter table RoundRobinMatches add index (RrMatchTournament, RrMatchTeam, RrMatchEvent)");
-	db_save_version('2026-03-18 09:25:00');
+	db_save_version('2026-05-13 09:25:00');
 }
 
 */

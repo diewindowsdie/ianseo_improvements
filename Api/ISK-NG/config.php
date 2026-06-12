@@ -5,7 +5,7 @@ require_once('Common/Lib/Fun_Modules.php');
 require_once('Common/Lib/CommonLib.php');
 require_once(__DIR__.'/config_defines.php');
 
-const reqAppVersion = '1.8.1';
+const reqAppVersion = '1.9.4';
 const reqGateVersion = '0.0.1';
 
 define('NG_DEBUG_LOG', ($CFG->DEBUG??false) and is_dir(__DIR__.'/log') and is_writable(__DIR__.'/log'));
@@ -207,21 +207,27 @@ function getQrConfig($DEVICE, $cachedData=false, $Lightmode=false, $Force=false)
 									tgt1.*, tgt2.*
 								from (
 									select TfArrowstring Arrowstring1, TfTieBreak TieBreak1, FSTarget+0 as Target1, FsMatchNo FsMatchNo1, FsEvent FsEvent1, 
-							       		TfWinLose as Win1, TfTbClosest as Closest1, 
-							       		coalesce(group_concat(concat_ws('-', IskDtEndNo, IskDtArrowstring) separator '|'),'') as TempArrows1
+							       		TfWinLose as Win1, TfTbClosest as Closest1, TfShootingArchers ShootingArchers1, 
+							       		coalesce(group_concat(concat_ws('-', IskDtEndNo, IskDtArrowstring) separator '|'),'') as TempArrows1,
+							       		coalesce(group_concat(concat_ws('-', IskDtEndNo, IskDtTeamArchers) separator '|'),'') as TempArchers1,
+							       		GROUP_CONCAT(CONCAT(TfcOrder,'|',TfcId) ORDER BY TfcOrder separator '#') as Ath1
 									from FinSchedule
 								    inner join Grids on GrMatchNo=FSMatchNo
 									inner join TeamFinals on FsEvent=TfEvent and TfTournament=$toId and FsMatchNo=TfMatchNo
+                                    left join TeamFinComponent ON TfTeam=TfcCoId and TfSubTeam=TfcSubTeam and TfTournament=TfcTournament and TfEvent=TfcEvent
 									left join IskData on IskDtTournament=FsTournament and IskDtType='M' and IskDtMatchNo=FSMatchNo and IskDtEvent=FSEvent and IskDtTeamInd=FSTeamEvent
 									where $MainFilter and FsMatchNo%2=0
 									group by FsEvent, FSTeamEvent, FSMatchNo) tgt1
 								inner join (
 									select TfArrowstring Arrowstring2, TfTieBreak TieBreak2, FSTarget+0 as Target2, FsMatchNo FsMatchNo2, FsEvent FsEvent2, 
-						                TfWinLose as Win2, TfTbClosest as Closest2, 
-						                coalesce(group_concat(concat_ws('-', IskDtEndNo, IskDtArrowstring) separator '|'),'') as TempArrows2
+						                TfWinLose as Win2, TfTbClosest as Closest2, TfShootingArchers ShootingArchers2, 
+						                coalesce(group_concat(concat_ws('-', IskDtEndNo, IskDtArrowstring) separator '|'),'') as TempArrows2,
+						                coalesce(group_concat(concat_ws('-', IskDtEndNo, IskDtTeamArchers) separator '|'),'') as TempArchers2,
+						                GROUP_CONCAT(CONCAT(TfcOrder,'|',TfcId) ORDER BY TfcOrder separator '#') as Ath2
 									from FinSchedule
 								    inner join Grids on GrMatchNo=FSMatchNo
 									inner join TeamFinals on FsEvent=TfEvent and FsTournament=TfTournament and FsMatchNo=TfMatchNo
+                                    left join TeamFinComponent ON TfTeam=TfcCoId and TfSubTeam=TfcSubTeam and TfTournament=TfcTournament and TfEvent=TfcEvent
 									left join IskData on IskDtTournament=FsTournament and IskDtType='M' and IskDtMatchNo=FSMatchNo and IskDtEvent=FSEvent and IskDtTeamInd=FSTeamEvent
 									where $MainFilter
 									group by FsEvent, FSTeamEvent, FSMatchNo) tgt2
@@ -238,8 +244,10 @@ function getQrConfig($DEVICE, $cachedData=false, $Lightmode=false, $Force=false)
 							$tmpArrows=[];
 							if($r->TempArrows1) {
 								foreach(explode('|', $r->TempArrows1) as $item) {
-									list($a,$b)=explode('-', $item);
-									$tmpArrows[$a]=$b;
+                                    if(strpos($item,'-')) {
+                                        list($a, $b) = explode('-', $item);
+                                        $tmpArrows[$a] = $b;
+                                    }
 								}
 							}
 
@@ -257,6 +265,37 @@ function getQrConfig($DEVICE, $cachedData=false, $Lightmode=false, $Force=false)
 							}
                             $json_array['archers'][$r->refKey1]['scoring'][$dKey]['arrowstring']=$arrowstring;
                             $json_array['archers'][$r->refKey1]['scoring'][$dKey]['soClosest']=(string) $r->Closest1;
+                            if($IskSequence['subtype']=='T' AND $IskSequence['sendTeamComponents']) {
+                                $tmpShooters=array_fill(0, strlen($arrowstring),'');
+                                $arrShoothers = json_decode((empty($r->ShootingArchers1) ? '[]' : $r->ShootingArchers1),true);
+                                foreach(explode('#', $r->Ath1) as $archer) {
+                                    $tmp = explode('|', $archer);
+                                    array_walk($arrShoothers, function(&$value, $key) use($tmp, &$tmpShooters) {
+                                        if ($value == $tmp[1]) {
+                                            $tmpShooters[$key] = $tmp[0];
+                                        }
+                                    });
+                                }
+                                if($r->TempArchers1) {
+                                    foreach(explode('|', $r->TempArchers1) as $item) {
+                                        if(strpos($item,'-')) {
+                                            list($a, $b) = explode('-', $item);
+                                            $offset = ($a - 1) * $distance['arrows'];
+                                            if ($a > $distance['ends']) {
+                                                $offset = ($distance['arrows'] * $distance['ends']) + (($distance['ends'] - ($a - 1)) * $distance['shootOff']);
+                                            }
+                                            for ($k = 0; $k < strlen($b); $k++) {
+                                                if (substr($b, $k, 1) != ' ' and $tmpShooters[$offset + $k] != substr($b, $k, 1)) {
+                                                    $tmpShooters[$offset + $k] = substr($b, $k, 1);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                foreach ($json_array['archers'][$r->refKey1]['scoring'][$dKey]['teamArchers'] as $kArcher=>$tArcher) {
+                                    $json_array['archers'][$r->refKey1]['scoring'][$dKey]['teamArchers'][$kArcher]['arrows'] = array_keys($tmpShooters,$tArcher['id']);
+                                }
+                            }
 
 							if(strlen($arrowstring)<=($distance['arrows']*$distance['ends'])) {
 								$soEnds=1;
@@ -268,8 +307,10 @@ function getQrConfig($DEVICE, $cachedData=false, $Lightmode=false, $Force=false)
 							$tmpArrows=[];
 							if($r->TempArrows2) {
 								foreach(explode('|', $r->TempArrows2) as $item) {
-									list($a,$b)=explode('-', $item);
-									$tmpArrows[$a]=$b;
+                                    if(strpos($item,'-')) {
+                                        list($a, $b) = explode('-', $item);
+                                        $tmpArrows[$a] = $b;
+                                    }
 								}
 							}
 							$arrowstring=str_pad($r->Arrowstring2, $distance['arrows']*$distance['ends'], ' ', STR_PAD_RIGHT);
@@ -286,6 +327,37 @@ function getQrConfig($DEVICE, $cachedData=false, $Lightmode=false, $Force=false)
 							}
                             $json_array['archers'][$r->refKey2]['scoring'][$dKey]['arrowstring']=$arrowstring;
                             $json_array['archers'][$r->refKey2]['scoring'][$dKey]['soClosest']=(string) $r->Closest2;
+                            if($IskSequence['subtype']=='T' AND $IskSequence['sendTeamComponents']) {
+                                $tmpShooters=array_fill(0, strlen($arrowstring),'');
+                                $arrShoothers = json_decode((empty($r->ShootingArchers2) ? '[]' : $r->ShootingArchers2),true);
+                                foreach(explode('#', $r->Ath2) as $archer) {
+                                    $tmp = explode('|', $archer);
+                                    array_walk($arrShoothers, function(&$value, $key) use($tmp, &$tmpShooters) {
+                                        if ($value == $tmp[1]) {
+                                            $tmpShooters[$key] = $tmp[0];
+                                        }
+                                    });
+                                }
+                                if($r->TempArchers2) {
+                                    foreach(explode('|', $r->TempArchers2) as $item) {
+                                        if(strpos($item,'-')) {
+                                            list($a, $b) = explode('-', $item);
+                                            $offset = ($a - 1) * $distance['arrows'];
+                                            if ($a > $distance['ends']) {
+                                                $offset = ($distance['arrows'] * $distance['ends']) + (($distance['ends'] - ($a - 1)) * $distance['shootOff']);
+                                            }
+                                            for ($k = 0; $k < strlen($b); $k++) {
+                                                if ($b[$k] != ' ' and $tmpShooters[$offset + $k] != $b[$k]) {
+                                                    $tmpShooters[$offset + $k] = $b[$k];
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                foreach ($json_array['archers'][$r->refKey2]['scoring'][$dKey]['teamArchers'] as $kArcher=>$tArcher) {
+                                    $json_array['archers'][$r->refKey2]['scoring'][$dKey]['teamArchers'][$kArcher]['arrows'] = array_keys($tmpShooters,$tArcher['id']);
+                                }
+                            }
 
 							if(strlen($arrowstring)<=($distance['arrows']*$distance['ends'])) {
 								$soEnds=1;
@@ -877,24 +949,34 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 							if(GrPhase1 & EvMatchArrowsNo, EvElimArrows, EvFinArrows) Arrows, if(GrPhase1 & EvMatchArrowsNo, EvElimEnds, EvFinEnds) Ends, if(GrPhase1 & EvMatchArrowsNo, EvElimSO, EvFinSO) SO
 						from (select concat(date_format(FSScheduledDate, '%e %b'), ' ', date_format(FSScheduledTime, '%H:%i')) as Scheduled, GrPhase as GrPhase1,
 				            	CoCode EnCode1, CoCode CoCode1, CoName Country1, CoName Athlete1, '' Entry1, TfArrowstring Arrowstring1, TfTieBreak TieBreak1, TfEvent as EnDivision1, '' as EnClass1,
-								FsTarget+0 Target1, substr(FsLetter, length(FsTarget)+1, 1) Letter1,
+								FsTarget+0 Target1, substr(FsLetter, length(FsTarget)+1, 1) Letter1, GROUP_CONCAT(CONCAT($ExtraField,'|||', IFNULL(zextra.EdExtra,EnCode), '|||', TfcOrder, '|||', EnFirstName,' ',EnName,'|||',EnDivision,'|||',EnClass) ORDER BY EnFirstName, EnName, TfcOrder separator '###') as Ath1,
 								FsLetter FsLetter1, FsMatchNo FsMatchNo1, FsEvent FsEvent1, TfWinLose as Win1, TfTbClosest as Closest1, '{COUNTRY}|{DIVISION}|{TOURNAMENT}' as QrCode1
 							from FinSchedule
 							inner join Grids on FsMatchNo=GrMatchno
 							inner join TeamFinals on FsEvent=TfEvent and TfTournament=$toId and FsMatchNo=TfMatchNo
 							inner join Teams on TeCoId=TfTeam and TeSubTeam=TfSubTeam and TeEvent=TfEvent and TeTournament=$toId and TeFinEvent=1
 							inner join Countries on CoId=TeCoId
-							where $MainFilter and FsMatchNo%2=0) tgt1
+                            left join TeamFinComponent ON TeCoId=TfcCoId and TeSubTeam=TfcSubTeam and TeTournament=TfcTournament and TeEvent=TfcEvent
+                            left join Entries ON TfcId=EnId
+                            left join ExtraData zextra ON EnId=zextra.EdId and zextra.EdType='Z' and zextra.EdExtra!=''
+							$ExtraSql
+							where $MainFilter and FsMatchNo%2=0
+							GROUP BY FSEvent, FSTeamEvent, FSMatchNo) tgt1
 						inner join (select 
 			                	CoCode EnCode2, CoCode CoCode2, CoName Country2, CoName Athlete2, '' Entry2, TfArrowstring Arrowstring2, TfTieBreak TieBreak2, TfEvent as EnDivision2, '' as EnClass2,
-			                	FsTarget+0 Target2, substr(FsLetter, length(FsTarget)+1, 1) Letter2, 
+			                	FsTarget+0 Target2, substr(FsLetter, length(FsTarget)+1, 1) Letter2, GROUP_CONCAT(CONCAT($ExtraField,'|||', IFNULL(zextra.EdExtra,EnCode), '|||', TfcOrder, '|||', EnFirstName,' ',EnName,'|||',EnDivision,'|||',EnClass) ORDER BY EnFirstName, EnName, TfcOrder separator '###') as Ath2,
 			                	FsLetter FsLetter2, FsMatchNo FsMatchNo2, FsEvent FsEvent2, TfWinLose as Win2, TfTbClosest as Closest2, '{COUNTRY}|{DIVISION}|{TOURNAMENT}' as QrCode2
 							from FinSchedule
 							inner join Grids on FsMatchNo=GrMatchno
 							inner join TeamFinals on FsEvent=TfEvent and TfTournament=$toId and FsMatchNo=TfMatchNo
 							inner join Teams on TeCoId=TfTeam and TeSubTeam=TfSubTeam and TeEvent=TfEvent and TeTournament=$toId and TeFinEvent=1
 							inner join Countries on CoId=TeCoId
-							where $MainFilter) tgt2
+                            left join TeamFinComponent ON TeCoId=TfcCoId and TeSubTeam=TfcSubTeam and TeTournament=TfcTournament and TeEvent=TfcEvent
+                            left join Entries ON TfcId=EnId
+                            left join ExtraData zextra ON EnId=zextra.EdId and zextra.EdType='Z' and zextra.EdExtra!=''
+							$ExtraSql
+							where $MainFilter
+							GROUP BY FSEvent, FSTeamEvent, FSMatchNo) tgt2
 							on FsEvent1=FsEvent2 and FsMatchNo2=FsMatchNo1+1
 						inner join Events on FsEvent1=EvCode and EvTeamEvent=1 and EvTournament=$toId
 						inner join Grids on FsMatchNo1=GrMatchNo
@@ -923,6 +1005,7 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 					$EventCode = get_text(namePhase($r->EvFinalFirstPhase,$r->GrPhase).'_Phase') . ' ' . $r->EvCode;
 					$EventName = get_text(namePhase($r->EvFinalFirstPhase,$r->GrPhase).'_Phase') . ' - '  . $r->EvEventName;
 				}
+
 
                 $replacements=array(
                     '{ENCODE}'=>$r->EnCode1,
@@ -965,6 +1048,26 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 			        'scoringEnds' => intval($r->Ends),
 			        'totalTargets' => intval($r->Ends)
 		        ]];
+                if($IskSequence['subtype']=='T' AND $IskSequence['sendTeamComponents']!=0) {
+                    $row_array["scoring"][0]['teamArchers'] = array();
+                    foreach(explode('###', $r->Ath1) as $archer) {
+                        $tmp = explode('|||', $archer);
+                        $replacements=array(
+                            '{ENCODE}'=>$tmp[1],
+                            '{COUNTRY}'=>$r->CoCode1,
+                            '{DIVISION}'=>$tmp[4],
+                            '{CLASS}'=>$tmp[5],
+                            '{TOURNAMENT}'=>$r->ToCode,
+                        );
+                        $row_array["scoring"][0]['teamArchers'][] = array(
+                            "name" => $tmp[3],
+                            "id" => $tmp[2],
+                            "qrCode" => str_replace(array_keys($replacements), array_values($replacements), $tmp[0]),
+                            "arrows" => array()
+                        );
+                    }
+                }
+
 
 		        $json_array['archers'][$r->refKey1]=$row_array;
 
@@ -1009,100 +1112,29 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 			        'scoringEnds' => intval($r->Ends),
 			        'totalTargets' => intval($r->Ends)
 		        ]];
+                if($IskSequence['subtype']=='T' AND $IskSequence['sendTeamComponents']!=0) {
+                    $row_array["scoring"][0]['teamArchers'] = array();
+                    foreach(explode('###', $r->Ath2) as $archer) {
+                        $tmp = explode('|||', $archer);
+                        $replacements=array(
+                            '{ENCODE}'=>$tmp[1],
+                            '{COUNTRY}'=>$r->CoCode2,
+                            '{DIVISION}'=>$tmp[4],
+                            '{CLASS}'=>$tmp[5],
+                            '{TOURNAMENT}'=>$r->ToCode,
+                        );
+                        $row_array["scoring"][0]['teamArchers'][] = array(
+                            "name" => $tmp[3],
+                            "id" => $tmp[2],
+                            "qrCode" => str_replace(array_keys($replacements), array_values($replacements), $tmp[0]),
+                            "arrows" => array()
+                        );
+                    }
+                }
 
 		        $json_array['archers'][$r->refKey2]=$row_array;
 
 	        }
-
-	        // ROUND ROBIN STUFF
-	        // if(!empty($IskSequence['subtype'])) {
-	        //
-	        //     while($r=safe_fetch($q)) {
-	        //         // there is a "left target" associated with this device on this session...
-	        //         $json_array['current']=array(
-	        //             'session'=>'',
-	        //             'distance'=>'0',
-	        //             'end'=>$IskSequence['end'],
-	        //             'sessionName'=>get_text('R-Session', 'Tournament').' - '.$r->Scheduled,
-	        //             'distanceName'=>$r->EvDistance,
-	        //             'ends' => $r->Ends,
-	        //             'arrows' => $r->Arrows,
-	        //             'shootOff' => $r->SO,
-	        //             'soEnds'=>array()
-	        //         );
-	        //
-	        //         // LEFT archer
-	        //         $row_array=array();
-	        //         $row_array["encode"] = $r->EnCode1;
-	        //         $row_array["name"] = $r->Athlete1;
-	        //         $row_array["placement"] = ltrim($r->FsLetter1, '0');
-	        //         $row_array["noc"] = $r->CoCode1;
-	        //         $row_array["nocname"] = $r->Country1;
-	        //         $row_array["event"] = $r->EvCode;
-	        //         $row_array["eventname"] = $r->RrLevName.' '.$r->RrGrName.' '.get_text('RoundNum', 'RoundRobin', $r->RrMatchRound);
-	        //         $row_array['matchmode'] = $r->EvMatchMode;
-	        //         $row_array["qutarget"] = $r->EvCode.'|'.$r->FsMatchNo1;
-	        //         $row_array["targetface"] = $r->EvFinalTargetType;
-	        //         $row_array["arrowstring"] = str_pad($r->Arrowstring1, $json_array['current']['ends']*$json_array['current']['arrows'] , ' ', STR_PAD_RIGHT) .
-	        //             (strlen(trim($r->TieBreak1))!=0 ? trim($r->TieBreak1) : "");
-	        //
-	        //         // adjust with what we have in the temporary table
-	        //         $t=safe_r_sql("select * from IskData
-	        // 			where IskDtTournament=$toId
-	        // 			and IskDtMatchNo='$r->FsMatchNo1'
-	        // 			and IskDtEvent='$r->EvCode'
-	        // 			and IskDtTeamInd=0
-	        // 			and IskDtType='{$IskSequence['type']}'
-	        // 			and IskDtDevice=".StrSafe_DB($DEVICE->IskDvDevice));
-	        //
-	        //         while($u=safe_fetch($t)) {
-	        //             $row_array["arrowstring"]=substr_replace($row_array["arrowstring"], $u->IskDtArrowstring, ($u->IskDtEndNo-1)*$json_array['current']['arrows'], $json_array['current']['arrows']);
-	        //         }
-	        //         if(strlen($row_array["arrowstring"])<=($r->Ends*$r->Arrows)) {
-	        //             $soEnds[]=1;
-	        //         } else {
-	        //             $soEnds[]=ceil((strlen($row_array["arrowstring"])-($r->Ends*$r->Arrows))/$r->SO);
-	        //         }
-	        //         $json_array['archers'][]=$row_array;
-	        //
-	        //         // RIGHT archer
-	        //         $row_array=array();
-	        //         $row_array["encode"] = $r->EnCode2;
-	        //         $row_array["name"] = $r->Athlete2;
-	        //         $row_array["placement"] = ltrim($r->FsLetter2, '0');
-	        //         $row_array["noc"] = $r->CoCode2;
-	        //         $row_array["nocname"] = $r->Country2;
-	        //         $row_array["event"] = $r->EvCode;
-	        //         $row_array["eventname"] = $r->RrLevName.' '.$r->RrGrName.' '.get_text('RoundNum', 'RoundRobin', $r->RrMatchRound);
-	        //         $row_array['matchmode'] = $r->EvMatchMode;
-	        //         $row_array["qutarget"] = $r->EvCode.'|'.$r->FsMatchNo2;
-	        //         $row_array["targetface"] = $r->EvFinalTargetType;
-	        //         $row_array["arrowstring"] = str_pad($r->Arrowstring2, $json_array['current']['ends']*$json_array['current']['arrows'] , ' ', STR_PAD_RIGHT) .
-	        //             (strlen(trim($r->TieBreak2))!=0 ? trim($r->TieBreak2) : "");
-	        //
-	        //         // adjust with what we have in the temporary table
-	        //         $t=safe_r_sql("select * from IskData
-	        // 			where IskDtTournament=$toId
-	        // 			and IskDtMatchNo='$r->FsMatchNo2'
-	        // 			and IskDtEvent='$r->EvCode'
-	        // 			and IskDtTeamInd=0
-	        // 			and IskDtType='{$IskSequence['type']}'
-	        // 			and IskDtDevice=".StrSafe_DB($DEVICE->IskDvDevice));
-	        //
-	        //         while($u=safe_fetch($t)) {
-	        //             $row_array["arrowstring"]=substr_replace($row_array["arrowstring"], $u->IskDtArrowstring, ($u->IskDtEndNo-1)*$json_array['current']['arrows'], $json_array['current']['arrows']);
-	        //         }
-	        //         if(strlen($row_array["arrowstring"])<=($r->Ends*$r->Arrows)) {
-	        //             $soEnds[]=1;
-	        //         } else {
-	        //             $soEnds[]=ceil((strlen($row_array["arrowstring"])-($r->Ends*$r->Arrows))/$r->SO);
-	        //         }
-	        //         $json_array['archers'][]=$row_array;
-	        //
-	        //     }
-	        //     $json_array['current']['soEnds']=$soEnds;
-	        // } else {
-	        // }
             break;
         default:
             return resetDevice($DEVICE->IskDvDevice, $DEVICE->IskDvTarget, $Force);

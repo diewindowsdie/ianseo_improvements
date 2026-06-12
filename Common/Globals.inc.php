@@ -1192,13 +1192,15 @@ function checkCompetitionAnomalies() {
         $Ret['Q']['Cats'][]=get_text('PopupStatusSession', 'Api',$r->DiSession) . ': ' . get_text('DistanceNum', 'Api',$r->DiDistance);
     }
 
-    // check events End/Arrows anomalies
-    $q=safe_r_sql("select EvCode, if(EvTeamEvent=1,'T','I') as TeamEvent
+    // check events End/Arrows anomalies, but not in Run Archery
+    if($_SESSION['TourType']!=48) {
+        $q=safe_r_sql("select EvCode, if(EvTeamEvent=1,'T','I') as TeamEvent
         from Events
         where EvTournament={$_SESSION['TourId']} and (EvElimEnds=0 or EvFinEnds=0 or EvElimArrows=0 or EvFinArrows=0) and EvFinalFirstPhase!=0
         order by EvTeamEvent,EvProgr");
-    while($r=safe_fetch($q)) {
-        $Ret[$r->TeamEvent]['Cats'][]=$r->EvCode;
+        while($r=safe_fetch($q)) {
+            $Ret[$r->TeamEvent]['Cats'][]=$r->EvCode;
+        }
     }
 
     $RetResult=[];

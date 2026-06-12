@@ -371,7 +371,7 @@ function formatUpdateDatetime($timestamp, $showYear) {
 	$today->setTime( 0, 0, 0 ); // reset time part, to prevent partial comparison
 
 	$diff = $today->diff( $lastUp );
-	$diffDays = (integer)$diff->format( "%R%a" ); // Extract days count in interval
+	$diffDays = (int)$diff->format( "%R%a" ); // Extract days count in interval
 
 	if ($today->format('Y') == $displayLastUp->format('Y')) {
 		// Special format for updates that recently occurred

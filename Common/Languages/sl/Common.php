@@ -223,6 +223,7 @@ $lang['MenuLM_Export Results']='Izvozi rezultate';
 $lang['MenuLM_Export Text File']='Izvozi .txt';
 $lang['MenuLM_Export Tournament']='Izvozi tekmovanje';
 $lang['MenuLM_Export Tournament Photo']='Izvozi tekmovanje s slikami';
+$lang['MenuLM_ExportFieldStatistics']='Izvozi statistiko strelišča';
 $lang['MenuLM_Extended Table']='Razširjena tabela';
 $lang['MenuLM_Fees setup']='Štartnine';
 $lang['MenuLM_Field Crew']='Vodstvo tekmovanja';

@@ -459,6 +459,10 @@ function DrawScore(&$pdf, $MyRow, $Side='L', $Athletes=array()) {
     $GoldsTotal = 0;
     $XNineTotal = 0;
     $SetTotal = 0;
+//Shooters
+    if(!is_array($MyRow->{$Prefix . 'ShootingArchers'})) {
+        $MyRow->{$Prefix . 'ShootingArchers'} = json_decode($MyRow->{$Prefix . 'ShootingArchers'},true);
+    }
 
     for($i=1; $i<=$NumRow; $i++) {
         $a=0;
@@ -472,16 +476,17 @@ function DrawScore(&$pdf, $MyRow, $Side='L', $Athletes=array()) {
         list($a,$b,$c)=ValutaArrowStringGX(substr($MyRow->{$Prefix . 'Arrowstring'}, ($i - 1) * $NumCol, $NumCol), $MyRow->EvGoldsChars,  $MyRow->EvXNineChars);
         for($j=0; $j<$NumCol; $j++) {
             $pdf->SetFont($pdf->FontStd,'',10);
-            if(count($Athletes) AND !$FillWithArrows) {
-                $pdf->Cell($ArrowW-3, $ScoreCellHeight, '', 'LTB', 0, 'C', 0);
+            if(count($Athletes)) {
+                $pdf->Cell($ArrowW-3, $ScoreCellHeight, ($FillWithArrows ? DecodeFromLetter(substr($MyRow->{$Prefix . 'Arrowstring'}, ($i - 1) * $NumCol + $j, 1)) : ''), 'LTB', 0, 'C', 0);
                 $posTemp = array($pdf->getX(), $pdf->getY());
                 $tmpScoreCellHeight = $ScoreCellHeight/count($Athletes);
                 $tmpPadding = $pdf->getCellPaddings();
                 $pdf->setCellPadding(0);
-                $pdf->SetFont($pdf->FontStd,'',6);
+                $shooting = $MyRow->{$Prefix . 'ShootingArchers'}[($i - 1) * $NumCol + $j]??0;
                 for($ath=0; $ath<count($Athletes); $ath++) {
                     $pdf->setXY($posTemp[0],$posTemp[1]+$tmpScoreCellHeight*$ath);
-                    $pdf->Cell(3, $tmpScoreCellHeight, TCPDF_FONTS::unichr($ath+65), '1', 0, 'C', 0);
+                    $pdf->SetFont($pdf->FontStd,($Athletes[$ath]['id']==$shooting ? 'B':''),6);
+                    $pdf->Cell(3, $tmpScoreCellHeight, TCPDF_FONTS::unichr($ath+65), '1', 0, 'C', ($Athletes[$ath]['id']==$shooting ? 1:0));
                 }
                 $pdf->setXY($posTemp[0]+3,$posTemp[1]);
                 $pdf->setCellPaddings($tmpPadding['L'],$tmpPadding['T'],$tmpPadding['R'],$tmpPadding['B']);

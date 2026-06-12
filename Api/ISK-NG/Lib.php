@@ -137,6 +137,16 @@ function readJsonData($Data) {
 						$item->distance=$distance->distance;
 						$item->arrowstring=$distance->arrowstring;
                         $item->signed=($distance->signed??'0');
+                        if($distance->teamArchers??false) {
+                            $tmp=array_fill(0, strlen($distance->arrowstring),' ');
+                            foreach ($distance->teamArchers as $teamArcher) {
+                                foreach ($teamArcher->arrows as $arrow) {
+                                    $tmp[$arrow] = $teamArcher->id;
+                                }
+                            }
+                            ksort($tmp);
+                            $item->teamArchers=implode('', $tmp);
+                        }
 						if(($Error=applyScore($item, $Data->ToId))=='OK') {
                             $GlobalErrorFlag=false;
                         } else {
@@ -157,6 +167,16 @@ function readJsonData($Data) {
 				$Data->team=$bits[0];
 				$Data->soClosest=(string) ($Data->soClosest??'0');
                 $Data->signed=(string) ($Data->signed??'0');
+                if($Data->subtype=='T' and ($Data->teamArchers??false)) {
+                    $tmp=array_fill(0, strlen($Data->arrowstring),' ');
+                    foreach ($Data->teamArchers as $archer) {
+                        foreach ($archer->arrows as $arrow) {
+                            $tmp[$arrow] = $archer->id;
+                        }
+                    }
+                    ksort($tmp);
+                    $Data->teamArchers=implode('', $tmp);
+                }
 				return applyScore($Data, $Data->ToId);
 			}
 			break;
@@ -178,54 +198,6 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 	}
 
 	switch($Data->type) {
-		// case 'X':
-			// $Grouping=getModuleParameter('ISK-NG', 'Grouping', null, $ToId);
-			//
-			// if($Grouping[$Data->IskDvGroup] ?? 0) {
-			// 	$TargetNo=getTargetsFromGroup(intval(substr($Data->key, 0, -1)), $ToId);
-			// } else {
-			// 	if(isset($Data->key)) {
-			// 		$TargetNo = intval(substr($Data->key, 0, -1));
-			// 	} else {
-			// 		foreach ($Data->archers as $k=>$v) {
-			// 			foreach ( range ( 0, 4) as $end ) {
-			// 				$start = $end * 3;
-			// 				$arr = 3;
-			// 				$IskArrowstring = substr ( $v->arrowstring, $start, $arr );
-			// 				if(trim($IskArrowstring)) {
-			// 					$SQL = array ();
-			// 					$SQL [] = "IskDtTournament=$ToId";
-			// 					if(isset($v->matchno)) {
-			// 						$SQL [] = "IskDtMatchNo=" . StrSafe_DB($v->matchno);
-			// 					}
-			// 					if(isset($v->event)) {
-			// 						$SQL [] = "IskDtEvent=" . StrSafe_DB($v->event);
-			// 					}
-			// 					if(isset($v->team)) {
-			// 						$SQL [] = "IskDtTeamInd=" . StrSafe_DB($v->team);
-			// 					}
-			// 					$SQL [] = "IskDtType=" . StrSafe_DB ( $Data->type );
-			// 					$SQL [] = "IskDtTargetNo=" . StrSafe_DB ( $v->key );
-			// 					$SQL [] = "IskDtDistance=" . ($Data->distance);
-			// 					$SQL [] = "IskDtSession=" . StrSafe_DB($Data->session);
-			// 					$SQL [] = "IskDtEndNo=" . ($end + 1);
-			// 					$SQL [] = "IskDtDevice=" . StrSafe_DB ( $Data->device );
-			// 					$SQL [] = "IskDtArrowstring=" . StrSafe_DB ( $IskArrowstring );
-			// 					$SQL [] = "IskDtUpdate=" . StrSafe_DB ( date ( 'Y-m-d H:i:s' ) );
-			//
-			// 					$SQL = "INSERT INTO IskData set " . implode ( ',', $SQL ) . "
-			// 				        ON DUPLICATE KEY UPDATE " . implode ( ',', $SQL );
-			// 					safe_w_SQL ( $SQL );
-			// 				}
-			// 			}
-			// 		}
-			// 		return '';
-			// 	}
-			// }
-			// $SQL="select 4 as DiEnds, 3 as DiArrows, 1 as DiSO, '' as Arrowstring, IskDvGroup, IskDvSchedKey, 0 as StopScore
-			// 	from IskDevices
-			// 	where IskDvTournament=$ToId and IskDvDevice='{$Data->device}' and IskDvProActive=1";
-			// break;
 		case 'Q':
 			$SQL="select DiEnds, DiArrows, 1 as DiSO, QuD{$Data->distance}Arrowstring as Arrowstring, IskDvGroup, IskDvSchedKey, 
 					QuConfirm & ".pow(2, $Data->distance)."!=0 as StopScore, 0 as IsClosest, QuSigned & ".pow(2, $Data->distance)."!=0 as IsSigned,
@@ -236,21 +208,6 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 				INNER JOIN IskDevices on IskDvTournament=EnTournament and IskDvDevice='{$Data->device}' and IskDvProActive=1 and IskDvTarget in ({$TargetNo})
 				where EnTournament=$ToId and QuSession={$Data->session}";
 			break;
-		// case 'E1':
-		// case 'E2':
-			// $Phase=$Data->type[1]-1;
-			//
-			// //$TargetNo=$Data->session.sprintf("%03s", intval($Data->key));
-			// $TargetNo=intval($Data->key);
-			//
-			// $SQL="select if(ElElimPhase=0, EvE1Ends, EvE2Ends) as DiEnds, if(ElElimPhase=0, EvE1Arrows, EvE2Arrows) as DiArrows, 1 as DiSO,
-			// ElArrowstring as Arrowstring, IskDvGroup, IskDvSchedKey, ElConfirm as StopScore, concat_ws('|','E', ElElimPhase, ElEventCode) as LockKey
-			// 	from Eliminations
-			// 	inner join Events on EvCode=ElEventCode and EvTournament=ElTournament and EvTeamEvent=0
-			// 	INNER JOIN IskDevices on IskDvTournament=ElTournament and IskDvDevice='{$Data->device}' and IskDvProActive=1 and IskDvTarget in ({$TargetNo})
-			// 	where ElTournament=$ToId and ElElimPhase=$Phase and ElSession={$Data->session} and ElTargetNo='{$Data->key}'
-			// 	";
-			// break;
 		case 'M':
 			$match1=($Data->matchno%2 ? $Data->matchno-1 : $Data->matchno);
 			$match2=($Data->matchno%2 ? $Data->matchno : $Data->matchno+1);
@@ -279,25 +236,30 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 				case 'T':
 					$SQL="select @ArBit:=(EvMatchArrowsNo & GrBitPhase), 
 						if(@ArBit=0, EvFinArrows, EvElimArrows) DiArrows, if(@ArBit=0, EvFinEnds, EvElimEnds) DiEnds, if(@ArBit=0, EvFinSO, EvElimSO) DiSO, 
-       					IskDvGroup, IskDvSchedKey, StopScore, concat_ws('|','T',GrPhase,EvCode) as LockKey,
+       					IskDvGroup, IskDvSchedKey, StopScore, concat_ws('|','T',GrPhase,EvCode) as LockKey,  
+       					if($Data->matchno=FsMatchNo1, ShootingArchers1, ShootingArchers2) ShootingArchers, if($Data->matchno=FsMatchNo1, Ath1, Ath2) Ath,
        					if($Data->matchno=FsMatchNo1, Closest1, Closest2) as IsClosest, if($Data->matchno=FsMatchNo1, Signed1, Signed2) as IsSigned,
 						concat(rpad(if($Data->matchno=FsMatchNo1, Arrowstring1, Arrowstring2), if(@ArBit=0, EvFinEnds, EvElimEnds)*if(@ArBit=0, EvFinArrows, EvElimArrows), ' '), if($Data->matchno=FsMatchNo1, TieBreak1, TieBreak2)) Arrowstring, if($Data->matchno=FsMatchNo1, TieBreak1, TieBreak2) TieBreak
 						from (select TfConfirmed as StopScore, 
-			            		TfArrowstring Arrowstring1, TfTieBreak TieBreak1,
-								FsTarget+0 Target1,
+			            		TfArrowstring Arrowstring1, TfTieBreak TieBreak1, TfShootingArchers ShootingArchers1,
+								FsTarget+0 Target1, GROUP_CONCAT(CONCAT(TfcOrder,'|',TfcId) ORDER BY TfcOrder separator '#') as Ath1,
 								substr(FsLetter, length(FsTarget)+1, 1) Letter1,
 								FsLetter FsLetter1, FsMatchNo FsMatchNo1, FsEvent FsEvent1, TfWinLose as Win1, TfTbClosest as Closest1, TfSigned as Signed1
 							from FinSchedule
 							inner join TeamFinals on FsEvent=TfEvent and TfTournament=$ToId and FsMatchNo=TfMatchNo
-							where FsTournament=$ToId and FsTarget>'' and FsEvent='$Data->event' and FsTeamEvent=1 and FsMatchNo=$match1) tgt1
+							left join TeamFinComponent ON TfTeam=TfcCoId and TfSubTeam=TfcSubTeam and TfcTournament=$ToId and TfEvent=TfcEvent
+							where FsTournament=$ToId and FsTarget>'' and FsEvent='$Data->event' and FsTeamEvent=1 and FsMatchNo=$match1
+							GROUP BY FSEvent, FSTeamEvent, FSMatchNo) tgt1
 						inner join (select 
-			                	TfArrowstring Arrowstring2, TfTieBreak TieBreak2, 
-			                	FsTarget+0 Target2, 
+			                	TfArrowstring Arrowstring2, TfTieBreak TieBreak2,  TfShootingArchers ShootingArchers2,
+			                	FsTarget+0 Target2, GROUP_CONCAT(CONCAT(TfcOrder,'|',TfcId) ORDER BY TfcOrder separator '#') as Ath2,
 			                	substr(FsLetter, length(FsTarget)+1, 1) Letter2, 
 			                	FsLetter FsLetter2, FsMatchNo FsMatchNo2, FsEvent FsEvent2, TfWinLose as Win2, TfTbClosest as Closest2, TfSigned as Signed2
 							from FinSchedule
 							inner join TeamFinals on FsEvent=TfEvent and TfTournament=$ToId and FsMatchNo=TfMatchNo
-							where FsTournament=$ToId and FsTarget>'' and FsEvent='$Data->event' and FsTeamEvent=1 and FsMatchNo=$match2) tgt2
+							left join TeamFinComponent ON TfTeam=TfcCoId and TfSubTeam=TfcSubTeam and TfcTournament=$ToId and TfEvent=TfcEvent
+							where FsTournament=$ToId and FsTarget>'' and FsEvent='$Data->event' and FsTeamEvent=1 and FsMatchNo=$match2
+							GROUP BY FSEvent, FSTeamEvent, FSMatchNo) tgt2
 							on FsEvent1=FsEvent2 and FsMatchNo2=FsMatchNo1+1
 						inner join Events on FsEvent1=EvCode and EvTeamEvent=1 and EvTournament=$ToId
 						inner join Grids on FsMatchNo1=GrMatchNo
@@ -392,6 +354,19 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
             if(strlen(trim($Data->arrowstring))<($r->DiEnds * $r->DiArrows)) {
                 $maxNumEnd = max(0,ceil(strlen(rtrim($Data->arrowstring))/$r->DiArrows)-1);
             }
+            if($Data->subtype=='T' and ($Data->teamArchers??false)) {
+                $tmpShooters=array_fill(0, strlen($Data->arrowstring),' ');
+                $arrShoothers = json_decode((empty($r->ShootingArchers) ? '[]' : $r->ShootingArchers),true);
+                foreach(explode('#', $r->Ath) as $archer) {
+                    $tmp = explode('|', $archer);
+                    array_walk($arrShoothers, function(&$value, $key) use($tmp, &$tmpShooters) {
+                        if ($value == $tmp[1]) {
+                            $tmpShooters[$key] = $tmp[0];
+                        }
+                    });
+                }
+                $r->ShootingArchers=implode('',$tmpShooters);
+            }
 		}
 		$Errors=[];
 
@@ -403,8 +378,10 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 				$start = ($r->DiEnds*$r->DiArrows)+($end-$r->DiEnds)*$r->DiSO;
 				$arr = $r->DiSO;
 			}
-			$DbArrowstring = substr ( $r->Arrowstring, $start, $arr );
-			$IskArrowstring = substr ( $Data->arrowstring, $start, $arr );
+			$DbArrowstring = substr( $r->Arrowstring, $start, $arr);
+			$IskArrowstring = substr( $Data->arrowstring, $start, $arr);
+            $DbShooters = substr(($r->ShootingArchers??''), $start, $arr);
+            $IskShooters = substr(($Data->teamArchers??''), $start, $arr);
 			if(trim($IskArrowstring)) {
 				$SQL = array ();
 				$SQL [] = "IskDtTournament=$ToId";
@@ -425,8 +402,9 @@ function applyScore($Data, $ToId, $IsSendAll=0, &$UpdatedEntries=[]) {
 				if(isset($Data->team)) {
 					$SQL [] = "IskDtTeamInd=" . StrSafe_DB($Data->team);
 				}
-				if ($DbArrowstring != $IskArrowstring or ($end==$maxNumEnd and ($r->IsClosest!=$Data->soClosest or $r->IsSigned!=$Data->signed))) {
+				if ($DbArrowstring != $IskArrowstring or ($DbShooters != $IskShooters and $Data->teamArchers??false) or ($end==$maxNumEnd and ($r->IsClosest!=$Data->soClosest or $r->IsSigned!=$Data->signed))) {
 					$SQL [] = "IskDtArrowstring=" . StrSafe_DB ( $IskArrowstring );
+                    $SQL [] = "IskDtTeamArchers=" . StrSafe_DB($IskShooters);
 					$SQL [] = "IskDtUpdate=" . StrSafe_DB ( date ( 'Y-m-d H:i:s' ) );
 
 					$SQL = "INSERT INTO IskData set " . implode ( ',', $SQL ) . " ON DUPLICATE KEY UPDATE " . implode ( ',', $SQL );
@@ -623,67 +601,7 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
 			}
 			$Error=0;
 			break;
-		// case 'E':
-		// 	$Phase=$IskSequence['maxdist']-1;
-		// 	$Session=$IskSequence['session'];
-		// 	if(!empty($Options['Category']) and preg_match('/^[a-z0-9_.-]+$/sim', $Options['Category'])) {
-		// 		$Filtre=" AND ElEventCode='{$Options['Category']}'";
-		// 	}
-		// 	$SQL="SELECT ElId, ElTargetNo, ElArrowstring as Arrowstring, IskDtArrowstring, IskDtEndNo, if(ElElimPhase=0, EvE1Ends, EvE2Ends) as DIEnds, if(ElElimPhase=0, EvE1Arrows, EvE2Arrows) as DIArrows, IF(EvGoldsChars='',ToGoldsChars,EvGoldsChars) as GoldsChars, IF(EvXNineChars='',ToXNineChars,EvXNineChars) as XNineChars
-		// 		from Eliminations
-		// 		INNER JOIN Events ON EvTournament=ElTournament and EvTeamEvent=0 and EvCode=ElEventCode
-		// 		INNER JOIN Tournament ON ToId=ElTournament
-		// 		INNER JOIN IskData ON IskDtTournament=ElTournament AND IskDtMatchNo=0 AND IskDtEvent='' AND IskDtTeamInd=0 AND IskDtType='E{$IskSequence['maxdist']}' AND IskDtTargetNo=ElTargetNo AND IskDtEndNo={$End}
-		// 			$Filtre
-		// 		INNER JOIN IskDevices on IskDvTournament=IskDtTournament and IskDvProActive>0 and IskDvDevice=IskDtDevice and IskDvSchedKey=".StrSafe_DB($Key)." and IskDvGroup=$Group
-		// 		WHERE ElTournament={$CompId} and ElSession={$Session} and ElElimPhase=$Phase";
-		// 	$updated=array();
-		// 	$q=safe_r_sql($SQL);
-		// 	while($r=safe_fetch($q)) {
-		// 		$arrowString = str_pad($r->Arrowstring,$r->DIArrows*$r->DIEnds);
-		// 		for($i=0; $i<$r->DIArrows; $i++){
-		// 			if($r->IskDtArrowstring[$i]!=' '){
-		// 				$arrowString[($r->IskDtEndNo-1)*$r->DIArrows+$i]=$r->IskDtArrowstring[$i];
-		// 			}
-		// 		}
-		// 		$Score=0;
-		// 		$Gold=0;
-		// 		$XNine=0;
-		// 		list($Score,$Gold,$XNine)=ValutaArrowStringGX($arrowString,$r->GoldsChars,$r->XNineChars);
-		// 		$Hits=strlen(str_replace(' ', '', $arrowString));
-		//
-		// 		$Update = "UPDATE Eliminations SET
-		// 			ElScore={$Score}, ElGold={$Gold}, ElXnine={$XNine}, ElArrowString='{$arrowString}', ElHits={$Hits},
-		// 			ElDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . "
-		// 			WHERE  ElElimPhase=$Phase and ElId={$r->ElId}";
-		// 		safe_w_SQL($Update);
-		// 		if(safe_w_affected_rows()) {
-		// 			$updated[] = $r->ElId;
-		// 		}
-		// 		$Update = "DELETE FROM IskData
-		// 			WHERE IskDtTournament={$CompId} AND IskDtMatchNo=0 AND IskDtEvent='' AND IskDtTeamInd=0 AND IskDtType='E{$IskSequence['maxdist']}'
-		// 			AND IskDtTargetNo='{$r->ElTargetNo}' AND IskDtEndNo={$End} AND IskDtArrowstring='{$r->IskDtArrowstring}'";
-		// 		safe_w_SQL($Update);
-		// 	}
-		// 	if(count($updated)) {
-		// 		// needs to recalculate ranks
-		// 		$q="SELECT distinct ElEventCode FROM Eliminations WHERE ElId IN (" . implode(",",$updated) . ") AND ElElimPhase={$Phase} and ElEventCode!=''";
-		// 		$r=safe_r_sql($q);
-		// 		while($row=safe_fetch($r)) {
-		// 			if ($Phase==0) {
-		// 				ResetElimRows($row->ElEventCode,2, $CompId);
-		// 			}
-		//
-		// 			Obj_RankFactory::create('ElimInd',array('tournament'=>$CompId,'eventsC'=>array($row->ElEventCode.'@'.($Phase+1))))->calculate();
-		//
-		// 			ResetShootoff ( $row->ElEventCode, 0, $Phase+1, $CompId);
-		// 		}
-		// 	}
-		// 	$Error=0;
-		// 	break;
 		case 'M':
-		// case 'I':
-		// case 'T':
             $importAllSession = !empty($Options['allSessions']);
 			if(isset($Options['team'])) {
 				$IndTeam=intval($Options['team']);
@@ -781,16 +699,18 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
 				$tblHead = ($IndTeam==0 ? 'Fin' : 'Tf');
 
 				$SQL="SELECT if(EvGoldsChars='', ToGoldsChars, EvGoldsChars) as GoldsChars, if(EvXNineChars='', ToXNineChars, EvXNineChars) as XNineChars, FSEvent, FSMatchNo, FSTeamEvent, {$tblHead}Arrowstring as Arrowstring, {$tblHead}Tiebreak as TieBreak, {$tblHead}TbClosest as TbClosest, {$tblHead}TbDecoded as TbDecoded, GrPhase, 
-       				group_concat(concat_ws(':', IskDtEndNo, IskDtArrowstring) separator '|') as IskArrowstring, max(IskDtIsClosest) as IskClosest,
-       				{$tblHead}Confirmed as StopScore, {$tblHead}Signed as Signed, IskDtIsSigned
-					FROM FinSchedule
-                    inner join Events on EvTournament=FSTournament and EvTeamEvent=FSTeamEvent and EvCode=FSEvent
-                    inner join Tournament on ToId=FSTournament
-					INNER JOIN Grids ON FSMatchNo=GrMatchNo
-					INNER JOIN IskData ON IskDtTournament=FsTournament AND IskDtMatchNo=FsMatchNo AND IskDtEvent=FSEvent AND IskDtTeamInd=FsTeamEvent AND IskDtType='M' AND IskDtTargetNo='' AND IskDtDistance=1 ".($End ? "AND IskDtEndNo={$End}" : "")."
+       				group_concat(distinct concat_ws(':', IskDtEndNo, IskDtArrowstring) separator '|') as IskArrowstring, group_concat(distinct concat_ws(':', IskDtEndNo, IskDtTeamArchers) separator '|') as IskTeamArchers, max(IskDtIsClosest) as IskClosest,
+       				{$tblHead}Confirmed as StopScore, {$tblHead}Signed as Signed, IskDtIsSigned, ".($IndTeam==0 ? "''": "TfShootingArchers")." as ShootingArchers
+       				" .($IndTeam==0 ? "": ", GROUP_CONCAT(distinct CONCAT(TfcOrder,'|',TfcId) ORDER BY TfcOrder separator '#') as Ath "). "  
+					FROM `FinSchedule`
+                    inner join `Events` on EvTournament=FSTournament and EvTeamEvent=FSTeamEvent and EvCode=FSEvent
+                    inner join `Tournament` on ToId=FSTournament
+					INNER JOIN `Grids` ON FSMatchNo=GrMatchNo
+					INNER JOIN `IskData` ON IskDtTournament=FsTournament AND IskDtMatchNo=FsMatchNo AND IskDtEvent=FSEvent AND IskDtTeamInd=FsTeamEvent AND IskDtType='M' AND IskDtTargetNo='' AND IskDtDistance=1 ".($End ? "AND IskDtEndNo={$End}" : "")."
 						$Filtre
-					INNER JOIN IskDevices on IskDvTournament=IskDtTournament and IskDvProActive>0 and IskDvDevice=IskDtDevice ".(($isLiteMode OR $importAllSession) ? "" : "and IskDvSchedKey=".StrSafe_DB($Key))." and IskDvGroup=$Group
-					INNER JOIN " . ($IndTeam==0 ? 'Finals' : 'TeamFinals') . " ON FsTournament={$tblHead}Tournament AND FsMatchNo={$tblHead}MatchNo AND FSEvent={$tblHead}Event
+					INNER JOIN `IskDevices` on IskDvTournament=IskDtTournament and IskDvProActive>0 and IskDvDevice=IskDtDevice ".(($isLiteMode OR $importAllSession) ? "" : "and IskDvSchedKey=".StrSafe_DB($Key))." and IskDvGroup=$Group
+					INNER JOIN " . ($IndTeam==0 ? '`Finals`' : '`TeamFinals`') . " ON FsTournament={$tblHead}Tournament AND FsMatchNo={$tblHead}MatchNo AND FSEvent={$tblHead}Event
+					".($IndTeam==0 ? "": "left join `TeamFinComponent` ON TfTeam=TfcCoId and TfSubTeam=TfcSubTeam and TfTournament=TfcTournament and TfEvent=TfcEvent ")."
 					WHERE FSTournament={$CompId} AND FsTeamEvent={$IndTeam}
 					".(($isLiteMode OR $importAllSession) ? "" : "AND CONCAT(FSScheduledDate,FSScheduledTime)=" . StrSafe_DB($fSes));
                 if(isset($Options['filterGroup'])) {
@@ -812,7 +732,7 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
                     $r->so=$obj->so; // will be used later on in UpdateNgArrowString()
                     $r->startArrow = 10000;
                     $r->endArrow = 0;
-					foreach(explode('|', $r->IskArrowstring) as $IskEnds) {
+					foreach(explode('|', $r->IskArrowstring) as $IskKeyEnds=>$IskEnds) {
 						list($IskEnd,$IskString)=explode(':', $IskEnds);
 
 						if($IskEnd > $obj->ends) {
@@ -843,6 +763,23 @@ function DoImportData($Options=array(), $IsSendall=0, &$UpdatedEntries=[]) {
                             $r->startArrow = min($Offset, $r->startArrow);
                             $r->endArrow = max($End*$obj->arrows, $r->endArrow);
 						}
+                        if(($IskSequence['sendTeamComponents']??0)) {
+                            $tmpArchers = array_column(array_map(fn($pair) => explode('|', $pair), explode('#', $r->Ath)),1,  0);
+                            foreach(explode('|', $r->IskTeamArchers) as $IskShEnds) {
+                                list($IskShEnd, $IskShString) = explode(':', $IskShEnds);
+                                if($IskShEnd==$IskEnd) {
+                                    $Offset = ($IskShEnd-1) * $obj->arrows;
+                                    if($IskShEnd>$obj->ends) {
+                                        $Offset = ($obj->ends * $obj->arrows) + (($IskEnd - $obj->ends -1)*$obj->so);
+                                    }
+                                    $r->ShootingArchers = json_decode((empty($r->ShootingArchers) ? '[]' : $r->ShootingArchers),true);
+                                    for($i=0; $i<strlen($IskShString);$i++) {
+                                        $r->ShootingArchers[$Offset+$i]=intval($tmpArchers[$IskShString[$i]]);
+                                    }
+                                    $r->ShootingArchers = (count($r->ShootingArchers)!=0) ? json_encode($r->ShootingArchers) : '';
+                                }
+                            }
+                        }
 
 						$Update = "DELETE FROM IskData
 							WHERE IskDtTournament={$CompId} AND IskDtMatchNo={$r->FSMatchNo} AND IskDtEvent='{$r->FSEvent}' AND IskDtTeamInd={$IndTeam} AND IskDtType='M'
@@ -1098,6 +1035,7 @@ function UpdateNgArrowString($r, $ToId=0, &$CHANGES=false) {
 
     $query="UPDATE $Table 
         SET {$TablePrefix}Arrowstring=" . StrSafe_DB($r->Arrowstring) . ", 
+            ".(($r->FSTeamEvent and !empty($r->ShootingArchers)) ? "TfShootingArchers=".StrSafe_DB($r->ShootingArchers).", " : "")."
         	{$TablePrefix}Golds=".intval($Golds).",
         	{$TablePrefix}XNines=".intval($XNine).",
         	{$TablePrefix}DateTime={$TablePrefix}DateTime,

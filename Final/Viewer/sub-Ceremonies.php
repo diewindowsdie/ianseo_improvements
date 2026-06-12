@@ -4,7 +4,7 @@ $arrPosition=array('','1st','2nd','3rd','4th','5th');
 $ReversedCountries="if(EnNameOrder=1, CONCAT(UPPER(EnFirstName), ' ', EnName), CONCAT(EnName, ' ', UPPER(EnFirstName)))";
 $par_RepresentCountry = getModuleParameter('Awards','RepresentCountry',1);
 $par_PlayAnthem = getModuleParameter('Awards','PlayAnthem',1);
-$par_ShowPoints = getModuleParameter('Awards','ShowPoints',0);
+$par_SwapLanguages = getModuleParameter('Awards','SwapLanguages',0);
 $FirstLang=(getModuleParameter('Awards', 'FirstLanguageCode') ? getModuleParameter('Awards', 'FirstLanguageCode') : ($_SESSION['TourPrintLang'] ? $_SESSION['TourPrintLang'] : SelectLanguage()));
 $SecondLang=getModuleParameter('Awards', 'SecondLanguageCode');
 $JSON['OppLeft']=$FirstLang;
@@ -152,19 +152,12 @@ if(count($data)>0) {
                 $Club2 = (get_text($data[$i][3], 'IOC_Codes', '', '1', '', $SecondLang) == $data[$i][3] ? $data[$i][2] : get_text($data[$i][3], 'IOC_Codes', '', '', '', $pdf->SecondLang));
             }
 
-            $Ceremonies[0] .= '<br>' . get_text_eval(getModuleParameter('Awards', 'Aw-representing-1'), $Club1);
+            $Ceremonies[0] .= '<br>' . get_text_eval(getModuleParameter('Awards', 'Aw-representing'.($Team ? 'Team':'').'-1'), $Club1);
             if ($SecondLang) {
-                $Ceremonies[1] .= '<br>' . get_text_eval(getModuleParameter('Awards', 'Aw-representing-2'), $Club2);
+                $Ceremonies[1] .= '<br>' . get_text_eval(getModuleParameter('Awards', 'Aw-representing'.($Team ? 'Team':'').'-2'), $Club2);
             }
         }
 
-
-        if ($par_ShowPoints) {
-            $Ceremonies[0] .= '<br>' . get_text_eval('Points') . ' ' . $data[$i][5] . '; ' . get_text_eval('Golds') . ' ' . $data[$i][6] . '; ' . get_text_eval('XNine') . ' ' . $data[$i][7];
-            if ($SecondLang) {
-                $Ceremonies[1] .= '<br>&nbsp;';
-            }
-        }
         $Ceremonies[0] .= '</div>';
         if ($SecondLang) {
             $Ceremonies[1] .= '</div>';
@@ -223,5 +216,11 @@ if(count($data)>0) {
         $Ceremonies[1] = '<div class="ceremonies">'.$Ceremonies[1].'</div>';
     }
 
+    if($SecondLang and $par_SwapLanguages) {
+        $Ceremonies = [$Ceremonies[1],$Ceremonies[0]];
+        $JSON['OppLeft']=$SecondLang;
+        $JSON['OppRight']=$FirstLang;
+    }
 }
+
 

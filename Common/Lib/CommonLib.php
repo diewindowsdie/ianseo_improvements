@@ -667,7 +667,7 @@ function getApiScheduledSessions($ScheduleOptions=[]) {
         }
 		$aSQL[]="SELECT DISTINCT CONCAT(SesType,ToNumDist,SesOrder) as keyValue, SesType as Type, 'Q' as txtkey,
 				if(SesName='', SesOrder, SesName) as Description, '0' as FirstPhase,
-				IFNULL(CONCAT(SchDay, ' ', SchStart), concat('0000-00-00 00:00:', SesOrder)) as dtOrder, group_concat(DiEnds order by DiDistance) MaxEnds, 0 as EvElimType,
+				IFNULL(CONCAT(SchDay, ' ', SchStart), concat('0000-00-00 00:00:00.', LPAD(SesOrder, 3, '0'))) as dtOrder, group_concat(DiEnds order by DiDistance) MaxEnds, 0 as EvElimType,
 				SesOrder as ComboKey
 			FROM Session
 			INNER JOIN Tournament ON SesTournament=ToId
@@ -682,7 +682,7 @@ function getApiScheduledSessions($ScheduleOptions=[]) {
 		// Eliminations 1st level
 		$aSQL[]="SELECT DISTINCT CONCAT('E1',ElSession) as keyValue, 'E' as Type, 'E1' as txtkey,
 				if(SesName is null or SesName='', ElSession, SesName) as Description, '0' as FirstPhase,
-				IFNULL(CONCAT(SchDay, ' ', SchStart), concat('0000-00-00 00:00:', ElSession)) as dtOrder, EvElimEnds as MaxEnds, EvElimType,
+				IFNULL(CONCAT(SchDay, ' ', SchStart), concat('0000-00-00 00:00:00.', LPAD(ElSession, 3, '0'))) as dtOrder, EvElimEnds as MaxEnds, EvElimType,
 				'E1' as ComboKey
 			FROM Events
             inner join Tournament on ToId=EvTournament
@@ -697,7 +697,7 @@ function getApiScheduledSessions($ScheduleOptions=[]) {
 		// Eliminations 2nd level
 		$aSQL[]="SELECT DISTINCT CONCAT('E2',ElSession) as keyValue, 'E' as Type, 'E2' as txtkey,
 				if(SesName is null or SesName='', ElSession, SesName) as Description, '0' as FirstPhase, 
-				IFNULL(CONCAT(SchDay, ' ', SchStart), concat('0000-00-00 00:00:', ElSession)) as dtOrder, EvElim2 as MaxEnds, EvElimType,
+				IFNULL(CONCAT(SchDay, ' ', SchStart), concat('0000-00-00 00:00:00.', LPAD(ElSession, 3, '0'))) as dtOrder, EvElim2 as MaxEnds, EvElimType,
 				'E2' as ComboKey
 			FROM Events
             inner join Tournament on ToId=EvTournament

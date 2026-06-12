@@ -92,6 +92,7 @@ $JS_SCRIPT=array(
         'txtDevDisconnected'=>get_text('DevDisconnected', 'Api'),
         'txtOnlyToday'=>get_text('ScheduleToday', 'Tournament'),
         'txtUnfinished'=>get_text('ScheduleUnfinished', 'Tournament'),
+        'txtViewTeamComponent'=>module_exists('ExtendedORIS') ? '<input type="checkbox" value="1" checked="checked">'.get_text('ViewTeamComponents', 'Tournament') : ""
     )),
     ($_SESSION["UseApi"] == ISK_NG_LIVE_CODE ? '<script type="text/javascript" src="./socket.js"></script>' : '<script></script>'),
     '<script type="text/javascript" src="./Devices.js"></script>',

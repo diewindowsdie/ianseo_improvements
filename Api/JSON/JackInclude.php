@@ -27,7 +27,6 @@ function JackRunUpdate_MatchUpdate($Event, $Team, $MatchNo, $TourId) {
 				curl_setopt($ch,CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
 				curl_setopt($ch,CURLOPT_POSTFIELDS, $Response);
 				$result = curl_exec($ch);
-				curl_close($ch);
 //				echo "--Jack--\t$Response\t$result\n";
 			}
 		}
@@ -49,8 +48,6 @@ function JackRunUpdate_RankUpdate($Event, $Team, $TourId) {
 				curl_setopt($ch,CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
 				curl_setopt($ch,CURLOPT_POSTFIELDS, $Response);
 				$result = curl_exec($ch);
-				curl_close($ch);
-				//				echo "--Jack--\t$Response\t$result\n";
 			}
 		}
 	}
@@ -71,8 +68,6 @@ function JackRunUpdate_QRRankUpdate($Event, $Team, $TourId) {
                 curl_setopt($ch,CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
                 curl_setopt($ch,CURLOPT_POSTFIELDS, $Response);
                 $result = curl_exec($ch);
-                curl_close($ch);
-                //				echo "--Jack--\t$Response\t$result\n";
             }
         }
     }
@@ -93,8 +88,6 @@ function JackRunUpdate_ArrowSpeed($Speed, $UM, $TourId) {
 				curl_setopt($ch,CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
 				curl_setopt($ch,CURLOPT_POSTFIELDS, $Response);
 				$result = curl_exec($ch);
-				curl_close($ch);
-//				echo "--Jack--\n\t$Response\n\t$result\n";
 			}
 		}
 	}
@@ -115,8 +108,6 @@ function JackRunUpdate_Wind($Speed, $Direction, $UM, $TourId) {
 				curl_setopt($ch,CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
 				curl_setopt($ch,CURLOPT_POSTFIELDS, $Response);
 				$result = curl_exec($ch);
-				curl_close($ch);
-//				echo "--Jack--\n\t$Response\n\t$result\n";
 			}
 		}
 	}
@@ -138,8 +129,6 @@ function JackRunUpdate_Time($Time, $Side, $Color, $TourId) {
 				curl_setopt($ch,CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
 				curl_setopt($ch,CURLOPT_POSTFIELDS, $Response);
 				$result = curl_exec($ch);
-				curl_close($ch);
-//				echo "--Jack--\t$Response\t$result\n";
 			}
 		}
 	}
@@ -161,8 +150,6 @@ function JackRunUpdate_LiveUpdate($Event, $Team, $MatchNo, $TourId) {
 				curl_setopt($ch,CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
 				curl_setopt($ch,CURLOPT_POSTFIELDS, $Response);
 				$result = curl_exec($ch);
-				curl_close($ch);
-//				echo "--Jack--\t$Response\t$result\n";
 			}
 		}
 	}
@@ -187,7 +174,5 @@ function JackRunUpdate_Check($ClientId) {
 		curl_setopt($ch,CURLOPT_POSTFIELDS, $Response);
 		//execute post
 		$result = curl_exec($ch);
-		//close connection
-		curl_close($ch);
 	}
 }

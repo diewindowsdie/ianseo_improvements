@@ -81,7 +81,9 @@ function devicesRenderer(data) {
                         '</div>',
                         seqSelector,
                         $('<div class="mt-3" id="AssignedSequence_' + gElement.gId + '" curValue="'+AssignedSequenceId+'">'+AssignedSequence+'</div>')]));
-                    tmpRow.append('<td colspan="3"><div class="hidden" id="grpSeqDist_' + gElement.gId + '"></div></td>');
+                    tmpRow.append('<td colspan="3"><div class="hidden" id="grpSeqDist_' + gElement.gId + '"></div>' +
+                        '<div class="hidden" id="grpSeqTeam_' + gElement.gId + '"><span class="mx-1">'+txtViewTeamComponent+'</span></div>' +
+                        '</td>');
                     tmpRow.append('<td colspan="2" class="Center">' +
                         '<input class="iskButton" type="button" value="' + msgCmdSend + '" onClick="saveSequence(\'' + gElement.gId + '\', true);">' +
                         '<input class="iskButton" type="button" value="' + msgCmdCancel + '" onClick="saveSequence(\'' + gElement.gId + '\', false);">' +
@@ -322,6 +324,9 @@ function saveSequence(group, doSet) {
             }
             $('#grpSeqDist_' + group).removeClass('MissingDistances');
         }
+        if(!$('#grpSeqTeam_' + group).hasClass('hidden')) {
+            form.sendTeamComponents = $('#grpSeqTeam_' + group +' input:checked').length;
+        }
         $.get('Devices-action.php', form, (data) => {
             if (!data.error) {
                 $('#AssignedSequence_'+group).html($('#grpSeq_'+group+' [value="'+data.assigned+'"]').html())
@@ -544,6 +549,7 @@ function manageDistances(gId) {
     const selectedIndex = scheduleIndex.indexOf($('#grpSeq_'+gId).val());
     let distances='';
     let hide=true;
+    let hideTeam=true;
     if(selectedIndex !== -1) {
         if(scheduleOpts[selectedIndex].distances!=0) {
             hide=false;
@@ -556,9 +562,12 @@ function manageDistances(gId) {
                 }
                 distances+='<span class="mx-1"><input type="checkbox" value="'+i+'" '+(checked ? 'checked="checked"' : '')+'>'+i+'</span>';
             }
+        } else if(scheduleOpts[selectedIndex].key.substring(0,1)=='T') {
+            hideTeam=false;
         }
     }
     $('#grpSeqDist_'+gId).html(distances).toggleClass('hidden', hide);
+    $('#grpSeqTeam_'+gId).toggleClass('hidden', hideTeam);
 }
 
 /** Input/Output **/

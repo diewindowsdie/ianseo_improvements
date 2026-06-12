@@ -2,7 +2,7 @@
 require_once(dirname(__DIR__) . '/config.php');
 $JSON=[
     'error'=>1,
-    'msg'=>get_text('GenericError', 'Errors'),
+    'msg'=>get_text('ErrGenericError', 'Errors'),
 ];
 
 if(!CheckTourSession() or !hasFullACL(AclAccreditation, 'acSetup', AclReadWrite)) {

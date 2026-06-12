@@ -1015,13 +1015,14 @@ function getStandingRecords($ORIS=true) {
 	$Data->Order='3';
 	$Data->Description='Standing Records';
 	$Data->Header=array(
-			"Record Description",
-			"§Score",
+			"Event",
+            "Type#",
+			"Score#",
 			"Name",
 			"§NOC\nCode",
 			"Location",
-			"#Date");
-	$Data->HeaderWidth=array(50, 15, 50, 10, 45, 0);
+			"Date#");
+	$Data->HeaderWidth=array(60, 10, 15, 45, 10, 35, 0);
 	$Data->IndexName='Records';
 	$Data->Phase='';
 	$Data->DocVersion='';
@@ -1052,8 +1053,6 @@ function getStandingRecords($ORIS=true) {
 	$MyQuery = getStandingRecordsQuery($ORIS);
 
 	$Rs=safe_r_sql($MyQuery);
-	$Record=array();
-	$Countries=array();
 	while ($MyRow=safe_fetch($Rs)) {
 		if($MyRow->RtRecDate=='0000-00-00') {
 			$MyRow->RtRecDate='';
@@ -1069,8 +1068,8 @@ function getStandingRecords($ORIS=true) {
 		}
 		$MyRow->RtRecExtra=unserialize($MyRow->RtRecExtra);
 
-		$Data->Data['Items'][$MyRow->EvTeamEvent]["$MyRow->EvRecCategory-$MyRow->RtRecCode"][]=$MyRow;
-		$Data->SubSections[$MyRow->EvTeamEvent]["$MyRow->EvRecCategory-$MyRow->RtRecCode"]=$MyRow->EventName . ' - ' . $MyRow->TrHeader;
+		$Data->Data['Items'][$MyRow->EvTeamEvent]["$MyRow->EvRecCategory - $MyRow->RtRecDistance"][]=$MyRow;
+		$Data->SubSections[$MyRow->EvTeamEvent]["$MyRow->EvRecCategory - $MyRow->RtRecDistance"]=$MyRow->EventName . ' - ' . $MyRow->TrHeader;
 		if(!empty($MyRow->DocVersion)) {
 			$Data->DocVersion=$MyRow->DocVersion;
 			$Data->DocVersionDate=$MyRow->DocVersionDate;
@@ -1127,16 +1126,11 @@ function getBrokenRecords($ORIS=true) {
 	$MyQuery = getBrokenRecordsQuery($ORIS);
 
 	$Rs=safe_r_sql($MyQuery);
-	$Record=array();
 	if($CheckDate=(getToday()<$Data->RecordAs)) {
 		$Data->RecordAs=getToday();
 	}
 	//error_reporting(E_ALL);
 	while ($MyRow=safe_fetch($Rs)) {
-		//if($MyRow->RtRecXNine and $MyRow->RtRecTotal==$MyRow->NewRecord and $MyRow->RtRecXNine>=$MyRow->NewXNine) {
-		//	// in case full scores the X are marked so check the Xs of the new record
-		//	continue;
-		//}
         if($MyRow->RecordDate>$Data->LastUpdate) {
             $Data->LastUpdate=$MyRow->RecordDate;
         }

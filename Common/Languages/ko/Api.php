@@ -23,6 +23,7 @@ $lang['Desc-Let-1']='현재 엔드 가져오기';
 $lang['Desc-Let-2']='현재 엔드에서 누락된 화살';
 $lang['DevConnected']='연결됨';
 $lang['ISK-BadCompCode']='잘못된 대회 코드';
+$lang['ISK-ForceQRCodeScanning-Help']='QR코드 스캔을 통해서만 설정을 허용합니다.<br>수동으로 과녁을 선택할 수 없습니다.<br>주로 원격 온라인 토너먼트에서 사용되며 다른 과녁에 점수입력하는 것을 방지하기 위함입니다.';
 $lang['ISK-Lite-NoCompCode']='대회 코드 누락';
 $lang['ISK-Lite-ServerUrl']='서버 URL (프로토콜 및 포트 80이 아닌 경우 포함)';
 $lang['ISK-NoCompCode']='대회 코드 누락';
