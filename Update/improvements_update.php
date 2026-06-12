@@ -21,6 +21,7 @@ require_once 'improvements/2026-02-21_add_second_qual_header.php';
 require_once 'improvements/2026-03-12_add_50_30_RUS.php';
 require_once 'improvements/2026-03-12_add_12_12_RUS.php';
 require_once 'improvements/2026-05-03_add_judges_fixed_order.php';
+require_once 'improvements/2026-06-12_judge_roles.php';
 
 if ($log) fclose($log);
 ?>
