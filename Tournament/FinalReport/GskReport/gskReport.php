@@ -68,10 +68,10 @@ while ($row = safe_fetch($rs)) {
 }
 
 //главный судья и главный секретарь
-$query = "select TiName, TiGivenName, TiLastName from TournamentInvolved where TiType = '5' and TiTournament = " . $_SESSION["TourId"];
+$query = "select TiName, TiGivenName, TiLastName from TournamentInvolved ti left join InvolvedType it on ti.TiType = it.ItId where it.ItDescription = 'ChairmanJudge' and TiTournament = " . $_SESSION["TourId"];
 $rs = safe_r_SQL($query);
 $chairpersonOfJudges = safe_fetch($rs);
-$query = "select TiName, TiGivenName, TiLastName from TournamentInvolved where TiType = '23' and TiTournament = " . $_SESSION["TourId"];
+$query = "select TiName, TiGivenName, TiLastName from TournamentInvolved ti left join InvolvedType it on ti.TiType = it.ItId  where it.ItDescription = 'ChiefSecretary' and TiTournament = " . $_SESSION["TourId"];
 $rs = safe_r_SQL($query);
 $chiefSecretary = safe_fetch($rs);
 
