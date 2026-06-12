@@ -21,6 +21,7 @@ $lang['Award-PlaqueGiver']='Pokloni će biti uručeni od strane $a';
 $lang['Award-PremiumGiver']='$a[0] će biti uručeno od strane $a[1]';
 $lang['Award-PremiumGiving']='$a[0] se sada uručuje od strane $a[1]';
 $lang['Award-representing']='predstavlja $a';
+$lang['Award-representingTeam']='predstavlja $a';
 $lang['Award-Special']='Specijalna nagrada će sada biti uručena našem šampionu od strane {$a}';
 $lang['AZE']='Azerbejdžan';
 $lang['BAH']='Bahami';

@@ -156,15 +156,19 @@ function CreateStandardEvents($TourId, $subRuleName, $Outdoor=true,$TourType) {
             CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'REO', 'Recurve Experienced Open', 1, 240);
             CreateEvent($TourId, $i++, 0, 0, 0, $TargetC, 5, 3, 1, 5, 3, 1, 'CEO', 'Compound Experienced Open', $SetC, 240);
             CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'BEO', 'Barebow Experienced Open', 1, 240);
+            CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'LEO', 'Longbow Experienced Open', 1, 240);
             CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'REF', 'Recurve Experienced Female', 1, 240);
             CreateEvent($TourId, $i++, 0, 0, 0, $TargetC, 5, 3, 1, 5, 3, 1, 'CEF', 'Compound Experienced Female', $SetC, 240);
             CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'BEF', 'Barebow Experienced Female', 1, 240);
+            CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'LEF', 'Longbow Experienced Female', 1, 240);
             CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'RNO', 'Recurve Novice Open', 1, 240);
             CreateEvent($TourId, $i++, 0, 0, 0, $TargetC, 5, 3, 1, 5, 3, 1, 'CNO', 'Compound Novice Open', $SetC, 240);
             CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'BNO', 'Barebow Novice Open', 1, 240);
+            CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'LNO', 'Longbow Novice Open', 1, 240);
             CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'RNF', 'Recurve Novice Female', 1, 240);
             CreateEvent($TourId, $i++, 0, 0, 0, $TargetC, 5, 3, 1, 5, 3, 1, 'CNF', 'Compound Novice Female', $SetC, 240);
             CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'BNF', 'Barebow Novice Female', 1, 240);
+            CreateEvent($TourId, $i++, 0, 0, 0, $TargetR, 5, 3, 1, 5, 3, 1, 'LEF', 'Longbow Novice Female', 1, 240);
         }else {
 
 

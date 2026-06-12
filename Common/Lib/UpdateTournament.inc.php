@@ -1370,5 +1370,4 @@ function GetNewUuidOnce() {
             DelParameter('UUID');
 		}
 	}
-	curl_close($ch);
 }

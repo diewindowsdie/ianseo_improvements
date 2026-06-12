@@ -22,7 +22,7 @@ switch($Action) {
         switch($Field) {
             case 'ReverseNameFunction':
             case 'ShowPdfFlags':
-            case 'ShowPoints':
+            case 'SwapLanguages':
             case 'SecondLanguage':
 	            $new = 1-getModuleParameter('Awards',$Field,0);
                 break;
@@ -50,6 +50,7 @@ switch($Action) {
                 'Aw-Med3-%s'=>['t'=>'Medal-3', 'p'=>'$a'],
                 'Aw-Med4-%s'=>['t'=>'Medal-4', 'p'=>'$a'],
                 'Aw-representing-%s'=>['t'=>'Award-representing', 'p'=>'$a'],
+                'Aw-representingTeam-%s'=>['t'=>'Award-representingTeam', 'p'=>'$a'],
                 'Aw-Anthem-%s'=>['t'=>'Award-Anthem', 'p'=>''],
                 'Aw-Anthem-TPE-%s'=>['t'=>'Award-Anthem-TPE', 'p'=>''],
                 'Aw-Applause-%s'=>['t'=>'Award-Applause', 'p'=>''],
@@ -248,14 +249,14 @@ if (isset($_REQUEST['Command'])) {
 			$RsSwitch = safe_w_sql($Switch);
 		}
 	} elseif ($_REQUEST['Command']=='OPTION') {
-		if(isset($_REQUEST['OptSwitch']) && in_array($_REQUEST["OptSwitch"],array('RepresentCountry','PlayAnthem','SecondLanguage','ShowPoints','ShowPdfFlags'))) {
+		if(isset($_REQUEST['OptSwitch']) && in_array($_REQUEST["OptSwitch"],array('RepresentCountry','PlayAnthem','SecondLanguage','ShowPdfFlags'))) {
 		    if($_REQUEST["OptSwitch"]=='ShowPdfFlags') {
 		        // check if the RepresentCountry is on!
                 if(!getModuleParameter('Awards', 'RepresentCountry', 1)) {
                     CD_redirect();
                 }
             }
-            $tmp = getModuleParameter('Awards', $_REQUEST["OptSwitch"], in_array($_REQUEST["OptSwitch"], array('ShowPoints','ShowPdfFlags','SecondLanguage') ? 0 : 1));
+            $tmp = getModuleParameter('Awards', $_REQUEST["OptSwitch"], in_array($_REQUEST["OptSwitch"], array('ShowPdfFlags','SecondLanguage') ? 0 : 1));
             setModuleParameter('Awards', $_REQUEST["OptSwitch"], ($tmp ? 0 : 1));
 		    if($_REQUEST["OptSwitch"]=='RepresentCountry' and $tmp) {
                 setModuleParameter('Awards', 'ShowPdfFlags', 0);

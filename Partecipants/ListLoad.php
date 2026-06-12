@@ -96,7 +96,35 @@ if($DataSource) {
 		foreach(explode("\t", stripslashes($Value)) as $k=>$v) $tmpString[$k]=trim($v);
 
 		if(preg_match('/^##([a-z0-9-]+)##$/i',$tmpString[0])) {
-			if($tmpString[0]== "##NOC##") {
+            if($tmpString[0]== "##RUN-ARCHERY-EVENTS##") {
+                if(count($tmpString)!=3) {
+                    $ImportResult['Refused'][]='<tr class="error"><td>Row ' . $Line  . ' incorrect, wrong number of fields<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
+                    continue;
+                }
+
+                require_once('RunArchery/Lib.php');
+
+                // check the event laps number
+                if(empty($EventLaps)) {
+                    $EventLaps=array();
+                    $q=safe_r_sql("select EvCode, EvFinEnds from Events where EvTournament={$_SESSION['TourId']} and EvTeamEvent=0");
+                    while($r=safe_fetch($q)) {
+                        $EventLaps[$r->EvCode]=$r->EvFinEnds;
+                    }
+                }
+                // gets the EnIds of the archer with that EnCode
+                $q=safe_r_SQL("select EnId from Entries where EnCode=".StrSafe_DB($tmpString[1])." and EnTournament={$_SESSION['TourId']}");
+                if(safe_num_rows($q)) {
+                    while($r=safe_fetch($q)) {
+                        insertRunParticipant(0, $tmpString[2], $r->EnId, $EventLaps[$tmpString[2]]??'');
+                        $ImportResult['Inserted'][]='<tr><td>Inserted/updated</td><td>'.$tmpString[1].'</td><td>'.$tmpString[2].'</td></tr>';
+                        $ImportResult['Imported']++;
+                    }
+                } else {
+                    $ImportResult['Refused'][]='<tr class="error"><td>Row ' . $Line  . ' incorrect, Invalid Entry Code<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
+                    continue;
+                }
+            } elseif($tmpString[0]== "##NOC##") {
 				if(count($tmpString)!=3) {
 					$ImportResult['Refused'][]='<tr class="error"><td>Row ' . $Line  . ' incorrect, wrong number of fields<br/>Row not imported</td><td>'.implode('</td><td>', $tmpString)."</td></tr>";
 					continue;

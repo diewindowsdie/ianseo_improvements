@@ -129,12 +129,13 @@ if(isset($_REQUEST['Action']) && preg_match("/^(tSendMessage|tPersonal|tSendQrSe
                 JsonOut($Json);
             }
 	        $Json['assigned']=$_REQUEST["sequenceId"];
-	        $IskSeq = array('IskKey'=>'', "type"=>'', "subtype"=>'', "session"=>'', "distance"=>[], "maxdist"=>'');
+	        $IskSeq = array('IskKey'=>'', "type"=>'', "subtype"=>'', "session"=>'', "distance"=>[], "sendTeamComponents"=>0, "maxdist"=>'');
             if(array_key_exists($tmpSeq[0], getApiScheduledSessions())) {
                 $type = substr($tmpSeq[0],0,1);
 	            $SEQTYPE = $type;
                 $subtype='';
                 $maxDist = '';
+                $sendTeamComponents = 0;
 				switch($type) {
 					case 'Q':
 						$maxDist = substr($tmpSeq[0],1,1);
@@ -147,6 +148,9 @@ if(isset($_REQUEST['Action']) && preg_match("/^(tSendMessage|tPersonal|tSendQrSe
 						break;
 					default:
 						$subtype=$type;
+                        if($type=='T' AND intval($_REQUEST['sendTeamComponents'])!=0) {
+                            $sendTeamComponents = 1;
+                        }
 						$ses = substr($tmpSeq[0],1);
 						if($ses[0]=='R') {
 							$subtype='R';
@@ -162,7 +166,7 @@ if(isset($_REQUEST['Action']) && preg_match("/^(tSendMessage|tPersonal|tSendQrSe
 					}
 					$Dists[]=intval($d);
 				}
-                $IskSeq = array('IskKey'=>$tmpSeq[0], "type"=>$type, "subtype"=>$subtype, "session"=>$ses, "distance"=>$Dists, "maxdist"=>$maxDist);
+                $IskSeq = array('IskKey'=>$tmpSeq[0], "type"=>$type, "subtype"=>$subtype, "session"=>$ses, "distance"=>$Dists, "sendTeamComponents"=>$sendTeamComponents, "maxdist"=>$maxDist);
             }
             if(count($storeSeq)==0) {
                 $storeSeq = array($GROUPID => $IskSeq);

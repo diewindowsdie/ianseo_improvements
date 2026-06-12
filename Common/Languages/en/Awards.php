@@ -8,6 +8,7 @@ $lang['Aw-Med2']='2nd place award name';
 $lang['Aw-Med3']='3rd place award name';
 $lang['Aw-Med4']='4th place award name';
 $lang['Aw-representing']='Representing line';
+$lang['Aw-representingTeam']='Representing line for teams';
 $lang['CM0']='Compound Men';
 $lang['CM1']='Compound Men Team';
 $lang['CustomAward']='Custom Award';

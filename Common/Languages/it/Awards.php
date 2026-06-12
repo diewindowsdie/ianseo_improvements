@@ -8,6 +8,7 @@ $lang['Aw-Med2']='Nome Trofeo 2° Posto';
 $lang['Aw-Med3']='Nome Trofeo 3° Posto';
 $lang['Aw-Med4']='Nome Trofeo 4° Posto';
 $lang['Aw-representing']='Linea rappresentanza';
+$lang['Aw-representingTeam']='Riga di rappresentazione per le squadre';
 $lang['CM0']='Compound Uomini';
 $lang['CM1']='Compound Squadra Uomini';
 $lang['CustomAward']='Premiazione Personalizzata';

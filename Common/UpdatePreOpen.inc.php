@@ -192,6 +192,11 @@ function UpdatePreOpen($TournamentID) {
         to_save_version($TournamentID, '2025-04-07 11:00:05');
     }
 
+    if($version<'2026-06-17 19:20:01') {
+        updateRemoveDNFnoRank_20260607($TournamentID);
+        to_save_version($TournamentID, '2026-06-17 19:20:01');
+    }
+
     to_save_version($TournamentID, $DbVersion);
 }
 

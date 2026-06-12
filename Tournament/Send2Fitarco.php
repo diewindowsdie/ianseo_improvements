@@ -116,9 +116,6 @@ if (count($Arr_Files2Send)>0)
             {
                 $StrCurlError .= curl_error($ch);
             }
-
-            // chiudo la sessione CURL
-            curl_close($ch);
         }
     }
 }

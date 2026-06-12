@@ -21,6 +21,7 @@ $lang['Award-PlaqueGiver']='Gifts will be presented by $a';
 $lang['Award-PremiumGiver']='The $a[0] will be presented by $a[1]';
 $lang['Award-PremiumGiving']='The $a[0] is now being presented by $a[1]';
 $lang['Award-representing']='representing $a';
+$lang['Award-representingTeam']='representing $a';
 $lang['Award-Special']='The Special Prize will now be presented to our Champion by {$a}';
 $lang['AZE']='Azerbaijan';
 $lang['BAH']='Bahamas';

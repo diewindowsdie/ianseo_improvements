@@ -630,7 +630,7 @@ switch($_REQUEST['act']) {
                                     where TeTournament={$_SESSION['TourId']} and TeEvent=".StrSafe_DB($soEvent)."
                                 ) sqt on RrPartTeam=1 and TeRank=RrPartSourceRank and RrPartSourceLevel=0 and RrPartSourceGroup=0
 								set RrPartParticipant=coalesce(SrcPart, TeCoId, IndId), RrPartSubTeam=coalesce(SrcSubteam,TeSubTeam,0), RrMatchAthlete=coalesce(SrcPart, TeCoId, IndId), RrMatchSubTeam=coalesce(SrcSubteam,TeSubTeam,0)
-								where RrPartLevel=".($soLevel+1)." and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent));
+								where RrPartLevel=".($soLevel+1)." and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent)." and coalesce(SrcPart, TeCoId, IndId) is not null");
 
 							// updates the SO status of the group
 							safe_w_sql("UPDATE RoundRobinGroup SET RrGrSoSolved=1 WHERE RrGrTournament={$_SESSION['TourId']} and RrGrTeam=$Team and RrGrLevel=$soLevel and RrGrGroup=$soGroup and RrGrEvent=" . StrSafe_DB($soEvent));
@@ -654,7 +654,7 @@ switch($_REQUEST['act']) {
                                     where TeTournament={$_SESSION['TourId']} and TeEvent=".StrSafe_DB($soEvent)."
                                 ) sqt on RrPartTeam=1 and TeRank=RrPartSourceRank and RrPartSourceLevel=0 and RrPartSourceGroup=0
 								set RrPartParticipant=SrcPart, RrPartSubTeam=SrcSubteam, RrMatchAthlete=SrcPart, RrMatchSubTeam=SrcSubteam
-								where RrPartSourceLevel=".($soLevel+1)." and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent));
+								where RrPartSourceLevel=".($soLevel+1)." and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent)." and coalesce(SrcPart, TeCoId, IndId) is not null");
 
 							// select the "losers" and updates the "final rank" status
 
