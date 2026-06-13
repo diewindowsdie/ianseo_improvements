@@ -88,7 +88,7 @@ foreach($PdfData->Data['Items'] as $MyRows) {
 			$FirstTime=false;
 		}
 		//$pdf->SetFont($pdf->FontStd,'B',8);
-		if($OldTarget != substr($MyRow->TargetNo,0,-1)) {
+		if($OldTarget != substr($MyRow->TargetNo,0,-1) && ($MyRow->FirstName || $OldTarget != '')) {
             //outputs rows with targets and people each time target changes
 			if($Components['players']) $pdf->PrintComponents($OldTarget, $Components, empty($_REQUEST['Filled']),$TargetFace); // new function
             //resets targets and people array, target
