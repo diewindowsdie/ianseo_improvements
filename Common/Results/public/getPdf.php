@@ -5,7 +5,7 @@ require_once dirname(__FILE__, 2) . "/lib.php";
 function getVisibleEventCodesConsideringTeams($competitionId, $isTeam): array
 {
     $events = array();
-    foreach(getCompetitionEvents($competitionId) as $event) {
+    foreach (getCompetitionEvents($competitionId) as $event) {
         if ($event->EvTeamEvent === $isTeam) {
             //если просили конкретный эвент - зафильтруем по нему
             if (!isset($_REQUEST["event"]) || $_REQUEST["event"] === $event->EvCode) {
@@ -102,6 +102,10 @@ switch ($_REQUEST["report"]) {
         require_once "../../../Tournament/PrnStaffField.php";
         break;
     case "d":
+        if (getModuleParameter(RESULTS_PUBLICATION_MODULE_NAME, HIDE_DRAW, "0", $competition->ToId) === "1") {
+            exitNotFound();
+        }
+
         $_REQUEST["Session"] = $_REQUEST["session"];
         $_REQUEST["Filled"] = "1";
 

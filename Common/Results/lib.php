@@ -7,6 +7,7 @@ const SHOW_FINAL_SESSIONS_IN_SCHEDULE_PARAM_NAME = "showSessionsInSchedule";
 const PROTOCOL_PDF_PARAM_NAME = "ProtocolPdf";
 const PUBLISH_SCORECARDS_PARAM_NAME = "PublishScorecards";
 const HIDE_FULL_NAME_AND_BIRTHDAY_FOR_REPORTS_PARAM_NAME = "hideFullNameAndBirthdayForReports";
+const HIDE_DRAW = "hideDraw";
 
 const PROTOCOL_MODULE = "Protocol";
 const STAT_HEADER_PARAM_NAME_PREFIX = "StatHeader";
@@ -483,8 +484,8 @@ function getCompetitionDetailsHtml($competition): string
             }
         }
 
-        //если хоть у кого-то есть назначенная мишень - покажем жеребьевку
-        if (count($targetsAssignedFor) > 0) {
+        //если хоть у кого-то есть назначенная мишень и нет флага скрытия - покажем жеребьевку
+        if (count($targetsAssignedFor) > 0 && (getModuleParameter(RESULTS_PUBLICATION_MODULE_NAME, HIDE_DRAW, "0", $competition->ToId) === "0")) {
             $result .= '<i id="toggleQualDraw_' . $competition->ToCode . '" class="l3 fa-solid fa-caret-right" onclick="toggle(\'toggleQualDraw_\', \'qualDraw_\', \'' . $competition->ToCode . '\')"></i>
                 <span class="resultsGroupHeader" onclick="toggle(\'toggleQualDraw_\', \'qualDraw_\', \'' . $competition->ToCode . '\')">' . getTextAtCompetitionLanguage('DrawResults', $competition, 'Tournament') . '</span>';
             $result .= '<div class="results display-none" id="qualDraw_' . $competition->ToCode . '">';
