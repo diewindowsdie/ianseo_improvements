@@ -1,7 +1,7 @@
 <?php
 define('ProgramRelease', 'STABLE');
-define('ProgramBuild', 'rev 204 [improvements v6.5]');
-define("CurrentTag", "v6.5");
+define('ProgramBuild', 'rev 204 [improvements v6.6]');
+define("CurrentTag", "v6.6");
 //pre-релизы собираются из ветки live - это lts ветка, предназначенная для проведения крупных соревнований, в нее попадают только критически важные обновления
 define("UsePreReleases", false);
 define("DefaultCompetitionResultsPagePrefix", "Common/Results/public/competition.php?code=");
