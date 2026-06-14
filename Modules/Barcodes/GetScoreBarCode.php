@@ -376,7 +376,7 @@ if(!$archers){
             echo '<td class="Score">'.$archer->tXnine.'</td>';
         }
         echo '<td class="Score '.((($archer->Hits OR $archer->expectedArrows) AND $archer->Hits != $archer->expectedArrows) ? 'ArrError': '').'">'.$archer->Hits.'</td>';
-        echo '<td class="Command Bold"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C' => $archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass)).'">' . get_text('ConfirmMatch', 'Tournament') . '</a></td>';
+        echo '<td class="Command Bold"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C' => $archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass)).'">' . get_text('Confirm', 'Tournament') . '</a></td>';
         if($D) {
             echo '<td class="Command"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'EDIT')).'">' . get_text('ScorecardArrows', 'ISK-App') . '</a>
 					<br/><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C' => 'EDIT2')).'">' . get_text('Results', 'Tournament') . '</a>
