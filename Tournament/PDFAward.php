@@ -10,7 +10,7 @@ $par_SwapLanguages = getModuleParameter('Awards','SwapLanguages',0);
 
 $ReversedCountries="if(EnNameOrder=1, CONCAT(UPPER(EnFirstName), ' ', EnName), CONCAT(EnName, ' ', UPPER(EnFirstName)))";
 
-$pdf = new OrisPDF('Awards', '');
+$pdf = new OrisPDF('Awards', '',  '',true);
 $pdf->FontStd2=$pdf->FontStd;
 $pdf->FontFix2=$pdf->FontFix;
 // $pdf->addTTFfont($CFG->DOCUMENT_PATH.'Common/tcpdf/fonts/DroidSansFallback.ttf');
@@ -424,11 +424,12 @@ function writeData($pdf, $data, $Description, $Category, $Awarders, $indEvent, $
 			}
 			$pdf->ln(6*max($lines, $lines2));
 
+            $tmp = getOrderedText($pdf,$Club1,$Club2);
 			$pdf->SetFont($pdf->FontStd,'B',13);
-			$pdf->Cell($LangCol, 7, $Club1, $pdf->lBorder, 0, 'C', 0);
+			$pdf->Cell($LangCol, 7, $tmp[0], $pdf->lBorder, 0, 'C', 0);
 			if($pdf->SecondLang) {
 				$pdf->SetFont($pdf->FontStd2,'B',13);
-				$pdf->Cell($LangCol, 7, $Club2, 'L', 0, 'C', 0);
+				$pdf->Cell($LangCol, 7, $tmp[1], 'L', 0, 'C', 0);
 			}
 
 			$pdf->ln(8);

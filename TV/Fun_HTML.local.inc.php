@@ -398,7 +398,7 @@ function genera_html_rot($TVsettings, $RULE) {
 		case 'QUALS':
 			include('Rot_qual_snap.php');
 			break;
-		case 'QUALT';
+        case 'QUALT':
 			include('Rot_qual_t.php');
 			break;
 		case 'ABS':

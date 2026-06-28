@@ -14,6 +14,7 @@ function rotList($TVsettings, $RULE) {
 
     $Filter=[
         "EnTournament = " . $TourId,
+        "QuSession != 0",
     ];
     if(!empty($TVsettings->TVPSession)) {
         $Filter[]="QuSession = " . $TVsettings->TVPSession;

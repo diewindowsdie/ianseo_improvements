@@ -16,7 +16,7 @@ require_once('Common/Lib/Fun_DateTime.inc.php');
 require_once('Common/Fun_Phases.inc.php');
 require_once('Qualification/Fun_Qualification.local.inc.php');
 
-function getPdfHeader($ForOnline=true) {
+function getPdfHeader($ForOnline=true, $fullFontSet=false) {
 	$RET=new StdClass();
 
 	$Sql = "SELECT ToCode, ToLocRule, ToType, ToTypeSubRule, ToName, ToComDescr, ToWhere, ToVenue, ToTimeZone, 
@@ -76,6 +76,9 @@ function getPdfHeader($ForOnline=true) {
 		$RET->PageSize = 'LETTER';
 	}
     $RET->ToPrintChars = $r->ToPrintChars;
+    if($fullFontSet AND $r->ToPrintChars==0) {
+        $r->ToPrintChars = 1;
+    }
 	switch($r->ToPrintChars) {
 		case 0:		 // helvetica & standard european fonts
 			$RET->FontStd='helvetica';
@@ -777,53 +780,76 @@ function getStatEntriesByEvent($ORIS='') {
 		$MyQuery = getStatEntriesByEventQuery('TF');
 		$RsEv=safe_r_sql($MyQuery);
 		while($MyRowEv=safe_fetch($RsEv)) {
-			$Sql = "SELECT DISTINCT EcCode, EcTeamEvent, EcNumber FROM EventClass WHERE EcCode=" . StrSafe_DB($MyRowEv->EvCode) . " AND EcTeamEvent!=0 AND EcTournament=" . StrSafe_DB($_SESSION['TourId']);
+            $ifc=ifSqlForCountry($MyRowEv->EvTeamCreationMode);
+            $tmpQuanti=0;
+			$teamDef = array();
+            $Sql = "SELECT DISTINCT EcCode, EcTeamEvent, EcNumber FROM EventClass WHERE EcCode=" . StrSafe_DB($MyRowEv->EvCode) . " AND EcTeamEvent!=0 AND EcTournament=" . StrSafe_DB($_SESSION['TourId'] . " ORDER BY EcTeamEvent");
 			$RsEc=safe_r_sql($Sql);
-			if(safe_num_rows($RsEc)>0) {
-				$RuleCnt=0;
-				$Sql = "";
-				$MultiTeams=array(999);
-				while($MyRowEc=safe_fetch($RsEc)) {
-					$ifc=ifSqlForCountry($MyRowEv->EvTeamCreationMode);
-					$Sql .= (++$RuleCnt == 1 ? "FROM ": "INNER JOIN ");
-					$Sql .= "(SELECT {$ifc} as C" . $RuleCnt . ", floor(SUM(IF(EnSubTeam=0,1,0))/$MyRowEc->EcNumber) AS QuantiMulti" . $RuleCnt . "
-						FROM Entries
-						INNER JOIN EventClass ON EnClass=EcClass AND EnDivision=EcDivision and if(EcSubClass=0, true, EcSubClass=EnSubClass) AND EnTournament=EcTournament AND EcTeamEvent=" . $MyRowEc->EcTeamEvent . " AND EcCode=" . StrSafe_DB($MyRowEc->EcCode) . "
-						WHERE {$ifc}<>0 AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EnTeam" . ($MyRowEv->EvMixedTeam ? 'Mix' : 'F') ."Event=1
-						group by {$ifc}, EnSubTeam
-						HAVING COUNT(EnId)>=" . $MyRowEc->EcNumber . ") as sqy";
-					$Sql .= ($RuleCnt == 1 ? " ": $RuleCnt . " ON C1=C". $RuleCnt . " ");
-					$MultiTeams[]='QuantiMulti'.$RuleCnt;
-				}
-				$Sql = "Select *, least(".implode(',', $MultiTeams).") as MinTeams ".$Sql;
+            while($MyRowEc=safe_fetch($RsEc)) {
+                $teamDef[$MyRowEc->EcTeamEvent] = intval($MyRowEc->EcNumber);
+            }
+            $Sql = "SELECT  {$ifc}  as Country, EnId, EnSubTeam, GROUP_CONCAT(EcTeamEvent order by EcTeamEvent) as grpNo, count(distinct EcTeamEvent) as grpQty
+                FROM Entries
+                LEFT JOIN ExtraData on EdId=EnId and EdType='P'
+                INNER JOIN EventClass ON EnClass=EcClass AND EnDivision=EcDivision and (if(EcSubClass=0, true, EcSubClass=EnSubClass) OR if(EcExtraAddons=0, true, EdExtra & EcExtraAddons)) AND EnTournament=EcTournament AND EcTeamEvent!=0 AND EcCode=" . StrSafe_DB($MyRowEv->EvCode) . "
+                WHERE  {$ifc}<>0 AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EnTeam" . ($MyRowEv->EvMixedTeam ? 'Mix' : 'F') ."Event=1
+                GROUP BY {$ifc}, EnId, EnSubTeam
+                ORDER BY EnCountry,  EnSubTeam, grpQty DESC, EnId, EcTeamEvent ASC";
+            $RsEc=safe_r_sql($Sql);
+            $tmpTeamCounter = array();
+            $curTeam = 0;
+            while($MyRowEc=safe_fetch($RsEc)) {
+                if($curTeam != $MyRowEc->Country) {
+                    if($curTeam != 0) {
+                        foreach ($tmpTeamCounter as $kGroup=>$vGroup) {
+                            if(array_sum($vGroup)==0) {
+                                if($kGroup==0 || ($MyRowEv->EvMultiTeam!=0 and ($MyRowEv->EvMultiTeamNo==0 or $kGroup<$MyRowEv->EvMultiTeamNo))){
+                                    $tmpQuanti++;
+                                }
+                            }
+                        }
+                    }
+                    $curTeam = $MyRowEc->Country;
+                    $tmpTeamCounter = array();
+                    $tmpTeamCounter[] = $teamDef;
+                }
+                foreach (explode(',', $MyRowEc->grpNo) as $vGrpNo) {
+                    foreach ($tmpTeamCounter as $kGroup=>$vGroup) {
+                        if($tmpTeamCounter[$kGroup][$vGrpNo] > 0) {
+                            $tmpTeamCounter[$kGroup][$vGrpNo]--;
+                            break 2;
+                        }
+                    }
+                    $tmpTeamCounter[] = $teamDef;
+                    $tmpTeamCounter[count($tmpTeamCounter)-1][$vGrpNo]--;
+                }
+            }
+            foreach ($tmpTeamCounter as $kGroup=>$vGroup) {
+                if(array_sum($vGroup)==0) {
+                    if($kGroup==0 || ($MyRowEv->EvMultiTeam!=0 and ($MyRowEv->EvMultiTeamNo==0 or $kGroup<$MyRowEv->EvMultiTeamNo))){
+                        $tmpQuanti++;
+                    }
+                }
+            }
 
-				$Rs=safe_r_sql($Sql);
-				$tmpQuanti=safe_num_rows($Rs);
-				if($MyRowEv->EvMultiTeam!=0) {
-					$tmpQuanti = 0;
-					while($tmpRow=safe_fetch($Rs)) {
-						$tmpQuanti += ($MyRowEv->EvMultiTeamNo == 0 ? $tmpRow->MinTeams : min($MyRowEv->EvMultiTeamNo,$tmpRow->MinTeams));
-					}
-				}
 
-				$tmpSaved=max(0, $MyRowEv->EvNumQualified - (numMatchesByPhase($MyRowEv->FirstPhase)*2));
-				$tmpQuantiIn = $MyRowEv->EvNumQualified;
-				$tmpQuantiOut = $tmpQuanti-$tmpQuantiIn;
-				$tmpMatch = (min($tmpQuantiIn,$tmpQuanti) -$tmpSaved)-numMatchesByPhase($MyRowEv->FirstPhase);
-				$tmpBye = numMatchesByPhase($MyRowEv->FirstPhase)-$tmpMatch;
+            $tmpSaved=max(0, $MyRowEv->EvNumQualified - (numMatchesByPhase($MyRowEv->FirstPhase)*2));
+            $tmpQuantiIn = $MyRowEv->EvNumQualified;
+            $tmpQuantiOut = $tmpQuanti-$tmpQuantiIn;
+            $tmpMatch = (min($tmpQuantiIn,$tmpQuanti) -$tmpSaved)-numMatchesByPhase($MyRowEv->FirstPhase);
+            $tmpBye = numMatchesByPhase($MyRowEv->FirstPhase)-$tmpMatch;
 
-				$QR['Data'][$MyRowEv->EvCode]=array(
-					'Name' => $MyRowEv->EventName,
-					'Number' => $tmpQuanti,
-					'Invalid' => ($tmpMatch<=0),
-					'FirstPhase' => $MyRowEv->FirstPhase==0 ? "" : get_text(namePhase($MyRowEv->FirstPhase,$MyRowEv->FirstPhase).'_Phase'),
-					'Matches' => $MyRowEv->FirstPhase==0 ? "" : $tmpMatch,
-					'Byes' => $MyRowEv->FirstPhase==0  || $tmpMatch<0 ? "" : '(' . $tmpBye . ($tmpSaved!=0 ? '+' . $tmpSaved : '') . ')',
-					'ArchersIn' => $MyRowEv->FirstPhase==0 ? "" : ($tmpQuanti < $tmpQuantiIn ? $tmpQuanti : $tmpQuantiIn),
-					'ArchersOut' => $MyRowEv->FirstPhase==0 ? "" : ($tmpQuantiOut>0 ? '(' . $tmpQuantiOut . ')' : '---'),
-					'MixedTeam' => get_text($MyRowEv->EvMixedTeam ? 'Yes' : 'No'),
-					);
-			}
+            $QR['Data'][$MyRowEv->EvCode]=array(
+                'Name' => $MyRowEv->EventName,
+                'Number' => $tmpQuanti,
+                'Invalid' => ($tmpMatch<=0),
+                'FirstPhase' => $MyRowEv->FirstPhase==0 ? "" : get_text(namePhase($MyRowEv->FirstPhase,$MyRowEv->FirstPhase).'_Phase'),
+                'Matches' => $MyRowEv->FirstPhase==0 ? "" : $tmpMatch,
+                'Byes' => $MyRowEv->FirstPhase==0  || $tmpMatch<0 ? "" : '(' . $tmpBye . ($tmpSaved!=0 ? '+' . $tmpSaved : '') . ')',
+                'ArchersIn' => $MyRowEv->FirstPhase==0 ? "" : ($tmpQuanti < $tmpQuantiIn ? $tmpQuanti : $tmpQuantiIn),
+                'ArchersOut' => $MyRowEv->FirstPhase==0 ? "" : ($tmpQuantiOut>0 ? '(' . $tmpQuantiOut . ')' : '---'),
+                'MixedTeam' => get_text($MyRowEv->EvMixedTeam ? 'Yes' : 'No'),
+            );
 		}
 		$Data->Data['TF']=$QR;
 	}
@@ -1110,13 +1136,14 @@ function getBrokenRecords($ORIS=true) {
 	$Data->Code='C81';
 	$Data->Order='4';
 	$Data->Description='Records Broken';
-	$Data->Header=array(
-			"Record Description",
-			"§Record Score\nold / new",
-			"Name",
-			"§NOC\nCode",
-			"#Date");
-	$Data->HeaderWidth=array(50, 30, 55, 15, 0);
+    $Data->Header=array(
+        "Event",
+        "Record\nType#",
+        "§Record Score\nold / new",
+        "Name",
+        "§NOC\nCode",
+        "Date#");
+    $Data->HeaderWidth=array(60, 15, 25, 65, 10, 0);
 	$Data->IndexName='Records Broken';
 	$Data->Phase='';
 	$Data->DocVersion='';
@@ -1182,9 +1209,10 @@ function getBrokenRecords($ORIS=true) {
 			$MyRow->EventName=get_text($MyRow->EventName,'','',true);
 		}
 		$MyRow->RtRecExtra=unserialize($MyRow->RtRecExtra);
+        $MyRow->Archers=explode("\n", $MyRow->Archers);
 
-		$Data->Data['Items'][$MyRow->TeamEvent]["$MyRow->RecCategory-$MyRow->RtRecCode"][]=$MyRow;
-		$Data->SubSections[$MyRow->TeamEvent]["$MyRow->RecCategory-$MyRow->RtRecCode"]=$MyRow->RecCategoryName . ' - ' . $MyRow->TrHeader;
+		$Data->Data['Items'][$MyRow->TeamEvent]["$MyRow->RecCategory - $MyRow->RtRecDistance"][]=$MyRow;
+		$Data->SubSections[$MyRow->TeamEvent]["$MyRow->RecCategory - $MyRow->RtRecDistance"]=$MyRow->RecCategoryName . ' - ' . $MyRow->TrHeader;
 		if(!empty($MyRow->DocVersion)) {
 			$Data->DocVersion=$MyRow->DocVersion;
 			$Data->DocVersionDate=$MyRow->DocVersionDate;

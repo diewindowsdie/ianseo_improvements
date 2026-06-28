@@ -203,6 +203,14 @@ function get_which_menu($on=false) {
             $ret['PART']['ACCR'][] = get_text('MenuLM_Printout') . '|' . $CFG->ROOT_DIR . 'Accreditation/PrintOut.php';
             $ret['PART'][] = MENU_DIVIDER;
         }
+        if (subFeatureAcl($acl,AclAccreditation,'acAdvanced') >= AclReadOnly) {
+            $ret['PART']['ACCR'][] = MENU_DIVIDER;
+            $ret['PART']['ACCR'][] = get_text('MenuLM_GateSituation') . '|' . $CFG->ROOT_DIR . 'Accreditation/GateSituation.php';
+            if(subFeatureAcl($acl,AclAccreditation,'acAdvanced') == AclReadWrite) {
+                $ret['PART']['ACCR'][] = get_text('MenuLM_GateControl') . '|' . $CFG->ROOT_DIR . 'Accreditation/GateControl.php';
+                $ret['PART']['ACCR'][] = get_text('MenuLM_QrCodesGates') . '|' . $CFG->ROOT_DIR . 'Accreditation/QRcodes.php';
+            }
+        }
         if(subFeatureAcl($acl,AclParticipants,'pAdvancedEntries') == AclReadWrite) {
             $ret['PART']['SYNC'][] = get_text('MenuLM_Athletes Sync.') . '|' . $CFG->ROOT_DIR . 'Partecipants/LookupTableLoad.php';
             $ret['PART']['SYNC'][] = get_text('MenuLM_Athletes Sync.') . '|' . $CFG->ROOT_DIR . 'Partecipants/LookupTableLoad.php';
@@ -505,7 +513,7 @@ function get_which_menu($on=false) {
             }
             $ret['MEDI'][] = MENU_DIVIDER;
             $ret['MEDI'][] = get_text('MenuLM_Spotting') . '|' . $CFG->ROOT_DIR . 'Final/Viewer/|||_blank';
-            $ret['MEDI'][] = 'ShowTvLiveScore|' . $CFG->ROOT_DIR . 'Final/ShowTVScore.php?TourId=' . $_SESSION['TourCode'] . '|||TV';
+            $ret['MEDI'][] = get_text('MenuLM_ShowTvLiveScore').'|' . $CFG->ROOT_DIR . 'Final/ShowTVScore.php?TourId=' . $_SESSION['TourCode'] . '|||TV';
         }
 
 	} else {

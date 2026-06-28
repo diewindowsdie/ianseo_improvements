@@ -64,7 +64,11 @@ if (isset($_REQUEST['Command'])) {
                 } else {
                     $RowId=0;
                     if(empty($_REQUEST['d_ToIocCode'])) $_REQUEST['d_ToIocCode']='';
-                    $ToTypeSubRule = (empty($_REQUEST['d_SubRule']) || empty($SetTypes[$_REQUEST['d_Rule']]['rules'][$_REQUEST['d_ToType']][$_REQUEST['d_SubRule']-1]) ? '' : $SetTypes[$_REQUEST['d_Rule']]['rules'][$_REQUEST['d_ToType']][$_REQUEST['d_SubRule']-1]);
+                    if(empty($_REQUEST['d_SubRule']) OR is_numeric($_REQUEST['d_SubRule'])) {
+                        $ToTypeSubRule = (empty($_REQUEST['d_SubRule']) || empty($SetTypes[$_REQUEST['d_Rule']]['rules'][$_REQUEST['d_ToType']][$_REQUEST['d_SubRule'] - 1]) ? '' : $SetTypes[$_REQUEST['d_Rule']]['rules'][$_REQUEST['d_ToType']][$_REQUEST['d_SubRule'] - 1]);
+                    } else {
+                        $ToTypeSubRule = $_REQUEST['d_SubRule'];
+                    }
                     $DoChanges=isset($_REQUEST['TourReset']);
 
                     // check rules of the tournament
@@ -425,7 +429,7 @@ if (!isset($_REQUEST['New'])) {
 				if(count($SetTypes)>1)
 					echo '<option value="">--> '.get_text('Setup-Select','Install').' <--</option>';
 				foreach($SetTypes as $key => $val) {
-                    echo '<option value="' . $key . '"' . (((!is_null($MyRow) and $key == $MyRow->ToLocRule) or (is_null($MyRow) and !empty($_REQUEST['d_Rule']) and $key == $_REQUEST['d_Rule'])) ? ' selected' : '') . '>' . $val['descr'] . '</option>';
+                    echo '<option value="' . $key . '"' . (((!is_null($MyRow) and $key == str_replace('FITA','default',$MyRow->ToLocRule)) or (is_null($MyRow) and !empty($_REQUEST['d_Rule']) and $key == $_REQUEST['d_Rule'])) ? ' selected' : '') . '>' . $val['descr'] . '</option>';
                 }
 			?>
 		</select>
@@ -446,7 +450,7 @@ if(isset($_REQUEST['New'])) {
         }
     }
 } else {
-	foreach($SetTypes[$MyRow->ToLocRule]['types'] as $k=>$v) {
+	foreach($SetTypes[str_replace('FITA','default',$MyRow->ToLocRule)]['types'] as $k=>$v) {
 		echo '<option value="'.$k.'"'.($k==$MyRow->ToType?' selected':'').'>'.$v.'</option>';
 	}
 }
@@ -456,7 +460,7 @@ if(isset($_REQUEST['New'])) {
 </td>
 </tr>
 
-<tr id="rowSubRule"<?php echo (isset($_REQUEST['New']) || !empty($SetTypes[$MyRow->ToLocRule]['rules'][$MyRow->ToType]) ? '' : ' style="display:none"'); ?>>
+<tr id="rowSubRule"<?php echo (isset($_REQUEST['New']) || !empty($SetTypes[str_replace('FITA','default',$MyRow->ToLocRule)]['rules'][$MyRow->ToType]) ? '' : ' style="display:none"'); ?>>
 	<th class="TitleLeft w-15"><?php echo get_text('LocalSubRule','Tournament'); ?></th>
 	<td><select name="d_SubRule" id="d_SubRule">
 <?php
@@ -467,11 +471,16 @@ if(isset($_REQUEST['New']) and !empty($_REQUEST['d_Rule']) and !empty($_REQUEST[
         echo '<option value="'.($k+1).'"'.(($k+1)==$_REQUEST['d_SubRule'] ? ' selected' : '').'>'.get_text($v,'Install').'</option>';
     }
 
-} else if(!isset($_REQUEST['New']) and !empty($SetTypes[$MyRow->ToLocRule]['rules'][$MyRow->ToType])) {
+} else if(!isset($_REQUEST['New']) and !empty($SetTypes[str_replace('FITA','default',$MyRow->ToLocRule)]['rules'][$MyRow->ToType])) {
 	echo '<option value="">--</option>';
-	foreach($SetTypes[$MyRow->ToLocRule]['rules'][$MyRow->ToType] as $k => $v) {
+    $tmpFound=false;
+	foreach($SetTypes[str_replace('FITA','default',$MyRow->ToLocRule)]['rules'][$MyRow->ToType] as $k => $v) {
 		echo '<option value="'.($k+1).'"'.($v==$MyRow->ToTypeSubRule?' selected':'').'>'.get_text($v,'Install').'</option>';
+        $tmpFound = ($tmpFound or ($v==$MyRow->ToTypeSubRule));
 	}
+    if(!$tmpFound and !empty($MyRow->ToTypeSubRule)) {
+        echo '<option value="'.($MyRow->ToTypeSubRule).'" selected>'.($MyRow->ToTypeSubRule).'</option>';
+    }
 }
 
 ?>

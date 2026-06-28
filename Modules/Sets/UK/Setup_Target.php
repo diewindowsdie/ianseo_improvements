@@ -219,6 +219,14 @@ switch($TourType) {
 					CreateDistanceNew($TourId, $TourType, $vDiv . 'U18O', $d50);
 					CreateDistanceNew($TourId, $TourType, $vDiv . '50W', $d50);
 					CreateDistanceNew($TourId, $TourType, $vDiv . '50O', $d50);
+					CreateDistanceNew($TourId, $TourType, $vDiv . 'U16O', $d50);
+               		CreateDistanceNew($TourId, $TourType, $vDiv . 'U15O', $d50);
+                	CreateDistanceNew($TourId, $TourType, $vDiv . 'U14O', $d50);
+					CreateDistanceNew($TourId, $TourType, $vDiv . 'U12O', $d50);
+                	CreateDistanceNew($TourId, $TourType, $vDiv . 'U16W', $d50);
+                	CreateDistanceNew($TourId, $TourType, $vDiv . 'U15W', $d50);
+                	CreateDistanceNew($TourId, $TourType, $vDiv . 'U14W', $d40);
+					CreateDistanceNew($TourId, $TourType, $vDiv . 'U12W', $d30);
 				} else {
 					CreateDistanceNew($TourId, $TourType, $vDiv . 'W', $d70);
 					CreateDistanceNew($TourId, $TourType, $vDiv . 'U21W', $d70);
@@ -228,16 +236,16 @@ switch($TourType) {
 					CreateDistanceNew($TourId, $TourType, $vDiv . 'U18O', $d60);
 					CreateDistanceNew($TourId, $TourType, $vDiv . '50O', $d60);
 					CreateDistanceNew($TourId, $TourType, $vDiv . '50W', $d60);
+					CreateDistanceNew($TourId, $TourType, $vDiv . 'U16O', $d60);
+                	CreateDistanceNew($TourId, $TourType, $vDiv . 'U15O', $d50);
+                	CreateDistanceNew($TourId, $TourType, $vDiv . 'U14O', $d40);
+					CreateDistanceNew($TourId, $TourType, $vDiv . 'U12O', $d30);
+                	CreateDistanceNew($TourId, $TourType, $vDiv . 'U16W', $d50);
+                	CreateDistanceNew($TourId, $TourType, $vDiv . 'U15W', $d50);
+                	CreateDistanceNew($TourId, $TourType, $vDiv . 'U14W', $d40);
+					CreateDistanceNew($TourId, $TourType, $vDiv . 'U12W', $d30);
 				}
 
-                CreateDistanceNew($TourId, $TourType, $vDiv . 'U16O', $d60);
-                CreateDistanceNew($TourId, $TourType, $vDiv . 'U15O', $d50);
-                CreateDistanceNew($TourId, $TourType, $vDiv . 'U14O', $d40);
-				CreateDistanceNew($TourId, $TourType, $vDiv . 'U12O', $d30);
-                CreateDistanceNew($TourId, $TourType, $vDiv . 'U16W', $d50);
-                CreateDistanceNew($TourId, $TourType, $vDiv . 'U15W', $d50);
-                CreateDistanceNew($TourId, $TourType, $vDiv . 'U14W', $d40);
-				CreateDistanceNew($TourId, $TourType, $vDiv . 'U12W', $d30);
             }
             CreateDistanceNew($TourId, $TourType, 'CO', $d50);
 			CreateDistanceNew($TourId, $TourType, 'C50O', $d50);

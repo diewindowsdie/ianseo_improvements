@@ -326,34 +326,22 @@ foreach($rankData['sections'] as $Event => $section) {
 
 			if($PhaseNum<=1) {
 				if($Obj1->FinRank==1) {
-					$PdfData->Events[$Event]->Medals["Gold"]->FirstName = $Obj1->FirstName;
-					$PdfData->Events[$Event]->Medals["Gold"]->Name = $Obj1->Name;
-					$PdfData->Events[$Event]->Medals["Gold"]->Country = $Obj1->Country;
+					$PdfData->Events[$Event]->Medals["Gold"] = $Obj1->FirstName . ' ' . $pdf->FirstLetters($Obj1->Name) . ' ('.$Obj1->Country.')';
 				}
 				if($Obj1->FinRank==2) {
-					$PdfData->Events[$Event]->Medals["Silver"]->FirstName = $Obj1->FirstName;
-					$PdfData->Events[$Event]->Medals["Silver"]->Name = $Obj1->Name;
-					$PdfData->Events[$Event]->Medals["Silver"]->Country = $Obj1->Country;
+					$PdfData->Events[$Event]->Medals["Silver"] = $Obj1->FirstName . ' ' . $pdf->FirstLetters($Obj1->Name) . ' ('.$Obj1->Country.')';
 				}
 				if($Obj1->FinRank==3) {
-					$PdfData->Events[$Event]->Medals["Bronze"]->FirstName = $Obj1->FirstName;
-					$PdfData->Events[$Event]->Medals["Bronze"]->Name = $Obj1->Name;
-					$PdfData->Events[$Event]->Medals["Bronze"]->Country = $Obj1->Country;
+					$PdfData->Events[$Event]->Medals["Bronze"] = $Obj1->FirstName . ' ' . $pdf->FirstLetters($Obj1->Name) . ' ('.$Obj1->Country.')';
 				}
 				if($Obj2->FinRank==1) {
-					$PdfData->Events[$Event]->Medals["Gold"]->FirstName = $Obj2->FirstName;
-					$PdfData->Events[$Event]->Medals["Gold"]->Name = $Obj2->Name;
-					$PdfData->Events[$Event]->Medals["Gold"]->Country = $Obj2->Country;
+					$PdfData->Events[$Event]->Medals["Gold"] = (is_string($PdfData->Events[$Event]->Medals["Gold"]) ? $PdfData->Events[$Event]->Medals["Gold"] . ', ' :  '') . $Obj2->FirstName . ' ' . $pdf->FirstLetters($Obj2->Name) . ' ('.$Obj2->Country.')';
 				}
 				if($Obj2->FinRank==2) {
-					$PdfData->Events[$Event]->Medals["Silver"]->FirstName = $Obj2->FirstName;
-					$PdfData->Events[$Event]->Medals["Silver"]->Name = $Obj2->Name;
-					$PdfData->Events[$Event]->Medals["Silver"]->Country = $Obj2->Country;
+					$PdfData->Events[$Event]->Medals["Silver"] = (is_string($PdfData->Events[$Event]->Medals["Silver"]) ? $PdfData->Events[$Event]->Medals["Silver"] . ', ' :  '') . $Obj2->FirstName . ' ' . $pdf->FirstLetters($Obj2->Name) . ' ('.$Obj2->Country.')';
 				}
 				if($Obj2->FinRank==3) {
-					$PdfData->Events[$Event]->Medals["Bronze"]->FirstName = $Obj2->FirstName;
-					$PdfData->Events[$Event]->Medals["Bronze"]->Name = $Obj2->Name;
-					$PdfData->Events[$Event]->Medals["Bronze"]->Country = $Obj2->Country;
+					$PdfData->Events[$Event]->Medals["Bronze"] = (is_string($PdfData->Events[$Event]->Medals["Bronze"]) ? $PdfData->Events[$Event]->Medals["Bronze"] . ', ' :  '') . $Obj2->FirstName . ' ' . $pdf->FirstLetters($Obj2->Name) . ' ('.$Obj2->Country.')';
 				}
 			}
 		}
@@ -410,11 +398,7 @@ foreach($PdfData->Events as $Event => $Pages) {
 		}
 
 		$pdf->lastY = $TopY + ($Pages->FirstPhase>=4 ? 4.5 : 1.5)*$pdf->CellVSp;
-		$pdf->PrintMedals($PhaseCounter,
-			(empty($Pages->Medals["Gold"]->FirstName) ? "" : $Pages->Medals["Gold"]->FirstName), (empty($Pages->Medals["Gold"]->Name) ? "" : $Pages->Medals["Gold"]->Name),(empty($Pages->Medals["Gold"]->Country) ? "" : $Pages->Medals["Gold"]->Country),
-			(empty($Pages->Medals["Silver"]->FirstName) ? "" : $Pages->Medals["Silver"]->FirstName), (empty($Pages->Medals["Silver"]->Name) ? "" : $Pages->Medals["Silver"]->Name),(empty($Pages->Medals["Silver"]->Country) ? "" : $Pages->Medals["Silver"]->Country),
-			(empty($Pages->Medals["Bronze"]->FirstName) ? "" : $Pages->Medals["Bronze"]->FirstName), (empty($Pages->Medals["Bronze"]->Name) ? "" : $Pages->Medals["Bronze"]->Name),(empty($Pages->Medals["Bronze"]->Country) ? "" : $Pages->Medals["Bronze"]->Country));
-
+		$pdf->PrintMedals($PhaseCounter,$Pages->Medals["Gold"], $Pages->Medals["Silver"], $Pages->Medals["Bronze"]);
 		$pdf->Finalists=$Finalists[$Event];
 		$pdf->MaxFinalists=$MaxFinalists[$Event];
 		$pdf->PrintFinalists();

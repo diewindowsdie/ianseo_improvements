@@ -57,7 +57,7 @@
 							// UN-schedule a single match
 						} else {
 							$vv=ConvertDate($Value);
-							$badDate=!($vv>=date('Y-m-d',$_SESSION['ToWhenFromUTS']) && $vv<=date('Y-m-d',$_SESSION['ToWhenToUTS']));
+							$badDate=!($vv>=$_SESSION['TourRealWhenFrom'] && $vv<=$_SESSION['TourRealWhenTo']);
 						}
 					}
 					elseif ($cc=='FSScheduledTime')

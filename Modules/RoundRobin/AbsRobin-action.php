@@ -642,7 +642,7 @@ switch($_REQUEST['act']) {
 								    select RrPartLevelRank as SrcRank, RrPartParticipant as SrcPart, RrPartSubTeam as SrcSubteam, RrPartLevel as SrcLevel, RrPartGroup as SrcGroup
 								    from RoundRobinParticipants 
 								    where RrPartLevel=$soLevel and RrPartLevelRank>0 and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent)."
-								    ) sqy on SrcRank=RrPartSourceRank and SrcLevel=RrPartSourceLevel and SrcGroup=RrPartSourceGroup
+								    ) sqy on SrcRank=RrPartSourceRank and SrcLevel=RrPartSourceLevel and RrPartSourceGroup=0
                                 left join (
                                     select IndRank, IndId
                                     from Individuals
@@ -653,8 +653,8 @@ switch($_REQUEST['act']) {
                                     from Teams
                                     where TeTournament={$_SESSION['TourId']} and TeEvent=".StrSafe_DB($soEvent)."
                                 ) sqt on RrPartTeam=1 and TeRank=RrPartSourceRank and RrPartSourceLevel=0 and RrPartSourceGroup=0
-								set RrPartParticipant=SrcPart, RrPartSubTeam=SrcSubteam, RrMatchAthlete=SrcPart, RrMatchSubTeam=SrcSubteam
-								where RrPartSourceLevel=".($soLevel+1)." and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent)." and coalesce(SrcPart, TeCoId, IndId) is not null");
+								set RrPartParticipant=coalesce(SrcPart, TeCoId, IndId), RrPartSubTeam=SrcSubteam, RrMatchAthlete=SrcPart, RrMatchSubTeam=SrcSubteam
+								where RrPartLevel=".($soLevel+1)." and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=$Team and RrPartEvent=".StrSafe_DB($soEvent)." and coalesce(SrcPart, TeCoId, IndId) is not null");
 
 							// select the "losers" and updates the "final rank" status
 

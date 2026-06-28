@@ -124,6 +124,11 @@ function CheckAccreditationCode($EnCode, $Options=array(), $OnlyTour=false) {
 
 			$iceContent=getIceRegExpMatches($r->IceContent);
 			//$RegExp=str_replace(array('\\{ENCODE\\}', '\\{COUNTRY\\}','\\{DIVISION\\}','\\{CLASS\\}', '\\{TOURNAMENT\\}'), '(.+?)', $RegExp);
+            if(preg_match('#(?<!/)/$#', $RegExp)) {
+                preg_replace('#(?<!/)/$#', '(?:\/)?', $RegExp);
+            } else {
+                $RegExp .= '(?:\/)?';
+            }
             $RegExp=str_replace(array('\\{ENCODE\\}', '\\{COUNTRY\\}'), '(.+?)', $RegExp);
             if(strpos($RegExp,'{TOURNAMENT\\}')) {
                 $RegExp=str_replace(array('\\{TOURNAMENT\\}'), '('.getCodeFromId($TourId).')', $RegExp);
@@ -146,7 +151,7 @@ function CheckAccreditationCode($EnCode, $Options=array(), $OnlyTour=false) {
             }
 			unset($Matches);
 
-			preg_match('/^'.$RegExp.'$/', $bib, $Matches);
+			preg_match('/^'.$RegExp.'$/i', $bib, $Matches);
 			$BibCode=($iceContent['encode']!=-1 && isset($Matches[$iceContent['encode']]) ? $Matches[$iceContent['encode']] : 0);
 			$Division='';
 			$Class='';
@@ -190,7 +195,7 @@ function CheckAccreditationCode($EnCode, $Options=array(), $OnlyTour=false) {
 					$sql="select * from Entries LEFT JOIN ExtraData zextra ON EnId=zextra.EdId and zextra.EdType='Z' and zextra.EdExtra!='' where (EnCode = ".StrSafe_DB($BibCode)." or zextra.EdExtra = ".StrSafe_DB($BibCode).") and EnTournament=$TourId ".($CardsMatched ? "and concat(EnDivision,EnClass) in ('".str_replace(",", "','", $CardsMatched)."')" : "");
 					$d=safe_r_SQL($sql);
 
-					if(safe_num_rows($d) and $CheckCode==$EnCode and $ID=CheckBibIsOk($BibCode, $Where, $WAbib, $Country, $Division)) {
+					if(safe_num_rows($d) and preg_match('/^'.$RegExp.'$/i', $CheckCode) and $ID=CheckBibIsOk($BibCode, $Where, $WAbib, $Country, $Division)) {
 						if(!in_array($ID, $ret)) $ret[array_search($TourId, array_keys($Options))]= $ID;
 					}
 				}

@@ -7,7 +7,7 @@ $arrPosition=array('','1st','2nd','3rd','4th','5th');
 
 $ReversedCountries="if(EnNameOrder=1, CONCAT(UPPER(EnFirstName), ' ', EnName), CONCAT(EnName, ' ', UPPER(EnFirstName)))";
 
-$pdf = new OrisPDF('Awards', '');
+$pdf = new OrisPDF('Awards', '', '', true);
 $pdf->FontStd2=$pdf->FontStd;
 $pdf->FontFix2=$pdf->FontFix;
 // $pdf->addTTFfont($CFG->DOCUMENT_PATH.'Common/tcpdf/fonts/DroidSansFallback.ttf');
