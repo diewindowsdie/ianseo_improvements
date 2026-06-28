@@ -275,8 +275,8 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 				if($Obj1->FinRank and is_numeric($Obj1->FinRank)) {
 					if($Obj1->IrmText!='DQB') {
 						if($Obj1->FinRank<=4) {
-							if(empty($Finalists[$Event][$Obj1->FinRank][0])) {
-								$Finalists[$Event][$Obj1->FinRank][0]=$Obj1;
+							if(empty($Finalists[$Event][$Obj1->FinRank][$Obj1->Country])) {
+								$Finalists[$Event][$Obj1->FinRank][$Obj1->Country]=$Obj1;
 								$MaxFinalists[$Event]++;
 							}
 						} elseif($Obj1->FinRank<=8) {
@@ -291,8 +291,8 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 				if($Obj2->FinRank and is_numeric($Obj2->FinRank)) {
 					if($Obj2->IrmText!='DQB') {
 						if($Obj2->FinRank<=4) {
-							if(empty($Finalists[$Event][$Obj2->FinRank][0])) {
-								$Finalists[$Event][$Obj2->FinRank][0]=$Obj2;
+							if(empty($Finalists[$Event][$Obj2->FinRank][$Obj2->Country])) {
+								$Finalists[$Event][$Obj2->FinRank][$Obj2->Country]=$Obj2;
 								$MaxFinalists[$Event]++;
 							}
 						} elseif($Obj2->FinRank<=8) {
@@ -314,11 +314,11 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 				if($Obj1->FinRank==3)
 					$PdfData->Events[$Event]->Medals["Bronze"] = $Obj1->Team;
 				if($Obj2->FinRank==1)
-					$PdfData->Events[$Event]->Medals["Gold"] = $Obj2->Team;
+					$PdfData->Events[$Event]->Medals["Gold"] = ($PdfData->Events[$Event]->Medals["Gold"]!='-' ? $PdfData->Events[$Event]->Medals["Gold"]. ', ' :  '') . $Obj2->Team;
 				if($Obj2->FinRank==2)
-					$PdfData->Events[$Event]->Medals["Silver"] = $Obj2->Team;
+					$PdfData->Events[$Event]->Medals["Silver"] = ($PdfData->Events[$Event]->Medals["Silver"]!='-' ? $PdfData->Events[$Event]->Medals["Silver"]. ', ' : '') . $Obj2->Team;
 				if($Obj2->FinRank==3)
-					$PdfData->Events[$Event]->Medals["Bronze"] = $Obj2->Team;
+					$PdfData->Events[$Event]->Medals["Bronze"] = ($PdfData->Events[$Event]->Medals["Bronze"]!='-' ? $PdfData->Events[$Event]->Medals["Bronze"]. ', ' : '') . $Obj2->Team;
 			}
 		}
 		$FirstPhase=false;

@@ -5,6 +5,6 @@ if (!empty($on) AND subFeatureAcl($acl, AclOutput, 'outCaspar') == AclReadWrite 
 	if(count($ret['MEDI'])>1 and end($ret['MEDI']) != MENU_DIVIDER) {
 		$ret['MEDI'][] = MENU_DIVIDER;
 	}
-    $ret['MEDI'][] = 'ManageTvFlags|' . $CFG->ROOT_DIR . 'Modules/Boinx/ManageTVFlags.php';
-    $ret['MEDI'][] = 'ShowTvFlags|' . $CFG->ROOT_DIR . 'Modules/Boinx/ShowTVFlags.php?Tour=' . $_SESSION['TourCode'] . '|||TV';
+    $ret['MEDI'][] = get_text('MenuLM_ManageTvFlags').'|' . $CFG->ROOT_DIR . 'Modules/Boinx/ManageTVFlags.php';
+    $ret['MEDI'][] = get_text('MenuLM_ShowTvFlags').'|' . $CFG->ROOT_DIR . 'Modules/Boinx/ShowTVFlags.php?Tour=' . $_SESSION['TourCode'] . '|||TV';
 }

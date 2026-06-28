@@ -1,10 +1,6 @@
 <?php
-
-$OldStop=$pdf->StopHeader;
-$pdf->StopHeader=true;
 $pdf->setPhase('As of '.$PdfData->RecordAs);
 $pdf->setEvent($PdfData->Description);
-
 $pdf->setDocUpdate($PdfData->LastUpdate ?? $PdfData->Timestamp ?? '');
 
 $Version='';
@@ -13,61 +9,81 @@ if($PdfData->DocVersion) {
 }
 $pdf->setComment($Version);
 $pdf->setOrisCode($PdfData->Code, $PdfData->Description);
+
+$pdf->SetDataHeader($PdfData->Header, $PdfData->HeaderWidth);
+$pdf->PrintHeader($pdf->GetX(), $pdf->GetY()+1);
+
 $pdf->AddPage();
 $pdf->Bookmark($PdfData->IndexName, 0);
 
 $ONLINE=isset($PdfData->HTML);
 
-$AddPage=false;
-$first=true;
-
 if(empty($PdfData->Data['Items'])) {
 	$pdf->printSectionTitle('No data§', $pdf->GetY()+10);
 } else {
-	$pdf->SetDataHeader($PdfData->Header, $PdfData->HeaderWidth);
-	foreach($PdfData->Data['Items'] as $Team => $Rows) {
-		if($AddPage) {
-			$pdf->addpage();
-			$first=true;
-		}
-		if(!$pdf->samePage(5, 3.5, $pdf->lastY)) {
-			$first=true;
-		}
-		//$AddPage=true;
-		$pdf->SamePage(count($Rows), 3.5, $pdf->lastY);
-		$lstPictures = array();
-		$lstDoB = array();
+    $firstRun=true;
+    foreach($PdfData->Data['Items'] as $Team => $Rows) {
+        $oldRecName = '';
+        foreach($Rows as $RecType => $MyRows) {
+            $PrintSection = true;
+            foreach ($MyRows as $MyRow) {
+                $MinRows = count($MyRow->RtRecExtra) * count($MyRows);
+                if ($MyRow->RtRecExtra and count($MyRow->RtRecExtra[0]->Archers) > 1) {
+                    $MinRows = (count($MyRow->RtRecExtra[0]->Archers) + 1) * count($MyRows);
+                }
+                if ($PrintSection and !$pdf->SamePage($MinRows, 3.5, $pdf->lastY, false)) {
+                    $pdf->SamePage($MinRows, 3.5, $pdf->lastY);
+                    $oldRecName = '';
+                    $firstRun = true;
+                }
+                if ($PrintSection and !$firstRun) {
+                    $PrintSection = false;
+                    $pdf->lastY += 3.5;
+                }
+                $firstRun = false;
+                $PrintSection = false;
 
-		foreach($Rows as $RecType => $MyRows) {
-			if(!$pdf->samePage(4+intval($MyRows[0]->RtRecComponents), 3.5, $pdf->lastY)) {
-				/// must keep at least the space before header, header and captions and 1 line of record
-				$first=true;
-			}
-			$pdf->printSectionTitle($PdfData->SubSections[$Team][$RecType].'§', $pdf->lastY+($first ? 0 : 5));
-			$pdf->ln();
-			$pdf->PrintHeader($pdf->GetX(), $pdf->GetY()+1);
-			foreach($MyRows as $MyRow) {
-				if(!$pdf->samePage(1+intval($MyRow->RtRecComponents), 3.5, $pdf->lastY)) {
-					$pdf->printSectionTitleWContinue($PdfData->SubSections[$Team][$RecType].'§', $pdf->lastY);
-					$pdf->ln();
-					$pdf->PrintHeader($pdf->GetX(), $pdf->GetY()+1);
-				}
-				$OldRecord='*';
-				if($MyRow->RtRecTotal) {
-					$OldRecord=$MyRow->RtRecTotal.(($MyRow->CheckXNine and $MyRow->RtRecXNine) ? "/$MyRow->RtRecXNine" : '');
-				}
-				$tmp=array(
-					$MyRow->RtRecDistance,
-					'§'. $OldRecord . ' / ' . $MyRow->NewRecord.(($MyRow->CheckXNine) ? "/$MyRow->NewXNine" : ''),
-					$MyRow->Athlete,
-					'§'.$MyRow->CoCode,
-					substr($MyRow->RecordDate,0,10).'#'
-					);
-				$pdf->printDataRow($tmp);
-			}
-			$first=false;
-		}
-	}
+                $first = true;
+                foreach ($MyRow->RtRecExtra as $Record) {
+                    if ($MyRow->RtRecTotal) {
+                        $OldRecord = $MyRow->RtRecTotal . (($MyRow->CheckXNine and $MyRow->RtRecXNine) ? "/$MyRow->RtRecXNine" : '');
+                    }
+                    if ($MyRow->TeamEvent) {
+                        $tmp = array(
+                            ($oldRecName == $MyRow->RtRecCategoryName . " - " . $MyRow->RtRecDistance ? '' : $MyRow->RtRecCategoryName . " - " . $MyRow->RtRecDistance),
+                            $MyRow->TrHeaderCode . '#',
+                            '§' . $OldRecord . ' / ' . $MyRow->NewRecord . (($MyRow->CheckXNine) ? "/$MyRow->NewXNine" : ''),
+                            $MyRow->Athlete,
+                            '§' .$MyRow->CoCode,
+                            substr($MyRow->RecordDate,0,10) . '#'
+                        );
+                        $pdf->printDataRow($tmp);
+                        foreach ($MyRow->Archers as $Archer) {
+                            $tmp = array(
+                                '', '', '', '   '.$Archer
+                            );
+                            $pdf->printDataRow($tmp);
+                        }
+                        $pdf->lastY += 1;
+                    } else {
+                        $tmp = array(
+                            ($oldRecName == $MyRow->RtRecCategoryName . " - " . $MyRow->RtRecDistance ? '' : $MyRow->RtRecCategoryName . " - " . $MyRow->RtRecDistance),
+                            $MyRow->TrHeaderCode . '#',
+                            '§' . $OldRecord . ' / ' . $MyRow->NewRecord . (($MyRow->CheckXNine) ? "/$MyRow->NewXNine" : ''),
+                            $MyRow->Athlete,
+                            '§' . $MyRow->CoCode,
+                            substr($MyRow->RecordDate,0,10) . '#'
+                        );
+                        if (!$first) {
+                            $tmp[1] = '';
+                        }
+                        $first = false;
+                        $pdf->printDataRow($tmp);
+                    }
+                    $oldRecName = $MyRow->RtRecCategoryName . " - " . $MyRow->RtRecDistance;
+                }
+            }
+        }
+    }
 }
 
-$pdf->StopHeader=$OldStop;

@@ -255,16 +255,16 @@ class OrisBracketPDF extends OrisPDF
 		}
 	}
 
-	function PrintMedals($PhaseCounter, $GoldFirstName, $GoldName, $GoldCountry, $SilverFirstName, $SilverName, $SilverCountry, $BronzeFirstName, $BronzeName, $BronzeCountry)
-	{
+	function PrintMedals($PhaseCounter, $GoldName, $SilverName, $BronzeName) {
 		$this->SetLineWidth(0.1);
 		$this->SetXY(95+$PhaseCounter*$this->CellHSp,$this->lastY);
 		$this->SetFont('','B');
 		$this->Cell($this->CellHSp-5,$this->CellVSp,"GOLD",0,1,'L');
 		$this->SetXY(83+$PhaseCounter*$this->CellHSp,$this->GetY());
 		$this->SetFont('','');
-		if(!is_null($GoldFirstName) && strlen($GoldFirstName)>0)
-			$this->Cell($this->CellHSp,$this->CellVSp,$GoldFirstName . ' ' . $this->FirstLetters($GoldName). " (" . $GoldCountry . ")" ,0,0,'L');
+		if(is_string($GoldName)) {
+            $this->Cell($this->CellHSp, $this->CellVSp, $GoldName, 0, 0, 'L');
+        }
 		$this->Line(83+$PhaseCounter*$this->CellHSp,$this->lastY+2*$this->CellVSp,83+$PhaseCounter*$this->CellHSp+$this->CellHSp,$this->lastY+2*$this->CellVSp);
 
 		$this->lastY += ($PhaseCounter==2 ? 3: 6) * $this->CellVSp;
@@ -273,9 +273,10 @@ class OrisBracketPDF extends OrisPDF
 		$this->Cell($this->CellHSp-5,$this->CellVSp,"SILVER",0,1,'L');
 		$this->SetXY(83+$PhaseCounter*$this->CellHSp,$this->GetY());
 		$this->SetFont('','');
-		if(!is_null($SilverFirstName) && strlen($SilverFirstName)>0)
-			$this->Cell($this->CellHSp,$this->CellVSp,$SilverFirstName . ' ' . $this->FirstLetters($SilverName). " (" . $SilverCountry . ")" ,0,0,'L');
-		$this->Line(83+$PhaseCounter*$this->CellHSp,$this->lastY+2*$this->CellVSp,83+$PhaseCounter*$this->CellHSp+$this->CellHSp,$this->lastY+2*$this->CellVSp);
+		if(is_string($SilverName)) {
+            $this->Cell($this->CellHSp, $this->CellVSp, $SilverName, 0, 0, 'L');
+        }
+        $this->Line(83+$PhaseCounter*$this->CellHSp,$this->lastY+2*$this->CellVSp,83+$PhaseCounter*$this->CellHSp+$this->CellHSp,$this->lastY+2*$this->CellVSp);
 
 		$this->lastY += ($PhaseCounter==2 ? 3: 6) * $this->CellVSp;
 		$this->SetXY(95+$PhaseCounter*$this->CellHSp,$this->lastY);
@@ -283,10 +284,10 @@ class OrisBracketPDF extends OrisPDF
 		$this->Cell($this->CellHSp-5,$this->CellVSp,"BRONZE",0,1,'L');
 		$this->SetXY(83+$PhaseCounter*$this->CellHSp,$this->GetY());
 		$this->SetFont('','');
-		if(!is_null($BronzeFirstName) && strlen($BronzeFirstName)>0)
-			$this->Cell($this->CellHSp,$this->CellVSp,$BronzeFirstName . ' ' . $this->FirstLetters($BronzeName). " (" . $BronzeCountry . ")" ,0,0,'L');
+		if(is_string($BronzeName)) {
+            $this->Cell($this->CellHSp,$this->CellVSp, $BronzeName ,0,0,'L');
+        }
 		$this->Line(83+$PhaseCounter*$this->CellHSp,$this->lastY+2*$this->CellVSp,83+$PhaseCounter*$this->CellHSp+$this->CellHSp,$this->lastY+2*$this->CellVSp);
-
 	}
 
 	function FirstColumnTeam($item) {

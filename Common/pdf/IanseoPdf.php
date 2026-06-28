@@ -79,7 +79,7 @@ class IanseoPdf extends TCPDF {
     var $PoolWinnersWA=array();
 
 
-	function __construct($DocTitolo, $Portrait=true, $Headers='', $StaffVisibility=true) {
+	function __construct($DocTitolo, $Portrait=true, $Headers='', $StaffVisibility=true, $fullFontSet=false) {
 		global $CFG;
 		$isOnline=false;
 		if($Headers and is_file($Headers)) {
@@ -87,7 +87,7 @@ class IanseoPdf extends TCPDF {
 			$tmp=unserialize(file_get_contents($Headers));
 		} elseif(CheckTourSession()) {
 			require_once('Common/OrisFunctions.php');
-			$tmp=getPdfHeader(false);
+			$tmp=getPdfHeader(false, $fullFontSet);
             if($tmp->LocalRule!='IT') {
                 $StaffVisibility=false;
             }

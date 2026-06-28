@@ -68,7 +68,7 @@
 						$vv=$Value;
 
 						if($vv!=='0') {
-							$badDate=!($vv>=date('Y-m-d',$_SESSION['ToWhenFromUTS']) && $vv<=date('Y-m-d',$_SESSION['ToWhenToUTS']));
+							$badDate=!($vv>=$_SESSION['TourRealWhenFrom'] && $vv<=$_SESSION['TourRealWhenTo']);
 						}
 						if(!$badDate) {
 							// check if there is still a warmup for that event at the original time...

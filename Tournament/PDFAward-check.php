@@ -8,7 +8,7 @@ $par_RepresentCountry = getModuleParameter('Awards','RepresentCountry',1);
 $par_PlayAnthem = getModuleParameter('Awards','PlayAnthem',1);
 
 
-$pdf = new OrisPDF('Awards',get_text('MenuLM_PrintAwards'));
+$pdf = new OrisPDF('Awards',get_text('MenuLM_PrintAwards'), '', true);
 // $pdf->FontStd='droidsansfallback';
 // $pdf->FontFix='droidsansfallback';
 $pdf->SetFont($pdf->FontStd,'',8);

@@ -91,8 +91,8 @@ else{
                 CreateClass($TourId, $i++, 14, 14, 1, 'U15W', 'U21W,U18W,U16W,U15W,W', 'Female U15');
                 CreateClass($TourId, $i++, 12, 13, -1, 'U14O', 'U21O,U18O,U16O,U15O,U14O,O', 'Open U14');
                 CreateClass($TourId, $i++, 12, 13, 1, 'U14W', 'U21W,U18W,U16W,U15W,U14W,W', 'Female U14');
-                CreateClass($TourId, $i++, 1, 12, -1, 'U12O', 'U21O,U18O,U16O,U15O,U14O,U12O,O', 'Open U12');
-                CreateClass($TourId, $i++, 1, 12, 1, 'U12W', 'U21W,U18W,U16W,U15W,U14W,U12W,W', 'Female U12');
+                CreateClass($TourId, $i++, 1, 11, -1, 'U12O', 'U21O,U18O,U16O,U15O,U14O,U12O,O', 'Open U12');
+                CreateClass($TourId, $i++, 1, 11, 1, 'U12W', 'U21W,U18W,U16W,U15W,U14W,U12W,W', 'Female U12');
                 CreateClass($TourId, $i++, 50, 110, -1, '50O', '50O,O', '50+ Open');
                 CreateClass($TourId, $i++, 50, 110, 1, '50W', '50W,W', '50+ Female');
                 break;
@@ -118,8 +118,8 @@ else{
                         CreateClass($TourId, $i++, 14, 14, 1, 'U15W', 'U15W', 'Female U15');
                         CreateClass($TourId, $i++, 12, 13, -1, 'U14O', 'U14O', 'Open U14');
                         CreateClass($TourId, $i++, 12, 13, 1, 'U14W', 'U14W', 'Female U14');
-                        CreateClass($TourId, $i++, 1, 12, -1, 'U12O', 'U12O', 'Open U12');
-                        CreateClass($TourId, $i++, 1, 12, 1, 'U12W', 'U12W', 'Female U12');
+                        CreateClass($TourId, $i++, 1, 11, -1, 'U12O', 'U12O', 'Open U12');
+                        CreateClass($TourId, $i++, 1, 11, 1, 'U12W', 'U12W', 'Female U12');
                         break;
                     case 'SetUK_Metric':
                         CreateClass($TourId, $i++, 21, 49, -1, 'O', 'O', 'Open');
@@ -134,8 +134,8 @@ else{
                         CreateClass($TourId, $i++, 14, 14, 1, 'U15W', 'U21W,U18W,U16W,U15W,W', 'Female U15');
                         CreateClass($TourId, $i++, 12, 13, -1, 'U14O', 'U21O,U18O,U16O,U15O,U14O,O', 'Open U14');
                         CreateClass($TourId, $i++, 12, 13, 1, 'U14W', 'U21W,U18W,U16W,U15W,U14W,W', 'Female U14');
-                        CreateClass($TourId, $i++, 1, 12, -1, 'U12O', 'U21O,U18O,U16O,U15O,U14O,U12O,O', 'Open U12');
-                        CreateClass($TourId, $i++, 1, 12, 1, 'U12W', 'U21W,U18W,U16W,U15W,U14W,U12W,W', 'Female U12');
+                        CreateClass($TourId, $i++, 1, 11, -1, 'U12O', 'U21O,U18O,U16O,U15O,U14O,U12O,O', 'Open U12');
+                        CreateClass($TourId, $i++, 1, 11, 1, 'U12W', 'U21W,U18W,U16W,U15W,U14W,U12W,W', 'Female U12');
                         CreateClass($TourId, $i++, 50, 110, -1, '50O', '50O,O', '50+ Open');
                         CreateClass($TourId, $i++, 50, 110, 1, '50W', '50W,W', '50+ Female');
                         break;

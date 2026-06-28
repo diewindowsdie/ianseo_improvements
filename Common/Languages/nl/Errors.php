@@ -28,4 +28,5 @@ $lang['MissingPhpIntlModule']='Transliteratie kan worden uitgevoerd door install
 $lang['SpecialFilterDiscrepancy']='Speciaal filter is ingesteld, maar is niet actief';
 $lang['TooManyArrows']='Teveel totaal aantal pijlen: het maximum is $a';
 $lang['TooManyElimQualified']='Rondes van type $a[0] kunnen alleen worden geaccepteerd tot $a[1] schutters';
+$lang['TooManySessions']='Teveel sessies';
 ?>

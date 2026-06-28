@@ -1,5 +1,4 @@
 <?php
-
 $pdf->setPhase('As of '.$PdfData->RecordAs);
 $pdf->setEvent($PdfData->Description);
 $pdf->setDocUpdate($PdfData->LastUpdate ?? $PdfData->Timestamp ?? '');
@@ -59,7 +58,7 @@ if(empty($PdfData->Data['Items'])) {
                         $pdf->printDataRow($tmp);
                         foreach($Record->Archers as $Archers) {
                             $tmp = array(
-                                '','','',$Archers['Archer']
+                                '','','','   '.$Archers['Archer']
                             );
                             $pdf->printDataRow($tmp);
                         }

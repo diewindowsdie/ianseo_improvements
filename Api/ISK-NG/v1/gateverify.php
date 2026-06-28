@@ -77,77 +77,111 @@ if($r=safe_fetch($q)) {
         if(!empty($Options[$r->ToId])) {
             // we have sessions so check if session=0 and is not athlete... it is a coach
             $status = CheckStatus($r, $EnId, $Options);
-            if($status!=2) {
-                // check if this upgrade is linked to someone else's bib in another competition?
-                // if yes completely swap the accreditatoion
-                // select the extradata of the other competition
-                $t=safe_r_sql("select EdExtra, CoCode
+            $u = null;
+            if($status==2) {
+                //If was not allowed, check if he is in a upgrade
+                $t=safe_r_sql("select EdId, EdExtra, CoCode
 					from ExtraData
 					inner join Entries on EnId=EdId and EnTournament in (".implode(', ', array_keys($Options)).")
 					inner join Countries on CoId=EnCountry
-					where EdType='Z' and EdId=$EnId");
-
-                if($u=safe_fetch($t) and $u->EdExtra) {
-                    $bits=explode('-', $u->EdExtra);
-                    $TmpEnCode = $bits[0];
-                    if(count($bits)>1) {
-                        // this is a coach upgrade
-                        $IsCoach=1;
-                        $TmpCoCode = $bits[1];
-                        $t=safe_r_sql("select EnId, EnCode, 0 QuSession, '' as ScheduledSession, ToId, ToCode, EnName, EnFirstName, CoId as EnCountry, CoCode, CoName, AeId is not null as Accredited,
-							AcArea0, AcArea1, AcArea2, AcArea3, AcArea4, AcArea5, AcArea6, AcArea7, AcAreaStar, EdExtra as EnCaption,
-							0 AS  AcIsAthlete, DivDescription, ClDescription, DivId
-							from Entries
-							inner join Qualifications on QuId=EnId
-							inner join Tournament on ToId=EnTournament
-							inner join Countries on CoTournament=EnTournament and CoCode='$TmpCoCode'
-							left join Divisions on DivTournament=EnTournament and DivId=EnDivision
-							left join Classes on ClTournament=EnTournament and ClId=EnClass
-							left join Eliminations on ElId=EnId
-							LEFT JOIN AccEntries ON AeId=EnId AND AEOperation=1
-							LEFT JOIN AccColors ON AcTournament=EnTournament AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE AcDivClass
-							LEFT JOIN ExtraData ON EdId=EnId and EdType='C'
-							where EnCode='$TmpEnCode' and EnTournament in (".implode(', ', array_keys($Options)).")");
-                    } else {
-                        // normal upgrade linked to somebody
-                        $IsCoach=0;
-                        $t=safe_r_sql("select EnId, EnCode, QuSession, '' as ScheduledSession, ToId, ToCode, EnName, EnFirstName, CoId as EnCountry, CoCode, CoName, AeId is not null as Accredited,
-							AcArea0, AcArea1, AcArea2, AcArea3, AcArea4, AcArea5, AcArea6, AcArea7, AcAreaStar, EdExtra as EnCaption,
-							0 AS  AcIsAthlete, DivDescription, ClDescription, DivId
-							from Entries
-							inner join Qualifications on QuId=EnId
-							inner join Tournament on ToId=EnTournament
-							inner join Countries on CoTournament=EnTournament and CoId=EnCountry
-							left join Divisions on DivTournament=EnTournament and DivId=EnDivision
-							left join Classes on ClTournament=EnTournament and ClId=EnClass
-							left join Eliminations on ElId=EnId
-							LEFT JOIN AccEntries ON AeId=EnId AND AEOperation=1
-							LEFT JOIN AccColors ON AcTournament=EnTournament AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE AcDivClass
-							LEFT JOIN ExtraData ON EdId=EnId and EdType='C'
-							where EnCode='$TmpEnCode' and EnTournament in (".implode(', ', array_keys($Options)).")");
+					where EdType='Z' and  EdExtra like '{$r->AthCode}-%'");
+                if($u=safe_fetch($t)) {
+                    $qEntry = "select EnId, IFNULL(localbib.EdExtra,EnCode) as AthCode, QuSession, '' as ScheduledSession, ToId, ToCode, EnName, EnFirstName, EnCountry, CoCode, CoName, AeId is not null as Accredited, 
+                        AcArea0, AcArea1, AcArea2, AcArea3, AcArea4, AcArea5, AcArea6, AcArea7, AcAreaStar, caption.EdExtra as EnCaption, IFNULL(extras.EdExtra,0) as AthExtras, 
+                        (ClAthlete*DivAthlete) AS  AcIsAthlete, DivDescription, ClDescription, DivId, ClId
+                        from Entries
+                        inner join Qualifications on QuId=EnId
+                        inner join Tournament on ToId=EnTournament
+                        inner join Countries on CoTournament=EnTournament and CoId=EnCountry
+                        left join Divisions on DivTournament=EnTournament and DivId=EnDivision
+                        left join Classes on ClTournament=EnTournament and ClId=EnClass
+                        left join Eliminations on ElId=EnId
+                        LEFT JOIN AccEntries ON AeId=EnId AND AEOperation=1
+                        LEFT JOIN AccColors ON AcTournament=EnTournament AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE AcDivClass
+                        LEFT JOIN ExtraData as caption ON caption.EdId=EnId and caption.EdType='C'
+                        LEFT JOIN ExtraData as localbib ON localbib.EdId=EnId and localbib.EdType='Z' and localbib.EdExtra!=''
+                        LEFT JOIN ExtraData as extras ON extras.EdId=EnId and extras.EdType='P'
+                        WHERE EnId={$u->EdId}";
+                    $q=safe_r_sql($qEntry);
+                    if($r2=safe_fetch($q)) {
+                        $status = CheckStatus($r2, $u->EdId, $Options);
+                        if($status == 2) {
+                            $u = null;
+                        }
                     }
+                }
 
-                    if($u=safe_fetch($t)) {
-                        if($IsCoach) {
-                            $status=CheckStatus($u, $EnId, $Options);
-                        }
-                        if($status==1) {
-                            // gets name and picture of the linked entry
-                            if(!$r->AcAreaStar) $r->AcAreaStar = $u->AcAreaStar;
-                            if(!$r->AcArea0) $r->AcArea0 = $u->AcArea0;
-                            if(!$r->AcArea1) $r->AcArea1 = $u->AcArea1;
-                            if(!$r->AcArea2) $r->AcArea2 = $u->AcArea2;
-                            if(!$r->AcArea3) $r->AcArea3 = $u->AcArea3;
-                            if(!$r->AcArea4) $r->AcArea4 = $u->AcArea4;
-                            if(!$r->AcArea5) $r->AcArea5 = $u->AcArea5;
-                            if(!$r->AcArea6) $r->AcArea6 = $u->AcArea6;
-                            if(!$r->AcArea7) $r->AcArea7 = $u->AcArea7;
-                            //$r->EnCaption=$u->EnCaption;
-                            $ToCode=$u->ToCode;
-                            $CoCode=$u->CoCode;
-                            $CoName=$u->CoName;
-                            $r->EnId=$u->EnId;
-                        }
+            } else {
+                // check if this upgrade is linked to someone else's bib in another competition?
+                // if yes completely swap the accreditatoion
+                // select the extradata of the other competition
+                $t = safe_r_sql("select EdExtra, CoCode
+					from ExtraData
+					inner join Entries on EnId=EdId and EnTournament in (" . implode(', ', array_keys($Options)) . ")
+					inner join Countries on CoId=EnCountry
+					where EdType='Z' and EdId=$EnId");
+                $u=safe_fetch($t);
+            }
+            if($u and $u->EdExtra) {
+                $bits=explode('-', $u->EdExtra);
+                $TmpEnCode = $bits[0];
+                if(count($bits)>1) {
+                    // this is a coach upgrade
+                    $IsCoach=1;
+                    $TmpCoCode = $bits[1];
+                    $t=safe_r_sql("select EnId, EnCode, 0 QuSession, '' as ScheduledSession, ToId, ToCode, EnName, EnFirstName, CoId as EnCountry, CoCode, CoName, AeId is not null as Accredited,
+                        AcArea0, AcArea1, AcArea2, AcArea3, AcArea4, AcArea5, AcArea6, AcArea7, AcAreaStar, EdExtra as EnCaption,
+                        0 AS  AcIsAthlete, DivDescription, ClDescription, DivId
+                        from Entries
+                        inner join Qualifications on QuId=EnId
+                        inner join Tournament on ToId=EnTournament
+                        inner join Countries on CoTournament=EnTournament and CoCode='$TmpCoCode'
+                        left join Divisions on DivTournament=EnTournament and DivId=EnDivision
+                        left join Classes on ClTournament=EnTournament and ClId=EnClass
+                        left join Eliminations on ElId=EnId
+                        LEFT JOIN AccEntries ON AeId=EnId AND AEOperation=1
+                        LEFT JOIN AccColors ON AcTournament=EnTournament AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE AcDivClass
+                        LEFT JOIN ExtraData ON EdId=EnId and EdType='C'
+                        where EnCode='$TmpEnCode' and EnTournament in (".implode(', ', array_keys($Options)).")");
+                } else {
+                    // normal upgrade linked to somebody
+                    $IsCoach=0;
+                    $t=safe_r_sql("select EnId, EnCode, QuSession, '' as ScheduledSession, ToId, ToCode, EnName, EnFirstName, CoId as EnCountry, CoCode, CoName, AeId is not null as Accredited,
+                        AcArea0, AcArea1, AcArea2, AcArea3, AcArea4, AcArea5, AcArea6, AcArea7, AcAreaStar, EdExtra as EnCaption,
+                        0 AS  AcIsAthlete, DivDescription, ClDescription, DivId
+                        from Entries
+                        inner join Qualifications on QuId=EnId
+                        inner join Tournament on ToId=EnTournament
+                        inner join Countries on CoTournament=EnTournament and CoId=EnCountry
+                        left join Divisions on DivTournament=EnTournament and DivId=EnDivision
+                        left join Classes on ClTournament=EnTournament and ClId=EnClass
+                        left join Eliminations on ElId=EnId
+                        LEFT JOIN AccEntries ON AeId=EnId AND AEOperation=1
+                        LEFT JOIN AccColors ON AcTournament=EnTournament AND CONCAT(TRIM(EnDivision),TRIM(EnClass)) LIKE AcDivClass
+                        LEFT JOIN ExtraData ON EdId=EnId and EdType='C'
+                        where EnCode='$TmpEnCode' and EnTournament in (".implode(', ', array_keys($Options)).")");
+                }
+
+                if($u=safe_fetch($t)) {
+                    if($IsCoach) {
+                        $status=CheckStatus($u, $EnId, $Options);
+                    }
+                    if($status==1) {
+                        // gets name and picture of the linked entry
+                        if(!$r->AcAreaStar) $r->AcAreaStar = $u->AcAreaStar;
+                        if(!$r->AcArea0) $r->AcArea0 = $u->AcArea0;
+                        if(!$r->AcArea1) $r->AcArea1 = $u->AcArea1;
+                        if(!$r->AcArea2) $r->AcArea2 = $u->AcArea2;
+                        if(!$r->AcArea3) $r->AcArea3 = $u->AcArea3;
+                        if(!$r->AcArea4) $r->AcArea4 = $u->AcArea4;
+                        if(!$r->AcArea5) $r->AcArea5 = $u->AcArea5;
+                        if(!$r->AcArea6) $r->AcArea6 = $u->AcArea6;
+                        if(!$r->AcArea7) $r->AcArea7 = $u->AcArea7;
+                        //$r->EnCaption=$u->EnCaption;
+                        $ToCode=$u->ToCode;
+                        $CoCode=$u->CoCode;
+                        $CoName=$u->CoName;
+                        $r->EnId=$u->EnId;
                     }
                 }
             }

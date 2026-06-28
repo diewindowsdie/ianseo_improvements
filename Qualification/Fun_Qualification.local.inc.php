@@ -1164,7 +1164,7 @@ function MakeTeamsAbs($Societa=null, $Div=null, $Cl=null, $ToId=0)/*,$MoreTeam=t
                     }
                     $MyQuery = substr($MyQuery, 0, -1 * strlen("UNION ALL "))
                         . ") TeamEntries 
-					group by EnId
+					group by EnId, CheQuery
 					ORDER BY Country, EnSubTeam, CheQuery, ScoreCalc DESC, QuGold DESC, QuXnine DESC,EnId ASC ";
                     //print $RowEv->EcCode . ":<br>" . $MyQuery. "<br><br>\n";//exit;
                     $Rs = safe_r_sql($MyQuery);
