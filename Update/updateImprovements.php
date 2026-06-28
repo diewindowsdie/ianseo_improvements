@@ -58,7 +58,7 @@ if (!defined('CurrentTag') || $releases[$latestReleaseIndex]->tag_name !== Curre
     //сначала попытаемся найти установленный релиз
     $currentReleaseIndex = -1;
     for ($i = 0; $i < count($releases); ++$i) {
-        if ($releases[$i]->tag_name === CurrentTag) {
+        if (($releases[$i]->tag_name === CurrentTag) && ($releases[$i]->prerelease === $usePreReleases)) {
             $currentReleaseIndex = $i;
             break;
         }
