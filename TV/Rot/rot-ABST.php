@@ -60,7 +60,6 @@ function rotAbst($TVsettings, $RULE) {
 	$Return['SubBlocks']=count($rankData['sections']);
 
 	if($SubBlock>count($rankData['sections'])) $SubBlock=1;
-	if(count($rankData['sections'])==0) return $Return;
 
 	$Return['NextSubBlock']=($SubBlock+1);
 
