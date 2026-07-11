@@ -2,6 +2,7 @@
 $lang['AddSlot']='Aggiungi fascia oraria';
 $lang['AddTarget']='Aggiungi Bersaglio';
 $lang['AddWarmup']='Aggiungi riscaldamento';
+$lang['AlertSwitch1Wave']='Rimuovi i blocchi dal turno CD prima di passare al turno unico.';
 $lang['AllPartecipantsHaveSession']='Tutti i partecipanti sono stati assegnati a un turno';
 $lang['ChangesNotSaved']='Modifiche non salvate';
 $lang['ClearSlot']='Cancella fascia oraria (rinvia ciascuna delle fasi in "Non programmata")';

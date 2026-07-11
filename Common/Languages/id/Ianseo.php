@@ -12,5 +12,5 @@ $lang['GenerateFileRyngDyng']='Buat Urutan Perintah Ryngdyng';
 $lang['ResetItems']='Atur Ulang Item.<br/>Tindakan ini tidak akan meminta konfirmasi dan tidak dapat dibatalkan!<br/>Menyetel ulang kualifikasi akan mengatur ulang semua acara berikutnya juga!';
 $lang['ResetResult']='Sesi yang diminta telah diatur ulang';
 $lang['ResetSessions']='Konfirmasi pengaturan ulang';
-$lang['ShuffleResults']='Hasil acak';
+$lang['ShuffleResults']='Hasil pengacakan';
 ?>

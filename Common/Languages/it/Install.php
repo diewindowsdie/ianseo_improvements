@@ -30,6 +30,7 @@ $lang['Credits-Credits']='Crediti';
 $lang['Credits-DebugManager']='Reparto di debug';
 $lang['Credits-Development']='Sviluppo e codifica';
 $lang['Credits-Documentation']='Documentazione e supporto';
+$lang['Credits-DragDropTargetCredits']='L\'assegnazione Piazzole "Trascina e Rilascia" è stato gentilmente sviluppato da tre arcieri francesi:';
 $lang['Credits-FitarcoCredits']='Cos\'è I@nseo? I@nseo è un software dedicato alla gestione dei risultati di una gara di tiro con l\'arco; è un progetto Open Source sviluppato su finanziamento della Fitarco e distribuito per sua decisione a tutta l\'Europa, che ha raggiunto il più avanzato standard al Mondo e oggi, tradotto in molte lingue, si sta sviluppando fino a comprendere le più svariate fasi dell\'organizzazione di una gara, dall\'accreditamento alla preparazione del materiale stampato, all\'integrazione in rete e al disegno del campo di gara.';
 $lang['Credits-HHT']='Integrazione HHT';
 $lang['Credits-IanseoTeam']='I@nseo & I@nseo Team';

@@ -71,6 +71,7 @@ $lang['IfaaFlintIndoorHelp']='Cells with a red border show the sessions with arc
 Click on the Session Headings will select all the categories already in that session</br>
 Select the destination session where the session will be merged.';
 $lang['ISK-LockedSessionHelp']='{$a} icons show if the app can score or not in that session.';
+$lang['ISK-regexSignature']='Leave empty to match the exact Accreditation QR Code';
 $lang['ISK-ServerUrlPin']='<b>DO NOT SHARE THIS NUMBER</b><br>Use a PIN of your choice (4 Numeric Digits) to be used to access your competition.<br>
 Devices can score in your competition only reading the QR-Code printed by IANSEO.<br>
 In case of manual input in Ianseo Scorekeeper LITE app, the Competition code to use is <b>{$a}</b>';

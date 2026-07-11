@@ -21,6 +21,7 @@ $lang['Award-PlaqueGiver']='Hadiah akan dipersembahkan oleh $a';
 $lang['Award-PremiumGiver']='$a[0] akan ditampilkan oleh $a[1]';
 $lang['Award-PremiumGiving']='$a[0] sekarang ditampilkan oleh $a[1]';
 $lang['Award-representing']='mewakili $a';
+$lang['Award-representingTeam']='mewakili $a';
 $lang['Award-Special']='Hadiah Khusus sekarang akan diberikan kepada Juara kami oleh {$a}';
 $lang['AZE']='Azerbaijan';
 $lang['BAH']='Bahama';

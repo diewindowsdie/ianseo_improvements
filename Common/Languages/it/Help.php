@@ -37,6 +37,7 @@ $lang['GetBarcodeSeparator']='Dopo aver stampato la pagina con i riferimenti dei
 $lang['HomePage']='Questa è la pagina dove puoi selezionare o creare un Torneo';
 $lang['IfaaFlintIndoorHelp']='Le celle con bordo rosso indicano i turni con arcieri di quella Classe/Divisione<br> Cliccando sui titoli dei turni si selezioneranno tutte le Divisioni/Classi già presenti in quel turno<br> Selezionare il turno di destinazione in cui il turno verrà unito.';
 $lang['ISK-LockedSessionHelp']='L\'icona {$a} indica se la app può inserire o meno dei punteggi nella sessione';
+$lang['ISK-regexSignature']='Lasciare vuoto per far corrispondere esattamente al QR-Code di accreditamento';
 $lang['ISK-ServerUrlPin']='<b>NON RIVELARE QUESTO NUMERO</b><br>Scegli un PIN (4 Cifre Numeriche) da usare per accedere alla tua competizione.<br>I Dispositivi potranno inviare punteggi alla tua gara solo leggendo il QR-Code che viene stampata da I@NSEO.<br> In caso di inserimento manuale dei dati di gara nella app I@nseo Scorekeeper LITE, Il codice competizione da usare è <b>{$a}</b>';
 $lang['QrCodeLandscape']='Un singolo o doppio "<" disegnerà una freccia che punta a sinistra. Un singolo o doppio ">" disegnerà una freccia che punta a destra. Un singolo o doppio "^" disegnerà una freccia che punta in alto. Una singola o doppia "v" disegnerà una freccia che punta verso il basso.';
 $lang['QrCodePortrait']='Il campo è compatibile con HTML. Se inserisci qualcosa circondato da &lt;qrcode&gt;...&lt;/qrcode&gt;  il contenuto verrà modificato in un QR-Code';

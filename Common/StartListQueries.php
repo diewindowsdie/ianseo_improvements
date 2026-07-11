@@ -940,21 +940,21 @@ function getStandingRecordsQuery($ORIS=true) {
 function getBrokenRecordsQuery($ORIS=true) {
 	// The system is completely new and is based on the table RecBroken!
 	// check if a double event...
-	$q=safe_r_sql("select ToType, ToDouble, ToNumDist, ToXNineChars from Tournament where ToId={$_SESSION['TourId']}");
+	$q=safe_r_sql("select ToType, ToDouble, ToNumDist, ToGoldsChars from Tournament where ToId={$_SESSION['TourId']}");
 	$r=safe_fetch($q);
 	$IsDouble=$r->ToDouble;
 	$NumDistances=$r->ToNumDist;
 	$RecordTotal="QuScore";
-	$RecordXNine="QuXNine";
-	$GenXNine=$r->ToXNineChars;
+	$RecordXNine="QuGold";
+	$GenXNine=$r->ToGoldsChars;
 	if($IsDouble) {
 		if($NumDistances==4) {
 			// double 70m or 18+25
 			$RecordTotal="if(RecBroRecDouble, QuScore, if(RecBroRecMatchno=1, QuD1Score+QuD2Score, QuD3Score+QuD4Score))";
-			$RecordXNine="if(RecBroRecDouble, QuXNine, if(RecBroRecMatchno=1, QuD1Xnine+QuD2Xnine, QuD3Xnine+QuD4Xnine))";
+			$RecordXNine="if(RecBroRecDouble, QuGold, if(RecBroRecMatchno=1, QuD1Gold+QuD2Gold, QuD3Gold+QuD4Gold))";
 		} else {
 			$RecordTotal="if(RecBroRecDouble, QuScore, if(RecBroRecMatchno=1, QuD1Score+QuD2Score+QuD3Score+QuD4Score, QuD5Score+QuD6Score+QuD7Score+QuD8Score))";
-			$RecordXNine="if(RecBroRecDouble, QuXNine, if(RecBroRecMatchno=1, QuD1Xnine+QuD2Xnine+QuD3Xnine+QuD4Xnine, QuD5Xnine+QuD6Xnine+QuD7Xnine+QuD8Xnine))";
+			$RecordXNine="if(RecBroRecDouble, QuGold, if(RecBroRecMatchno=1, QuD1Gold+QuD2Gold+QuD3Gold+QuD4Gold, QuD5Gold+QuD6Gold+QuD7Gold+QuD8Gold))";
 		}
 	}
 
@@ -1003,7 +1003,7 @@ function getBrokenRecordsQuery($ORIS=true) {
         RtRecCategory as RecCategory,
        	RtRecCategoryName as RecCategoryName,
         TeScore as NewRecord,
-        TeXNine as NewXNine,
+        TeGold as NewXNine,
 		TeScore=RtRecMaxScore as CheckXNine,
        	RecBroRecDate as RecordDate,
        	date(RecBroRecDate) as RecordDateDate,
@@ -1035,7 +1035,7 @@ function getBrokenRecordsQuery($ORIS=true) {
         RtRecCategory as RecCategory,
        	RtRecCategoryName as RecCategoryName,
         FinScore as NewRecord,
-        length(FinArrowstring)-length(replace(FinArrowstring, if(EvXNineChars='', '{$GenXNine}', EvXNineChars), '')) as NewXNine,
+        length(FinArrowstring)-length(replace(FinArrowstring, if(EvGoldsChars='', '{$GenXNine}', EvGoldsChars), '')) as NewXNine,
 		FinScore=RtRecMaxScore as CheckXNine,
        	RecBroRecDate as RecordDate,
        	date(RecBroRecDate) as RecordDateDate,
@@ -1065,7 +1065,7 @@ function getBrokenRecordsQuery($ORIS=true) {
         RtRecCategory as RecCategory,
        	RtRecCategoryName as RecCategoryName,
         TfScore as NewRecord,
-        length(TfArrowstring)-length(replace(TfArrowstring, if(EvXNineChars='', '{$GenXNine}', EvXNineChars), '')) as NewXNine,
+        length(TfArrowstring)-length(replace(TfArrowstring, if(EvGoldsChars='', '{$GenXNine}', EvGoldsChars), '')) as NewXNine,
 		TfScore=RtRecMaxScore as CheckXNine,
        	RecBroRecDate as RecordDate,
        	date(RecBroRecDate) as RecordDateDate,

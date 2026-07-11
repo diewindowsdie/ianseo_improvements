@@ -246,6 +246,7 @@
 					least(f.FinMatchNo,f2.FinMatchNo)";
 
 			$rs=safe_r_sql($q);
+            $firstRankedPosition = 1;
 
 			if (safe_num_rows($rs)>0) {
 			/*
@@ -258,6 +259,7 @@
 			 * Per le altre fasi si cicla nel recordset che ha il numero di righe >=0
 			 */
 				$myRow=safe_fetch($rs);
+                $firstRankedPosition = $myRow->EvWinnerFinalRank;
 
 				// trasformo la fase
 					$phase=namePhase($myRow->EvFinalFirstPhase, $realphase);
@@ -286,14 +288,14 @@
                     $toWrite=array();
 					if ($phase==0) {
 					// vincente
-						$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->OppAthId,'rank'=>$myRow->EvWinnerFinalRank);
+						$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->OppAthId,'rank'=>$firstRankedPosition);
 					// perdente
-						$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->AthId,'rank'=>$myRow->EvWinnerFinalRank+1);
+						$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->AthId,'rank'=>$firstRankedPosition+1);
 					} else if ($phase==1) {
 					// vincente
-						$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->OppAthId,'rank'=>$myRow->EvWinnerFinalRank+2);
+						$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->OppAthId,'rank'=>$firstRankedPosition+2);
 					// perdente
-						$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->AthId,'rank'=>$myRow->EvWinnerFinalRank+3);
+						$toWrite[]=array('event'=>$EventToUse,'id'=>$myRow->AthId,'rank'=>$firstRankedPosition+3);
 					}
 
 					foreach ($toWrite as $values) {
@@ -329,7 +331,7 @@
                         $myRow=safe_fetch($rs);
                     }
                     arsort($lstMatches);
-                    $pos=numMatchesByPhase($phase)+SavedInPhase($phase)+1;
+                    $pos=$firstRankedPosition+numMatchesByPhase($phase)+SavedInPhase($phase);
                     $rank=$pos;
                     $oldScore=-1;
                     foreach ($lstMatches as $match=>$score) {

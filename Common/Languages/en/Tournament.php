@@ -660,6 +660,7 @@ $lang['LUE-CAN']='Canada';
 $lang['LUE-FITA']='World Archery';
 $lang['LUE-FRA']='France';
 $lang['LUE-GBR']='Archery GB';
+$lang['LUE-IFAA']='IFAA';
 $lang['LUE-ITA']='Italy';
 $lang['LUE-ITA_e']='Italy (esordienti)';
 $lang['LUE-ITA_i']='Italy (indoor)';

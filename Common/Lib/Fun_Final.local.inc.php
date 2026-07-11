@@ -479,6 +479,8 @@ require_once('Final/Fun_ChangePhase.inc.php');
 					tf2.TfGolds as golds2,
 					tf1.TfXNines as xnines1,
 					tf2.TfXNines as xnines2,
+					tf1.TfShootingArchers as archers1,
+					tf2.TfShootingArchers as archers2,
 					IF(tf1.TfDateTime>=tf2.TfDateTime,tf1.TfDateTime,tf2.TfDateTime) AS LastUpdate
 			";
 

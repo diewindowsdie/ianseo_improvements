@@ -7,6 +7,7 @@ $lang['ByEvent']='berdasarkan Event';
 $lang['ByName']='berdasarkan Nama';
 $lang['ByTarget']='berdasarkan Target';
 $lang['ClassDiv']='Kategori';
+$lang['CompetitionOfficials']='Panitia Kompetisi';
 $lang['CompleteSchedule']='Lihat Jadwal Lengkap';
 $lang['DivClas']='Divisi & Kelas';
 $lang['Eliminations']='Eliminasi';

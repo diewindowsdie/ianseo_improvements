@@ -47,6 +47,7 @@ if($_GET) {
 			if($Match and (!IsBlocked(BIT_BLOCK_IND) or !IsBlocked(BIT_BLOCK_TEAM))) {
 				switch(strtoupper($C)) {
 					case 'EDIT':
+                    case 'COMPONENTS':
 						$GoBack=$_SERVER['SCRIPT_NAME'].go_get().'&return=1';
 
 						// edit the scorecard
@@ -54,7 +55,11 @@ if($_GET) {
 						$_REQUEST['d_Event']=$Match->event;
 						$_REQUEST['d_Match']=$Match->match1;
 						//require_once('Final/WriteScoreCard.php');
-						require_once('Final/Spotting.php');
+                        if(strtoupper($C)=='EDIT') {
+                            require_once('Final/Spotting.php');
+                        } else {
+                            require_once('Modules/ExtendedORIS/teamShooting.php');
+                        }
 						die();
 						break;
 					case strtoupper($_GET['B']):
@@ -147,6 +152,63 @@ if($Match) {
     $TB2=ValutaArrowStringSO($Match->tiebreak2, $XChar, $XChar ? 'A' : null);
     $Closest1=($Match->tiebreak1!=strtoupper($Match->tiebreak1) or $Match->closest1);
     $Closest2=($Match->tiebreak2!=strtoupper($Match->tiebreak2) or $Match->closest2);
+    $errorTeamComponent = [false, false];
+    if($Match->teamEvent and module_exists('ExtendedORIS')) {
+        $archers1=json_decode($Match->archers1,true);
+        $archers2=json_decode($Match->archers2,true);
+        for($end=0;$end<$Match->ends;$end++) {
+            $cntAth = array(array(),array());
+            for($arrow=0;$arrow<$Match->arrows;$arrow++) {
+                if(strlen($Match->arrowString1)>$end*$Match->arrows+$arrow and $Match->arrowString1[$end*$Match->arrows+$arrow]!=" ") {
+                    if (array_key_exists($end * $Match->arrows + $arrow, $archers1)) {
+                        $cntAth[0][$archers1[$end * $Match->arrows + $arrow]] = ($cntAth[0][$archers1[$end * $Match->arrows + $arrow]] ?? 0) + 1;
+                    } else {
+                        $errorTeamComponent[0] = true;
+                    }
+                }
+                if(strlen($Match->arrowString2)>$end*$Match->arrows+$arrow and $Match->arrowString2[$end*$Match->arrows+$arrow]!=" "){
+                    if(array_key_exists($end*$Match->arrows+$arrow,$archers2)) {
+                        $cntAth[1][$archers2[$end*$Match->arrows+$arrow]] = ($cntAth[1][$archers2[$end*$Match->arrows+$arrow]]??0)+1;
+                    } else {
+                        $errorTeamComponent[1] = true;
+                    }
+                }
+            }
+            if(count($cntAth[0]) and max($cntAth[0])!=min($cntAth[0])) {
+                $errorTeamComponent[0] = true;
+            }
+            if(count($cntAth[1]) and max($cntAth[1])!=min($cntAth[1])) {
+                $errorTeamComponent[1] = true;
+            }
+        }
+        $endOffset = $Match->arrows * $Match->ends;
+        for($end=0;$end<strlen($Match->tiebreak1);$end=$end+$Match->so) {
+            $cntAth = array(array(),array());
+            for($arrow=0;$arrow<$Match->so;$arrow++) {
+                if($Match->tiebreak1[$end*$Match->so+$arrow]!=" ") {
+                    if (array_key_exists($endOffset+$end * $Match->so + $arrow, $archers1)) {
+                        $cntAth[0][$archers1[$endOffset+$end * $Match->so + $arrow]] = ($cntAth[0][$archers1[$endOffset+$end * $Match->so + $arrow]] ?? 0) + 1;
+                    } else {
+                        $errorTeamComponent[0] = true;
+                    }
+                }
+                if($Match->tiebreak2[$end*$Match->so+$arrow]!=" "){
+                    if(array_key_exists($endOffset+$end*$Match->so+$arrow,$archers2)) {
+                        $cntAth[1][$archers2[$endOffset+$end*$Match->so+$arrow]] = ($cntAth[1][$archers2[$endOffset+$end*$Match->so+$arrow]]??0)+1;
+                    } else {
+                        $errorTeamComponent[1] = true;
+                    }
+                }
+            }
+            if(count($cntAth[0]) and max($cntAth[0])!=min($cntAth[0])) {
+                $errorTeamComponent[0] = true;
+            }
+            if(count($cntAth[1]) and max($cntAth[1])!=min($cntAth[1])) {
+                $errorTeamComponent[1] = true;
+            }
+        }
+
+    }
 
     if($Match->win1) {
         $Win1=' matchWinner';
@@ -182,7 +244,9 @@ if($Match) {
     if($Closest1 or $Closest2) {
         echo '<div class="matchHighlight"><div>'.get_text('ClosestShort', 'Tournament').'</div><div class="Score">'.($Closest1 ? '<i class="fa fa-check-circle txtGreen"></i>' :'&nbsp;').'</div></div>';
     }
-
+    if($Match->teamEvent and module_exists('ExtendedORIS')) {
+        echo '<div class="matchHighlight"><div>'.get_text('TeamComponents').'</div><div class="Score'.($errorTeamComponent[0] ? ' warning':'').'">'.($errorTeamComponent[0] ? '<i class="fa fa-triangle-exclamation txtRed"></i>' : '<i class="fa fa-check txtGreen"></i>').'</div></div>';
+    }
     echo '</td>';
 
     echo '<td>&nbsp;</td>';
@@ -208,6 +272,10 @@ if($Match) {
     if($Closest1 or $Closest2) {
         echo '<div class="matchHighlight"><div>'.get_text('ClosestShort', 'Tournament').'</div><div class="Score">'.($Closest2 ? '<i class="fa fa-check-circle txtGreen"></i>' :'&nbsp;').'</div></div>';
     }
+    if($Match->teamEvent and module_exists('ExtendedORIS')) {
+        echo '<div class="matchHighlight"><div>'.get_text('TeamComponents').'</div><div class="Score'.($errorTeamComponent[1] ? ' warning':'').'">'.($errorTeamComponent[1] ? '<i class="fa fa-triangle-exclamation txtRed"></i>' : '<i class="fa fa-check txtGreen"></i>').'</div></div>';
+    }
+
     echo '</td>';
     echo '</tr>';
     echo '<tr>';
@@ -216,6 +284,9 @@ if($Match) {
     echo '<td colspan="2" class="Command"><a href="'.go_get(array('C'=> 'EDIT')).'">Edit arrows</a>';
     echo '</td>';
     echo '</tr>';
+    if(($errorTeamComponent[0] or $errorTeamComponent[1])) {
+        echo '<tr><td colspan="5" class="Command"><a href="'.go_get(array('C'=> 'COMPONENTS')).'">'.get_text('TeamShootingOrder', 'Tournament').'</a></td></tr>';
+    }
     echo '</table></td></tr>';
 }
 
@@ -273,6 +344,10 @@ function getScore($barcode, $strict=false) {
 	if($r= safe_fetch($rs)) {
         $obj = getEventArrowsParams($event, $r->phase ?? 0, $team);
         $r->winAt = $obj->winAt;
+        $r->arrows = $obj->arrows;
+        $r->ends = $obj->ends;
+        $r->so = $obj->so;
+        $r->MaxTeam = $obj->MaxTeam??0;
     }
 	return $r;
 }
