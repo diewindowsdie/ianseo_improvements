@@ -39,6 +39,7 @@ $lang['GetBarcodeSeparator']='Setelah mencetak lembar referensi barcode, baca «
 $lang['HomePage']='Halaman ini tempat Anda dapat memilih atau membuat turnamen.';
 $lang['IfaaFlintIndoorHelp']='Sel dengan garis tepi merah menunjukkan sesi dengan pemanah dari kategori tersebut.<br/> Klik pada Judul Sesi akan memilih semua kategori yang sudah ada dalam sesi tersebut.</br> Pilih sesi tujuan tempat sesi akan digabungkan.';
 $lang['ISK-LockedSessionHelp']='{$a} ikon menunjukkan apakah aplikasi dapat memproses skor atau tidak dalam sesi yang dimaksud';
+$lang['ISK-regexSignature']='Biarkan kosong agar sesuai persis dengan Kode QR Akreditasi';
 $lang['ISK-ServerUrlPin']='<b>JANGAN BAGIKAN NOMOR INI</b><br>Gunakan PIN pilihan Anda (4 Digit Numerik) yang akan digunakan untuk mengakses kompetisi Anda.<br>
 Perangkat dapat memproses skor di kompetisi Anda hanya dengan membaca QR-Code yang dibuat oleh IANSEO.<br>
 Dalam hal input manual di aplikasi Ianseo Scorekeeper LITE, kode Kompetisi yang digunakan adalah <b>{$a}</b>';

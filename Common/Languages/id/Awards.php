@@ -8,6 +8,7 @@ $lang['Aw-Med2']='Nama penghargaan tempat kedua';
 $lang['Aw-Med3']='Nama penghargaan tempat ketiga';
 $lang['Aw-Med4']='Nama penghargaan tempat keempat';
 $lang['Aw-representing']='Garis mewakili';
+$lang['Aw-representingTeam']='Perwakilan Team';
 $lang['CM0']='Compound Pria';
 $lang['CM1']='Compound Pria Beregu';
 $lang['CustomAward']='Penghargaan Kustom';

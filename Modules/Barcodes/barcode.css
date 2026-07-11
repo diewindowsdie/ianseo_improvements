@@ -70,16 +70,17 @@ tr.newTgt>td {
 .matchHighlight div {
     color: var(--header-dark);
     background-color: var(--bg-cell-header);
-    flex:1 0 30%;
-    padding: 0.4em;
+    flex:1 0 35%;
+    padding: 0.5em;
 }
 .matchHighlight div.Score {
-    flex:1 0 70%;
+    flex:1 0 65%;
     background-color:white;
     text-align:center;
     font-size: 1.5em;
     color: black;
 }
+.matchHighlight div.warning {background-color: #FFD580;}
 
 select, select option {
     white-space: nowrap;
@@ -91,3 +92,6 @@ select, select option {
 td.signed {
     font-weight: bold;
 }
+
+.txtGreen {color:green;}
+.txtRed {color:red;}
