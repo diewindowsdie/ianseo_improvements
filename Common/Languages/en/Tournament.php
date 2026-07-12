@@ -12,6 +12,7 @@ $lang['Acc']='Enable';
 $lang['Accomodation']='Accomodation';
 $lang['AccrCaption']='Accreditation Caption';
 $lang['AccreditateAll']='Confirm All';
+$lang['AccreditateAllNotPaying']='Confirm all not paying';
 $lang['AccreditateNone']='Unconfirm All';
 $lang['Accreditation']='Accreditation';
 $lang['AccreditationBooth']='Accreditation Booth Only!';
