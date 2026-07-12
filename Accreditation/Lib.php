@@ -34,8 +34,11 @@ function SetAccreditation($Id, $SetRap=0, $return='RicaricaOpener', $TourId=0, $
 	return $RicaricaOpener;
 }
 
-function getAccrQuery($Id=0) {
+function getAccrQuery($Id=0, $additionanWhereStatement = null) {
 	$Where=array();
+    if ($additionanWhereStatement) {
+        $Where[] = $additionanWhereStatement;
+    }
 	if($_SESSION['chk_Turni']) {
 		$Where[]="QuSession IN (".implode(',', StrSafe_DB($_SESSION['chk_Turni'])).")";
 	}
@@ -80,6 +83,7 @@ function getAccrQuery($Id=0) {
 		LEFT JOIN AccEntries a ON EnId=a.AEId AND EnTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND a.AEOperation=1
 		LEFT JOIN AccOperationType ON m.AEOperation=AOTId
 		LEFT JOIN Photos ON EnId=PhEnId
+		left join AccPrice ap on ap.APTournament = EnTournament and ap.APDivClass = concat(EnDivision, EnClass)
 		WHERE ".implode(' AND ', $Where). "
 		ORDER BY HasPhoto desc, HasPaid desc, IsAccredited desc, QuSession ASC, TargetNo ASC, EnFirstName ASC , EnName ASC , CoCode ASC, EnCode ";
 }

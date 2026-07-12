@@ -51,6 +51,15 @@ if (!IsBlocked(BIT_BLOCK_ACCREDITATION)) {
         }
         CD_redirect('Accreditation.php'.go_get('AccreditateAll', '', true));
     }
+    if(isset($_REQUEST['AccreditateAllNotPaying'])) {
+        /// bulk accreditation of the visible ids
+        $Select = getAccrQuery(0, "(EnPays = 0 or APPrice = 0 or APPrice is null)");
+        $q=safe_r_sql($Select);
+        while($r=safe_fetch($q)) {
+            SetAccreditation($r->EnId, 0, 'RicaricaOpener', 0, $_SESSION['AccOp']);
+        }
+        CD_redirect('Accreditation.php'.go_get('AccreditateAllNotPaying', '', true));
+    }
     if(isset($_REQUEST['AccreditateNone'])) {
         /// bulk accreditation of the visible ids
 	    $Select = getAccrQuery();
@@ -188,7 +197,8 @@ $MyRowCounter = safe_fetch($Rs);
           <div>&nbsp;</div>
           <div>
               <input type="submit" name="AccreditateAll" value="<?php echo get_text('AccreditateAll', 'Tournament'); ?>" onclick="return confirm('Sure?')">
-              <input type="submit" name="AccreditateNone" value="<?php echo get_text('AccreditateNone', 'Tournament'); ?>" onclick="return confirm('Sure?')">
+              <input type="submit" name="AccreditateNone" value="<?php echo get_text('AccreditateNone', 'Tournament'); ?>" onclick="return confirm('Sure?')"><br />
+              <input type="submit" name="AccreditateAllNotPaying" value="<?php echo get_text('AccreditateAllNotPaying', 'Tournament'); ?>" onclick="return confirm('Sure?')">
           </div>
       </td>
       <th width="16%"><?php print get_text('FamilyName','Tournament');?></th>
