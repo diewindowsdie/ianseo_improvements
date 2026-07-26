@@ -444,7 +444,7 @@ function getCompetitionDetailsHtml($competition): string
         }
         $result .= '<br />';
         //Статистика (Квалификация и Финалы)
-        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=sacd&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('StatEvents', $competition, 'Tournament') . '</a><br />';
+        $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=sqf&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('StatEvents', $competition, 'Tournament') . '</a><br />';
         //статистика участников по классу и дивизиону
         $result .= '<a target="_blank" class="link-l4" href="' . getPdfPrefix() . 'getPdf.php?report=sacd&id=' . $competition->ToCode . '">' . getTextAtCompetitionLanguage('StatClasses', $competition, 'Tournament') . '</a><br /><br />';
 
