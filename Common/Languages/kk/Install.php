@@ -52,7 +52,6 @@ $lang['Setup-Default']='World Archery Турнирінің Ережелері';
 $lang['Setup-DK']='Дания Турнирінің Ережелері';
 $lang['Setup-FR']='Француз Турнирінің Ережелері';
 $lang['Setup-IFAA']='IFAA Турнирінің Ережелері';
-$lang['Setup-IT']='Италия Турнирінің Ережелері - FitARCO';
 $lang['Setup-Kyudo']='Кюдо Турнирлері';
 $lang['Setup-LANC']='Ланкастер';
 $lang['Setup-NFAA']='NFAA Турнирінің Ережелері';

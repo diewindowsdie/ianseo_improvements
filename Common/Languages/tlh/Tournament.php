@@ -221,7 +221,6 @@ $lang['DefaultHM']='- ';
 $lang['DefaultLocRule']='';
 $lang['DefaultVI']='  ';
 $lang['DeletePreviousTeams']=' ';
-$lang['DeleteTourConfirm']='  :';
 $lang['DeleteTournament']=' ';
 $lang['Deleting']=':   ';
 $lang['Descr']='';

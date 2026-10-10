@@ -184,7 +184,6 @@ $lang['DefaultLocRule']='Раунд 1440';
 $lang['DefaultVI']='За замовчуванням VI';
 $lang['Delayed']='Відкладено (-1 для скидання)';
 $lang['DeletePreviousArchers']='Видалити наявні записи, яких немає в списку';
-$lang['DeleteTourConfirm']='Будь ласка, вставте в текстове поле наступний контрольний код:';
 $lang['DeleteTournament']='Видалити Змагання';
 $lang['DescDOB']='##DOB##&nbsp;<i>&lt;tab&gt;</i>&nbsp;BIB&nbsp;<i>&lt;tab&gt;</i>&nbsp;DOB<br>Установити дату народження (DOB) спортсмена визначені BIB. Формат дати: рррр-мм-дд';
 $lang['Descr']='Опис';

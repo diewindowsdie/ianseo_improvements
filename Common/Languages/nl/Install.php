@@ -179,7 +179,6 @@ $lang['Setup-CH']='Zwitserseregels';
 $lang['Setup-Default']='Standaard toernooi (WA regels)';
 $lang['Setup-DK']='Deense wedstrijdreglementen';
 $lang['Setup-FR']='Franse wedstrijdreglementen';
-$lang['Setup-IT']='Italiaanse wedstrijdreglementen - FITARCO';
 $lang['Setup-NFAA']='NFAA wedstrijdreglement';
 $lang['Setup-NL']='Nederlands tournooi';
 $lang['Setup-NO']='Noors tournooi (Norges Bueskytterforbund rules)';

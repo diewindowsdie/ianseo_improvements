@@ -223,7 +223,6 @@ $lang['DefaultHM']='Noklusēts HM';
 $lang['DefaultLocRule']='FITA';
 $lang['DefaultVI']='Noklusēts VI';
 $lang['DeletePreviousTeams']='Izdzēst iepriekšējās komandas';
-$lang['DeleteTourConfirm']='Lūdzu ievadiet teksta laukumā sekojošo kontroles kodu:';
 $lang['DeleteTournament']='Dzēst sacensības';
 $lang['Deleting']='Notiek darbība: tiek dzēsti online faili...';
 $lang['DescPhotoName']='Skatīt kodu';

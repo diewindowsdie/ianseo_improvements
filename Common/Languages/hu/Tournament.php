@@ -248,7 +248,6 @@ $lang['DefaultVI']='Alapértelmezett VI';
 $lang['DeletePreviousArchers']='Listában nem szereplő versenyzők törlése';
 $lang['DeletePreviousTeams']='Korábbi csapatok törlése';
 $lang['DeleteSplit']='Felosztás törlése.';
-$lang['DeleteTourConfirm']='Írja be a következő ellenőrző kódot a szövegmezőbe';
 $lang['DeleteTournament']='Verseny törlése';
 $lang['Deleting']='Folyamatban lévő művelet: on-line fájlok törlése...';
 $lang['DescPhotoName']='Kód megtekintése';

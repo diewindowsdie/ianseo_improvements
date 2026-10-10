@@ -361,8 +361,8 @@ switch($_REQUEST['act']) {
        			RrMatchRound as idRound,
        			RrMatchWinLose as winner,
        			RrMatchWinLose as finished,
-       			if(RrLevTieBreakSystem2>0, concat_ws('/',RrPartPoints,RrPartTieBreaker,RrPartTieBreaker2), concat_ws('/',RrPartPoints,RrPartTieBreaker)) as gPoints, 
-       			if(RrLevTieBreakSystem2>0, concat_ws('/',RrMatchRoundPoints,RrMatchTieBreaker,RrMatchTieBreaker2), concat_ws('/',RrMatchRoundPoints,RrMatchTieBreaker)) as mPoints, 
+       			if(RrLevTieBreakSystem2>0, concat_ws('/',RrPartPoints,RrPartTieBreaker/IF(RrLevTieBreakSystem=6,1000,1),RrPartTieBreaker2/IF(RrLevTieBreakSystem2=6,1000,1)), concat_ws('/',RrPartPoints,RrPartTieBreaker/IF(RrLevTieBreakSystem=6,1000,1))) as gPoints, 
+       			if(RrLevTieBreakSystem2>0, concat_ws('/',RrMatchRoundPoints,RrMatchTieBreaker/IF(RrLevTieBreakSystem=6,1000,1),RrMatchTieBreaker2/IF(RrLevTieBreakSystem2=6,1000,1)), concat_ws('/',RrMatchRoundPoints,RrMatchTieBreaker/IF(RrLevTieBreakSystem=6,1000,1))) as mPoints, 
        			RrPartGroupRank as gRank
 				from RoundRobinMatches
 				inner join RoundRobinLevel on RrLevTournament=RrMatchTournament and RrLevTeam=RrMatchTeam and RrLevEvent=RrMatchEvent and RrLevLevel=RrMatchLevel

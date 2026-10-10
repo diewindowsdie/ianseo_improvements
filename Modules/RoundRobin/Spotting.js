@@ -157,14 +157,20 @@ function toggleAlternate() {
         var Arrows=$('table.Scorecard').attr('arrows');
         var SO=$('table.Scorecard').attr('so');
         var tabindex=1;
-        $('.ShootsFirst:checked').each(function() {
-            // gets the rows set as shooting first and set them as alternates
-            // r1=$()
-        });
     } else {
         $('.Alternate').hide();
         $('[tabindexorg]').each(function() {
             this.prop('tabindex', this.attr('tabindexorg'));
+        });
+        $.getJSON(WebDir+'Modules/RoundRobin/Spotting-action.php', {
+            team:$('#spotTeam').val(),
+            event:$('#spotEvent').val(),
+            level:$('#spotLevel').val(),
+            group:$('#spotGroup').val(),
+            round:$('#spotRound').val(),
+            match:$('#spotMatch').val(),
+            act:'setShootingFirst',
+            stopAlternate:1
         });
     }
 }

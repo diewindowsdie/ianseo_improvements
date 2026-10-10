@@ -19,7 +19,7 @@ if(!empty($_REQUEST['Event'])) {
 	$options['events']=$_REQUEST['Event'];
 }
 $pdf = new ResultPDF(get_text('ResultsRobin','Tournament'));
-$PdfData = getRobin($options, false, (empty($_REQUEST['IncRankings']) or !empty($_REQUEST['IncBrackets'])), (empty($_REQUEST['IncBrackets']) or !empty($_REQUEST['IncRankings'])));
+$PdfData = getRobin($options, false, !empty($_REQUEST['IncBrackets']), !empty($_REQUEST['IncRankings']), !empty($_REQUEST['IncBrackets']));
 $rankData = $PdfData->rankData;
 
 if(!empty($_REQUEST['ShowOris'])) {

@@ -10,6 +10,7 @@ $lang['Credits-Coordination']='IT Project Coordination';
 $lang['Credits-CoreGroup']='IANSEO Core Group';
 $lang['Credits-Credits']='Credits';
 $lang['Credits-Documentation']='Dokumentation & Support';
+$lang['Credits-DragDropTargetCredits']='Dra-och-släpp-funktionen för tavel-/patrull-indelning har utvecklats av tre franska bågskyttar, som generöst bidragit med sitt arbete';
 $lang['Credits-FitarcoCredits']='Vad är Ianseo? Ianseo är ett system för resultathantering på en bågskyttetävling.<br>Ianseo är ett Open Source projekt möjliggjort med stöd av det Italienska bågskytteförbundet, som beslutat att dela med sig systemet gratis till att börja med i Europa.<br>Systemet har sedan spridits och används över hela världen, och används på alla nivåer allt ifrån enkla klubbtävlingar till Världscuppstävlingar och Olympiska spel.<br>
 Systemet har utvecklats ifrån att endast hantera skyttarnas poäng till att sköta allt från avgiftsadministration och materialkontroll till publicering av TV-grafik i direktsändningar. Utöver detta finner du säkert fler funktioner, mer eller mindre användbara för just din tävling.';
 $lang['Credits-HHT']='HHT Integration';
@@ -138,6 +139,9 @@ $lang['WhatIanseoDoes02']='<b>Hjälp och support</b> Om du behöver hjälp, skic
 $lang['WhatIanseoDoes03']='<b>Tävlings-och träningssammanhang</b> I@nseo kan användas i alla sammanhang. I@nseo kan användas både med handenheter och utan, som ett verktyg för publicering av resultat både på internet och lokalt. Tillsammans med enheter och "Ianseo ScoreKeeper NG" minskar belastningen för sekretariatet eftersom resultaten förs in direkt i systemet. Appen finns att ladda ner både för Android och iOS.';
 $lang['WhatIanseoDoes04']='<b>Donera gärna!</b> I@nseo är fritt att använda och "open source"... Om du gillar i@nseo bör du skänka ett bidrag, det hjälper oss att hålla server och programvara uppdaterade. Klicka "Paypal" eller "Stripe"-knappen på hemsidan $a!';
 $lang['WhatIanseoDoes05']='<b>Sociala media:</b> Följ i@nseo på $a!';
+$lang['WhatIanseoDoes06']='<b>GARANTI</b> Ianseo tillhandahålls i ”befintligt skick” och utan garantier av något slag, vare sig uttryckliga eller underförstådda, inklusive, men inte begränsat till, garantier avseende lämplighet för ett visst ändamål, säljbarhet, äganderätt eller att programvaran inte gör intrång i tredje parts rättigheter. Under inga omständigheter ansvarar vi gentemot dig för något som uppstår till följd av eller i samband med programvaran, inklusive indirekta, särskilda, tillfälliga skador eller följdskador, även om vi i förväg har informerats om möjligheten att sådana skador kan uppstå.';
+$lang['WhatIanseoDoes07']='<b>ÖVERSÄTTNINGAR</b> Ianseos officiella språk är engelska. Översättningar tillhandahålls, men ansvaret för deras korrekthet ligger hos respektive översättare.';
+$lang['WhatIanseoDoes08']='<b>MODULER</b> Vissa moduler är utvecklade av tredje part, som själva ansvarar för sitt arbete. De tillhandahålls enligt principen ”bästa möjliga insats”.';
 $lang['WhatIanseoDoesTitle']='I@NSEO hjälper dig att arrangera en bättre tävling.';
 $lang['Write connection failed']='Connection with write server failed: either you did not provide the root password or the login data are not correct!';
 $lang['Write Database not present']='The write database could not be accessed: either the DB name is wrong or you didn\'t provide the ROOT password to create it.';

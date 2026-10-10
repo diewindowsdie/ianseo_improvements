@@ -10,7 +10,7 @@ if(!hasFullACL(AclCompetition, 'cData', AclReadWrite) or !CheckTourSession() or 
 	JsonOut($JSON);
 }
 
-$Advanced = (ProgramRelease!='FITARCO' AND ProgramRelease!='STABLE');
+$Advanced =!isProduction(['FITARCO', 'STABLE']);
 
 $AllowedNullTargets=array(
 	6,//TrgField

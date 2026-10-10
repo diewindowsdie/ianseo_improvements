@@ -35,6 +35,8 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 	 */
 		var $EnIdFound=array();
 		var $TeamFound='';
+        var $scheduledMatchesList=array();
+        var $scheduledMatchesStatus=array();
 
 		protected function safeFilter() {
 			$ret=array();
@@ -94,7 +96,14 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 				$ExtraFilter[] = 'Event in ("'.implode('","', $this->EnIdFound).'") AND (Team='.StrSafe_DB($this->TeamFound).' or oppTeam='.StrSafe_DB($this->TeamFound).')';
 			}
 			if(!empty($this->opts['coid'])) {
-				$ExtraFilter[] = "(Team=" . intval($this->opts['coid']) . " or OppTeam=" . intval($this->opts['coid']) . ") ";
+                if(is_array($this->opts['coid'])) {
+                    $co=intval($this->opts['coid'][0]);
+                    $sub=intval($this->opts['coid'][1]);
+                    $ExtraFilter[] = "((Team, subteam)=({$co},{$sub}) or (OppTeam,oppSubTeam)=({$co},{$sub})) ";
+                } else {
+                    $co=intval($this->opts['coid']);
+                    $ExtraFilter[] = "(Team={$co} or OppTeam={$co}) ";
+                }
 			}
 			if(isset($this->opts['matchno'])) {
 				$ExtraFilter[] = "(MatchNo=" . intval($this->opts['matchno']) . ' or OppMatchNo =' . intval($this->opts['matchno']) . ')';
@@ -536,6 +545,8 @@ require_once('Common/Lib/Fun_PrintOuts.php');
 					'scheduledDate' => $myRow->ScheduledDate,
 					'scheduledTime' => $myRow->ScheduledTime,
 					'scheduledKey' => $myRow->ScheduledKey,
+                    'hideSchedule' => false,
+//
 					'lastUpdated' => $myRow->LastUpdated,
 					'matchNo' => $myRow->MatchNo,
 					'isValidMatch'=> ($myRow->GridPosition + $myRow->OppGridPosition),
@@ -665,7 +676,27 @@ require_once('Common/Lib/Fun_PrintOuts.php');
                 }
 
                 $this->data['sections'][$myRow->Event]['phases'][$myRow->Phase]['items'][] = $item;
+                if(!array_key_exists($item["scheduledKey"]??'', $this->scheduledMatchesList)) {
+                    $this->scheduledMatchesList[$item["scheduledKey"]??''] = array();
+                    $this->scheduledMatchesStatus[$item["scheduledKey"]??''] = array();
+                    $this->scheduledMatchesStatus[$item["scheduledKey"]??''][$myRow->Event] = false;
+                } elseif(!array_key_exists($myRow->Event, $this->scheduledMatchesStatus[$item["scheduledKey"]??''])) {
+                    $this->scheduledMatchesStatus[$item["scheduledKey"]??''][$myRow->Event] = false;
+                }
+                $this->scheduledMatchesList[$item["scheduledKey"]??''][] = array($myRow->Event, $myRow->Phase, array_key_last($this->data['sections'][$myRow->Event]['phases'][$myRow->Phase]['items']));
+                $this->scheduledMatchesStatus[$item["scheduledKey"]??''][$myRow->Event] |= !(empty($item["score"]) AND empty($item["setScore"]) AND empty($item["irm"]) AND empty($item["oppScore"]) AND empty($item["oppSetScore"] AND empty($item["oppIrm"])));
 			}
+            foreach ($this->scheduledMatchesStatus as $key => $value) {
+                foreach ($value as $kEvent=>$vEvent) {
+                    if ($vEvent) {
+                        foreach ($this->scheduledMatchesList[$key] as $keyArray) {
+                            if ($keyArray[0] == $kEvent) {
+                                $this->data['sections'][$keyArray[0]]['phases'][$keyArray[1]]['items'][$keyArray[2]]['hideSchedule'] = true;
+                            }
+                        }
+                    }
+                }
+            }
 		}
 
 		function getData() {

@@ -5,8 +5,8 @@ require_once('Common/Lib/Fun_Modules.php');
 require_once('Common/Lib/CommonLib.php');
 require_once(__DIR__.'/config_defines.php');
 
-const reqAppVersion = '1.9.4';
-const reqGateVersion = '0.0.1';
+const reqAppVersion = '1.10.0';
+const reqGateVersion = '1.0.4';
 
 define('NG_DEBUG_LOG', ($CFG->DEBUG??false) and is_dir(__DIR__.'/log') and is_writable(__DIR__.'/log'));
 define('NG_DEBUG_LOGFILE', __DIR__.'/log/messages-'.date('Y-m-d').'.jsonl');
@@ -460,16 +460,18 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
     }
     $toId = getIdFromCode($DEVICE->ToCode);
 
-
-	if($Lightmode) {
-		$IskSequence=$Lightmode;
-	} else {
+    $IskSequence = $Lightmode;
+    $signatureFormula = null;
+	if(!$Lightmode) {
 	    $IskGroup=getModuleParameter('ISK-NG', 'Sequence', null, $toId);
 	    if(empty($IskGroup[$DEVICE->IskDvGroup])) {
 		    return resetDevice($DEVICE->IskDvDevice, $DEVICE->IskDvTarget, $Force);
 	    }
-
 	    $IskSequence=$IskGroup[$DEVICE->IskDvGroup];
+        $Items=getModuleParameter('ISK-NG', 'QRCode-Setup', [], $toId);
+        if(array_key_exists('regexSignature', $Items) AND !empty($Items["regexSignature"])) {
+            $signatureFormula = $Items["regexSignature"];
+        }
 	}
 
 	// if($DEVICE->ScheduleKey!=$IskSequence['type'].$IskSequence['maxdist'].$IskSequence['session']) {
@@ -494,6 +496,9 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
         'archers' => array(),
         'targetFaces' => array(),
     );
+    if(!is_null($signatureFormula)) {
+        $json_array['signatureFormula'] = $signatureFormula;
+    }
 
     $TgtFaceList = array();
 	$TgtFaceTemplate=[
@@ -518,25 +523,30 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 	//  check if there are specific accreditations
 	$ExtraSql='';
 	$ExtraField='IFNULL(zextra.EdExtra,EnCode) ';
-	if($Specific=getModuleParameterLike('Accreditation', 'Matches-A-%', $toId)) {
-		$f=array();
-		foreach($Specific as $SpecType=>$SpecCats) {
-			$tmp=explode('-', $SpecType);
-            $q=safe_r_SQL("SELECT IceCardNumber FROM `IdCardElements` WHERE `IceTournament` = $toId AND IceType='AthQrCode' and IceCardType='A' AND IceCardNumber=".end($tmp));
-            if(safe_num_rows($q)>0) {
-                $f[]="(IceCardNumber=".end($tmp)." and find_in_set(concat(EnDivision,EnClass), '$SpecCats'))";
+    $Items=getModuleParameter('ISK-NG', 'QRCode-Setup', [], $toId);
+    if(array_key_exists('deviceSignatureCode', $Items) AND !empty($Items["deviceSignatureCode"])) {
+        $ExtraField = "'".$Items["deviceSignatureCode"]."'";
+    } else {
+        if ($Specific = getModuleParameterLike('Accreditation', 'Matches-A-%', $toId)) {
+            $f = array();
+            foreach ($Specific as $SpecType => $SpecCats) {
+                $tmp = explode('-', $SpecType);
+                $q = safe_r_SQL("SELECT IceCardNumber FROM `IdCardElements` WHERE `IceTournament` = $toId AND IceType='AthQrCode' and IceCardType='A' AND IceCardNumber=" . end($tmp));
+                if (safe_num_rows($q) > 0) {
+                    $f[] = "(IceCardNumber=" . end($tmp) . " and find_in_set(concat(EnDivision,EnClass), '$SpecCats'))";
+                }
             }
-		}
-        if(count($f)>0) {
-            $ExtraSql = "left join IdCardElements on IceTournament=EnTournament and IceType='AthQrCode' and IceCardType='A' and (" . implode(' or ', $f) . ") ";
-            $ExtraField = 'coalesce(IceContent, zextra.EdExtra, EnCode)';
+            if (count($f) > 0) {
+                $ExtraSql = "left join IdCardElements on IceTournament=EnTournament and IceType='AthQrCode' and IceCardType='A' and (" . implode(' or ', $f) . ") ";
+                $ExtraField = 'coalesce(IceContent, zextra.EdExtra, EnCode)';
+            }
         }
-	}
-    if($ExtraSql=='') {
-        $q=safe_r_SQL("SELECT IceCardNumber, IceOrder, IceCardPage  FROM `IdCardElements` WHERE `IceTournament` = $toId AND IceType='AthQrCode' and IceCardType='A' ORDER BY IceCardNumber, IceOrder, IceCardPage");
-        if($f=safe_fetch($q)) {
-            $ExtraSql="left join IdCardElements on IceTournament=EnTournament and IceType='AthQrCode' and IceCardType='A' and IceCardNumber=$f->IceCardNumber AND IceOrder=$f->IceOrder AND IceCardPage=$f->IceCardPage ";
-            $ExtraField='coalesce(IceContent, zextra.EdExtra, EnCode)';
+        if ($ExtraSql == '') {
+            $q = safe_r_SQL("SELECT IceCardNumber, IceOrder, IceCardPage  FROM `IdCardElements` WHERE `IceTournament` = $toId AND IceType='AthQrCode' and IceCardType='A' ORDER BY IceCardNumber, IceOrder, IceCardPage");
+            if ($f = safe_fetch($q)) {
+                $ExtraSql = "left join IdCardElements on IceTournament=EnTournament and IceType='AthQrCode' and IceCardType='A' and IceCardNumber=$f->IceCardNumber AND IceOrder=$f->IceOrder AND IceCardPage=$f->IceCardPage ";
+                $ExtraField = 'coalesce(IceContent, zextra.EdExtra, EnCode)';
+            }
         }
     }
 
@@ -688,101 +698,6 @@ function rebuildQrConfig($DEVICE, $Lightmode=false, $Force=false) {
 		        return resetDevice($DEVICE->IskDvDevice, $json_array['targetAssigned']);
 	        }
 	        break;
-        // case 'E1':
-        // case 'E2':
-        //     $Session = $IskSequence['session'];
-        //     $Phase=substr($IskSequence['type'], 1)-1;
-        //     // Add leading zeroes because the app doesn't send them
-        //     $TargetNo=$Session.sprintf("%03s", $DEVICE->IskDvTarget);
-        //     $tgtAssigned=array($DEVICE->IskDvTarget);
-		//
-        //     $json_array['targetAssigned']=implode(', ', $tgtAssigned);
-        //     $json_array['type']=$IskSequence['type'];
-        //     $json_array['current']=array(
-        //         'session'=>$Session,
-        //         'distance'=>'0',
-        //         'end'=>$IskSequence['end'],
-        //         'sessionName'=>'Session '.$Session,
-        //         'distanceName'=>$IskSequence['distance'],
-        //         'ends' => 0,
-        //         'arrows' => 0,
-        //         'shootOff' => 3,
-        //         'soEnds'=>array()
-        //     );
-		//
-        //     // get the distances, Course name, Ends and arrows/end
-        //     $SQL="select distinct if(ElElimPhase=0, EvE1Ends, EvE2Ends) as DiEnds, if(ElElimPhase=0, EvE1Arrows, EvE2Arrows) as DiArrows, SesName
-		// 		FROM Events
-		// 		INNER JOIN Eliminations on ElTournament=EvTournament and ElElimPhase=$Phase and EvCode=ElEventCode and EvTeamEvent=0 and EvElim".($Phase+1).">0
-		// 		Left join Session on SesTournament=EvTournament and ElSession=SesOrder AND SesType='E'
-		// 		WHERE EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " and ElSession=$Session
-		// 		";
-		//
-        //     $q=safe_r_sql($SQL);
-        //     if($r=safe_fetch($q)) {
-        //         if($r->SesName) {
-        //             $json_array['current']['sessionName']=$r->SesName;
-        //         }
-        //         $json_array['current']['distanceName']='';
-        //         $json_array['current']['ends']=$r->DiEnds;
-        //         $json_array['current']['arrows']=$r->DiArrows;
-        //     } else {
-        //         return resetDevice($DEVICE->IskDvDevice, $json_array['targetAssigned']);
-        //     }
-		//
-        //     // Prepare the select used to retrieve competitor information
-        //     $Select = "SELECT EnId, EnCode, EnName, ucase(EnFirstName) as EnFirstName, EnNameOrder, EnSex, EvCode, EvEventName, CoCode, CoName,
-		// 			ElTargetNo,
-		// 			SUBSTRING(ElTargetNo,2) AS TargetNo,
-		//             EvFinalTargetType,
-		//             ElArrowstring ArrowString
-		// 		FROM Entries
-		// 		INNER JOIN Eliminations ON EnId=ElId and ElElimPhase={$Phase} and ElSession=$Session
-		// 		INNER JOIN Countries ON EnCountry=CoId AND EnTournament=CoTournament
-		// 		INNER JOIN Events  on EvTournament=EnTournament and EvCode=ElEventCode and EvTeamEvent=0
-		// 		WHERE EnTournament=$toId
-		// 			AND EnAthlete=1
-		// 			AND EnStatus <= 1
-		// 			AND left(concat(ElSession, ElTargetNo), 4) in ('".$TargetNo."')
-		// 		ORDER BY ElTargetNo ";
-        //     // Retrieve the competitor info
-        //     $Rs=safe_r_sql($Select);
-		//
-        //     while ($MyRow=safe_fetch($Rs)) {
-        //         // Now load the json array with the info we need
-        //         $row_array=array();
-        //         $row_array["encode"] = $MyRow->EnCode;
-        //         $row_array["name"] = $MyRow->EnFirstName . ' ' . $MyRow->EnName;
-        //         $row_array["placement"] = ltrim($MyRow->TargetNo, '0');
-        //         $row_array["noc"] = $MyRow->CoCode;
-        //         $row_array["nocname"] = $MyRow->CoName;
-        //         $row_array["event"] = $MyRow->EvCode;
-        //         $row_array["eventname"] = $MyRow->EvEventName;
-        //         $row_array["qutarget"] = $MyRow->ElTargetNo;
-        //         $row_array["targetface"] = $MyRow->EvFinalTargetType;
-        //         $row_array["arrowstring"] = str_pad($MyRow->ArrowString, $json_array['current']['ends']*$json_array['current']['arrows'] , ' ', STR_PAD_RIGHT);
-		//
-        //         // adjust with what we have in the temporary table
-        //         $t=safe_r_sql("select * from IskData
-		// 				where IskDtTournament=$toId
-		// 					and IskDtTargetNo='$MyRow->ElTargetNo'
-		// 					and IskDtType='{$IskSequence['type']}'
-		// 					and IskDtDevice=".StrSafe_DB($DEVICE->IskDvDevice));
-		//
-        //         while($u=safe_fetch($t)) {
-        //             $row_array["arrowstring"]=substr_replace($row_array["arrowstring"], $u->IskDtArrowstring, intval(($u->IskDtEndNo-1)*$json_array['current']['arrows']), intval($json_array['current']['arrows']));
-        //         }
-        //         $json_array['current']['soEnds'][]=1;
-        //         $json_array['archers'][]=$row_array;
-        //     }
-		//
-        //     if(empty($json_array['archers'])) {
-        //         return resetDevice($DEVICE->IskDvDevice, $json_array['targetAssigned']);
-        //     }
-		//
-        //     // sets the status!
-        //     safe_w_sql("update IskDevices SET IskDvProActive = 1 WHERE IskDvDevice = ".StrSafe_DB($DEVICE->IskDvDevice));
-        //     break;
         case 'M':
 			require_once('Common/Lib/CommonLib.php');
 	        require_once('Common/Lib/Fun_Phases.inc.php');

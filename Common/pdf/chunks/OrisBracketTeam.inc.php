@@ -80,6 +80,7 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 			$Obj1->FSTarget = ($ShowTargetNo ? $Match['target'] : '');
 			$Obj1->ScheduledDate = ($ShowSchedule ? $Match['scheduledDate'] : '');
 			$Obj1->ScheduledTime = ($ShowSchedule ? $Match['scheduledTime'] : '');
+            $Obj1->hideSchedule = ($ShowSchedule ? ($Match['hideSchedule']??false) : true);
             $Obj1->Saved = ($Match['oppPosition'] and $Match['oppPosition']<=$section['meta']['numSaved']) ? $PdfData->rankData['meta']['saved'] : '';
 			$Obj1->Componenti = $Comp1;
 
@@ -115,6 +116,7 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 			$Obj2->FSTarget = ($ShowTargetNo ? $Match['oppTarget'] : '');
 			$Obj2->ScheduledDate = ($ShowSchedule ? $Match['scheduledDate'] : '');
 			$Obj2->ScheduledTime = ($ShowSchedule ? $Match['scheduledTime'] : '');
+            $Obj2->hideSchedule = ($ShowSchedule ? ($Match['hideSchedule']??false) : true);
             $Obj2->Saved = ($Match['position'] and $Match['position']<=$section['meta']['numSaved']) ? $PdfData->rankData['meta']['saved'] : '';
 			$Obj2->Componenti = $Comp2;
 
@@ -194,12 +196,10 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 				$Obj1->ScoreDetails.=' '.$Match['record'];
 			} elseif($Match['notes']) {
 				$Obj1->ScoreNotes.=' '.$Match['notes'];
-			} elseif($Match['tie']==2) {
-				$Obj1->Score='';
 			} elseif($RealScore1==0 and $RealScore2==0) {
 				$Obj1->Score='';
 				//$Obj1->ScoreDetails='';
-				if($Match['oppTie']!=2 and $Match['tie']!=2 and $Obj1->FSTarget) {
+				if(!($Match['hideSchedule']) and $Obj1->FSTarget) {
 					$Obj1->ScoreDetails='T# '.$Obj1->FSTarget;
 				}
 			}
@@ -208,12 +208,10 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 				$Obj2->ScoreDetails.=' '.$Match['oppRecord'];
 			} elseif($Match['oppNotes']) {
 				$Obj2->ScoreNotes.=' '.$Match['oppNotes'];
-			} elseif($Match['oppTie']==2) {
-				$Obj2->Score='';
 			} elseif($RealScore1==0 and $RealScore2==0) {
 				$Obj2->Score='';
 				//$Obj2->ScoreDetails='';
-				if($Match['oppTie']!=2 and $Match['tie']!=2 and $Obj2->FSTarget) {
+				if(!($Match['hideSchedule']) and $Obj2->FSTarget) {
 					$Obj2->ScoreDetails='T# '.$Obj2->FSTarget;
 				}
 			}

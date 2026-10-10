@@ -149,7 +149,6 @@ $lang['Setup-Default']='WA takmičarska pravila';
 $lang['Setup-DK']='Takmičarska pravila Danske';
 $lang['Setup-FR']='Takmičarska pravila Francuske';
 $lang['Setup-IFAA']='IFAA takmičarska pravila';
-$lang['Setup-IT']='Takmičarska pravila FitARCO (Italija)';
 $lang['Setup-Kyudo']='Kyudo takmičenja';
 $lang['Setup-LANC']='Lancaster';
 $lang['Setup-NFAA']='NFAA takmičarska pravila';

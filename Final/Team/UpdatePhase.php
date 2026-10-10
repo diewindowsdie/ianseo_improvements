@@ -16,6 +16,13 @@ $Update = "UPDATE Events SET
 	WHERE EvCode=" . StrSafe_DB($_REQUEST['EvCode']) . " AND EvTeamEvent='1' AND EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " ";
 $Rs=safe_w_sql($Update);
 
+$EventSQL="SELECT * FROM Events 
+	inner join Tournament on ToId=EvTournament
+	WHERE EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvTeamEvent='1' and EvCode=".StrSafe_DB($_REQUEST['EvCode'])."
+	ORDER BY EvProgr ASC,EvCode ASC, EvTeamEvent ASC ";
+$q=safe_r_sql($EventSQL);
+
+$EVENT=safe_fetch($q);
 
 $JSON['error']=0;
 

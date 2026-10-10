@@ -1,6 +1,5 @@
 <?php
 $lang['AclNotSuperuser']='Sans accès "SUPERUSER", vous serez bloqué hors de cette section et ne pourrez donc pas activer les Politiques d\'Accès.';
-$lang['AuthTourCode']='Liste séparée par des virgules des codes de compétitions qui peuvent être gérés par l\'utilisateur.<br> Charactère générique autorisé : « % »';
 $lang['AutoCheckinAlreadyDone']='Vous êtes déjà enregistré pour la compétition! Si vous devez modifier des informations, retournez au greffe.';
 $lang['AutoCheckinConfirm']='Si tous les détails sont corrects, appuyez sur CONFIRMER L\'ENREGISTREMENT. Sinon, appuyez sur ANNULER et rendez-vous au Greffe.';
 $lang['AutoCheckinSearch']='Scannez le QR Code que vous avez reçu ou saisissez votre nom!';

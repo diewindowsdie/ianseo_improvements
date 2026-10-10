@@ -63,6 +63,7 @@ $lang['TiebreakSystem-2']='Jumlah set point';
 $lang['TiebreakSystem-3']='Jumlah point';
 $lang['TiebreakSystem-4']='Shoot off';
 $lang['TiebreakSystem-5']='Jumlah (set)point - Jumlah (set)point lawan';
+$lang['TiebreakSystem-6']='Rata-rata anak panah standar';
 $lang['tieBreakSystem2']='Sistem tie break tingkat 2';
 $lang['TiePoints']='Point untuk Tie';
 $lang['WinPoints']='Point untuk menang';

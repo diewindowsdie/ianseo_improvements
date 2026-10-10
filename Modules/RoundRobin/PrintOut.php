@@ -41,7 +41,7 @@ if(safe_num_rows($Rs)>0) {
 	echo '</td>
 		<td class="Left w-50">';
 	echo '<div><input name="IncRankings" type="checkbox" value="1" checked>&nbsp;' . get_text('Rankings') . '</div>';
-	echo '<div><input name="IncBrackets" type="checkbox" value="1" checked onclick="CheckIfOrisBrackets(true);">&nbsp;' . get_text('Brackets') . '</div>';
+	echo '<div><input name="IncBrackets" type="checkbox" value="1" checked>&nbsp;' . get_text('Brackets') . '</div>';
 	echo '<div><input name="ShowTargetNo" type="checkbox" value="1" checked>&nbsp;' . get_text('Target') . '</div>';
 	echo '<div><input name="ShowSchedule" type="checkbox" value="1" checked>&nbsp;' . get_text('ManFinScheduleInd') . '</div>';
 	echo '<div><input name="ShowSetArrows" type="checkbox" value="1">&nbsp;' . get_text('ShowSetEnds', 'Tournament') . '</div>';
@@ -50,7 +50,7 @@ if(safe_num_rows($Rs)>0) {
 	echo '</tr>';
 	echo '</table>';
 	echo '</form>';
-	echo '<div class="Center my-3"><div class="Button" onclick="showPrintout(this, 0)">' . get_text('BrakRank') . '</div></div>';
+	echo '<div class="Center my-3"><div class="Button" onclick="showPrintout(\'PrnParametersInd\', 0)">' . get_text('BrakRank') . '</div></div>';
 }
 echo '</td>';
 
@@ -80,7 +80,7 @@ if(safe_num_rows($Rs)>0) {
 	echo '</tr>';
 	echo '</table>';
 	echo '</form>';
-	echo '<div class="Center my-3"><div class="Button" onclick="showPrintout(this, 1)">' . get_text('BrakRank') . '</div></div>';
+	echo '<div class="Center my-3"><div class="Button" onclick="showPrintout(\'PrnParametersTeam\', 1)">' . get_text('BrakRank') . '</div></div>';
 }
 	echo '</td></tr>';
 	echo '</table>';

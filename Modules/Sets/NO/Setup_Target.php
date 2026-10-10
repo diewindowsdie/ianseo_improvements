@@ -8,6 +8,12 @@ COMMON SETUP FOR TARGET
 require_once(dirname(__FILE__).'/lib.php');
 require_once(dirname(dirname(__FILE__)).'/lib.php');
 
+//Temporary sistuation
+$compDate = date('Y-m-d', mktime(0, 0, 0, ($_REQUEST['xx_ToWhenFromMonth']??date('m')), ($_REQUEST['xx_ToWhenFromDay']??date('d')), ($_REQUEST['xx_ToWhenFromYear']??date('Y'))));
+if(in_array($TourType,array(6,7,8,22)) and $SubRule!=3 and $compDate<'2026-10-21') {
+    $TourType *= -1;
+}
+
 // default Divisions
 CreateStandardDivisions($TourId, $TourType, $SubRule);
 
@@ -242,18 +248,30 @@ switch($TourType) {
             CreateDistanceNew($TourId, $TourType,'OC1', array(array('20 m',20), array('20 m',20), array('20 m',20)));
 		}
 		break;
+    case -6:
+        CreateDistanceNew($TourId, abs($TourType), 'F6', array(array('12m-1',12), array('12m-2',12)));
+        CreateDistanceNew($TourId, abs($TourType), '%5', array(array('12m-1',12), array('12m-2',12)));
+        CreateDistanceNew($TourId, abs($TourType), '%4', array(array('18m-1',18), array('18m-2',18)));
+        CreateDistanceNew($TourId, abs($TourType), '%3', array(array('18m-1',18), array('18m-2',18)));
+        CreateDistanceNew($TourId, abs($TourType), '%2', array(array('18m-1',18), array('18m-2',18)));
+        CreateDistanceNew($TourId, abs($TourType), '_1', array(array('18m-1',18), array('18m-2',18)));
+        CreateDistanceNew($TourId, abs($TourType), 'LB1', array(array('18m-1',18), array('18m-2',18)));
+        CreateDistanceNew($TourId, abs($TourType), 'VI1', array(array('18m-1',18), array('18m-2',18)));
+        CreateDistanceNew($TourId, abs($TourType), 'OC1', array(array('12m-1',12), array('12m-2',18)));
+        break;
 	case 6:
 		if($SubRule<3) {
 			// ordinary tournaments
-			CreateDistanceNew($TourId, $TourType, 'F6', array(array('12m-1',12), array('12m-2',12)));
-			CreateDistanceNew($TourId, $TourType, '%5', array(array('12m-1',12), array('12m-2',12)));
-			CreateDistanceNew($TourId, $TourType, '%4', array(array('18m-1',18), array('18m-2',18)));
-			CreateDistanceNew($TourId, $TourType, '%3', array(array('18m-1',18), array('18m-2',18)));
-			CreateDistanceNew($TourId, $TourType, '%2', array(array('18m-1',18), array('18m-2',18)));
-			CreateDistanceNew($TourId, $TourType, '_1', array(array('18m-1',18), array('18m-2',18)));
-            CreateDistanceNew($TourId, $TourType, 'LB1', array(array('18m-1',18), array('18m-2',18)));
-            CreateDistanceNew($TourId, $TourType, 'VI1', array(array('18m-1',18), array('18m-2',18)));
-            CreateDistanceNew($TourId, $TourType, 'OC1', array(array('12m-1',12), array('12m-2',18)));
+            CreateDistanceNew($TourId, $TourType, '%M', array(array('18m-1',18), array('18m-2',18)));
+            CreateDistanceNew($TourId, $TourType, '%50', array(array('18m-1',18), array('18m-2',18)));
+            CreateDistanceNew($TourId, $TourType, '%Sr', array(array('18m-1',18), array('18m-2',18)));
+            CreateDistanceNew($TourId, $TourType, '%U21', array(array('18m-1',18), array('18m-2',18)));
+            CreateDistanceNew($TourId, $TourType, '%U18', array(array('18m-1',18), array('18m-2',18)));
+            CreateDistanceNew($TourId, $TourType, '%U15', array(array('18m-1',18), array('18m-2',18)));
+            CreateDistanceNew($TourId, $TourType, '%U13', array(array('12m-1',12), array('12m-2',12)));
+            CreateDistanceNew($TourId, $TourType, 'AU11', array(array('12m-1',12), array('12m-2',12)));
+            CreateDistanceNew($TourId, $TourType, 'VIU', array(array('18m-1',18), array('18m-2',18)));
+            CreateDistanceNew($TourId, $TourType, 'OCU', array(array('12m-1',12), array('12m-2',12)));
 		} else {
 			// Champs
 			CreateDistanceNew($TourId, $TourType, 'T%', array(array('18m-1',18), array('18m-2',18)));
@@ -265,7 +283,7 @@ switch($TourType) {
             CreateDistanceNew($TourId, $TourType, 'OC%', array(array('12m-1',12), array('12m-2',18)));
 		}
 		break;
-	case 7:
+	case -7:
 		// ordinary tournaments
 		CreateDistanceNew($TourId, $TourType, 'F6', array(array('16m-1',16), array('16m-2',16)));
 		CreateDistanceNew($TourId, $TourType, '%5', array(array('16m-1',16), array('16m-2',16)));
@@ -277,7 +295,19 @@ switch($TourType) {
         CreateDistanceNew($TourId, $TourType, 'VI1', array(array('25m-1',25), array('25m-2',25)));
         CreateDistanceNew($TourId, $TourType, 'OC1', array(array('16m-1',16), array('16m-2',16)));
         break;
-	case 8:
+    case 7:
+        CreateDistanceNew($TourId, $TourType, '%M', array(array('25m-1',25), array('25m-2',25)));
+        CreateDistanceNew($TourId, $TourType, '%50', array(array('25m-1',25), array('25m-2',25)));
+        CreateDistanceNew($TourId, $TourType, '%Sr', array(array('25m-1',25), array('25m-2',25)));
+        CreateDistanceNew($TourId, $TourType, '%U21', array(array('25m-1',25), array('25m-2',25)));
+        CreateDistanceNew($TourId, $TourType, '%U18', array(array('25m-1',25), array('25m-2',25)));
+        CreateDistanceNew($TourId, $TourType, '%U15', array(array('25m-1',25), array('25m-2',25)));
+        CreateDistanceNew($TourId, $TourType, '%U13', array(array('16m-1',16), array('16m-2',16)));
+        CreateDistanceNew($TourId, $TourType, 'AU11', array(array('16m-1',16), array('16m-2',16)));
+        CreateDistanceNew($TourId, $TourType, 'VIU', array(array('25m-1',25), array('25m-2',25)));
+        CreateDistanceNew($TourId, $TourType, 'OCU', array(array('16m-1',16), array('16m-2',16)));
+        break;
+	case -8:
 		// ordinary tournaments
 		CreateDistanceNew($TourId, $TourType, 'F6', array(array('16m-1',16), array('16m-2',16), array('12m-1',12), array('12m-2',12)));
 		CreateDistanceNew($TourId, $TourType, '%5', array(array('16m-1',16), array('16m-2',16), array('12m-1',12), array('12m-2',12)));
@@ -289,6 +319,17 @@ switch($TourType) {
         CreateDistanceNew($TourId, $TourType, 'VI1', array(array('25m-1',25), array('25m-2',25), array('18m-1',18), array('18m-2',18)));
         CreateDistanceNew($TourId, $TourType, 'OC1', array(array('16m-1',16), array('16m-2',16), array('12m-1',12), array('12m-2',12)));
         break;
+    case 8:
+        CreateDistanceNew($TourId, $TourType, '%M', array(array('25m-1',25), array('25m-2',25), array('18m-1',18), array('18m-2',18)));
+        CreateDistanceNew($TourId, $TourType, '%50', array(array('25m-1',25), array('25m-2',25), array('18m-1',18), array('18m-2',18)));
+        CreateDistanceNew($TourId, $TourType, '%Sr', array(array('25m-1',25), array('25m-2',25), array('18m-1',18), array('18m-2',18)));
+        CreateDistanceNew($TourId, $TourType, '%U21', array(array('25m-1',25), array('25m-2',25), array('18m-1',18), array('18m-2',18)));
+        CreateDistanceNew($TourId, $TourType, '%U18', array(array('25m-1',25), array('25m-2',25), array('18m-1',18), array('18m-2',18)));
+        CreateDistanceNew($TourId, $TourType, '%U15', array(array('25m-1',25), array('25m-2',25), array('18m-1',18), array('18m-2',18)));
+        CreateDistanceNew($TourId, $TourType, '%U13', array(array('16m-1',16), array('16m-2',16), array('12m-1',12), array('12m-2',12)));
+        CreateDistanceNew($TourId, $TourType, 'AU11', array(array('16m-1',16), array('16m-2',16), array('12m-1',12), array('12m-2',12)));
+        CreateDistanceNew($TourId, $TourType, 'VIU', array(array('25m-1',25), array('25m-2',25), array('18m-1',18), array('18m-2',18)));
+        CreateDistanceNew($TourId, $TourType, 'OCU', array(array('16m-1',16), array('16m-2',16),array('12m-1',12), array('12m-2',12)));
 	case 18:
 		// only with Finals
 		CreateDistanceNew($TourId, $TourType, 'C5', array(array('25m-1',25), array('25m-2',25), array('-',0), array('-',0)));
@@ -387,6 +428,17 @@ switch($TourType) {
 			CreateTargetFace($TourId, $i++, '~Default', '%', '1',  5, 122, 5, 122, 5, 122);
 		}
 		break;
+    case -6:
+    case -22:
+        CreateTargetFace($TourId, $i++, '~Standard 60', '%', '1', TGT_IND_1_big10, 60, TGT_IND_1_big10, 60); // most of the "small" class use big targets!
+        CreateTargetFace($TourId, $i++, '~Standard 40', 'REG-^(R2|T1|LB1)', '1', TGT_IND_1_big10, 40, TGT_IND_1_big10, 40);
+        CreateTargetFace($TourId, $i++, '~Trippel 40 CO', 'REG-^C[12]', '1', TGT_IND_6_small10, 40, TGT_IND_6_small10, 40);
+        CreateTargetFace($TourId, $i++, '~Trippel 60 CO', 'REG-^C[345]', '1', TGT_IND_6_small10, 60, TGT_IND_6_small10, 60);
+        //CreateTargetFace($TourId, $i++, '~Trippel 60', 'REG-^(LB1|IN1)', '1',  2, 60, 2, 60);
+        CreateTargetFace($TourId, $i++, '~Trippel 40', 'REG-^R1', '1',  TGT_IND_6_big10, 40, TGT_IND_6_big10, 40);
+        CreateTargetFace($TourId, $i++, '~Standard 40', 'REG-(^B1|^B2)', '1',  TGT_IND_1_big10, 40, TGT_IND_1_big10, 40);
+        CreateTargetFace($TourId, $i++, '~Trippel 40', 'REG-^B1', '0',  TGT_IND_6_big10, 40, TGT_IND_6_big10, 40);
+        break;
 	case 6:
 	case 22:
 		if($SubRule==3) {
@@ -398,30 +450,43 @@ switch($TourType) {
 			CreateTargetFace($TourId, $i++, '60cm (1-10)', 'REG-((^R|^T|^B|^LB)[D|H]U16)$|((^T|^LB)[D|H](U21|U18))$|^VI|^OC', '1', TGT_IND_1_big10, 60, TGT_IND_1_big10, 60);
             CreateTargetFace($TourId, $i++, 'Tripple 60cm', 'REG-^C[D|H]U16$', '1', TGT_IND_6_small10, 60, TGT_IND_6_small10, 60);
 		} else {
-			CreateTargetFace($TourId, $i++, '~Standard 60', '%', '1', TGT_IND_1_big10, 60, TGT_IND_1_big10, 60); // most of the "small" class use big targets!
-			CreateTargetFace($TourId, $i++, '~Standard 40', 'REG-^(R2|T1|LB1)', '1', TGT_IND_1_big10, 40, TGT_IND_1_big10, 40);
-			CreateTargetFace($TourId, $i++, '~Trippel 40 CO', 'REG-^C[12]', '1', TGT_IND_6_small10, 40, TGT_IND_6_small10, 40);
-			CreateTargetFace($TourId, $i++, '~Trippel 60 CO', 'REG-^C[345]', '1', TGT_IND_6_small10, 60, TGT_IND_6_small10, 60);
-            //CreateTargetFace($TourId, $i++, '~Trippel 60', 'REG-^(LB1|IN1)', '1',  2, 60, 2, 60);
-            CreateTargetFace($TourId, $i++, '~Trippel 40', 'REG-^R1', '1',  TGT_IND_6_big10, 40, TGT_IND_6_big10, 40);
-            CreateTargetFace($TourId, $i++, '~Standard 40', 'REG-(^B1|^B2)', '1',  TGT_IND_1_big10, 40, TGT_IND_1_big10, 40);
-            CreateTargetFace($TourId, $i++, '~Trippel 40', 'REG-^B1', '0',  TGT_IND_6_big10, 40, TGT_IND_6_big10, 40);
+            CreateTargetFace($TourId, $i++, '40 cm 1-10', 'REG-^[RB](?:50|Sr|U18|U21)|((?:LB|T)(?:50|Sr))$', '1', TGT_IND_1_big10, 40, TGT_IND_1_big10, 40);
+            CreateTargetFace($TourId, $i++, 'Tripple 40cm', 'REG-^[RB](?:50|Sr|U18|U21)$', '', TGT_IND_6_big10, 40, TGT_IND_6_big10, 40);
+            CreateTargetFace($TourId, $i++, '60 cm 1-10', 'REG-^(?:[RB](?:M|U1[35])|(?:LB|T)(?:M|U1[358]|U21)|VIU|OCU|AU11)$', '1', TGT_IND_1_big10, 60, TGT_IND_1_big10, 60);
+            CreateTargetFace($TourId, $i++, 'Tripple 40cm CO', 'REG-^C(?:50|Sr|U18|U21)$', '1', TGT_IND_6_small10, 40, TGT_IND_6_small10, 40);
+            CreateTargetFace($TourId, $i++, 'Tripple 60cm CO', 'REG-^C(?:M|U1[35])$', '1', TGT_IND_6_small10, 60, TGT_IND_6_small10, 60);
+            CreateTargetFace($TourId, $i++, 'Tripple 60cm', 'REG-^(AU11|OCU)$', '0', TGT_IND_6_small10, 60, TGT_IND_6_small10, 60);
 		}
 		break;
-	case 7:
+	case -7:
 		CreateTargetFace($TourId, $i++, '~Standard 80', '%', '1', TGT_IND_1_big10, 80, TGT_IND_1_big10, 80); // most of the "small" class use big targets!
 		CreateTargetFace($TourId, $i++, '~Standard 60', 'REG-^(R2|B1|T1|LB1)', '1', TGT_IND_1_big10, 60, TGT_IND_1_big10, 60);
 		CreateTargetFace($TourId, $i++, '~Trippel 60 CO', 'REG-^C[12]', '1', TGT_IND_6_small10, 60, TGT_IND_6_small10, 60);
 		CreateTargetFace($TourId, $i++, '~80 6-10', 'REG-^C[345]', '1', TGT_IND_6_small10, 80, TGT_IND_6_small10, 80);
 		CreateTargetFace($TourId, $i++, '~Trippel 60', 'REG-^R1', '1',  TGT_IND_6_big10, 60, TGT_IND_6_big10, 60);
 		break;
-	case 8:
+    case 7:
+        CreateTargetFace($TourId, $i++, '60 cm 1-10', 'REG-^[RB](?:50|Sr|U18|U21)|((?:LB|T)(?:50|Sr))$', '1', TGT_IND_1_big10, 60, TGT_IND_1_big10, 60);
+        CreateTargetFace($TourId, $i++, 'Tripple 60cm', 'REG-^R(?:50|Sr|U18|U21)$', '', TGT_IND_6_big10, 60, TGT_IND_6_big10, 60);
+        CreateTargetFace($TourId, $i++, '80 cm 1-10', 'REG-^(?:[RB](?:M|U1[35])|(?:LB|T)(?:M|U1[358]|U21)|VIU|OCU|AU11)$', '1', TGT_IND_1_big10, 80, TGT_IND_1_big10, 80);
+        CreateTargetFace($TourId, $i++, 'Tripple 60cm CO', 'REG-^C(?:50|Sr|U18|U21)$', '1', TGT_IND_6_small10, 60, TGT_IND_6_small10, 60);
+        CreateTargetFace($TourId, $i++, '80 cm 5-10', 'REG-^C(?:M|U1[35])$', '1', TGT_OUT_5_big10, 80, TGT_OUT_5_big10, 80);
+        break;
+	case -8:
 		CreateTargetFace($TourId, $i++, '~Standard 80/60', '%', '1', TGT_IND_1_big10, 80, TGT_IND_1_big10, 80, TGT_IND_1_big10, 60, TGT_IND_1_big10, 60); // most of the "small" class use big targets!
 		CreateTargetFace($TourId, $i++, '~Standard 60/40', 'REG-^(R2|B1|T1|LB1)', '1', TGT_IND_1_big10, 60, TGT_IND_1_big10, 60, TGT_IND_1_big10, 40, TGT_IND_1_big10, 40);
 		CreateTargetFace($TourId, $i++, '~Trippel 60/40 CO', 'REG-^C[12]', '1', TGT_IND_6_small10, 60, TGT_IND_6_small10, 60, TGT_IND_6_small10, 40, TGT_IND_6_small10, 40);
 		CreateTargetFace($TourId, $i++, '~80 6-10/Trippel 60 CO', 'REG-^C[345]', '1', TGT_IND_6_small10, 80, TGT_IND_6_small10, 80, TGT_IND_6_small10, 60, TGT_IND_6_small10, 60);
         CreateTargetFace($TourId, $i++, '~Trippel 60/40', 'REG-^R1', '1',  TGT_IND_6_big10, 60, TGT_IND_6_big10, 60,  TGT_IND_6_big10, 40, TGT_IND_6_big10, 40);
 		break;
+    case 8:
+        CreateTargetFace($TourId, $i++, '60/40 cm 1-10', 'REG-^[RB](?:50|Sr|U18|U21)|((?:LB|T)(?:50|Sr))$', '1', TGT_IND_1_big10, 60, TGT_IND_1_big10, 60,TGT_IND_1_big10, 40, TGT_IND_1_big10, 40);
+        CreateTargetFace($TourId, $i++, 'Tripple 60cm/40cm', 'REG-^R(?:50|Sr|U18|U21)$', '', TGT_IND_6_big10, 60, TGT_IND_6_big10, 60,TGT_IND_6_big10, 40, TGT_IND_6_big10, 40);
+        CreateTargetFace($TourId, $i++, '60cm/Tripple 40cm', 'REG-^B(?:50|Sr|U18|U21)$', '', TGT_IND_1_big10, 60, TGT_IND_1_big10, 60,TGT_IND_6_big10, 40, TGT_IND_6_big10, 40);
+        CreateTargetFace($TourId, $i++, '80/60 cm 1-10', 'REG-^(?:[RB](?:M|U1[35])|(?:LB|T)(?:M|U1[358]|U21)|VIU|OCU|AU11)$', '1', TGT_IND_1_big10, 80, TGT_IND_1_big10, 80, TGT_IND_1_big10, 60, TGT_IND_1_big10, 60);
+        CreateTargetFace($TourId, $i++, 'Tripple 60/40cm CO', 'REG-^C(?:50|Sr|U18|U21)$', '1', TGT_IND_6_small10, 60, TGT_IND_6_small10, 60, TGT_IND_6_small10, 40, TGT_IND_6_small10, 40);
+        CreateTargetFace($TourId, $i++, '80 cm/Tripple 60cm CO', 'REG-^C(?:M|U1[35])$', '1', TGT_OUT_5_big10, 80, TGT_OUT_5_big10, 80, TGT_IND_6_small10, 60, TGT_IND_6_small10, 60);
+        break;
 }
 
 // create a first distance prototype

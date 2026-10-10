@@ -1,4 +1,5 @@
 <?php
+$lang['AddRow']='Aggiungi Riga';
 $lang['AddSlot']='Aggiungi fascia oraria';
 $lang['AddTarget']='Aggiungi Bersaglio';
 $lang['AddWarmup']='Aggiungi riscaldamento';
@@ -14,6 +15,7 @@ $lang['Conflict']='Conflitto';
 $lang['Copy']='Copia';
 $lang['CopyCart']='Il carrello è stato copiato negli appunti';
 $lang['FaceType']='Tipo di Bersaglio';
+$lang['GlobalCoeff']='Coefficienti Globali';
 $lang['GlobalRecap']='Panoramica globale dei Tipi di Bersagli';
 $lang['GrandTotal']='Totale complessivo';
 $lang['LostUnsaved']='Le modifiche non salvate andranno perse';

@@ -249,7 +249,9 @@ if(empty($_REQUEST['btnDelOnline'])) {
 
     // Robin, Team
     if(!empty($_REQUEST['RobinTeam'])) {
-        $RET->IR=new StdClass();
+        if(!$RET->IR) {
+            $RET->IR = new StdClass();
+        }
         foreach($_REQUEST['RobinTeam'] as $Event) {
             $RET->IR->{$Event}=getRobin(['team'=>substr($Event,1,1), 'events'=>[substr($Event,2)], 'includeTeamRank' => ($_SESSION['TourLocSubRule']=='SetFRD12023' or $_SESSION['TourLocSubRule']=='SetFRD12026')],$ORIS,1,1);
         }

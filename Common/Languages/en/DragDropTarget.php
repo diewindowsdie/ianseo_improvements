@@ -1,4 +1,5 @@
 <?php
+$lang['AddRow']='Add Row';
 $lang['AddSlot']='Add Time Slot';
 $lang['AddTarget']='Add target';
 $lang['AddWarmup']='Add Warmup';
@@ -14,6 +15,7 @@ $lang['Conflict']='Conflict';
 $lang['Copy']='Copy';
 $lang['CopyCart']='Cart copied to clipboard';
 $lang['FaceType']='Type of target face';
+$lang['GlobalCoeff']='Global Coeff';
 $lang['GlobalRecap']='Global recap of target faces';
 $lang['GrandTotal']='Grand total';
 $lang['LostUnsaved']='Unsaved changes will be lost';

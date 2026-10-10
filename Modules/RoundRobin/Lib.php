@@ -487,11 +487,12 @@ function setWinner($m1, $EV, $ScoreField, $Totals=true) {
 	$m2=$m1+1;
 	$SQL1="RrMatchTieBreaker=RrMatchTieBreaker";
 	$SQL2="RrMatchTieBreaker=RrMatchTieBreaker";
-	$RetSQL="select 
-			m1.RrMatchSetPoints as EndPoints1, m1.RrMatchTie as Tie1, m1.RrMatchTbClosest as Closest1, m1.RrMatchTiebreak as TieArrows1, m1.RrMatchScore as Score1, m1.$ScoreField as Total1, m1.RrMatchTbDecoded as TbDecoded1,
-			m2.RrMatchSetPoints as EndPoints2, m2.RrMatchTie as Tie2, m2.RrMatchTbClosest as Closest2, m2.RrMatchTiebreak as TieArrows2, m2.RrMatchScore as Score2, m2.$ScoreField as Total2, m2.RrMatchTbDecoded as TbDecoded2
+	$RetSQL="select RrLevArrows as arrows, RrLevSO as so, RrLevEnds as ends,
+			m1.RrMatchSetPoints as EndPoints1, m1.RrMatchTie as Tie1, m1.RrMatchTbClosest as Closest1, m1.RrMatchTiebreak as TieArrows1, m1.RrMatchScore as Score1, m1.$ScoreField as Total1, m1.RrMatchTbDecoded as TbDecoded1, m1.RrMatchArrowstring as Arrowstring1,
+			m2.RrMatchSetPoints as EndPoints2, m2.RrMatchTie as Tie2, m2.RrMatchTbClosest as Closest2, m2.RrMatchTiebreak as TieArrows2, m2.RrMatchScore as Score2, m2.$ScoreField as Total2, m2.RrMatchTbDecoded as TbDecoded2, m2.RrMatchArrowstring as Arrowstring2
 		from RoundRobinMatches m1
-		inner join RoundRobinMatches m2 on m2.RrMatchTournament=m1.RrMatchTournament and m2.RrMatchTeam=m1.RrMatchTeam and m2.RrMatchEvent=m1.RrMatchEvent and m2.RrMatchLevel=m1.RrMatchLevel and m2.RrMatchGroup=m1.RrMatchGroup and m2.RrMatchRound=m1.RrMatchRound and m2.RrMatchMatchNo=m1.RrMatchMatchNo+1				
+		inner join RoundRobinMatches m2 on m2.RrMatchTournament=m1.RrMatchTournament and m2.RrMatchTeam=m1.RrMatchTeam and m2.RrMatchEvent=m1.RrMatchEvent and m2.RrMatchLevel=m1.RrMatchLevel and m2.RrMatchGroup=m1.RrMatchGroup and m2.RrMatchRound=m1.RrMatchRound and m2.RrMatchMatchNo=m1.RrMatchMatchNo+1
+		INNER JOIN RoundRobinLevel ON RrLevTournament=m1.RrMatchTournament AND RrLevTeam=m1.RrMatchTeam and RrLevEvent=m1.RrMatchEvent and RrLevLevel=m1.RrMatchLevel
 		where m1.RrMatchTournament={$_SESSION['TourId']} and m1.RrMatchTeam={$EV->Team} and m1.RrMatchEvent=".StrSafe_DB($EV->Event)." and m1.RrMatchLevel={$EV->Level} and m1.RrMatchGroup={$EV->Group} and m1.RrMatchRound={$EV->Round} and m1.RrMatchMatchNo=$m1
 		";
 	$q=safe_r_sql($RetSQL);
@@ -526,6 +527,9 @@ function setWinner($m1, $EV, $ScoreField, $Totals=true) {
 						$SQL2="RrMatchTieBreaker=".($r->Score2-$r->Score1);
 					}
 					break;
+                case '6':
+                    $SQL1="RrMatchTieBreaker=".(1000*round(($r->Score1 / (strlen(trim($r->Arrowstring1)) ?: (strlen(preg_replace("/\d/","",$r->EndPoints1)) ? (strlen(preg_replace("/\d/","",$r->EndPoints1))+1)*$r->arrows : ($r->arrows ?: 1)))), 3));
+                    $SQL2="RrMatchTieBreaker=".(1000*round(($r->Score2 / (strlen(trim($r->Arrowstring2)) ?: (strlen(preg_replace("/\d/","",$r->EndPoints2)) ? (strlen(preg_replace("/\d/","",$r->EndPoints2))+1)*$r->arrows : ($r->arrows ?: 1)))), 3));
 			}
 			switch($EV->TieSystem2) {
 				case '0':
@@ -549,6 +553,10 @@ function setWinner($m1, $EV, $ScoreField, $Totals=true) {
 						$SQL2.=", RrMatchTieBreaker2=".($r->Score2-$r->Score1);
 					}
 					break;
+                case '6':
+                    $SQL1.=", RrMatchTieBreaker2=".(1000*round(($r->Score1 / (strlen(trim($r->Arrowstring1)) ?: (strlen(preg_replace("/\d/","",$r->EndPoints1)) ? (strlen(preg_replace("/\d/","",$r->EndPoints1))+1)*$r->arrows : ($r->arrows ?: 1)))), 3));
+                    $SQL2.=", RrMatchTieBreaker2=".(1000*round(($r->Score2 / (strlen(trim($r->Arrowstring2)) ?: (strlen(preg_replace("/\d/","",$r->EndPoints2)) ? (strlen(preg_replace("/\d/","",$r->EndPoints2))+1)*$r->arrows : ($r->arrows ?: 1)))), 3));
+                    break;
 			}
 
 		} else {
@@ -742,7 +750,10 @@ function setWinner($m1, $EV, $ScoreField, $Totals=true) {
 						$SQL1.=", RrMatchTieBreaker=".($r->Score1-$r->Score2);
 						$SQL2.=", RrMatchTieBreaker=".($r->Score2-$r->Score1);
 					}
-					break;
+                case '6':
+                    $SQL1.=", RrMatchTieBreaker=".(1000*round(($r->Score1 / (strlen(trim($r->Arrowstring1)) ?: (strlen(preg_replace("/\d/","",$r->EndPoints1)) ? (strlen(preg_replace("/\d/","",$r->EndPoints1))+1)*$r->arrows : ($r->arrows ?: 1)))), 3));
+                    $SQL2.=", RrMatchTieBreaker=".(1000*round(($r->Score2 / (strlen(trim($r->Arrowstring2)) ?: (strlen(preg_replace("/\d/","",$r->EndPoints2)) ? (strlen(preg_replace("/\d/","",$r->EndPoints2))+1)*$r->arrows : ($r->arrows ?: 1)))), 3));
+                    break;
 			}
 			switch($EV->TieSystem2) {
 				case '0':
@@ -771,6 +782,10 @@ function setWinner($m1, $EV, $ScoreField, $Totals=true) {
 						$SQL1.=", RrMatchTieBreaker2=".($r->Score1-$r->Score2);
 						$SQL2.=", RrMatchTieBreaker2=".($r->Score2-$r->Score1);
 					}
+                    break;
+                case '6':
+                    $SQL1.=", RrMatchTieBreaker2=".(1000*round(($r->Score1 / (strlen(trim($r->Arrowstring1)) ?: (strlen(preg_replace("/\d/","",$r->EndPoints1)) ? (strlen(preg_replace("/\d/","",$r->EndPoints1))+1)*$r->arrows : ($r->arrows ?: 1)))), 3));
+                    $SQL2.=", RrMatchTieBreaker2=".(1000*round(($r->Score2 / (strlen(trim($r->Arrowstring2)) ?: (strlen(preg_replace("/\d/","",$r->EndPoints2)) ? (strlen(preg_replace("/\d/","",$r->EndPoints2))+1)*$r->arrows : ($r->arrows ?: 1)))), 3));
 					break;
 			}
 		}
@@ -800,6 +815,7 @@ function setWinner($m1, $EV, $ScoreField, $Totals=true) {
  * <li>3: Total points</li>
  * <li>4: Shoot off</li>
  * <li>5: Sum (set)points - Sum opponents (set)points</li>
+ * <li>6: Regulation arrows average</li>
  * </ul>
  *
  * @param $Event Object (see case updateScore in InsertPoint-action.php)
@@ -980,19 +996,19 @@ function RobinMatchTotal($MatchNo, $Event, $Team, $Level, $Group, $Round, $CompI
 
 	$Select = "SELECT 
        		EvCode, RrLevMatchMode, EvMatchArrowsNo, RrLevCheckGolds, RrLevCheckXNines, EvGoldsChars, EvXNineChars,
-	      	MatchNo, Score, SetScore, Tie, ArString, TbString, TbClosest, Athlete,
-       		OppMatchNo, OppScore, OppSetScore, OppTie, OppArString, OppTbString, OppTbClosest, OppAthlete,
+	      	MatchNo, Score, SetScore, Tie, ArString, TbString, TbClosest, SetPoints, Athlete,
+       		OppMatchNo, OppScore, OppSetScore, OppTie, OppArString, OppTbString, OppTbClosest, OppSetPoints, OppAthlete,
 			greatest(M1DateTime, M2DateTime) AS DateTime,
        		RrLevArrows as arrows, RrLevSO as so, RrLevEnds as ends, RrLevEnds+1 as winAt, 
             RrLevTieAllowed, RrLevWinPoints, RrLevTiePoints, RrLevTieBreakSystem, RrLevTieBreakSystem2
 		FROM (
 		    select RrMatchEvent, RrMatchTeam, RrMatchTournament,
-		           RrMatchDateTime as M1DateTime, RrMatchAthlete as Athlete, RrMatchMatchNo as MatchNo, RrMatchScore as Score, RrMatchSetScore as SetScore, RrMatchTie as Tie, coalesce(RrMatchArrowstring,'') as ArString, coalesce(RrMatchTiebreak) as TbString, coalesce(RrMatchTbClosest,0) as TbClosest
+		           RrMatchDateTime as M1DateTime, RrMatchAthlete as Athlete, RrMatchMatchNo as MatchNo, RrMatchScore as Score, RrMatchSetScore as SetScore, RrMatchTie as Tie, coalesce(RrMatchArrowstring,'') as ArString, coalesce(RrMatchTiebreak) as TbString, coalesce(RrMatchTbClosest,0) as TbClosest, coalesce(RrMatchSetPoints,'') as SetPoints
 			from RoundRobinMatches 
 		    where $MainFilter and RrMatchMatchNo=$M1
 		    ) AS M1
 		inner join (
-		    select RrMatchDateTime as M2DateTime, RrMatchAthlete as OppAthlete, RrMatchMatchNo as OppMatchNo, RrMatchScore as OppScore, RrMatchSetScore as OppSetScore, RrMatchTie as OppTie, coalesce(RrMatchArrowstring,'') as OppArString, coalesce(RrMatchTiebreak) as OppTbString, coalesce(RrMatchTbClosest,0) as OppTbClosest
+		    select RrMatchDateTime as M2DateTime, RrMatchAthlete as OppAthlete, RrMatchMatchNo as OppMatchNo, RrMatchScore as OppScore, RrMatchSetScore as OppSetScore, RrMatchTie as OppTie, coalesce(RrMatchArrowstring,'') as OppArString, coalesce(RrMatchTiebreak) as OppTbString, coalesce(RrMatchTbClosest,0) as OppTbClosest, coalesce(RrMatchSetPoints,'') as OppSetPoints
 			from RoundRobinMatches 
 		    where $MainFilter and RrMatchMatchNo=$M2
 		    ) AS M2 on OppMatchNo=MatchNo+1
@@ -1351,6 +1367,10 @@ function RobinMatchTotal($MatchNo, $Event, $Team, $Level, $Group, $Round, $CompI
 					$AthTieBreaker=($MyRow->RrLevMatchMode ? ($SetAth-$SetOpp) : ($Score-$OppScore));
 					$OppTieBreaker=($MyRow->RrLevMatchMode ? ($SetOpp-$SetAth) : ($OppScore-$Score));
 					break;
+                case '6':
+                    $AthTieBreaker= 1000*round(($Score / (strlen(trim($MyRow->ArString)) ?: (strlen(preg_replace("/\d/","",$MyRow->SetPoints)) ? (strlen(preg_replace("/\d/","",$MyRow->SetPoints))+1)*$MyRow->arrows : ($MyRow->arrows ?: 1)))), 3);
+                    $OppTieBreaker= 1000*round(($OppScore / (strlen(trim($MyRow->OppArString)) ?: (strlen(preg_replace("/\d/","",$MyRow->OppSetPoints)) ? (strlen(preg_replace("/\d/","",$MyRow->OppSetPoints))+1)*$MyRow->arrows : ($MyRow->arrows ?: 1)))), 3);
+                    break;
 			}
 			switch($MyRow->RrLevTieBreakSystem2) {
 				case '1':
@@ -1374,6 +1394,10 @@ function RobinMatchTotal($MatchNo, $Event, $Team, $Level, $Group, $Round, $CompI
 					$AthTieBreaker2=($MyRow->RrLevMatchMode ? ($SetAth-$SetOpp) : ($Score-$OppScore));
 					$OppTieBreaker2=($MyRow->RrLevMatchMode ? ($SetOpp-$SetAth) : ($OppScore-$Score));
 					break;
+                case '6':
+                    $AthTieBreaker2= 1000*round(($Score / (strlen(trim($MyRow->ArString)) ?: (strlen(preg_replace("/\d/","",$MyRow->SetPoints)) ? (strlen(preg_replace("/\d/","",$MyRow->SetPoints))+1)*$MyRow->arrows : ($MyRow->arrows ?: 1)))), 3);
+                    $OppTieBreaker2= 1000*round(($OppScore / (strlen(trim($MyRow->OppArString)) ?: (strlen(preg_replace("/\d/","",$MyRow->OppSetPoints)) ? (strlen(preg_replace("/\d/","",$MyRow->OppSetPoints))+1)*$MyRow->arrows : ($MyRow->arrows ?: 1)))), 3);
+                    break;
 			}
 		}
 

@@ -19,7 +19,7 @@ $PAGE_TITLE=get_text('Setup', 'RoundRobin');
  * 3: Total points
  * 4: Shoot off
  * 5: Sum (set)points - Sum opponents (set)points
- *
+ * 6: average arrow
  * */
 
 /* Combos for Team/Individual, Event, Level plus a hidden "copy from" */
@@ -50,6 +50,7 @@ $JS_SCRIPT=array(
 		'strSetupCopyWarning' => get_text('SetupCopyWarning', 'RoundRobin'),
 		'cmdConfirm' => get_text('Confirm', 'Tournament'),
 		'cmdCancel' => get_text('CmdCancel'),
+		'ChangesLost' => get_text('ChangesLost', 'Errors'),
 	)),
 	'<script type="text/javascript" src="./Common.js"></script>',
 	'<script type="text/javascript" src="./Setup.js"></script>',

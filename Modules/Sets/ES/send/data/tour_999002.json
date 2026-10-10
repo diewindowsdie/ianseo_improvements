@@ -1,0 +1,25 @@
+{
+    "settings": {
+        "url": "https:\/\/api-res.rfeta.es",
+        "interval": 120
+    },
+    "auth": {
+        "token": "",
+        "status": "",
+        "blockedReason": "",
+        "privileged": false
+    },
+    "request": {
+        "email": "",
+        "federation": "",
+        "categoryId": 0,
+        "discipline": ""
+    },
+    "hashes": [],
+    "mediaHashes": [],
+    "lastSummary": [],
+    "transfer": {
+        "totalUp": 0,
+        "totalDown": 0
+    }
+}

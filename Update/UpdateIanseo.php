@@ -34,7 +34,7 @@ require_once('Language/lib.php');
 ini_set('memory_limit', '512M');
 
 // nothing to do here without data
-if(!in_array(ProgramRelease, array('STABLE','FITARCO')) and empty($_REQUEST['user'])) {
+if(!isProduction(['STABLE','FITARCO']) and empty($_REQUEST['user'])) {
     $DATA->error=1;
     $DATA->status='<div>' .get_text('NotUpdatable', 'Install', $CFG->INCLUDE_PATH).'</div>';
     $DATA->msg=get_text('NotUpdatable', 'Install', $CFG->INCLUDE_PATH).'<div>' . $CFG->INCLUDE_PATH.'</div>';
@@ -43,7 +43,7 @@ if(!in_array(ProgramRelease, array('STABLE','FITARCO')) and empty($_REQUEST['use
     JsonOut($JSON);
 }
 
-if(ProgramRelease!='HEAD') {
+if(isProduction()) {
     $URL = $CFG->IanseoServer . 'Update.php';
     include('FileList.php');
 
@@ -196,9 +196,10 @@ if(!empty($_REQUEST['user'])) {
     if ($stream !== false) {
         $tmp = stream_get_contents($stream);
         try {
-            $licDecoded = json_decode($tmp);
-            if ($licDecoded->error == 0) {
-                file_put_contents('modules.pgp', $licDecoded->license);
+            if($licDecoded = json_decode($tmp)) {
+                if ($licDecoded->error == 0) {
+                    file_put_contents('modules.pgp', $licDecoded->license);
+                }
             }
         } finally {
             fclose($stream);
@@ -210,7 +211,7 @@ if(!empty($_REQUEST['user'])) {
 
 updateChkUp();
 
-if(ProgramRelease!='HEAD') {
+if(isProduction()) {
     // updating the languages
     $DATA->status .= '<div>' . get_text('GettingLanguagePacks', 'Install').'</div>';
     writeStatusFile($UpdateFile, $DATA);

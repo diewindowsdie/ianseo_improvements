@@ -1,12 +1,20 @@
 <?php
 $lang['AclNotSuperuser']='Ohne "Superuser"-Berechtigung wirst Du aus diesem Bereich ausgeloggt und deshalb kannst Du die Zugriffs-Policies nicht aktivieren.';
+$lang['AuthTourCode']='Turnierlisten-Codes, die vom Benutzer gemanaged werden kann. <br>Erlaubtes Wildcard: "%"';
+$lang['AutoCheckinAlreadyDone']='Du bist bereits eingecheckt.<br>Wenn Du irgendeine Information anpassen möchtest, begib Dich bitte zur Anmeldung.';
 $lang['AutoCheckinConfirm']='Wenn alle Details korrekt sind, drücke "Check-in bestätigen".<br>Ansonsten drücke ABBRECHEN/CANCEL und gehe zur Akkredition.';
 $lang['AutoCheckinSearch']='Scanne den QR-Code, den Du erhalten hast, oder gib Deinen Namen ein.';
 $lang['AutoCHK-CanEditCategory']='Kategorie ändern';
 $lang['AutoCHK-CanEditEntry']='Eintragsdetails ändern';
 $lang['AutoCHK-CanEditExtras']='Extras ändern';
 $lang['AutoCHK-CanEditTgt']='Scheibeneinteilung ändern';
+$lang['AutoCHK-KioskEditPin']='4stelliger PIN, um Daten in zugelassenen Geräten zu verändern.';
 $lang['AutoCHK-Print']='Automatisch Druck-Dialog anzeigen';
+$lang['AutoImportSettings']='<b>Nur für Expert-Anwender</b><br>Das Verändern der Voreinstellungen könnte falsche Ergebnisse hervorrufen.<br>Es ist wichtig, alle Ergebnisse neu zu berechnen, die als "manuell" eingestellt sind, bevor sie an ianseo.net gesendet werden oder die Ergebnisse ausgedruckt werden und im Allgemeinen vor jeder Verteilung jeglicher Art.';
+$lang['CombiCompList']='Liste der Turnier-Codes (comma-separated)';
+$lang['ExportCategories']='Wähle aus, welche Kategorien/Veranstaltungen exportiert werden sollen (keine Auswahl = alle)';
+$lang['ExportDistances']='Wähle aus, welche Distanz(en) exportiert werden soll(en) (keine Auswahl = alle)';
+$lang['ExportSchedule']='Wähle vom Zeitplan aus, welcher Durchgang exportiert werden soll.';
 $lang['ExportScheduleToday']='Zeige nur die geplanten Durchgänge für heute';
 $lang['FontFamily']='in CSS zu benutzende Schrift';
 $lang['FontFile']='Speicherort der Datei';
@@ -20,10 +28,10 @@ $lang['ISK-LockedSessionHelp']='{$a} Icons zeigen, ob die App in diesem Durchgan
 $lang['ISK-ServerUrlPin']='<b>Gib diese Nummer nicht weiter!</b><br>Benutzen einen PIN (4-stellig nummerisch) für den Zugriff auf Deinen Wettkampf.<br>Die Geräte können nur nach dem Scan des QR-Codes zum Werten benutzt werden.<br>Für die manuelle Wertungsaufnahme mit der ianseo Scorekeeper LITE App, muss der Competition-Code <b>{$a}</b> benutzt werden.';
 $lang['QrCodeLandscape']='ein einfacher oder doppelter "<" macht einen Links-Pfeil<br>ein einfacher oder doppelter ">" macht einen Rechts-Pfeil<br>ein einfacher oder doppelter "^" macht einen Nach-Oben-Pfeil<br>ein einfacher oder doppelter "v" macht einen Nach-Unten-Pfeil';
 $lang['QrCodePortrait']='Dieses Feld ist HTML-tauglich. Wenn Du etwas mit &lt;qrcode&gt;...&lt;/qrcode&gt; einschließt, wird der Inhalt in einen QR-Code verändert.';
-$lang['RecordGrayLine']='Der gleiche Typ und die gleiche Kategorie enthalten bereits eine höhere Wertung.<br>Prüfe das Regelwerk und Daten für die Rekordeintragung.';
+$lang['RecordGrayLine']='Der gleiche Typ und die gleiche Kategorie enthalten bereits eine höhere Wertung.<br>Prüfe das Reglement und Daten für die Rekordeintragung.';
 $lang['RecordHelp']='Die farbigen Zeilen/Zellen helfen.';
 $lang['RecordPinkCell']='Die gleiche Wertung und Kategorie ist ein Rekord in einem höheren Level.<bt>Schreibe in der PDF nur den als am wichtigsten bewerteten.</bt>';
-$lang['ScoreBarCodeShortcuts']='Lies den Barcode, der auf der Scorekarte gedruckt ist.<br/> Wenn manuell ein # eingefügt wird, gefolgt vom Namen des Athleten, wird die Datenbank nach dem Namen des Athleten suchen<br/> Wenn ein @ gefolgt von der Scheibennummer eingefügt wird, wird diese Scheibe gesucht. Der Abstand MUSS gesetzt sein. Die Session muss angegeben werden (erstes Zeichen) und die Scheibe ist auf 3 Stellen gesetzt.';
+$lang['ScoreBarCodeShortcuts']='Lies den Barcode, der auf der Scorekarte gedruckt ist.<br> Wenn manuell ein # eingefügt wird, gefolgt vom Namen des Athleten, wird in der Datenbank nach dem Namen des Athleten gesucht.<br> Wenn ein @ gefolgt von der Scheibennummer eingefügt wird, wird diese Scheibe gesucht. Der Abstand MUSS gesetzt sein. Die Session muss angegeben werden (erstes Zeichen) und die Scheibe ist auf 3 Stellen gesetzt.';
 $lang['ScoreboardFreetext-Texts']='Füge {{date}} für das Datum im englischen Format ein (january 4, 2024).<br> Füge {{date-lang}} für das lokale Datum ein (z. B. {{date-de}} für 4. Januar 2024).<br>Füge {{time}} für die laufende Zeit im ISO-Format ein (15:03:23).<br> Füge {{time-am}} für die laufende Zeit im AM/PM-Format ein (3:03:23 PM).<br>Füge {{counter-datetime}} ein, um einen vollen Countdown zu erhalten ([[[days:]hours:]minutes:]seconds , wobei datetime die Angaben im ISO Format 2024-12-04T09:00:00 mit lokaler Zeit ergibt).<br>Diese Felder können immer nur 1x im Text verwendet werden!';
 $lang['Sport80-DeleteEntries']='Lösche Einträge, die nicht in Sport80 vorhanden sind.';
 $lang['Sport80-ForceUpdate']='Diese Aktion wird alle Änderungen mit den Original Informationen überschreiben, die vom Sport80-Registration-System kommen.<br>Es ist angeraten, ein Backup vor dem Ausführen zum machen.<br>Nur Ausführen, wenn Du Dir extrem sicher bist, was Du tust.';

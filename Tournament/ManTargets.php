@@ -8,7 +8,7 @@ require_once('Partecipants/Fun_Targets.php');
 
 
 
-$Advanced = (ProgramRelease!='FITARCO' AND ProgramRelease!='STABLE');
+$Advanced =!isProduction(['FITARCO', 'STABLE']);
 
 $numDist=0;
 $colspan=0;

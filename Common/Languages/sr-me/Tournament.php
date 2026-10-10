@@ -258,7 +258,6 @@ $lang['Delayed']='Odloženo (-1 za reset)';
 $lang['DeleteChannel']='Obriši kanal';
 $lang['DeletePreviousArchers']='Obriši postojeće unose koji nisu na listi';
 $lang['DeletePreviousTeams']='Obriši prethodne timove';
-$lang['DeleteTourConfirm']='Unesi u okvir za tekst sljedeći kontrolni kod:';
 $lang['DeleteTournament']='Obriši turnir';
 $lang['Deleting']='U toku: brisanje online fajlova...';
 $lang['DescID-OC']='##ID-OC## <i><tab></i> BIB <i><tab></i> LOCALBIB<br>Postavi lokalni startni broj za streličara identifikovanog putem BIB-a';

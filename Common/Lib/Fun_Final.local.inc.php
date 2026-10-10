@@ -758,8 +758,8 @@ function setLiveSession($TeamEvent, $event, $match, $TourId=0, $Toggle=true) {
         $Where="RrMatchTournament=$TourId and RrMatchEvent=".StrSafe_DB($event)." and (RrMatchLevel*1000000)+(RrMatchGroup*10000)+(RrMatchRound*100)+RrMatchMatchNo in ($match, ".($match+1).") and RrMatchTeam=".($TeamEvent ? 1 : 0);
 
         $sql="select RrMatchLive Live, if(RrMatchScheduledDate>0, RrMatchScheduledDate, '') as RrMatchScheduledDate,
-                concat_ws('|', RrLevName, RrMatchLevel, RrGrName, RrMatchGroup, RrMatchRound) Session,
-                RrMatchRound Distance,
+                concat_ws('|', RrLevName, RrMatchLevel, RrGrName, RrMatchGroup, RrMatchRound, RrMatchTeam) Session,
+                0 as Distance,
                 if(RrMatchScheduledTime=0, '', date_format(RrMatchScheduledTime, '%H:%i')) Start,
                 (RrMatchLevel*1000000)+(RrMatchGroup*10000)+(RrMatchRound*100) as OrderPhase
             from RoundRobinMatches

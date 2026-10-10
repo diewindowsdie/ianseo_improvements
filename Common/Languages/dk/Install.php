@@ -256,7 +256,6 @@ $lang['Setup-Default']='International turnering (WA regler)';
 $lang['Setup-DK']='Danske regler';
 $lang['Setup-FR']='Franske regler';
 $lang['Setup-IFAA']='IFAA Tournament Rules';
-$lang['Setup-IT']='Italienske regler';
 $lang['Setup-Kyudo']='Kyudo regler';
 $lang['Setup-LANC']='Lancaster';
 $lang['Setup-NFAA']='NFAA regler';

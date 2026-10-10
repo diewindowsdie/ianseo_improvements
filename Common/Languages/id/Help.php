@@ -1,6 +1,6 @@
 <?php
 $lang['AclNotSuperuser']='Tanpa akses "SUPERUSER" Anda akan terkunci dari bagian ini dan oleh karena itu Anda tidak dapat mengaktifkan Kebijakan Akses';
-$lang['AuthTourCode']='Daftar kode turnamen yang dipisahkan koma yang dapat dikelola oleh pengguna.<br>Karakter pengganti yang diizinkan: "%"';
+$lang['AuthTourCode']='Daftar kode turnamen yang dapat dikelola oleh pengguna.<br>Wildcard yang diizinkan: "%"';
 $lang['AutoCheckinAlreadyDone']='Anda sudah check-in<br>Jika Anda perlu mengubah informasi apa pun, lanjutkan ke meja akreditasi';
 $lang['AutoCheckinConfirm']='Jika semua detail sudah benar, tekan CONFIRM CHECK-IN<br> Jika tidak, tekan CANCEL dan lanjutkan ke meja akreditasi';
 $lang['AutoCheckinSearch']='Scan Kode QR yang Anda terima atau ketik nama Anda';

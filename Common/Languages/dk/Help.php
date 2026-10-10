@@ -1,6 +1,5 @@
 <?php
 $lang['AclNotSuperuser']='Without "SUPERUSER" access you will be locked out of this section and therefore you cannot enable Access Policies';
-$lang['AuthTourCode']='Kommasepareret liste af turneringskoder som kan håndteres af brugeren.<br>Man kan bruge "%" som wildcard.';
 $lang['AutoCheckinAlreadyDone']='Du er allerede indchecket<br>Hvis du vil ændre data, så henvend dig ved indcheckning';
 $lang['AutoCheckinConfirm']='Hvis al information er korrekt, så tryk BEKRÆFT CHECK-IN<br> Ellers tryk AFBRYD og henvend dig ved indcheckning';
 $lang['AutoCheckinSearch']='Skan den modtagne QR koden eller indtast navn';

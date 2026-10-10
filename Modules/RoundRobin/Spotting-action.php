@@ -76,7 +76,7 @@ switch($_REQUEST['act']) {
     case 'setLive':
         if(isset($_REQUEST['match']) and is_numeric($_REQUEST['match'])) {
             require_once('Common/Lib/Fun_Final.local.inc.php');
-            $m1=floor(intval($_REQUEST['match']))*2;
+            $m1=intval($_REQUEST['match']);
 
             $Rs=setLiveSession($Team, $Event, $Level*1000000 + $Group*10000 + $Round*100 + $m1, $_SESSION['TourId']);
             $JSON['isLive']=0;
@@ -927,55 +927,59 @@ switch($_REQUEST['act']) {
 		$Params=getRobinArrowsParams($Team, $Event, $Level);
 		$m=array($Match, ($Match%2) ? $Match-1 : $Match+1);
 
-		$Sql1="update RoundRobinMatches set RrMatchShootFirst=(RrMatchShootFirst | ".pow(2, $End)."), RrMatchDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . "  
+        if(empty($_REQUEST['stopAlternate'])) {
+            $Sql1 = "update RoundRobinMatches set RrMatchShootFirst=(RrMatchShootFirst | " . pow(2, $End) . "), RrMatchDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . "  
 			where RrMatchTournament={$_SESSION['TourId']} and RrMatchEvent='$Event' and RrMatchLevel=$Level and RrMatchGroup=$Group and RrMatchRound=$Round and RrMatchMatchNo={$m[0]}";
-		$Sql2="update RoundRobinMatches set RrMatchShootFirst=(RrMatchShootFirst & ~".pow(2, $End)."), RrMatchDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . "  
+            $Sql2 = "update RoundRobinMatches set RrMatchShootFirst=(RrMatchShootFirst & ~" . pow(2, $End) . "), RrMatchDateTime=" . StrSafe_DB(date('Y-m-d H:i:s')) . "  
 			where RrMatchTournament={$_SESSION['TourId']} and RrMatchEvent='$Event' and RrMatchLevel=$Level and RrMatchGroup=$Group and RrMatchRound=$Round and RrMatchMatchNo={$m[1]}";
-		if($End==$Params->ends) {
-			// Setting SO
-			for($i=0; $i<3; $i++) {
-				// alternate teams each component shoots 1 arrow, so we iterate for as many arrows per archer!
-				for($j=0; $j < $Params->so; $j++) {
-					$tabIndex=$TabIndexOffset + $Params->ends*$Params->arrows*2 + $i*$Params->so*2 + $j + 1;
+            if ($End == $Params->ends) {
+                // Setting SO
+                for ($i = 0; $i < 3; $i++) {
+                    // alternate teams each component shoots 1 arrow, so we iterate for as many arrows per archer!
+                    for ($j = 0; $j < $Params->so; $j++) {
+                        $tabIndex = $TabIndexOffset + $Params->ends * $Params->arrows * 2 + $i * $Params->so * 2 + $j + 1;
 
-					$JSON['t'][]=array(
-						'id' => 'Arrow['.$m[0].']['.$Team.']['.$i.']['.$j.']',
-						'val' => $tabIndex,
-					);
-					$JSON['t'][]=array(
-						'id' => 'Arrow['.$m[1].']['.$Team.']['.$i.']['.$j.']',
-						'val' => $tabIndex+1,
-					);
-				}
-			}
-		} else {
-			// setting regular arrows
-			for($i=$End; $i<$Params->ends; $i++) {
-				// alternate teams each component shoots 1 arrow, so we iterate for as many arrows per archer!
-				for($j=0; $j < $Params->arrows; $j++) {
-					$tabIndex=$TabIndexOffset + $i*$Params->arrows*2 + $j*2 + 1;
+                        $JSON['t'][] = array(
+                            'id' => 'Arrow[' . $m[0] . '][' . $Team . '][' . $i . '][' . $j . ']',
+                            'val' => $tabIndex,
+                        );
+                        $JSON['t'][] = array(
+                            'id' => 'Arrow[' . $m[1] . '][' . $Team . '][' . $i . '][' . $j . ']',
+                            'val' => $tabIndex + 1,
+                        );
+                    }
+                }
+            } else {
+                // setting regular arrows
+                for ($i = $End; $i < $Params->ends; $i++) {
+                    // alternate teams each component shoots 1 arrow, so we iterate for as many arrows per archer!
+                    for ($j = 0; $j < $Params->arrows; $j++) {
+                        $tabIndex = $TabIndexOffset + $i * $Params->arrows * 2 + $j * 2 + 1;
 
-					$JSON['t'][]=array(
-						'id' => 'Arrow['.$m[0].'][0]['.$i.']['.$j.']',
-						'val' => $tabIndex,
-					);
-					$JSON['t'][]=array(
-						'id' => 'Arrow['.$m[1].'][0]['.$i.']['.$j.']',
-						'val' => $tabIndex+1,
-					);
-				}
-			}
-		}
-		// if($Start=='y') {
-		// } else {
-		// 	$Sql1="update Finals set FinShootFirst=FinShootFirst & ~".pow(2, $End)." where FinTournament={$_SESSION['TourId']} and FinEvent='$Event' and FinMatchNo=$Matchno";
-		// 	if($Team) $Sql1="update TeamFinals set TfShootFirst=TfShootFirst & ~".pow(2, $End)." where TfTournament={$_SESSION['TourId']} and TfEvent='$Event' and TfMatchNo=$Matchno";
-		// }
-		safe_w_sql($Sql1);
-		if($Sql2) {
-			safe_w_sql($Sql2);
-		}
-
+                        $JSON['t'][] = array(
+                            'id' => 'Arrow[' . $m[0] . '][0][' . $i . '][' . $j . ']',
+                            'val' => $tabIndex,
+                        );
+                        $JSON['t'][] = array(
+                            'id' => 'Arrow[' . $m[1] . '][0][' . $i . '][' . $j . ']',
+                            'val' => $tabIndex + 1,
+                        );
+                    }
+                }
+            }
+            // if($Start=='y') {
+            // } else {
+            // 	$Sql1="update Finals set FinShootFirst=FinShootFirst & ~".pow(2, $End)." where FinTournament={$_SESSION['TourId']} and FinEvent='$Event' and FinMatchNo=$Matchno";
+            // 	if($Team) $Sql1="update TeamFinals set TfShootFirst=TfShootFirst & ~".pow(2, $End)." where TfTournament={$_SESSION['TourId']} and TfEvent='$Event' and TfMatchNo=$Matchno";
+            // }
+            safe_w_sql($Sql1);
+            if ($Sql2) {
+                safe_w_sql($Sql2);
+            }
+        } else {
+            $Sql1 = "update RoundRobinMatches set RrMatchShootFirst=0 where RrMatchTournament={$_SESSION['TourId']} and RrMatchEvent='$Event' and RrMatchLevel=$Level and RrMatchGroup=$Group and RrMatchRound=$Round and RrMatchMatchNo IN ({$m[0]},{$m[1]}) and trim(RrMatchArrowstring)=''";
+            safe_w_sql($Sql1);
+        }
 		$JSON['error']=0;
 		break;
 	case 'confirmMatch':

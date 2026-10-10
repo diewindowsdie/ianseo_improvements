@@ -19,4 +19,5 @@ $lang['RankingsTeam']='Lag Elim.- & Finalronder';
 $lang['Teams']='Lag';
 $lang['TypeName']='Knappa in det namn du letar efter';
 $lang['VenueTime']='Lokal tid';
+$lang['ViewIndividualResults']='Se individuella resultat';
 ?>

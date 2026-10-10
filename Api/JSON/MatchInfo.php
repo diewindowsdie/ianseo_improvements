@@ -27,143 +27,231 @@ if(isset($_REQUEST['MatchId']) && preg_match("/^[0-9]+$/", $_REQUEST['MatchId'])
 $json_array=array();
 $imgPath='/TV/Photos/' . $TourCode . '-%s-%s.jpg';
 
-$options['tournament']=$TourId;
-$options['events']=$EvCode;
-$options['matchno']=$MatchId;
+if($MatchId>256) {
+    // Round Robin
+    $options['tournament'] = $TourId;
+    $options['events']=[$EvCode];
+    $options['matchno']=$MatchId;
+    $options['team']=$EvType;
 
-$rank=null;
-if($EvType) {
-	$rank=Obj_RankFactory::create('GridTeam',$options);
+    $rank=Obj_RankFactory::create('Robin',$options);
+    $rank->OnlyMatch=true;
+
+    $rank->read();
+    $Data=$rank->getData();
+
+    foreach($Data['sections'] as $evCode=>$Levels) {
+        if(empty($Levels['levels'])) {
+            continue;
+        }
+        foreach($Levels['levels'] as $evLevelNum=>$evLevel) {
+            if(empty($evLevel['matches'])) {
+                continue;
+            }
+            $json_array = array("Event" => $EvCode, "Type" => $EvType, "MatchId" => strval($MatchId), "PhaseId" => strval("R".$evLevel['id']), "ScheduledDateTime" => '', "SessionId" => strval(0), "SessionName" => '', "LineJudge" => "", "LineJudgeId" => "", "TargetJudge" => "", "TargetJudgeId" => "");
+            $json_array['Mode'] = array("ScoringMode" => ($Levels["meta"]["matchMode"]==1 ? "S" : "C"),
+                "Arrows" => intval($evLevel['arrows']), "Ends" => intval($evLevel['ends']), "ShootoffArrows" => intval($evLevel['soNumArrows']),
+                "InitialTime" => strval($EvType == 0 ? 20 : intval($evLevel['arrows']) * 20), "ShootoffInitialTime" => strval($EvType == 0 ? 20 : intval($evLevel['soNumArrows']) * 20), "TimeResetsOnArrow" => ($EvType == 0));
+            foreach($evLevel['matches'] as $evGroupNum=>$evGroup) {
+                if(empty($evGroup['rounds'])) {
+                    continue;
+                }
+                foreach($evGroup['rounds'] as $evRoundNum=>$vPh) {
+                    foreach($vPh['items'] as $kItem=>$vItem) {
+                        $json_array["ScheduledDateTime"] = date("Y-m-d H:i", strtotime($vItem["scheduledDate"] . " " . $vItem["scheduledTime"]));
+                        $Sql = "SELECT `SesOrder`, `SesName`
+                            FROM `Session` 
+                            WHERE '".$vItem["scheduledDate"] . " " . $vItem["scheduledTime"]."' BETWEEN `SesDtStart` AND `SesDtEnd` and (SesEvents='' or FIND_IN_SET('{$EvType}{$EvCode}',SesEvents))";
+                        $q = safe_r_SQL($Sql);
+                        if ($r = safe_fetch($q)) {
+                            $json_array["SessionId"] = $r->SesOrder;
+                            $json_array["SessionName"] = $r->SesName;
+                        }
+                        if (!empty($vItem["lineJudge"])) {
+                            $json_array["LineJudge"] = $vItem["lineJudge"];
+                            $json_array["LineJudgeId"] = $vItem["lineCodeLocal"];
+                        } else {
+                            unset($json_array["LineJudge"]);
+                            unset($json_array["LineJudgeId"]);
+                        }
+                        if (!empty($vItem["targetJudge"])) {
+                            $json_array["TargetJudge"] = $vItem["targetJudge"];
+                            $json_array["TargetJudgeId"] = $vItem["targetCodeLocal"];
+                        } else {
+                            unset($json_array["TargetJudge"]);
+                            unset($json_array["TargetJudgeId"]);
+                        }
+                        $tmpL = array();
+                        $tmpR = array();
+                        if ($EvType == 0) {
+                            $tmpL += array("Id" => $vItem["localBib"], "FamilyName" => $vItem["familyName"], "GivenName" => $vItem["givenName"], "NameOrder" => $vItem["nameOrder"], "Gender" => $vItem["gender"]);
+                            if (file_exists($CFG->DOCUMENT_PATH . 'TV/Photos/' . $TourCode . '-En-' . $vItem['itemId'] . '.jpg')) {
+                                $tmpL += array("ProfilePicURL" => sprintf($imgPath, 'En', $vItem['itemId']));
+                            }
+                            $tmpR += array("Id" => $vItem["oppLocalBib"], "FamilyName" => $vItem["oppFamilyName"], "GivenName" => $vItem["oppGivenName"], "NameOrder" => $vItem["oppNameOrder"], "Gender" => $vItem["oppGender"]);
+                            if (file_exists($CFG->DOCUMENT_PATH . 'TV/Photos/' . $TourCode . '-En-' . $vItem['oppItemId'] . '.jpg')) {
+                                $tmpR += array("ProfilePicURL" => sprintf($imgPath, 'En', $vItem['oppItemId']));
+                            }
+
+                        }
+                        $tmpL += array("TeamCode" => $vItem["countryCode"], "TeamName" => $vItem["countryName"]);
+                        $tmpL += array("Target" => ltrim($vItem["target"], "0"));
+                        $tmpL += array("QualificationRank" => $vItem["qualRank"], "QualificationScore" => $vItem["qualScore"], "WorldRanking" => '');
+                        if (file_exists($CFG->DOCUMENT_PATH . 'TV/Photos/' . $TourCode . '-Fl-' . $vItem['countryCode'] . '.jpg')) {
+                            $tmpL += array("FlagURL" => sprintf($imgPath, 'Fl', $vItem['countryCode']));
+                        }
+
+                        $tmpR += array("TeamCode" => $vItem["oppCountryCode"], "TeamName" => $vItem["oppCountryName"]);
+                        $tmpR += array("Target" => ltrim($vItem["oppTarget"], "0"));
+                        $tmpR += array("QualificationRank" => $vItem["oppQualRank"], "QualificationScore" => $vItem["oppQualScore"], "WorldRanking" => '');
+                        if (file_exists($CFG->DOCUMENT_PATH . 'TV/Photos/' . $TourCode . '-Fl-' . $vItem['oppCountryCode'] . '.jpg')) {
+                            $tmpR += array("FlagURL" => sprintf($imgPath, 'Fl', $vItem['oppCountryCode']));
+                        }
+
+                        $json_array['LeftOpponent'] = $tmpL;
+                        $json_array['RightOpponent'] = $tmpR;
+                    }
+                }
+            }
+        }
+    }
 } else {
-	$rank=Obj_RankFactory::create('GridInd',$options);
-}
-$rank->read();
-$Data=$rank->getData();
+    $options['tournament'] = $TourId;
+    $options['events'] = $EvCode;
+    $options['matchno'] = $MatchId;
+    $rank = null;
+    if ($EvType) {
+        $rank = Obj_RankFactory::create('GridTeam', $options);
+    } else {
+        $rank = Obj_RankFactory::create('GridInd', $options);
+    }
+    $rank->read();
+    $Data = $rank->getData();
 
-foreach($Data['sections'] as $kSec=>$vSec) {
-	if(!empty($vSec['phases'])) {
-		foreach($vSec['phases'] as $kPh=>$vPh) {
-			$json_array = Array("Event"=>$EvCode, "Type"=>$EvType, "MatchId"=>$MatchId, "PhaseId"=>strval($kPh), "ScheduledDateTime"=>'', "SessionId"=>strval(0), "SessionName"=>'', "LineJudge"=>"", "LineJudgeId"=>"", "TargetJudge"=>"", "TargetJudgeId"=>"");
-			$objParam=getEventArrowsParams($kSec,$kPh,$EvType,$TourId);
-			$json_array['Mode'] = Array("ScoringMode"=>($vSec["meta"]["matchMode"]==1 ? "S" : "C"),
-				"Arrows"=>strval($objParam->arrows), "Ends"=>strval($objParam->ends), "ShootoffArrows"=>strval($objParam->so),
-				"InitialTime"=>strval($EvType==0 ? 20 : $objParam->arrows*20), "ShootoffInitialTime"=>strval($EvType==0 ? 20 : $objParam->so*20), "TimeResetsOnArrow"=>($EvType==0));
-			foreach($vPh['items'] as $kItem=>$vItem) {
-				$json_array["ScheduledDateTime"] = date("Y-m-d H:i",strtotime($vItem["scheduledDate"] . " ". $vItem["scheduledTime"]));
-				$Sql = "SELECT SesOrder, SesName
+    foreach ($Data['sections'] as $kSec => $vSec) {
+        if (!empty($vSec['phases'])) {
+            foreach ($vSec['phases'] as $kPh => $vPh) {
+                $json_array = array("Event" => $EvCode, "Type" => $EvType, "MatchId" => $MatchId, "PhaseId" => strval($kPh), "ScheduledDateTime" => '', "SessionId" => strval(0), "SessionName" => '', "LineJudge" => "", "LineJudgeId" => "", "TargetJudge" => "", "TargetJudgeId" => "");
+                $objParam = getEventArrowsParams($kSec, $kPh, $EvType, $TourId);
+                $json_array['Mode'] = array("ScoringMode" => ($vSec["meta"]["matchMode"] == 1 ? "S" : "C"),
+                    "Arrows" => strval($objParam->arrows), "Ends" => strval($objParam->ends), "ShootoffArrows" => strval($objParam->so),
+                    "InitialTime" => strval($EvType == 0 ? 20 : $objParam->arrows * 20), "ShootoffInitialTime" => strval($EvType == 0 ? 20 : $objParam->so * 20), "TimeResetsOnArrow" => ($EvType == 0));
+                foreach ($vPh['items'] as $kItem => $vItem) {
+                    $json_array["ScheduledDateTime"] = date("Y-m-d H:i", strtotime($vItem["scheduledDate"] . " " . $vItem["scheduledTime"]));
+                    $Sql = "SELECT SesOrder, SesName
 					FROM FinSchedule
 					INNER JOIN Session ON FsTournament=SesTournament AND CONCAT_WS(' ', FSScheduledDate,FSScheduledTime) BETWEEN SesDtStart AND SesDtEnd
 					WHERE FSTournament={$TourId} AND FSEvent='{$EvCode}' AND FSTeamEvent='{$EvType}' AND FSMatchNo={$MatchId}";
-				$q=safe_r_SQL($Sql);
-				if($r=safe_fetch($q)){
-					$json_array["SessionId"] = $r->SesOrder;
-					$json_array["SessionName"] = $r->SesName;
-				}
-                if(!empty($vItem["lineJudge"])) {
-                    $json_array["LineJudge"] = $vItem["lineJudge"];
-                    $json_array["LineJudgeId"] = $vItem["lineCodeLocal"];
-                } else {
-                    unset($json_array["LineJudge"]);
-                    unset($json_array["LineJudgeId"]);
+                    $q = safe_r_SQL($Sql);
+                    if ($r = safe_fetch($q)) {
+                        $json_array["SessionId"] = $r->SesOrder;
+                        $json_array["SessionName"] = $r->SesName;
+                    }
+                    if (!empty($vItem["lineJudge"])) {
+                        $json_array["LineJudge"] = $vItem["lineJudge"];
+                        $json_array["LineJudgeId"] = $vItem["lineCodeLocal"];
+                    } else {
+                        unset($json_array["LineJudge"]);
+                        unset($json_array["LineJudgeId"]);
+                    }
+                    if (!empty($vItem["targetJudge"])) {
+                        $json_array["TargetJudge"] = $vItem["targetJudge"];
+                        $json_array["TargetJudgeId"] = $vItem["targetCodeLocal"];
+                    } else {
+                        unset($json_array["TargetJudge"]);
+                        unset($json_array["TargetJudgeId"]);
+                    }
+                    $tmpL = array();
+                    $tmpR = array();
+                    if ($EvType == 0) {
+                        $tmpL += array("Id" => $vItem["localBib"], "FamilyName" => $vItem["familyName"], "GivenName" => $vItem["givenName"], "NameOrder" => $vItem["nameOrder"], "Gender" => $vItem["gender"]);
+                        if (file_exists($CFG->DOCUMENT_PATH . 'TV/Photos/' . $TourCode . '-En-' . $vItem['id'] . '.jpg')) {
+                            $tmpL += array("ProfilePicURL" => sprintf($imgPath, 'En', $vItem['id']));
+                        }
+                        $tmpR += array("Id" => $vItem["oppLocalBib"], "FamilyName" => $vItem["oppFamilyName"], "GivenName" => $vItem["oppGivenName"], "NameOrder" => $vItem["oppNameOrder"], "Gender" => $vItem["oppGender"]);
+                        if (file_exists($CFG->DOCUMENT_PATH . 'TV/Photos/' . $TourCode . '-En-' . $vItem['oppId'] . '.jpg')) {
+                            $tmpR += array("ProfilePicURL" => sprintf($imgPath, 'En', $vItem['oppId']));
+                        }
+
+                    }
+                    $tmpL += array("TeamCode" => $vItem["countryCode"], "TeamName" => $vItem["countryName"]);
+                    $tmpL += array("Target" => ltrim($vItem["target"], "0"));
+                    $tmpL += array("QualificationRank" => $vItem["qualRank"], "QualificationScore" => $vItem["qualScore"], "WorldRanking" => '');
+                    if (file_exists($CFG->DOCUMENT_PATH . 'TV/Photos/' . $TourCode . '-Fl-' . $vItem['countryCode'] . '.jpg')) {
+                        $tmpL += array("FlagURL" => sprintf($imgPath, 'Fl', $vItem['countryCode']));
+                    }
+
+                    $tmpR += array("TeamCode" => $vItem["oppCountryCode"], "TeamName" => $vItem["oppCountryName"]);
+                    $tmpR += array("Target" => ltrim($vItem["oppTarget"], "0"));
+                    $tmpR += array("QualificationRank" => $vItem["oppQualRank"], "QualificationScore" => $vItem["oppQualScore"], "WorldRanking" => '');
+                    if (file_exists($CFG->DOCUMENT_PATH . 'TV/Photos/' . $TourCode . '-Fl-' . $vItem['oppCountryCode'] . '.jpg')) {
+                        $tmpR += array("FlagURL" => sprintf($imgPath, 'Fl', $vItem['oppCountryCode']));
+                    }
+
+                    $q = safe_r_SQL("SELECT RankRanking FROM Rankings WHERE RankTournament={$TourId} AND RankTeam={$EvType} AND RankEvent='{$EvCode}' AND RankCode='" . ($EvType == 0 ? $vItem["localBib"] : $vItem["countryCode"]) . "'");
+                    if ($r = safe_fetch($q)) {
+                        $tmpL["WorldRanking"] = $r->RankRanking;
+                    }
+                    $q = safe_r_SQL("SELECT RankRanking FROM Rankings WHERE RankTournament={$TourId} AND RankTeam={$EvType} AND RankEvent='{$EvCode}' AND RankCode='" . ($EvType == 0 ? $vItem["oppLocalBib"] : $vItem["oppCountryCode"]) . "'");
+                    if ($r = safe_fetch($q)) {
+                        $tmpR["WorldRanking"] = $r->RankRanking;
+                    }
+                    if (!empty($vItem["coach"])) {
+                        $tmpL["Coach"] = $vItem["coach"];
+                        $tmpL["CoachId"] = $vItem["coachCode"];
+                    }
+                    if (!empty($vItem["oppCoach"])) {
+                        $tmpR["Coach"] = $vItem["oppCoach"];
+                        $tmpR["CoachId"] = $vItem["oppCoachCode"];
+                    }
+                    if ($EvType) {
+                        $q = safe_r_SQL("SELECT EdcExtra FROM ExtraDataCountries WHERE EdcId='" . $vItem['teamId'] . "' AND EdcType='Y' and EdcEvent='{$EvCode}'");
+                        if ($r = safe_fetch($q)) {
+                            $tmpL["ProfileData"] = unserialize($r->EdcExtra);
+                        }
+
+                        $q = safe_r_SQL("SELECT EdcExtra FROM ExtraDataCountries WHERE EdcId='" . $vItem['oppTeamId'] . "' AND EdcType='Y' and EdcEvent='{$EvCode}'");
+                        if ($r = safe_fetch($q)) {
+                            $tmpR["ProfileData"] = unserialize($r->EdcExtra);
+                        }
+
+                        $tmp = array();
+                        if (!empty($vSec["athletes"][$vItem["teamId"]][$vItem["subTeam"]])) {
+                            foreach ($vSec["athletes"][$vItem["teamId"]][$vItem["subTeam"]] as $kAth => $vAth) {
+                                $tmp[$kAth] = array("Id" => $vAth["localBib"], "FamilyName" => $vAth["familyName"], "GivenName" => $vAth["givenName"], "NameOrder" => $vAth["nameOrder"], "Gender" => $vAth["gender"]);
+                                if (file_exists($CFG->DOCUMENT_PATH . 'TV/Photos/' . $TourCode . '-En-' . $vAth['id'] . '.jpg')) {
+                                    $tmp[$kAth] += array("ProfilePicURL" => sprintf($imgPath, 'En', $vAth['id']));
+                                }
+                            }
+                        }
+                        $tmpL["Components"] = $tmp;
+                        $tmp = array();
+                        if (!empty($vSec["athletes"][$vItem["oppTeamId"]][$vItem["oppSubTeam"]])) {
+                            foreach ($vSec["athletes"][$vItem["oppTeamId"]][$vItem["oppSubTeam"]] as $kAth => $vAth) {
+                                $tmp[$kAth] = array("Id" => $vAth["localBib"], "FamilyName" => $vAth["familyName"], "GivenName" => $vAth["givenName"], "NameOrder" => $vAth["nameOrder"], "Gender" => $vAth["gender"]);
+                                if (file_exists($CFG->DOCUMENT_PATH . 'TV/Photos/' . $TourCode . '-En-' . $vAth['id'] . '.jpg')) {
+                                    $tmp[$kAth] += array("ProfilePicURL" => sprintf($imgPath, 'En', $vAth['id']));
+                                }
+                            }
+                        }
+                        $tmpR["Components"] = $tmp;
+                    } else {
+                        $q = safe_r_SQL("SELECT EdExtra FROM ExtraData WHERE EdId='" . $vItem['id'] . "' AND EdType='Y' and EdEvent='{$EvCode}'");
+                        if ($r = safe_fetch($q)) {
+                            $tmpL["ProfileData"] = unserialize($r->EdExtra);
+                        }
+
+                        $q = safe_r_SQL("SELECT EdExtra FROM ExtraData WHERE EdId='" . $vItem['oppId'] . "' AND EdType='Y' and EdEvent='{$EvCode}'");
+                        if ($r = safe_fetch($q)) {
+                            $tmpR["ProfileData"] = unserialize($r->EdExtra);
+                        }
+                    }
+                    $json_array['LeftOpponent'] = $tmpL;
+                    $json_array['RightOpponent'] = $tmpR;
                 }
-                if(!empty($vItem["targetJudge"])) {
-                    $json_array["TargetJudge"] = $vItem["targetJudge"];
-                    $json_array["TargetJudgeId"] = $vItem["targetCodeLocal"];
-                } else {
-                    unset($json_array["TargetJudge"]);
-                    unset($json_array["TargetJudgeId"]);
-                }
-				$tmpL = array();
-				$tmpR = array();
-				if($EvType==0) {
-					$tmpL += array("Id"=>$vItem["localBib"], "FamilyName"=>$vItem["familyName"], "GivenName"=>$vItem["givenName"], "NameOrder"=>$vItem["nameOrder"], "Gender"=>$vItem["gender"]);
-					if(file_exists($CFG->DOCUMENT_PATH.'TV/Photos/'.$TourCode.'-En-'.$vItem['id'].'.jpg')) {
-						$tmpL += array("ProfilePicURL"=>sprintf($imgPath, 'En', $vItem['id']));
-					}
-					$tmpR += array("Id"=>$vItem["oppLocalBib"], "FamilyName"=>$vItem["oppFamilyName"], "GivenName"=>$vItem["oppGivenName"], "NameOrder"=>$vItem["oppNameOrder"], "Gender"=>$vItem["oppGender"]);
-					if(file_exists($CFG->DOCUMENT_PATH.'TV/Photos/'.$TourCode.'-En-'.$vItem['oppId'].'.jpg')) {
-						$tmpR += array("ProfilePicURL"=>sprintf($imgPath, 'En', $vItem['oppId']));
-					}
-
-				}
-				$tmpL += array("TeamCode"=>$vItem["countryCode"], "TeamName"=>$vItem["countryName"]);
-				$tmpL += array("Target"=>ltrim($vItem["target"],"0"));
-				$tmpL += array("QualificationRank"=>$vItem["qualRank"], "QualificationScore"=>$vItem["qualScore"], "WorldRanking"=>'');
-				if(file_exists($CFG->DOCUMENT_PATH.'TV/Photos/'.$TourCode.'-Fl-'.$vItem['countryCode'].'.jpg')) {
-					$tmpL += array("FlagURL"=>sprintf($imgPath, 'Fl', $vItem['countryCode']));
-				}
-
-				$tmpR += array("TeamCode"=>$vItem["oppCountryCode"], "TeamName"=>$vItem["oppCountryName"]);
-				$tmpR += array("Target"=>ltrim($vItem["oppTarget"],"0"));
-				$tmpR += array("QualificationRank"=>$vItem["oppQualRank"], "QualificationScore"=>$vItem["oppQualScore"], "WorldRanking"=>'');
-				if(file_exists($CFG->DOCUMENT_PATH.'TV/Photos/'.$TourCode.'-Fl-'.$vItem['oppCountryCode'].'.jpg')) {
-					$tmpR += array("FlagURL"=>sprintf($imgPath, 'Fl', $vItem['oppCountryCode']));
-				}
-
-				$q= safe_r_SQL("SELECT RankRanking FROM Rankings WHERE RankTournament={$TourId} AND RankTeam={$EvType} AND RankEvent='{$EvCode}' AND RankCode='".($EvType==0 ? $vItem["localBib"] : $vItem["countryCode"])."'");
-				if($r=safe_fetch($q)){
-					$tmpL["WorldRanking"] = $r->RankRanking;
-				}
-				$q= safe_r_SQL("SELECT RankRanking FROM Rankings WHERE RankTournament={$TourId} AND RankTeam={$EvType} AND RankEvent='{$EvCode}' AND RankCode='".($EvType==0 ? $vItem["oppLocalBib"] : $vItem["oppCountryCode"])."'");
-				if($r=safe_fetch($q)){
-					$tmpR["WorldRanking"] = $r->RankRanking;
-				}
-                if(!empty($vItem["coach"])) {
-                    $tmpL["Coach"] = $vItem["coach"];
-                    $tmpL["CoachId"] = $vItem["coachCode"];
-                }
-                if(!empty($vItem["oppCoach"])) {
-                    $tmpR["Coach"] = $vItem["oppCoach"];
-                    $tmpR["CoachId"] = $vItem["oppCoachCode"];
-                }
-				if($EvType) {
-					$q= safe_r_SQL("SELECT EdcExtra FROM ExtraDataCountries WHERE EdcId='".$vItem['teamId']."' AND EdcType='Y' and EdcEvent='{$EvCode}'");
-					if($r=safe_fetch($q)){
-						$tmpL["ProfileData"] = unserialize($r->EdcExtra);
-					}
-
-					$q= safe_r_SQL("SELECT EdcExtra FROM ExtraDataCountries WHERE EdcId='".$vItem['oppTeamId']."' AND EdcType='Y' and EdcEvent='{$EvCode}'");
-					if($r=safe_fetch($q)){
-						$tmpR["ProfileData"] = unserialize($r->EdcExtra);
-					}
-
-					$tmp=array();
-					if(!empty($vSec["athletes"][$vItem["teamId"]][$vItem["subTeam"]] )) {
-						foreach($vSec["athletes"][$vItem["teamId"]][$vItem["subTeam"]] as $kAth=>$vAth) {
-							$tmp[$kAth]= array("Id"=>$vAth["localBib"], "FamilyName"=>$vAth["familyName"], "GivenName"=>$vAth["givenName"], "NameOrder"=>$vAth["nameOrder"], "Gender"=>$vAth["gender"]);
-							if(file_exists($CFG->DOCUMENT_PATH.'TV/Photos/'.$TourCode.'-En-'.$vAth['id'].'.jpg')) {
-								$tmp[$kAth] += array("ProfilePicURL"=>sprintf($imgPath, 'En', $vAth['id']));
-							}
-						}
-					}
-					$tmpL["Components"] = $tmp;
-					$tmp=array();
-					if(!empty($vSec["athletes"][$vItem["oppTeamId"]][$vItem["oppSubTeam"]] )) {
-						foreach($vSec["athletes"][$vItem["oppTeamId"]][$vItem["oppSubTeam"]] as $kAth=>$vAth) {
-							$tmp[$kAth]= array("Id"=>$vAth["localBib"], "FamilyName"=>$vAth["familyName"], "GivenName"=>$vAth["givenName"], "NameOrder"=>$vAth["nameOrder"], "Gender"=>$vAth["gender"]);
-							if(file_exists($CFG->DOCUMENT_PATH.'TV/Photos/'.$TourCode.'-En-'.$vAth['id'].'.jpg')) {
-								$tmp[$kAth] += array("ProfilePicURL"=>sprintf($imgPath, 'En', $vAth['id']));
-							}
-						}
-					}
-					$tmpR["Components"] = $tmp;
-				} else {
-					$q= safe_r_SQL("SELECT EdExtra FROM ExtraData WHERE EdId='".$vItem['id']."' AND EdType='Y' and EdEvent='{$EvCode}'");
-					if($r=safe_fetch($q)){
-						$tmpL["ProfileData"] = unserialize($r->EdExtra);
-					}
-
-					$q= safe_r_SQL("SELECT EdExtra FROM ExtraData WHERE EdId='".$vItem['oppId']."' AND EdType='Y' and EdEvent='{$EvCode}'");
-					if($r=safe_fetch($q)){
-						$tmpR["ProfileData"] = unserialize($r->EdExtra);
-					}
-				}
-				$json_array['LeftOpponent'] = $tmpL;
-				$json_array['RightOpponent'] = $tmpR;
-			}
-		}
-	}
+            }
+        }
+    }
 }
-
 // Return the json structure with the callback function that is needed by the app
 SendResult($json_array);

@@ -5,177 +5,61 @@ CheckTourSession(true);
 
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Lib/Obj_RankFactory.php');
+// DecodeFromLetter() and the $LetterPoint table it reads. Obj_Rank_FinalInd pulls this in for its
+// own arrowstrings, so the v2 qualification builder used to work only because the finals were read
+// first — required here so the order of the builders cannot decide whether arrow data survives.
+require_once('Common/Lib/ArrTargets.inc.php');
 
 require_once(dirname(__FILE__).'/config.php');
-$url = $swe_url_result;
+require_once(dirname(__FILE__).'/Functions.php');
+
+if (!$swe_configured) {
+    echo json_encode(array('status' => 'Failed', 'message' => $swelang_notconfigured));
+    exit;
+}
 
 // Read post_body for json data
 $request_body = file_get_contents('php://input');
-$data = json_decode($request_body,true);
-
-//
-$my_json_body = array();
-$have_data_to_send = false;
-// Send qvalification round
-
-if ($data['option']['ind_kval'] == 1) {
-    $data['qualification'] = getIndQualification();
-    $have_data_to_send = true;
-}
-// Send finL round
-
-if ($data['option']['ind_final'] == 1) {
-    $data['final'] = getIndFinals();
-    $have_data_to_send = true;
-}
-unset($data['option']);
-
-if ($have_data_to_send) {
-    echo sendInformation($url, json_encode($data));
-} else {
-    $rdata = array('status'=>'Failed','message'=>$swelang_noinformation_sent);
-    echo json_encode($rdata);
+$data = json_decode($request_body, true);
+if (!is_array($data)) {
+    $data = array();
 }
 
+$auth = isset($data['auth']) && is_array($data['auth']) ? $data['auth'] : array();
 
-
-function getIndQualification() {
-    //.
-    $options=array();
-    $rank=Obj_RankFactory::create('DivClass',$options);
-    $rank->read();
-    return prepareIndQualification($rank->getData());
+/*
+ * The operator does not pick what to send: IANSEO knows which events the competition has, so both
+ * versions always post everything they can produce. For v2 that also means ARS can replace the
+ * competition's whole result set, instead of keeping rows from a competition imported earlier.
+ */
+if ((int)$swe_api_version >= 2) {
+    $payload = buildPayloadV2($auth, $swe_module_version);
+    echo sendInformation($swe_url_result_v2, json_encode($payload, JSON_UNESCAPED_UNICODE));
+    exit;
 }
 
-function getIndFinals() {
-    //.
-    $options=array();
-    $rank=Obj_RankFactory::create('FinalInd',$options);
-    $rank->read();
-    $rankData=$rank->getData();
-    if (count($rankData['sections']) > 0)
-    {
-        return prepareIndFinals($rankData);
-    }
-    return "";
+/* ---------- v1: legacy payload shape ---------- */
+/*
+ * No finals, no 'final' key. That is exactly what the v1 endpoint received when the operator left the
+ * Final checkbox unticked, before the checkboxes were removed, so it is the one shape every v1 server
+ * already accepts. Norway and Iceland run most competitions without finals, and both other choices broke
+ * the whole send: "" (what the single Send button first sent) cannot bind to a list, and [] is refused by
+ * the v1 server as "Import data could not be parsed". Either way nothing was imported, the qualification
+ * included.
+ *
+ * v1 only. The v2 endpoint must keep getting "final": [], because it clears old individual results only
+ * when a payload speaks about BOTH qualification and final (CompetitionResultsV2Controller).
+ *
+ * !empty() rather than count(): a rank object that returned nothing at all makes count() a fatal on
+ * PHP 8, which would take the JSON answer down with it.
+ */
+$rankData = getIndFinals();
+$data = array(
+    'auth'          => $auth,
+    'qualification' => prepareIndQualification(getIndQualification()),
+);
+if (!empty($rankData['sections'])) {
+    $data['final'] = prepareIndFinals($rankData);
 }
-
-function prepareIndQualification($data) {
-    $sektions = array();
-    foreach ($data['sections'] as $key => $value) {
-        $item = array();
-        foreach($value['items'] as $ikey => $ivalue) {
-            $item[] = array(
-                'bib'=> $ivalue['bib'],
-                'familyname' => $ivalue['familyname'],
-                'givenname' => $ivalue['givenname'],
-                'gender' => $ivalue['gender'],
-                'div' => $ivalue['div'],
-                'class' => $ivalue['class'],
-                'ageclass' => $ivalue['ageclass'],
-                'subclass' => $ivalue['subclass'],
-                'clubId' => $ivalue['countryCode'],
-                'clubName' => $ivalue['countryName'],
-                'rank' => $ivalue['rank'],
-                'score' => $ivalue['score'],
-                'gold' => $ivalue['gold'],
-                'xnine' => $ivalue['xnine'],
-                'dist_1' => $ivalue['dist_1'],
-                'dist_2' => $ivalue['dist_2'],
-                'dist_3' => $ivalue['dist_3'],
-                'dist_4' => $ivalue['dist_4'],
-                'dist_5' => $ivalue['dist_5'],
-                'dist_6' => $ivalue['dist_6'],
-                'dist_7' => $ivalue['dist_7'],
-                'dist_8' => $ivalue['dist_8'],
-                'hits' => $ivalue['arrowsShot'],
-                'id' => $ivalue['id']
-            );
-        }
-
-        $sektions[] = array('q_class' => $key, 'q_results' => array(
-            'q_meta' => array(
-                'descr' => $value['meta']['descr'],
-                'numdist' => $value['meta']['numDist'],
-                'maxArrows' => $value['meta']['maxArrows'],
-                'score' => $value['meta']['fields']['score'],
-                'gold' => $value['meta']['fields']['gold'],
-                'xnine' => $value['meta']['fields']['xnine'],
-                'dist_1' => $value['meta']['fields']['dist_1'],
-                'dist_2' => $value['meta']['fields']['dist_2'],
-                'dist_3' => $value['meta']['fields']['dist_3'],
-                'dist_4' => $value['meta']['fields']['dist_4'],
-                'dist_5' => $value['meta']['fields']['dist_5'],
-                'dist_6' => $value['meta']['fields']['dist_6'],
-                'dist_7' => $value['meta']['fields']['dist_7'],
-                'dist_8' => $value['meta']['fields']['dist_8']
-            ),
-            'q_items' => $item
-        ));
-    }
-    return $sektions;
-}
-
-function prepareIndFinals($data) {
-    $returnData = array();
-    foreach ($data['sections'] as $key => $value) {
-        $item = array();
-        foreach($value['items'] as $ikey => $ivalue) {
-            $currentFinals = array();
-            foreach($ivalue['finals'] as $fkey => $fvalue) {
-                $currentFinals[$fkey] = array(
-                    'athleteId' => $ivalue['id'],
-                    'score' => $fvalue['score'],
-                    'setScore' => $fvalue['setScore'],
-                    'tie' => $fvalue['tie'],
-                    'tiebreak' => $fvalue['tiebreak'],
-                    'oppAthleteId' => $fvalue['oppAthlete'],
-                    'oppAthlete' => $value['items'][$fvalue['oppAthlete']]['bib'],
-                    'oppScore' => $fvalue['oppScore'],
-                    'oppSetScore' => $fvalue['oppSetScore'],
-                    'oppTie' => $fvalue['oppTie'],
-                    'oppTiebreak' => $fvalue['oppTiebreak']
-                );
-            }
-
-            $item[] = array(
-                'id' => $ivalue['id'],
-                'bib'=> $ivalue['bib'],
-                'familyname' => $ivalue['familyname'],
-                'givenname' => $ivalue['givenname'],
-                'gender' => $ivalue['gender'],
-                'clubId' => $ivalue['countryCode'],
-                'clubName' => $ivalue['countryName'],
-                'rank' => $ivalue['rank'],
-                'elims' => $ivalue['elims'],
-                'finals' => $currentFinals
-            );
-        }
-        unset($value['meta']['fields']['finals']['fields']);
-        $returnData[] = array('f_class' => $key, 'f_results' => array(
-            'f_meta' => array(
-                'descr' => $value['meta']['descr'],
-                'firstPhase' => $value['meta']['firstPhase'],
-                'elim1' => $value['meta']['fields']['elim1'],
-                'elim2' => $value['meta']['fields']['elim2'],
-                'finals' => $value['meta']['fields']['finals']
-            ),
-            'f_items' => $item
-        ));
-    }
-    return $returnData;
-}
-
-function sendInformation($url, $data) {
-    $hand = curl_init($url);
-    curl_setopt($hand, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($hand, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($hand, CURLOPT_POSTFIELDS, $data);
-    curl_setopt($hand, CURLOPT_FOLLOWLOCATION, 1);
-    curl_setopt($hand, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($hand, CURLOPT_HTTPHEADER, array("Content-type: application/json"));
-    $result = curl_exec($hand);
-    curl_close($hand);
-    return $result;
-}
+echo sendInformation($swe_url_result, json_encode($data));
 ?>

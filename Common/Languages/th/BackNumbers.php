@@ -1,6 +1,6 @@
 <?php
 $lang['Category']='หมวดหมู่';
 $lang['FinalRanking']='Final Rank';
-$lang['Schedule']='ตารางการแข่งขัน';
-$lang['Target']='หน้าเป้า';
+$lang['Schedule']='ตารางการขัน';
+$lang['Target']='ห น าเ ป า';
 ?>

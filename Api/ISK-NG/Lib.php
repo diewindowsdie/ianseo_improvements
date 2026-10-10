@@ -80,10 +80,7 @@ function readJsonData($Data) {
                             $GlobalErrorLast=$Error;
                         }
 						foreach($UpdatedEntries as $Type => $EnIds) {
-							if(empty($UpdatedEntriesDistances[$distance->distance][$Type])) {
-								$UpdatedEntriesDistances[$distance->distance][$Type]=[];
-							}
-							$UpdatedEntriesDistances[$distance->distance][$Type]=$UpdatedEntriesDistances[$distance->distance][$Type]+$EnIds;
+							$UpdatedEntriesDistances[$distance->distance][$Type] = array_merge($UpdatedEntriesDistances[$distance->distance][$Type] ?? [], $EnIds);
 						}
 					}
 				}
@@ -1161,7 +1158,7 @@ function RobinUpdateNgArrowString($r, $CompId=0) {
 		$TieStatus=($r->RrLevBestRankMode==1 ? '0' : "if(RrMatchTie=1,0,RrMatchTie)");
 		safe_w_sql("update RoundRobinMatches set RrMatchConfirmed=0, RrMatchWinLose=0, RrMatchTie=$TieStatus 
 				WHERE $Filter and RrMatchMatchNo in ($r->RrMatchMatchNo, $OppMatchno)");
-		if($r->RrMatchConfirmed) {
+		if($r->StopScore) {
 			// the match was confirmed so status to 3 of the other match
 			safe_w_sql("update RoundRobinMatches set RrMatchStatus=(RrMatchStatus | 2) 
 					WHERE $Filter and RrMatchMatchNo = $OppMatchno");

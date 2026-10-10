@@ -1,5 +1,4 @@
 <?php
-$lang['AuthTourCode']='Lista separada por comas de códigos de torneos que o usuario pode xestionar.<br>Carácter comodín permitido: "%"';
 $lang['AutoCheckinAlreadyDone']='Xa estás rexistrado.<br>Se necesitas cambiar algún dato, diríxete á mesa de acreditación';
 $lang['AutoCheckinConfirm']='Se todos os detalles son correctos, prema en CONFIRMAR REIXISTRO.<br>Se non, prema en CANCELAR e diríxase á mesa de acreditación';
 $lang['AutoCheckinSearch']='Escanea o código QR que recibiches ou escribe o teu nome';

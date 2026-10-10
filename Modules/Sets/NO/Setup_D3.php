@@ -26,12 +26,14 @@ if($SubRule==9) {
 // default Distances & Default Target
 if($tourDetNumDist==1) {
 	if($SubRule==9) {
-		CreateDistanceNew($TourId, $TourType, 'RD%', array(array('Blå',0)));
-		CreateDistanceNew($TourId, $TourType, 'RH%', array(array('Blå',0)));
-		CreateDistanceNew($TourId, $TourType, 'RR%', array(array('Gul',0)));
-		CreateDistanceNew($TourId, $TourType, 'CD%', array(array('Rød',0)));
-		CreateDistanceNew($TourId, $TourType, 'CH%', array(array('Rød',0)));
-		CreateDistanceNew($TourId, $TourType, 'CR%', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'R_U16', array(array('Gul',0)));
+		CreateDistanceNew($TourId, $TourType, 'R_U18', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'R_U21', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'R_', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'C_U16', array(array('Blå',0)));
+		CreateDistanceNew($TourId, $TourType, 'C_U18', array(array('Rød',0)));
+		CreateDistanceNew($TourId, $TourType, 'C_U21', array(array('Rød',0)));
+		CreateDistanceNew($TourId, $TourType, 'C_', array(array('Rød',0)));
 		CreateDistanceNew($TourId, $TourType, 'BUBU', array(array('Rød',0)));
 		CreateDistanceNew($TourId, $TourType, 'B_U21', array(array('Blå',0)));
 		CreateDistanceNew($TourId, $TourType, 'B_U18', array(array('Blå',0)));

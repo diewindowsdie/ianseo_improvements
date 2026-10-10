@@ -64,6 +64,7 @@ $lang['TiebreakSystem-2']='Total set points';
 $lang['TiebreakSystem-3']='Total points';
 $lang['TiebreakSystem-4']='Shoot off';
 $lang['TiebreakSystem-5']='Sum (set)points - Sum opponents (set)points';
+$lang['TiebreakSystem-6']='Regulation arrows average';
 $lang['tieBreakSystem2']='Tie break system 2nd level';
 $lang['TiePoints']='Points for Ties';
 $lang['WinPoints']='Points for Winner';

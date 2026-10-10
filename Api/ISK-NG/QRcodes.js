@@ -33,13 +33,16 @@ function socketConnected() {
         }
         if(isFunctionAvailable('Signatures')) {
             $('.Signatures').show();
+
         }
         if(isFunctionAvailable('ScorecardPhoto')) {
             $('.ScorePicture').show();
+            showRegExp();
         }
     } else {
         $('.GPS').hide();
         $('.Signatures').hide();
+        $('.SignaturesRegexp').hide();
         $('.ScorePicture').hide();
         showGPSPart(true);
     }
@@ -101,4 +104,37 @@ function save() {
 }
 function print() {
     window.open('./QRcodesPDF.php', 'QrCode');
+}
+
+function getSignature(isRandom) {
+    var form={
+        action:'getSignature',
+        code: (isRandom ? 0 : $('#regexSignatureBib').val()),
+    }
+    $.getJSON('QRcodes-action.php', form, function(data) {
+        $('#regexSignatureBib').val(data.data.BibCode);
+        $('#regexSignatureName').html(data.data.BibCode + ' - ' + data.data.Name);
+        $('#regexSignatureTest').val(data.data.QrCode);
+        $('#deviceSignatureTest').val(data.data.DeviceQrCode);
+        checkSignature();
+    });
+}
+
+function showRegExp() {
+    $('.SignaturesRegexp').toggle(($('#askSignature').val()!=0));
+    $('.SignaturesRegexpTest').toggle(($('#regexSignature').val().length!=0));
+}
+
+function checkSignature() {
+    const elements = $('#regexSignatureTest').val().match($('#regexSignature').val());
+    let isValid = false;
+    if(elements && elements.length>0) {
+        if(elements.length>1) {
+            isValid = elements[1]==$('#deviceSignatureTest').val()
+        } else {
+            isValid = elements[0]==$('#deviceSignatureTest').val();
+        }
+    }
+    $('#regexSignatureValid').toggleClass('hidden', false).removeClass('fa-thumbs-up fa-thumbs-down text-success text-danger');
+    $('#regexSignatureValid').addClass(isValid ? 'fa-thumbs-up text-success' : 'fa-thumbs-down text-danger');
 }

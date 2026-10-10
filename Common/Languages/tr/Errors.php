@@ -2,6 +2,7 @@
 $lang['AllFieldsMandatory']='Tüm alanlar zorunlu';
 $lang['AllMailsRedirect']='Tüm mesajların gönderileceği yer';
 $lang['Anomalies']='Sorunlar';
+$lang['BarCodeSession']='Ayarlarda bir hata var: Bir oturum ayarlamayı deneyin!';
 $lang['CategoresNotDefined']='Eksik Kategori tanımları';
 $lang['ClassFromToError']='Başlangıç ve Bitiş aralıkları sayısal değer olmalı';
 $lang['ClubNotFound']='Kulüp kodu mevcut kulüpler arasında bulunamadı. Lütfen önce veritabanını güncelleyin!';

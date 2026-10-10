@@ -1,11 +1,30 @@
 $(function() {
     $('#EvCopyFrom').hide();
+
+    $(window).on('beforeunload', function() {
+        if($('#CmdSubmit').length>0 && !$('#CmdSubmit').attr('disabled')) {
+            return true;
+        }
+    });
+
     getEventDetail();
 });
 
 let showAlertDialog=false;
 
+function isTainted() {
+    console.log($('#CmdSubmit').attr('disabled'));
+    if(!$('#CmdSubmit').attr('disabled')) {
+        alert('Non salvato')
+    }
+}
+
 function getEventDetail() {
+    if($('#CmdSubmit').length>0 && !$('#CmdSubmit').attr('disabled')) {
+        if(!confirm(ChangesLost)) {
+            return;
+        }
+    }
     history.pushState(null, '', '?Team='+$('#EvTeam').val()+'&Event='+$('#EvCode').val());
     let form={
         Team:$('#EvTeam').val(),
@@ -50,7 +69,7 @@ function getEventDetail() {
             $('#LevDetails').append('<tr><th>'+data.details.bestRanked.text+'</th><td><select '+fldDisabled+' class="details" id="bestRanked" onchange="checkValue()"></select></td></tr>');
             $('#LevDetails').append('<tr><th>'+data.details.ends.text+'</th><td><input '+fldDisabled+' type="number" class="details non0" id="Ends" value="'+data.details.ends.val+'" onchange="checkValue()"></td></tr>');
             $('#LevDetails').append('<tr><th>'+data.details.arrows.text+'</th><td><input '+fldDisabled+' type="number" class="details non0" id="Arrows" value="'+data.details.arrows.val+'" onchange="checkValue()"></td></tr>');
-            $('#LevDetails').append('<tr><th>'+data.details.so.text+'</th><td><input '+fldDisabled+' type="number" class="details non0" id="SO" value="'+data.details.so.val+'" onchange="checkValue()"></td></tr>');
+            $('#LevDetails').append('<tr><th>'+data.details.so.text+'</th><td><input '+fldDisabled+' type="number" class="details non0" id="SO" value="'+data.details.so.val+'" onchange="checkValue()" min="'+data.soMinArrows+'"></td></tr>');
             $('#LevDetails').append('<tr><th>'+data.details.tieAllowed.text+'</th><td><input '+fldDisabled+' type="checkbox" id="TieAllowed"'+(data.details.tieAllowed.val==1 ? ' checked="checked"' : '')+'" onclick="checkValue()"></td></tr>');
             $('#LevDetails').append('<tr><th>'+data.details.winPoints.text+'</th><td><input '+fldDisabled+' type="number" class="details" id="WinPoints" value="'+data.details.winPoints.val+'" onchange="checkValue()"></td></tr>');
             $('#LevDetails').append('<tr><th>'+data.details.tiePoints.text+'</th><td><input '+fldDisabled+' type="number" class="details" id="TiePoints" value="'+data.details.tiePoints.val+'" onchange="checkValue()"></td></tr>');
@@ -134,6 +153,9 @@ function checkValue() {
         }
     });
     $('#CmdSubmit').prop('disabled', disabled);
+    if(disabled) {
+        $('#')
+    }
 }
 
 function doSetValues() {
@@ -152,7 +174,7 @@ function doSetValues() {
             if(data.levels) {
                 $('#EvLevel').empty();
                 $.each(data.levels, function() {
-                    $('#EvLevel').append('<option value="'+this.val+'">'+this.text+'</option>');
+                    $('#EvLevel').append('<span class="mx-2 text-dark Button"><input style="margin-left: 0" type="radio" name="EvLevel" value="'+this.val+'" onclick="getEventDetail()" '+(this.val==form.Level ? 'checked="checked"' : '')+'>'+this.text+'</span>');
                 });
                 $('#EvLevel').val(form.Level);
             }

@@ -97,6 +97,7 @@ if(isset($_REQUEST['Action']) && preg_match("/^(tSendMessage|tPersonal|tSendQrSe
 
 			$QrCode['device']=$_REQUEST['deviceId'];
 	        $Json['json'][]=$QrCode;
+            $Json['json'][]=array('action'=>'info', 'device'=>$_REQUEST['deviceId'], 'sender'=>'');
 	        $Json['error'] = false;
 	        JsonOut($Json);
 			break;

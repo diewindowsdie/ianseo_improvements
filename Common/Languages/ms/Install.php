@@ -189,7 +189,6 @@ $lang['Setup-CH']='Undang-undang Pertandingan Swiss';
 $lang['Setup-Default']='Undang-undang Pertandingan Memanah Dunia';
 $lang['Setup-DK']='Undang-undang Danish';
 $lang['Setup-FR']='Undang-undang Perancis';
-$lang['Setup-IT']='FITARCO - Undang-undang Pertandingan Italian';
 $lang['Setup-Kyudo']='Pertandingan Kyudo';
 $lang['Setup-NFAA']='Undang-undang Kejohanan NFAA';
 $lang['Setup-NL']='Undang-undang Pertandingan Dutch';

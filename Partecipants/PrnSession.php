@@ -45,5 +45,3 @@ if(!isset($isCompleteResultBook))
 	else
 		$pdf->Output();
 }
-
-?>

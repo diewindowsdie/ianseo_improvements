@@ -232,7 +232,6 @@ $lang['DefaultHM']='ברירת מחדל HM';
 $lang['DefaultLocRule']='FITA';
 $lang['DefaultVI']='ברירת מחדל VI';
 $lang['DeletePreviousTeams']='מחק קבוצות קודמות';
-$lang['DeleteTourConfirm']='נא הזינו בתיבת הטקסט את הקוד הבא:';
 $lang['DeleteTournament']='מחק תחרות';
 $lang['Deleting']='מבצע פעולה: מחיקת קבצים מקוונים...';
 $lang['DescPhotoName']='הצג קוד';

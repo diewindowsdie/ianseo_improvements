@@ -7,6 +7,7 @@ $lang['Aw-Med2']='2. sıra ödül adı';
 $lang['Aw-Med3']='3. sıra ödül adı';
 $lang['Aw-Med4']='4. sıra ödül adı';
 $lang['Aw-representing']='"Temsilen" satırı';
+$lang['Aw-representingTeam']='Takımlar için Temsil Bilgisi';
 $lang['CM0']='Makaralı Yay Erkek';
 $lang['CM1']='Makaralı Yay Erkek Takım';
 $lang['CustomAward']='Özel Ödül';

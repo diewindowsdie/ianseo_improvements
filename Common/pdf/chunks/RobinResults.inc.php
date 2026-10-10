@@ -14,6 +14,23 @@ $ShowRank=($PdfData->ShowRank??1);
 // if(!$pdf->ShowRank) {
 // 	$pdf->setPageOrientation('L');
 // }
+if(defined('CompleteBook') and CompleteBook??'') {
+    $pdf->setPhase($PdfData->IndexName);
+//    $pdf->setDocUpdate($PdfData->LastUpdate);
+
+    if($PdfData->Version??'') {
+        $pdf->setComment(trim("Vers. {$PdfData->Version} ({$PdfData->VersionDate}) {$PdfData->VersionNote}"));
+    }
+
+    $pdf->setOrisCode($PdfData->Code, $PdfData->Description);
+
+    $pdf->AddPage();
+    if(!$PdfData->HasPrintedBookmark) {
+        $pdf->Bookmark($PdfData->IndexName, 0);
+    }
+    $pdf->SetXY(OrisPDF::leftMargin,$pdf->lastY);
+    $pdf->SetTopMargin($pdf->lastY);
+}
 
 $CellHeight=3.5;
 if(count($rankData['sections'])) {
@@ -48,6 +65,9 @@ if(count($rankData['sections'])) {
 				if(!$level['ranks']) {
 					continue;
 				}
+                if($OldLevel!=$idLevel) {
+                    $pdf->Bookmark($section['meta']['descr'].' - '.$level['name'], 1);
+                }
 				if(!$pdf->SamePage(15) or $OldLevel) {
 					$pdf->AddPage();
 					$pdf->SetFont('','b',15);
@@ -61,7 +81,8 @@ if(count($rankData['sections'])) {
 				$pdf->SetFont('','b',12);
 				$pdf->cell(0,0,$level['name'],'1',1, 'C', '1');
 				$pdf->SetFont('','',8);
-				$OldLevel=$idLevel;
+
+                $OldLevel=$idLevel;
 				$OldGroup=-1;
 				$Header=false;
 
@@ -204,7 +225,7 @@ if(count($rankData['sections'])) {
 						}
 						$pdf->SetFont('', 'b', 8);
 						$pdf->cell($MatchWidth,0,$round['name'],1,1,'C',1);
-						$pdf->cell($colW1, $CellHeight, $section['meta']['fields']['rank'], '1', 0, 'C', '1');
+						$pdf->cell($colW1, $CellHeight, ($section['meta']['fields']['target']??''), '1', 0, 'C', '1');
 						$pdf->cell($colW3, $CellHeight, $section['meta']['fields']['athlete'], '1', 0, 'L', '1');
 						$pdf->cell($colW2, $CellHeight, $section['meta']['fields']['countryName'], '1', 0, 'L', '1');
 						$pdf->cell($colW1, $CellHeight, $section['meta']['fields']['score'], '1', 0, 'C', '1');

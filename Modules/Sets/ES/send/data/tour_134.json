@@ -1,0 +1,63 @@
+{
+    "settings": {
+        "url": "https:\/\/api-res.rfeta.es",
+        "interval": 120
+    },
+    "auth": {
+        "token": "c237b8a7e17be9e9fa1429e9bc2504b310b5910dc7b441f7bfb79231d6ef5ab1",
+        "status": "approved",
+        "blockedReason": "",
+        "privileged": false
+    },
+    "request": {
+        "email": "",
+        "federation": "",
+        "categoryId": 0,
+        "discipline": ""
+    },
+    "hashes": {
+        "info": "1db136b75fef2c396ce167cf490a094b",
+        "schedule": "37536477e2ba7a0bbd0e25e9c0f0a5ca",
+        "entries": "55cf02bc2803f1e3dd8e5ba6c0f82410",
+        "qual:RU21:0": "2619e9beddd6b7db3187765f58735995",
+        "cards:RU21": "93ed24bbf8f14d240a491191d22bb7c8",
+        "qual:CU21:0": "e772b9f8dbb74da967fe80b8ee128d74",
+        "cards:CU21": "b0b4afac398e79d50be30e5f6ad3f7ef",
+        "qual:CU18:0": "210cbe6c9294d2f694f84d3a5e5e509f",
+        "cards:CU18": "a482bead30e91cd5408ea9646b6c03c9",
+        "qual:RU21:1": "e603ad2531776ebba8da72dc1f24141e",
+        "robin:RU21:1": "e5a7cebd6e0b60e149bfb4ce291675b8",
+        "final:RU21:1": "6a5b8d2cf492fcb97189f912867e6bcf",
+        "brackets:RU21:1": "3838437444feb451d78dd655753a1790",
+        "qual:CU21:1": "6d7c266b79e111ce64a6ad9b6f452900",
+        "final:CU21:1": "e84fda70b1b6d2d79973bcb9f69ea20b",
+        "brackets:CU21:1": "84e23df56cee14743f410f56a724f308",
+        "qual:CU18:1": "a85b675e38869b142c0306e1c48e7867",
+        "final:CU18:1": "553de1ea538020a0ea476eabe09263ed",
+        "brackets:CU18:1": "f68409fa96e811a0f287c476f6a5accf",
+        "events": "d3735f39479a6463e332c0724ca69e86"
+    },
+    "mediaHashes": [],
+    "lastSummary": {
+        "ok": true,
+        "message": "Sin cambios",
+        "mediaSent": 0,
+        "needsLogin": false,
+        "needsRegister": false,
+        "total": 20,
+        "sent": 0,
+        "unchanged": 20,
+        "sentKeys": [],
+        "errors": [],
+        "upBytes": 36878,
+        "downBytes": 369,
+        "totalUp": 162242,
+        "totalDown": 2359,
+        "elapsed": 0.65,
+        "when": "2026-09-22 20:44:57"
+    },
+    "transfer": {
+        "totalUp": 162242,
+        "totalDown": 2359
+    }
+}

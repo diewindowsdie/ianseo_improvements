@@ -63,6 +63,7 @@ $lang['TiebreakSystem-2']='Punti totali del Set';
 $lang['TiebreakSystem-3']='Punti totali';
 $lang['TiebreakSystem-4']='Spareggio';
 $lang['TiebreakSystem-5']='Somma dei punti(set) - Somma dei punti (set) dell\'avversario';
+$lang['TiebreakSystem-6']='Regola della media frecce';
 $lang['tieBreakSystem2']='Sistema di Spareggio 2° livello';
 $lang['TiePoints']='Punti per Pareggio';
 $lang['WinPoints']='Punti per Vittoria';

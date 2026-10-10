@@ -223,13 +223,13 @@ class OrisPDF extends IanseoPdf {
 
 		$this->SetFont($this->FontStd,'',8);
 		$this->SetXY(10,$TopStart);
-		$this->Cell(60,3,mb_convert_case($this->FooterPrefix . $this->Number, MB_CASE_UPPER, "UTF-8"),0,0,'L');
+		$this->Cell(60,3,mb_convert_case($this->FooterPrefix . $this->Number, MB_CASE_UPPER, "UTF-8").($this->Version ? ' V. '.$this->Version : ''),0,0,'L');
         if($this->printPageNo) {
 		    $this->SetXY($this->w-60,$TopStart);
             $this->Cell(60, 3, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, 0, 'R');
         }
 		$this->SetXY($this->w/2-30,$TopStart);
-		$this->Cell(60,3,'Report Created: ' . date('d M Y H:i',$this->utsReportCreated).' @ UTC'.$this->TzOffset.($this->Version ? ' (v. '.$this->Version.')' : ''),0,0,'C');
+		$this->Cell(60,3,'Report Created: ' . date('d M Y H:i',$this->utsReportCreated).' @ UTC'.$this->TzOffset,0,0,'C');
 
 		$im=NULL;
 		if($this->ToPaths['ToBottom']) {

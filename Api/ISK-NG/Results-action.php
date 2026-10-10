@@ -445,7 +445,7 @@ if($isRW) {
 	                            RrLevSO DiSO, 
 	                            coalesce(IskDtArrowstring, '') as IskArrows, coalesce(IskDtIsClosest, '') as IskClosest  
 							from Events
-						    inner join RoundRobinMatches on RrMatchEvent=EvCode and RrMatchTournament=EvTournament and RrMatchMatchNo+100*RrMatchRound+10000*RrMatchGroup+1000000*RrMatchLevel in ({$matchnos})
+						    inner join RoundRobinMatches on RrMatchEvent=EvCode and RrMatchTeam=EvTeamEvent AND  RrMatchTournament=EvTournament and RrMatchMatchNo+100*RrMatchRound+10000*RrMatchGroup+1000000*RrMatchLevel in ({$matchnos})
 						    inner join RoundRobinLevel on RrLevTournament=EvTournament and RrLevTeam=EvTeamEvent and RrLevEvent=EvCode and RrLevLevel=RrMatchLevel
 							left join Countries on CoId=RrMatchAthlete and CoTournament=EvTournament and RrMatchTeam=1
 							left join Entries on EnId=RrMatchAthlete and EnTournament=EvTournament and RrMatchTeam=0
@@ -453,9 +453,9 @@ if($isRW) {
 								select IskDtArrowstring, IskDtIsClosest, IskDtMatchNo
 							    from IskData
 							    inner join IskDevices on IskDvTournament=IskDtTournament and IskDvDevice=IskDtDevice
-							    where IskDtType='M' and IskDtDevice IN ('" . implode("','", $id) . "') and IskDtEndNo={$end} and IskDtTeamInd=1 and IskDtEvent=" . StrSafe_DB($event) . " and IskDtTournament={$_SESSION['TourId']}
+							    where IskDtType='M' and IskDtDevice IN ('" . implode("','", $id) . "') and IskDtEndNo={$end} and IskDtTeamInd={$team} and IskDtEvent=" . StrSafe_DB($event) . " and IskDtTournament={$_SESSION['TourId']}
 							    ) IskData on IskDtMatchNo=RrMatchMatchNo+100*RrMatchRound+10000*RrMatchGroup+1000000*RrMatchLevel
-							where EvTournament={$_SESSION['TourId']} and EvTeamEvent=$team and EvCode=" . StrSafe_DB($event) . " ORDER BY RrMatchMatchNo";
+							where EvTournament={$_SESSION['TourId']} and EvTeamEvent={$team} and EvCode=" . StrSafe_DB($event) . " ORDER BY RrMatchMatchNo";
                             break;
                     }
                     $q = safe_r_sql($SQL);

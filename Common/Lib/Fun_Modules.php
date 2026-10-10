@@ -158,7 +158,10 @@ function runJack($JackEvent, $TourId=0, $param=array()) {
         if($sock !== false) {
             @socket_set_option($sock, SOL_SOCKET, SO_BROADCAST, 1);
             if(($ifList = net_get_interfaces())!==false) {
-                foreach ($ifList as $ifUni) {
+                foreach ($ifList as $ifName=>$ifUni) {
+                    if(isset($udpData['interfaces']) and count($udpData['interfaces'])!=0 and !in_array($ifName, $udpData['interfaces'])) {
+                        continue;
+                    }
                     foreach ($ifUni['unicast'] as $if) {
                         if (array_key_exists('broadcast', $if)) {
                             @socket_sendto($sock, $msg, strlen($msg), 0, $if['broadcast'], $udpData['port']);

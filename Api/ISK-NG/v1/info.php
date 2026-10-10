@@ -23,6 +23,9 @@ $checkQr = array(
     'askSignature' => 'askSignature',
     'spottingMode' => 'spottingMode',
     'settingsPinCode' => 'settingsPinCode',
+    'kioskMode'=>'kioskMode',
+    'enableHaptics'=>'enableHaptics',
+    'takeScorecardPhoto'=>'takeScorecardPhoto',
     'socketIP' => 'hostName',
     'socketPort' => 'hostPort',
 );

@@ -266,9 +266,10 @@ class Obj_Rank_Robin extends Obj_Rank{
 					inner join Events on EvCode=IndEvent and EvTournament=EnTournament and EvTeamEvent=0 
 				    left join Countries on CoId=
                         case EvTeamCreationMode 
-                            when 0 then EnCountry
-                            when 1 then EnCountry2
-                            when 2 then EnCountry3
+                            when 0 then if(EnCountry2=0,EnCountry,EnCountry2)
+                            when 1 then EnCountry
+                            when 2 then EnCountry2
+                            when 3 then EnCountry3
                             else EnCountry
                         end
                         AND CoTournament=EnTournament
@@ -300,6 +301,7 @@ class Obj_Rank_Robin extends Obj_Rank{
 						'athlete' => get_text('Athlete'),
 						'countryName' => get_text('Country'),
 						'rank' => get_text('PositionShort'),
+                        'target' => get_text('TargetShort','Tournament'),
 						'score' => get_text('TotalShort','Tournament'),
 						'points' => get_text('Points','Tournament'),
 						'completeScore' => get_text('TotalShort','Tournament'),
@@ -313,6 +315,7 @@ class Obj_Rank_Robin extends Obj_Rank{
 					$this->data['sections'][$myRow->EvCode]=array(
 						'meta' => array(
 							'event' => $myRow->EvCode,
+                            'teamEvent' => $myRow->EvTeamEvent,
                             'eventParent' => $myRow->EvCodeParent,
                             'lastPhase'=>$myRow->LastPhase,
 							'descr' => $myRow->EvEventName,
@@ -389,8 +392,8 @@ class Obj_Rank_Robin extends Obj_Rank{
 					'rank' => $myRow->RrPartGroupRank,
 					'rankBefSO'=>$myRow->RrPartGroupRankBefSO,
 					'score' => $myRow->RrPartPoints,
-					'tieBreaker' => $myRow->RrPartTieBreaker,
-					'tieBreaker2' => $myRow->RrPartTieBreaker2,
+					'tieBreaker' => ($myRow->RrLevTieBreakSystem ? (number_format($myRow->RrPartTieBreaker / ($myRow->RrLevTieBreakSystem==6 ? 1000 : 1), ($myRow->RrLevTieBreakSystem==6 ? 3 : 0))) : ''),
+					'tieBreaker2' => ($myRow->RrLevTieBreakSystem2 ? (number_format($myRow->RrPartTieBreaker2 / ($myRow->RrLevTieBreakSystem2==6 ? 1000 : 1), ($myRow->RrLevTieBreakSystem2==6 ? 3 : 0))) : ''),
 					'qualified' => $myRow->Qualified,
 					'so' => $myRow->RrPartGroupTiesForSO,
 					'ct' => $myRow->RrPartGroupTiesForCT,
@@ -425,6 +428,7 @@ class Obj_Rank_Robin extends Obj_Rank{
 						'athlete' => get_text('Athlete'),
 						'countryName' => get_text('Country'),
 						'rank' => get_text('PositionShort'),
+                        'target' => get_text('TargetShort','Tournament'),
 						'score' => get_text('TotalShort','Tournament'),
 						'points' => get_text('Points','Tournament'),
 						'completeScore' => get_text('TotalShort','Tournament'),
@@ -438,6 +442,7 @@ class Obj_Rank_Robin extends Obj_Rank{
 					$this->data['sections'][$myRow->EvCode]=array(
 						'meta' => array(
 							'event' => $myRow->EvCode,
+                            'teamEvent' => $myRow->EvTeamEvent,
 							'eventParent' => $myRow->EvCodeParent,
                             'lastPhase'=>$myRow->LastPhase,
 							'descr' => $myRow->EvEventName,
@@ -507,7 +512,7 @@ class Obj_Rank_Robin extends Obj_Rank{
 					'liveFlag' => $myRow->LiveFlag,
 					'scheduledDate' => $myRow->M1ScheduledDate,
 					'scheduledTime' => substr($myRow->M1ScheduledTime, 0, 5),
-					// 'scheduledKey' => $myRow->ScheduledKey,
+					'scheduledKey' => $myRow->ScheduledKey,
 					'lastUpdated' => $myRow->M1DateTime,
 					'matchNo' => $myRow->M1MatchNo,
 					// 'isValidMatch'=> ($myRow->GridPosition + $myRow->OppGridPosition),
@@ -524,6 +529,8 @@ class Obj_Rank_Robin extends Obj_Rank{
 					// 'birthDate' => $myRow->BirthDate,
 					'itemId' => $myRow->M1Athlete,
 					'itemSubTeam' => $myRow->M1SubTeam,
+                    'teamId' => $myRow->Te1CoId,
+                    'subTeam' => $myRow->M1SubTeam,
 					'target' => ltrim($myRow->M1Target, '0'),
 					'athlete' => $myRow->Athlete1,
                     'tvFamilyName' => $myRow->TvFamilyName1,
@@ -560,8 +567,8 @@ class Obj_Rank_Robin extends Obj_Rank{
                     'notes'=>'',
                     'oppNotes'=>'',
 					'points'=> $myRow->M1RoundPoints,
-					'tieBreaker'=> $myRow->M1TieBreaker,
-					'tieBreaker2'=> $myRow->M1TieBreaker2,
+					'tieBreaker'=> $myRow->RrLevTieBreakSystem ? (number_format($myRow->M1TieBreaker / ($myRow->RrLevTieBreakSystem==6 ? 1000 : 1), ($myRow->RrLevTieBreakSystem==6 ? 3 : 0))) : '',
+					'tieBreaker2'=> $myRow->RrLevTieBreakSystem2 ? (number_format($myRow->M1TieBreaker2 / ($myRow->RrLevTieBreakSystem2==6 ? 1000 : 1), ($myRow->RrLevTieBreakSystem2==6 ? 3 : 0))) : '',
 					'tie'=> $myRow->M1Tie,
 					'arrowstring'=> $myRow->M1Arrowstring,
 					'tiebreak'=> $myRow->M1Tiebreak,
@@ -589,7 +596,9 @@ class Obj_Rank_Robin extends Obj_Rank{
 					// 'oppOdfPath' => $myRow->OppOdfPreviousMatch && intval($myRow->OppOdfPreviousMatch)==0 ? $myRow->OppOdfPreviousMatch : get_text(($myRow->OppMatchNo==2 or $myRow->OppMatchNo==3) ? 'LoserMatchName' : 'WinnerMatchName', 'ODF', $myRow->OppOdfPreviousMatch ? $myRow->OppOdfPreviousMatch : $myRow->OppPreviousMatchTime),
 					// 'oppBirthDate' => $myRow->OppBirthDate,
 					'oppItemId' => $myRow->M2Athlete,
-					'oppTarget' => ltrim($myRow->M2Target,'0'),
+                    'oppTeamId' => $myRow->Te2CoId,
+                    'oppSubTeam' => $myRow->M2SubTeam,
+                    'oppTarget' => ltrim($myRow->M2Target,'0'),
 					'oppAthlete' => $myRow->Athlete2,
                     'oppTvFamilyName' => $myRow->TvFamilyName2,
                     'oppTvGivenName' => $myRow->TvGivenName2,
@@ -628,8 +637,8 @@ class Obj_Rank_Robin extends Obj_Rank{
 					'oppSetPointsByEnd'=> $myRow->M2SetPointsByEnd,
 					// 'oppNotes'=> $myRow->OppNotes,
 					'oppPoints'=> $myRow->M2RoundPoints,
-					'oppTieBreaker'=> $myRow->M2TieBreaker,
-					'oppTieBreaker2'=> $myRow->M2TieBreaker2,
+					'oppTieBreaker'=> $myRow->RrLevTieBreakSystem ? (number_format($myRow->M2TieBreaker / ($myRow->RrLevTieBreakSystem==6 ? 1000 : 1), ($myRow->RrLevTieBreakSystem==6 ? 3 : 0))) : '',
+					'oppTieBreaker2'=> $myRow->RrLevTieBreakSystem2 ? (number_format($myRow->M2TieBreaker2 / ($myRow->RrLevTieBreakSystem2==6 ? 1000 : 1), ($myRow->RrLevTieBreakSystem2==6 ? 3 : 0))) : '',
 					'oppTie'=> $myRow->M2Tie,
 					'oppArrowstring'=> $myRow->M2Arrowstring,
 					'oppTiebreak'=> $myRow->M2Tiebreak,
@@ -698,12 +707,12 @@ class Obj_Rank_Robin extends Obj_Rank{
        		EvCode, EvEventName, EvTeamEvent, EvProgr, EvShootOff, EvCodeParent, RrLevMatchMode, RrLevBestRankMode,
        		TarId, TarDescr, EvDistance as Distance, EvTargetSize as TargetSize,
        		RrLevCheckGolds as EvCheckGolds, RrLevCheckXNines as EvCheckXNines, EvGoldsChars, EvXNineChars,
-            coalesce(En1Entry, Te1Country) as Athlete1, coalesce(En1Country, Te1Code) as Country1, coalesce(En1CoShort, Te1Code) as CoShort1, coalesce(En1CoName, Te1Country) as CoName1, En1CoName2, En1CoName3, coalesce(En1TvFamilyName, '') as TvFamilyName1, coalesce(En1TvInitials, '') as TvInitials1, coalesce(En1TvGivenName, '') as TvGivenName1,
-            coalesce(En2Entry, Te2Country) as Athlete2, coalesce(En2Country, Te2Code) as Country2, coalesce(En2CoShort, Te2Code) as CoShort2, coalesce(En2CoName, Te2Country) as CoName2, En2CoName2, En2CoName3, coalesce(En2TvFamilyName, '') as TvFamilyName2, coalesce(En2TvInitials, '') as TvInitials2, coalesce(En2TvGivenName, '') as TvGivenName2,
+            coalesce(En1Entry, Te1Country) as Athlete1, coalesce(En1Country, Te1Country) as Country1, coalesce(En1CoShort, Te1Code) as CoShort1, coalesce(En1CoName, Te1Country) as CoName1, En1CoName2, En1CoName3, coalesce(En1TvFamilyName, '') as TvFamilyName1, coalesce(En1TvInitials, '') as TvInitials1, coalesce(En1TvGivenName, '') as TvGivenName1,
+            coalesce(En2Entry, Te2Country) as Athlete2, coalesce(En2Country, Te2Country) as Country2, coalesce(En2CoShort, Te2Code) as CoShort2, coalesce(En2CoName, Te2Country) as CoName2, En2CoName2, En2CoName3, coalesce(En2TvFamilyName, '') as TvFamilyName2, coalesce(En2TvInitials, '') as TvInitials2, coalesce(En2TvGivenName, '') as TvGivenName2,
 			coalesce(En1Rank, Te1Rank) as Rank1, coalesce(En2Rank, Te2Rank) as Rank2,
 			coalesce(En1EntryShort, Te1Short) as AthleteShort1, coalesce(En2EntryShort, Te2Short) as AthleteShort2,
-            '' as LineJudge, '' as LineCode,  '' as LineCodeLocal, '' as LineFamName, '' as LineGivName, '' as LineCountry, '' as LineGender, '' as LineOdfCode,
-            '' as TargetJudge, '' as TargetCode, '' as TargetCodeLocal, '' as TargetFamName, '' as TargetGivName, '' as TargetCountry, '' as TargetGender, '' as TargetOdfCode,
+            coalesce(JudgeLine,'') as LineJudge, coalesce(JudgeLineId,'') as LineCode,  coalesce(JudgeLineCodeLocal,'') as LineCodeLocal, coalesce(JudgeLineFamName,'') as LineFamName, coalesce(JudgeLineGivName,'') as LineGivName, coalesce(JudgeLineCountry,'') as LineCountry, coalesce(JudgeLineGender,'') as LineGender, coalesce(OdfLineCode,'') as LineOdfCode,
+            coalesce(JudgeTarget,'') as TargetJudge, coalesce(JudgeTargetId,'') as TargetCode, coalesce(JudgeTargetCodeLocal,'') as TargetCodeLocal, coalesce(JudgeTargetFamName,'') as TargetFamName, coalesce(JudgeTargetGivName,'') as TargetGivName, coalesce(JudgeTargetCountry,'') as TargetCountry, coalesce(JudgeTargetGender,'') as TargetGender, coalesce(OdfTargetCode,'') as TargetOdfCode,
             coalesce(Coach1,'') as Coach, coalesce(Coach1Code,'') as CoachCode, coalesce(Coach1FamName,'') as CoachFamName, coalesce(Coach1GivName,'') as CoachGivName, coalesce(Coach1Country,'') as CoachCountry, coalesce(Coach1Gender,'') as CoachGender,
             coalesce(Coach2,'') as OppCoach, coalesce(Coach2Code,'') as OppCoachCode, coalesce(Coach2FamName,'') as OppCoachFamName, coalesce(Coach2GivName,'') as OppCoachGivName, coalesce(Coach2Country,'') as OppCoachCountry, coalesce(Coach2Gender,'') as OppCoachGender,
        		ifnull(concat(DV2.DvMajVersion, '.', DV2.DvMinVersion) ,concat(DV1.DvMajVersion, '.', DV1.DvMinVersion)) as DocVersion,
@@ -718,7 +727,8 @@ class Obj_Rank_Robin extends Obj_Rank{
             coalesce(En2Bib, if(Te2SubTeam>0, concat_ws('-', Te2Country, Te2SubTeam), Te2Code),'') as En2Bib,
             coalesce(En2LocalBib, if(Te2SubTeam>0, concat_ws('-', Te2Country, Te2SubTeam), Te2Code),'') as En2LocalBib,
             coalesce(Qu1Score, Te1Score) as Qual1Score, coalesce(Qu2Score, Te2Score) as Qual2Score,
-            coalesce(En1SourceRank, Te1SourceRank, '') as En1SourceRank, coalesce(En2SourceRank, Te2SourceRank, '') as En2SourceRank
+            coalesce(En1SourceRank, Te1SourceRank, '') as En1SourceRank, coalesce(En2SourceRank, Te2SourceRank, '') as En2SourceRank,
+            coalesce(Te1Id,'') as Te1CoId, coalesce(Te2Id,'') as Te2CoId
 		from (
 		    select 
 		        RrMatchSwapped as Swapped,
@@ -732,6 +742,7 @@ class Obj_Rank_Robin extends Obj_Rank{
 				RrMatchTarget as M1Target,
 				DATE_FORMAT(RrMatchScheduledDate, '" . get_text('DateFmtDB') . "') as M1ScheduledDate,
 				RrMatchScheduledTime as M1ScheduledTime,
+				concat(RrMatchScheduledDate,' ',RrMatchScheduledTime) AS ScheduledKey, 
 				RrMatchScheduledLength as M1ScheduledLength,
 				RrMatchAthlete as M1Athlete,
 				RrMatchSubTeam as M1SubTeam,
@@ -764,7 +775,9 @@ class Obj_Rank_Robin extends Obj_Rank{
 				RrMatchCoach as M1Coach,
 				RrMatchRoundPoints as M1RoundPoints,
 				RrMatchTieBreaker as M1TieBreaker,
-				RrMatchTieBreaker2 as M1TieBreaker2
+				RrMatchTieBreaker2 as M1TieBreaker2,
+				RrMatchLJudge as M1LJudge,
+				RrMatchTJudge as M1TJudge
 		    from RoundRobinMatches
 		    inner join IrmTypes on IrmId=RrMatchIrmType
 		    where $MFilter and RrMatchMatchNo%2=0
@@ -808,7 +821,9 @@ class Obj_Rank_Robin extends Obj_Rank{
 				RrMatchCoach as M2Coach,
 				RrMatchRoundPoints as M2RoundPoints,
 				RrMatchTieBreaker as M2TieBreaker,
-				RrMatchTieBreaker2 as M2TieBreaker2
+				RrMatchTieBreaker2 as M2TieBreaker2,
+                RrMatchLJudge as M2LJudge,
+				RrMatchTJudge as M2TJudge
 		    from RoundRobinMatches
 		    inner join IrmTypes on IrmId=RrMatchIrmType
 		    where $MFilter
@@ -893,6 +908,18 @@ class Obj_Rank_Robin extends Obj_Rank{
             inner join Countries on CoId=EnCountry and CoTournament=EnTournament
             LEFT JOIN ExtraData ON EdId=EnId AND EdType='Z' and EdExtra!='' 
             where EnTournament={$this->tournament}) Coach2 on Coach2Id=M2Coach
+        LEFT JOIN (
+            select TiId as JudgeLineId, TiCode as JudgeLineCode, IF(TiCodeLocal='',TiCode,TiCodeLocal) JudgeLineCodeLocal, CoCode as JudgeLineCountry, if(TiGender=0, 'M', 'F') as JudgeLineGender, TiName as JudgeLineFamName, TiGivenName as JudgeLineGivName, concat(ucase(TiName), ' ', TiGivenName) as JudgeLine, coalesce(OdfTrOdfCode, 'LNE_JU') as OdfLineCode
+            from TournamentInvolved
+            inner join Countries on CoId=TiCountry
+            left join OdfTranslations on OdfTrTournament=TiTournament and OdfTrInternal='FUNC' and OdfTrType='NAME' and OdfTrIanseo='LJU'
+            where TiTournament={$this->tournament}) jLine on m1.M1LJudge=JudgeLineId  
+        LEFT JOIN (
+            select TiId as JudgeTargetId, TiCode as JudgeTargetCode, IF(TiCodeLocal='',TiCode,TiCodeLocal) JudgeTargetCodeLocal, CoCode as JudgeTargetCountry, if(TiGender=0, 'M', 'F') as JudgeTargetGender, TiName as JudgeTargetFamName, TiGivenName as JudgeTargetGivName, concat(ucase(TiName), ' ', TiGivenName) as JudgeTarget, coalesce(OdfTrOdfCode, 'TGT_JU') as OdfTargetCode 
+            from TournamentInvolved 
+            inner join Countries on CoId=TiCountry
+            left join OdfTranslations on OdfTrTournament=TiTournament and OdfTrInternal='FUNC' and OdfTrType='NAME' and OdfTrIanseo='TJU'
+            where TiTournament={$this->tournament}) jTarget on m1.M1TJudge=JudgeTargetId 
         $EnIdFilter
 		order by ".($orderByTarget ? 'greatest(M1Target,M2Target), ' : '')."EvTeamEvent, EvProgr, M1Level, M1Group, M1Round, greatest(M1Target,M2Target)
 		";

@@ -133,7 +133,6 @@ $lang['Default']='デフォルト';
 $lang['DefaultLocRule']='FITA';
 $lang['Delayed']='遅延（分）';
 $lang['DeletePreviousArchers']='アップロードしない選手は削除';
-$lang['DeleteTourConfirm']='次のコードをテキストボックスに入力することで削除できます';
 $lang['DeleteTournament']='大会を削除';
 $lang['Descr']='詳細';
 $lang['Distance']='ﾗｳﾝﾄﾞ';

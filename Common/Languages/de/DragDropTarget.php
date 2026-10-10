@@ -1,0 +1,37 @@
+<?php
+$lang['AddSlot']='Zeiten hinzufügen';
+$lang['AddTarget']='Scheibe hinzufügen';
+$lang['AddWarmup']='Aufwärmen hinzufügen';
+$lang['AllPartecipantsHaveSession']='Alle Teilnehmer sind einem Durchgang zugeordnet.';
+$lang['ChangesNotSaved']='Änderungen nicht gespeichert';
+$lang['CmdModify']='Anpassen';
+$lang['Conflict']='Konflikt';
+$lang['Copy']='Kopie';
+$lang['FaceType']='Typ der Scheibenauflage';
+$lang['LostUnsaved']='Ungespeicherte Änderungen gehen verloren.';
+$lang['MoveTarget']='Bewege Scheibe';
+$lang['NoTargetFace']='keine Scheibenauflage';
+$lang['NotScheduled']='nicht geplant';
+$lang['ParticipantsTargetFace']='Teilnehmer / Scheibenauflage';
+$lang['PrintPlan']='Drucke Scheibenplan';
+$lang['Quantity']='Anzahl';
+$lang['RemoveArcher']='Lösche « __ARCHER__ » wirklich? Diese Aktion ist nicht rückgängig zu machen.';
+$lang['RemoveSlot']='Zeiten entfernen';
+$lang['RemoveTarget']='Entferne Scheibe';
+$lang['Saved']='gespeichert ...';
+$lang['SavedWithError']='gespeichert mit Fehlern:';
+$lang['Saving']='speichere ...';
+$lang['ShowFaces']='Zeige Scheibenauflagen';
+$lang['Switch1Archer']='2 Schützen/Scheibe - Klick, um auf 1 zu ändern';
+$lang['Switch2Archers']='1 Schütze/Scheibe - Klick, um auf 2 zu ändern';
+$lang['TargetFree']='frei';
+$lang['TargetFull']='voll';
+$lang['TargetUnique']='Nur ein Land/Verein';
+$lang['TargetWrongTargetFace']='falsche Scheibenauflage';
+$lang['UnassignAllOfSession']='Alle Schützen von allen Scheiben in diesem Durchgang zurücksetzen?';
+$lang['UnassignAllOfTarget']='Alle Schützen von Scheibe __TARGET__ zurücksetzen?';
+$lang['UnassignTarget']='Alle Schützen der Scheibe zurücksetzen';
+$lang['Unknown']='unbekannt';
+$lang['UpdateNextTimelines']='Update der Zeiten';
+$lang['WithoutSession']='ohne Durchgang';
+?>

@@ -181,6 +181,13 @@ switch($_REQUEST['act']) {
                         safe_w_sql("delete from RoundRobinLevel where RrLevLevel>$Value and RrLevTournament={$_SESSION['TourId']} and RrLevTeam=1 and RrLevEvent=".StrSafe_DB($_REQUEST['ev']));
                         safe_w_sql("delete from RoundRobinMatches where RrMatchLevel>$Value and RrMatchTournament={$_SESSION['TourId']} and RrMatchTeam=1 and RrMatchEvent=".StrSafe_DB($_REQUEST['ev']));
                         safe_w_sql("delete from RoundRobinParticipants where RrPartLevel>$Value and RrPartTournament={$_SESSION['TourId']} and RrPartTeam=1 and RrPartEvent=".StrSafe_DB($_REQUEST['ev']));
+                        // inserts all the missing parts
+                        if($EVENT->EvFinalFirstPhase) {
+                            @include_once('Modules/RoundRobin/Lib.php');
+                            if(function_exists('CreateFinalLevel')) {
+                                CreateFinalLevel(1, $_REQUEST['ev'], $EVENT->EvNumQualified);
+                            }
+                        }
                     }
                 } else {
                     $SQL="update Events set EvElim1=0, EvE1Ends=0, EvE1Arrows=0, EvE1SO=0, EvElimType=1 where EvTournament=" . StrSafe_DB($_SESSION['TourId']) . " AND EvTeamEvent=1 and EvCode=".StrSafe_DB($_REQUEST['ev']);

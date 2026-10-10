@@ -7,6 +7,7 @@ $lang['ByEvent']='Nach Event';
 $lang['ByName']='Nach Name';
 $lang['ByTarget']='Nach Scheibe';
 $lang['ClassDiv']='Klasse';
+$lang['CompetitionOfficials']='Turnierplatzpersonal';
 $lang['CompleteSchedule']='Kompletten Zeitplan anzeigen';
 $lang['DivClas']='Bogenart und Altersklassen';
 $lang['Eliminations']='Ausscheidungen';

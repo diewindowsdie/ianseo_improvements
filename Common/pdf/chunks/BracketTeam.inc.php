@@ -111,17 +111,18 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
                 !($Match['score'] or $Match['setScore']) and
                 !($Match['oppScore'] or $Match['oppSetScore']) and
                 in_array($Match['tie'], [0, 2]) and
-                in_array($Match['oppTie'], [0, 2])) {
+                in_array($Match['oppTie'], [0, 2]) and
+                !($Match['hideSchedule']??1)) {
 			   	$pdf->SetFont($pdf->FontStd,'I',7);
 				if($FirstPhase) {
 					$pdf->SetX($LineXstart-7);
                     //в первом этапе не показываем номера щитов, если по нему никто не стреляет
                     if ($Match["countryName"]) {
-                        $pdf->Cell(7, $CellHeight, get_text('TargetWithoutN') . ' ' . ltrim($Match['target'], '0'), 0, 0, 'R', 0);
+                        $pdf->Cell(7, $CellHeight, (empty($Match['target']) ? '' : (get_text('TargetWithoutN') . ' ') . ltrim($Match['target'], '0')), 0, 0, 'R', 0);
                     }
 					$pdf->SetXY($LineXstart-7, $OrgY+$CellHeight);
                     if ($Match["oppCountryName"]) {
-                        $pdf->Cell(7, $Cella + ($Componenti * $CellaNomi), get_text('TargetWithoutN') . ' ' . ltrim($Match['oppTarget'], '0'), 0, 0, 'R', 0);
+                        $pdf->Cell(7, $Cella + ($Componenti * $CellaNomi), (empty($Match['oppTarget']) ? '' : (get_text('TargetWithoutN') . ' '). ltrim($Match['oppTarget'], '0')), 0, 0, 'R', 0);
                     }
 				} else {
 					$pdf->SetXY($LineXstart, $OrgY-3);
@@ -142,7 +143,8 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
                 !($Match['score'] or $Match['setScore']) and
                 !($Match['oppScore'] or $Match['oppSetScore']) and
                 in_array($Match['tie'], [0, 2]) and
-                in_array($Match['oppTie'], [0, 2])) {
+                in_array($Match['oppTie'], [0, 2]) and
+                !($Match['hideSchedule']??1)) {
 				if($FirstPhase) {
 					$pdf->SetFont($pdf->FontStd,'I',6);
 					$pdf->SetXY($LineXstart, $OrgY-3);

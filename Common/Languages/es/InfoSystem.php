@@ -7,6 +7,7 @@ $lang['ByEvent']='Por Evento';
 $lang['ByName']='Por nombre';
 $lang['ByTarget']='Por diana';
 $lang['ClassDiv']='Categoría';
+$lang['CompetitionOfficials']='Oficiales de la Competición';
 $lang['CompleteSchedule']='Ver el programa completo';
 $lang['DivClas']='Divisiones & Clases';
 $lang['Eliminations']='Series de Eliminación';

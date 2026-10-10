@@ -1268,6 +1268,7 @@ function getStartListCategoryQuery($ORIS=false, $orderByTeam=0, $Events=array())
 			`EnMiddleName` as `MiddleName`,
 			`QuSession` AS `Session`,
 			CONCAT(QuTarget,QuLetter) AS `TargetNo`,
+            EnSubTeam as NationSubTeam,
 			case `EvTeamCreationMode`
 				when 0 then c.`CoCode`
 				when 1 then c2.`CoCode`

@@ -93,7 +93,6 @@ $lang['Credited']='Accreditati';
 $lang['CtrlCodeShort']='Codice de Controllo';
 $lang['Currency']='Euri';
 $lang['DefaultLocRule']='FITA';
-$lang['DeleteTourConfirm']='Fà \'r favore và, \'nfila in der bocchese er seguente codice e controllo:';
 $lang['DeleteTournament']='Cancella er Torneo';
 $lang['Deleting']='Sto a lavorà: sto a fà sparì li fail onlain...';
 $lang['Descr']='Descrizzione';

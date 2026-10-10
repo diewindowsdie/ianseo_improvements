@@ -239,7 +239,6 @@ $lang['DeleteAclRule']='Eliminar regla ACL';
 $lang['DeleteAclUser']='Eliminar usuario ACL';
 $lang['DeletePreviousArchers']='Eliminar las inscripciones no cargadas';
 $lang['DeletePreviousTeams']='Eliminar Equipos Anteriores';
-$lang['DeleteTourConfirm']='Por favor, ingrese el siguiente código de control:';
 $lang['DeleteTournament']='Eliminar Competencia';
 $lang['Deleting']='Procesando: borrando archivos en línea...';
 $lang['DescAddress']='Ver código';
