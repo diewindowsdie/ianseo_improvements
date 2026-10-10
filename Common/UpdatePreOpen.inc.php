@@ -197,6 +197,11 @@ function UpdatePreOpen($TournamentID) {
         to_save_version($TournamentID, '2026-06-17 19:20:01');
     }
 
+    if($version<'2026-09-14 00:00:04') {
+        updateTargetShape_20260914($TournamentID);
+        to_save_version($TournamentID, '2026-09-14 00:00:04');
+    }
+
     to_save_version($TournamentID, $DbVersion);
 }
 

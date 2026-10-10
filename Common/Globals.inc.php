@@ -928,7 +928,7 @@ function GetWebDirectory($file) {
 function AvailableApis() {
 	global $CFG;
 	$ret=array();
-	if(ProgramRelease=='FITARCO') return $ret;
+	if(isProduction(['FITARCO'])) return $ret;
 	foreach(glob($CFG->DOCUMENT_PATH.'Api/*/ApiConfig.php') as $dir) {
 		if(basename(dirname($dir))!='ISK-Lite') {
 			$ret[]=basename(dirname($dir));
@@ -938,6 +938,15 @@ function AvailableApis() {
 	return $ret;
 }
 
+/**
+ * This function is used to check which distro is in use to switch on/off or lock certain features
+ * @param $distros array an array of distos to check against, default to Fitarco, Stable and testing
+ * @return bool true if the current distro is among the ones in the array
+ */
+function isProduction($distros=['FITARCO','STABLE','TESTING']): bool
+{
+    return in_array(ProgramRelease, $distros);
+}
 /**
  * @param array $color
  * @return boolean

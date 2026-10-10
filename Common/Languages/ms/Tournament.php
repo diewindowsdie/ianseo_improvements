@@ -282,7 +282,6 @@ $lang['DefaultVI']='Asal VI';
 $lang['Delayed']='Ditangguhkan';
 $lang['DeletePreviousArchers']='Padamkan entri sedia ada yang tidak ada dalam senarai';
 $lang['DeletePreviousTeams']='Padam Pasukan Sebelum Ini';
-$lang['DeleteTourConfirm']='Sila masukkan dalam kotak teks kod kawalan berikut:';
 $lang['DeleteTournament']='Hapus Pertandingan';
 $lang['Deleting']='Masih dalam proses: memadam fail dalam talian...';
 $lang['DescAddress']='Lihat Kod';

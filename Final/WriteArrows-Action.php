@@ -38,18 +38,21 @@ switch($_REQUEST['act']) {
 			if(strlen($options['schedule'])==16) {
 				$options['schedule'].=':00';
 			}
-			if($Events) {
-				$options['events']=$Events;
-			}
-			if($Team=$Schedule[0]) {
-				if(!hasFullACL(AclTeams, '', AclReadWrite)) {
-					JsonOut($JSON);
-				}
-				$rank[$Team]=Obj_RankFactory::create('GridTeam',$options);
+            if($Team=$Schedule[0]) {
+                if(!hasFullACL(AclTeams, '', AclReadWrite)) {
+                    JsonOut($JSON);
+                }
+                if($Events[1]??[]) {
+                    $options['events']=$Events[1];
+                }
+                $rank[$Team]=Obj_RankFactory::create('GridTeam',$options);
 			} else {
 				if(!hasFullACL(AclIndividuals, '',  AclReadWrite)) {
 					JsonOut($JSON);
 				}
+                if($Events[0]??[]) {
+                    $options['events']=$Events[0];
+                }
 				$rank[$Team]=Obj_RankFactory::create('GridInd',$options);
 			}
 		} else {
@@ -257,7 +260,9 @@ switch($_REQUEST['act']) {
 			if($JSON['html']) {
 				$JSON['html']='<table class="Tabella" style="width:auto; margin:auto;">'.$JSON['html'].'</table>';
 				$JSON['error']=0;
-			}
+			} else {
+                $JSON['msg']=get_text('FilterEventPhaseNoResults', 'Errors');
+            }
 			JsonOut($JSON);
 		}
 		break;

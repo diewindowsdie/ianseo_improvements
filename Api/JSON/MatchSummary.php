@@ -60,6 +60,7 @@ $BasePosition=array('X' => -1000,
 
 $rank=null;
 if($MatchId>256) {
+    $options['team']=$EvType;
 	$rank=Obj_RankFactory::create('Robin',$options);
 } elseif($EvType) {
 	$rank=Obj_RankFactory::create('GridTeam',$options);

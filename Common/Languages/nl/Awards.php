@@ -1,5 +1,14 @@
 <?php
 $lang['Aw-Anthem']='Volkslied regel';
+$lang['Aw-Anthem-TPE']='TPE-anthem regel';
+$lang['Aw-Applause']='Applause regel';
+$lang['Aw-Intro']='Introductie regel';
+$lang['Aw-Med1']='naam 1e plaats';
+$lang['Aw-Med2']='naam 2e plaats';
+$lang['Aw-Med3']='naam 3e plaats';
+$lang['Aw-Med4']='naam 4e plaats';
+$lang['Aw-representing']='regel representatie';
+$lang['Aw-representingTeam']='representatie regel voor teams';
 $lang['CM0']='Mannen Compound';
 $lang['CM1']='Mannen Team Compound';
 $lang['CustomAward']='Aangepaste prijs';

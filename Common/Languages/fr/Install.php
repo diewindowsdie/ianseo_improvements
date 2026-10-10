@@ -201,7 +201,6 @@ $lang['Setup-CH']='Règles du Tournoi Suisses';
 $lang['Setup-Default']='Tournoi Règlement World Archery';
 $lang['Setup-DK']='Règles Danoises';
 $lang['Setup-FR']='Règles françaises';
-$lang['Setup-IT']='Règles du Tournoi Italiennes - FITARCO';
 $lang['Setup-Kyudo']='Tournoi de Kyudo';
 $lang['Setup-LANC']='Lancaster';
 $lang['Setup-NFAA']='Règles NFAA';
@@ -241,6 +240,9 @@ $lang['WhatIanseoDoes03']='<b>Formations et cours sur site :</b> Ianseo est dis
 Le second vise à acquérir toutes les connaissances spécifiques pour lancer un concours "flèche par flèche".';
 $lang['WhatIanseoDoes04']='<b>Dons!</b> Ianseo est Libre et Ouvert... Si vous l\'appréciez, aidez-nous s\'il vous plait à maintenir le logiciel et le serveur à jour : cliquez sur le bouton "Donate" de la page d\'Accueil de $a!';
 $lang['WhatIanseoDoes05']='<b> Média Social</b> Ianseo est aussi sur $a!';
+$lang['WhatIanseoDoes06']='<b>GARANTIE</b> Ianseo est fournie « en l’état » et sans aucune garantie d’aucune sorte, expresse ou implicite, y compris, sans s’y limiter, les garanties d’adéquation à un usage particulier, de qualité marchande, de titre ou de non-contrefaçon. En aucun cas nous n’aurons de responsabilité envers vous découlant du ou lié au logiciel, y compris les dommages indirects, spéciaux, accessoires ou consécutifs, même si nous avons été informés de leur possibilité à l’avance';
+$lang['WhatIanseoDoes07']='<b>TRADUCTION</b> La langue officielle d’Ianseo est l’anglais, les traductions sont fournies mais leur exactitude relève de la responsabilité des traducteurs.';
+$lang['WhatIanseoDoes08']='<b>MODULES</b> Certains modules sont développés par des tiers qui en assument la responsabilité. Ils sont partagés dans un but de « meilleur effort ».';
 $lang['WhatIanseoDoesTitle']='Que peut faire Ianseo pour votre compétition?';
 $lang['Write connection failed']='La connexion avec le serveur d\'écriture échoue : soit le mot de passe ROOT n\'est pas fourni, soit les données de connexion ne sont pas correctes!';
 $lang['Write Database not present']='La base de données ne peut être accédée en écriture : soit le nom de la base de données est erroné, soit le mot de passe ROOT n\'est pas fourni';

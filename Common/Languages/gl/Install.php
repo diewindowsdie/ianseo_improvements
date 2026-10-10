@@ -232,7 +232,6 @@ $lang['Setup-Default']='Normas do Torneo de World Archery';
 $lang['Setup-DK']='Normas do Torneo Danés';
 $lang['Setup-FR']='Normas do Torneo Francés';
 $lang['Setup-IFAA']='Normas do Torneo IFAA';
-$lang['Setup-IT']='Normas do Torneo Italiano - FitARCO';
 $lang['Setup-Kyudo']='Torneos de Kyudo';
 $lang['Setup-LANC']='Lancaster';
 $lang['Setup-NFAA']='Normas do Torneo NFAA';

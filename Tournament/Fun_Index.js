@@ -97,3 +97,15 @@ function CheckIskStatus() {
 
 	return confirm(IskResetAlert);
 }
+
+function checkYear(maxYear) {
+	var fromYear=parseInt($('#xx_ToWhenFromYear').val());
+	var toYear=parseInt($('#xx_ToWhenToYear').val());
+	if(toYear<fromYear) {
+		alert(ToLessThanFrom)
+	} else if(fromYear>maxYear) {
+		alert(FromDateInFuture)
+	} else if(toYear-1>fromYear) {
+		alert(ToDateMisMatch)
+	}
+}

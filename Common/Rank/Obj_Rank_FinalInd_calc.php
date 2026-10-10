@@ -226,11 +226,12 @@
 				SELECT EvElimType, EvWinnerFinalRank, SubCodes, EvCodeParent, GrPhase, EvFinalFirstPhase, least(f.FinMatchNo,f2.FinMatchNo) as MatchNo,
 					if((EvMatchArrowsNo & GrBitPhase)=0, EvFinArrows, EvElimArrows) DiEndArrows,
 					if((EvMatchArrowsNo & GrBitPhase)=0, EvFinArrows*EvFinEnds, EvElimArrows*EvElimEnds) DiArrows,
-				    f.FinAthlete AS AthId, i.IndRank as AthRank, f2.FinAthlete AS OppAthId, i2.IndRank as OppAthRank,
+				    f.FinAthlete AS AthId, i.IndRank as AthRank, ABS(i.IndSO) as AthSO, f2.FinAthlete AS OppAthId, i2.IndRank as OppAthRank, ABS(i2.IndSO) as OppAthSO,
 					f.FinIrmType as IrmType, f2.FinIrmType as OppIrmType, f.FinWinLose as WinLose, f2.FinWinLose as OppWinLose,
 					f.FinArrowstring as Arrowstring, f2.FinArrowstring as OppArrowstring, f.FinSetPoints as SetPoints, f2.FinSetPoints as OppSetPoints,
 					f.FinTiebreak as Tiebreak, f2.FinTiebreak as OppTiebreak,
-					f.FinScore AS Score,f.FinTie AS Tie, f2.FinScore AS OppScore,f2.FinTie as OppTie, f.FinMatchNo as RealMatchNo, f2.FinMatchNo as OppRealMatchNo
+					f.FinScore AS Score,f.FinTie AS Tie, f2.FinScore AS OppScore,f2.FinTie as OppTie, f.FinMatchNo as RealMatchNo, f2.FinMatchNo as OppRealMatchNo,
+					(ToCategory IN (4,8)) as isField3D
 				FROM
 					Finals AS f
 					INNER JOIN Finals AS f2 ON f.FinEvent=f2.FinEvent AND f.FinMatchNo=IF((f.FinMatchNo % 2)=0,f2.FinMatchNo-1,f2.FinMatchNo+1) AND f.FinTournament=f2.FinTournament
@@ -238,6 +239,7 @@
 					left JOIN Individuals AS i2 ON i2.IndId=f2.FinAthlete AND i2.IndTournament=f2.FinTournament and i2.IndEvent=f2.FinEvent
 					INNER JOIN Grids ON f.FinMatchNo=GrMatchNo
 					INNER JOIN Events ON f.FinEvent=EvCode AND f.FinTournament=EvTournament AND EvTeamEvent=0
+                    INNER JOIN Tournament on f.FinTournament=ToId
 					left join (select group_concat(DISTINCT concat(EvCode, '@', EvFinalFirstPhase)) SubCodes, EvCodeParent SubMainCode, EvFinalFirstPhase SubFirstPhase from Events where EvCodeParent!='' and EvTeamEvent=0 and EvTournament={$this->tournament} group by EvCodeParent, EvFinalFirstPhase) Secondary on SubMainCode=EvCode and SubFirstPhase=GrPhase/2
 				WHERE
 					f.FinTournament={$this->tournament} AND f.FinEvent='{$event}' AND GrPhase={$realphase}
@@ -317,6 +319,7 @@
                     }
                 } else {
                     $lstMatches = array();
+                    $isField3d = $myRow->isField3D;
                     while ($myRow) {
                         $avg = [
                             round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->SetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->SetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
@@ -324,17 +327,28 @@
                             round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->OppSetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->OppSetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
                             round((valutaArrowString($myRow->OppTiebreak) / (strlen(trim($myRow->OppTiebreak)) ?: 1)), 3)
                         ];
-                        $lstMatches[$myRow->MatchNo] = $avg[0]*1000+($avg[1]/100);
+                        if($isField3d) {
+                            $lstMatches[$myRow->MatchNo] = $myRow->AthSO;
+                        } else {
+                            $lstMatches[$myRow->MatchNo] = $avg[0]*1000+($avg[1]/100);
+                        }
                         $toWrite[$myRow->MatchNo]=array('event'=>$EventToUse,'id'=>$myRow->AthId);
                         safe_w_SQL("UPDATE Finals SET FinAverageMatch='{$avg[0]}', FinAverageTie='{$avg[1]}' WHERE FinTournament='{$this->tournament}' AND FinEvent='$EventToUse' AND FinMatchNo='{$myRow->RealMatchNo}'");
                         safe_w_SQL("UPDATE Finals SET FinAverageMatch='{$avg[2]}', FinAverageTie='{$avg[3]}' WHERE FinTournament='{$this->tournament}' AND FinEvent='$EventToUse' AND FinMatchNo='{$myRow->OppRealMatchNo}'");
                         $myRow=safe_fetch($rs);
                     }
-                    arsort($lstMatches);
+                    if($isField3d) {
+                        asort($lstMatches);
+                    } else {
+                        arsort($lstMatches);
+                    }
                     $pos=$firstRankedPosition+numMatchesByPhase($phase)+SavedInPhase($phase);
                     $rank=$pos;
                     $oldScore=-1;
                     foreach ($lstMatches as $match=>$score) {
+                        if($toWrite[$match]['id']==0) {
+                            continue;
+                        }
                         if($oldScore!=$score) {
                             $rank=$pos;
                             $oldScore=$score;

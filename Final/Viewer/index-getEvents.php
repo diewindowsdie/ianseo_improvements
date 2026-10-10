@@ -32,8 +32,10 @@ while($r=safe_fetch($q)) {
         $JSON['data'][$r->EvCode.$isTeam]['phases'][] = array('id'=>'C', 'name'=>get_text('PoolName', 'Tournament', 'C'));
         $JSON['data'][$r->EvCode.$isTeam]['phases'][] = array('id'=>'D', 'name'=>get_text('PoolName', 'Tournament', 'D'));
     }
-    foreach(getPhasesId($r->StartPhase) as $ph) {
-        $JSON['data'][$r->EvCode.$isTeam]['phases'][] = array('id'=>$ph, 'name'=>get_text(namePhase($r->StartPhase,$ph).'_Phase'));
+    if($r->StartPhase) {
+        foreach(getPhasesId($r->StartPhase) as $ph) {
+            $JSON['data'][$r->EvCode.$isTeam]['phases'][] = array('id'=>$ph, 'name'=>get_text(namePhase($r->StartPhase,$ph).'_Phase'));
+        }
     }
     $JSON['error']=0;
 }

@@ -55,7 +55,7 @@ function getArrows() {
 		if(data.error==0) {
 			$('#idOutput').html(data.html);
 		} else {
-			$.alert(data.msg);
+			showAlert(data.msg);
 		}
 	});
 }

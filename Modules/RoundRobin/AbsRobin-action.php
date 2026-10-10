@@ -1005,8 +1005,8 @@ switch($_REQUEST['act']) {
 			$row['item']=$r->athlete;
 			$row['country']=$r->country;
 			$row['points']=$r->RrPartPoints;
-			$row['untie1']=$r->RrPartTieBreaker;
-			$row['untie2']=$r->RrPartTieBreaker2;
+			$row['untie1']=$r->RrPartTieBreaker / ($r->RrLevTieBreakSystem==6 ? 1000 : 1);
+			$row['untie2']=$r->RrPartTieBreaker2 / ($r->RrLevTieBreakSystem==6 ? 1000 : 1);
 			$row['arrows']=[];
 			$row['closest']='';
 
@@ -1190,8 +1190,8 @@ switch($_REQUEST['act']) {
 					$row['item']=$r->athlete;
 					$row['country']=$r->country;
 					$row['points']=$r->RrPartPoints;
-					$row['untie1']=$r->RrPartTieBreaker;
-					$row['untie2']=$r->RrPartTieBreaker2;
+					$row['untie1']=$r->RrPartTieBreaker / ($r->RrLevTieBreakSystem==6 ? 1000 : 1);
+					$row['untie2']=$r->RrPartTieBreaker2 / ($r->RrLevTieBreakSystem==6 ? 1000 : 1);
 					$row['arrows']=[];
 					$row['closest']='';
 

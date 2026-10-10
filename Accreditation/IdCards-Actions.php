@@ -37,7 +37,7 @@ switch($_REQUEST['act']) {
                         $Settings=[];
                     }
                     list(,$Item)=explode('-', $_REQUEST['fld']);
-                    $Settings[$Item]=$_REQUEST['val'];
+                    $Settings[$Item]=str_replace(",",".",$_REQUEST['val']);
                     $sql="IcTournament={$_SESSION['TourId']}, IcType='$CardType', IcNumber=$CardNumber, IcSettings=".StrSafe_DB(serialize($Settings));
                     safe_w_sql("INSERT INTO IdCards set $sql on duplicate key update $sql");
                     $JSON['error'] = 0;
@@ -235,6 +235,9 @@ switch($_REQUEST['act']) {
                     $Options=unserialize($r->IceOptions);
                 }
                 foreach($_REQUEST['Options'] as $Key=>$Value) {
+                    if($Key=='X' || $Key=='Y' || $Key=='W' || $Key=='H' || $Key=='Size') {
+                        $Value=str_replace(",",".",$Value);
+                    }
                     $Options[$Key]=$Value;
                 }
                 safe_w_sql("update IdCardElements set IceOptions=".StrSafe_DB(serialize($Options))." where $IceFilter");

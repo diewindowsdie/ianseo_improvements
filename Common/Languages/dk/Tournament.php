@@ -311,7 +311,6 @@ $lang['DeleteChannel']='Fjerne Kanal. Dette vil fjerne alle split for kanalen og
 $lang['DeletePreviousArchers']='Slet information som ikke er sendt';
 $lang['DeletePreviousTeams']='Slet forrige hold';
 $lang['DeleteSplit']='Fjern split. Dette vil fjerne split.';
-$lang['DeleteTourConfirm']='Indsæt følgende kontrolkode i tekstboksen for at slette turneringen:';
 $lang['DeleteTournament']='Slet turnering';
 $lang['Deleting']='Arbejder: sletter online filer...';
 $lang['DescAddress']='##ADDRESS##&nbsp;<i>&lt;tab&gt;</i>&nbsp;BIB&nbsp;<i>&lt;tab&gt;</i>&nbsp;ADDRESS&nbsp;<i>&lt;tab&gt;</i>&nbsp;ZIP&nbsp;<i>&lt;tab&gt;</i>&nbsp;CITY&nbsp;<i>&lt;tab&gt;</i>&nbsp;PROVINCE&nbsp;<i>&lt;tab&gt;</i>&nbsp;COUNTRY<br>Set postal mail of the archer identified by BIB';

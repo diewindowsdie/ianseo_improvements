@@ -3,7 +3,7 @@ require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once('Common/Lib/ArrTargets.inc.php');
 require_once('Common/Lib/CommonLib.php');
 
-$JSON=array('error' => 1);
+$JSON=array('error' => 1, 'BioL'=>'', 'BioR'=>'');
 
 
 if(!CheckTourSession() OR GetTournamentIocCode()!='FITA' or !hasFullACL(AclOutput, 'outTv', AclReadOnly)) {
@@ -14,6 +14,14 @@ $Team=(isset($_REQUEST['Team']) ? intval($_REQUEST['Team']) : -1);
 $Id1 = (isset($_REQUEST['Id1']) ? $_REQUEST['Id1'] : false);
 $Id2 = (isset($_REQUEST['Id2']) ? $_REQUEST['Id2'] : false);
 $Event = (isset($_REQUEST['Event']) ? $_REQUEST['Event'] : false);
+if($Team and $Id1) {
+    $Id1=substr($Id1,0,3);
+}
+if($Team and $Id1) {
+    $Id2 = substr($Id2, 0, 3);
+}
+
+
 
 if($Event) {
 	// double check the WA event is correct
@@ -32,14 +40,14 @@ if($Team) {
     }
     if($Id1 !== false AND $Event !== false) {
         $rawData = file_get_contents($CFG->WaWrapper . "?v=3&content=TEAMBIOGRAPHY&Noc={$Id1}&CatCode={$Event}&Detailed=1");
-        if(($BioData=json_decode($rawData))!=null) {
+        if(($BioData=json_decode($rawData))!=null and $BioData->items) {
             $JSON['error']=0;
             $JSON["BioL"] = bioTeam($BioData->items[0],$H2HMatches,'L',$Event);
         }
     }
     if($Id2 !== false AND $Event !== false) {
         $rawData = file_get_contents($CFG->WaWrapper . "?v=3&content=TEAMBIOGRAPHY&Noc={$Id2}&CatCode={$Event}&Detailed=1");
-        if(($BioData=json_decode($rawData))!=null) {
+        if(($BioData=json_decode($rawData))!=null and $BioData->items) {
             $JSON['error']=0;
             $JSON["BioR"] = bioTeam($BioData->items[0],$H2HMatches,'R',$Event);
         }

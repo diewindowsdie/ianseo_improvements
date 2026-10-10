@@ -46,7 +46,11 @@ foreach($rankData['sections'] as $Event => $section) {
 
 	$numCols=min(6,ceil(log(min(32,$section['meta']['firstPhase']),2))+1);
 	$numRows=min(32,$section['meta']['firstPhase']);
-	if($numRows==24) $numRows=32;
+	if($numRows==24) {
+		$numRows=32;
+	} else if($numRows==12) {
+		$numRows=16;
+	}
 
 	$CellHSp=8;
 	$BlockLen = min(60, ($LarghezzaPagina - $MisPos - ($ShowNation ? 0 : $MisCountry) - $CellHSp*($numCols-1)) / $numCols);
@@ -96,6 +100,7 @@ foreach($rankData['sections'] as $Event => $section) {
 	$FirstPhase=true;
 	$DateShown=false;
 	$DateFlag=false;
+	$OldDate='';
 
 	$CellVSp=min(50,($PaginaUtile - $Cella*2*min(32,max(1,$numRows)))/max(1,min(32,$numRows)-1));
 	$OffsetY=0;
@@ -144,9 +149,11 @@ foreach($rankData['sections'] as $Event => $section) {
 		$CellL += ($MisName + ($PrintCountry ? $MisCountry : 0) + $MisScore + $MisTie) + $CellHSp;
 
 		foreach($Items['items'] as $Match) {
-			// flag for the 8 "saved"
-			$DrawMatch = !( ($section['meta']['firstPhase']==48 or $section['meta']['firstPhase']==24) && $Phase>=32 && ($Match['saved'] or $Match['oppSaved']) );
+			// set if DateTime is set
+			$HasDate=($ShowSchedule and $Match['scheduledTime']!='00:00' and $Match['scheduledDate']!='00-00-0000');
 
+			// flag for the 8 "saved"
+			$DrawMatch = !(($section['meta']['firstPhase']==48 or $section['meta']['firstPhase']==24) && $Phase>=32 && !$Match["isValidMatch"] );
 			//Gestisco la seconda colonna dei 48/64imi
 			if($section['meta']['firstPhase']>32 && ($Match['matchNo']==192 || ($Phase==33 && $Match['matchNo']==96)))  {
 				$margins=$pdf->GetMargins();
@@ -197,7 +204,7 @@ foreach($rankData['sections'] as $Event => $section) {
 			}
 
 			// Target Numbers
-			if($ShowTargetNo && ($Match['target'] or $Match['oppTarget']) and !($Match['score'] or $Match['setScore']) and !($Match['oppScore'] or $Match['oppSetScore']) and !$Match['tie'] and !$Match['oppTie']) {
+			if($ShowTargetNo && ($Match['target'] or $Match['oppTarget']) and !($Match['hideSchedule']??1)) {
 				if($FirstPhase) {
 					// Target numbers in front of the row
 					$pdf->SetXY($LineXstart-7, $OrgY);
@@ -213,17 +220,18 @@ foreach($rankData['sections'] as $Event => $section) {
 					// up and down
 					$pdf->SetXY($LineXstart, $OrgY-$Cella);
 					$pdf->SetFont($pdf->FontStd,'I',6);
-					$pdf->Cell($MisName + $AddSize + $MisScore + 2*$AddSize + ($PrintCountry ? $MisCountry : 0), 2.5, "T# " . ltrim($Match['target'],'0') . (($ShowSchedule and $Match['scheduledTime']!='00:00' and $Match['scheduledDate']!='00-00-0000') ?  ($DateShown ? '' : ' ' . $Match['scheduledDate']) . " @ "  . $Match['scheduledTime'] : '') , 0, 0, 'L', 0);
+					$pdf->Cell($MisName + $AddSize + $MisScore + 2*$AddSize + ($PrintCountry ? $MisCountry : 0), 2.5, "T# " . ltrim($Match['target'],'0') . ($HasDate ?  ($Match['scheduledDate']==$OldDate ? '' : ' ' . $Match['scheduledDate']) . " @ "  . $Match['scheduledTime'] : '') , 0, 0, 'L', 0);
 					if($Match['target']!=$Match['oppTarget']) {
 						$pdf->SetXY($LineXstart,$OrgY+ 2*$Cella);
 						$pdf->Cell($MisName + $AddSize + $MisScore + 2*$AddSize + ($PrintCountry ? $MisCountry : 0), 2.5, "T# " . ltrim($Match['oppTarget'],'0') , 0, 0, 'L', 0);
 					}
-					$DateFlag=($DateFlag or ($Match['scheduledTime']!='00:00' && $Match['scheduledDate']!='00-00-0000'));
+					$DateFlag=($DateFlag or $HasDate);
 				}
 				$pdf->SetXY($LineXstart,$OrgY);
 			}
+			$OldDate=$Match['scheduledDate'];
 
-			if($ShowSchedule and $Match['scheduledTime']!='00:00' and $Match['scheduledDate']!='00-00-0000' and (trim($Match['scheduledTime']??'') or trim($Match['scheduledDate']??'')) and !($Match['score'] or $Match['setScore']) and !($Match['oppScore'] or $Match['oppSetScore']) and !$Match['tie'] and !$Match['oppTie']) {
+			if($HasDate and (trim($Match['scheduledTime']??'') or trim($Match['scheduledDate']??'')) and !($Match['hideSchedule']??1)) {
 				if($FirstPhase && $section['meta']['firstPhase']<24) {
 					$pdf->SetY($OrgY-3, false);
 					$pdf->SetFont($pdf->FontStd,'I',6);
@@ -278,7 +286,7 @@ foreach($rankData['sections'] as $Event => $section) {
 				$pdf->Cell($MisName + ($PrintCountry ? 2 :1 ) * $AddSize, $Cella,  $FirstPhase ? $Match['athlete'] : $Match['familyName'] . ' ' . ($Match['givenName'] ? mb_substr($Match['givenName'],0,1, 'utf8') . '.' : '') , ($Match['position']!=0 || $Match['oppTie']==2 ? 1 : 0), 0, 'L', 0);
 			} else {
 				$pdf->SetFont($pdf->FontStd,'I',5.5);
-				$pdf->Cell($MisName + $MisTie + $MisScore, $Cella,  $rankData['meta']['saved'] , 0, 0, 'L', 0);
+				$pdf->Cell($MisName + $MisTie + $MisScore, $Cella,  $rankData['meta']['saved'.($section['meta']['firstPhase']==12 ? '8' : '')] , 0, 0, 'L', 0);
 				$pdf->SetFont('','');
 			}
 			$pdf->SetXY($MyX,$OrgY+$Cella);
@@ -286,7 +294,7 @@ foreach($rankData['sections'] as $Event => $section) {
 				$pdf->Cell($MisName + ($PrintCountry ? 2 :1 ) * $AddSize, $Cella,  $FirstPhase ? $Match['oppAthlete'] : $Match['oppFamilyName'] . ' ' . ($Match['oppGivenName'] ? mb_substr($Match['oppGivenName'],0,1, 'utf8') . '.' : '') , ($Match['oppPosition']!=0 || $Match['tie']==2 ? 1 : 0), 0, 'L', 0);
 			} else {
 				$pdf->SetFont($pdf->FontStd,'I',5.5);
-				$pdf->Cell($MisName + $MisTie + $MisScore, $Cella,  $rankData['meta']['saved'] , 0, 0, 'L', 0);
+				$pdf->Cell($MisName + $MisTie + $MisScore, $Cella,  $rankData['meta']['saved'.($section['meta']['firstPhase']==12 ? '8' : '')] , 0, 0, 'L', 0);
 				$pdf->SetFont('','');
 			}
 			$pdf->SetXY($MyX+$MisName,$OrgY);
@@ -398,4 +406,4 @@ $pdf->SetAutoPageBreak(true);
 $pdf->popMargins();
 
 
-?>
+

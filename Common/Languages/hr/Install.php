@@ -110,7 +110,6 @@ $lang['SetUkNationals']='Nacionalno prvenstvo';
 $lang['Setup-ARLEF']='LEF Pravila';
 $lang['Setup-CH']='Švicarska pravila';
 $lang['Setup-Default']='Međunarodni turnir (FITA pravila)';
-$lang['Setup-IT']='Local italian tournament (Fitarco rules)';
 $lang['Setup-NFAA']='Las Vegas Rules';
 $lang['Setup-NL']='Nizozemski turnir';
 $lang['Setup-NO']='Norwegian tournament (Norges Bueskytterforbund rules)';

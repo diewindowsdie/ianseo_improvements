@@ -15,7 +15,7 @@ foreach($AllowedTypes as $val) {
 foreach(array(1,2,3,5,6,7,8,37) as $val) {
     if($_SESSION)
         $SetType['UK']['rules']["$val"] =
-            (ProgramRelease === 'TESTING')
+            (isProduction(['TESTING']))
                 ? array('SetUkNationals', 'SetUkJunNationals','SetUK_Metric')
                 : array('SetUK_Metric');
 }

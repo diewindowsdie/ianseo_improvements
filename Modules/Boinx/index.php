@@ -99,7 +99,7 @@ include('Common/Templates/head.php');
 
 echo '<h1>'.get_text('HowToUse', 'Boinx').'</h1>';
 
-if(ProgramRelease!='STABLE' and ProgramRelease!='FITARCO' and !empty($_SESSION['TourId'])) {
+if(!isProduction(['STABLE','FITARCO']) and !empty($_SESSION['TourId'])) {
 	echo '<div><form>';
 	echo '<table class="Tabella">';
 	echo '<tr>';

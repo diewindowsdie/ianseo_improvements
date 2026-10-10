@@ -27,6 +27,7 @@ if(empty($PdfData->Data['Items'])) {
         foreach($Rows as $RecType => $MyRows) {
             $PrintSection = true;
             foreach ($MyRows as $MyRow) {
+                $OldRecord='';
                 $MinRows = count($MyRow->RtRecExtra) * count($MyRows);
                 if ($MyRow->RtRecExtra and count($MyRow->RtRecExtra[0]->Archers) > 1) {
                     $MinRows = (count($MyRow->RtRecExtra[0]->Archers) + 1) * count($MyRows);
@@ -52,7 +53,7 @@ if(empty($PdfData->Data['Items'])) {
                         $tmp = array(
                             ($oldRecName == $MyRow->RtRecCategoryName . " - " . $MyRow->RtRecDistance ? '' : $MyRow->RtRecCategoryName . " - " . $MyRow->RtRecDistance),
                             $MyRow->TrHeaderCode . '#',
-                            '§' . $OldRecord . ' / ' . $MyRow->NewRecord . (($MyRow->CheckXNine) ? "/$MyRow->NewXNine" : ''),
+                            '§' . (!empty($OldRecord) ? $OldRecord : '* ') . ' / ' . $MyRow->NewRecord . (($MyRow->CheckXNine) ? "/$MyRow->NewXNine" : ''),
                             $MyRow->Athlete,
                             '§' .$MyRow->CoCode,
                             substr($MyRow->RecordDate,0,10) . '#'
@@ -69,7 +70,7 @@ if(empty($PdfData->Data['Items'])) {
                         $tmp = array(
                             ($oldRecName == $MyRow->RtRecCategoryName . " - " . $MyRow->RtRecDistance ? '' : $MyRow->RtRecCategoryName . " - " . $MyRow->RtRecDistance),
                             $MyRow->TrHeaderCode . '#',
-                            '§' . $OldRecord . ' / ' . $MyRow->NewRecord . (($MyRow->CheckXNine) ? "/$MyRow->NewXNine" : ''),
+                            '§' . (!empty($OldRecord) ? $OldRecord : '* ') . ' / ' . $MyRow->NewRecord . (($MyRow->CheckXNine) ? "/$MyRow->NewXNine" : ''),
                             $MyRow->Athlete,
                             '§' . $MyRow->CoCode,
                             substr($MyRow->RecordDate,0,10) . '#'

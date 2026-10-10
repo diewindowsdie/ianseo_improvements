@@ -1,0 +1,25 @@
+{
+    "settings": {
+        "url": "https:\/\/api-res.rfeta.es",
+        "interval": 40
+    },
+    "auth": {
+        "token": "",
+        "status": "approved",
+        "blockedReason": "",
+        "privileged": true
+    },
+    "request": {
+        "email": "javier@addon-sport.com",
+        "federation": "AND",
+        "categoryId": 10,
+        "discipline": "indoor"
+    },
+    "hashes": [],
+    "mediaHashes": [],
+    "lastSummary": [],
+    "transfer": {
+        "totalUp": 55242,
+        "totalDown": 4606
+    }
+}

@@ -135,8 +135,10 @@ class Obj_Rank_Robin_calc extends Obj_Rank_Robin{
 		$PartFilterTrunc=$this->safeFilter('Participants', 'P');
 		$PartFilterSource=$this->safeFilter('Participants', 'S');
 		// creates the group rank
-		$q=safe_r_sql("select RrMatchAthlete, RrMatchSubTeam, sum(RrMatchRoundPoints) as Points, sum(RrMatchTieBreaker) as TieBreaker, sum(RrMatchTieBreaker2) as TieBreaker2
+		$q=safe_r_sql("select RrMatchAthlete, RrMatchSubTeam, sum(RrMatchRoundPoints) as Points, sum(RrMatchTieBreaker) as TieBreaker, sum(RrMatchTieBreaker2) as TieBreaker2, 
+            SUM(RrMatchScore) as Score,  GROUP_CONCAT(TRIM(RrMatchArrowstring) separator '') as Arrowstring, GROUP_CONCAT(RrMatchSetPoints separator'|') as EndPoints, RrLevArrows as arrows, RrLevTieBreakSystem, RrLevTieBreakSystem2    
 			from RoundRobinMatches 
+			INNER JOIN RoundRobinLevel ON RrLevTournament=RrMatchTournament AND RrLevTeam=RrMatchTeam and RrLevEvent=RrMatchEvent and RrLevLevel=RrMatchLevel
 			where $MatchFilter and RrMatchAthlete>0
 			group by RrMatchAthlete, RrMatchSubTeam
 			order by Points desc, TieBreaker desc, TieBreaker2 desc");
@@ -148,6 +150,12 @@ class Obj_Rank_Robin_calc extends Obj_Rank_Robin{
 			if($rank or $r->Points) {
 				$i++;
 			}
+            if($r->RrLevTieBreakSystem==6) {
+                $r->TieBreaker = (1000*round(($r->Score / (strlen(trim($r->Arrowstring)) ?: (strlen(preg_replace("/\d|\|\|/","",$r->EndPoints)) ? (strlen(preg_replace("/\d|\|\|/","",$r->EndPoints))+1)*$r->arrows : ($r->arrows ?: 1)))), 3));
+            }
+            if($r->RrLevTieBreakSystem2==6) {
+                $r->TieBreaker2 = (1000*round(($r->Score / (strlen(trim($r->Arrowstring)) ?: (strlen(preg_replace("/\d|\|\|/","",$r->EndPoints)) ? (strlen(preg_replace("/\d|\|\|/","",$r->EndPoints))+1)*$r->arrows : ($r->arrows ?: 1)))), 3));
+            }
 			if($oldStatus!="{$r->Points}-{$r->TieBreaker}-{$r->TieBreaker2}") {
 				$rank+=$i;
 				$i=0;

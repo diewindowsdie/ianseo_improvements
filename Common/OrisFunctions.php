@@ -282,8 +282,8 @@ function getStartList($ORIS='', $Event='', $Elim=false, $Filled=false, $isPool=f
 		if($MyRow->EnTimestamp and $MyRow->EnTimestamp>$Data->Timestamp) {
 			$Data->Timestamp=$MyRow->EnTimestamp;
 		}
-		if(empty($Data->OdfCodes[$MyRow->EventCode])) {
-			$Data->OdfCodes[$MyRow->EventCode]=array('event' => $MyRow->EvOdfCode, 'version' => $MyRow->DocVersion, 'versionDate' => $MyRow->DocVersionDate);
+		if(empty($Data->OdfCodes[$MyRow->EventCode??''])) {
+			$Data->OdfCodes[$MyRow->EventCode??'']=array('event' => $MyRow->EvOdfCode, 'version' => $MyRow->DocVersion, 'versionDate' => $MyRow->DocVersionDate);
 		}
 		unset($MyRow->EnTimestamp);
 		$MyRow->EventName=get_text($MyRow->EventName,'','',true);
@@ -312,7 +312,7 @@ function getStartList($ORIS='', $Event='', $Elim=false, $Filled=false, $isPool=f
 				$Data->Data['Items'][$MyRow->EventCode][] = $MyRow;
 			}
 		} else {
-			$Data->Data['Items'][$MyRow->EventCode][] = $MyRow;
+			$Data->Data['Items'][$MyRow->EventCode??''][] = $MyRow;
 		}
 	}
 
@@ -1188,6 +1188,9 @@ function getBrokenRecords($ORIS=true) {
 			$MyRow->EventName=get_text($MyRow->EventName,'','',true);
 		}
 		$MyRow->RtRecExtra=unserialize($MyRow->RtRecExtra);
+        if(count($MyRow->RtRecExtra)>0) {
+            $MyRow->RtRecExtra=array(end($MyRow->RtRecExtra));
+        }
         $MyRow->Archers=explode("\n", $MyRow->Archers);
 
 		$Data->Data['Items'][$MyRow->TeamEvent]["$MyRow->RecCategory - $MyRow->RtRecDistance"][]=$MyRow;
@@ -1610,7 +1613,7 @@ function getQualificationIndividual($EventRequested='', $ORIS=false, $ShowRecord
 	return $Data;
 }
 
-function getRobin($options=[], $ORIS=false, $ShowTargetNo=true, $ShowRank=true) {
+function getRobin($options=[], $ORIS=false, $ShowTargetNo=true, $ShowRank=true, $ShowMatches=true) {
 	$Data=new StdClass();
 
 	$Data->Code='ROBIN';
@@ -1626,9 +1629,10 @@ function getRobin($options=[], $ORIS=false, $ShowTargetNo=true, $ShowRank=true) 
 	$Data->NumberDecimalSeparator = get_text('NumberDecimalSeparator');
 	$Data->Continue=get_text('Continue');
 	$Data->TotalShort=get_text('TotalShort','Tournament');
-	$Data->IndexName=get_text('ResultIndAbs', 'Tournament');
+	$Data->IndexName=get_text('ResultsRobin', 'Tournament');
     $Data->ShowTargetNo = $ShowTargetNo;
     $Data->ShowRank = $ShowRank;
+    $Data->ShowMatches = $ShowMatches;
 
 	if(!$ORIS) {
 		$Data->Description=get_text('ResultsRobin','Tournament');

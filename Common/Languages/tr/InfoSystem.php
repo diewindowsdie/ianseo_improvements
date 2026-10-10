@@ -7,6 +7,7 @@ $lang['ByEvent']='Kategoriye göre';
 $lang['ByName']='Ada göre';
 $lang['ByTarget']='Hedefe göre';
 $lang['ClassDiv']='Kategori';
+$lang['CompetitionOfficials']='Yarışma Görevlileri';
 $lang['CompleteSchedule']='Tam programı görüntüle';
 $lang['DivClas']='Klasmanlar ve Kategoriler';
 $lang['Eliminations']='Elemeler';

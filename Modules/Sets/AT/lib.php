@@ -6,6 +6,11 @@ STANDARD DEFINITIONS (Target Tournaments)
 
 */
 
+/**
+ * Modified by helmut.poell@gmx.at
+ * 2026-09-07
+ */
+
 // these go here as it is a "global" definition, used or not
 $tourCollation = '';
 $tourDetIocCode = 'AUT';
@@ -15,63 +20,65 @@ if(empty($SubRule)) {
 
 function CreateStandardDivisions($TourId, $Type='FITA', $SubRule) {
 	$i=1;
-	$optionDivs = array(
-        'L'=>'Langbogen',
-        'T'=>'Traditional',
-        'B'=>'Blankbogen',
-        'W0'=>'W0',
-        'W1'=>'W1',
-        'PR'=>'Para Recurve',
-        'PC'=>'Para Compound',
-        'C'=>'Compound',
-        'R'=>'Recurve'
-    );
+//                  TourId  Order Id   Description (other parms (see below) are optional)       
+    CreateDivision($TourId, $i++, 'L', 'Langbogen');
+    CreateDivision($TourId, $i++, 'T', 'Traditional');
+    CreateDivision($TourId, $i++, 'B', 'Blankbogen');
+    CreateDivision($TourId, $i++, 'C', 'Compound');
+    CreateDivision($TourId, $i++, 'R', 'Recurve');
 
-	if ($Type == 'FIELD' OR $Type == '3D') {
-        $optionDivs = array('R' => 'Recurve', 'C' => 'Compound', 'B' => 'Blankbogen', 'L' => 'Langbogen', 'T' => 'Traditional');
+// Add Para-Divisions in Target    
+    if ($Type == 'FITA') {
+//      A=IsAthlete (fix 1)
+//      BB=RecDivision
+//      CC=WaDivision
+//      D=IsPara(!)
+//                      TourId  Order Id    Desc. A   BB    CC   D
+        CreateDivision($TourId, $i++, 'W0', 'W0', 1, 'W0', 'W0', 1);
+        CreateDivision($TourId, $i++, 'W1', 'W1', 1, 'W1', 'W1', 1);
+        CreateDivision($TourId, $i++, 'PC', 'Para Compound', 1, 'C', 'C', 1);
+        CreateDivision($TourId, $i++, 'PR', 'Para Recurve', 1, 'R', 'R', 1);
     }
-    foreach ($optionDivs as $k => $v){
-		CreateDivision($TourId, $i++, $k, $v, 1, ($k=='W1' ? 'W1' : substr($k,0,1)), ($k=='W1' ? 'W1' : substr($k,0,1)),($k=='W0' or $k=='W1' or $k=='PR' or $k=='PC'));
-	}
 }
 
-function CreateStandardClasses($TourId, $SubRule, $Type='FITA') {
-	switch($SubRule) {
-		case '1':
-        case '3':
-            CreateClass($TourId, 1, 10, 12, 1, 'U13W', 'U13W,U15W,U18W,U21W,W', 'U13 weiblich');
-            CreateClass($TourId, 2, 10, 12, 0, 'U13M', 'U13M,U15M,U18M,U21M,M', 'U13 männlich');
-            CreateClass($TourId, 3, 10, 12, -1, 'U13', 'U13,U15', 'U13');
+function CreateStandardClasses($TourId, $SubRule, $TourType) {
+    $i=1;
+    
+    if ($TourType==3 or $TourType==6 or $TourType==9 or $TourType==11) {
+        CreateClass($TourId, $i++, 1, 7, 1, 'U8W', 'U8W,U10W', 'U8 weiblich');
+        CreateClass($TourId, $i++, 1, 7, 0, 'U8M', 'U8M,U10M', 'U8 männlich');
+        CreateClass($TourId, $i++, 1, 7, -1, 'U8', 'U8,U10', 'U8');
 
-            CreateClass($TourId, 4, 13, 14, 1, 'U15W', 'U15W,U18W,U21W,W', 'U15 weiblich');
-            CreateClass($TourId, 5, 13, 14, 0, 'U15M', 'U15M,U18M,U21M,M', 'U15 männlich');
-            CreateClass($TourId, 6, 13, 14, -1, 'U15', 'U15', 'U15');
+        CreateClass($TourId, $i++, 8, 9, 1, 'U10W', 'U10W', 'U10 weiblich');
+        CreateClass($TourId, $i++, 8, 9, 0, 'U10M', 'U10M', 'U10 männlich');
+        CreateClass($TourId, $i++, 8, 9, -1, 'U10', 'U10', 'U10');
+    }
+    
+    CreateClass($TourId, $i++, 10, 12, 1, 'U13W', 'U13W,U15W,U18W,U21W,W', 'U13 weiblich');
+    CreateClass($TourId, $i++, 10, 12, 0, 'U13M', 'U13M,U15M,U18M,U21M,M', 'U13 männlich');
+    CreateClass($TourId, $i++, 10, 12, -1, 'U13', 'U13,U15', 'U13');
 
-            CreateClass($TourId, 7, 15, 17, 1, 'U18W', 'U18W,U21W,W', 'U18 weiblich');
-            CreateClass($TourId, 8, 15, 17, 0, 'U18M', 'U18M,U21M,M', 'U18 männlich');
-            CreateClass($TourId, 9, 18, 20, 1, 'U21W', 'U21W,W', 'U21 weiblich');
-            CreateClass($TourId, 10, 18, 20, 0, 'U21M', 'U21M,M', 'U21 männlich');
+    CreateClass($TourId, $i++, 13, 14, 1, 'U15W', 'U15W,U18W,U21W,W', 'U15 weiblich');
+    CreateClass($TourId, $i++, 13, 14, 0, 'U15M', 'U15M,U18M,U21M,M', 'U15 männlich');
+    CreateClass($TourId, $i++, 13, 14, -1, 'U15', 'U15', 'U15');
 
-            CreateClass($TourId, 11, 50, 64, 1, '50W', '50W,W', '50+ weiblich');
-            CreateClass($TourId, 12, 50, 64, 0, '50M', '50M,M', '50+ männlich');
-            CreateClass($TourId, 13, 60, 99, 1, '60W', '60W,W', '60+ weiblich');
-            CreateClass($TourId, 14, 60, 99, 0, '60M', '60M,M', '60+ männlich');
-            CreateClass($TourId, 15, 65, 99, 1, '65W', '65W,50W,W', '65+ weiblich');
-            CreateClass($TourId, 16, 65, 99, 0, '65M', '65M,50M,M', '65+ männlich');
+    CreateClass($TourId, $i++, 15, 17, 1, 'U18W', 'U18W,U21W,W', 'U18 weiblich');
+    CreateClass($TourId, $i++, 15, 17, 0, 'U18M', 'U18M,U21M,M', 'U18 männlich');
+    CreateClass($TourId, $i++, 18, 20, 1, 'U21W', 'U21W,W', 'U21 weiblich');
+    CreateClass($TourId, $i++, 18, 20, 0, 'U21M', 'U21M,M', 'U21 männlich');
 
-            CreateClass($TourId, 17, 21, 49, 1, 'W', 'W', 'Damen');
-            CreateClass($TourId, 18, 21, 49, 0, 'M', 'M', 'Herren');
+    CreateClass($TourId, $i++, 50, 64, 1, '50W', '50W,W', '50+ weiblich');
+    CreateClass($TourId, $i++, 50, 64, 0, '50M', '50M,M', '50+ männlich');
+    CreateClass($TourId, $i++, 65, 99, 1, '65W', '65W,50W,W', '65+ weiblich');
+    CreateClass($TourId, $i++, 65, 99, 0, '65M', '65M,50M,M', '65+ männlich');
 
-            break;
-		case '2':
-        case '4':
-            CreateClass($TourId, 1, 1, 100, 0, 'M', 'M', 'Herren allgemeine Klasse ');
-            CreateClass($TourId, 2, 1, 100, 1, 'W', 'W', 'Damen allgemeine Klasse');
-			break;
-	}
+    CreateClass($TourId, $i++, 21, 49, 1, 'W', 'W', 'Damen');
+    CreateClass($TourId, $i++, 21, 49, 0, 'M', 'M', 'Herren');
+    
+    CreateClass($TourId, $i++, 1, 99, -1, 'G', 'G', 'Gästeklasse');
 }
 
-function CreateStandardEvents($TourId, $SubRule, $Outdoor=true, $allowBB=true) {
+function CreateStandardEvents($TourId, $SubRule, $Outdoor=true) {
 	$TargetR=($Outdoor ? TGT_OUT_FULL : TGT_IND_6_big10);
 	$TargetC=($Outdoor ? TGT_OUT_5_big10 : TGT_IND_6_small10);
     $TargetB=($Outdoor ? TGT_OUT_FULL : TGT_IND_6_big10);
@@ -86,7 +93,7 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true, $allowBB=true) {
     $DistanceB=($Outdoor ? 50 : 18);
     $DistanceL=($Outdoor ? 30 : 18);
     $DistanceT=($Outdoor ? 40 : 18);
-	$FirstPhase = ($Outdoor ? 48 : 16);
+	$FirstPhase = ($Outdoor ? 16 : 16);   // 48 : 16
 	$TeamFirstPhase = ($Outdoor ? 12 : 8);
 
     $i=1;
@@ -120,28 +127,28 @@ function CreateStandardEvents($TourId, $SubRule, $Outdoor=true, $allowBB=true) {
 }
 
 function InsertStandardEvents($TourId, $SubRule, $Outdoor=true) {
-    foreach (array('R'=>'R_','C'=>'C_','B'=>'B_','L'=>'L_','T'=>'T_') as $kDiv=>$vDiv) {
-        $clsTmpArr = array('W','U21W','U18W','50W','60W','65W');
+    foreach (array('R'=>'R_','C'=>'C_','B'=>'B_','L'=>'L_','T'=>'T_','PC'=>'C_') as $kDiv=>$vDiv) {
+        $clsTmpArr = array('W','U21W','U18W','50W','65W');
         if($kDiv == 'R' AND $Outdoor) {
             $clsTmpArr = array('W','U21W');
         } else if($kDiv == 'T') {
-            $clsTmpArr = array('W','U21W','50W','60W','65W');
+            $clsTmpArr = array('W','U21W','50W','65W');
         }
         foreach($clsTmpArr as $kClass=>$vClass) {
-            InsertClassEvent($TourId, 0, 1, str_replace('_','W',$vDiv), $kDiv,  $vClass);
-            InsertClassEvent($TourId, 1, 3, str_replace('_','W',$vDiv),  $kDiv,  $vClass);
-            InsertClassEvent($TourId, 1, 1, str_replace('_','X',$vDiv),  $kDiv,  $vClass);
+            InsertClassEvent($TourId, 0, 1, str_replace('_','W',$vDiv), $kDiv,  $vClass);   // Individuals
+            InsertClassEvent($TourId, 1, 3, str_replace('_','W',$vDiv), $kDiv,  $vClass);   // Teams
+            InsertClassEvent($TourId, 1, 1, str_replace('_','X',$vDiv), $kDiv,  $vClass);   // Mixed Team (Part one)
         }
-        $clsTmpArr = array('M','U21M','U18M','50M','60M','65M');
+        $clsTmpArr = array('M','U21M','U18M','50M','65M');
         if($kDiv == 'R' AND $Outdoor) {
             $clsTmpArr = array('M','U21M');
         } else if($kDiv == 'T') {
-            $clsTmpArr = array('M','U21M','50M','60M','65M');
+            $clsTmpArr = array('M','U21M','50M','65M');
         }
         foreach($clsTmpArr as $kClass=>$vClass) {
-            InsertClassEvent($TourId, 0, 1, str_replace('_','M',$vDiv), $kDiv,  $vClass);
-            InsertClassEvent($TourId, 1, 3, str_replace('_','M',$vDiv),  $kDiv,  $vClass);
-            InsertClassEvent($TourId, 2, 1, str_replace('_','X',$vDiv),  $kDiv,  $vClass);
+            InsertClassEvent($TourId, 0, 1, str_replace('_','M',$vDiv), $kDiv,  $vClass);   // Individuals
+            InsertClassEvent($TourId, 1, 3, str_replace('_','M',$vDiv), $kDiv,  $vClass);   // Teams
+            InsertClassEvent($TourId, 2, 1, str_replace('_','X',$vDiv), $kDiv,  $vClass);   // Mixed Team (Part two)
         }
     }
 }

@@ -118,6 +118,7 @@ if($IsRunArchery) {
 		// Field/3D eliminations and Pools...
 		switch($MyRow->EvElimType) {
 			case 0:
+            case 5:
 				// do nothing
 				break;
 			case 3:
@@ -143,16 +144,18 @@ if($IsRunArchery) {
 		}
 
 		// based on the SO status we build brackets and Final Ranks
-		if($MyRow->EvShootOff) {
-			$BraCode='IB' . $MyRow->EvCode;
-			$FinCode='IF' . $MyRow->EvCode;
-			$outputIndFin .='<input type="checkbox" name="FinalInd[]" value="'.$FinCode.'">' . $MyRow->EvCode . '&nbsp;-&nbsp;' . $MyRow->EvEventName . '<br/>';
-			$outputIndBra .='<input type="checkbox" name="BracketsInd[]" value="'.$BraCode.'">' . $MyRow->EvCode . '&nbsp;-&nbsp;' . $MyRow->EvEventName . '<br/>';
-		}
+        $BraCode='IB' . $MyRow->EvCode;
+        $FinCode='IF' . $MyRow->EvCode;
+        if($MyRow->EvShootOff) {
+            $outputIndFin .='<input type="checkbox" name="FinalInd[]" value="'.$FinCode.'">' . $MyRow->EvCode . '&nbsp;-&nbsp;' . $MyRow->EvEventName . '<br/>';
+            $outputIndBra .='<input type="checkbox" name="BracketsInd[]" value="'.$BraCode.'">' . $MyRow->EvCode . '&nbsp;-&nbsp;' . $MyRow->EvEventName . '<br/>';
+        } else if ($MyRow->EvElimType==5) {
+            $outputIndFin .='<input type="checkbox" name="FinalInd[]" value="'.$FinCode.'">' . $MyRow->EvCode . '&nbsp;-&nbsp;' . $MyRow->EvEventName . '<br/>';
+        }
 	}
 
 	// select the ACTUAL Team Events
-	$Sql = "SELECT max(t1.TeTimeStamp) as LastUpdate, max(t1.TeHits) as Arrows, min(t1.TeHits) as MinArrows, EvCode, EvEventName, EvFinalFirstPhase, EvMedals, ifnull(t2.TeCoId,t3.TeCoId) as HasMedal, (t2.TeCoId is NOT NULL) as HasGoldMedal, EvShootOff
+	$Sql = "SELECT max(t1.TeTimeStamp) as LastUpdate, max(t1.TeHits) as Arrows, min(t1.TeHits) as MinArrows, EvCode, EvEventName, EvFinalFirstPhase, EvMedals, ifnull(t2.TeCoId,t3.TeCoId) as HasMedal, (t2.TeCoId is NOT NULL) as HasGoldMedal, EvShootOff, EvElimType
     FROM Events 
     inner join Teams t1 on t1.TeEvent=EvCode and t1.TeTournament=EvTournament
     left join Teams t2 on t2.TeEvent=EvCode and t2.TeTournament=EvTournament and t2.TeRankFinal=EvWinnerFinalRank
@@ -177,11 +180,12 @@ if($IsRunArchery) {
 		$outputTeamAbs .='<div style="display:flex;margin-bottom:0.5em;align-items:center;"><div><input type="checkbox" name="QualificationTeam[]" value="' . $QualCode . '"></div><div>' . $MyRowEv->EvCode . '&nbsp;-&nbsp;' . $MyRowEv->EvEventName . '<br/>'.$MyRowEv->MinArrows.($MyRowEv->MinArrows== $MyRowEv->Arrows ? '' : '-'.$MyRowEv->Arrows).' / '.substr($MyRowEv->LastUpdate,0,-3).'</div></div>';
 
 		// solo chi ha la fase > 0 va avanti
-		if(!$MyRowEv->EvFinalFirstPhase or in_array($MyRowEv->EvCode, $_SESSION['MenuFinT'])) {
-			continue;
-		}
-		$outputTeamFin .='<input type="checkbox" name="FinalTeam[]" value="' . $FinCode . '">' . $MyRowEv->EvCode . '&nbsp;-&nbsp;' . $MyRowEv->EvEventName . '<br/>';
-		$outputTeamBra .='<input type="checkbox" name="BracketsTeam[]" value="' . $BraCode . '">' . $MyRowEv->EvCode . '&nbsp;-&nbsp;' . $MyRowEv->EvEventName . '<br/>';
+        if($MyRowEv->EvFinalFirstPhase AND !in_array($MyRowEv->EvCode, $_SESSION['MenuFinT'])) {
+            $outputTeamBra .='<input type="checkbox" name="BracketsTeam[]" value="' . $BraCode . '">' . $MyRowEv->EvCode . '&nbsp;-&nbsp;' . $MyRowEv->EvEventName . '<br/>';
+        }
+        if(($MyRowEv->EvFinalFirstPhase or $MyRowEv->EvElimType==5) AND !(in_array($MyRowEv->EvCode, $_SESSION['MenuFinT']) or in_array($MyRowEv->EvCode, $_SESSION['MenuRobin']))) {
+            $outputTeamFin .='<input type="checkbox" name="FinalTeam[]" value="' . $FinCode . '">' . $MyRowEv->EvCode . '&nbsp;-&nbsp;' . $MyRowEv->EvEventName . '<br/>';
+        }
 	}
 	if($Elim4) {
 		$ElimCode='EL4';

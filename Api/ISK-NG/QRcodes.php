@@ -53,6 +53,8 @@ switch($_SESSION['UseApi']??'') {
 			'askTotals'=>0,
             'enableHaptics'=>0,
 			'askSignature'=>0,
+            'regexSignature'=>'',
+            'deviceSignatureCode'=>'',
             'takeScorecardPhoto'=>0,
             'settingsPinCode'=>'',
 		];
@@ -148,11 +150,25 @@ switch($_SESSION['UseApi']??'') {
 			</tr>';
         $Content.= '<tr class="Signatures hidden">
 			<th colspan="2">' . get_text('ISK-askSignature','Api') . '</th>
-			<td colspan="3"><select name="askSignature" onchange="manageButtons()">
+			<td colspan="3"><select id="askSignature" name="askSignature" onchange="manageButtons(); showRegExp()">
 			<option value="0">'.get_text('AskSignature-0','Api').'</option>
 			<option value="1" '. ($QrCode['askSignature']==1 ? 'selected="selected"' : '') .'>'.get_text('AskSignature-1','Api').'</option>
-			<option value="2" '. ($QrCode['askSignature']==2 ? 'selected="selected"' : '') .'>'.get_text('AskSignature-2','Api').'</option>
 			</select></td>
+			</tr>';
+        $Content.= '<tr class="SignaturesRegexp  hidden">
+			<th colspan="2" >' . get_text('ISK-regexSignature','Api') . '</th>
+			<td colspan="3"><input type="text" class="w-100" name="regexSignature" id="regexSignature" onchange="manageButtons(); showRegExp(); checkSignature();" value="'. $QrCode['regexSignature'] .'"><br><span class="small">'.get_text('ISK-regexSignature','Help').'</span></td>
+			</tr>';
+        $Content.= '<tr class="SignaturesRegexp  hidden">
+			<th colspan="2" >' . get_text('ISK-DeviceSignatureCode','Api') . '</th>
+			<td colspan="3"><input type="text" class="w-100" name="deviceSignatureCode" id="deviceSignatureCode" onchange="manageButtons(); showRegExp(); checkSignature();" value="'. $QrCode['deviceSignatureCode'] .'"><br><span class="small">'.get_text('ISK-regexSignature','Help').'<br>'.get_text('ISK-DeviceQrCodeField','Api').'</span></td>
+			</tr>';
+        $Content.= '<tr class="SignaturesRegexpTest hidden">
+			<th colspan="2" >' . get_text('ISK-regexSignatureTest','Api') . '</th>
+			<td colspan="3">
+			<div class="mt-1 mb-1 Left">'.get_text('BibNumber', 'BackNumbers').'<input class="mx-2" type="text" size="10" id="regexSignatureBib">
+			<input class="mx-2" type="button" value="'.get_text('CmdGetSignature','Api').'" onclick="getSignature(false)"><input type="button" value="'.get_text('CmdSignatureRandomID','Api').'" onclick="getSignature(true)"><div class="ml-2 text-secondary" id="regexSignatureName"></div></div>
+			<input type="hidden" id="deviceSignatureTest"><input type="text" class="w-90 mr-1" id="regexSignatureTest" onchange="checkSignature()"><i id="regexSignatureValid" class="fa-solid fa-lg hidden"></i></td>
 			</tr>';
         $Content.= '<tr class="ScorePicture hidden">
 			<th colspan="2">' . get_text('ISK-takeScorecardPhoto','Api') . '</th>

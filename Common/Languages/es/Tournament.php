@@ -302,7 +302,6 @@ $lang['DeleteChannel']='Quitar el Canal';
 $lang['DeletePreviousArchers']='Borrar las inscripciones existentes que no estén en la lista';
 $lang['DeletePreviousTeams']='Borrar Equipos Anteriores';
 $lang['DeleteSplit']='Quitar nivel. Esto quiratá el nivel.';
-$lang['DeleteTourConfirm']='Por favor, introduzca en la casilla de texto el siguiente código de control:';
 $lang['DeleteTournament']='Eliminar Competición';
 $lang['Deleting']='Trabajo en proceso: eliminando archivos en-línea...';
 $lang['DescPhotoName']='Ver Contraseña';

@@ -1,4 +1,5 @@
 <?php
+$lang['AddRow']='+ Ligne';
 $lang['AddSlot']='Ajouter un créneau horaire';
 $lang['AddTarget']='Ajouter une cible';
 $lang['AddWarmup']='Ajouter échauffement';
@@ -14,6 +15,7 @@ $lang['Conflict']='Conflit';
 $lang['Copy']='Copier';
 $lang['CopyCart']='Commande copiée dans le presse-papiers.';
 $lang['FaceType']='Type de blason';
+$lang['GlobalCoeff']='Coeff Global';
 $lang['GlobalRecap']='Récap global blasons';
 $lang['GrandTotal']='Total général';
 $lang['LostUnsaved']='Des modifications non sauvegardées seront perdues.';

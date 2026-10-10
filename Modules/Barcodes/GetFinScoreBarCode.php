@@ -114,7 +114,7 @@ echo '<div id="bcodeContainer" class="bcodeContainer"><div class="bcodeOp"><form
     }
     echo '</td><td class="Center"><select id="Session" name="T"  onchange="refreshForm(true)"><option value="0"></option>';
 
-    $q=safe_r_sql("Select distinct `FSTeamEvent`, CONCAT(date_format(FSScheduledDate, '%e %b '),date_format(FSScheduledTime, '%H:%i'), ' ', group_concat(distinct concat('--', `EvFinalFirstPhase`,'|',`GrPhase`, '-- ', `FsEvent`) separator ' + ')) AS `Description`, `EvElimType`, `FSScheduledDate`, `FSScheduledTime` 
+    $q=safe_r_sql("Select distinct `FSTeamEvent`, CONCAT(date_format(FSScheduledDate, '%e %b '),date_format(FSScheduledTime, '%H:%i'), ' - ', group_concat(distinct concat('--', `EvFinalFirstPhase`,'|',`GrPhase`, '-- ', `FsEvent`) separator ' + ')) AS `Description`, `EvElimType`, `FSScheduledDate`, `FSScheduledTime` 
         from `FinSchedule` 
         inner join `Grids` on `GrMatchNo`=`FsMatchNo` 
         inner join `Events` on `EvTournament`=`FSTournament` and `EvCode`=`FSEvent` and `EvTeamEvent`=`FSTeamEvent`
@@ -156,58 +156,61 @@ if($Match) {
     if($Match->teamEvent and module_exists('ExtendedORIS')) {
         $archers1=json_decode($Match->archers1,true);
         $archers2=json_decode($Match->archers2,true);
-        for($end=0;$end<$Match->ends;$end++) {
-            $cntAth = array(array(),array());
-            for($arrow=0;$arrow<$Match->arrows;$arrow++) {
-                if(strlen($Match->arrowString1)>$end*$Match->arrows+$arrow and $Match->arrowString1[$end*$Match->arrows+$arrow]!=" ") {
-                    if (array_key_exists($end * $Match->arrows + $arrow, $archers1)) {
-                        $cntAth[0][$archers1[$end * $Match->arrows + $arrow]] = ($cntAth[0][$archers1[$end * $Match->arrows + $arrow]] ?? 0) + 1;
-                    } else {
-                        $errorTeamComponent[0] = true;
+        if(is_null($archers1) or is_null($archers2)) {
+            $errorTeamComponent = [is_null($archers1), is_null($archers2)];
+        } else {
+            for ($end = 0; $end < $Match->ends; $end++) {
+                $cntAth = array(array(), array());
+                for ($arrow = 0; $arrow < $Match->arrows; $arrow++) {
+                    if (strlen($Match->arrowString1) > $end * $Match->arrows + $arrow and $Match->arrowString1[$end * $Match->arrows + $arrow] != " ") {
+                        if (array_key_exists($end * $Match->arrows + $arrow, $archers1)) {
+                            $cntAth[0][$archers1[$end * $Match->arrows + $arrow]] = ($cntAth[0][$archers1[$end * $Match->arrows + $arrow]] ?? 0) + 1;
+                        } else {
+                            $errorTeamComponent[0] = true;
+                        }
+                    }
+                    if (strlen($Match->arrowString2) > $end * $Match->arrows + $arrow and $Match->arrowString2[$end * $Match->arrows + $arrow] != " ") {
+                        if (array_key_exists($end * $Match->arrows + $arrow, $archers2)) {
+                            $cntAth[1][$archers2[$end * $Match->arrows + $arrow]] = ($cntAth[1][$archers2[$end * $Match->arrows + $arrow]] ?? 0) + 1;
+                        } else {
+                            $errorTeamComponent[1] = true;
+                        }
                     }
                 }
-                if(strlen($Match->arrowString2)>$end*$Match->arrows+$arrow and $Match->arrowString2[$end*$Match->arrows+$arrow]!=" "){
-                    if(array_key_exists($end*$Match->arrows+$arrow,$archers2)) {
-                        $cntAth[1][$archers2[$end*$Match->arrows+$arrow]] = ($cntAth[1][$archers2[$end*$Match->arrows+$arrow]]??0)+1;
-                    } else {
-                        $errorTeamComponent[1] = true;
-                    }
+                if (count($cntAth[0]) and max($cntAth[0]) != min($cntAth[0])) {
+                    $errorTeamComponent[0] = true;
+                }
+                if (count($cntAth[1]) and max($cntAth[1]) != min($cntAth[1])) {
+                    $errorTeamComponent[1] = true;
                 }
             }
-            if(count($cntAth[0]) and max($cntAth[0])!=min($cntAth[0])) {
-                $errorTeamComponent[0] = true;
-            }
-            if(count($cntAth[1]) and max($cntAth[1])!=min($cntAth[1])) {
-                $errorTeamComponent[1] = true;
+            $endOffset = $Match->arrows * $Match->ends;
+            for ($end = 0; $end < strlen($Match->tiebreak1); $end = $end + $Match->so) {
+                $cntAth = array(array(), array());
+                for ($arrow = 0; $arrow < $Match->so; $arrow++) {
+                    if ($Match->tiebreak1[$end * $Match->so + $arrow] != " ") {
+                        if (array_key_exists($endOffset + $end * $Match->so + $arrow, $archers1)) {
+                            $cntAth[0][$archers1[$endOffset + $end * $Match->so + $arrow]] = ($cntAth[0][$archers1[$endOffset + $end * $Match->so + $arrow]] ?? 0) + 1;
+                        } else {
+                            $errorTeamComponent[0] = true;
+                        }
+                    }
+                    if ($Match->tiebreak2[$end * $Match->so + $arrow] != " ") {
+                        if (array_key_exists($endOffset + $end * $Match->so + $arrow, $archers2)) {
+                            $cntAth[1][$archers2[$endOffset + $end * $Match->so + $arrow]] = ($cntAth[1][$archers2[$endOffset + $end * $Match->so + $arrow]] ?? 0) + 1;
+                        } else {
+                            $errorTeamComponent[1] = true;
+                        }
+                    }
+                }
+                if (count($cntAth[0]) and max($cntAth[0]) != min($cntAth[0])) {
+                    $errorTeamComponent[0] = true;
+                }
+                if (count($cntAth[1]) and max($cntAth[1]) != min($cntAth[1])) {
+                    $errorTeamComponent[1] = true;
+                }
             }
         }
-        $endOffset = $Match->arrows * $Match->ends;
-        for($end=0;$end<strlen($Match->tiebreak1);$end=$end+$Match->so) {
-            $cntAth = array(array(),array());
-            for($arrow=0;$arrow<$Match->so;$arrow++) {
-                if($Match->tiebreak1[$end*$Match->so+$arrow]!=" ") {
-                    if (array_key_exists($endOffset+$end * $Match->so + $arrow, $archers1)) {
-                        $cntAth[0][$archers1[$endOffset+$end * $Match->so + $arrow]] = ($cntAth[0][$archers1[$endOffset+$end * $Match->so + $arrow]] ?? 0) + 1;
-                    } else {
-                        $errorTeamComponent[0] = true;
-                    }
-                }
-                if($Match->tiebreak2[$end*$Match->so+$arrow]!=" "){
-                    if(array_key_exists($endOffset+$end*$Match->so+$arrow,$archers2)) {
-                        $cntAth[1][$archers2[$endOffset+$end*$Match->so+$arrow]] = ($cntAth[1][$archers2[$endOffset+$end*$Match->so+$arrow]]??0)+1;
-                    } else {
-                        $errorTeamComponent[1] = true;
-                    }
-                }
-            }
-            if(count($cntAth[0]) and max($cntAth[0])!=min($cntAth[0])) {
-                $errorTeamComponent[0] = true;
-            }
-            if(count($cntAth[1]) and max($cntAth[1])!=min($cntAth[1])) {
-                $errorTeamComponent[1] = true;
-            }
-        }
-
     }
 
     if($Match->win1) {

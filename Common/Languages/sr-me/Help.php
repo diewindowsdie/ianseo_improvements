@@ -1,5 +1,4 @@
 <?php
-$lang['AuthTourCode']='Zarezom razdvojena lista kodova turnira kojima korisnik može da upravlja.<br>Dozvoljen džoker znak: "%"';
 $lang['AutoCheckinAlreadyDone']='Već ste se prijavili<br>Ako treba da promijenite bilo kakve informacije, obratite se na šalter za prijavu.';
 $lang['AutoCheckinConfirm']='Ako su svi podaci tačni, pritisnite POTVRDI PRIJAVU<br>U suprotnom pritisnite OTKAŽI i obratite se akreditacionom stolu';
 $lang['AutoCheckinSearch']='Očitajte QR kod koji ste primili ili unesite svoje ime';

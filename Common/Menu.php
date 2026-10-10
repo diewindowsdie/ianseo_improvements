@@ -135,7 +135,7 @@ function get_which_menu($on=false) {
             $ret['COMP']['EXPT'][] = get_text('Export2Fitarco', 'Tournament') . '|' . $CFG->ROOT_DIR . 'Tournament/Export2Fitarco.php';
             $ret['COMP']['EXPT'][] = get_text('MenuLM_Export Tournament') . '|' . $CFG->ROOT_DIR . 'Tournament/TournamentExport.php';
             $ret['COMP']['EXPT'][] = get_text('MenuLM_Export Tournament Photo') . '|' . $CFG->ROOT_DIR . 'Tournament/TournamentExport.php?Complete=1';
-            if (ProgramRelease == 'HEAD') $ret['COMP']['EXPT'][] = get_text('MenuLM_Export Entries') . '|' . $CFG->ROOT_DIR . 'Partecipants/EntriesExchange.php';
+            if (!isProduction()) $ret['COMP']['EXPT'][] = get_text('MenuLM_Export Entries') . '|' . $CFG->ROOT_DIR . 'Partecipants/EntriesExchange.php';
             $ret['COMP'][] = MENU_DIVIDER;
         }
         if (subFeatureAcl($acl,AclInternetPublish) == AclReadWrite) {
@@ -721,14 +721,14 @@ function get_which_run_menu($on=false) {
 		$ret['COMP'][] = get_text('MenuLM_Select Language') .'|'.$CFG->ROOT_DIR.'Language/index.php';
 		if(substr(SelectLanguage(),0,2)!='en') $ret['COMP'][] = 'Select Language|'.$CFG->ROOT_DIR.'Language/index.php';
 
-		if(ProgramRelease=='HEAD') {
+		if(!isProduction()) {
 			$ret['MEDI'][] = get_text('MenuLM_Output') .'';
 			$ret['MEDI'][] = get_text('MenuLM_TV Channels') .'|'.$CFG->ROOT_DIR.'tv.php';
 		}
 	}
 
 	$ret['MODS'][] = get_text('MenuLM_Modules');
-	if(ProgramRelease!='HEAD' AND (empty($_SESSION['AUTH_ENABLE']) OR !empty($_SESSION['AUTH_ROOT']))) {
+	if(isProduction() AND (empty($_SESSION['AUTH_ENABLE']) OR !empty($_SESSION['AUTH_ROOT']))) {
 	    $ret['MODS'][] = ''.get_text('MenuLM_Update') .'|'.$CFG->ROOT_DIR.'Update/';
     }
 	//$ret['MODS'][] = get_text('MenuLM_SearchModules') .'|'.$CFG->ROOT_DIR.'Modules/';

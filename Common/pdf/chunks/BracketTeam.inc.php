@@ -17,7 +17,7 @@ $InitMargin=10;
 $LarghezzaPagina=$pdf->GetPageWidth()-2*$InitMargin;
 
 $Cella=4.5;
-$CellaNomi=3;
+$CellaNomi=2.8;
 
 $MisPos=5; //5
 $MisName=30; //20
@@ -90,13 +90,13 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 			$OrgY=$pdf->GetY();
 
 			// Target Numbers
-			if($ShowTargetNo && ($Match['target'] or $Match['oppTarget']) and !($Match['score'] or $Match['setScore']) and !($Match['oppScore'] or $Match['oppSetScore']) and !$Match['tie'] and !$Match['oppTie']) {
+			if($ShowTargetNo && ($Match['target'] or $Match['oppTarget']) and !($Match['hideSchedule']??1)) {
 			   	$pdf->SetFont($pdf->FontStd,'I',7);
 				if($FirstPhase) {
 					$pdf->SetX($LineXstart-7);
-					$pdf->Cell(7, $CellHeight, "T# " . $Match['target'], 0, 0, 'R', 0);
+					$pdf->Cell(7, $CellHeight, (empty($Match['target']) ? '' : "T# " . $Match['target']), 0, 0, 'R', 0);
 					$pdf->SetXY($LineXstart-7, $OrgY+$CellHeight);
-					$pdf->Cell(7, $Cella+($Componenti*$CellaNomi), "T# " . $Match['oppTarget'], 0, 0, 'R', 0);
+					$pdf->Cell(7, $Cella+($Componenti*$CellaNomi), (empty($Match['oppTarget']) ? '' : "T# " . $Match['oppTarget']), 0, 0, 'R', 0);
 				} else {
 					$pdf->SetXY($LineXstart, $OrgY-3);
 					$pdf->Cell($MisName+$AddSize+$MisScore, 2.5, "T# " . $Match['target']. ($ShowSchedule ? ' ' . $Match['scheduledDate']  . " @ "  . $Match['scheduledTime'] : ''), 0, 0, 'L', 0);
@@ -106,7 +106,7 @@ foreach($PdfData->rankData['sections'] as $Event => $section) {
 				$pdf->SetXY($LineXstart, $OrgY);
 			}
 
-			if($ShowSchedule && $Match['scheduledDate']!='00-00-0000'  && $Match['scheduledTime']!='00:00' and !($Match['score'] or $Match['setScore']) and !($Match['oppScore'] or $Match['oppSetScore']) and !$Match['tie'] and !$Match['oppTie']) {
+			if($ShowSchedule && $Match['scheduledDate']!='00-00-0000' && $Match['scheduledTime']!='00:00' && !($Match['hideSchedule']??1)) {
 				if($FirstPhase) {
 					$pdf->SetFont($pdf->FontStd,'I',6);
 					$pdf->SetXY($LineXstart, $OrgY-3);

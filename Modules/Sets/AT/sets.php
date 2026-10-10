@@ -1,4 +1,10 @@
 <?php
+
+/**
+ * Modified by helmut.poell@gmx.at
+ * 2026-09-07
+ */
+
 require_once('Common/Fun_Modules.php');
 $version = '2020-01-01 00:00:00';
 
@@ -14,24 +20,24 @@ foreach($AllowedTypes as $val) {
 }
 
 foreach($AllowedTypes as $val) {
-    if($val!=1 AND $val!=2 AND $val!=5) {
+    if($val!=1 AND $val!=2 AND $val!=5 AND $val!=7 AND $val!=8) {
         $SetType['AT']['rules']["$val"] = array(
-            'SetAllClass',
-            'SetOneClass'
+            'SetOrdinary',
+            'SetOrdinaryFinals'
         );
     }
 }
 
 
 $SetType['AT']['rules'][3] = array(
-    'SetAllClass',
-    'SetOneClass',
+    'SetOrdinary',
+    'SetOrdinaryFinals',
     'LooserBrackets'
 );
 
 $SetType['AT']['rules'][6] = array(
-    'SetAllClass',
-    'SetOneClass',
+    'SetOrdinary',
+    'SetOrdinaryFinals',
     'LooserBrackets'
 );
 

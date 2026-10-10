@@ -386,14 +386,18 @@ function MakeTeams($Societa, $Category, $ToId=0) {
 		}
 
 	// Elimino le squadre della qualifica
-		$Delete
-			= "DELETE Teams, TeamComponent FROM "
-			. "Teams, TeamComponent  "
-			. "WHERE TeCoId=TcCoId AND TeEvent=TcEvent AND TeTournament=TcTournament AND TeTournament=" . StrSafe_DB($ToId)
-			. (!is_null($Societa) ? ' AND TeCoId=' . StrSafe_DB($Societa) . ' AND TcCoId=' . StrSafe_DB($Societa)  : '')
-			. ((!is_null($Category) AND $TipoElaborazione==0) ? ' AND TeEvent=' . StrSafe_DB($Category) . ' AND TcEvent=' . StrSafe_DB($Category) : '')
-			. " AND TeFinEvent='0' AND TcFinEvent='0' ";
+		$Delete = "DELETE FROM Teams
+            WHERE TeTournament=" . StrSafe_DB($ToId)
+			. (!is_null($Societa) ? ' AND TeCoId=' . StrSafe_DB($Societa)  : '')
+			. ((!is_null($Category) AND $TipoElaborazione==0) ? ' AND TeEvent=' . StrSafe_DB($Category) : '')
+			. " AND TeFinEvent='0'";
 		$Rs=safe_w_sql($Delete);
+        $Delete = "DELETE FROM TeamComponent  
+            WHERE TcTournament=" . StrSafe_DB($ToId)
+            . (!is_null($Societa) ? ' AND TcCoId=' . StrSafe_DB($Societa)  : '')
+            . ((!is_null($Category) AND $TipoElaborazione==0) ? ' AND TcEvent=' . StrSafe_DB($Category) : '')
+            . " AND TcFinEvent='0' ";
+        $Rs=safe_w_sql($Delete);
 
 		if($TipoElaborazione==0)	//Gare Standard
 		{

@@ -319,7 +319,6 @@ $lang['DeleteChannel']='Eliminar canle';
 $lang['DeletePreviousArchers']='Eliminar inscricións existentes que non están na lista';
 $lang['DeletePreviousTeams']='Eliminar equipos anteriores';
 $lang['DeleteSplit']='Eliminar división. Isto eliminará a división.';
-$lang['DeleteTourConfirm']='Insire na caixa de texto o seguinte código de control:';
 $lang['DeleteTournament']='Eliminar torneo';
 $lang['Deleting']='Traballo en curso: eliminando ficheiros en liña...';
 $lang['DescAddress']='##ADDRESS## <i><tab></i> BIB <i><tab></i> ADDRESS <i><tab></i> ZIP <i><tab></i> CITY <i><tab></i> PROVINCE <i><tab></i> COUNTRY<br>Set postal mail of the archer identified by BIB';

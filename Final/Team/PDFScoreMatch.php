@@ -485,8 +485,8 @@ function DrawScore(&$pdf, $MyRow, $Side='L', $Athletes=array()) {
                 $shooting = $MyRow->{$Prefix . 'ShootingArchers'}[($i - 1) * $NumCol + $j]??0;
                 for($ath=0; $ath<count($Athletes); $ath++) {
                     $pdf->setXY($posTemp[0],$posTemp[1]+$tmpScoreCellHeight*$ath);
-                    $pdf->SetFont($pdf->FontStd,($Athletes[$ath]['id']==$shooting ? 'B':''),6);
-                    $pdf->Cell(3, $tmpScoreCellHeight, TCPDF_FONTS::unichr($ath+65), '1', 0, 'C', ($Athletes[$ath]['id']==$shooting ? 1:0));
+                    $pdf->SetFont($pdf->FontStd,(($FillWithArrows AND $Athletes[$ath]['id']==$shooting) ? 'B':''),6);
+                    $pdf->Cell(3, $tmpScoreCellHeight, TCPDF_FONTS::unichr($ath+65), '1', 0, 'C', (($FillWithArrows AND $Athletes[$ath]['id']==$shooting) ? 1:0));
                 }
                 $pdf->setXY($posTemp[0]+3,$posTemp[1]);
                 $pdf->setCellPaddings($tmpPadding['L'],$tmpPadding['T'],$tmpPadding['R'],$tmpPadding['B']);

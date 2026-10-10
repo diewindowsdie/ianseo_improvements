@@ -1,5 +1,5 @@
 <?php
-$lang['DailySchedule']='กำหนดการแช่งขัน (แยกตามวัน)';
+$lang['DailySchedule']='กำหนดการแข่งขัน (แยกตามวัน)';
 $lang['DaySchedule']='ตารางแข่งของวัน';
 $lang['Distance']='เก็บคะแนน รอบ';
 $lang['Distances']='ระยะ';

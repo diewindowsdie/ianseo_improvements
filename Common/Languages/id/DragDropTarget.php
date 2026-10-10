@@ -1,4 +1,5 @@
 <?php
+$lang['AddRow']='Tambah Anak Panah';
 $lang['AddSlot']='Tambahkan Slot Waktu';
 $lang['AddTarget']='Tambahkan Target';
 $lang['AddWarmup']='Tambahkan Pemanasan';
@@ -14,6 +15,7 @@ $lang['Conflict']='Konflik';
 $lang['Copy']='Salin';
 $lang['CopyCart']='Keranjang telah disalin ke clipboard';
 $lang['FaceType']='Tipe Target Face';
+$lang['GlobalCoeff']='Global Coeff';
 $lang['GlobalRecap']='Ringkasan global mengenai Target Face';
 $lang['GrandTotal']='Jumlah Total';
 $lang['LostUnsaved']='Perubahan yang tidak disimpan akan hilang';

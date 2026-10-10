@@ -4,12 +4,12 @@ $(function() {
 
 })
 
-function showPrintout(obj, team) {
+function showPrintout(frm, team) {
     let form={
         'team':team,
     }
 
-    $('input:checked').each(function() {
+    $('#'+frm+' input:checked').each(function() {
         if(this.disabled) {
             return;
         }

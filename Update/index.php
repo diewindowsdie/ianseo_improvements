@@ -72,7 +72,7 @@ if($f) {
     echo '<div id="UpdateTable" class="text-small '.($NeedsUpdate ? 'd-none' : '').'">
         <div class="alert alert-success">'.get_text('UpdatePrepared', 'Install') .'</div>';
 
-    if(!in_array(ProgramRelease, array('STABLE','FITARCO')) or isset($_GET['testing'])) {
+    if(!isProduction(['STABLE','FITARCO']) or isset($_GET['testing'])) {
         echo '<div class="alert alert-info mt-2">
             <div><b>'.get_text('SpecialUpdate', 'Install').'<b></b></div>
             <div style="display:flex" class="mt-2"><div class="text-right mx-2">' . get_text('Email','Install') . ':</div><div class="w-100"><input type="text" name="Email" id="Email"  class="w-100"></div></div>

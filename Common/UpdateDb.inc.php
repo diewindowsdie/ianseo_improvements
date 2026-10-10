@@ -136,6 +136,29 @@ if($version<'2026-06-17 19:20:01') {
     db_save_version('2026-06-17 19:20:01');
 }
 
+if($version<'2026-08-05 17:30:00') {
+    safe_w_sql("ALTER TABLE `RoundRobinGroup` ADD `RrGrFinalRank` INT NOT NULL AFTER `RrGrSoSolved`",false,array(1146, 1054, 1060));
+    safe_w_sql("ALTER TABLE `Teams` ADD `TeTbShootingArchers` MEDIUMTEXT NOT NULL AFTER `TeTbDecoded`",false,array(1146, 1054, 1060));
+    safe_w_sql("ALTER TABLE `RoundRobinMatches` ADD `RrMatchShootingArchers` MEDIUMTEXT NOT NULL AFTER `RrMatchTieBreaker3`",false,array(1146, 1054, 1060));
+    db_save_version('2026-08-05 17:30:00');
+}
+
+if($version<'2026-08-09 04:30:00') {
+    safe_w_sql("ALTER TABLE `RoundRobinMatches` ADD `RrMatchLJudge` INT NOT NULL AFTER `RrMatchCoach`, ADD `RrMatchTJudge` INT NOT NULL AFTER `RrMatchLJudge`",false,array(1146, 1054, 1060));
+    db_save_version('2026-08-09 04:30:00');
+}
+
+if($version<'2026-09-14 00:00:04') {
+    safe_w_sql("UPDATE `Phases` SET `PhIndTeam` = '3' WHERE `PhId` = 12");
+    safe_w_sql("REPLACE INTO `Targets` (`TarId`, `TarDescr`, `TarArray`, `TarStars`, `TarOrder`, `TarFullSize`, `L_size`, `L_color`, `9_size`, `9_color`, `V_size`, `V_color`) 
+        VALUES (33, 'TrgFrNature', 'TrgFrNature', 'al', '33', '50', '50', '000000', '30', '000000', '10', 'FFFFFF')");
+    safe_w_sql("ALTER TABLE TargetFaces add TfF1 tinyint unsigned not null after TfW1, add TfF2 tinyint unsigned not null after TfW2, add TfF3 tinyint unsigned not null after TfW3, add TfF4 tinyint unsigned not null after TfW4,
+        add TfF5 tinyint unsigned not null after TfW5, add TfF6 tinyint unsigned not null after TfW6, add TfF7 tinyint unsigned not null after TfW7, add TfF8 tinyint unsigned not null after TfW8",false,array(1146, 1054, 1060));
+    foreach(range(1,8) as $i) {
+        safe_w_sql("UPDATE TargetFaces INNER JOIN Tournament ON TfTournament=ToId set TfF{$i}=1 where TfT{$i} in (2,4) and (ToType NOT IN (14,32,36,38,46,47,49) and ToTypeSubRule != 'SetLancClassic') ",false,array());
+    }
+    db_save_version('2026-09-14 00:00:04');
+}
 
 /*
 

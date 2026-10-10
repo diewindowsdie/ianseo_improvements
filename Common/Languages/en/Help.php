@@ -1,6 +1,6 @@
 <?php
 $lang['AclNotSuperuser']='Without "SUPERUSER" access you will be locked out of this section and therefore you cannot enable Access Policies';
-$lang['AuthTourCode']='Comma separated list of tournaments codes that can be managed by the user.<br>Allowed wildchar: "%"';
+$lang['AuthTourCode']='List of tournaments codes that can be managed by the user.<br>Allowed wildchar: "%"';
 $lang['AutoCheckinAlreadyDone']='You are already checked in<br>If you need to change any information proceed to the accreditation desk';
 $lang['AutoCheckinConfirm']='If all the details are correct press CONFIRM CHECK-IN<br> 
 Otherwise press CANCEL and proceed to the accreditation desk';

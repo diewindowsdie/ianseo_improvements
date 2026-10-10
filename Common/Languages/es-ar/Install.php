@@ -131,7 +131,6 @@ $lang['Setup-CA']='Torneo con Reglamentación de Canadá';
 $lang['Setup-CH']='Torneo con Reglamentación de Suiza';
 $lang['Setup-Default']='Reglas World Archery para la Competencia';
 $lang['Setup-FR']='Reglamentación Francesa';
-$lang['Setup-IT']='Competencia con Reglamentación Italiana - FITARCO';
 $lang['Setup-LANC']='Lancaster';
 $lang['Setup-NFAA']='Torneo con Reglamentación de la NFAA';
 $lang['Setup-NL']='Torneo con Reglamentación de Holanda';

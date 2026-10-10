@@ -63,6 +63,7 @@ $lang['TiebreakSystem-2']='Total de puntos de set';
 $lang['TiebreakSystem-3']='Puntos totales';
 $lang['TiebreakSystem-4']='Desempate';
 $lang['TiebreakSystem-5']='Suma (set) de puntos - Suma de puntos (set) de los oponentes';
+$lang['TiebreakSystem-6']='Promedio de flechas en regulación';
 $lang['tieBreakSystem2']='Sistema de desempate 2º nivel';
 $lang['TiePoints']='Puntos para empates';
 $lang['WinPoints']='Puntos para ganar';

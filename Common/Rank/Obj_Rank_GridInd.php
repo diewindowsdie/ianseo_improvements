@@ -29,6 +29,8 @@
  */
 	class Obj_Rank_GridInd extends Obj_Rank
 	{
+        var $scheduledMatchesList=array();
+        var $scheduledMatchesStatus=array();
 	/**
 	 * safeFilter()
 	 * Protegge con gli apici gli elementi di $this->opts['events']
@@ -407,6 +409,7 @@
 
 			$this->data['meta']['title']=get_text('BracketsInd');
 			$this->data['meta']['saved']=get_text('Seeded16th');
+            $this->data['meta']['saved8']=get_text('Seeded8th');
 			$this->data['meta']['notAwarded']=get_text('NotAwarded','ODF');
 			$this->data['meta']['lastUpdate']='0000-00-00 00:00:00';
 			$this->data['meta']['fields']=array(
@@ -594,6 +597,8 @@
 					'scheduledDate' => $myRow->ScheduledDate,
 					'scheduledTime' => $myRow->ScheduledTime,
 					'scheduledKey' => $myRow->ScheduledKey,
+                    'hideSchedule' => false,
+//
 					'lastUpdated' => $myRow->LastUpdated,
 					'matchNo' => $myRow->MatchNo,
 				 	'isValidMatch'=> ($myRow->GridPosition + $myRow->OppGridPosition),
@@ -752,11 +757,30 @@
 				}
 
 				$this->data['sections'][$myRow->Event]['phases'][$myRow->Phase]['items'][]=$item;
+                if(!array_key_exists($item["scheduledKey"], $this->scheduledMatchesList)) {
+                    $this->scheduledMatchesList[$item["scheduledKey"]] = array();
+                    $this->scheduledMatchesStatus[$item["scheduledKey"]] = array();
+                    $this->scheduledMatchesStatus[$item["scheduledKey"]][$myRow->Event] = false;
+                } elseif(!array_key_exists($myRow->Event, $this->scheduledMatchesStatus[$item["scheduledKey"]])) {
+                    $this->scheduledMatchesStatus[$item["scheduledKey"]][$myRow->Event] = false;
+                }
+                $this->scheduledMatchesList[$item["scheduledKey"]][] = array($myRow->Event, $myRow->Phase, array_key_last($this->data['sections'][$myRow->Event]['phases'][$myRow->Phase]['items']));
+                $this->scheduledMatchesStatus[$item["scheduledKey"]][$myRow->Event] |= !(empty($item["score"]) AND empty($item["setScore"]) AND empty($item["irm"]) AND empty($item["oppScore"]) AND empty($item["oppSetScore"] AND empty($item["oppIrm"])));
 
 				$curEvent='';
 				$curPhase='';
 				$section=null;
-
 			}
+            foreach ($this->scheduledMatchesStatus as $key => $value) {
+                foreach ($value as $kEvent=>$vEvent) {
+                    if ($vEvent) {
+                        foreach ($this->scheduledMatchesList[$key] as $keyArray) {
+                            if ($keyArray[0] == $kEvent) {
+                                $this->data['sections'][$keyArray[0]]['phases'][$keyArray[1]]['items'][$keyArray[2]]['hideSchedule'] = true;
+                            }
+                        }
+                    }
+                }
+            }
 		}
 	}

@@ -164,7 +164,6 @@ $lang['DefaultHM']='Zadana vrijednost HM';
 $lang['DefaultLocRule']='FITA';
 $lang['DefaultVI']='Zadana vrijednost VI';
 $lang['DeletePreviousTeams']='Izbrisati prethodni tim';
-$lang['DeleteTourConfirm']='Molim unesite u tekstualni okvir sljedeći kontrolni kod:';
 $lang['DeleteTournament']='Obriši turnir';
 $lang['Deleting']='Rad u tijeku: brisanje on-line podataka...';
 $lang['Descr']='Opis';

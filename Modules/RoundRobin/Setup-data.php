@@ -46,7 +46,7 @@ switch($_REQUEST['act']) {
 		}
 
 		$JSON['error']=0;
-		$q=safe_r_sql("select RoundRobinLevel.*, EvElim1, EvMatchMode, EvElimArrows, EvElimEnds, EvElimSO, coalesce(sqySelector, 0) as HasBegun
+		$q=safe_r_sql("select RoundRobinLevel.*, EvElim1, EvMatchMode, EvElimArrows, EvElimEnds, EvElimSO, EvMaxTeamPerson, coalesce(sqySelector, 0) as HasBegun
             from Events 
 		    left join RoundRobinLevel on RrLevTournament=EvTournament and RrLevTeam=EvTeamEvent and RrLevEvent=EvCode and RrLevLevel=$Level
             left join (
@@ -75,7 +75,7 @@ switch($_REQUEST['act']) {
 			'bestRanked'    =>array('text'=>get_text('BestRanked','RoundRobin'),'val'=>($LEVEL->RrLevBestRankMode ?? 0)),
 			'arrows'        =>array('text'=>get_text('ArrowsPerEnd','Tournament'),'val'=>($LEVEL->RrLevArrows ?? $LEVEL->EvElimArrows)),
 			'ends'          =>array('text'=>get_text('Ends','Tournament'),'val'=>($LEVEL->RrLevEnds ?? $LEVEL->EvElimEnds)),
-			'so'            =>array('text'=>get_text('TieArrows'),'val'=>($LEVEL->RrLevSO ?? $LEVEL->EvElimSO)),
+			'so'            =>array('text'=>get_text('TieArrows'),'val'=>($LEVEL->RrLevSO ?? $LEVEL->EvElimSO)?:$LEVEL->EvMaxTeamPerson),
 			'tieAllowed'    =>array('text'=>get_text('TieAllowed', 'RoundRobin'),'val'=>($LEVEL->RrLevTieAllowed ?? 1)),
 			'winPoints'     =>array('text'=>get_text('WinPoints', 'RoundRobin'),'val'=>($LEVEL->RrLevWinPoints ?? 2)),
 			'tiePoints'     =>array('text'=>get_text('TiePoints', 'RoundRobin'),'val'=>($LEVEL->RrLevTiePoints ?? 1)),
@@ -84,12 +84,14 @@ switch($_REQUEST['act']) {
 			'checkGolds'    =>array('text'=>get_text('CheckGoldsInMatch', 'Tournament'),'val'=>($LEVEL->RrLevCheckGolds ?? 0)),
 			'checkXNines'   =>array('text'=>get_text('CheckXNinesInMatch', 'Tournament'),'val'=>($LEVEL->RrLevCheckXNines ?? 0)),
 		);
+        $JSON['soMinArrows']=$LEVEL->EvMaxTeamPerson;
 		$JSON['tieBreakOptions']=array(
 			array('val' => 1, 'text' => get_text('TiebreakSystem-1', 'RoundRobin')),
 			array('val' => 2, 'text' => get_text('TiebreakSystem-2', 'RoundRobin')),
 			array('val' => 3, 'text' => get_text('TiebreakSystem-3', 'RoundRobin')),
 			array('val' => 4, 'text' => get_text('TiebreakSystem-4', 'RoundRobin')),
 			array('val' => 5, 'text' => get_text('TiebreakSystem-5', 'RoundRobin')),
+            array('val' => 6, 'text' => get_text('TiebreakSystem-6', 'RoundRobin')),
 		);
 		$JSON['modeOptions']=array(
 			array('val' => 0, 'text' => get_text('MatchMode_0')),

@@ -118,13 +118,17 @@
 					tf.TfTeam AS TeamId, tf.TfSubTeam AS SubTeam, tf2.TfTeam AS OppTeamId, tf2.TfSubTeam AS OppSubTeam,
 					tf.TfIrmType as IrmType, tf2.TfIrmType as OppIrmType, tf.TfWinLose as WinLose, tf2.TfWinLose as OppWinLose,
 					tf.TfArrowstring as Arrowstring, tf2.TfArrowstring as OppArrowstring, tf.TfSetPoints as SetPoints, tf2.TfSetPoints as OppSetPoints,
-					tf.TfTiebreak as Tiebreak, tf2.TfTiebreak as OppTiebreak,
-					tf.TfScore AS Score,tf.TfTie AS Tie, tf2.TfScore AS OppScore, tf2.TfTie as OppTie, tf.TfMatchNo as RealMatchNo, tf2.TfMatchNo as OppRealMatchNo
+					tf.TfTiebreak as Tiebreak, tf2.TfTiebreak as OppTiebreak, ABS(t.TeSO) as TeamSO, ABS(t2.TeSO) as OppTeamSO,
+					tf.TfScore AS Score,tf.TfTie AS Tie, tf2.TfScore AS OppScore, tf2.TfTie as OppTie, tf.TfMatchNo as RealMatchNo, tf2.TfMatchNo as OppRealMatchNo,
+					(ToCategory IN (4,8)) as isField3D
 				FROM
 					TeamFinals AS tf
 					INNER JOIN TeamFinals AS tf2 ON tf.TfEvent=tf2.TfEvent AND tf.TfMatchNo=IF((tf.TfMatchNo % 2)=0,tf2.TfMatchNo-1,tf2.TfMatchNo+1) AND tf.TfTournament=tf2.TfTournament
-					INNER JOIN Grids ON tf.TfMatchNo=GrMatchNo
+                    left JOIN Teams AS t ON t.TeCoId=tf.TfTeam AND t.TeSubTeam=tf.TfSubTeam AND t.TeTournament=tf.TfTournament and t.TeEvent=tf.TfEvent and t.TeFinEvent=1
+                    left JOIN Teams AS t2 ON t2.TeCoId=tf2.TfTeam AND t2.TeSubTeam=tf2.TfSubTeam AND t2.TeTournament=tf2.TfTournament and t2.TeEvent=tf2.TfEvent and t2.TeFinEvent=1
+                    INNER JOIN Grids ON tf.TfMatchNo=GrMatchNo
 					INNER JOIN Events ON tf.TfEvent=EvCode AND tf.TfTournament=EvTournament AND EvTeamEvent=1
+                    INNER JOIN Tournament on tf.TfTournament=ToId
 					left join (select group_concat(DISTINCT concat(EvCode, '@', EvFinalFirstPhase)) SubCodes, EvCodeParent SubMainCode, EvFinalFirstPhase SubFirstPhase from Events where EvCodeParent!='' and EvTeamEvent=1 and EvTournament={$this->tournament} group by EvCodeParent, EvFinalFirstPhase) Secondary on SubMainCode=EvCode and SubFirstPhase=GrPhase/2
 				WHERE
 					tf.TfTournament={$this->tournament} AND tf.TfEvent='{$event}' AND GrPhase={$realphase}
@@ -205,6 +209,7 @@
                         }
 					} else {
                         $lstMatches = array();
+                        $isField3d = $myRow->isField3D;
                         while ($myRow) {
                             $avg = [
                                 round(($myRow->Score / (strlen(trim($myRow->Arrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->SetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->SetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
@@ -212,13 +217,21 @@
                                 round(($myRow->OppScore / (strlen(trim($myRow->OppArrowstring)) ?: (strlen(preg_replace("/\d/","",$myRow->OppSetPoints)) ? (strlen(preg_replace("/\d/","",$myRow->OppSetPoints))+1)*$myRow->DiEndArrows : ($myRow->DiArrows ?: 1)))), 3),
                                 round((valutaArrowString($myRow->OppTiebreak) / (strlen(trim($myRow->OppTiebreak)) ?: 1)), 3)
                             ];
-                            $lstMatches[$myRow->MatchNo] = $avg[0]*1000+($avg[1]/100);
+                            if($isField3d) {
+                                $lstMatches[$myRow->MatchNo] = $myRow->TeamSO;
+                            } else {
+                                $lstMatches[$myRow->MatchNo] = $avg[0]*1000+($avg[1]/100);
+                            }
                             $toWrite[$myRow->MatchNo]=array('event'=>$EventToUse,'id'=>$myRow->TeamId,'subteam'=>$myRow->SubTeam);
                             safe_w_SQL("UPDATE TeamFinals SET TfAverageMatch='{$avg[0]}', TfAverageTie='{$avg[1]}' WHERE TfTournament='{$this->tournament}' AND TfEvent='$EventToUse' AND TfMatchNo='{$myRow->RealMatchNo}'");
                             safe_w_SQL("UPDATE TeamFinals SET TfAverageMatch='{$avg[2]}', TfAverageTie='{$avg[3]}' WHERE TfTournament='{$this->tournament}' AND TfEvent='$EventToUse' AND TfMatchNo='{$myRow->OppRealMatchNo}'");
                             $myRow=safe_fetch($rs);
                         }
-                        arsort($lstMatches);
+                        if($isField3d) {
+                            asort($lstMatches);
+                        } else {
+                            arsort($lstMatches);
+                        }
                         $pos=numMatchesByPhase($phase)+SavedInPhase($phase)+1;
                         $rank=$pos;
                         $oldScore=-1;

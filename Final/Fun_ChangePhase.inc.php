@@ -538,7 +538,8 @@ function move2NextPhase($Phase=NULL, $Event=NULL, $MatchNo=NULL, $TourId=0, $NoR
 
 		Obj_RankFactory::create('FinalInd',array('tournament' => $TourId, 'eventsC'=>$coppie))->calculate();
 		foreach($coppie as $cp) {
-			runJack("FinRankUpdate", $TourId, array("Event"=>substr($cp, 0, strpos($cp, '@')), "Team"=>0, "TourId"=>$TourId));
+            list($e,$p)=explode('@', $cp);
+			runJack("FinRankUpdate", $TourId, array("Event"=>$e, "Team"=>0, "MatchNo"=>($p?999:0), "TourId"=>$TourId));
 		}
 	}
 
@@ -972,7 +973,8 @@ function move2NextPhaseTeam($Phase=NULL, $Event=NULL, $MatchNo=NULL, $TourId=0, 
 
 		Obj_RankFactory::create('FinalTeam',array('tournament'=> $TourId, 'eventsC'=>$coppie))->calculate();
 		foreach($coppie as $cp) {
-			runJack("FinRankUpdate", $TourId, array("Event"=>substr($cp, 0, strpos($cp, '@')), "Team"=>1, "TourId"=>$TourId));
+            list($e,$p)=explode('@', $cp);
+            runJack("FinRankUpdate", $TourId, array("Event"=>$e, "Team"=>1, "MatchNo"=>($p?999:0), "TourId"=>$TourId));
 		}
 	}
 

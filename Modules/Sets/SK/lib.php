@@ -41,12 +41,10 @@ function CreateStandardClasses($TourId, $SubRule, $Type='OUTDOOR') {
         CreateClass($TourId, $order++, 15, 17, 0, 'U18M', 'U18M,U21M,M', 'Kadeti');
         CreateClass($TourId, $order++, 15, 17, 1, 'U18W', 'U18W,U21W,W', 'Kadetky');
         if($Type == '70M') {
-            CreateClass($TourId, $order++, 13, 14, 0, 'U15M', 'U15M,U18M,U21M,M', 'Chlapci do 14 rokov','1','KL,HL,DL,TL');
-            CreateClass($TourId, $order++, 13, 14, 1, 'U15W', 'U15W,U18M,U21W,W', 'Dievčatá do 14 rokov','1','KL,HL,DL,TL');
-            CreateClass($TourId, $order++, 14, 14, 0, 'OLU15M', 'OLU15M,U18M,U21M,M', 'Chlapci do 14 rokov','1','OL');
-            CreateClass($TourId, $order++, 14, 14, 1, 'OLU15W', 'OLU15W,U18M,U21W,W', 'Dievčatá do 14 rokov','1','OL');
-            CreateClass($TourId, $order++, 13, 13, 0, 'OLU14M', 'OLU14M,OLU15M,U18M,U21M,M', 'Chlapci do 13 rokov','1','OL');
-            CreateClass($TourId, $order++, 13, 13, 1, 'OLU14W', 'OLU14W,OLU15W,U18W,U21W,W', 'Dievčatá do 13 rokov','1','OL');
+            CreateClass($TourId, $order++, 13, 14, 0, 'U15M', 'U15M,U18M,U21M,M', 'Chlapci do 14 rokov','1','KL,HL,DL,OL,TL');
+            CreateClass($TourId, $order++, 13, 14, 1, 'U15W', 'U15W,U18M,U21W,W', 'Dievčatá do 14 rokov','1','KL,HL,DL,OL,TL');
+            CreateClass($TourId, $order++, 13, 13, 0, 'U14M', 'OLU14M,OLU15M,U18M,U21M,M', 'Chlapci do 13 rokov','1','OL');
+            CreateClass($TourId, $order++, 13, 13, 1, 'U14W', 'OLU14W,OLU15W,U18W,U21W,W', 'Dievčatá do 13 rokov','1','OL');
         } else {
             CreateClass($TourId, $order++, 13, 14, 0, 'U15M', 'U15M,U18M,U21M,M', 'Chlapci do 14 rokov');
             CreateClass($TourId, $order++, 13, 14, 1, 'U15W', 'U15W,U18W,U21W,W', 'Dievčatá do 14 rokov');
@@ -181,7 +179,7 @@ function InsertStandardEvents($TourId, $SubRule, $Outdoor=true) {
     foreach (array('OL','KL','HL','DL','TL') as $vDiv) {
         $clsTmpArr = array('W','U21W','U18W','U15W','U14W','U13W','U11W','50W','60W','70W','M','U21M','U18M','U15M','U14M','U13M','U11M','50M','60M','70M');
         foreach($clsTmpArr as $vClass) {
-            InsertClassEvent($TourId, 0, 1, $vDiv.$vClass, $vDiv, (($Outdoor AND $vDiv=='OL' AND ($vClass=='U15W' OR $vClass=='U15M' OR $vClass=='U14W' OR $vClass=='U14M')) ? 'OL' : '') .  $vClass);
+            InsertClassEvent($TourId, 0, 1, $vDiv.$vClass, $vDiv, $vClass);
         }
     }
     if($SubRule == 3) {

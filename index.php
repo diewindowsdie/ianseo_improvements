@@ -30,24 +30,26 @@ echo checkPhpVersion(true);
     </th>
 </tr>
 
-<?php if (ProgramRelease!='HEAD' && CheckLastSWUpdate()) { ?>
+<?php if (isProduction() && CheckLastSWUpdate()) { ?>
 	<tr class="Divider"><td colspan="6"></td></tr>
 	<tr><td colspan="6" class="Bold Center"><?php print get_text('CheckUpdate','Common',$CFG->ROOT_DIR.'Update/');?></td></tr>
 <?php }
 
-if(empty($_SESSION['TourCode']) and ProgramRelease!='HEAD') {
+if(empty($_SESSION['TourCode']) and isProduction()) {
 	echo '<div class="WhatIanseoDoes">';
 	echo '<h1>'.get_text('WhatIanseoDoesTitle', 'Install').'</h1>';
 	echo '<div>'.get_text('WhatIanseoDoes01', 'Install').'</div>';
-	if(ProgramRelease!='FITARCO') {
+	if(!isProduction(['FITARCO'])) {
 		echo '<div>'.get_text('WhatIanseoDoes02', 'Install', '<a href="mailto:help@ianseo.net">help@ianseo.net</a>').'</div>';
-		echo '<div>'.get_text('WhatIanseoDoes03', 'Install').'</div>';
 		echo '<div>'.get_text('WhatIanseoDoes04', 'Install', '<a href="https://www.ianseo.net" target="_blank">www.ianseo.net</a>').'</div>';
 	} else {
 		echo '<div>'.get_text('WhatIanseoDoes02', 'Install', '<a href="mailto:aiuto@ianseo.net">aiuto@ianseo.net</a>').'</div>';
 	}
-	echo '<div>'.get_text('WhatIanseoDoes05', 'Install', '<a href="https://www.facebook.com/ianseoarchery" target="_blank">Facebook</a>, <a href="https://twitter.com/IanseoArchery" target="_blank">Twitter</a>').'</div>';
+	echo '<div>'.get_text('WhatIanseoDoes05', 'Install', '<a href="https://www.facebook.com/ianseoarchery" target="_blank">Facebook</a>').'</div>';
 	echo '<div>'.get_text('FreeOnlineResults', 'Install', '<b>'.get_text('MenuLM_Competition').'=>'.get_text('MenuLM_Send to ianseo.net').'</b>').'</div>';
+	echo '<div class="text-danger">'.get_text('WhatIanseoDoes06', 'Install').'</div>';
+	echo '<div class="text-danger">'.get_text('WhatIanseoDoes07', 'Install').'</div>';
+	echo '<div class="text-danger">'.get_text('WhatIanseoDoes08', 'Install').'</div>';
 	echo '</div>';
 }
 

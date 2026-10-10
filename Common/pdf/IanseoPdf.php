@@ -41,6 +41,7 @@ class IanseoPdf extends TCPDF {
 	var $DtFrom;
 	var $DtTo;
 	var $TzOffset='';
+    var $TourPath='';
 
 	// Texts
 	var $TournamentDate2String='';

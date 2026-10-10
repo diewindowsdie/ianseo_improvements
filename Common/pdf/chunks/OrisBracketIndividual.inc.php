@@ -52,6 +52,9 @@ foreach($rankData['sections'] as $Event => $section) {
 			// ALWAYS at least 1 page up to 16th
 			$cols=ceil(log($section['meta']['firstPhase'], 2))+1;
 			$tmpTitle=$PhaseTitles;
+            if($section['meta']['firstPhase']==12) {
+                $tmpTitle[2]="1/12\nElimin. Round§";
+            }
 			if($section['meta']['firstPhase']==32) $tmpTitle[1]="1/32\nElimin. Round§";
 			if($section['meta']['firstPhase']==64) {
 				$tmpTitle[0]="1/64\nElimin. Round§";
@@ -80,10 +83,7 @@ foreach($rankData['sections'] as $Event => $section) {
 		$page=0;
 
 		foreach($Phase['items'] as $item) {
-
-			$DrawMatch = !( ($section['meta']['firstPhase']==48 or $section['meta']['firstPhase']==24) && $Phase>=32 && ($item['saved'] or $item['oppSaved']) );
-			$DrawMatch = ($DrawMatch and $item['id'] and $item['oppId']);
-
+			$DrawMatch = !(($section['meta']['firstPhase']==48 or $section['meta']['firstPhase']==24) && $Phase>=32 && !$item["isValidMatch"] );
 			if($section['meta']['firstPhase']>32) {
 				if($item['matchNo']==8 or $item['matchNo']==10 or $item['matchNo']==12 or $item['matchNo']==14
 					or $item['matchNo']==16 or $item['matchNo']==20 or $item['matchNo']==24 or $item['matchNo']==28
@@ -140,9 +140,9 @@ foreach($rankData['sections'] as $Event => $section) {
 
 			$Obj1->ScheduledDate = ($ShowSchedule ? $item['scheduledDate'] : '');
 			$Obj1->ScheduledTime = ($ShowSchedule ? $item['scheduledTime'] : '');
-			$Obj1->Saved = ($PhaseNum>=32 AND $item['oppPosition'] and $item['oppPosition']<=$section['meta']['numSaved']) ? $PdfData->rankData['meta']['saved'] : '';
+            $Obj1->hideSchedule = ($ShowSchedule ? ($item['hideSchedule']??true) : true);
+			$Obj1->Saved = (($section['meta']['firstPhase']==12 and $PhaseNum==16 AND $item['oppPosition'] and $item['oppPosition']<=$section['meta']['numSaved']) OR ($PhaseNum>=32 AND $item['oppPosition'] and $item['oppPosition']<=$section['meta']['numSaved'])) ? $PdfData->rankData['meta']['saved'.($section['meta']['firstPhase']==12 ? '8' : '')] : '';
             $Obj1->DrawMatch=$DrawMatch;
-			$Obj1->ToDo = ($DrawMatch or $item['saved']);
 
 			// second athlete of match
 			$Obj2=new StdClass();
@@ -182,9 +182,9 @@ foreach($rankData['sections'] as $Event => $section) {
 			$Obj2->FSTarget = ($ShowTargetNo ? $item['oppTarget'] : '');
 			$Obj2->ScheduledDate = ($ShowSchedule ? $item['scheduledDate'] : '');
 			$Obj2->ScheduledTime = ($ShowSchedule ? $item['scheduledTime'] : '');
-			$Obj2->Saved = ($PhaseNum>=32 AND $item['position'] and $item['position']<=$section['meta']['numSaved']) ? $PdfData->rankData['meta']['saved'] : '';
+            $Obj2->hideSchedule = ($ShowSchedule ? ($item['hideSchedule']??true) : true);
+			$Obj2->Saved = (($section['meta']['firstPhase']==12 and $PhaseNum==16 AND $item['position'] and $item['position']<=$section['meta']['numSaved']) OR ($PhaseNum>=32 AND $item['position'] and $item['position']<=$section['meta']['numSaved'])) ? $PdfData->rankData['meta']['saved'.($section['meta']['firstPhase']==12 ? '8' : '')] : '';
             $Obj2->DrawMatch=$DrawMatch;
-			$Obj2->ToDo = ($DrawMatch or $item['oppSaved']);
 
 			// what exactly has to print as "score" for side A...
 			$Obj1->strike=($item['finIrm']==20);
@@ -249,12 +249,10 @@ foreach($rankData['sections'] as $Event => $section) {
 				$Obj1->ScoreDetails.=' '.$item['record'];
 			} elseif($item['notes']) {
 				$Obj1->ScoreNotes.=' '.$item['notes'];
-			} elseif($item['tie']==2) {
-				$Obj1->Score='';
 			} elseif($RealScore1==0 and $RealScore2==0) {
 				$Obj1->Score='';
 				//$Obj1->ScoreDetails='';
-				if($item['oppTie']!=2 and $item['tie']!=2 and $Obj1->FSTarget and empty($Obj1->ScoreDetails)) {
+				if(!$item['hideSchedule'] and $Obj1->FSTarget and empty($Obj1->ScoreDetails)) {
 					$Obj1->ScoreDetails='T# '.$Obj1->FSTarget;
 				}
 			}
@@ -263,12 +261,10 @@ foreach($rankData['sections'] as $Event => $section) {
 				$Obj2->ScoreDetails.=' '.$item['oppRecord'];
 			} elseif($item['oppNotes']) {
 				$Obj2->ScoreNotes.=' '.$item['oppNotes'];
-			} elseif($item['oppTie']==2) {
-				$Obj2->Score='';
 			} elseif($RealScore1==0 and $RealScore2==0) {
 				$Obj2->Score='';
 				//$Obj2->ScoreDetails='';
-				if($item['oppTie']!=2 and $item['tie']!=2 and $Obj2->FSTarget and empty($Obj2->ScoreDetails)) {
+				if(!$item['hideSchedule'] and $Obj2->FSTarget and empty($Obj2->ScoreDetails)) {
 					$Obj2->ScoreDetails='T# '.$Obj2->FSTarget;
 				}
 			}

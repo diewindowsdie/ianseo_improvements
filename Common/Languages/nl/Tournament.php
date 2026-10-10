@@ -300,7 +300,6 @@ $lang['DefaultVI']='Standaard VI';
 $lang['Delayed']='Vertraagd';
 $lang['DeletePreviousArchers']='Verwijder vorige sporters';
 $lang['DeletePreviousTeams']='Verwijder vorige teams';
-$lang['DeleteTourConfirm']='Voeg in tekstbox de volgende "control code" toe:';
 $lang['DeleteTournament']='Verwijder wedstrijd';
 $lang['Deleting']='Moment: verwijderen van bestanden';
 $lang['DescAddress']='Zie code';

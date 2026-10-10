@@ -10,7 +10,7 @@ if (!empty($on) && $_SESSION["TourLocRule"] == 'UK' && ($_SESSION["TourLocSubRul
   $ret['AGBR1']['Teams'] = 'AGB Teams' . '|' . $CFG->ROOT_DIR . 'Modules/Sets/UK/TeamSetup.php';
 }
 //If Testing release, show the Round Robin Reconfiguration. Add the print by alpha order for all on one scorecards here. specific to big AGB events
-if(ProgramRelease ==='TESTING'){
+if(isProduction(['TESTING'])){
     if(!empty($_SESSION["TourCode"]) && strpos($_SESSION["TourCode"], "B2B") !== false) {
                $ret['AGBR1']['RRSetup'] = 'AGB Round Robin Setup' . '|' . $CFG->ROOT_DIR . 'Modules/Sets/UK/RRSetup.php';
     }

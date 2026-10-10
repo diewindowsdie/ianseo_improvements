@@ -1,4 +1,5 @@
 <?php
+$lang['BrokenRecords']='Kırılmış Rekorlar';
 $lang['IntEVENT']='Etkinlik Adı';
 $lang['IntMATCH']='Maçlar';
 $lang['IntRES']='Sonuçlar';

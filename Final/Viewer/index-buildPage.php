@@ -234,7 +234,7 @@ if(!$IsSO) {
 $JSON['Winner'.$Sx] = ($Match['winner']==1);
 $JSON['Winner'.$Rx] = ($Match['oppWinner']==1);
 
-if($Team) {
+if($Team and $MatchNo<=256) {
     foreach ($Section['athletes'][$Match['teamId']][$Match['subTeam']] as $ath) {
         $JSON['Ath'.$Sx][] = array("Id"=>$ath['code'], "Ath"=>$ath['fullName']);
     }
@@ -346,9 +346,9 @@ switch ($_REQUEST["View"]) {
                 $Records .= '</div>';
             }
         }
-        if($Team) {
+        if($Team and $MatchNo<=256) {
             //Left Team
-            $options['coid'] = $Match['teamId'];
+            $options['coid'] = [$Match['teamId'],$Match['subTeam']];
             $rank = Obj_RankFactory::create('GridTeam', $options);
             $rank->read();
             $rankData=$rank->getData();
@@ -408,7 +408,7 @@ switch ($_REQUEST["View"]) {
             $JSON['Tgt'.$Left] .= $Records.'</div>';
 
             //Right Team
-            $options['coid'] = $Match['oppTeamId'];
+            $options['coid'] = [$Match['oppTeamId'],$Match['oppSubTeam']];
             $rank = Obj_RankFactory::create('GridTeam', $options);
             $rank->read();
             $rankData=$rank->getData();
@@ -450,7 +450,7 @@ switch ($_REQUEST["View"]) {
                         ' - ' .
                         ($rankData['sections'][$options['events']]['meta']['matchMode'] ? $vPh['items'][0]['oppSetScore'] : $vPh['items'][0]['oppScore']).
                         (($vPh['items'][0]['tie']==1 OR $vPh['items'][0]['oppTie']==1) ? ' <span class="small">T.'.$vPh['items'][0]['oppTiebreakDecoded'].'</span>':'').
-                        '</span>) <span class="'.($vPh['items'][0]['oppWinner'] ? 'font-weight-bold':'').'">' . $vPh['items'][0]['oppCountryName'] .
+                        '</span>) <span class="'.($vPh['items'][0]['oppWinner'] ? 'font-weight-bold':'').'">' . $vPh['items'][0]['oppCountryName'] .($vPh['items'][0]['oppSubTeam']>1?' ('.$vPh['items'][0]['subTeam'].')':'') .
                         '</span>';
                 }
                 $JSON['Tgt'.$Right] .= '</li>';
@@ -470,9 +470,6 @@ switch ($_REQUEST["View"]) {
             if($MatchNo>256) {
                 $options['events']=$Section['meta']['eventParent'];
             }
-            $rank = Obj_RankFactory::create('GridInd', $options);
-            $rank->read();
-            $rankData=$rank->getData();
             $JSON['Tgt'.$Left] = '<div id="picsL" class="d-flex justify-content-center"><figure class="figure m-2">' .
                 get_photo_ianseo($Match['id']??$Match['itemId'], 150, '', 'class="figure-img rounded"', true, $_SESSION['TourCode']) .
                 '<figcaption class="figure-caption text-center">'.$Match['fullName'].'</figcaption>' .
@@ -480,37 +477,43 @@ switch ($_REQUEST["View"]) {
                 '<div class="text-left">' .
                 ($Section['meta']['eventName']??$Section['meta']['descr']).
                 '<ul><li>' . get_text('QualRound') . ': ' . $Match['qualScore'] . ' - #&nbsp;' . $Match['qualRank'] . '</li>';
-            foreach ($rankData['sections'][$options['events']]['phases'] as $kPh => $vPh) {
-                if(($MatchNo<=256 and $MatchNo >= $vPh['items'][0]['matchNo']) or ($MatchNo>256 and ($Section['meta']['lastPhase']??0) > $kPh)) {
-                    continue;
-                }
-                $JSON['Tgt'.$Left] .= '<li>'.$vPh['meta']['phaseName'].': ';
-                if(($vPh['items'][0]['saved'] OR $vPh['items'][0]['oppSaved']) AND ($vPh['items'][0]['tie']==2 OR $vPh['items'][0]['oppTie']==2) AND ($vPh['items'][0]['id']==0 OR $vPh['items'][0]['oppId']==0)) {
-                    $JSON['Tgt'.$Left] .= '<span class="small font-italic">'.$rankData['meta']['saved'].'</span>';
-                } else if($vPh['items'][0]['tie']==2 OR $vPh['items'][0]['oppTie']==2) {
-                    if($vPh['items'][0]['id']==0 OR $vPh['items'][0]['oppId']==0) {
-                        $JSON['Tgt'.$Left] .= '<span class="small font-italic">' . get_text('Bye') . '</span>';
+            if($MatchNo<=256) {
+                $rank = Obj_RankFactory::create('GridInd', $options);
+                $rank->read();
+                $rankData=$rank->getData();
+
+                foreach ($rankData['sections'][$options['events']]['phases'] as $kPh => $vPh) {
+                    if(($MatchNo<=256 and $MatchNo >= $vPh['items'][0]['matchNo']) or ($MatchNo>256 and ($Section['meta']['lastPhase']??0) > $kPh)) {
+                        continue;
+                    }
+                    $JSON['Tgt'.$Left] .= '<li>'.$vPh['meta']['phaseName'].': ';
+                    if(($vPh['items'][0]['saved'] OR $vPh['items'][0]['oppSaved']) AND ($vPh['items'][0]['tie']==2 OR $vPh['items'][0]['oppTie']==2) AND ($vPh['items'][0]['id']==0 OR $vPh['items'][0]['oppId']==0)) {
+                        $JSON['Tgt'.$Left] .= '<span class="small font-italic">'.$rankData['meta']['saved'].'</span>';
+                    } else if($vPh['items'][0]['tie']==2 OR $vPh['items'][0]['oppTie']==2) {
+                        if($vPh['items'][0]['id']==0 OR $vPh['items'][0]['oppId']==0) {
+                            $JSON['Tgt'.$Left] .= '<span class="small font-italic">' . get_text('Bye') . '</span>';
+                        } else {
+                            $JSON['Tgt'.$Left] .= '<span class="'.($vPh['items'][0]['winner'] ? 'font-weight-bold':'').'">' .
+                                $vPh['items'][0]['countryCode'] . ' - ' . $vPh['items'][0]['fullName'] . '</span> (<span class="font-italic">' .
+                                ' <span class="small">' . (($vPh['items'][0]['tie']==2) ? get_text('Bye'):$vPh['items'][0]['notes']).'</span>'.
+                                ' - ' .
+                                ' <span class="small">' . (($vPh['items'][0]['oppTie']==2) ? get_text('Bye'):$vPh['items'][0]['oppNotes']).'</span>'.
+                                '</span>) <span class="'.($vPh['items'][0]['oppWinner'] ? 'font-weight-bold':'').'">' . $vPh['items'][0]['oppFullName'] . ' - '.  $vPh['items'][0]['oppCountryCode'] .
+                                '</span>';
+                        }
                     } else {
                         $JSON['Tgt'.$Left] .= '<span class="'.($vPh['items'][0]['winner'] ? 'font-weight-bold':'').'">' .
                             $vPh['items'][0]['countryCode'] . ' - ' . $vPh['items'][0]['fullName'] . '</span> (<span class="font-italic">' .
-                            ' <span class="small">' . (($vPh['items'][0]['tie']==2) ? get_text('Bye'):$vPh['items'][0]['notes']).'</span>'.
+                            ($rankData['sections'][$options['events']]['meta']['matchMode'] ? $vPh['items'][0]['setScore'] : $vPh['items'][0]['score']) .
+                            (($vPh['items'][0]['tie']==1 OR $vPh['items'][0]['oppTie']==1) ? ' <span class="small">T.'.$vPh['items'][0]['tiebreakDecoded'] .'</span>':'').
                             ' - ' .
-                            ' <span class="small">' . (($vPh['items'][0]['oppTie']==2) ? get_text('Bye'):$vPh['items'][0]['oppNotes']).'</span>'.
+                            ($rankData['sections'][$options['events']]['meta']['matchMode'] ? $vPh['items'][0]['oppSetScore'] : $vPh['items'][0]['oppScore']).
+                            (($vPh['items'][0]['tie']==1 OR $vPh['items'][0]['oppTie']==1) ? ' <span class="small">T.'.$vPh['items'][0]['oppTiebreakDecoded'].'</span>':'').
                             '</span>) <span class="'.($vPh['items'][0]['oppWinner'] ? 'font-weight-bold':'').'">' . $vPh['items'][0]['oppFullName'] . ' - '.  $vPh['items'][0]['oppCountryCode'] .
                             '</span>';
                     }
-                } else {
-                    $JSON['Tgt'.$Left] .= '<span class="'.($vPh['items'][0]['winner'] ? 'font-weight-bold':'').'">' .
-                        $vPh['items'][0]['countryCode'] . ' - ' . $vPh['items'][0]['fullName'] . '</span> (<span class="font-italic">' .
-                        ($rankData['sections'][$options['events']]['meta']['matchMode'] ? $vPh['items'][0]['setScore'] : $vPh['items'][0]['score']) .
-                        (($vPh['items'][0]['tie']==1 OR $vPh['items'][0]['oppTie']==1) ? ' <span class="small">T.'.$vPh['items'][0]['tiebreakDecoded'] .'</span>':'').
-                        ' - ' .
-                        ($rankData['sections'][$options['events']]['meta']['matchMode'] ? $vPh['items'][0]['oppSetScore'] : $vPh['items'][0]['oppScore']).
-                        (($vPh['items'][0]['tie']==1 OR $vPh['items'][0]['oppTie']==1) ? ' <span class="small">T.'.$vPh['items'][0]['oppTiebreakDecoded'].'</span>':'').
-                        '</span>) <span class="'.($vPh['items'][0]['oppWinner'] ? 'font-weight-bold':'').'">' . $vPh['items'][0]['oppFullName'] . ' - '.  $vPh['items'][0]['oppCountryCode'] .
-                        '</span>';
+                    $JSON['Tgt'.$Left] .= '</li>';
                 }
-                $JSON['Tgt'.$Left] .= '</li>';
             }
             $JSON['Tgt'.$Left] .= '</ul>';
 
@@ -569,13 +572,13 @@ switch ($_REQUEST["View"]) {
                     }
                 }
                 $JSON['Tgt'.$Left] .= '</ul>';
-                if(!empty($Match['coach'])) {
-                    $JSON['Tgt'.$Left] .= '<div id="CoachLeft">' . get_text('Coach', 'Tournament') . ' : <span id="CoachL">'.$Match['coach'].'</span></div>';
-                }
-                if(count($J)) {
-                    $JSON['Tgt'.$Left] .= '<br>'.implode('',$J);
-                }
-                $JSON['Tgt'.$Left] .= '</ul>';
+//                if(!empty($Match['coach'])) {
+//                    $JSON['Tgt'.$Left] .= '<div id="CoachLeft">' . get_text('Coach', 'Tournament') . ' : <span id="CoachL">'.$Match['coach'].'</span></div>';
+//                }
+//                if(count($J)) {
+//                    $JSON['Tgt'.$Left] .= '<br>'.implode('',$J);
+//                }
+//                $JSON['Tgt'.$Left] .= '</ul>';
             }
 
             if(!empty($Match['coach'])) {
@@ -591,9 +594,6 @@ switch ($_REQUEST["View"]) {
             if($MatchNo>256) {
                 $options['events']=$Section['meta']['eventParent'];
             }
-            $rank = Obj_RankFactory::create('GridInd', $options);
-            $rank->read();
-            $rankData=$rank->getData();
             $JSON['Tgt'.$Right] = '<div id="picsR" class="d-flex justify-content-center"><figure class="figure m-2">' .
                 get_photo_ianseo($Match['oppId']??$Match['oppItemId'], 150, '', 'class="figure-img rounded"', true, $_SESSION['TourCode']) .
                 '<figcaption class="figure-caption text-center">'.$Match['oppFullName'].'</figcaption>' .
@@ -601,38 +601,44 @@ switch ($_REQUEST["View"]) {
                 '<div class="text-left">' .
                 ($Section['meta']['eventName']??$Section['meta']['descr']).
                 '<ul><li>' . get_text('QualRound') . ': ' . $Match['oppQualScore'] . ' - #&nbsp;' . $Match['oppQualRank'] . '</li>';
-            foreach ($rankData['sections'][$options['events']]['phases'] as $kPh => $vPh) {
-                if(($MatchNo<=256 and $MatchNo >= $vPh['items'][0]['matchNo']) or ($MatchNo>256 and ($Section['meta']['lastPhase']??0) > $kPh)) {
-                    continue;
-                }
-                $JSON['Tgt'.$Right] .= '<li>'.$vPh['meta']['phaseName'].': ';
-                if(($vPh['items'][0]['saved'] OR $vPh['items'][0]['oppSaved']) AND ($vPh['items'][0]['tie']==2 OR $vPh['items'][0]['oppTie']==2) AND ($vPh['items'][0]['id']==0 OR $vPh['items'][0]['oppId']==0)) {
-                    $JSON['Tgt'.$Right] .= '<span class="small font-italic">' . $rankData['meta']['saved'] . '</span>';
-                } else if($vPh['items'][0]['tie']==2 OR $vPh['items'][0]['oppTie']==2) {
-                    if($vPh['items'][0]['id']==0 OR $vPh['items'][0]['oppId']==0) {
-                        $JSON['Tgt'.$Right] .= '<span class="small font-italic">' . get_text('Bye') . '</span>';
+            if($MatchNo<=256) {
+                $rank = Obj_RankFactory::create('GridInd', $options);
+                $rank->read();
+                $rankData=$rank->getData();
+
+                foreach ($rankData['sections'][$options['events']]['phases'] as $kPh => $vPh) {
+                    if(($MatchNo<=256 and $MatchNo >= $vPh['items'][0]['matchNo']) or ($MatchNo>256 and ($Section['meta']['lastPhase']??0) > $kPh)) {
+                        continue;
+                    }
+                    $JSON['Tgt'.$Right] .= '<li>'.$vPh['meta']['phaseName'].': ';
+                    if(($vPh['items'][0]['saved'] OR $vPh['items'][0]['oppSaved']) AND ($vPh['items'][0]['tie']==2 OR $vPh['items'][0]['oppTie']==2) AND ($vPh['items'][0]['id']==0 OR $vPh['items'][0]['oppId']==0)) {
+                        $JSON['Tgt'.$Right] .= '<span class="small font-italic">' . $rankData['meta']['saved'] . '</span>';
+                    } else if($vPh['items'][0]['tie']==2 OR $vPh['items'][0]['oppTie']==2) {
+                        if($vPh['items'][0]['id']==0 OR $vPh['items'][0]['oppId']==0) {
+                            $JSON['Tgt'.$Right] .= '<span class="small font-italic">' . get_text('Bye') . '</span>';
+                        } else {
+                            $JSON['Tgt'.$Right] .= '<span class="'.($vPh['items'][0]['winner'] ? 'font-weight-bold':'').'">' .
+                                $vPh['items'][0]['countryCode'] . ' - ' . $vPh['items'][0]['fullName']  . '</span> (<span class="font-italic">' .
+                                ' <span class="small">' . (($vPh['items'][0]['tie']==2) ? get_text('Bye'):$vPh['items'][0]['notes']).'</span>'.
+                                ' - ' .
+                                ' <span class="small">' . (($vPh['items'][0]['oppTie']==2) ? get_text('Bye'):$vPh['items'][0]['oppNotes']).'</span>'.
+                                '</span>) <span class="'.($vPh['items'][0]['oppWinner'] ? 'font-weight-bold':'').'">' . $vPh['items'][0]['oppFullName'] . ' - '.  $vPh['items'][0]['oppCountryCode'] .
+                                '</span>';
+                        }
                     } else {
                         $JSON['Tgt'.$Right] .= '<span class="'.($vPh['items'][0]['winner'] ? 'font-weight-bold':'').'">' .
-                            $vPh['items'][0]['countryCode'] . ' - ' . $vPh['items'][0]['fullName']  . '</span> (<span class="font-italic">' .
-                            ' <span class="small">' . (($vPh['items'][0]['tie']==2) ? get_text('Bye'):$vPh['items'][0]['notes']).'</span>'.
+                            $vPh['items'][0]['countryCode'] . ' - ' . $vPh['items'][0]['fullName'] . '</span> (<span class="font-italic">' .
+                            ($rankData['sections'][$options['events']]['meta']['matchMode'] ? $vPh['items'][0]['setScore'] : $vPh['items'][0]['score']) .
+                            (($vPh['items'][0]['tie']==1 OR $vPh['items'][0]['oppTie']==1) ? ' <span class="small">T.'.$vPh['items'][0]['tiebreakDecoded'] .'</span>':'').
                             ' - ' .
-                            ' <span class="small">' . (($vPh['items'][0]['oppTie']==2) ? get_text('Bye'):$vPh['items'][0]['oppNotes']).'</span>'.
+                            ($rankData['sections'][$options['events']]['meta']['matchMode'] ? $vPh['items'][0]['oppSetScore'] : $vPh['items'][0]['oppScore']).
+                            (($vPh['items'][0]['tie']==1 OR $vPh['items'][0]['oppTie']==1) ? ' <span class="small">T.'.$vPh['items'][0]['oppTiebreakDecoded'].'</span>':'').
                             '</span>) <span class="'.($vPh['items'][0]['oppWinner'] ? 'font-weight-bold':'').'">' . $vPh['items'][0]['oppFullName'] . ' - '.  $vPh['items'][0]['oppCountryCode'] .
                             '</span>';
-                    }
-                } else {
-                    $JSON['Tgt'.$Right] .= '<span class="'.($vPh['items'][0]['winner'] ? 'font-weight-bold':'').'">' .
-                        $vPh['items'][0]['countryCode'] . ' - ' . $vPh['items'][0]['fullName'] . '</span> (<span class="font-italic">' .
-                        ($rankData['sections'][$options['events']]['meta']['matchMode'] ? $vPh['items'][0]['setScore'] : $vPh['items'][0]['score']) .
-                        (($vPh['items'][0]['tie']==1 OR $vPh['items'][0]['oppTie']==1) ? ' <span class="small">T.'.$vPh['items'][0]['tiebreakDecoded'] .'</span>':'').
-                        ' - ' .
-                        ($rankData['sections'][$options['events']]['meta']['matchMode'] ? $vPh['items'][0]['oppSetScore'] : $vPh['items'][0]['oppScore']).
-                        (($vPh['items'][0]['tie']==1 OR $vPh['items'][0]['oppTie']==1) ? ' <span class="small">T.'.$vPh['items'][0]['oppTiebreakDecoded'].'</span>':'').
-                        '</span>) <span class="'.($vPh['items'][0]['oppWinner'] ? 'font-weight-bold':'').'">' . $vPh['items'][0]['oppFullName'] . ' - '.  $vPh['items'][0]['oppCountryCode'] .
-                        '</span>';
 
+                    }
+                    $JSON['Tgt'.$Right] .= '</li>';
                 }
-                $JSON['Tgt'.$Right] .= '</li>';
             }
 
             $JSON['Tgt'.$Right] .= '</ul>';
@@ -692,12 +698,12 @@ switch ($_REQUEST["View"]) {
                 if(!$header) {
                     $JSON['Tgt'.$Right] .= '</ul>';
                 }
-                if(!empty($Match['coach'])) {
-                    $JSON['Tgt'.$Right] .= '<div id="CoachLeft">' . get_text('Coach', 'Tournament') . ' : <span id="CoachL">'.$Match['coach'].'</span></div>';
-                }
-                if(count($J)) {
-                    $JSON['Tgt'.$Right] .= '<br>'.implode('',$J);
-                }
+//                if(!empty($Match['oppCoach'])) {
+//                    $JSON['Tgt'.$Right] .= '<div id="CoachLeft">' . get_text('Coach', 'Tournament') . ' : <span id="CoachL">'.$Match['oppCoach'].'</span></div>';
+//                }
+//                if(count($J)) {
+//                    $JSON['Tgt'.$Right] .= '<br>'.implode('',$J);
+//                }
             }
 
             if(!empty($Match['oppCoach'])) {

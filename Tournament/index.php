@@ -308,6 +308,9 @@ $JS_SCRIPT[] = phpVars2js([
         'ToTypes' => SubruleEncode($SetTypes),
         'isNew' => isset($_REQUEST['New']),
         'IskResetAlert' => get_text('IskResetAlert','Api'),
+        'ToLessThanFrom'=>get_text('ToLessThanFrom','Tournament'),
+        'FromDateInFuture'=>get_text('FromDateInFuture','Tournament'),
+        'ToDateMisMatch'=>get_text('ToDateMisMatch','Tournament'),
     ]);
 $JS_SCRIPT[] = '<script type="text/javascript" src="Fun_Index.js"></script>';
 $JS_SCRIPT[] = '<style>.TextInput {width:40rem;box-sizing: border-box;}</style>';
@@ -598,14 +601,14 @@ $tmpToMonth.= '</select>';
 $ToFromLen=max(strlen(get_text('From','Tournament')), strlen(get_text('To','Tournament')));
 echo get_text('From','Tournament')
 	. str_repeat('&nbsp;', 1 + ($ToFromLen - strlen(get_text('From','Tournament')))*2)
-	. '<input ' . ($Arr_Values2Check_Index['x_ToWhenFrom']['Error'] ? ' class="error"' : '') . ' type="text" name="xx_ToWhenFromYear" size="4" maxlength="4" value="' . $FromYear . '">'
+	. '<input ' . ($Arr_Values2Check_Index['x_ToWhenFrom']['Error'] ? ' class="error"' : '') . ' type="text" name="xx_ToWhenFromYear" id="xx_ToWhenFromYear" size="4" maxlength="4" value="' . $FromYear . '" onchange="checkYear('.(date('Y')+(isProduction() ? 2 : 99)).')">'
 	. '&nbsp;-&nbsp;'.$tmpFromMonth
 	. '&nbsp;-&nbsp;'.$tmpFromDay
 	. '&nbsp;(yyyy-mm-dd)';
 echo '<br><br>';
 echo get_text('To','Tournament')
 	. str_repeat('&nbsp;', 1 + ($ToFromLen - strlen(get_text('To','Tournament')))*2)
-	. '<input ' . ($Arr_Values2Check_Index['x_ToWhenTo']['Error'] ? ' class="error"' : '') . ' type="text" name="xx_ToWhenToYear" size="4" maxlength="4" value="' . $ToYear . '">'
+	. '<input ' . ($Arr_Values2Check_Index['x_ToWhenTo']['Error'] ? ' class="error"' : '') . ' type="text" name="xx_ToWhenToYear" id="xx_ToWhenToYear" size="4" maxlength="4" value="' . $ToYear . '" onchange="checkYear('.(date('Y')+(isProduction() ? 2 : 99)).')">'
 	. '&nbsp;-&nbsp;'.$tmpToMonth
 	. '&nbsp;-&nbsp;'.$tmpToDay
 	. '&nbsp;(yyyy-mm-dd)';

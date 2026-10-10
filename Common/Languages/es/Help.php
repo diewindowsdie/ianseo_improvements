@@ -1,6 +1,5 @@
 <?php
 $lang['AclNotSuperuser']='Sin el acceso de "SUPERUSUARIO" se le bloqueará esta sección y, por lo tanto, no podrá habilitar las Políticas de Acceso';
-$lang['AuthTourCode']='Lista separada por comas de códigos de torneos que pueden ser administrados por el usuario.<br>Permitido comodín: "%"';
 $lang['AutoCheckinAlreadyDone']='Usted ya ha sido verificado en <br>Si necesita modificar cualquier información dirijase al mostrador de acreditación';
 $lang['AutoCheckinConfirm']='Si todos los detalles son correctos pulse CONFIRMAR REGISTRO<br>Si no, pulse CANCELAR y acuda al mostrador de acreditación';
 $lang['AutoCheckinSearch']='Escanee el Código QR que ha recibido o teclee su nombre';
@@ -14,6 +13,7 @@ $lang['AutoCHK-IPBowStorage']='Lista de IP de los puntos de almacenamiento de Ar
 $lang['AutoCHK-IPGoodiesDistribution']='Lista de IP de los puntos de distribución de Goodie Bags. Una dirección IP por línea que coincida con uno de los siguientes formatos:<br> IP del dispositivo<br> IP del dispositivo | Código de la competición<br> Agregue un Código de Competición para limitar la operación de IP en un torneo específico';
 $lang['AutoCHK-IPinfo']='Lista de IP de puntos de autoinformación. Una dirección IP por línea';
 $lang['AutoCHK-IPnoMgm']='Lista de IP de auto check-in en información. Una dirección IP por línea, que coincida con uno de los siguientes formatos:<br> IP del dispositivo<br> IP del dispositivo | Cola de la impresora de acreditación <br> IP del dispositivo | Cola de la impresora de acreditación | Cola de la impresora de etiquetas de nombre<br> Cola de impresora en forma: Nombre de cola [ @ Servidor de impresora ]';
+$lang['AutoCHK-KioskEditPin']='PIN de 4 dígitos para editar datos en dispositivos habilitados para edición';
 $lang['AutoCHK-Print']='Muestra automáticamente imprimir dialogo.';
 $lang['CombiCompList']='Listado de Códigos de Competiciones, separados por una coma';
 $lang['DeleteChannel']='Eliminar el canal. Esto eliminará todas las divisiones del canal y el propio canal.';

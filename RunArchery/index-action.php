@@ -77,7 +77,7 @@ switch($_REQUEST['act']) {
 		$Team=intval($Team);
 
 		// get details of event to push athletes in the correct slots
-		$q=safe_r_sql("select EvElim1, EvElim2 from Events where EvTournament={$_SESSION['TourId']} and EvTeamEvent=$Team and EvElimType>0 and EvCode=".StrSafe_DB($Event));
+		$q=safe_r_sql("select EvElim1, EvElim2 from Events where EvTournament={$_SESSION['TourId']} and EvTeamEvent=$Team and EvFinalFirstPhase>0 and EvCode=".StrSafe_DB($Event));
 		if(!($r=safe_fetch($q))) {
 			JsonOut($JSON);
 		}

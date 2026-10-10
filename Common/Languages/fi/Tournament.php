@@ -136,7 +136,6 @@ $lang['DefaultCO']='Oletus CO';
 $lang['DefaultHM']='Oletus HM';
 $lang['DefaultLocRule']='FITA';
 $lang['DefaultVI']='Oletus VI';
-$lang['DeleteTourConfirm']='Ole hyvä ja syötä tekstikenttään seuraava tarkistuskoodi';
 $lang['DeleteTournament']='Poista kilpailu';
 $lang['Deleting']='Työ on kesken: poistetaan online-tiedostoja...';
 $lang['Descr']='Selite';

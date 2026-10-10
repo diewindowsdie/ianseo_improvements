@@ -52,7 +52,7 @@ $lang['CB']='Arco Compuesto';
 $lang['ChangeComponents']='Cambia Componentes';
 $lang['ChangeElimWarning']='¡Cuidado! ¡Editar los parámetros de las eliminatorias eliminará todos los resultados de las eliminatorias y de las finales individuales!';
 $lang['CheckDefaultFlags']='Verificar Banderas por defecto';
-$lang['CheckUpdate']='Ha consultado sobre actualizaciones de IANSEO hace ya más de 10 días. Es aconsejable que consulte sobre nuevas actualizaciones tan pronto como le sea posible una vez que se conecte a Internet, <a href="/Update" style="text-decorator: underline; font-size: 15px;">pulsando aquí</a>.<br/> Equipo Ianseo';
+$lang['CheckUpdate']='Ha consultado sobre actualizaciones de IANSEO hace ya más de 10 días. Es aconsejable que consulte sobre nuevas actualizaciones tan pronto como le sea posible una vez que se conecte a Internet, <a href="$a" style="text-decorator: underline; font-size: 15px;">pulsando aquí</a>.<br> Equipo Ianseo';
 $lang['Cl']='Cl.';
 $lang['Class']='Cl en Comp.';
 $lang['Class-1']='1 (VI)';

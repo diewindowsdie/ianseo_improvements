@@ -233,6 +233,7 @@ Class Scheduler {
 		$tmp->ElimType=$r->EvElimType;
 		$tmp->UID=$r->UID.($Warmup ? 'W' : '');
 		$tmp->RowLocation=($r->RowLocation??'');
+        $tmp->isRRTeam=0;
 
 		switch($r->Type) {
 			case 'Q':
@@ -254,7 +255,7 @@ Class Scheduler {
 				$tmp->Target=$r->BestTarget;
 				break;
 			case 'R':
-				list($LevelName, $Level, $GroupName, $Group, $Round)=explode('|', $r->Session);
+				list($LevelName, $Level, $GroupName, $Group, $Round, $tmp->isRRTeam)=explode('|', $r->Session);
 				$tmp->Text=($LevelName ?: get_text('LevelNum', 'RoundRobin', $Level)).' '.($GroupName ?: get_text('GroupNum', 'RoundRobin', $Group)).' '.get_text('RoundNum', 'RoundRobin', $Round);
 				$tmp->SubTitle=$r->Options;
 				// $tmp->Text=$r->Events;
@@ -745,7 +746,7 @@ Class Scheduler {
 				max(RrMatchTarget*1) as `BestTarget`,
 				'R' Type,
 				RrMatchScheduledDate Day,
-				concat_ws('|', RrLevName, RrMatchLevel, RrGrName, RrMatchGroup, RrMatchRound) Session,
+				concat_ws('|', RrLevName, RrMatchLevel, RrGrName, RrMatchGroup, RrMatchRound, RrMatchTeam) Session,
 				/*RrMatchRound*/ 0 as Distance,
 				EvDistance as RealDistance,
 				EvMedals as Medal,
@@ -901,8 +902,9 @@ Class Scheduler {
                                 $Item->StartView = $Item->Start;
                                 if($Type=='IS' and $timeOffset!=0) {
                                     $origDateTime =  new DateTime($Item->Day . ' ' . $Item->Start);
-                                    $Item->StartView = ($origDateTime->modify($timeOffset . ' hours'))->format('H:i');
-                                    if(($origDateTime->format("d")) != ((new DateTime($Item->Day . ' ' . $Item->Start))->format('d'))) {
+                                    $origDay=$origDateTime->format('d');
+                                    $Item->StartView = ($origDateTime->modify(($timeOffset*60) . ' minutes'))->format('H:i');
+                                    if($origDateTime->format("d") != $origDay) {
                                         $extraTimeInfo = '&nbsp;<b>('.get_text(($timeOffset > 0 ? 'OneDayAfter' : 'OneDayBefore'),'InfoSystem'). ')</b>&nbsp;';
                                     } else {
                                         $extraTimeInfo = '';
@@ -1159,11 +1161,13 @@ Class Scheduler {
                                             case 'R':
                                                 $lnk=$Item->Text.': '.$Item->Events;
                                                 $Class='';
-                                                $SQL="select concat_ws(' ', ucase(e1.EnFirstName), e1.EnName) as M1Name, concat_ws(' ', ucase(e2.EnFirstName), e2.EnName) as M2Name
+                                                $SQL="select COALESCE(c1.CoName, concat_ws(' ', ucase(e1.EnFirstName), e1.EnName)) as M1Name, COALESCE(c2.CoName, concat_ws(' ', ucase(e2.EnFirstName), e2.EnName)) as M2Name
                                                     from RoundRobinMatches m1
                                                     inner join RoundRobinMatches m2 on m2.RrMatchTournament=m1.RrMatchTournament and m2.RrMatchTeam=m1.RrMatchTeam and m2.RrMatchEvent=m1.RrMatchEvent and m2.RrMatchLevel=m1.RrMatchLevel and m2.RrMatchGroup=m1.RrMatchGroup and m2.RrMatchRound=m1.RrMatchRound and m2.RrMatchMatchNo=m1.RrMatchMatchNo+1
-                                                    left join Entries e1 on e1.EnId=m1.RrMatchAthlete
-                                                    left join Entries e2 on e2.EnId=m2.RrMatchAthlete
+                                                    left join Entries e1 on e1.EnId=m1.RrMatchAthlete and e1.EnTournament=$this->TourId and m1.RrMatchTeam=0
+                                                    left join Entries e2 on e2.EnId=m2.RrMatchAthlete and e2.EnTournament=$this->TourId and m2.RrMatchTeam=0
+                                                    left join Countries c1 on c1.CoId=m1.RrMatchAthlete and c1.CoTournament=$this->TourId and m1.RrMatchTeam=1
+                                                    left join Countries c2 on c2.CoId=m2.RrMatchAthlete and c2.CoTournament=$this->TourId and m2.RrMatchTeam=1
                                                     where m1.RrMatchMatchNo%2=0 and m1.RrMatchTournament=$this->TourId and m1.RrMatchScheduledDate='$Date' and m1.RrMatchScheduledTime='$Time'";
                                                 $NameLink='';
                                                 $q=safe_r_sql($SQL);
@@ -1179,7 +1183,7 @@ Class Scheduler {
                                                     if($NameLink) {
                                                         $NameLink=" ($NameLink)";
                                                     }
-                                                    $lnk='<a href="'.$this->ROOT_DIR.'Finals/session.php?Session='.urlencode(($Item->Type=='T' ? 1 : 0)."$Item->Day $Item->Start:00").$TourCode.'">'.$lnk.$NameLink.'</a>';
+                                                    $lnk='<a href="'.$this->ROOT_DIR.'Finals/session.php?Session='.urlencode(($Item->isRRTeam ? 1 : 0)."$Item->Day $Item->Start:00").$TourCode.'">'.$lnk.$NameLink.'</a>';
                                                 }
                                                 $ret[]='<tr name="'.$key.'" class="'.$Class.($ActiveSession ? ' active' : '').'"><td>'
                                                     . $timing . ($Item->Shift && $timing ? ($Type=='IS' ? '<span class="SchDelay">' : '') . '&nbsp;+' . $Item->Shift . ($Type=='IS' ? '</span>' : ''): "")
@@ -4146,9 +4150,8 @@ Class Scheduler {
                                                                 RrLevArrows AS `arrows`,
                                                                 RrLevSO AS `so`,
                                                                 EvMaxTeamPerson, group_concat(distinct if(instr('ABCD', right(RrMatchTarget,1))>0, right(RrMatchTarget,1), '') order by right(RrMatchTarget,1) separator '') as Persons,
-                                                                RrMatchScheduledDate as FSScheduledDate,
-                                                                RrMatchScheduledTime as FSScheduledTime, EvDistance, TarDescr, EvTargetSize,
-                                                                EvWinnerFinalRank
+                                                                RrMatchScheduledDate as FSScheduledDate, RrMatchScheduledTime as FSScheduledTime, EvDistance, TarDescr, EvTargetSize,
+                                                                EvWinnerFinalRank, 0 as isBye
                                                             FROM RoundRobinMatches
                                                             INNER JOIN RoundRobinLevel ON RrLevTournament=RrMatchTournament AND RrLevTeam=RrMatchTeam and RrLevEvent=RrMatchEvent and RrLevLevel=RrMatchLevel
                                                             INNER JOIN Events ON EvCode=RrMatchEvent AND EvTeamEvent=RrMatchTeam AND EvTournament=RrMatchTournament
@@ -4168,15 +4171,20 @@ Class Scheduler {
                                                                 IF(@bit=0,EvFinArrows,EvElimArrows) AS `arrows`,
                                                                 IF(@bit=0,EvFinSO,EvElimSO) AS `so`,
                                                                 EvMaxTeamPerson, group_concat(distinct if(instr('ABCD', right(FsLetter,1))>0, right(FsLetter,1), '') order by right(FsLetter,1) separator '') as Persons,
-                                                                FSScheduledDate,
-                                                                FSScheduledTime, EvDistance, TarDescr, EvTargetSize,
-                                                                EvWinnerFinalRank
+                                                                FSScheduledDate, FSScheduledTime, EvDistance, TarDescr, EvTargetSize,
+                                                                EvWinnerFinalRank, SUM(if(PhLevel=-1,GREATEST(GrPosition,g2Pos),GREATEST(GrPosition2,g2Pos2))>coalesce(IndQty,TeQty,999))>=1 as isBye
                                                             FROM FinSchedule
                                                             INNER JOIN Grids ON FSMatchNo=GrMatchNo
                                                             INNER JOIN Events ON FSEvent=EvCode AND FSTeamEvent=EvTeamEvent AND FSTournament=EvTournament
                                                             inner join Phases on EvFinalFirstPhase in (PhId, PhLevel) and (PhIndTeam & pow(2, EvTeamEvent))>0 and PhRuleSets in ('', '{$_SESSION['TourLocRule']}')
+                                                            INNER JOIN (SELECT GrMatchNo as g2MatchNo, GrPosition as g2Pos, GrPosition2 as g2Pos2 FROM Grids) as sqyGr ON g2MatchNo=(GrMatchNo+IF(GrMatchNo%2,-1,1))
                                                             left join Session on SesTournament=EvTournament and SesType='F' and concat(FsScheduledDate,' ',FsScheduledTime) between SesDtStart and SesDtEnd and if(SesEvents='', true, find_in_set(concat(EvTeamEvent,EvCode), SesEvents))
                                                             left join Targets on EvFinalTargetType=TarId
+                                                            left join Finals on FSEvent=FinEvent and FsMatchNo=FinMatchNo and FsTournament=FinTournament and FSTeamEvent=0
+                                                            LEFT JOIN (SELECT count(*) as IndQty, `IndEvent` FROM `Individuals` WHERE `IndTournament`=" . StrSafe_DB($this->TourId) . " AND IndIrmType<10  GROUP BY `IndEvent`) as indSqy on indSqy.IndEvent=EvCode and FSTeamEvent=0
+                                                            left join TeamFinals on FSEvent=TfEvent and FsMatchNo=TfMatchNo and FsTournament=TfTournament and FSTeamEvent=1
+                                                            LEFT JOIN (SELECT count(*) as TeQty, `TeEvent` FROM `Teams` WHERE `TeTournament`=" . StrSafe_DB($this->TourId) . " and TeFinEvent=1 AND TeIrmType<10  GROUP BY `TeEvent`) as teamSqy on teamSqy.TeEvent=EvCode and FSTeamEvent=1
+                                                            
                                                             WHERE FSTournament=" . StrSafe_DB($this->TourId) . "
                                                                 AND FSScheduledDate='$Date' and FSScheduledTime='$Time'
                                                                 and FsTarget!=''
@@ -4210,7 +4218,7 @@ Class Scheduler {
 
                                                         $rows[$u->FSEvent][$u->FsTarget]['d']=$u->EvDistance;
                                                         $rows[$u->FSEvent][$u->FsTarget]['e']=$u->FSEvent;
-                                                        $rows[$u->FSEvent][$u->FsTarget]['c']=$ColorAssignment["{$u->EvDistance}-{$u->FSEvent}"];
+                                                        $rows[$u->FSEvent][$u->FsTarget]['c']=($u->isBye ? '' : $ColorAssignment["{$u->EvDistance}-{$u->FSEvent}"]);
                                                         $rows[$u->FSEvent][$u->FsTarget]['f']=get_text($u->TarDescr)." $u->EvTargetSize cm";
                                                         $rows[$u->FSEvent][$u->FsTarget]['p']=$u->Persons;
                                                         $rows[$u->FSEvent][$u->FsTarget]['mp']=$u->EvMaxTeamPerson;
@@ -4218,9 +4226,11 @@ Class Scheduler {
                                                         if($Item->Type=='R') {
                                                             $rows[$u->FSEvent][$u->FsTarget]['ph']='';
                                                         } else {
-                                                            if($u->GrPhase==0) {
+                                                            if($u->isBye) {
+                                                                $rows[$u->FSEvent][$u->FsTarget]['ph']=get_text('Bye');
+                                                            } else if($u->GrPhase==0) {
                                                                 $rows[$u->FSEvent][$u->FsTarget]['ph']=$u->EvWinnerFinalRank==1 ? get_text('0_Phase') : ($u->EvWinnerFinalRank) . ' vs ' . ($u->EvWinnerFinalRank+1);
-                                                            } elseif($u->GrPhase==1) {
+                                                            } else if($u->GrPhase==1) {
                                                                 $rows[$u->FSEvent][$u->FsTarget]['ph']=$u->EvWinnerFinalRank==1 ? get_text('1_Phase') : ($u->EvWinnerFinalRank+2) . ' vs ' . ($u->EvWinnerFinalRank+3);
                                                             } else {
                                                                 $rows[$u->FSEvent][$u->FsTarget]['ph']=get_text(namePhase($u->EvFinalFirstPhase, $u->GrPhase) . '_Phase');

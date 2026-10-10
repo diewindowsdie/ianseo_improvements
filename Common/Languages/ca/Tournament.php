@@ -310,7 +310,6 @@ $lang['DeleteChannel']='Elimina Canal';
 $lang['DeletePreviousArchers']='Elimineu inscripcions que no apareixen a la llista';
 $lang['DeletePreviousTeams']='Esborra Equips Anteriors';
 $lang['DeleteSplit']='Elimina partició. Això eliminarà la partició.';
-$lang['DeleteTourConfirm']='Si us plau, introdueixi en el quadre de text el codi de control següent:';
 $lang['DeleteTournament']='Elimina torneig';
 $lang['Deleting']='Treballs en curs: esborrar arxius en línia ...';
 $lang['DescAddress']='##ADDRESS##&nbsp;<i>&lt;tab&gt;</i>&nbsp;BIB&nbsp;<i>&lt;tab&gt;</i>&nbsp;ADDRESS&nbsp;<i>&lt;tab&gt;</i>&nbsp;ZIP&nbsp;<i>&lt;tab&gt;</i>&nbsp;CITY&nbsp;<i>&lt;tab&gt;</i>&nbsp;PROVINCE&nbsp;<i>&lt;tab&gt;</i>&nbsp;COUNTRY<br>Defineix correu postal de l\'arquer identificat per BIB';

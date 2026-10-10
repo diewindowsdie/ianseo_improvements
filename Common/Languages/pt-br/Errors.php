@@ -26,6 +26,6 @@ $lang['ErrUnknownNation']='País desconhecido.';
 $lang['ErrYellowCard']='O Comitê lhe deu um Cartão Amarelo porque nenhum resultado foi atualizado no site. Contate codes@ianseo.net para mais explicações.';
 $lang['LockedProcedure']='Este procedimento está BLOQUEADO';
 $lang['TooManyArrows']='Excesso de flechas: o máximo é $a';
-$lang['TooManyElimQualified']='Rounds do tipo $a[0] somente podem aceitar até $a[1] arqueiros.';
+$lang['TooManyElimQualified']='Rounds do tipo $a[0] somente podem aceitar até $a[1] atletas.';
 $lang['WrongPort']='Esta porta não é suportada';
 ?>

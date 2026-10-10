@@ -7,6 +7,14 @@ CheckTourSession(true);
 require_once('Common/Fun_FormatText.inc.php');
 require_once('Common/Lib/Obj_RankFactory.php');
 include('Common/Templates/head.php');
+
+$swe_v2 = ((int)$swe_api_version >= 2);
+
+if (!$swe_configured) {
+    echo '<div align="center" style="padding:2em;">' . htmlspecialchars($swelang_notconfigured) . '</div>';
+    include('Common/Templates/tail.php');
+    exit;
+}
 ?>
 <div align="center">
 <style>
@@ -44,6 +52,10 @@ include('Common/Templates/head.php');
 .swewarning {
     background-color: rgba(255,0,0,0.25);
 }
+.sweerror {
+    color: #a00000;
+    font-weight: bold;
+}
 </style>
 <div id="sweDiv1">
     
@@ -53,6 +65,7 @@ include('Common/Templates/head.php');
     </div>
     <br /><hr style="width: 50%;"/><br />
     <div style="font-size: 1.2em; width: 50%; text-align: left;"><?= $swelang_moduleversion; ?>: <?= $swe_module_version; ?> </div>
+    <div style="font-size: 1.2em; width: 50%; text-align: left;"><?= $swelang_apiversion; ?>: <span id="swe_api_version_text">v<?= (int)$swe_api_version; ?></span> </div>
     <div style="font-size: 1.2em; width: 50%; text-align: left;"><?= $swelang_sendto; ?>: <?= $swe_host; ?> </div>
     <br /><hr style="width: 50%;"/><br />
     <div style="font-size: 1.2em; width: 50%; text-align: left;">
@@ -62,15 +75,13 @@ include('Common/Templates/head.php');
             <tbody>
                 <tr><td><?= $swelang_eventnumber; ?></td><td><?= $swelang_eventnumber_desc; ?></td></tr>
                 <tr><td><?= $swelang_password; ?></td><td><?= $swelang_password_desc; ?></td></tr>
-                <tr><td><?= $swelang_qualification; ?></td><td><?= $swelang_qualification_desc; ?></td></tr>
-                <tr><td><?= $swelang_final; ?></td><td><?= $swelang_final_desc; ?></td></tr>
+                <tr><td><?= $swelang_sendresult; ?></td><td><?= $swelang_sendall_desc; ?></td></tr>
             </tbody>
         </table>
         <br />
     </div>
 </div>
 
-<!--div style="width: 50%; background-color:#004488; text-align:center;  padding:5px; padding-left:0px; padding-right: 0px; font-weight:bold; color: #F2F9ff; font-size:120%;">Skicka in resultat</div -->
 <br />
 <div style="width: 50%; padding: 0;">
     <table id="ConfigurationSettings" class="SweTabel">
@@ -91,8 +102,6 @@ include('Common/Templates/head.php');
             <tr><th colspan="2"><?= $swelang_sendresult; ?></th></tr>
         </thead>
         <tbody>
-            <tr><td class="SweTableRight" width="30%" rowspan=2><?= $swelang_individ; ?></td><td><input type="checkbox" name="r_select" value="ind_kval" /><?= $swelang_qualification; ?></input></td></tr>
-            <tr><td><input type="checkbox" name="r_select" value="ind_final" /><?= $swelang_final; ?></input></td></tr>
             <tr><td colspan="2" class="SweCenter"><input type="submit" onClick="send_result();" style="padding: 5px; margin: 5px;" value="<?= $swelang_send; ?>" id="sendbutton" /></td></tr>
             <tr><td colspan="2" class="SweCenter">&nbsp;</td></tr>
             <tr><td colspan="2" class="SweInformation">&nbsp;<span id="status_result"></span></td></tr>
@@ -101,61 +110,119 @@ include('Common/Templates/head.php');
 </div>
 </div>
 <script>
+    var SWE_API_VERSION = <?= (int)$swe_api_version; ?>;
+    var SWE_TXT = {
+        exported: <?= json_encode($swelang_exported); ?>,
+        notexported: <?= json_encode($swelang_notexported); ?>,
+        warnings: <?= json_encode($swelang_warnings); ?>,
+        connectionerror: <?= json_encode($swelang_connectionerror); ?>,
+        individ: <?= json_encode($swelang_individ); ?>,
+        team: <?= json_encode($swelang_team); ?>,
+        qualification: <?= json_encode($swelang_qualification); ?>,
+        final: <?= json_encode($swelang_final); ?>,
+        run: <?= json_encode($swelang_run); ?>
+    };
+
     window.onload = disableButton;
     function disableButton() {
         document.getElementById("sendbutton").disabled = true;
     };
+    function authData() {
+        return {"auth": {"competition": document.getElementById("s_competition_code").value, "password": document.getElementById("s_competition_password").value}};
+    };
     function test_settings() {
-        var data = {"auth": {"competition": document.getElementById("s_competition_code").value, "password": document.getElementById("s_competition_password").value}};
         var xhr = new XMLHttpRequest();
         xhr.open("POST","testsetting.php",true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         xhr.onreadystatechange = handler;
-        xhr.send(JSON.stringify(data));
+        xhr.send(JSON.stringify(authData()));
     };
     function send_result() {
-        var data = {"auth": {"competition": document.getElementById("s_competition_code").value, "password": document.getElementById("s_competition_password").value}};
-        data["option"] = {"ind_kval": document.getElementsByName("r_select")[0].checked, "ind_final": document.getElementsByName("r_select")[1].checked};
+        // Everything the competition has is sent; IANSEO decides what that is.
+        var data = authData();
+        document.getElementById("sendbutton").disabled = true;
+        document.getElementById("status_result").innerHTML = "...";
         var xhr = new XMLHttpRequest();
         xhr.open("POST","send.php",true);
         xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
         xhr.onreadystatechange = resulthandler;
         xhr.send(JSON.stringify(data));
     };
+    function parseJson(text) {
+        try { return JSON.parse(text); } catch (e) { return null; }
+    };
+    function serverText(data, httpStatus) {
+        // Never print the word "undefined" at the operator. A reply with no message is still a reply,
+        // and the HTTP code plus whatever detail came with it is what makes it reportable.
+        var msg = (data && typeof data['message'] === 'string') ? data['message'] : '';
+        if (msg === '') {
+            msg = SWE_TXT.connectionerror + ' (HTTP ' + httpStatus + ')';
+        }
+        return msg;
+    };
+    function sectionLabel(section) {
+        // v2 responses may tag each class row with the block it came from.
+        switch (section) {
+            case 'ind_kval':   return SWE_TXT.individ + ' - ' + SWE_TXT.qualification + ': ';
+            case 'ind_final':  return SWE_TXT.individ + ' - ' + SWE_TXT.final + ': ';
+            case 'team_kval':  return SWE_TXT.team + ' - ' + SWE_TXT.qualification + ': ';
+            case 'team_final': return SWE_TXT.team + ' - ' + SWE_TXT.final + ': ';
+            case 'run':        return SWE_TXT.run + ': ';
+            default:           return '';
+        }
+    };
     function handler() {
         if (this.readyState == 4) {
-            if (this.status == 200) {
-                var resp = JSON.parse(this.responseText);
-                if (resp['status'] == 'Ready') {
-                    document.getElementById("sendbutton").disabled = false;
-                } else {
-                    document.getElementById("sendbutton").disabled = true;
-                }
-                document.getElementById("status_information").innerHTML = resp['message'];
+            var resp = this.status == 200 ? parseJson(this.responseText) : null;
+            if (resp && resp['status'] == 'Ready') {
+                document.getElementById("sendbutton").disabled = false;
+            } else {
+                document.getElementById("sendbutton").disabled = true;
+            }
+            // The test re-detects the server's API version; show it, so an organizer whose federation
+            // has just upgraded sees the module follow without reinstalling anything.
+            if (resp && resp['apiVersion']) {
+                SWE_API_VERSION = parseInt(resp['apiVersion'], 10);
+                var el = document.getElementById("swe_api_version_text");
+                if (el) { el.textContent = 'v' + SWE_API_VERSION; }
+            }
+            if (resp) {
+                document.getElementById("status_information").innerHTML = serverText(resp, this.status)
+                    + (resp['detail'] ? '<br /><span class="sweerror">' + resp['detail'] + '</span>' : '');
+            } else {
+                document.getElementById("status_information").innerHTML = '<span class="sweerror">' + SWE_TXT.connectionerror + ' (HTTP ' + this.status + ')</span>';
             }
         }
     };
     function resulthandler() {
         if (this.readyState == 4) {
-            if (this.status == 200) {
-                var data = JSON.parse(this.response);
-                if (data['status'] == 'Ready') {
-                    var xc;
-                    document.getElementById("status_result").innerHTML = "";
-                    for (xc in data['results']) {
-                        document.getElementById("status_result").innerHTML += '<br />' + data['results'][xc]['className'] + '<br /><?= $swelang_exported ?>: ' + data['results'][xc]['imported'] + ' <?= $swelang_notexported ?>: ' + data['results'][xc]['failed'];
-			            if (data['results'][xc]['warningMessage'] != null) {
-                           document.getElementById("status_result").innerHTML +=  '<br /><?= $swelang_warnings ?>: (' + data['results'][xc]['warnings'] +')<br /><span class="swewarning"> ' + data['results'][xc]['warningMessage'] + '</span>';
-                        }
-                        document.getElementById("status_result").innerHTML += '<br />';
-                        console.log(data['results']);
-                    }
-                    document.getElementById("status_result").innerHTML += "</tbody></table>";
-                } else {
-                    document.getElementById("status_result").innerHTML = data['message'];
-                    console.log(data);
+            var out = document.getElementById("status_result");
+            document.getElementById("sendbutton").disabled = false;
+            var data = this.status == 200 ? parseJson(this.response) : null;
+            if (!data) {
+                out.innerHTML = '<span class="sweerror">' + SWE_TXT.connectionerror + ' (HTTP ' + this.status + ')</span>';
+                console.log(this.response);
+                return;
+            }
+            if (data['status'] == 'Ready') {
+                var html = "";
+                if (data['message']) {
+                    html += '<br /><b>' + data['message'] + '</b><br />';
                 }
-
+                var xc;
+                for (xc in data['results']) {
+                    var r = data['results'][xc];
+                    html += '<br />' + sectionLabel(r['section']) + r['className'] + '<br />' + SWE_TXT.exported + ': ' + r['imported'] + ' ' + SWE_TXT.notexported + ': ' + r['failed'];
+                    if (r['warningMessage'] != null && r['warningMessage'] != '') {
+                        html += '<br />' + SWE_TXT.warnings + ': (' + r['warnings'] + ')<br /><span class="swewarning"> ' + r['warningMessage'] + '</span>';
+                    }
+                    html += '<br />';
+                }
+                out.innerHTML = html;
+                console.log(data['results']);
+            } else {
+                out.innerHTML = '<span class="sweerror">' + serverText(data, this.status) + '</span>' + (data['detail'] ? '<br />' + data['detail'] : '');
+                console.log(data);
             }
         }
     };

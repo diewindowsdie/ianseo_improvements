@@ -42,7 +42,7 @@ Aggiunto il campo FinConfirmed e TfConfirmed (int(4)) nelle rispettive tabelle p
 	if(!empty($_GET['B'])) {
 		// get the match
 		$Match=getScore($_GET['B']);
-		if(!empty($Match->FsDate1) and !empty($Match->FsTime1)) $_GET['T']=$Match->FsDate1.'|'.$Match->FsTime1;
+		if(!empty($Match->ScheduledKey)) $_GET['T']=$Match->ScheduledKey;
 
 		// if we have a "C" input (beware of autoedit!) then do the action
 		if(!empty($_GET['C'])) {

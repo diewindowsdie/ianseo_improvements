@@ -5,6 +5,11 @@ Common setup for Field
 
 */
 
+/**
+ * Modified by helmut.poell@gmx.at
+ * 2026-09-07
+ */
+
 require_once(dirname(__FILE__).'/lib.php');
 require_once(dirname(dirname(__FILE__)).'/lib.php');
 
@@ -12,7 +17,7 @@ require_once(dirname(dirname(__FILE__)).'/lib.php');
 CreateStandardDivisions($TourId, 'FIELD', $SubRule);
 
 // default Classes
-CreateStandardClasses($TourId, $SubRule);
+CreateStandardClasses($TourId, $SubRule, $TourType);
 
 // default Distances
 switch($TourType) {
@@ -38,6 +43,7 @@ InsertStandardFieldEliminations($TourId, $SubRule);
 CreateFinals($TourId);
 
 // create Groups finals
+// The use of this function is not clear, theese SubRules did never exist. I keep it unchanged, you never know.
 switch($SubRule) {
 	case 3:
 		$query = "INSERT INTO Finals (FinEvent,FinMatchNo,FinTournament,FinDateTime) 
@@ -57,42 +63,23 @@ switch($SubRule) {
 		break;
 }
 
+$i=1;
+
 // Default Target
 switch($TourType) {
     case 9:
-        switch ($SubRule) {
-            case 1:
-            case 3:
-                CreateTargetFace($TourId, 1, 'Weiß', 'REG-^RU13|^RU15|^CU13|^CU15|^BU13|^BU15|^LU13|^LU15|^TU13|^TU15', '1', TGT_FIELD, 0);
-                CreateTargetFace($TourId, 2, 'Gelb', 'REG-^BU18|^LU18|^TU18|^LU21|^L50|^L60|^L65|^L[M|W]$', '1', TGT_FIELD, 0);
-                CreateTargetFace($TourId, 3, 'Blau', 'REG-^RU18|^CU18|^BU21|^B50|^B60|^B65|^B[M|W]$|^TU21|^T50|^T60|^T65|^T[M|W]$', '1', TGT_FIELD, 0);
-                CreateTargetFace($TourId, 4, 'Rot', 'REG-^RU21|^R50|^R60|^R65|^R[M|W]$|^CU21|^C50|^C60|^C65|^C[M|W]$', '1', TGT_FIELD, 0);
-                break;
-            case 2:
-            case 4:
-                CreateTargetFace($TourId, 1, 'Gelb', 'REG-^L', '1', TGT_FIELD, 0);
-                CreateTargetFace($TourId, 2, 'Blau', 'REG-^[BT]', '1', TGT_FIELD, 0);
-                CreateTargetFace($TourId, 3, 'Rot', 'REG-^[RC]', '1', TGT_FIELD, 0);
-                break;
-        }
+        CreateTargetFace($TourId, $i++, 'Grün', 'REG-^RU8|^RU10|CU8|^CU10|BU8|^BU10|^LU8|^LU10|^TU8|^TU10', '1', TGT_FIELD, 0);
+        CreateTargetFace($TourId, $i++, 'Weiß', 'REG-^RU13|^RU15|^CU13|^CU15|^BU13|^BU15|^LU13|^LU15|^TU13|^TU15', '1', TGT_FIELD, 0);
+        CreateTargetFace($TourId, $i++, 'Gelb', 'REG-^BU18|^LU18|^TU18|^LU21|^L50|^L65|^L[M|W|G]$', '1', TGT_FIELD, 0);
+        CreateTargetFace($TourId, $i++, 'Blau', 'REG-^RU18|^CU18|^BU21|^B50|^B65|^B[M|W|G]$|^TU21|^T50|^T65|^T[M|W|G]$', '1', TGT_FIELD, 0);
+        CreateTargetFace($TourId, $i++, 'Rot', 'REG-^RU21|^R50|^R65|^R[M|W|G]$|^CU21|^C50|^C65|^C[M|W|G]$', '1', TGT_FIELD, 0);
         break;
     case 10:
     case 12:
-        switch ($SubRule) {
-            case 1:
-            case 3:
-                CreateTargetFace($TourId, 1, 'Weiß', 'REG-^RU13|^RU15|^CU13|^CU15|^BU13|^BU15|^LU13|^LU15|^TU13|^TU15', '1', TGT_FIELD, 0, TGT_FIELD, 0);
-                CreateTargetFace($TourId, 2, 'Gelb', 'REG-^BU18|^LU18|^TU18|^LU21|^L50|^L60|^L65|^L[M|W]$', '1', TGT_FIELD, 0, TGT_FIELD, 0);
-                CreateTargetFace($TourId, 3, 'Blau', 'REG-^RU18|^CU18|^BU21|^B50|^B60|^B65|^B[M|W]$|^TU21|^T50|^T60|^T65|^T[M|W]$', '1', TGT_FIELD, 0, TGT_FIELD, 0);
-                CreateTargetFace($TourId, 4, 'Rot', 'REG-^RU21|^R50|^R60|^R65|^R[M|W]$|^CU21|^C50|^C60|^C65|^C[M|W]$', '1', TGT_FIELD, 0, TGT_FIELD, 0);
-                break;
-            case 2:
-            case 4:
-                CreateTargetFace($TourId, 1, 'Gelb', 'REG-^L', '1', TGT_FIELD, 0, TGT_FIELD, 0);
-                CreateTargetFace($TourId, 2, 'Blau', 'REG-^[BT]', '1', TGT_FIELD, 0, TGT_FIELD, 0);
-                CreateTargetFace($TourId, 3, 'Rot', 'REG-^[RC]', '1', TGT_FIELD, 0, TGT_FIELD, 0);
-                break;
-        }
+        CreateTargetFace($TourId, $i++, 'Weiß', 'REG-^RU13|^RU15|^CU13|^CU15|^BU13|^BU15|^LU13|^LU15|^TU13|^TU15', '1', TGT_FIELD, 0, TGT_FIELD, 0);
+        CreateTargetFace($TourId, $i++, 'Gelb', 'REG-^BU18|^LU18|^TU18|^LU21|^L50|^L65|^L[M|W|G]$', '1', TGT_FIELD, 0, TGT_FIELD, 0);
+        CreateTargetFace($TourId, $i++, 'Blau', 'REG-^RU18|^CU18|^BU21|^B50|^B65|^B[M|W|G]$|^TU21|^T50|^T65|^T[M|W|G]$', '1', TGT_FIELD, 0, TGT_FIELD, 0);
+        CreateTargetFace($TourId, $i++, 'Rot', 'REG-^RU21|^R50|^R65|^R[M|W|G]$|^CU21|^C50|^C65|^C[M|W|G]$', '1', TGT_FIELD, 0, TGT_FIELD, 0);
         break;
 }
 

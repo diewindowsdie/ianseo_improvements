@@ -224,6 +224,7 @@ $lang['MenuLM_DeleteTarget']='Ta bort tavelplaceringen';
 $lang['MenuLM_Distances']='Avståndshantering';
 $lang['MenuLM_Div/Class Result List']='Resultat Skjutstil/klass';
 $lang['MenuLM_Divisions and Classes']='Skjutstilar och klasser';
+$lang['MenuLM_DragDropTarget']='Drag and drop Tavel/patrullindelning';
 $lang['MenuLM_Draw']='Lottning';
 $lang['MenuLM_Edit Competition Info']='Redigera tävlingsinformation';
 $lang['MenuLM_EditFinalReport']='Redigera slutlig rapport';

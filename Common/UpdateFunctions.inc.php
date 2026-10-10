@@ -911,3 +911,9 @@ function updateRemoveDNFnoRank_20260607($ToId) {
     safe_w_sql("UPDATE `Individuals` set `IndIrmType`=5 where `IndIrmType`=7  and `IndTournament` = {$ToId}",false,array());
     safe_w_sql("UPDATE `Individuals` set `IndIrmTypeFinal`=5 where `IndIrmTypeFinal`=7 and `IndTournament` = {$ToId}",false,array());
 }
+
+function updateTargetShape_20260914($ToId) {
+    foreach(range(1,8) as $i) {
+        safe_w_sql("UPDATE TargetFaces INNER JOIN Tournament ON TfTournament=ToId set TfF{$i}=1 where ToId={$ToId} and TfT{$i} in (2,4) and (ToType NOT IN (14,32,36,38,46,47,49) and ToTypeSubRule != 'SetLancClassic') ",false,array());
+    }
+}

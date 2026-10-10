@@ -102,7 +102,6 @@ $lang['Currency']='Din.';
 $lang['DailySchedule']='Dnevni raspored';
 $lang['Days']='Dani';
 $lang['DefaultLocRule']='FITA';
-$lang['DeleteTourConfirm']='Unesi u okvir za tekst sledeći kontrolni kod:';
 $lang['DeleteTournament']='Obriši takmičenje';
 $lang['Deleting']='Rad u toku: brisanje internet fajlova...';
 $lang['Descr']='Opis';

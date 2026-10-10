@@ -23,12 +23,14 @@ $lang['AutoCHK-CanEdit']='Els dispositius poden editar grafia nom i categoria';
 $lang['AutoCHK-Code']='Codi Competició';
 $lang['AutoCHK-Confirm']='Confirmar Check-In (Entrades)';
 $lang['AutoCHK-FastLaneExtra']='Indicador d’accés ràpid a pràctica';
+$lang['AutoCHK-FastLanePractice']='Taquilla de pràctica per Pagament de Via Ràpida';
 $lang['AutoCHK-IP']='IPs dels dispositius Auto-Checkin (un per línia)';
 $lang['AutoCHK-IPBowStorage']='Quiosc de guarda d’arcs';
 $lang['AutoCHK-IPGoodiesDistribution']='Quiosc de distribució d’obsequis';
 $lang['AutoCHK-IPinfo']='Punts Informació Autoservei';
 $lang['AutoCHK-IPnoMgm']='Terminals Autoservei';
 $lang['AutoCHK-IPPaidPractice']='Quiosc de pràctica de pagament';
+$lang['AutoCHK-KioskEditPin']='Mode Taquilla: canvia el PIN';
 $lang['AutoCHK-Names']='Comproveu també Nom de pila/Cognoms';
 $lang['AutoCHK-nobody']='Ningú amb aquest Codi es troba a la BBDD en aquest instant... SI US PLAU VAGI A SECRETARIA TECNICA';
 $lang['AutoCHK-PaidPracticeExtra']='Indicador de pràctica de pagament';
@@ -67,6 +69,7 @@ $lang['BgImage']='Imatge de fons';
 $lang['BibNumber']='Nombre dorsal';
 $lang['BlackWhite']='Blanc i negre';
 $lang['Bold']='Negreta';
+$lang['Cards']='Nom Targeta';
 $lang['Category']='Categoria';
 $lang['CharColor']='Color lletres';
 $lang['CharSize']='Mida del caràcter<br/>(Factor d\'espaiat)';
@@ -143,6 +146,8 @@ $lang['IdMarginW']='Amplada marge';
 $lang['Image']='Imatge';
 $lang['Images']='Imatges';
 $lang['ImageSvg']='Imatge SVG';
+$lang['ImageUrl']='Imatge des d\'URL';
+$lang['ImageUrlFields']='<ul><li><b>{LOOKUPTABLE}: </b>{LOOKUPTABLE} es convertirà en la referència de la Taula de Consulta de la Inscripció</li> <li><b>{ENCODE}: </b>{ENCODE} es convertirà en el Codi de la Inscripció</li> <li><b>{COUNTRY}: </b>{COUNTRY} es convertirà en el Codi del País</li> <li><b>{DIVISION}: </b>{DIVISION} es convertirà en el Codi de la Divisió</li> <li><b>{CLASS}: </b>{CLASS} es convertirà en el Codi de la Classe</li> <li><b>{TOURNAMENT}: </b>{TOURNAMENT} es convertirà en el Codi de la Competició</li> </ul>';
 $lang['IncludeLogo']='Imprimir banderes associació/club';
 $lang['IncludeSession']='Inclogui sessió a la impressió';
 $lang['Italic']='Cursiva';
@@ -174,6 +179,14 @@ $lang['PrintHasPlastic']='Acreditacions penjants amb cinta només';
 $lang['PrintSpecificBadges']='Imprimir utilitzant acreditacions auto-coincidents';
 $lang['PrintSyncResult']='$a Dorsals s\'han posat tal com estan impresos!';
 $lang['Q-Badge']='Dorsal classificatòria';
+$lang['QrCodeFields']='"<ul>
+<li><b>En blanc: </b>s\'imprimirà una cadena separada per barres verticals amb el Codi de la Inscripció, el Codi del País i la Divisió</li>
+<li><b>{ENCODE}: </b>{ENCODE} es convertirà en el Codi de la Inscripció</li>
+<li><b>{COUNTRY}: </b>{COUNTRY} es convertirà en el Codi del País</li>
+<li><b>{DIVISION}: </b>{DIVISION} es convertirà en el Codi de la Divisió</li>
+<li><b>{CLASS}: </b>{CLASS} es convertirà en el Codi de la Classe</li>
+<li><b>{TOURNAMENT}: </b>{TOURNAMENT} es convertirà en el Codi de la Competició</li>
+</ul>"';
 $lang['QRScore']='Puntuació Ronda Classificació';
 $lang['QualPosition']='Posició Classificació';
 $lang['RandomImage']='Imatge aleatòria';

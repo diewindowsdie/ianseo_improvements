@@ -140,7 +140,6 @@ $lang['Setup-CA']='Kanādas sacensību noteikumi';
 $lang['Setup-CH']='Šveices sacensībau noteikumi';
 $lang['Setup-Default']='Starptautiskas sacensības (WA noteikumi)';
 $lang['Setup-FR']='Francijas turnīru noteikumi';
-$lang['Setup-IT']='Itālijas sacensību noteikumi - FitARCO noteikumi';
 $lang['Setup-NFAA']='NFAA sacensībau noteikumi';
 $lang['Setup-NL']='Dāņu sacensību noteikumi';
 $lang['Setup-NO']='Norvēģu sacensības';

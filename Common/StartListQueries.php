@@ -1210,6 +1210,7 @@ function getStartListCategoryQuery($ORIS=false, $orderByTeam=0, $Events=array())
 			concat(upper(`EnFirstName` $Collation), ' ', `EnName` $Collation) AS `Athlete`, 
 			`QuSession` AS `Session`, 
 			CONCAT(QuTarget,QuLetter) AS `TargetNo`, 
+			EnSubTeam as NationSubTeam,
 			case `EvTeamCreationMode`
 				when 0 then upper(c.`CoCode`) 
 				when 1 then upper(c2.`CoCode`) 

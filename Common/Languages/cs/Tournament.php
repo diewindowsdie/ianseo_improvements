@@ -141,7 +141,6 @@ $lang['DefaultHM']='Výchozí HM';
 $lang['DefaultLocRule']='FITA';
 $lang['DefaultVI']='Výchozí VI';
 $lang['DeletePreviousTeams']='Smazat předešlý tým';
-$lang['DeleteTourConfirm']='Prosím, vložte do textového pole následující kontrolní kód:';
 $lang['DeleteTournament']='Smazat závod';
 $lang['Deleting']='Pracuji: mazání on-line souborů ...';
 $lang['Descr']='Popis';

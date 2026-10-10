@@ -145,12 +145,14 @@ if(!$IsRunArchery) {
 		}
 
 		// based on the SO status we build brackets and Final Ranks
+        $BraCode='IB' . $MyRow->EvCode;
+        $FinCode='IF' . $MyRow->EvCode;
 		if($MyRow->EvShootOff) {
-			$BraCode='IB' . $MyRow->EvCode;
-			$FinCode='IF' . $MyRow->EvCode;
 			$outputIndFin .='<input type="checkbox" name="FinalInd[]" value="'.$FinCode.'">' . $MyRow->EvCode . '&nbsp;-&nbsp;' . $MyRow->EvEventName . '<br/>';
 			$outputIndBra .='<input type="checkbox" name="BracketsInd[]" value="'.$BraCode.'">' . $MyRow->EvCode . '&nbsp;-&nbsp;' . $MyRow->EvEventName . '<br/>';
-		}
+		} else if ($MyRow->EvElimType==5) {
+            $outputIndFin .='<input type="checkbox" name="FinalInd[]" value="'.$FinCode.'">' . $MyRow->EvCode . '&nbsp;-&nbsp;' . $MyRow->EvEventName . '<br/>';
+        }
 	}
 
 	// select the ACTUAL Team Events
@@ -214,11 +216,12 @@ if(!$IsRunArchery) {
 		}
 
 		// solo chi ha la fase > 0 va avanti
-		if(!$MyRowEv->EvFinalFirstPhase or in_array($MyRowEv->EvCode, $_SESSION['MenuFinT'])) {
-			continue;
+		if($MyRowEv->EvFinalFirstPhase AND !in_array($MyRowEv->EvCode, $_SESSION['MenuFinT'])) {
+            $outputTeamBra .='<input type="checkbox" name="BracketsTeam[]" value="' . $BraCode . '">' . $MyRowEv->EvCode . '&nbsp;-&nbsp;' . $MyRowEv->EvEventName . '<br/>';
 		}
-		$outputTeamFin .='<input type="checkbox" name="FinalTeam[]" value="' . $FinCode . '">' . $MyRowEv->EvCode . '&nbsp;-&nbsp;' . $MyRowEv->EvEventName . '<br/>';
-		$outputTeamBra .='<input type="checkbox" name="BracketsTeam[]" value="' . $BraCode . '">' . $MyRowEv->EvCode . '&nbsp;-&nbsp;' . $MyRowEv->EvEventName . '<br/>';
+        if(($MyRowEv->EvFinalFirstPhase or $MyRowEv->EvElimType==5) AND !(in_array($MyRowEv->EvCode, $_SESSION['MenuFinT']) or in_array($MyRowEv->EvCode, $_SESSION['MenuRobin']))) {
+            $outputTeamFin .='<input type="checkbox" name="FinalTeam[]" value="' . $FinCode . '">' . $MyRowEv->EvCode . '&nbsp;-&nbsp;' . $MyRowEv->EvEventName . '<br/>';
+        }
 	}
 }
 

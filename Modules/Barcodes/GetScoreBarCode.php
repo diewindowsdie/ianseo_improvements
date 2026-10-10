@@ -381,16 +381,16 @@ if(!$archers){
             echo '<td class="Score">'.$archer->tXnine.'</td>';
         }
         echo '<td class="Score '.((($archer->Hits OR $archer->expectedArrows) AND $archer->Hits != $archer->expectedArrows) ? 'ArrError': '').'">'.$archer->Hits.'</td>';
-        echo '<td class="Command Bold"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C' => $archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass)).'">CONFIRM</a></td>';
+        echo '<td class="Command Bold"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C' => $archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass)).'">'.get_text('BcodeConfirm','Tournament').'</a></td>';
         if($D) {
-            echo '<td class="Command"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'EDIT')).'">Edit arrows</a>
-					<br/><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C' => 'EDIT2')).'">Edit totals</a>
+            echo '<td class="Command"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'EDIT')).'">'.get_text('BcodeEditArrow','Tournament').'</a>
+					<br/><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C' => 'EDIT2')).'">'.get_text('BcodeEditTotals','Tournament').'</a>
 					</td>';
-            echo '<td class="Command"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'REM10')).'">Remove 10</a>
-					<br/><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'REMXNINE')).'">Remove X/Nine</a>
-					<br/><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'REMALL')).'">Remove both</a>
+            echo '<td class="Command"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'REM10')).'">'.get_text('BcodeRemoveItem','Tournament',$TOUR->ToGolds).'</a>
+					<br/><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'REMXNINE')).'">'.get_text('BcodeRemoveItem','Tournament',$TOUR->ToXNine).'</a>
+					<br/><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'REMALL')).'">'.get_text('BcodeRemoveBoth','Tournament').'</a>
 					</td>';
-            echo '<td class="Command"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'RESET')).'">Reset both</a>
+            echo '<td class="Command"><a href="'.go_get(array('B'=>$archer->EnBib.$_SESSION['BarCodeSeparator'].$archer->EnDivision.$_SESSION['BarCodeSeparator'].$archer->EnClass, 'C'=> 'RESET')).'">'.get_text('BcodeResetBoth','Tournament').'</a>
 					</td>';
         } else {
             echo '<td colspan="3">&nbsp;</td>';

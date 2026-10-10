@@ -827,7 +827,7 @@ function getApiScheduledSessions($ScheduleOptions=[]) {
 			};
 			$val=array();
 			foreach($f as $team => $levels) {
-				$val[$team]=($team ? 'T: ' : 'I: ');
+				$val[$team]=($team ? 'T: ' : 'I: ') . $d . ' - ';
 				$lv=[];
 				foreach($levels as $level => $rounds) {
 					$rd=[];
