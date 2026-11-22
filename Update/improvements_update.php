@@ -22,6 +22,7 @@ require_once 'improvements/2026-03-12_add_50_30_RUS.php';
 require_once 'improvements/2026-03-12_add_12_12_RUS.php';
 require_once 'improvements/2026-05-03_add_judges_fixed_order.php';
 require_once 'improvements/2026-06-12_judge_roles.php';
+require_once 'improvements/2026-11-22_add_senior_secretary_role.php';
 
 if ($log) fclose($log);
 ?>

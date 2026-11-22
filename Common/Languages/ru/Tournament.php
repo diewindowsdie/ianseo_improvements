@@ -722,6 +722,7 @@ $lang['SendLogos']='Отправить логотипы и изображени�
 $lang['SendMail']='Отправить почту';
 $lang['SendNoRank']='Спортсмен ещё соревнуется';
 $lang['SendTestMail']='Отправить тестовое письмо';
+$lang['SeniorSecretary']='Старший секретарь';
 $lang['SeparateClasses']='Разделить классы';
 $lang['SeparateDivisions']='Разделить дивизионы';
 $lang['ServerFilesPath']='Путь к папке на сервере';

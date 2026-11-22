@@ -1148,6 +1148,7 @@ $lang['SendNoRank']='Archers still competing';
 $lang['SendTeams']='Send to Team Officials';
 $lang['SendTestMail']='Send test mail to:';
 $lang['SendToModEntries']='Send to Entries Modified since their last email';
+$lang['SeniorSecretary']='Senior Secretary';
 $lang['SeparateClasses']='Separate Classes';
 $lang['SeparateDivisions']='Separate Divisions';
 $lang['ServerFile']='File on Server';
